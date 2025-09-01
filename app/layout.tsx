@@ -70,7 +70,7 @@ export default async function RootLayout({
 }>) {
   // Get dictionary and set to server provider
   const [dict] = ServerProvider('dict', await getDictionary());
-  // const { isError, menu } = await getMenuByMarker('main');
+  const { isError, menu } = await getMenuByMarker('main');
   
   // if (isError || !menu) {
   //   // !!! 504 Error return page no internet connection
@@ -86,7 +86,7 @@ export default async function RootLayout({
         <StoreProvider>
           <AuthProvider>
             <OpenDrawerProvider>
-              {/* <Header menu={menu} /> */}
+              <Header menu={menu} />
               <TransitionProvider>
                 <div className="h-[130px] max-xl:h-[110px] max-lg:h-[110px] max-md:h-[90px] max-sm:h-[75px]"></div>
                 <main className="flex flex-col grow overflow-hidden">

@@ -44,25 +44,25 @@ const SearchBar: FC<{ placeholder: string }> = ({ placeholder }) => {
   };
 
   return (
-    <div className="relative text-neutral-600 max-2xl:hidden">
-      <form className="flex w-full" onSubmit={handleSubmit}>
-        <button
-          type="submit"
-          className="group relative m-auto box-border flex shrink-0 flex-col p-2.5"
-        >
-          <span className="sr-only">{placeholder}</span>
-          <SearchIcon />
-        </button>
+    <div className="relative">
+      <form className="relative" onSubmit={handleSubmit}>
         <input
           defaultValue={debouncedValue}
           onChange={(e) => handleSearch(e.target.value)}
           type="search"
-          placeholder={placeholder}
           id="searchInput"
           name="quick-search"
-          className="my-auto h-[25px] w-[210px] rounded-xl border border-solid border-gray-200 px-2.5 text-neutral-400 outline-none transition-colors duration-300 ease-in-out focus:border-none focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
+          className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-[40px] text-[#dfe9f9] cursor-pointer"
+          placeholder={placeholder}
           aria-label={placeholder}
         />
+        <button
+          type="submit"
+          className="group absolute top-[8px] left-2.5"
+        >
+          <span className="sr-only">{placeholder}</span>
+          <SearchIcon />
+        </button>
       </form>
       <Suspense fallback={'...'}>
         <SearchResults

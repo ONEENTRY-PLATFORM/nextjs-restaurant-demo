@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import type { FC } from 'react';
 
 import FavoritesIcon from '@/components/icons/favorites';

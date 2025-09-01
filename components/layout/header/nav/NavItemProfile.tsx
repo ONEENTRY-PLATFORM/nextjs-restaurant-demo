@@ -34,7 +34,7 @@ const NavItemProfile: FC<NavItemProfileProps> = ({ userMenu }) => {
     return (
       <button
         onClick={handleSignInClick}
-        className="group relative my-auto box-border flex size-6 shrink-0"
+        className="group relative my-auto box-border flex size-6 shrink-0 cursor-pointer"
         aria-label="Sign In"
       >
         <ProfileIcon />

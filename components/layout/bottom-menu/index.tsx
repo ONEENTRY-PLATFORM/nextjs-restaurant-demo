@@ -4,7 +4,6 @@ import { type Key } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
 
-import NavItemBooking from './components/NavItemBooking';
 import NavItemCalendar from './components/NavItemCalendar';
 import NavItemCatalog from './components/NavItemCatalog';
 import NavItemHome from './components/NavItemHome';
@@ -28,7 +27,6 @@ const BottomMobileMenu: FC = async () => {
             <div className="flex size-6" key={i}>
               {item.pageUrl === 'home' && <NavItemHome item={item} />}
               {item.pageUrl === 'services' && <NavItemCatalog item={item} />}
-              {item.pageUrl === 'booking' && <NavItemBooking item={item} />}
               {item.pageUrl === 'masters' && <NavItemCalendar item={item} />}
               {item.pageUrl === 'profile' && <NavItemProfile item={item} />}
             </div>

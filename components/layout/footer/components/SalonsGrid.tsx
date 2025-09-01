@@ -2,7 +2,6 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { FC } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
-import Phone2Icon from '@/components/icons/phone-2';
 
 /**
  * SalonsGrid
@@ -43,7 +42,6 @@ const SalonsGrid: FC = async () => {
                 href={'tel:' + item.phone}
                 className="flex gap-2 text-sm font-bold focus:outline-none"
               >
-                <Phone2Icon />
                 <p>{item.phoneFormatted}</p>
               </a>
             </address>

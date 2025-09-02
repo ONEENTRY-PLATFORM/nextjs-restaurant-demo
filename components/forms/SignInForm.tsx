@@ -44,7 +44,7 @@ const SignInForm: FC<{
   } = dict;
 
   // Get form by marker with RTK
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'reg' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // get fields from formFieldsReducer
   const { email_reg, password_reg } = useAppSelector(

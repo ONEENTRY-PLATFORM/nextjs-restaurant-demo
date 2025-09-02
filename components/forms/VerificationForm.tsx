@@ -117,7 +117,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
       >
         <div className="relative mb-5 box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-gray-400 max-md:max-w-full">
-            {enter_otp_code?.value}
+            Enter your OTP code here
           </p>
         </div>
 
@@ -137,7 +137,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
               type="button"
               onClick={onResendHandle}
             >
-              {resend_text?.value}
+              Resend
             </button>
           </div>
         </div>

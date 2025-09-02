@@ -5,9 +5,17 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductEntity, IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
 type InitialStateType = {
+  products: IProductsEntity[];
+  productsData: any[];
+  delivery: IProductsEntity | null;
+  deliveryData: {
+    date: number;
+    time: string;
+    address: string;
+  };
   serviceId: number;
   servicesData: {
     id: number;
@@ -23,6 +31,14 @@ type InitialStateType = {
 };
 
 const initialState: InitialStateType = {
+  products: [],
+  productsData: [],
+  delivery: {} as IProductsEntity,
+  deliveryData: {
+    date: new Date().getTime(),
+    time: '',
+    address: '',
+  },
   serviceId: 0,
   servicesData: [
     {
@@ -69,6 +85,29 @@ export const cartSlice = createSlice({
         }
       });
     },
+    addProductsToCart(state, action: PayloadAction<IProductsEntity[]>) {
+      state.products = action.payload;
+    },
+    addDeliveryToCart(state, action: PayloadAction<IProductsEntity>) {
+      state.delivery = action.payload;
+    },
+    setDeliveryData(
+      state,
+      action: PayloadAction<{ date: number; time: string; address: string }>,
+    ) {
+      state.deliveryData = {
+        date: action.payload.date,
+        time: action.payload.time,
+        address: action.payload.address,
+      };
+    },
+    deselectProduct(state, action: PayloadAction<number>) {
+      state.productsData.map((product) => {
+        if (product.id === action.payload) {
+          product.selected = !product.selected;
+        }
+      });
+    },
     removeAllServices(state) {
       state.servicesData = initialState.servicesData;
     },
@@ -80,6 +119,10 @@ export const cartSlice = createSlice({
 
 export const {
   addServiceToCart,
+  addProductsToCart,
+  addDeliveryToCart,
+  setDeliveryData,
+  deselectProduct,
   removeAllServices,
   setCartVersion,
 } = cartSlice.actions;
@@ -92,6 +135,23 @@ export const {
 export const selectCartData = (state: {
   cartReducer: { servicesData: any[] };
 }) => state.cartReducer.servicesData;
+
+/**
+ * Select delivery data
+ *
+ * @param state slice state
+ *
+ * @returns
+ */
+export const selectDeliveryData = (state: {
+  cartReducer: {
+    deliveryData: {
+      date: number;
+      time: string;
+      address: string;
+    };
+  };
+}) => state.cartReducer.deliveryData;
 
 /**
  * Select cart total price

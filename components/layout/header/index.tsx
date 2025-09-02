@@ -7,6 +7,9 @@ import Logo from './Logo';
 import NavGroup from './nav/NavGroup';
 import SearchBar from './search/SearchBar';
 import { getChildPagesByParentUrl } from '@/app/api';
+import CategoryModal from '@/components/static/CategoryModal';
+import MenuBottom from '@/components/static/MenuBottom';
+import FilterBottom from '@/components/static/FilterBottom';
 
 
 const SearchFallback = () => (
@@ -127,6 +130,9 @@ const Header: FC = async () => {
 
         </div>
       </div>
+      {/* <CategoryModal /> */}
+      {/* <MenuBottom /> */}
+      {/* <FilterBottom /> */}
     </div>
   );
 };

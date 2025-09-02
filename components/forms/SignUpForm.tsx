@@ -33,7 +33,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   const { sign_up_text, sign_in_text, create_account_desc } = dict;
 
   // Get form by marker with RTK
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'reg' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // Get fields from formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);

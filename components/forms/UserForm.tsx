@@ -37,7 +37,7 @@ const UserForm: FC<FormProps> = ({ dict }) => {
 
   // Get form by marker with RTK
   const { data, isLoading, error } = useGetFormByMarkerQuery({
-    marker: 'reg',
+    marker: 'user',
   });
 
   // get fields from formFieldsReducer

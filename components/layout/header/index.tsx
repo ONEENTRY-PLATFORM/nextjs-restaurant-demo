@@ -131,8 +131,8 @@ const Header: FC = async () => {
         </div>
       </div>
       {/* <CategoryModal /> */}
-      {/* <MenuBottom /> */}
-      {/* <FilterBottom /> */}
+      <MenuBottom />
+      <FilterBottom />
     </div>
   );
 };

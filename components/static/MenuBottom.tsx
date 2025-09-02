@@ -62,7 +62,7 @@ const MenuBottom = () => (
         </div>
       </div>
     </div>
-    <div className="clipped-div fixed bottom-[-2px] left-0 z-40 bg-custom_black"></div>
+    <div className="clipped-div fixed bottom-[-2px] left-0 z-40 bg-black"></div>
   </div>
 )
 

@@ -28,7 +28,6 @@ const Footer = dynamic(() => import('@/components/layout/footer'), {
 // });
 
 import "./globals.css";
-import "./styles/main.css";
 import { ToastContainer } from "react-toastify";
 
 const lato = Lato({

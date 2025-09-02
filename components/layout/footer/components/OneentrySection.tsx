@@ -47,7 +47,7 @@ const OneentrySection: FC = () => {
           />
         </Link>
       </div>
-      <div className="mx-auto flex max-w-screen-xl flex-row max-sm:flex-col">
+      <div className="mx-auto flex max-w-(--breakpoint-xl) flex-row max-sm:flex-col">
         <div className="flex w-4/12 flex-col max-md:w-4/12 max-sm:w-full">
           <Link
             target="_blank"

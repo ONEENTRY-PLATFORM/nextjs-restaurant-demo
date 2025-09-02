@@ -80,7 +80,7 @@ export default async function PageLayout({ params }: { params: PageProps }) {
   ];
 
   return (
-    <div className="mx-auto flex min-h-80 w-full max-w-screen-2xl flex-col overflow-hidden">
+    <div className="mx-auto flex min-h-80 w-full max-w-(--breakpoint-2xl) flex-col overflow-hidden">
       {pages.map((p, i) => {
         // if (pageUrl === p.name) {
         //   return <div key={i}>{p.component}</div>;

@@ -66,8 +66,8 @@ const CategoryModal= () => {
   ];
 
   return (
-    <div className="fixed bottom-0 h-[100%] md:absolute md:top-[280px] left-0 w-full md:h-[896px] bg-[rgba(76,77,86,0.8)] rounded-t-[20px] md:rounded-tl-none md:rounded-r-[20px] backdrop-blur-[10px] z-10 pt-[20px] md:pr-[42px] md:pl-[239px] md:max-w-[599px] transform translate-y-0 md:translate-y-0 md:translate-x-0 transition-transform duration-1000 ease-in-out">
-      <div className="max-w-[320px] mx-auto  h-[100%] overflow-y-auto no-scrollbar pb-[100px] md:pb-0">
+    <div className="fixed bottom-0 h-full md:absolute md:top-[280px] left-0 w-full md:h-[896px] bg-[rgba(76,77,86,0.8)] rounded-t-[20px] md:rounded-tl-none md:rounded-r-[20px] backdrop-blur-[10px] z-10 pt-[20px] md:pr-[42px] md:pl-[239px] md:max-w-[599px] transform translate-y-0 md:translate-y-0 md:translate-x-0 transition-transform duration-1000 ease-in-out">
+      <div className="max-w-[320px] mx-auto  h-full overflow-y-auto no-scrollbar pb-[100px] md:pb-0">
         <p className="font-normal text-[20px] tracking-[0.02em] text-[#dfe9f9] text-center">Category</p>
         <div className="flex justify-between flex-wrap gap-[15px] pt-[20px] md:pb-0">
           {items.map((item, index) => (

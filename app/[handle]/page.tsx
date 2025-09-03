@@ -1,43 +1,50 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
-import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
+import type { PageProps } from '@/app/types/global';
+// import PaymentPage from '@/components/layout/payment';
+// import ProfilePage from '@/components/layout/profile';
+// import AboutPage from '@/components/pages/AboutPage';
+// import ContactsPage from '@/components/pages/ContactsPage';
 // import PaymentCanceled from '@/components/pages/PaymentCanceled';
 // import PaymentSuccess from '@/components/pages/PaymentSuccess';
+// import ServicesPage from '@/components/pages/ServicesPage';
+// import type { Locale } from '@/i18n-config';
 
-type PageProps = Promise<{
-  handle: string;
-}>;
+// import { getDictionary } from '../dictionaries';
+import WithSidebar from './WithSidebar';
+import { getDictionary } from '../api/utils/dictionaries';
 
 /**
  * Generate page metadata
- *
  * @async server component
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
+ * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns metadata
  */
 export async function generateMetadata({
   params,
 }: {
-  params: PageProps;
+  params: { page: string; lang: string };
 }): Promise<Metadata> {
-  const { handle } = await params;
-
-  // Fetch page data based on the URL handle
-  const { page, isError } = await getPageByUrl(handle);
+  const { page: pageData } = await params;
+  // get page by Url
+  const { page, isError } = await getPageByUrl(pageData);
 
   if (isError || !page) {
-    return {}; // Return default metadata or handle not found appropriately
+    return notFound();
   }
 
+  // extract data from page
   const { localizeInfos } = page;
 
   return {
-    title: localizeInfos?.title || 'Default Title',
-    description: localizeInfos?.description || 'Default Description',
+    title: localizeInfos?.title,
+    description: localizeInfos?.title,
     openGraph: {
       type: 'article',
     },
@@ -45,48 +52,84 @@ export async function generateMetadata({
 }
 
 /**
- * Simple page layout
- *
+ * Simple page
  * @async server component
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
+ * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns page layout JSX.Element
  */
-export default async function PageLayout({ params }: { params: PageProps }) {
-  const { handle } = await params;
+const PageLayout: FC<{ params: any }> = async ({ params }) => {
+  const { page: p, lang } = await params;
+  // Get dictionary and set to server provider
   const [dict] = ServerProvider('dict', await getDictionary());
 
-  // get page by Url
-  const { page, isError } = await getPageByUrl(handle);
+  // Get page by current url
+  const { page, isError } = await getPageByUrl(p);
 
+  // if error return notFound
   if (isError || !page) {
     return notFound();
   }
 
+  // extract data from page
   const { pageUrl, templateIdentifier } = page;
 
   // array of pages components with additional settings for next router
   const pages = [
     {
       templateType: templateIdentifier,
-      name: 'payment_success',
-      // component: <PaymentSuccess page={page} dict={dict} />,
+      name: 'profile',
+      component: null,
     },
-    {
-      templateType: templateIdentifier,
-      name: 'payment_canceled',
-      // component: <PaymentCanceled page={page} dict={dict} />,
-    },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'payment',
+    //   component: <PaymentPage page={page} lang={lang} dict={dict} />,
+    // },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'about_us',
+    //   component: <AboutPage page={page} lang={lang} dict={dict} />,
+    // },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'services',
+    //   component: <ServicesPage page={page} lang={lang} dict={dict} />,
+    // },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'contact_us',
+    //   component: <ContactsPage page={page} lang={lang} dict={dict} />,
+    // },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'payment_success',
+    //   component: <PaymentSuccess page={page} lang={lang} dict={dict} />,
+    // },
+    // {
+    //   templateType: templateIdentifier,
+    //   name: 'payment_canceled',
+    //   component: <PaymentCanceled page={page} lang={lang} dict={dict} />,
+    // },
   ];
 
   return (
-    <div className="mx-auto flex min-h-80 w-full max-w-(--breakpoint-2xl) flex-col overflow-hidden">
+    <div className="mx-auto flex min-h-80 w-full max-w-screen-xl flex-col overflow-hidden">
       {pages.map((p, i) => {
-        // if (pageUrl === p.name) {
-        //   return <div key={i}>{p.component}</div>;
-        // }
-        return null;
+        if (pageUrl !== p.name) {
+          return;
+        }
+        return p.templateType === 'withSidebar' ? (
+          <WithSidebar key={i}>
+            {p.component}
+          </WithSidebar>
+        ) : (
+          <div key={i}>{p.component}</div>
+        );
       })}
     </div>
   );
-}
+};
+
+export default PageLayout;

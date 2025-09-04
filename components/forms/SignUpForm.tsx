@@ -30,7 +30,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   const { authenticate } = useContext(AuthContext);
   const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
 
-  const { sign_up_text, sign_in_text, create_account_desc } = dict;
+  const { sign_up_text, sign_in_text, create_account_text } = dict;
 
   // Get form by marker with RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
@@ -40,7 +40,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
 
   // Memoized form fields for better performance
   const formFields = useMemo(
-    () => ['email_reg', 'name_reg', 'phone_reg', 'password_reg'],
+    () => ['username', 'surname', 'email', 'phone'],
     [],
   );
 
@@ -142,7 +142,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
             >
               {sign_in_text?.value || 'sign_in'}
             </button>{' '}
-            {create_account_desc?.value || 'create_account'}
+            {create_account_text?.value || 'Create account'}
           </p>
         </div>
 

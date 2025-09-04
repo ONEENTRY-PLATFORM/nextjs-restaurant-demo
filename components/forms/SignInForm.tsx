@@ -47,7 +47,7 @@ const SignInForm: FC<{
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // get fields from formFieldsReducer
-  const { email_reg, password_reg } = useAppSelector(
+  const { email, password } = useAppSelector(
     (state) => state.formFieldsReducer.fields,
   );
 
@@ -69,7 +69,7 @@ const SignInForm: FC<{
     e.preventDefault();
 
     // Check if email and password fields are filled, exit early if not
-    if (!email_reg || !password_reg) return;
+    if (!email || !password) return;
 
     try {
       // Set loading state to true while processing the sign-in request
@@ -78,8 +78,8 @@ const SignInForm: FC<{
       // Attempt to log in the user with the provided credentials
       const result = await logInUser({
         method: tab, // Authentication method (e.g., 'email', 'google', etc.)
-        login: email_reg.value, // User's email
-        password: password_reg.value, // User's password
+        login: email.value, // User's email
+        password: password.value, // User's password
       });
 
       // If there's an error in the result, throw an error to be caught below

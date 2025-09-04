@@ -16,7 +16,7 @@ export const getDictionary = async () => {
     const { attributes } = await getCachedData(
       'dictionary',
       async () => await getAttributesByMarker({attributeMarker: 'static_content'}),
-    );
+    );    
 
     return attributes;
   } catch (e) {

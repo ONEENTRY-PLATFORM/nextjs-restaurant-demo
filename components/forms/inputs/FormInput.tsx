@@ -63,7 +63,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
       index={field.index}
       className="relative box-border flex shrink-0 flex-col"
     >
-      <label htmlFor={field.marker} className="text-xl text-gray-400">
+      <label htmlFor={field.marker} className="text-xl text-white">
         {localizeInfos?.title}{' '}
         {required && <span className="text-red-500">*</span>}
       </label>

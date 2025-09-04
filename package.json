@@ -16,7 +16,7 @@
     "next-transition-router": "^0.2.9",
     "oneentry": "^1.0.124",
     "react": "^19.1.1",
-    "react-dom": "19.1.0",
+    "react-dom": "^19.1.1",
     "react-otp-input": "^3.1.1",
     "react-toastify": "^11.0.5"
   },

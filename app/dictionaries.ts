@@ -16,7 +16,6 @@ const dict = async (): Promise<any> => {
 
     // get block by marker from api
     const { block } = await getBlockByMarker('static_content');
-    console.log(block);
 
     // extract block attribute values
     const blockValues =

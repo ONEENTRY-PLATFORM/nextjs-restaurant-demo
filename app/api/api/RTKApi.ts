@@ -184,6 +184,7 @@ export const RTKApi = createApi({
     getBlockByMarker: build.query<IBlockEntity, BlockByMarkerProps>({
       queryFn: async ({ marker }) => {
         const result = await api.Blocks.getBlockByMarker(marker);
+        console.log(result);
         if (typeError(result)) {
           return { error: result };
         }

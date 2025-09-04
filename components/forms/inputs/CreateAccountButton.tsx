@@ -25,7 +25,7 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ title }) => {
         setComponent('SignUpForm');
       }}
       type="button"
-      className="w-full items-center justify-center rounded-[30px] border border-solid border-fuchsia-500 bg-transparent px-10 py-4 text-xl font-bold uppercase tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:text-neutral-300 max-sm:px-5"
+      className="rounded-[10px] w-full h-[56px] font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-[#ec722b] bg-transparent border border-[#ec722b] mt-[50px] hover_btn_white"
     >
       {title || 'Create account'}
     </button>

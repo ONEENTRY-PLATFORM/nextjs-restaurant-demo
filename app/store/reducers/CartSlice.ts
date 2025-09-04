@@ -85,8 +85,82 @@ export const cartSlice = createSlice({
         }
       });
     },
+    addProductToCart(
+      state,
+      action: PayloadAction<{
+        id: number;
+        selected: boolean;
+        quantity: number;
+      }>,
+    ) {
+      const index = state.productsData.findIndex(
+        (product: { id: number }) => product.id === action.payload.id,
+      );
+      if (index === -1) {
+        state.productsData.push(action.payload);
+      }
+    },
     addProductsToCart(state, action: PayloadAction<IProductsEntity[]>) {
       state.products = action.payload;
+    },
+    increaseProductQty(
+      state,
+      action: PayloadAction<{ units: number; id: number; quantity: number }>,
+    ) {
+      const index = state.productsData.findIndex(
+        (product: { id: number }) => product.id === action.payload.id,
+      );
+      const qty = state.productsData[index].quantity + action.payload.quantity;
+
+      state.productsData[index] = {
+        ...state.productsData[index],
+        selected: state.productsData[index].selected,
+        quantity:
+          qty > action.payload.units ? Number(action.payload.units) : qty,
+      };
+    },
+    decreaseProductQty(
+      state,
+      action: PayloadAction<{ id: number; quantity: number }>,
+    ) {
+      const index = state.productsData.findIndex(
+        (product: { id: number }) => product.id === action.payload.id,
+      );
+      const qty = state.productsData[index].quantity - action.payload.quantity;
+      state.productsData[index] = {
+        ...state.productsData[index],
+        selected: state.productsData[index].selected,
+        quantity: qty <= 0 ? 1 : qty,
+      };
+    },
+    setProductQty(
+      state,
+      action: PayloadAction<{ units: number; id: number; quantity: number }>,
+    ) {
+      const index = state.productsData.findIndex(
+        (product: { id: number }) => product.id === action.payload.id,
+      );
+      const qty = action.payload.quantity;
+
+      state.productsData[index] = {
+        ...state.productsData[index],
+        selected: state.productsData[index].selected,
+        quantity:
+          qty <= 0
+            ? 0
+            : qty > action.payload.units
+              ? action.payload.units
+              : qty,
+      };
+    },
+    removeProduct(state, action: PayloadAction<number>) {
+      state.productsData = state.productsData.filter(
+        (item: any) => item.id !== action.payload,
+      );
+    },
+    removeAllProducts(state) {
+      state.productsData = initialState.productsData;
+      state.products = initialState.products;
     },
     addDeliveryToCart(state, action: PayloadAction<IProductsEntity>) {
       state.delivery = action.payload;
@@ -111,6 +185,9 @@ export const cartSlice = createSlice({
     removeAllServices(state) {
       state.servicesData = initialState.servicesData;
     },
+    setCartTransition(state, action: PayloadAction<{ productId: number }>) {
+      state.transitionId = action.payload.productId;
+    },
     setCartVersion(state, action: PayloadAction<number>) {
       state.version = action.payload;
     },
@@ -122,9 +199,16 @@ export const {
   addProductsToCart,
   addDeliveryToCart,
   setDeliveryData,
+  setProductQty,
+  setCartTransition,
   deselectProduct,
   removeAllServices,
+  removeAllProducts,
   setCartVersion,
+  addProductToCart,
+  removeProduct,
+  increaseProductQty,
+  decreaseProductQty,
 } = cartSlice.actions;
 
 /**
@@ -201,5 +285,36 @@ export const selectTabsData = (
   key: string,
   state: { cartReducer: { tabsState: any } },
 ) => state.cartReducer.tabsState[key].data;
+
+/**
+ * Select cart item by product id
+ *
+ * @param state slice state
+ * @param id product id
+ *
+ * @returns
+ */
+export const selectCartItemWithIdLength = (
+  state: {
+    cartReducer: {
+      productsData: any[];
+    };
+  },
+  id: number,
+) =>
+  state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
+
+/**
+ * Get transition - get product id for animations
+ *
+ * @param state slice state
+ *
+ * @returns transitionId
+ */
+export const getTransition = (state: {
+  cartReducer: {
+    transitionId: number;
+  };
+}) => state.cartReducer;
 
 export default cartSlice.reducer;

@@ -15,7 +15,7 @@ interface CreateAccountButtonProps {
  *
  * @returns Create account button
  */
-const CreateAccountButton: FC<CreateAccountButtonProps> = ({ title }) => {
+const CreateAccountButton: FC<CreateAccountButtonProps> = ({ title = 'Create account' }) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (
@@ -27,7 +27,7 @@ const CreateAccountButton: FC<CreateAccountButtonProps> = ({ title }) => {
       type="button"
       className="rounded-[10px] w-full h-[56px] font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-[#ec722b] bg-transparent border border-[#ec722b] hover_btn_white"
     >
-      {title || 'Create account'}
+      {title}
     </button>
   );
 };

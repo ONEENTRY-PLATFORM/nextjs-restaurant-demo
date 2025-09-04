@@ -44,7 +44,7 @@ const SignInForm: FC<{
   } = dict;
 
   // Get form by marker with RTK
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: process.env.USER_FORM_MARKER as string });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // get fields from formFieldsReducer
   const { email_reg, password_reg } = useAppSelector(
@@ -151,13 +151,13 @@ const SignInForm: FC<{
           className="mx-auto mb-10 flex justify-between gap-5"
         >
           <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300 hover:text-cyan-400">
-            {forgot_password_text?.value}
+            {forgot_password_text?.value || 'Forgot Password?'}
           </div>
-          <ResetPasswordButton title={reset_password_text?.value || 'reset_password'} />
+          <ResetPasswordButton title={reset_password_text?.value || 'Reset Password'} />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
-          <CreateAccountButton title={create_account_text?.value || 'create_account'} />
+          <CreateAccountButton title={create_account_text?.value || 'Create account'} />
         </FormFieldAnimations>
 
         {error && <ErrorMessage error={error} />}

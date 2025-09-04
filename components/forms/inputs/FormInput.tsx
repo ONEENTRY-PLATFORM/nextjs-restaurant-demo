@@ -71,7 +71,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
       {type === 'list' && (
         <select
           id={field.marker}
-          className="border-b border-none border-b-white py-3 text-xl text-white"
+          className="border-b border-b-white py-3 text-xl text-white"
           required={required}
           value={value}
           onChange={(val) => setValue(val.currentTarget.value)}
@@ -90,7 +90,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
         <textarea
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="border-b border-none border-b-white py-3 text-xl text-white"
+          className="border-b border-b-white py-3 text-xl text-white"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           value={value}
@@ -102,7 +102,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
           type={type}
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="relative border-b border-none border-b-white py-3 text-xl text-white"
+          className="relative border-b border-b-white py-3 text-xl text-white"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           autoComplete={fieldType === 'password' ? 'password' : ''}

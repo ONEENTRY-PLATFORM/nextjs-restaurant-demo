@@ -36,7 +36,7 @@ const UserForm: FC<FormProps> = ({ dict }) => {
   const [isError, setError] = useState('');
 
   // Get form by marker with RTK
-  const { data, isLoading, error } = useGetFormByMarkerQuery({ marker: process.env.USER_FORM_MARKER as string });
+  const { data, isLoading, error } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // get fields from formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);

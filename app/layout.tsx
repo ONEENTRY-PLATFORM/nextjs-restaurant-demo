@@ -68,7 +68,7 @@ export default async function RootLayout({
 }>) {
   // Get dictionary and set to server provider
   const [dict] = ServerProvider('dict', await getDictionary());
-
+  
   return (
     <html lang={'en_US'}>
       <body className={`${lato.variable} antialiased flex flex-col min-h-screen`}>

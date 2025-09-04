@@ -7,8 +7,8 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import { FormFieldsEnum } from '@/app/types/enum';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
-// import EyeIcon from '@/components/icons/eye';
-// import EyeOpenIcon from '@/components/icons/eye-o';
+import EyeIcon from '@/components/icons/eye';
+import EyeOpenIcon from '@/components/icons/eye-o';
 
 /**
  * FormInput
@@ -124,7 +124,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
           }}
           className="absolute bottom-3 right-2 flex size-6 items-center"
         >
-          {/* {type === 'password' ? <EyeIcon /> : <EyeOpenIcon />} */}
+          {type === 'password' ? <EyeIcon /> : <EyeOpenIcon />}
         </button>
       )}
     </FormFieldAnimations>

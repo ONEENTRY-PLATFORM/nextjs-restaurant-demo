@@ -1,27 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'server-only';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
-
-import { getBlockByMarker } from '@/app/api/';
+import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
+import { IAttributeValues } from 'oneentry/dist/base/utils';
 
 /**
- * Get dictionary from block by marker
+ * Get dictionary from attributes by marker
  *
  * @returns Current lang dictionary
  */
 const dict = async (): Promise<any> => {
   try {
-    const langCode = 'en_US';
-
-    // get block by marker from api
-    const { block } = await getBlockByMarker('static_content');
-
-    // extract block attribute values
-    const blockValues =
-      block?.attributeValues[langCode] || block?.attributeValues;
-
-    return { ...(blockValues as IAttributeValues) };
+    // get attributes by marker from api
+    const { attributes } = await getAttributesByMarker({attributeMarker: 'static_content'});
+    
+    return attributes;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);

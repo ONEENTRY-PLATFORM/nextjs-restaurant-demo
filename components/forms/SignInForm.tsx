@@ -46,10 +46,8 @@ const SignInForm: FC<{
   // Get form by marker with RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
-  // get fields from formFieldsReducer
-  const { email, password } = useAppSelector(
-    (state) => state.formFieldsReducer.fields,
-  );
+  // Get fields from formFieldsReducer
+  const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   // sort fields by position
   const formFields = useMemo(
@@ -69,7 +67,7 @@ const SignInForm: FC<{
     e.preventDefault();
 
     // Check if email and password fields are filled, exit early if not
-    if (!email || !password) return;
+    if (!fields.email || !fields.password) return;
 
     try {
       // Set loading state to true while processing the sign-in request
@@ -77,9 +75,9 @@ const SignInForm: FC<{
 
       // Attempt to log in the user with the provided credentials
       const result = await logInUser({
-        method: tab, // Authentication method (e.g., 'email', 'google', etc.)
-        login: email.value, // User's email
-        password: password.value, // User's password
+        method: 'email', // Authentication method (e.g., 'email', 'google', etc.)
+        login: fields.email.value, // User's email
+        password: fields.password.value, // User's password
       });
 
       // If there's an error in the result, throw an error to be caught below
@@ -131,8 +129,8 @@ const SignInForm: FC<{
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
           {formFields?.map((field: any, index: number) => {
             if (
-              field.marker === `${tab}_reg` ||
-              field.marker === 'password_reg'
+              field.marker === `${tab}` ||
+              field.marker === 'password'
             ) {
               return <FormInput key={index} index={index + 2} {...field} />;
             }

@@ -21,8 +21,6 @@ export const getBlockByMarker = async (
 }> => {
   try {
     const data = await api.Blocks.getBlockByMarker(marker);
-    console.log('data');
-    console.log(data);
 
     if (typeError(data)) {
       return { isError: true, error: data };

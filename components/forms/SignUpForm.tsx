@@ -140,7 +140,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
               onClick={() => setComponent('SignInForm')}
               className="underline"
             >
-              {sign_in_text?.value || 'sign_in'}
+              {sign_in_text?.value || 'Sign in'}
             </button>{' '}
             {create_account_text?.value || 'Create account'}
           </p>

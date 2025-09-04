@@ -43,71 +43,90 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
   }, [otp, dispatch]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Function to handle verification of the OTP or activation of the user
   const handleVerification = async () => {
     try {
       if (action !== 'activateUser') {
-        // checkCode
+        // If the action is not to activate a user, check the OTP code
         const result = await api.AuthProvider.checkCode(
-          'email',
-          fields.email_reg.value,
-          'otp',
-          otp,
+          'email', // Method of verification via email
+          fields.email_reg.value, // User's email address from form fields
+          'otp', // Type of verification code (One-Time Password)
+          otp, // The OTP entered by the user
         );
-        if (result) setComponent('ResetPasswordForm');
+        if (result) setComponent('ResetPasswordForm'); // Switch to Reset Password Form on success
       } else {
-        // activateUser
+        // If the action is to activate a user
         const result = await api.AuthProvider.activateUser(
-          'email',
-          fields.email_reg.value,
-          otp,
+          'email', // Activation method via email
+          fields.email_reg.value, // User's email address from form fields
+          otp, // The OTP entered by the user
         );
         if (result) {
+          // On successful activation, log in the user
           await logInUser({
-            method: 'email',
-            login: fields.email_reg.value,
-            password: fields.password_reg.value,
+            method: 'email', // Login method via email
+            login: fields.email_reg.value, // User's email for login
+            password: fields.password_reg.value, // User's password for login
           });
-          authenticate();
-          router.push('/profile');
-          setOpen(false);
+          authenticate(); // Call function to set authentication state
+          router.push('/profile'); // Redirect to the user's profile page
+          setOpen(false); // Close any open modal or drawer
         } else {
-          throw new Error('Activation failed');
+          throw new Error('Activation failed'); // Throw an error if activation fails
         }
       }
     } catch (e: any) {
+      // Catch and set any errors encountered during the process
       setError(e.message || 'An error occurred');
     } finally {
+      // Ensure loading state is reset after processing
       setLoading(false);
     }
   };
 
+  // Function to handle form submission
   const onSubmitHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
+      // Prevent default form submission behavior
       e.preventDefault();
+
+      // Check if the OTP length is valid
       if (otp.length === 6) {
+        // Set loading state to true
         setLoading(true);
+        // Clear any previous error messages
         setError('');
+        // Call verification handler
         await handleVerification();
       }
     },
+    // Dependencies for useCallback
     [otp, handleVerification],
   );
 
+  // Function to handle resending of the OTP code
   const onResendHandle = useCallback(async () => {
     try {
+      // Set loading state to true
       setLoading(true);
+      // Clear any previous error messages
       setError('');
       await api.AuthProvider.generateCode(
-        'email',
-        fields.email_reg.value,
-        'generate_code',
+        'email', // Method to generate code via email
+        fields.email_reg.value, // User's email address from form fields
+        'generate_code', // Action type to generate a new code
       );
     } catch (e: any) {
+      // Catch and set any errors encountered during the process
       setError(e.message || 'An error occurred');
     } finally {
+      // Ensure loading state is reset after processing
       setLoading(false);
     }
+    // Dependency for useCallback
   }, [fields.email_reg.value]);
+
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>

@@ -39,12 +39,21 @@ export const resetPasswordFormFields = [
  * @returns Reset password form
  */
 const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
-  const { email_reg, password_reg, password_confirm, otp_code } =
-    useAppSelector((state) => state.formFieldsReducer.fields);
+  // Destructure form field values from the Redux store using a selector
+  const { email_reg, password_reg, password_confirm, otp_code } = useAppSelector(
+    (state) => state.formFieldsReducer.fields
+  );
+
+  // Access functions to change the current component and action from context
   const { setComponent, setAction } = useContext(OpenDrawerContext);
+
+  // State to manage loading status during asynchronous operations
   const [isLoading, setLoading] = useState(false);
+
+  // State to manage error messages for display to the user
   const [isError, setError] = useState('');
 
+  // Destructure text strings from a dictionary object for localization or static text
   const { new_password_desc, change_password_text } = dict;
 
   /**
@@ -52,27 +61,34 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
    * @param e FormEvent
    */
   const onResetSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    // Prevent the default form submission behavior
     e.preventDefault();
+
+    // Set loading state to true while processing the password reset request
     setLoading(true);
 
     try {
+      // Attempt to change the user's password using the provided API
       const result = await api.AuthProvider.changePassword(
-        'email',
-        email_reg.value,
-        'otp',
-        1,
-        otp_code.value.toString(),
-        password_reg.value,
-        password_confirm.value,
+        'email', // The method of authentication, in this case via email
+        email_reg.value, // User's email address
+        'otp', // The type of verification used, here it's an OTP (One-Time Password)
+        1, // Version or type indicator for the OTP process
+        otp_code.value.toString(), // The OTP code entered by the user, converted to a string
+        password_reg.value, // New password entered by the user
+        password_confirm.value, // Confirmation of the new password
       );
 
       if (result) {
+        // If the password change is successful, switch to the sign-in form
         setComponent('SignInForm');
-        setAction('');
+        setAction(''); // Clear any previous actions
       }
     } catch (error: any) {
+      // Catch any errors and set the error message
       setError(error.message);
     } finally {
+      // Reset loading state after processing the password reset request
       setLoading(false);
     }
   };

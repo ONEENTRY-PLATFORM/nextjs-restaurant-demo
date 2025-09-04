@@ -29,7 +29,7 @@ const FormSubmitButton: FC<FormSubmitButtonProps> = ({
         type="submit"
         className="rounded-[10px] w-full h-[60px] font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-white bg-[#ec722b] hover:bg-[#EB4B0E] border border-[#ec722b] hover:border-[#EB4B0E] mt-[25px]"
       >
-        {isLoading ? <Spinner /> : title}
+        {isLoading ? <Spinner /> : title || 'Submit'}
       </button>
     </FormFieldAnimations>
   );

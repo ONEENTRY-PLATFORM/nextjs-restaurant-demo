@@ -44,7 +44,7 @@ const SignInForm: FC<{
   } = dict;
 
   // Get form by marker with RTK
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: process.env.USER_FORM_MARKER as string });
 
   // get fields from formFieldsReducer
   const { email_reg, password_reg } = useAppSelector(
@@ -65,28 +65,38 @@ const SignInForm: FC<{
 
   // SignIn with API AuthProvider
   const onSignIn = async (e: FormEvent<HTMLFormElement>) => {
+    // Prevent the default form submission behavior
     e.preventDefault();
+
+    // Check if email and password fields are filled, exit early if not
     if (!email_reg || !password_reg) return;
 
     try {
+      // Set loading state to true while processing the sign-in request
       setLoading(true);
+
+      // Attempt to log in the user with the provided credentials
       const result = await logInUser({
-        method: tab,
-        login: email_reg.value,
-        password: password_reg.value,
+        method: tab, // Authentication method (e.g., 'email', 'google', etc.)
+        login: email_reg.value, // User's email
+        password: password_reg.value, // User's password
       });
 
+      // If there's an error in the result, throw an error to be caught below
       if (result?.error) {
         throw new Error(result.error);
       }
 
+      // Close any open modals or forms upon successful sign-in
       setOpen(false);
-      authenticate();
-      setError('');
-      toast('You signed in!');
+      authenticate(); // Authenticate the user session
+      setError(''); // Clear any previous errors
+      toast('You signed in!'); // Display a success message to the user
     } catch (err: any) {
+      // Catch any errors and set the error message
       setError(err.message);
     } finally {
+      // Reset loading state after processing the sign-in request
       setLoading(false);
     }
   };
@@ -143,11 +153,11 @@ const SignInForm: FC<{
           <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300 hover:text-cyan-400">
             {forgot_password_text?.value}
           </div>
-          <ResetPasswordButton title={reset_password_text?.value} />
+          <ResetPasswordButton title={reset_password_text?.value || 'reset_password'} />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
-          <CreateAccountButton title={create_account_text?.value} />
+          <CreateAccountButton title={create_account_text?.value || 'create_account'} />
         </FormFieldAnimations>
 
         {error && <ErrorMessage error={error} />}

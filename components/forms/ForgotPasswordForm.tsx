@@ -31,7 +31,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ dict }) => {
   const { reset_descr, send_text } = dict;
 
   // Get form data with RTK from API
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'reg' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: process.env.USER_FORM_MARKER as string });
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   // Submit form

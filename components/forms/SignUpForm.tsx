@@ -33,7 +33,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   const { sign_up_text, sign_in_text, create_account_desc } = dict;
 
   // Get form by marker with RTK
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: process.env.USER_FORM_MARKER as string });
 
   // Get fields from formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
@@ -62,12 +62,15 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   );
 
   // Handle sign up
-  const onSignUp = useCallback(
+  const onSignUpHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
+      // Prevent the default form submission behavior
       e.preventDefault();
 
+      // If the form cannot be submitted, exit early
       if (!canSubmit) return;
 
+      // Prepare the data object for the sign-up request
       const data: ISignUpData = {
         formIdentifier: 'reg',
         authData: [
@@ -82,29 +85,42 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
         },
       };
 
+      // Set loading state to true while processing the request
       setLoading(true);
 
       try {
+        // Attempt to sign up the user using the provided API
         const res = await api.AuthProvider.signUp('email', data);
 
+        // If the response indicates the account is active, log in the user
         if (res?.isActive) {
           await logInUser({
             method: 'email',
-            login: res.identifier,
-            password: fields.password_reg.value,
+            login: res.identifier, // Use the identifier from the response
+            password: fields.password_reg.value, // Use the entered password
           });
+          // Authenticate the user
           authenticate();
+          // Close any open modals or forms
           setOpen(false);
-        } else if (res && (!res.isActive || typeError(res))) {
+        }
+        // If the account is not active or there's an error, handle accordingly
+        else if (res && (!res.isActive || typeError(res))) {
+          // Open a modal or form
           setOpen(true);
+          // Set the component to display VerificationForm
           setComponent('VerificationForm');
+          // Set the action to activate the user
           setAction('activateUser');
         }
 
+        // Set an error message if there's an error type in the response
         setError(typeError(res) ? `Error ${res.status}` : '');
       } catch (e: any) {
+        // Catch any errors and set the error message
         setError(e.message);
       } finally {
+        // Reset loading state after processing the request
         setLoading(false);
       }
     },
@@ -115,7 +131,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
-        onSubmit={onSignUp}
+        onSubmit={onSignUpHandle}
         className="mx-auto flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
@@ -124,9 +140,9 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
               onClick={() => setComponent('SignInForm')}
               className="underline"
             >
-              {sign_in_text?.value}
+              {sign_in_text?.value || 'sign_in'}
             </button>{' '}
-            {create_account_desc?.value}
+            {create_account_desc?.value || 'create_account'}
           </p>
         </div>
 

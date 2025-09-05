@@ -23,7 +23,7 @@ const CartPageLayout: FC<any> = async ({ params }) => {
 
   return (
     <section className="relative mx-auto box-border flex min-h-80 w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
-      <div className="flex w-full flex-col items-center gap-5 bg-white">
+      <div className="flex w-full flex-col items-center gap-5">
         <WithSidebar>
           <CartPage
             dict={dict}

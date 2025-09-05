@@ -11,7 +11,6 @@ import NavigationButton from './NavigationButton';
 interface VariationsCarouselProps {
   items: Array<IProductsEntity> | undefined;
   total?: number;
-  lang: string;
 }
 /**
  * Variations carousel
@@ -27,7 +26,6 @@ interface VariationsCarouselProps {
 const VariationsCarousel: FC<VariationsCarouselProps> = ({
   items,
   total,
-  lang,
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -50,7 +48,6 @@ const VariationsCarousel: FC<VariationsCarouselProps> = ({
             key={idx}
             item={item}
             index={idx}
-            lang={lang}
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
           />
@@ -101,7 +98,6 @@ const VariationsCarousel: FC<VariationsCarouselProps> = ({
               key={idx}
               item={item}
               index={idx}
-              lang={lang}
               currentIndex={currentIndex}
               setCurrentIndex={setCurrentIndex}
             />

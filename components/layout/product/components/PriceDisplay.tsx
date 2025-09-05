@@ -6,29 +6,25 @@ import { UsePrice } from '@/components/utils';
 interface PriceDisplayProps {
   currentPrice: number;
   originalPrice: number;
-  lang: string;
 }
 
 /**
  * Price display
  * @param currentPrice
  * @param originalPrice
- * @param lang current language shortcode
  *
  * @returns Price display with current/old prices
  */
 const PriceDisplay: FC<PriceDisplayProps> = ({
   currentPrice,
   originalPrice,
-  lang,
 }) => {
   if (!currentPrice && !originalPrice) {
     return;
   }
-  const price = UsePrice({ amount: currentPrice, lang });
+  const price = UsePrice({ amount: currentPrice });
   const oldPrice = UsePrice({
     amount: originalPrice,
-    lang,
   });
 
   return (

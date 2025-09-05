@@ -9,7 +9,6 @@ import ProductUnits from './ProductUnits';
 
 interface ProductDetailsProps {
   product: IProductsEntity & { productPages?: [] };
-  lang: string;
   dict: IAttributeValues;
 }
 
@@ -24,7 +23,6 @@ interface ProductDetailsProps {
  */
 const ProductDetails: FC<ProductDetailsProps> = async ({
   product,
-  lang,
   dict,
 }) => {
   // Extract data from product
@@ -57,7 +55,6 @@ const ProductDetails: FC<ProductDetailsProps> = async ({
         <PriceDisplay
           currentPrice={sale?.value}
           originalPrice={price?.value}
-          lang={lang}
         />
       </div>
 

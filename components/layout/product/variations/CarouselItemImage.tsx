@@ -6,7 +6,6 @@ import type { FC } from 'react';
 import Placeholder from '@/components/shared/Placeholder';
 
 interface CarouselItemImageProps {
-  lang: string;
   item: IProductsEntity;
 }
 
@@ -14,11 +13,10 @@ interface CarouselItemImageProps {
  * CarouselItem image
  *
  * @param item product object
- * @param lang current language shortcode
  *
  * @returns
  */
-const CarouselItemImage: FC<CarouselItemImageProps> = ({ item, lang }) => {
+const CarouselItemImage: FC<CarouselItemImageProps> = ({ item }) => {
   const title = item.localizeInfos.title;
   const picVal = item.attributeValues.pic?.value || '';
   const imageSrc = Array.isArray(picVal)
@@ -26,7 +24,7 @@ const CarouselItemImage: FC<CarouselItemImageProps> = ({ item, lang }) => {
     : picVal.downloadLink;
 
   return (
-    <Link href={'/' + lang + '/shop/product/' + item.id} title={title}>
+    <Link href={'/shop/product/' + item.id} title={title}>
       {imageSrc ? (
         <Image
           width={80}

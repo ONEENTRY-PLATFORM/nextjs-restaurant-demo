@@ -7,7 +7,6 @@ import CarouselItemTitle from './CarouselItemTitle';
 
 interface VariationProps {
   index: number;
-  lang: string;
   item: IProductsEntity;
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
@@ -17,7 +16,6 @@ interface VariationProps {
  * CarouselItem
  *
  * @param item product object
- * @param lang current language shortcode
  * @param index index of slide
  * @param currentIndex index of current slide
  * @param setCurrentIndex Set state action
@@ -26,7 +24,6 @@ interface VariationProps {
  */
 const CarouselItem: FC<VariationProps> = ({
   item,
-  lang,
   index,
   currentIndex,
   setCurrentIndex,
@@ -51,10 +48,10 @@ const CarouselItem: FC<VariationProps> = ({
     >
       <div className="flex w-full flex-col gap-1 overflow-hidden pb-1 text-center text-sm">
         <div className="flex h-[80px] w-full items-center">
-          <CarouselItemImage lang={lang} item={item} />
+          <CarouselItemImage item={item} />
         </div>
         <h3 className="w-full text-center text-xs leading-4">
-          <CarouselItemTitle lang={lang} item={item} />
+          <CarouselItemTitle item={item} />
         </h3>
       </div>
     </button>

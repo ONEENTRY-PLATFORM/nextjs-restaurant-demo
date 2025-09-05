@@ -10,7 +10,6 @@ import ProductDetails from './product-single/ProductDetails';
 import ProductImage from './product-single/ProductImageGallery';
 import ProductsGroup from './ProductsGroup';
 import RelatedItems from './RelatedItems';
-import ReviewsSection from './ReviewsSection';
 import VariationsCarousel from './variations/VariationsCarousel';
 
 interface ProductSingleProps {
@@ -18,7 +17,6 @@ interface ProductSingleProps {
     blocks?: Array<string>;
     productPages?: [];
   };
-  lang: string;
   dict: IAttributeValues;
 }
 
@@ -26,21 +24,19 @@ interface ProductSingleProps {
  * Product single
  *
  * @param product product entity object
- * @param lang current language shortcode
  * @param dict dictionary from server api
  *
  * @returns Product single
  */
 const ProductSingle: FC<ProductSingleProps> = async ({
   product,
-  lang,
   dict,
 }) => {
   // extract data from product
   const { attributeValues, localizeInfos, blocks, id } = product;
 
   // Get all related products by Id
-  const { products, total } = await getRelatedProductsById(id, lang);
+  const { products, total } = await getRelatedProductsById(id);
 
   return (
     <section className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
@@ -59,7 +55,7 @@ const ProductSingle: FC<ProductSingleProps> = async ({
           index={1}
         >
           <div className="relative mb-6 box-border flex shrink-0 flex-col">
-            <VariationsCarousel items={products} total={total} lang={lang} />
+            <VariationsCarousel items={products} total={total} />
           </div>
 
           {/* ProductDescription */}
@@ -71,14 +67,9 @@ const ProductSingle: FC<ProductSingleProps> = async ({
           className="flex w-3/12 flex-col pt-1.5 max-md:mb-10 max-md:w-4/12 max-sm:w-full"
           index={2}
         >
-          <ProductDetails product={product} lang={lang} dict={dict} />
+          <ProductDetails product={product} dict={dict} />
         </ProductAnimations>
       </div>
-
-      {/* Reviews */}
-      <ProductAnimations className={''} index={3}>
-        <ReviewsSection dict={dict} />
-      </ProductAnimations>
 
       {/* blocks */}
       {Array.isArray(blocks) &&
@@ -88,7 +79,6 @@ const ProductSingle: FC<ProductSingleProps> = async ({
               <ProductsGroup
                 key={block}
                 marker={block}
-                lang={lang}
                 dict={dict}
               />
             );
@@ -97,7 +87,6 @@ const ProductSingle: FC<ProductSingleProps> = async ({
               <RelatedItems
                 key={block}
                 marker={block}
-                lang={lang}
                 dict={dict}
               />
             );

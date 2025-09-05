@@ -16,15 +16,15 @@ const WithSidebar: FC<{
   return (
     <div className="flex w-full flex-col items-center">
       <div className="mx-auto flex w-full max-w-screen-xl flex-row max-md:flex-row max-md:flex-wrap">
-        <aside className="w-[210px] pb-8 max-md:w-full">
-          <SidebarMenu />
-        </aside>
         <FadeTransition
-          className="flex w-[calc(_100%_-_210px_)] grow flex-col overflow-hidden max-md:w-full"
+          className="flex w-1/2 grow flex-col overflow-hidden max-md:w-full"
           index={0}
         >
           <div className="flex w-full flex-col pb-5">{children}</div>
         </FadeTransition>
+        <aside className="w-1/2 pb-8 max-md:w-full">
+          <SidebarMenu />
+        </aside>
       </div>
     </div>
   );

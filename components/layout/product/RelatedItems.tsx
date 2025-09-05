@@ -3,7 +3,6 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { FC, Key } from 'react';
 
 import { getBlockByMarker } from '@/app/api';
-import { LanguageEnum } from '@/app/types/enum';
 
 import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations';
 import ProductCard from '../products-grid/components/product-card/ProductCard';
@@ -11,7 +10,6 @@ import ProductAnimations from './animations/ProductAnimations';
 
 interface RelatedItemsProps {
   marker: string;
-  lang: string;
   dict: IAttributeValues;
 }
 
@@ -19,16 +17,13 @@ interface RelatedItemsProps {
  * RelatedItems
  *
  * @param marker
- * @param lang current language shortcode
  * @param dict dictionary from server api
  *
  * @returns RelatedItems
  */
-const RelatedItems: FC<RelatedItemsProps> = async ({ marker, lang, dict }) => {
-  const langCode = LanguageEnum[lang as keyof typeof LanguageEnum];
-
+const RelatedItems: FC<RelatedItemsProps> = async ({ marker, dict }) => {
   // Get related items block from api
-  const { isError, block } = await getBlockByMarker(marker, lang);
+  const { isError, block } = await getBlockByMarker(marker);
 
   if (isError || !block || !block.similarProducts) {
     return null;
@@ -38,7 +33,7 @@ const RelatedItems: FC<RelatedItemsProps> = async ({ marker, lang, dict }) => {
     <section className="flex flex-col max-md:max-w-full">
       <ProductAnimations className={''} index={0}>
         <h3 className="mb-5 text-base uppercase leading-5 text-neutral-600 max-md:max-w-full">
-          {block.attributeValues[langCode]?.block_title?.value ||
+          {block.attributeValues['en_US']?.block_title?.value ||
             block.attributeValues?.block_title?.value}
         </h3>
       </ProductAnimations>
@@ -48,7 +43,6 @@ const RelatedItems: FC<RelatedItemsProps> = async ({ marker, lang, dict }) => {
             return (
               <ProductCard
                 key={i}
-                lang={lang}
                 product={product}
                 dict={dict}
                 index={i as number}

@@ -3,7 +3,6 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { FC } from 'react';
 import React from 'react';
 
-import { LanguageEnum } from '@/app/types/enum';
 import Placeholder from '@/components/shared/Placeholder';
 
 import ApplyButton from './ApplyButton';
@@ -12,7 +11,6 @@ import ProductImage from './ProductImage';
 
 interface GroupCardProps {
   product: IProductsEntity;
-  lang: string;
   dict: IAttributeValues;
 }
 
@@ -20,17 +18,15 @@ interface GroupCardProps {
  * Products group card
  *
  * @param product product entity object
- * @param lang current language shortcode
  * @param dict dictionary from server api
  *
  * @returns Products group card
  */
-const GroupCard: FC<GroupCardProps> = ({ product, lang, dict }) => {
-  const langCode = LanguageEnum[lang as keyof typeof LanguageEnum];
+const GroupCard: FC<GroupCardProps> = ({ product, dict }) => {
   const attributeValues =
-    product.attributeValues[langCode] || product.attributeValues;
+    product.attributeValues['en_US'] || product.attributeValues;
   const title =
-    product.localizeInfos[langCode]?.title || product.localizeInfos?.title;
+    product.localizeInfos['en_US']?.title || product.localizeInfos?.title;
   const images =
     attributeValues.more_pic?.value || attributeValues.more_pic?.value;
   const pic1 = images && images[0]?.downloadLink;
@@ -43,8 +39,7 @@ const GroupCard: FC<GroupCardProps> = ({ product, lang, dict }) => {
           <h3 className="mb-5 text-sm leading-4 text-neutral-600">{title}</h3>
           <PriceDisplay
             currentPrice={attributeValues?.sale?.value}
-            originalPrice={product.price}
-            lang={lang}
+            originalPrice={product.price as number}
           />
           <ApplyButton product={product} dict={dict} />
         </div>

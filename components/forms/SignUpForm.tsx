@@ -40,7 +40,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
 
   // Memoized form fields for better performance
   const formFields = useMemo(
-    () => ['username', 'surname', 'email', 'phone'],
+    () => ['username', 'surname', 'email', 'phone', 'password', 'repeat_password'],
     [],
   );
 
@@ -60,6 +60,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
       })),
     [fields, formFields],
   );
+  console.log(formData);
 
   // Handle sign up
   const onSignUpHandle = useCallback(
@@ -74,14 +75,20 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
       const data: ISignUpData = {
         formIdentifier: 'reg',
         authData: [
-          { marker: 'email_reg', value: fields.email_reg.value },
-          { marker: 'password_reg', value: fields.password_reg.value },
+          {
+            marker: 'email',
+            value: fields.email.value
+          },
+          {
+            marker: 'password',
+            value: fields.password.value
+          },
         ],
         formData,
         notificationData: {
-          email: fields.email_reg.value,
-          phonePush: [fields.phone_reg.value],
-          phoneSMS: fields.phone_reg.value,
+          email: fields.email.value,
+          phonePush: [fields.phone.value],
+          phoneSMS: fields.phone.value,
         },
       };
 

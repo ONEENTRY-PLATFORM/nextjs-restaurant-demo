@@ -22,7 +22,7 @@ const ResetPasswordButton: FC<{
         setComponent('ForgotPasswordForm');
       }}
       type="button"
-      className="w-auto text-lg font-bold text-cyan-400 underline"
+      className="w-auto font-semibold text-[20px] text-[#ec722b] underline cursor-pointer"
     >
       {title}
     </button>

@@ -120,7 +120,7 @@ const SignInForm: FC<{
                 onClick={() => setTab(type)}
                 className={tab === type ? 'font-bold' : ''}
               >
-                {dict[`${type}_text`]?.value}
+                {type}
               </button>
             ))}
           </FormFieldAnimations>
@@ -148,7 +148,7 @@ const SignInForm: FC<{
           index={6}
           className="mx-auto mb-10 flex justify-between gap-5"
         >
-          <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300 hover:text-cyan-400">
+          <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300">
             {forgot_password_text?.value || 'Forgot Password?'}
           </div>
           <ResetPasswordButton title={reset_password_text?.value || 'Reset Password'} />

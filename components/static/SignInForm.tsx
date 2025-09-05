@@ -22,8 +22,8 @@ const SignInForm = () => (
           </div>
           <button className="cart_btn bg-custom_btnorange mt-[75px] hover:bg-[#EB4B0E]">SIGN IN</button>
           <div className="flex justify-between mt-[30px]">
-            <p className="font-normal text-[20px] text-white">Forgot Password? </p>
-            <button className=" border-none underline font-semibold text-[20px] text-[#ec722b]">Reset Password </button>
+            <p className="font-normal text-[20px] text-white">Forgot Password?</p>
+            <button className=" border-none underline font-semibold text-[20px] text-[#ec722b]">Reset Password</button>
           </div>
           <button className="rounded-[10px] w-full h-[56px] font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-[#ec722b] bg-transparent border border-[#ec722b] mt-[50px] hover_btn_white">
             CREATE AN ACCOUNT

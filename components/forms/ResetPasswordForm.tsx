@@ -40,10 +40,10 @@ export const resetPasswordFormFields = [
  */
 const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
   // Destructure form field values from the Redux store using a selector
-  const { email_reg, password_reg, password_confirm, otp_code } = useAppSelector(
+  const { email, password, password_confirm, otp_code } = useAppSelector(
     (state) => state.formFieldsReducer.fields
   );
-
+  
   // Access functions to change the current component and action from context
   const { setComponent, setAction } = useContext(OpenDrawerContext);
 
@@ -71,13 +71,14 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
       // Attempt to change the user's password using the provided API
       const result = await api.AuthProvider.changePassword(
         'email', // The method of authentication, in this case via email
-        email_reg.value, // User's email address
+        email.value, // User's email address
         'otp', // The type of verification used, here it's an OTP (One-Time Password)
         1, // Version or type indicator for the OTP process
         otp_code.value.toString(), // The OTP code entered by the user, converted to a string
-        password_reg.value, // New password entered by the user
+        password.value, // New password entered by the user
         password_confirm.value, // Confirmation of the new password
       );
+      console.log(result);
 
       if (result) {
         // If the password change is successful, switch to the sign-in form
@@ -102,7 +103,7 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="max-w-full text-xs text-gray-400">
-            {new_password_desc?.value}
+            {new_password_desc?.value || 'New password'}
           </p>
         </div>
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
@@ -119,7 +120,7 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
           ))}
         </div>
         <FormSubmitButton
-          title={change_password_text?.value}
+          title={change_password_text?.value || 'Change password'}
           isLoading={isLoading}
           index={10}
         />

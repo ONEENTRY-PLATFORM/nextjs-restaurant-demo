@@ -10,7 +10,6 @@ import FavoritesIcon from '@/components/icons/favorites';
  * @returns JSX.Element
  */
 const NavItemFavorites: FC = () => {
-
   return (
     <Link
       prefetch={false}

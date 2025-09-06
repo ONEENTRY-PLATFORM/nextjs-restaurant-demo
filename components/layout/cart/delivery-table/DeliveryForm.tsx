@@ -33,10 +33,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({ dict, deliveryData }) => {
         router.push('/payment');
       }}
     >
-      <DeliveryTable
-        dict={dict}
-        delivery={deliveryData as IProductsEntity}
-      />
+      <DeliveryTable dict={dict} delivery={deliveryData as IProductsEntity} />
       <div id="total" className="mt-4 flex w-full flex-col">
         <TotalAmount
           dict={dict}

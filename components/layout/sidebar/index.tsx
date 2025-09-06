@@ -28,9 +28,7 @@ const SidebarMenu = async () => {
       <SidebarAnimations className={''}>
         <ul className="sidebar-menu">
           {pages.map((item) => {
-            return (
-              <SidebarMenuItem key={item.id} menuItem={item} />
-            );
+            return <SidebarMenuItem key={item.id} menuItem={item} />;
           })}
           <LogoutMenuItem />
         </ul>

@@ -19,10 +19,7 @@ interface ProductsGroupProps {
  *
  * @returns ProductsGroup
  */
-const ProductsGroup: FC<ProductsGroupProps> = async ({
-  marker,
-  dict,
-}) => {
+const ProductsGroup: FC<ProductsGroupProps> = async ({ marker, dict }) => {
   const { isError, block } = await getBlockByMarker(marker);
 
   if (isError || !block) {

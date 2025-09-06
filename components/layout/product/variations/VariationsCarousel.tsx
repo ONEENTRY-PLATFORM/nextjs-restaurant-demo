@@ -23,10 +23,7 @@ interface VariationsCarouselProps {
  *
  * @returns Product variations carousel
  */
-const VariationsCarousel: FC<VariationsCarouselProps> = ({
-  items,
-  total,
-}) => {
+const VariationsCarousel: FC<VariationsCarouselProps> = ({ items, total }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   if (!items || !total || total < 1) {

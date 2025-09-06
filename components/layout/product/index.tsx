@@ -28,10 +28,7 @@ interface ProductSingleProps {
  *
  * @returns Product single
  */
-const ProductSingle: FC<ProductSingleProps> = async ({
-  product,
-  dict,
-}) => {
+const ProductSingle: FC<ProductSingleProps> = async ({ product, dict }) => {
   // extract data from product
   const { attributeValues, localizeInfos, blocks, id } = product;
 
@@ -75,21 +72,9 @@ const ProductSingle: FC<ProductSingleProps> = async ({
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {
-            return (
-              <ProductsGroup
-                key={block}
-                marker={block}
-                dict={dict}
-              />
-            );
+            return <ProductsGroup key={block} marker={block} dict={dict} />;
           } else if (block === 'similar') {
-            return (
-              <RelatedItems
-                key={block}
-                marker={block}
-                dict={dict}
-              />
-            );
+            return <RelatedItems key={block} marker={block} dict={dict} />;
           }
         })}
     </section>

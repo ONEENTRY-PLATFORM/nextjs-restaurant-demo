@@ -40,7 +40,14 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
 
   // Memoized form fields for better performance
   const formFields = useMemo(
-    () => ['username', 'surname', 'email', 'phone', 'password', 'repeat_password'],
+    () => [
+      'username',
+      'surname',
+      'email',
+      'phone',
+      'password',
+      'repeat_password',
+    ],
     [],
   );
 
@@ -77,11 +84,11 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
         authData: [
           {
             marker: 'email',
-            value: fields.email.value
+            value: fields.email.value,
           },
           {
             marker: 'password',
-            value: fields.password.value
+            value: fields.password.value,
           },
         ],
         formData,

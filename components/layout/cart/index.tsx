@@ -39,6 +39,7 @@ const CartPage: FC<CartPageProps> = ({ dict, deliveryData }) => {
   const [products, setProducts] = useState<IProductsEntity[]>([]);
 
   // products in redux carSlice
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const productsCartData = useAppSelector(selectCartData) as any[];
 
   // Get Products By Ids from api

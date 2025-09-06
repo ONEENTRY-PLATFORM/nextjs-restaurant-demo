@@ -14,9 +14,7 @@ interface StickersProps {
  *
  * @returns Stickers array
  */
-const Stickers: FC<StickersProps> = ({
-  product: { attributeValues },
-}) => {
+const Stickers: FC<StickersProps> = ({ product: { attributeValues } }) => {
   // extract attributes from attributeValues field of product
   const attributes = attributeValues['en_US'] || attributeValues;
 

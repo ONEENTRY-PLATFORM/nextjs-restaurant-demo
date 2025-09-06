@@ -128,10 +128,7 @@ const SignInForm: FC<{
 
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
           {formFields?.map((field: any, index: number) => {
-            if (
-              field.marker === `${tab}` ||
-              field.marker === 'password'
-            ) {
+            if (field.marker === `${tab}` || field.marker === 'password') {
               return <FormInput key={index} index={index + 2} {...field} />;
             }
             return null;
@@ -151,11 +148,15 @@ const SignInForm: FC<{
           <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300">
             {forgot_password_text?.value || 'Forgot Password?'}
           </div>
-          <ResetPasswordButton title={reset_password_text?.value || 'Reset Password'} />
+          <ResetPasswordButton
+            title={reset_password_text?.value || 'Reset Password'}
+          />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
-          <CreateAccountButton title={create_account_text?.value || 'Create account'} />
+          <CreateAccountButton
+            title={create_account_text?.value || 'Create account'}
+          />
         </FormFieldAnimations>
 
         {error && <ErrorMessage error={error} />}

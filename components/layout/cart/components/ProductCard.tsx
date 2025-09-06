@@ -15,6 +15,7 @@ import PriceDisplay from './PriceDisplay';
 interface ProductCardProps {
   product: IProductsEntity;
   selected: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dict: any;
   index: number;
 }

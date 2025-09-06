@@ -5,6 +5,7 @@ import { UsePrice } from '@/components/utils';
 interface PriceDisplayProps {
   currentPrice: number;
   originalPrice: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dict: any;
 }
 

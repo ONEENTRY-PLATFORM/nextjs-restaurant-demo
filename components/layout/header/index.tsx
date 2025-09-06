@@ -1,27 +1,40 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FC, Suspense } from 'react';
 
+import { getChildPagesByParentUrl } from '@/app/api';
 import SearchIcon from '@/components/icons/search';
 import NavigationMenu from '@/components/layout/header/main-menu';
+import CategoryModal from '@/components/static/CategoryModal';
+import FilterBottom from '@/components/static/FilterBottom';
+import MenuBottom from '@/components/static/MenuBottom';
 
 import Logo from './Logo';
 import NavGroup from './nav/NavGroup';
 import SearchBar from './search/SearchBar';
-import { getChildPagesByParentUrl } from '@/app/api';
-import CategoryModal from '@/components/static/CategoryModal';
-import MenuBottom from '@/components/static/MenuBottom';
-import FilterBottom from '@/components/static/FilterBottom';
-
 
 const SearchFallback = () => (
   <form className="relative">
     <input
       className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-[40px] text-[#dfe9f9] cursor-pointer"
-      type="text" placeholder="soup" />
-    <svg className="absolute top-[8px] left-2.5" width="22" height="22" viewBox="0 0 22 22" fill="none"
-      xmlns="http://www.w3.org/2000/svg">
+      type="text"
+      placeholder="soup"
+    />
+    <svg
+      className="absolute top-[8px] left-2.5"
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M15.3043 15.3044L20 20M16.8696 9.43476C16.8696 13.5409 13.5409 16.8695 9.4348 16.8695C5.32867 16.8695 2 13.5409 2 9.43476C2 5.32866 5.32867 2 9.4348 2C13.5409 2 16.8696 5.32866 16.8696 9.43476Z"
-        stroke="#EC722B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        stroke="#EC722B"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   </form>
 );
@@ -30,7 +43,7 @@ const SearchFallback = () => (
  * Header section
  * @returns React component
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const Header: FC = async () => {
   const { pages, isError } = await getChildPagesByParentUrl('menu');
 
@@ -43,42 +56,67 @@ const Header: FC = async () => {
             <div className="flex items-center justify-start md:gap-[30px] gap-[60px]">
               <Logo />
               <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-[400px] lg:max-w-[440px]">
-                Excellence taste in <span className="text-custom_orange">every bite</span></h1>
+                Excellence taste in{' '}
+                <span className="text-custom_orange">every bite</span>
+              </h1>
             </div>
             <div className="flex justify-between items-center md:gap-[20px] gap-[38px] lg:mt-[-45px]">
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
               <div className="cursor-pointer group">
-                <svg className="fill-[#DFE9F9] hover-target" width="21" height="20" viewBox="0 0 21 20" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd"
+                <svg
+                  className="fill-[#DFE9F9] hover-target"
+                  width="21"
+                  height="20"
+                  viewBox="0 0 21 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M16.7949 1.11111C16.7949 0.816426 16.6769 0.533811 16.4669 0.325437C16.257 0.117063 15.9722 0 15.6752 0C15.3783 0 15.0935 0.117063 14.8835 0.325437C14.6735 0.533811 14.5556 0.816426 14.5556 1.11111V2.22222H1.11966C0.822706 2.22222 0.537917 2.33929 0.32794 2.54766C0.117964 2.75603 0 3.03865 0 3.33333C0 3.62802 0.117964 3.91063 0.32794 4.11901C0.537917 4.32738 0.822706 4.44444 1.11966 4.44444H14.5556V5.55556C14.5556 5.85024 14.6735 6.13286 14.8835 6.34123C15.0935 6.5496 15.3783 6.66667 15.6752 6.66667C15.9722 6.66667 16.257 6.5496 16.4669 6.34123C16.6769 6.13286 16.7949 5.85024 16.7949 5.55556V4.44444H19.0342C19.3311 4.44444 19.6159 4.32738 19.8259 4.11901C20.0359 3.91063 20.1538 3.62802 20.1538 3.33333C20.1538 3.03865 20.0359 2.75603 19.8259 2.54766C19.6159 2.33929 19.3311 2.22222 19.0342 2.22222H16.7949V1.11111ZM1.11966 8.88889C0.822706 8.88889 0.537917 9.00595 0.32794 9.21433C0.117964 9.4227 0 9.70532 0 10C0 10.2947 0.117964 10.5773 0.32794 10.7857C0.537917 10.994 0.822706 11.1111 1.11966 11.1111H3.35897V12.2222C3.35897 12.5169 3.47694 12.7995 3.68691 13.0079C3.89689 13.2163 4.18168 13.3333 4.47863 13.3333C4.77558 13.3333 5.06037 13.2163 5.27035 13.0079C5.48033 12.7995 5.59829 12.5169 5.59829 12.2222V11.1111H19.0342C19.3311 11.1111 19.6159 10.994 19.8259 10.7857C20.0359 10.5773 20.1538 10.2947 20.1538 10C20.1538 9.70532 20.0359 9.4227 19.8259 9.21433C19.6159 9.00595 19.3311 8.88889 19.0342 8.88889H5.59829V7.77778C5.59829 7.48309 5.48033 7.20048 5.27035 6.9921C5.06037 6.78373 4.77558 6.66667 4.47863 6.66667C4.18168 6.66667 3.89689 6.78373 3.68691 6.9921C3.47694 7.20048 3.35897 7.48309 3.35897 7.77778V8.88889H1.11966ZM0 16.6667C0 16.372 0.117964 16.0894 0.32794 15.881C0.537917 15.6726 0.822706 15.5556 1.11966 15.5556H14.5556V14.4444C14.5556 14.1498 14.6735 13.8671 14.8835 13.6588C15.0935 13.4504 15.3783 13.3333 15.6752 13.3333C15.9722 13.3333 16.257 13.4504 16.4669 13.6588C16.6769 13.8671 16.7949 14.1498 16.7949 14.4444V15.5556H19.0342C19.3311 15.5556 19.6159 15.6726 19.8259 15.881C20.0359 16.0894 20.1538 16.372 20.1538 16.6667C20.1538 16.9614 20.0359 17.244 19.8259 17.4523C19.6159 17.6607 19.3311 17.7778 19.0342 17.7778H16.7949V18.8889C16.7949 19.1836 16.6769 19.4662 16.4669 19.6746C16.257 19.8829 15.9722 20 15.6752 20C15.3783 20 15.0935 19.8829 14.8835 19.6746C14.6735 19.4662 14.5556 19.1836 14.5556 18.8889V17.7778H1.11966C0.822706 17.7778 0.537917 17.6607 0.32794 17.4523C0.117964 17.244 0 16.9614 0 16.6667Z"
-                    fill="#DFE9F9" />
+                    fill="#DFE9F9"
+                  />
                 </svg>
               </div>
             </div>
           </div>
         </div>
       </header>
-      
+
       <div className="relative pb-[30px] md:pb-0 bg-custom">
         <div className="relative">
           <header className="header_mobile pt-[30px] px-[10px] max-w-[352px] mx-auto flex flex-col">
             <div className="flex justify-between items-center">
               <a className="w-[18px] h-[18px]" href="#">
-                <img src="/icons/phone.svg" alt="call"/>
+                <img src="/icons/phone.svg" alt="call" />
               </a>
               <a href="/">
-                <img src="/icons/logo_mobile.svg" alt="logo"/>
+                <img src="/icons/logo_mobile.svg" alt="logo" />
               </a>
               <div className="cursor-pointer group_stroke">
-                <svg className="stroke-[#DFE9F9] hover-target" width="21" height="17" viewBox="0 0 21 17" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.95599 2H19.0868H1.95599ZM1.95599 8.5H19.0868H1.95599ZM1.95599 15H19.0868H1.95599Z"
-                    fill="#4C4D56" fillOpacity="0.5" />
-                  <path d="M1.95599 2H19.0868M1.95599 8.5H19.0868M1.95599 15H19.0868" stroke="#DFE9F9" strokeWidth="3"
-                    strokeMiterlimit="10" strokeLinecap="round" />
+                <svg
+                  className="stroke-[#DFE9F9] hover-target"
+                  width="21"
+                  height="17"
+                  viewBox="0 0 21 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.95599 2H19.0868H1.95599ZM1.95599 8.5H19.0868H1.95599ZM1.95599 15H19.0868H1.95599Z"
+                    fill="#4C4D56"
+                    fillOpacity="0.5"
+                  />
+                  <path
+                    d="M1.95599 2H19.0868M1.95599 8.5H19.0868M1.95599 15H19.0868"
+                    stroke="#DFE9F9"
+                    strokeWidth="3"
+                    strokeMiterlimit="10"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </div>
             </div>
@@ -88,38 +126,66 @@ const Header: FC = async () => {
                 <SearchBar placeholder={'Search'} />
               </Suspense>
               <div className="cursor-pointer group">
-                <svg className="fill-[#DFE9F9] hover-target" width="21" height="20" viewBox="0 0 21 20" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd"
+                <svg
+                  className="fill-[#DFE9F9] hover-target"
+                  width="21"
+                  height="20"
+                  viewBox="0 0 21 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M16.7949 1.11111C16.7949 0.816426 16.6769 0.533811 16.4669 0.325437C16.257 0.117063 15.9722 0 15.6752 0C15.3783 0 15.0935 0.117063 14.8835 0.325437C14.6735 0.533811 14.5556 0.816426 14.5556 1.11111V2.22222H1.11966C0.822706 2.22222 0.537917 2.33929 0.32794 2.54766C0.117964 2.75603 0 3.03865 0 3.33333C0 3.62802 0.117964 3.91063 0.32794 4.11901C0.537917 4.32738 0.822706 4.44444 1.11966 4.44444H14.5556V5.55556C14.5556 5.85024 14.6735 6.13286 14.8835 6.34123C15.0935 6.5496 15.3783 6.66667 15.6752 6.66667C15.9722 6.66667 16.257 6.5496 16.4669 6.34123C16.6769 6.13286 16.7949 5.85024 16.7949 5.55556V4.44444H19.0342C19.3311 4.44444 19.6159 4.32738 19.8259 4.11901C20.0359 3.91063 20.1538 3.62802 20.1538 3.33333C20.1538 3.03865 20.0359 2.75603 19.8259 2.54766C19.6159 2.33929 19.3311 2.22222 19.0342 2.22222H16.7949V1.11111ZM1.11966 8.88889C0.822706 8.88889 0.537917 9.00595 0.32794 9.21433C0.117964 9.4227 0 9.70532 0 10C0 10.2947 0.117964 10.5773 0.32794 10.7857C0.537917 10.994 0.822706 11.1111 1.11966 11.1111H3.35897V12.2222C3.35897 12.5169 3.47694 12.7995 3.68691 13.0079C3.89689 13.2163 4.18168 13.3333 4.47863 13.3333C4.77558 13.3333 5.06037 13.2163 5.27035 13.0079C5.48033 12.7995 5.59829 12.5169 5.59829 12.2222V11.1111H19.0342C19.3311 11.1111 19.6159 10.994 19.8259 10.7857C20.0359 10.5773 20.1538 10.2947 20.1538 10C20.1538 9.70532 20.0359 9.4227 19.8259 9.21433C19.6159 9.00595 19.3311 8.88889 19.0342 8.88889H5.59829V7.77778C5.59829 7.48309 5.48033 7.20048 5.27035 6.9921C5.06037 6.78373 4.77558 6.66667 4.47863 6.66667C4.18168 6.66667 3.89689 6.78373 3.68691 6.9921C3.47694 7.20048 3.35897 7.48309 3.35897 7.77778V8.88889H1.11966ZM0 16.6667C0 16.372 0.117964 16.0894 0.32794 15.881C0.537917 15.6726 0.822706 15.5556 1.11966 15.5556H14.5556V14.4444C14.5556 14.1498 14.6735 13.8671 14.8835 13.6588C15.0935 13.4504 15.3783 13.3333 15.6752 13.3333C15.9722 13.3333 16.257 13.4504 16.4669 13.6588C16.6769 13.8671 16.7949 14.1498 16.7949 14.4444V15.5556H19.0342C19.3311 15.5556 19.6159 15.6726 19.8259 15.881C20.0359 16.0894 20.1538 16.372 20.1538 16.6667C20.1538 16.9614 20.0359 17.244 19.8259 17.4523C19.6159 17.6607 19.3311 17.7778 19.0342 17.7778H16.7949V18.8889C16.7949 19.1836 16.6769 19.4662 16.4669 19.6746C16.257 19.8829 15.9722 20 15.6752 20C15.3783 20 15.0935 19.8829 14.8835 19.6746C14.6735 19.4662 14.5556 19.1836 14.5556 18.8889V17.7778H1.11966C0.822706 17.7778 0.537917 17.6607 0.32794 17.4523C0.117964 17.244 0 16.9614 0 16.6667Z"
-                    fill="#DFE9F9" />
+                    fill="#DFE9F9"
+                  />
                 </svg>
               </div>
             </div>
           </header>
 
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto md:pb-[59px] xl:pb-[59px] flex justify-between items-end overflow-visible">
-            <svg className="hidden md:block md:w-[80px] md:h-[35px] md:mr-[25px] lg:mr-[40px] ml-[-15px]" viewBox="0 0 40 35"
-              fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              className="hidden md:block md:w-[80px] md:h-[35px] md:mr-[25px] lg:mr-[40px] ml-[-15px]"
+              viewBox="0 0 40 35"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M5.86319 11.8642C5.86319 12.6732 5.55434 13.449 5.00458 14.0211C4.45482 14.5932 3.70918 14.9145 2.9317 14.9145C2.15422 14.9145 1.40858 14.5932 0.858821 14.0211C0.309059 13.449 0.000205949 12.6732 0.000205949 11.8642C0.000205949 11.0551 0.309059 10.2793 0.858821 9.70721C1.40858 9.13515 2.15422 8.81378 2.9317 8.81378C3.70918 8.81378 4.45482 9.13515 5.00458 9.70721C5.55434 10.2793 5.86319 11.0551 5.86319 11.8642ZM5.86319 19.9985C5.86319 20.8075 5.55434 21.5834 5.00458 22.1554C4.45482 22.7275 3.70918 23.0489 2.9317 23.0489C2.15422 23.0489 1.40858 22.7275 0.858821 22.1554C0.309059 21.5834 0.000205949 20.8075 0.000205949 19.9985C0.000205949 19.1895 0.309059 18.4136 0.858821 17.8416C1.40858 17.2695 2.15422 16.9481 2.9317 16.9481C3.70918 16.9481 4.45482 17.2695 5.00458 17.8416C5.55434 18.4136 5.86319 19.1895 5.86319 19.9985ZM5.86319 28.1328C5.86319 28.9418 5.55434 29.7177 5.00458 30.2898C4.45482 30.8618 3.70918 31.1832 2.9317 31.1832C2.15422 31.1832 1.40858 30.8618 0.858821 30.2898C0.309059 29.7177 0.000205949 28.9418 0.000205949 28.1328C0.000205949 27.3238 0.309059 26.548 0.858821 25.9759C1.40858 25.4038 2.15422 25.0825 2.9317 25.0825C3.70918 25.0825 4.45482 25.4038 5.00458 25.9759C5.55434 26.548 5.86319 27.3238 5.86319 28.1328Z"
-                fill="#EC722B" />
-              <path fillRule="evenodd" clipRule="evenodd"
+                fill="#EC722B"
+              />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M7.81752 11.8642C7.81752 11.3248 8.02343 10.8076 8.38993 10.4262C8.75644 10.0448 9.25353 9.83057 9.77185 9.83057H34.5674C35.0857 9.83057 35.5828 10.0448 35.9493 10.4262C36.3158 10.8076 36.5217 11.3248 36.5217 11.8642C36.5217 12.4035 36.3158 12.9207 35.9493 13.3021C35.5828 13.6835 35.0857 13.8977 34.5674 13.8977H9.77185C9.25353 13.8977 8.75644 13.6835 8.38993 13.3021C8.02343 12.9207 7.81752 12.4035 7.81752 11.8642ZM7.81752 19.9985C7.81752 19.4592 8.02343 18.9419 8.38993 18.5605C8.75644 18.1792 9.25353 17.9649 9.77185 17.9649H34.5674C35.0857 17.9649 35.5828 18.1792 35.9493 18.5605C36.3158 18.9419 36.5217 19.4592 36.5217 19.9985C36.5217 20.5378 36.3158 21.0551 35.9493 21.4365C35.5828 21.8178 35.0857 22.0321 34.5674 22.0321H9.77185C9.25353 22.0321 8.75644 21.8178 8.38993 21.4365C8.02343 21.0551 7.81752 20.5378 7.81752 19.9985ZM7.81752 28.1328C7.81752 27.5935 8.02343 27.0762 8.38993 26.6949C8.75644 26.3135 9.25353 26.0993 9.77185 26.0993H34.5674C35.0857 26.0993 35.5828 26.3135 35.9493 26.6949C36.3158 27.0762 36.5217 27.5935 36.5217 28.1328C36.5217 28.6722 36.3158 29.1894 35.9493 29.5708C35.5828 29.9522 35.0857 30.1664 34.5674 30.1664H9.77185C9.25353 30.1664 8.75644 29.9522 8.38993 29.5708C8.02343 29.1894 7.81752 28.6722 7.81752 28.1328Z"
-                fill="#EC722B" />
+                fill="#EC722B"
+              />
               <path
                 d="M5.00437 5.52348C5.55414 4.95143 5.86299 4.17555 5.86299 3.36654C5.86299 2.55753 5.55414 1.78165 5.00437 1.2096C4.45461 0.63754 3.70898 0.316162 2.93149 0.316162C2.15401 0.316162 1.40838 0.63754 0.858615 1.2096C0.308853 1.78165 0 2.55753 0 3.36654C0 4.17555 0.308853 4.95143 0.858615 5.52348C1.40838 6.09554 2.15401 6.41692 2.93149 6.41692C3.70898 6.41692 4.45461 6.09554 5.00437 5.52348Z"
-                fill="#EC722B" />
+                fill="#EC722B"
+              />
               <path
                 d="M8.38973 1.92858C8.02322 2.30995 7.81732 2.8272 7.81732 3.36654C7.81732 3.90588 8.02322 4.42313 8.38973 4.8045C8.75624 5.18587 9.25333 5.40013 9.77165 5.40013H34.5672C35.0855 5.40013 35.5826 5.18587 35.9491 4.8045C36.3156 4.42313 36.5215 3.90588 36.5215 3.36654C36.5215 2.8272 36.3156 2.30995 35.9491 1.92858C35.5826 1.54721 35.0855 1.33295 34.5672 1.33295H9.77165C9.25333 1.33295 8.75624 1.54721 8.38973 1.92858Z"
-                fill="#EC722B" />
+                fill="#EC722B"
+              />
             </svg>
 
-            <ul id="menuItems" className="flex gap-[11px] md:gap-[25px] my-[23px] md:mt-[32px] md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory">
+            <ul
+              id="menuItems"
+              className="flex gap-[11px] md:gap-[25px] my-[23px] md:mt-[32px] md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
+            >
               {pages?.map((page: any) => {
                 return (
-                  <li key={page.id} className="border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start">
-                    <a className="block rounded-[5px] px-[13px] py-[5px] md:px-[15px] md:py-[6px] font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]" href="#">
+                  <li
+                    key={page.id}
+                    className="border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start"
+                  >
+                    <a
+                      className="block rounded-[5px] px-[13px] py-[5px] md:px-[15px] md:py-[6px] font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
+                      href="#"
+                    >
                       {page.localizeInfos.title}
                     </a>
                   </li>
@@ -127,7 +193,6 @@ const Header: FC = async () => {
               })}
             </ul>
           </section>
-
         </div>
       </div>
       {/* <CategoryModal /> */}

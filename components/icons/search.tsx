@@ -7,8 +7,7 @@ const SearchIcon = () => {
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
-      >
-      </path>
+      ></path>
     </svg>
   );
 };

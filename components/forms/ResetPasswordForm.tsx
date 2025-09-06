@@ -41,9 +41,9 @@ export const resetPasswordFormFields = [
 const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
   // Destructure form field values from the Redux store using a selector
   const { email, password, password_confirm, otp_code } = useAppSelector(
-    (state) => state.formFieldsReducer.fields
+    (state) => state.formFieldsReducer.fields,
   );
-  
+
   // Access functions to change the current component and action from context
   const { setComponent, setAction } = useContext(OpenDrawerContext);
 

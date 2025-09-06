@@ -15,7 +15,9 @@ interface CreateAccountButtonProps {
  *
  * @returns Create account button
  */
-const CreateAccountButton: FC<CreateAccountButtonProps> = ({ title = 'Create account' }) => {
+const CreateAccountButton: FC<CreateAccountButtonProps> = ({
+  title = 'Create account',
+}) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (

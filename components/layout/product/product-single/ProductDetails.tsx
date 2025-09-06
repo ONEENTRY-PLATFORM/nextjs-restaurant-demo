@@ -21,10 +21,7 @@ interface ProductDetailsProps {
  *
  * @returns Product details
  */
-const ProductDetails: FC<ProductDetailsProps> = async ({
-  product,
-  dict,
-}) => {
+const ProductDetails: FC<ProductDetailsProps> = async ({ product, dict }) => {
   // Extract data from product
   const {
     id,
@@ -52,10 +49,7 @@ const ProductDetails: FC<ProductDetailsProps> = async ({
       {/* !!! category */}
 
       <div className="mb-5 mt-4 text-left text-xl font-bold leading-8 text-neutral-600">
-        <PriceDisplay
-          currentPrice={sale?.value}
-          originalPrice={price?.value}
-        />
+        <PriceDisplay currentPrice={sale?.value} originalPrice={price?.value} />
       </div>
 
       <ProductUnits units={units} />

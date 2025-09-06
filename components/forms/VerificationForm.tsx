@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -42,7 +43,6 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
     }
   }, [otp, dispatch]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   // Function to handle verification of the OTP or activation of the user
   const handleVerification = async () => {
     try {
@@ -126,7 +126,6 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
     }
     // Dependency for useCallback
   }, [fields.email_reg.value]);
-
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>

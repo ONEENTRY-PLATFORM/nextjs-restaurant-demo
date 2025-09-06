@@ -56,10 +56,7 @@ const SearchBar: FC<{ placeholder: string }> = ({ placeholder }) => {
           placeholder={placeholder}
           aria-label={placeholder}
         />
-        <button
-          type="submit"
-          className="group absolute top-[8px] left-2.5"
-        >
+        <button type="submit" className="group absolute top-[8px] left-2.5">
           <span className="sr-only">{placeholder}</span>
           <SearchIcon />
         </button>

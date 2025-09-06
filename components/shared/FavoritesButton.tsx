@@ -17,7 +17,6 @@ import {
   removeFavorites,
   selectIsFavorites,
 } from '@/app/store/reducers/FavoritesSlice';
-
 import HeartIcon from '@/components/icons/heart';
 import HeartOpenIcon from '@/components/icons/heart-o';
 
@@ -32,6 +31,7 @@ const FavoritesButton: FC<IProductsEntity> = (product) => {
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
   const isFavorites = useAppSelector((state) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, id),
   );
 

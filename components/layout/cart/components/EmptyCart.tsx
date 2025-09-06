@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
 
 import FadeTransition from '@/app/animations/FadeTransition';
@@ -11,6 +10,7 @@ import FadeTransition from '@/app/animations/FadeTransition';
  *
  * @returns
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EmptyCart: FC<{ dict: any }> = ({ dict }) => {
   return (
     <FadeTransition

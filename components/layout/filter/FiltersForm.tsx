@@ -18,7 +18,6 @@ import PricePickerFilter from './components/price/PricePickerFilter';
 
 interface FiltersFormProps {
   prices: any;
-  lang: string;
   dict: IAttributeValues;
 }
 
@@ -26,22 +25,20 @@ interface FiltersFormProps {
  * Products filters form
  *
  * @param prices prices fromTo extracted from one product
- * @param lang Current language shortcode
  * @param dict dictionary from server api
  *
  * @returns Filters form
  */
-const FiltersForm: FC<FiltersFormProps> = async ({ prices, lang, dict }) => {
-  const pageInfo = await getPageByUrl('catalog_filters', lang);
+const FiltersForm: FC<FiltersFormProps> = async ({ prices, dict }) => {
+  const pageInfo = await getPageByUrl('catalog_filters');
   const data = await getSingleAttributeByMarkerSet({
     setMarker: 'product',
     attributeMarker: 'color',
-    lang: lang,
   });
   const { isError, error, attribute } = data;
 
   const sortedAttributes: Record<any, any> = sortObjectFieldsByPosition(
-    (pageInfo.page as IPagesEntity).attributeValues,
+    (pageInfo.page as IPagesEntity)?.attributeValues,
   );
 
   if (isError) {

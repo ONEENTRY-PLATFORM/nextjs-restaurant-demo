@@ -30,7 +30,7 @@ const MenuBottom = () => (
       </div>
       <div className="w-1/3  flex justify-center items-start mt-[-20px] p-[20px]">
         <div className="bg-[#ec722b] hover:bg-[#EB4B0E] w-[46px] h-[46px] flex justify-center items-center rounded-full mt-[-10px] relative">
-          <img className="w-[25px] h-[23px]" src="./icons/cart_black.svg" alt="cart" />
+          <img className="w-[25px] h-[23px]" src="/icons/cart_black.svg" alt="cart" />
           <div className="px-[4px] absolute top-[10px] right-[8px] rounded-full bg-white">
             <p className="font-bold text-[8px] ">2</p>
           </div>

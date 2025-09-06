@@ -1,58 +1,55 @@
 import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
-import type { FC, Key } from 'react';
+import { Suspense, type FC, type Key } from 'react';
 
+import type { PageProps } from '@/app/types/global';
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-// import { sortArrayByPosition } from '@/components/utils';
+import { sortArrayByPosition } from '@/components/utils';
+import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import ProductsGridLayout from '@/components/layout/products-grid';
 
 // const HomeHero = dynamic(() => import('@/components/layout/home-hero'), {
-//   ssr: true,
-// });
-// const CatalogSection = dynamic(
-//   () => import('@/components/layout/catalog-grid'),
-//   { ssr: true },
-// );
-// const GalleryFeed = dynamic(() => import('@/components/layout/gallery-feed'), {
-//   ssr: true,
-// });
-// const HomeDiscount = dynamic(
-//   () => import('@/components/layout/home-discount'),
-//   { ssr: true },
-// );
-// const ReviewsCarousel = dynamic(
-//   () => import('@/components/layout/reviews-carousel'),
-//   { ssr: true },
-// );
-// const MastersFeed = dynamic(() => import('@/components/layout/masters-feed'), {
-//   ssr: true,
-// });
-// const OffersFeed = dynamic(() => import('@/components/layout/offers-feed'), {
 //   ssr: true,
 // });
 
 // export const revalidate = 10;
 // export const dynamicParams = true;
 
-const IndexPageLayout: FC = async () => {
+const IndexPageLayout: FC<PageProps> = async (props) => {
+  const searchParams = (await props).searchParams;
+  const params = (await props).params;
   // set dict
-  ServerProvider('dict', await getDictionary());
+  const [dict] = ServerProvider('dict', await getDictionary());
   // get page
-  const { page, isError } = await getPageByUrl('home');
+  const { page, isError } = await getPageByUrl('home_web');
   // get page blocks
   const { blocks } = await getBlocksByPageUrl({ pageUrl: page?.pageUrl || '' });
   if (isError || !page || !blocks) {
     return 'isError';
   }
 
-  const sortedBlocks: IBlockEntity[] = [];
-  // const sortedBlocks = sortArrayByPosition(blocks);
+  const sortedBlocks = sortArrayByPosition(blocks);
+  console.log(sortedBlocks);
 
   return sortedBlocks?.map((block: IBlockEntity, index: Key) => {
     switch (block.identifier) {
-      case 'home_hero':
-        return '';
+      case 'recommended_web':
+        return (
+          <section className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
+            <div className="flex w-full flex-col items-center gap-5">
+              <Suspense fallback={<ProductsGridLoader />}>
+                <ProductsGridLayout
+                  pagesLimit={block.quantity || 4}
+                  dict={dict}
+                  params={params}
+                  searchParams={searchParams}
+                />
+              </Suspense>
+            </div>
+          </section>
+        );
       //   return <HomeHero key={index} block={block} />;
       // case 'home_catalog':
       //   return (

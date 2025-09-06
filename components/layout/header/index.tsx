@@ -67,10 +67,10 @@ const Header: FC = async () => {
           <header className="header_mobile pt-[30px] px-[10px] max-w-[352px] mx-auto flex flex-col">
             <div className="flex justify-between items-center">
               <a className="w-[18px] h-[18px]" href="#">
-                <img src="./icons/phone.svg" alt="call"/>
+                <img src="/icons/phone.svg" alt="call"/>
               </a>
-              <a href="#">
-                <img src="./icons/logo_mobile.svg" alt="logo"/>
+              <a href="/">
+                <img src="/icons/logo_mobile.svg" alt="logo"/>
               </a>
               <div className="cursor-pointer group_stroke">
                 <svg className="stroke-[#DFE9F9] hover-target" width="21" height="17" viewBox="0 0 21 17" fill="none"

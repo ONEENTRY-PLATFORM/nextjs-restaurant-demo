@@ -2,6 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { Key } from 'react';
 
 import { api } from '@/app/api';
+import { IProducts } from '@/app/types/global';
 
 /**
  * Update user state with API Users
@@ -13,10 +14,12 @@ import { api } from '@/app/api';
  * @returns bool
  */
 export const updateUserState = async ({
+  favorites,
   cart,
   user,
 }: {
-  cart: object;
+  favorites: number[];
+  cart: IProducts[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
 }) => {
@@ -75,7 +78,8 @@ export const updateUserState = async ({
     formIdentifier: 'reg',
     formData: [...formData],
     state: {
-      cart: cart ? cart : user.state.cart,
+      favorites: favorites.length > 0 ? favorites : user.state.favorites,
+      cart: cart.length > 0 ? cart : user.state.cart,
     },
     notificationData: {
       email: email?.value,
@@ -95,5 +99,5 @@ export const updateUserState = async ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const clearUserState = async (user: any) => {
-  updateUserState({ cart: {}, user: user });
+  updateUserState({ favorites: [], cart: [], user: user });
 };

@@ -8,7 +8,6 @@ import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
-import type { Locale } from '@/i18n-config';
 
 import { getDictionary } from '../../dictionaries';
 
@@ -22,8 +21,8 @@ import { getDictionary } from '../../dictionaries';
 export async function generateMetadata({
   params,
 }: MetadataParams): Promise<Metadata> {
-  const { handle, lang } = await params;
-  const { isError, page } = await getPageByUrl(handle, lang);
+  const { handle } = await params;
+  const { isError, page } = await getPageByUrl(handle);
 
   if (isError || !page) {
     return notFound();
@@ -79,14 +78,15 @@ export async function generateMetadata({
  * @returns Shop page layout JSX.Element
  */
 const ShopCatalogPage: FC<PageProps> = async (props) => {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const { handle, lang } = await params;
+  const searchParams = (await props).searchParams;
+  const params = (await props).params;
+  const { handle } = await params;
+
   // Get the dictionary from the API and set the server provider.
-  const [dict] = ServerProvider('dict', await getDictionary(lang as Locale));
+  const [dict] = ServerProvider('dict', await getDictionary());
 
   // get page by url from the API
-  const { page, isError } = await getPageByUrl(handle, lang);
+  const { page, isError } = await getPageByUrl(handle);
 
   // !!!extract products per page limit from global settings
   const pagesLimit = 10;
@@ -97,10 +97,10 @@ const ShopCatalogPage: FC<PageProps> = async (props) => {
 
   return (
     <section className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
-      <div className="flex w-full flex-col items-center gap-5 bg-white">
+      <div className="flex w-full flex-col items-center gap-5">
         <Suspense fallback={<ProductsGridLoader />}>
           <ProductsGridLayout
-            params={{ handle, lang }}
+            params={{ handle }}
             searchParams={searchParams}
             pagesLimit={pagesLimit}
             dict={dict}

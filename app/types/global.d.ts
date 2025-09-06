@@ -42,6 +42,12 @@ export type AnimationsProps = {
   index: number;
 };
 
+export type IProducts = {
+  id: number;
+  selected: boolean;
+  quantity: number;
+};
+
 export type FormProps = { dict: IAttributeValues; className: string };
 
 declare type TabLayoutProps = {

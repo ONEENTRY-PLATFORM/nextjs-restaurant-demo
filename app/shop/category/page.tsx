@@ -22,7 +22,7 @@ export async function generateMetadata({
   params: { handle: string; lang: string };
 }): Promise<Metadata> {
   const { lang } = await params;
-  const { isError, page } = await getPageByUrl('category', lang);
+  const { isError, page } = await getPageByUrl('category');
 
   if (isError || !page) {
     return notFound();
@@ -75,10 +75,9 @@ export async function generateMetadata({
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns Category page layout JSX.Element
  */
-const CategoryPage: FC<PageProps> = async ({ params }) => {
-  const { lang } = await params;
+const CategoryPage: FC = async () => {
   // Get child pages by parent url
-  const { pages, isError } = await getChildPagesByParentUrl('category', lang);
+  const { pages, isError } = await getChildPagesByParentUrl('category');
 
   if (isError || !pages || !Array.isArray(pages)) {
     return notFound();
@@ -88,14 +87,14 @@ const CategoryPage: FC<PageProps> = async ({ params }) => {
   const categories = pages.map((page: IPagesEntity) => {
     return {
       title: page.localizeInfos.title,
-      link: '/' + lang + '/shop/category/' + page.pageUrl,
+      link: '/shop/category/' + page.pageUrl,
       imgSrc: page.attributeValues.opengraph_image?.value[0]?.downloadLink,
     };
   });
 
   return (
     <section className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
-      <div className="flex w-full flex-col items-center gap-5 bg-white">
+      <div className="flex w-full flex-col items-center gap-5">
         <CategoriesGrid categories={categories} />
       </div>
     </section>

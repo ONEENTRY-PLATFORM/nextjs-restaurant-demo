@@ -18,8 +18,8 @@ import {
   selectIsFavorites,
 } from '@/app/store/reducers/FavoritesSlice';
 
-import HeartIcon from '../../../oneentry-next-shop/components/icons/heart';
-import HeartOpenIcon from '../../../oneentry-next-shop/components/icons/heart-o';
+import HeartIcon from '@/components/icons/heart';
+import HeartOpenIcon from '@/components/icons/heart-o';
 
 /**
  * Favorites button

@@ -6,6 +6,7 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 import { RTKApi } from '../api';
 import animationsSlice from './reducers/AnimationsSlice';
 import cartSlice from './reducers/CartSlice';
+import favoritesSlice from './reducers/FavoritesSlice';
 import formFieldsSlice from './reducers/FormFieldsSlice';
 import orderSlice from './reducers/OrderSlice';
 
@@ -43,6 +44,19 @@ const cartReducer = persistReducer(
 );
 
 /**
+ * Persist favoritesReducer
+ */
+const favoritesReducer = persistReducer(
+  {
+    key: 'favorites-slice',
+    storage: storage,
+    version: version,
+    whitelist: ['products'],
+  },
+  favoritesSlice,
+);
+
+/**
  * Persist formFieldsReducer
  */
 const formFieldsReducer = persistReducer(
@@ -74,6 +88,7 @@ const orderReducer = persistReducer(
 const rootReducer = combineReducers({
   cartReducer,
   orderReducer,
+  favoritesReducer,
   formFieldsReducer,
   animationsSlice,
   [RTKApi.reducerPath]: RTKApi.reducer,

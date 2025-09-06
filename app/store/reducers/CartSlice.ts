@@ -212,6 +212,27 @@ export const {
 } = cartSlice.actions;
 
 /**
+ * selectIsInCart
+ *
+ * @param state
+ * @param id product id
+ *
+ * @returns
+ */
+export const selectIsInCart = (
+  state: { cartReducer: { productsData: { id: number }[] } },
+  id: number,
+): boolean => {
+  const added = state.cartReducer.productsData.findIndex(
+    (product: { id: number }) => product.id === id,
+  );
+  if (added === -1) {
+    return false;
+  }
+  return true;
+};
+
+/**
  * Select cart data
  * @param state slice state
  * @returns productsData

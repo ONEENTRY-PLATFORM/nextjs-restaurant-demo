@@ -41,9 +41,9 @@ const ProductRow: FC<{ pageData: any; product: any; setState: any }> = ({
   return (
     <Link
       prefetch={false}
-      href={`/services/${pageData?.pageUrl || ''}`}
+      href={`/shop/${pageData?.pageUrl || ''}`}
       onClick={() => onApplyHandle()}
-      className="flex w-full py-2 hover:text-fuchsia-500"
+      className="flex w-full py-2 text-black hover:text-orange-500"
     >
       {product.localizeInfos?.title}
     </Link>

@@ -1,9 +1,7 @@
 import 'server-only';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
-
-import getCachedData from './getCachedData';
 import { getAttributesByMarker } from '../server/attributes/getAttributesByMarker';
+import getCachedData from './getCachedData';
 
 /**
  * Get dictionary
@@ -15,8 +13,9 @@ export const getDictionary = async () => {
     // get block by marker from api
     const { attributes } = await getCachedData(
       'dictionary',
-      async () => await getAttributesByMarker({attributeMarker: 'static_content'}),
-    );    
+      async () =>
+        await getAttributesByMarker({ attributeMarker: 'static_content' }),
+    );
 
     return attributes;
   } catch (e) {

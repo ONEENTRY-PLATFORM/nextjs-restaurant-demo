@@ -142,7 +142,7 @@ export const RTKApi = createApi({
     }),
     /**
      * Get Product By Id.
-     * @property {IProductEntity} item - IProductEntity.
+     * @property {number} id - product id.
      */
     getProductById: build.query<IProductEntity, { id: number }>({
       queryFn: async ({ id }) => {
@@ -158,6 +158,7 @@ export const RTKApi = createApi({
       providesTags: ['Products'],
       keepUnusedDataFor: 300, // 5 минут для отдельного продукта
     }),
+
     /**
      * Get Page By Id.
      * @property {IProductEntity} item - IProductEntity.
@@ -177,6 +178,7 @@ export const RTKApi = createApi({
       providesTags: ['Pages'],
       keepUnusedDataFor: 600, // 10 минут для страниц
     }),
+
     /**
      * Get block by Marker.
      * @property {string} marker - Marker of Block.
@@ -318,9 +320,10 @@ export const RTKApi = createApi({
     /**
      * Update user state
      */
-    updateUserState: build.mutation<boolean, { cart: object; user: any }>({
-      queryFn: async ({ cart, user }) => {
-        const result = await updateUserState({ cart, user });
+    // eslint-disable-next-line prettier/prettier
+    updateUserState: build.mutation<boolean, { favorites: number[], cart: any; user: any }>({
+      queryFn: async ({ favorites, cart, user }) => {
+        const result = await updateUserState({ favorites, cart, user });
         if (result === undefined) {
           return { data: false };
         }

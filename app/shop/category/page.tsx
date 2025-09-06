@@ -5,7 +5,6 @@ import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { getChildPagesByParentUrl } from '@/app/api';
-import type { PageProps } from '@/app/types/global';
 import CategoriesGrid from '@/components/layout/categories';
 
 /**
@@ -16,12 +15,7 @@ import CategoriesGrid from '@/components/layout/categories';
  * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
  * @returns metadata
  */
-export async function generateMetadata({
-  params,
-}: {
-  params: { handle: string; lang: string };
-}): Promise<Metadata> {
-  const { lang } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   const { isError, page } = await getPageByUrl('category');
 
   if (isError || !page) {

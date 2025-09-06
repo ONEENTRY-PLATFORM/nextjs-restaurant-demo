@@ -38,11 +38,11 @@ const ProductCard: FC<ProductCardProps> = ({
 
   const attributes = useMemo(
     () => attributeValues?.['en_US'] || attributeValues,
-    [attributeValues, 'en_US'],
+    [attributeValues],
   );
   const title = useMemo(
     () => localizeInfos?.['en_US']?.title || localizeInfos?.title || '',
-    [localizeInfos, 'en_US'],
+    [localizeInfos],
   );
   return (
     <CardAnimations

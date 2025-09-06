@@ -1,14 +1,14 @@
 import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
-import { Suspense, type FC, type Key } from 'react';
+import { type FC, type Key, Suspense } from 'react';
 
-import type { PageProps } from '@/app/types/global';
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import { sortArrayByPosition } from '@/components/utils';
-import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import type { PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
+import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import { sortArrayByPosition } from '@/components/utils';
 
 // const HomeHero = dynamic(() => import('@/components/layout/home-hero'), {
 //   ssr: true,
@@ -31,13 +31,16 @@ const IndexPageLayout: FC<PageProps> = async (props) => {
   }
 
   const sortedBlocks = sortArrayByPosition(blocks);
-  console.log(sortedBlocks);
+  // console.log(sortedBlocks);
 
   return sortedBlocks?.map((block: IBlockEntity, index: Key) => {
     switch (block.identifier) {
       case 'recommended_web':
         return (
-          <section className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
+          <section
+            key={block.identifier}
+            className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch"
+          >
             <div className="flex w-full flex-col items-center gap-5">
               <Suspense fallback={<ProductsGridLoader />}>
                 <ProductsGridLayout

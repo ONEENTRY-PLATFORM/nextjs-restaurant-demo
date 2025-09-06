@@ -2,7 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { Key } from 'react';
 
 import { api } from '@/app/api';
-import { IProducts } from '@/app/types/global';
+import type { IProducts } from '@/app/types/global';
 
 /**
  * Update user state with API Users

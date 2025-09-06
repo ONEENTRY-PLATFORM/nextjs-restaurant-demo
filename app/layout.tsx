@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
@@ -27,8 +27,9 @@ const Footer = dynamic(() => import('@/components/layout/footer'), {
 //   ssr: true,
 // });
 
-import "./globals.css";
-import { ToastContainer } from "react-toastify";
+import './globals.css';
+
+import { ToastContainer } from 'react-toastify';
 
 const lato = Lato({
   subsets: ['latin'],
@@ -68,10 +69,12 @@ export default async function RootLayout({
 }>) {
   // Get dictionary and set to server provider
   const [dict] = ServerProvider('dict', await getDictionary());
-  
+
   return (
     <html lang={'en_US'}>
-      <body className={`${lato.variable} antialiased flex flex-col min-h-screen`}>
+      <body
+        className={`${lato.variable} antialiased flex flex-col min-h-screen`}
+      >
         <RegisterGSAP />
         <StoreProvider>
           <AuthProvider>

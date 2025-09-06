@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { FC } from 'react';
 
@@ -25,10 +26,7 @@ const CartPageLayout: FC<any> = async ({ params }) => {
     <section className="relative mx-auto box-border flex min-h-80 w-full max-w-screen-xl shrink-0 grow flex-col self-stretch">
       <div className="flex w-full flex-col items-center gap-5">
         <WithSidebar>
-          <CartPage
-            dict={dict}
-            deliveryData={product as IProductsEntity}
-          />
+          <CartPage dict={dict} deliveryData={product as IProductsEntity} />
         </WithSidebar>
       </div>
     </section>

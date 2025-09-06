@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { FC } from 'react';
@@ -5,6 +6,8 @@ import type { FC } from 'react';
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { PageProps } from '@/app/types/global';
+
+import { getDictionary } from '../api/utils/dictionaries';
 // import PaymentPage from '@/components/layout/payment';
 // import ProfilePage from '@/components/layout/profile';
 // import AboutPage from '@/components/pages/AboutPage';
@@ -13,10 +16,8 @@ import type { PageProps } from '@/app/types/global';
 // import PaymentSuccess from '@/components/pages/PaymentSuccess';
 // import ServicesPage from '@/components/pages/ServicesPage';
 // import type { Locale } from '@/i18n-config';
-
 // import { getDictionary } from '../dictionaries';
 import WithSidebar from './WithSidebar';
-import { getDictionary } from '../api/utils/dictionaries';
 
 /**
  * Generate page metadata
@@ -121,9 +122,7 @@ const PageLayout: FC<{ params: any }> = async ({ params }) => {
           return;
         }
         return p.templateType === 'withSidebar' ? (
-          <WithSidebar key={i}>
-            {p.component}
-          </WithSidebar>
+          <WithSidebar key={i}>{p.component}</WithSidebar>
         ) : (
           <div key={i}>{p.component}</div>
         );

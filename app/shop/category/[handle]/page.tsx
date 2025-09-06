@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { type FC, Suspense } from 'react';
 
-import { getDictionary } from '@/app/dictionaries';
 import { getPageByUrl } from '@/app/api';
+import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';

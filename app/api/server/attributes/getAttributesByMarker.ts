@@ -22,9 +22,8 @@ export const getAttributesByMarker = async ({
   attributes?: IAttributesSetsEntity[];
 }> => {
   try {
-    const data = await api.AttributesSets.getAttributesByMarker(
-      attributeMarker,
-    ); 
+    const data =
+      await api.AttributesSets.getAttributesByMarker(attributeMarker);
 
     if (typeError(data)) {
       return { isError: true, error: data as IError };

@@ -5,7 +5,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductEntity, IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type {
+  IProductEntity,
+  IProductsEntity,
+} from 'oneentry/dist/products/productsInterfaces';
 
 type InitialStateType = {
   products: IProductsEntity[];
@@ -337,5 +340,16 @@ export const getTransition = (state: {
     transitionId: number;
   };
 }) => state.cartReducer;
+
+/**
+ * Select cart version
+ *
+ * @param state slice state
+ *
+ * @returns cart version
+ */
+export const selectCartVersion = (state: {
+  favoritesReducer: { version: number };
+}) => state.favoritesReducer.version;
 
 export default cartSlice.reducer;

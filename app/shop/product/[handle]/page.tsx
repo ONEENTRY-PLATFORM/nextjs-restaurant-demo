@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { FC } from 'react';
 
-import { getDictionary } from '@/app/dictionaries';
 import { getProductById } from '@/app/api';
-import type { PageProps } from '@/app/types/global';
+import { getDictionary } from '@/app/dictionaries';
 import ProductSingle from '@/components/layout/product';
 
 /**
@@ -63,7 +63,7 @@ export async function generateMetadata({
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns Product page layout JSX.Element
  */
-const ProductPageLayout: FC<PageProps> = async ({ params }) => {
+const ProductPageLayout: FC<{ params: any }> = async ({ params }) => {
   const { handle, lang } = await params;
   // Get the dictionary from the API and set the server provider.
   const dict = await getDictionary();

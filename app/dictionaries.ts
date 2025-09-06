@@ -2,7 +2,6 @@
 import 'server-only';
 
 import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
-import { IAttributeValues } from 'oneentry/dist/base/utils';
 
 /**
  * Get dictionary from attributes by marker
@@ -12,8 +11,10 @@ import { IAttributeValues } from 'oneentry/dist/base/utils';
 const dict = async (): Promise<any> => {
   try {
     // get attributes by marker from api
-    const { attributes } = await getAttributesByMarker({attributeMarker: 'static_content'});
-    
+    const { attributes } = await getAttributesByMarker({
+      attributeMarker: 'static_content',
+    });
+
     return attributes;
   } catch (e) {
     // eslint-disable-next-line no-console

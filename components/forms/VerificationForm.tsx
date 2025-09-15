@@ -33,6 +33,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { enter_otp_code, resend_text, receive_otp_text, verify_now_text } =
     dict;
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);

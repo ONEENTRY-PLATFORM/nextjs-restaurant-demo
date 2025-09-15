@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+// eslint-disable-next-line no-undef
 module.exports = {
   mode: 'jit',
-  content: ["*.html"],
+  content: ['*.html'],
   theme: {
     extend: {
       fontFamily: {
@@ -14,8 +15,8 @@ module.exports = {
       },
       plugins: [],
       screens: {
-        'mobile_wide': '500px',
-        'md_wide': {'min': '1020px', 'max': '1279px'},
+        mobile_wide: '500px',
+        md_wide: { min: '1020px', max: '1279px' },
       },
       colors: {
         custom_orange: '#ec722b',
@@ -31,28 +32,29 @@ module.exports = {
       },
       backgroundImage: {
         'custom-gradient': 'linear-gradient(90deg, #ec722b 0%, #4c4d56 100%)',
-        'gradient-to-r-hover': 'linear-gradient(90deg, #f15b22 0%, #3a3b42 100%)',
+        'gradient-to-r-hover':
+          'linear-gradient(90deg, #f15b22 0%, #3a3b42 100%)',
       },
       margin: {
-        '7.5': '30px',
+        7.5: '30px',
         '-11.25': '-45px',
       },
       spacing: {
-        '2.5': '10px',
+        2.5: '10px',
       },
       lineHeight: {
-        'mobile': '1.3',
-        '150': '1.5', 
+        mobile: '1.3',
+        150: '1.5',
       },
       width: {
-        '50%-gap': 'calc(50% - 15px)',
+        // '50%-gap': 'calc(50% - 15px)',
         '50%-gap': 'calc(50% - 30px)',
         '30%-gap': 'calc(32% - 5px)',
       },
     },
   },
   plugins: [
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       addUtilities({
         '.no-scrollbar::-webkit-scrollbar': {
           width: '0px',
@@ -60,9 +62,9 @@ module.exports = {
           display: 'none',
         },
         '.no-scrollbar': {
-          '-ms-overflow-style': 'none',  /* Internet Explorer 10+ */
-          'scrollbar-width': 'none', /* Firefox */
-          'scrollbar-color': 'transparent', 
+          '-ms-overflow-style': 'none' /* Internet Explorer 10+ */,
+          'scrollbar-width': 'none' /* Firefox */,
+          'scrollbar-color': 'transparent',
         },
         '.overflow-x-hidden': {
           overflowX: 'hidden',
@@ -76,10 +78,9 @@ module.exports = {
         '.bg-gradient-to-r-hover': {
           backgroundImage: 'linear-gradient(90deg, #f15b22 0%, #3a3b42 100%)',
         },
-      })
-    }
+      });
+    },
   ],
   tailwindcss: {},
   autoprefixer: {},
-}
-
+};

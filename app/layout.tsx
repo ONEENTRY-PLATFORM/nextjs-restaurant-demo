@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getMenuByMarker } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
@@ -84,7 +85,7 @@ export default async function RootLayout({
                 <main className="flex flex-col grow overflow-hidden">
                   {children}
                 </main>
-                <Footer dict={dict} />
+                <Footer />
               </TransitionProvider>
               <BottomMenu />
               <Modal dict={dict} />

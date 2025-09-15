@@ -19,7 +19,7 @@ export async function generateMetadata({
 }: {
   params: { handle: string; lang: string };
 }): Promise<Metadata> {
-  const { handle, lang } = await params;
+  const { handle } = await params;
   const { isError, product } = await getProductById(Number(handle));
 
   if (isError || !product) {
@@ -109,7 +109,7 @@ const ProductPageLayout: FC<{ params: any }> = async ({ params }) => {
         }}
       />
       <div className="mx-auto flex w-full max-w-screen-xl flex-col bg-white">
-        <ProductSingle lang={lang} product={product} dict={dict} />
+        <ProductSingle product={product as any} dict={dict} />
       </div>
     </>
   );

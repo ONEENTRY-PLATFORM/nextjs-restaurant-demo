@@ -19,9 +19,7 @@ import { getDictionary } from '../dictionaries';
  * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
  * @returns metadata
  */
-export async function generateMetadata({
-  params,
-}: MetadataParams): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const { isError, page } = await getPageByUrl('shop');
 
   if (isError || !page) {

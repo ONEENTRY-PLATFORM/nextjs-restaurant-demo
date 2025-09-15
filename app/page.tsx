@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import { type FC, type Key, Suspense } from 'react';

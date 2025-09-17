@@ -1,4 +1,4 @@
-import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
+import type { IAttributeSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 
 import { api } from '@/app/api';
@@ -19,7 +19,7 @@ export const getAttributesByMarker = async ({
 }): Promise<{
   isError: boolean;
   error?: IError;
-  attributes?: IAttributesSetsEntity[];
+  attributes?: IAttributeSetsEntity[];
 }> => {
   try {
     const data =

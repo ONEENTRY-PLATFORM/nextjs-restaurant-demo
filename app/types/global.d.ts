@@ -18,7 +18,7 @@ declare type PageProps = Promise<{
 
 declare type SimplePageProps = {
   page?: IPagesEntity;
-  dict: IAttributeValues;
+  dict?: IAttributeValues;
 };
 
 declare type LoaderProps = {

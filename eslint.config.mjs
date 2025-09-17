@@ -24,6 +24,9 @@ const compat = new FlatCompat({
 const eslintConfig = [{
   ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
 }, {
+  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
+}, // Base extends via compat to support flat config plugins
+{
   ignores: [
     "node_modules/**",
     ".next/**",
@@ -31,19 +34,18 @@ const eslintConfig = [{
     "build/**",
     "next-env.d.ts"
   ]
-}, // Base extends via compat to support flat config plugins
+}, // legacy compat extends for some plugins
 ...compat.config({
   extends: [
     'eslint:recommended',
     // 'next',
     'next/typescript',
   ],
-}), // legacy compat extends for some plugins
+}), // Main ruleset for JS/TS/JSX/TSX
 ...compat.extends(
   'plugin:react/recommended',
   'plugin:@next/next/recommended'
-), // Main ruleset for JS/TS/JSX/TSX
-{
+), {
   files: [
     '**/*.js',
     '**/*.jsx',

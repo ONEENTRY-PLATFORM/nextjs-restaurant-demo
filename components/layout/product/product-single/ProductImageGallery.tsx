@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import '@/app/styles/image-gallery.css';
-import '@/app/styles/slick.css';
-import '@/app/styles/slick-theme.css';
+// import '@/app/styles/image-gallery.css';
+// import '@/app/styles/slick.css';
+// import '@/app/styles/slick-theme.css';
 
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';

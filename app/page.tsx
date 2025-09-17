@@ -1,7 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
-import { type FC, type Key, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
 
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
@@ -19,8 +18,7 @@ import { sortArrayByPosition } from '@/components/utils';
 // export const dynamicParams = true;
 
 const IndexPageLayout: FC<PageProps> = async (props) => {
-  const searchParams = (await props).searchParams;
-  const params = (await props).params;
+  const { searchParams, params } = await props;
   // set dict
   const [dict] = ServerProvider('dict', await getDictionary());
   // get page
@@ -34,13 +32,13 @@ const IndexPageLayout: FC<PageProps> = async (props) => {
   const sortedBlocks = sortArrayByPosition(blocks);
   // console.log(sortedBlocks);
 
-  return sortedBlocks?.map((block: IBlockEntity, index: Key) => {
+  return sortedBlocks?.map((block: IBlockEntity) => {
     switch (block.identifier) {
       case 'recommended_web':
         return (
           <section
             key={block.identifier}
-            className="relative mx-auto box-border flex w-full max-w-screen-xl shrink-0 grow flex-col self-stretch"
+            className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch"
           >
             <div className="flex w-full flex-col items-center gap-5">
               <Suspense fallback={<ProductsGridLoader />}>

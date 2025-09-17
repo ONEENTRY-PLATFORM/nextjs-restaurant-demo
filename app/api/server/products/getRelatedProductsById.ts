@@ -1,5 +1,5 @@
 import type { IError } from 'oneentry/dist/base/utils';
-import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
 import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
@@ -17,7 +17,7 @@ export const getRelatedProductsById = async (
 ): Promise<{
   isError: boolean;
   error?: IError;
-  products?: IProductEntity[];
+  products?: IProductsEntity[];
   total: number;
 }> => {
   try {

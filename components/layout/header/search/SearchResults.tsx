@@ -2,7 +2,7 @@
 'use client';
 
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { Dispatch, FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
@@ -76,7 +76,7 @@ const SearchResults: FC<SearchResultsProps> = ({
     <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-2xl bg-white p-5 shadow-lg">
       <CloseSearch setState={setState} />
       {products.length > 0 ? (
-        products.map((product: IProductEntity, i: number) => {
+        products.map((product: IProductsEntity, i: number) => {
           const { id, attributeSetIdentifier } = product;
 
           // Skip rendering for 'service_product' type

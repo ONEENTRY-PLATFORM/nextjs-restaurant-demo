@@ -6,7 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type {
-  IProductEntity,
+  IProductsEntity,
   IProductsEntity,
 } from 'oneentry/dist/products/productsInterfaces';
 
@@ -24,7 +24,7 @@ type InitialStateType = {
     id: number;
     salon?: IPagesEntity;
     service?: IPagesEntity;
-    product?: IProductEntity;
+    product?: IProductsEntity;
     master?: IAdminEntity;
     date?: Date;
     interval?: Date[];
@@ -48,7 +48,7 @@ const initialState: InitialStateType = {
       id: 0,
       salon: {} as IPagesEntity,
       service: {} as IPagesEntity,
-      product: {} as IProductEntity,
+      product: {} as IProductsEntity,
       master: {} as IAdminEntity,
       date: {} as Date,
       interval: [] as Date[],
@@ -68,7 +68,7 @@ export const cartSlice = createSlice({
         id: number;
         salon?: IPagesEntity;
         service?: IPagesEntity;
-        product?: IProductEntity;
+        product?: IProductsEntity;
         master?: IAdminEntity;
         date?: Date;
         interval?: Date[];

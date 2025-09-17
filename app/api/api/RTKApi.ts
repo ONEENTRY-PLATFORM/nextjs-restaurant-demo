@@ -18,7 +18,7 @@ import type {
   ISessionEntity,
 } from 'oneentry/dist/payments/paymentsInterfaces';
 import type {
-  IProductEntity,
+  IProductsEntity,
   IProductsResponse,
 } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
@@ -74,7 +74,7 @@ export const RTKApi = createApi({
     }),
     /**
      * Get Products with filter
-     * @property {IProductEntity[]} item - IProductEntity.
+     * @property {IProductsEntity[]} item - IProductsEntity.
      */
     getProducts: build.query<IProductsResponse, { body: [] }>({
       queryFn: async ({ body }) => {
@@ -89,7 +89,7 @@ export const RTKApi = createApi({
     }),
     /**
      * Get Products By PageUrl
-     * @property {IProductEntity[]} item - IProductEntity.
+     * @property {IProductsEntity[]} item - IProductsEntity.
      */
     getProductsByPageUrl: build.query<IProductsResponse, { url: string }>({
       queryFn: async ({ url }) => {
@@ -107,9 +107,9 @@ export const RTKApi = createApi({
     }),
     /**
      * Get Products By Ids.
-     * @property {IProductEntity[]} items - Array of IProductEntity.
+     * @property {IProductsEntity[]} items - Array of IProductsEntity.
      */
-    getProductsByIds: build.query<IProductEntity[], { items: number[] }>({
+    getProductsByIds: build.query<IProductsEntity[], { items: number[] }>({
       queryFn: async ({ items }) => {
         const getProductsByIds = async (ids: number[]) => {
           return await Promise.all(
@@ -118,12 +118,12 @@ export const RTKApi = createApi({
               if (!product || (product as IError).statusCode >= 400) {
                 return undefined;
               } else {
-                return product as IProductEntity;
+                return product as IProductsEntity;
               }
             }),
           ).then((results) => {
             return results.filter(
-              (product): product is IProductEntity => product !== undefined,
+              (product): product is IProductsEntity => product !== undefined,
             );
           });
         };
@@ -144,7 +144,7 @@ export const RTKApi = createApi({
      * Get Product By Id.
      * @property {number} id - product id.
      */
-    getProductById: build.query<IProductEntity, { id: number }>({
+    getProductById: build.query<IProductsEntity, { id: number }>({
       queryFn: async ({ id }) => {
         if (!id) {
           return { error: null };
@@ -153,7 +153,7 @@ export const RTKApi = createApi({
         if (typeError(result)) {
           return { error: result };
         }
-        return { data: result as IProductEntity };
+        return { data: result as IProductsEntity };
       },
       providesTags: ['Products'],
       keepUnusedDataFor: 300, // 5 минут для отдельного продукта
@@ -161,7 +161,7 @@ export const RTKApi = createApi({
 
     /**
      * Get Page By Id.
-     * @property {IProductEntity} item - IProductEntity.
+     * @property {IProductsEntity} item - IProductsEntity.
      */
     getPageById: build.query<IPagesEntity, { id: number }>({
       queryFn: async ({ id }) => {

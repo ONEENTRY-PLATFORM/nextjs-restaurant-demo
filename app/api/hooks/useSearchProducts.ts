@@ -1,6 +1,6 @@
 'use client';
 
-import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { useEffect, useState } from 'react';
 
 import { api } from '@/app/api';
@@ -12,7 +12,7 @@ import { api } from '@/app/api';
  */
 export const useSearchProducts = ({ name }: { name: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [products, setProducts] = useState<IProductEntity[]>([]);
+  const [products, setProducts] = useState<IProductsEntity[]>([]);
   const [refetch, setRefetch] = useState(false);
 
   // search products on data change
@@ -23,7 +23,7 @@ export const useSearchProducts = ({ name }: { name: string }) => {
     (async () => {
       setLoading(true);
       const result = await api.Products.searchProduct(name);
-      setProducts(result as IProductEntity[]);
+      setProducts(result as IProductsEntity[]);
       setLoading(false);
     })();
   }, [refetch, name]);

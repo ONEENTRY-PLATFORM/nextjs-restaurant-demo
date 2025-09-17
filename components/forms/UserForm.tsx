@@ -3,7 +3,7 @@
 
 import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FormDataType } from 'oneentry/dist/formsData/formsDataInterfaces';
+import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { FC, FormEvent } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';

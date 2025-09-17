@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+// eslint-disable-next-line no-undef
 module.exports = {
   mode: 'jit',
   content: ['*.html'],
@@ -46,7 +47,7 @@ module.exports = {
         150: '1.5',
       },
       width: {
-        '50%-gap': 'calc(50% - 15px)',
+        // '50%-gap': 'calc(50% - 15px)',
         '50%-gap': 'calc(50% - 30px)',
         '30%-gap': 'calc(32% - 5px)',
       },

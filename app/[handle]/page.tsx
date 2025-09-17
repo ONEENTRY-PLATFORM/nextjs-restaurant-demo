@@ -6,8 +6,8 @@ import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import type { PageProps } from '@/app/types/global';
 
+// import type { PageProps } from '@/app/types/global';
 import { getDictionary } from '../api/utils/dictionaries';
 // import PaymentPage from '@/components/layout/payment';
 // import ProfilePage from '@/components/layout/profile';
@@ -31,7 +31,7 @@ import WithSidebar from './WithSidebar';
 export async function generateMetadata({
   params,
 }: {
-  params: { page: string; lang: string };
+  params: any;
 }): Promise<Metadata> {
   const { page: pageData } = await params;
   // get page by Url
@@ -62,7 +62,7 @@ export async function generateMetadata({
  * @returns page layout JSX.Element
  */
 const PageLayout: FC<{ params: any }> = async ({ params }) => {
-  const { page: p, lang } = await params;
+  const { page: p } = await params;
   // Get dictionary and set to server provider
   const [dict] = ServerProvider('dict', await getDictionary());
 
@@ -117,7 +117,7 @@ const PageLayout: FC<{ params: any }> = async ({ params }) => {
   ];
 
   return (
-    <div className="mx-auto flex min-h-80 w-full max-w-screen-xl flex-col overflow-hidden">
+    <div className="mx-auto flex min-h-80 w-full max-w-(--breakpoint-xl) flex-col overflow-hidden">
       {pages.map((p, i) => {
         if (pageUrl !== p.name) {
           return;

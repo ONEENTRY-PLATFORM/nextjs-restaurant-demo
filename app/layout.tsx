@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { getMenuByMarker } from '@/app/api';
+// import { getMenuByMarker } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';

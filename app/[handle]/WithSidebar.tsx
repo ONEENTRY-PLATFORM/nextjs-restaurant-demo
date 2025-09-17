@@ -15,7 +15,7 @@ const WithSidebar: FC<{
 }> = async ({ children }) => {
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="mx-auto flex w-full max-w-screen-xl flex-row max-md:flex-row max-md:flex-wrap">
+      <div className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-row max-md:flex-row max-md:flex-wrap">
         <FadeTransition
           className="flex w-1/2 grow flex-col overflow-hidden max-md:w-full"
           index={0}

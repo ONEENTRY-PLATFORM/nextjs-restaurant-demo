@@ -1,5 +1,9 @@
 import type { NextConfig } from 'next';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -7,7 +11,6 @@ const nextConfig: NextConfig = {
       dynamic: 30,
       static: 180,
     },
-    optimizeCss: true,
     optimizePackageImports: ['gsap', 'react-toastify'],
     serverActions: {
       bodySizeLimit: '2mb',
@@ -16,9 +19,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  productionBrowserSourceMaps: false,
   reactStrictMode: true,
   sassOptions: {
-    includePaths: [path.join(process.cwd(), 'styles')],
+    includePaths: [path.join(__dirname, 'styles')],
   },
   images: {
     formats: ['image/avif', 'image/webp'],

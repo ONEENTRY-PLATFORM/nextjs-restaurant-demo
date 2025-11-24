@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line no-undef
-module.exports = {
-  mode: 'jit',
-  content: ['*.html'],
+const config = {
+  content: [
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -12,11 +13,6 @@ module.exports = {
         extend: {
           backgroundImage: ['hover'],
         },
-      },
-      plugins: [],
-      screens: {
-        mobile_wide: '500px',
-        md_wide: { min: '1020px', max: '1279px' },
       },
       colors: {
         custom_orange: '#ec722b',
@@ -34,6 +30,9 @@ module.exports = {
         'custom-gradient': 'linear-gradient(90deg, #ec722b 0%, #4c4d56 100%)',
         'gradient-to-r-hover':
           'linear-gradient(90deg, #f15b22 0%, #3a3b42 100%)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       margin: {
         7.5: '30px',
@@ -50,6 +49,29 @@ module.exports = {
         // '50%-gap': 'calc(50% - 15px)',
         '50%-gap': 'calc(50% - 30px)',
         '30%-gap': 'calc(32% - 5px)',
+      },
+      screens: {
+        xs: '480px',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1240px',
+        '2xl': '1536px',
+      },
+      keyframes: {
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        'gradient-loader': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '200% 50%' },
+          '100%': { backgroundPosition: '50% 50%' },
+        },
+      },
+      animation: {
+        spinner: 'spin 60s linear infinite',
+        gradient: 'gradient-loader 5s ease infinite',
       },
     },
   },
@@ -84,3 +106,5 @@ module.exports = {
   tailwindcss: {},
   autoprefixer: {},
 };
+
+export default config;

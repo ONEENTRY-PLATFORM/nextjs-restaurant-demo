@@ -44,3 +44,6 @@ static/node_modules/
 package-lock.json
 
 .claude
+
+GIT-SETUP.md
+git-setup.sh

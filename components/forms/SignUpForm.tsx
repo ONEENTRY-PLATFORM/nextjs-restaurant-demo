@@ -67,7 +67,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
       })),
     [fields, formFields],
   );
-  console.log(formData);
+  // console.log(formData);
 
   // Handle sign up
   const onSignUpHandle = useCallback(
@@ -84,18 +84,18 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
         authData: [
           {
             marker: 'email',
-            value: fields.email.value,
+            value: fields.email?.value || '',
           },
           {
             marker: 'password',
-            value: fields.password.value,
+            value: fields.password?.value || '',
           },
         ],
         formData,
         notificationData: {
-          email: fields.email.value,
-          phonePush: [fields.phone.value],
-          phoneSMS: fields.phone.value,
+          email: fields.email?.value || '',
+          phonePush: [fields.phone?.value || ''],
+          phoneSMS: fields.phone?.value || '',
         },
       };
 
@@ -111,7 +111,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
           await logInUser({
             method: 'email',
             login: res.identifier, // Use the identifier from the response
-            password: fields.password_reg.value, // Use the entered password
+            password: fields.password_reg?.value || '', // Use the entered password
           });
           // Authenticate the user
           authenticate();

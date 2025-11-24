@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FC, Suspense } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
-import SearchIcon from '@/components/icons/search';
-import NavigationMenu from '@/components/layout/header/main-menu';
-import CategoryModal from '@/components/static/CategoryModal';
+// import SearchIcon from '@/components/icons/search';
+// import NavigationMenu from '@/components/layout/header/main-menu';
+// import CategoryModal from '@/components/static/CategoryModal';
 import FilterBottom from '@/components/static/FilterBottom';
 import MenuBottom from '@/components/static/MenuBottom';
 
@@ -18,12 +17,12 @@ import SearchBar from './search/SearchBar';
 const SearchFallback = () => (
   <form className="relative">
     <input
-      className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-[40px] text-[#dfe9f9] cursor-pointer"
+      className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-10 text-[#dfe9f9] cursor-pointer"
       type="text"
       placeholder="soup"
     />
     <svg
-      className="absolute top-[8px] left-2.5"
+      className="absolute top-2 left-2.5"
       width="22"
       height="22"
       viewBox="0 0 22 22"
@@ -47,7 +46,7 @@ const SearchFallback = () => (
  */
 
 const Header: FC = async () => {
-  const { pages, isError } = await getChildPagesByParentUrl('menu');
+  const { pages } = await getChildPagesByParentUrl('menu');
 
   return (
     <div id="header">
@@ -62,7 +61,7 @@ const Header: FC = async () => {
                 <span className="text-custom_orange">every bite</span>
               </h1>
             </div>
-            <div className="flex justify-between items-center md:gap-[20px] gap-[38px] lg:mt-[-45px]">
+            <div className="flex justify-between items-center md:gap-5 gap-[38px] lg:mt-[-45px]">
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
@@ -90,7 +89,7 @@ const Header: FC = async () => {
 
       <div className="relative pb-[30px] md:pb-0 bg-custom">
         <div className="relative">
-          <header className="header_mobile pt-[30px] px-[10px] max-w-[352px] mx-auto flex flex-col">
+          <header className="header_mobile pt-[30px] px-2.5 max-w-[352px] mx-auto flex flex-col">
             <div className="flex justify-between items-center">
               <a className="w-[18px] h-[18px]" href="#">
                 <img src="/icons/phone.svg" alt="call" />
@@ -149,7 +148,7 @@ const Header: FC = async () => {
 
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto md:pb-[59px] xl:pb-[59px] flex justify-between items-end overflow-visible">
             <svg
-              className="hidden md:block md:w-[80px] md:h-[35px] md:mr-[25px] lg:mr-[40px] ml-[-15px]"
+              className="hidden md:block md:w-20 md:h-[35px] md:mr-[25px] lg:mr-10 ml-[-15px]"
               viewBox="0 0 40 35"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +175,7 @@ const Header: FC = async () => {
 
             <ul
               id="menuItems"
-              className="flex gap-[11px] md:gap-[25px] my-[23px] md:mt-[32px] md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
+              className="flex gap-[11px] md:gap-[25px] my-[23px] md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
             >
               {pages?.map((page: any) => {
                 return (
@@ -185,7 +184,7 @@ const Header: FC = async () => {
                     className="border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start"
                   >
                     <a
-                      className="block rounded-[5px] px-[13px] py-[5px] md:px-[15px] md:py-[6px] font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
+                      className="block rounded-[5px] px-[13px] py-[5px] md:px-[15px] md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
                       href="#"
                     >
                       {page.localizeInfos.title}

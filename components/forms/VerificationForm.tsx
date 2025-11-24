@@ -33,9 +33,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { enter_otp_code, resend_text, receive_otp_text, verify_now_text } =
-    dict;
+  const { receive_otp_text, verify_now_text } = dict;
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
         // If the action is not to activate a user, check the OTP code
         const result = await api.AuthProvider.checkCode(
           'email', // Method of verification via email
-          fields.email_reg.value, // User's email address from form fields
+          fields.email_reg?.value || '', // User's email address from form fields
           'otp', // Type of verification code (One-Time Password)
           otp, // The OTP entered by the user
         );
@@ -60,15 +58,15 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
         // If the action is to activate a user
         const result = await api.AuthProvider.activateUser(
           'email', // Activation method via email
-          fields.email_reg.value, // User's email address from form fields
+          fields.email_reg?.value || '', // User's email address from form fields
           otp, // The OTP entered by the user
         );
         if (result) {
           // On successful activation, log in the user
           await logInUser({
             method: 'email', // Login method via email
-            login: fields.email_reg.value, // User's email for login
-            password: fields.password_reg.value, // User's password for login
+            login: fields.email_reg?.value || '', // User's email for login
+            password: fields.password_reg?.value || '', // User's password for login
           });
           authenticate(); // Call function to set authentication state
           router.push('/profile'); // Redirect to the user's profile page
@@ -115,7 +113,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
       setError('');
       await api.AuthProvider.generateCode(
         'email', // Method to generate code via email
-        fields.email_reg.value, // User's email address from form fields
+        fields.email_reg?.value || '', // User's email address from form fields
         'generate_code', // Action type to generate a new code
       );
     } catch (e: any) {
@@ -126,7 +124,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
       setLoading(false);
     }
     // Dependency for useCallback
-  }, [fields.email_reg.value]);
+  }, [fields.email_reg?.value]);
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>

@@ -1,6 +1,6 @@
 const SignInForm = () => (
   <div className=" hidden md:flex absolute inset-0 backdrop-blur-[10px] justify-center z-50">
-    <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-[20px] rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
+    <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-5 rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
       <div className="flex  justify-between items-center">
         <div className="group">
           <svg
@@ -34,7 +34,7 @@ const SignInForm = () => (
           </svg>
         </div>
       </div>
-      <div className="max-w-[460px] mx-auto px-[30px] pt-[25px] pb-[80px]">
+      <div className="max-w-[460px] mx-auto px-[30px] pt-[25px] pb-20">
         <form className="mt-[75px]">
           <div className="border-b border-b-[#b0bcce]">
             <label className="cart_label" htmlFor=""></label>
@@ -51,7 +51,7 @@ const SignInForm = () => (
               Reset Password
             </button>
           </div>
-          <button className="rounded-[10px] w-full h-[56px] font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-[#ec722b] bg-transparent border border-[#ec722b] mt-[50px] hover_btn_white">
+          <button className="rounded-[10px] w-full h-14 font-semibold text-[17px] text-center flex justify-center items-center gap-[25px] text-[#ec722b] bg-transparent border border-[#ec722b] mt-[50px] hover_btn_white">
             CREATE AN ACCOUNT
           </button>
         </form>

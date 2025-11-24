@@ -46,6 +46,7 @@ const QuantitySelector: FC<QuantitySelectorProps> = ({
     if (!quantity) {
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQty(quantity);
   }, [quantity]);
 

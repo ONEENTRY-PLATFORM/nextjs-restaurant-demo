@@ -71,12 +71,12 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
       // Attempt to change the user's password using the provided API
       const result = await api.AuthProvider.changePassword(
         'email', // The method of authentication, in this case via email
-        email.value, // User's email address
+        email?.value || '', // User's email address
         'otp', // The type of verification used, here it's an OTP (One-Time Password)
         1, // Version or type indicator for the OTP process
-        otp_code.value.toString(), // The OTP code entered by the user, converted to a string
-        password.value, // New password entered by the user
-        password_confirm.value, // Confirmation of the new password
+        otp_code?.value.toString() || '', // The OTP code entered by the user, converted to a string
+        password?.value || '', // New password entered by the user
+        password_confirm?.value || '', // Confirmation of the new password
       );
       console.log(result);
 

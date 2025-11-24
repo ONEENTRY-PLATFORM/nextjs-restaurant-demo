@@ -6,7 +6,7 @@ interface PriceDisplayProps {
   currentPrice: number;
   originalPrice: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dict: any;
+  dict?: any;
 }
 
 /**
@@ -18,7 +18,6 @@ interface PriceDisplayProps {
 const PriceDisplay: React.FC<PriceDisplayProps> = ({
   currentPrice,
   originalPrice,
-  dict,
 }) => {
   if (!currentPrice && !originalPrice) {
     return;

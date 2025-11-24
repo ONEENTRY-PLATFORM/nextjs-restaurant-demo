@@ -4,8 +4,7 @@ const LogoIcon: FC<{
   className: string;
   fill: string;
   stroke: string;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-}> = ({ className, fill, stroke }) => {
+}> = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

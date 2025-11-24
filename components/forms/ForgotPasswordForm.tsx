@@ -41,7 +41,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ dict }) => {
       // Generate verification code with API
       await api.AuthProvider.generateCode(
         'email',
-        fields.email_reg.value,
+        fields.email_reg?.value || '',
         'generate_otp',
       );
       // Open Verification form

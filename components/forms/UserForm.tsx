@@ -53,6 +53,7 @@ const UserForm: FC<FormProps> = ({ dict }) => {
             type: 'string',
           };
         }
+        return undefined;
       })
       .filter(Boolean) as IAuthFormData[];
   }, [data?.attributes, fields]);
@@ -71,13 +72,13 @@ const UserForm: FC<FormProps> = ({ dict }) => {
             authData: [
               {
                 marker: 'password_reg',
-                value: fields['password_reg'].value,
+                value: fields['password_reg']?.value || '',
               },
             ],
             notificationData: {
-              email: fields['email_reg'].value,
+              email: fields['email_reg']?.value || '',
               phonePush: [],
-              phoneSMS: fields['phone_reg'].value,
+              phoneSMS: fields['phone_reg']?.value || '',
             },
             state: {},
           });

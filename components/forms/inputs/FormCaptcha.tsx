@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 
@@ -17,9 +16,9 @@ type Props = {
  *
  * @returns FormCaptcha
  */
-const FormCaptcha = ({ setToken, setIsCaptcha, captchaKey }: Props) => {
+const FormCaptcha = ({ setIsCaptcha }: Props) => {
   const testKey = '6LdF4HcqAAAAAD7Mia-zF5SMzY-XjHd_SU2xr0uQ';
-  const siteKey = 'AIzaSyBC4rSjMl4SspgQ2J046ZyRv1IX44v3jgc';
+  // const siteKey = 'AIzaSyBC4rSjMl4SspgQ2J046ZyRv1IX44v3jgc';
 
   useEffect(() => {
     setIsCaptcha(true);
@@ -45,17 +44,17 @@ const FormCaptcha = ({ setToken, setIsCaptcha, captchaKey }: Props) => {
     // });
   };
 
-  const validateRecaptcha = async (validationObject: {
-    event: { token: string; siteKey: string };
-  }) => {
-    const url = `https://recaptchaenterprise.googleapis.com/v1/projects/oneentrys-captchas/assessments?key=${siteKey}`;
-    await fetch(url, { method: 'post', body: JSON.stringify(validationObject) })
-      .then((response) => response.json())
-      .then((data) => {
-        // eslint-disable-next-line no-console
-        console.log('validation result', data);
-      });
-  };
+  // const validateRecaptcha = async (validationObject: {
+  //   event: { token: string; siteKey: string };
+  // }) => {
+  //   const url = `https://recaptchaenterprise.googleapis.com/v1/projects/oneentrys-captchas/assessments?key=${siteKey}`;
+  //   await fetch(url, { method: 'post', body: JSON.stringify(validationObject) })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // eslint-disable-next-line no-console
+  //       console.log('validation result', data);
+  //     });
+  // };
 
   useEffect(() => {
     const script = document.createElement('script');

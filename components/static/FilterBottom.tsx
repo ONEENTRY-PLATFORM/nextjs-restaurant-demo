@@ -1,14 +1,14 @@
 const FilterBottom = () => (
   <div
     id="side-menu"
-    className=" fixed bottom-0 left-0 w-full bg-[rgba(76,77,86,0.8)] rounded-tl-[20px] rounded-tr-[20px] backdrop-blur-[10px] z-10 pt-[26px] px-[20px] md:hidden transform translate-y-0 transition-transform duration-1000 ease-in-out"
+    className=" fixed bottom-0 left-0 w-full bg-[rgba(76,77,86,0.8)] rounded-tl-[20px] rounded-tr-[20px] backdrop-blur-[10px] z-10 pt-[26px] px-5 md:hidden transform translate-y-0 transition-transform duration-1000 ease-in-out"
   >
     <div className="max-w-[355px] mx-auto flex justify-between">
       <button className="filter_btn text-[16px] border-b border-white pb-[3px]  hover:text-[#ec722b] hover:border-[#ec722b]">
         Clear all Filters
       </button>
       <p className="filter_btn">Filter</p>
-      <button className="filter_btn text-[#ec722b] border border-[#ec722b] rounded-[5px] px-[20px] hover_btn_white">
+      <button className="filter_btn text-[#ec722b] border border-[#ec722b] rounded-[5px] px-5 hover_btn_white">
         Apply
       </button>
     </div>

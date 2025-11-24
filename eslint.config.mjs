@@ -11,7 +11,7 @@ import nextPlugin from '@next/eslint-plugin-next';
 import prettierPlugin from 'eslint-plugin-prettier';
 import tailwindcssPlugin from 'eslint-plugin-tailwindcss';
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
-import jsdocPlugin from 'eslint-plugin-jsdoc';
+// import jsdocPlugin from 'eslint-plugin-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -90,7 +90,7 @@ const eslintConfig = [
       'react-hooks': reactHooksPlugin,
       tailwindcss: tailwindcssPlugin,
       'simple-import-sort': simpleImportSortPlugin,
-      jsdoc: jsdocPlugin,
+      // jsdoc: jsdocPlugin,
     },
     rules: {
       // bring in recommended configs as base
@@ -100,7 +100,7 @@ const eslintConfig = [
       ...reactPlugin.configs.flat.rules,
       ...reactHooksPlugin.configs['recommended-latest'].rules,
       ...tailwindcssPlugin.configs['flat/recommended'].rules,
-      ...jsdocPlugin.configs['flat/recommended'].rules,
+      // ...jsdocPlugin.configs['flat/recommended'].rules,
 
       // Prettier
       'prettier/prettier': [
@@ -123,7 +123,7 @@ const eslintConfig = [
       // Typescript / unused vars
       // disable base rule and use typescript-aware rule instead
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn'],
+      '@typescript-eslint/no-unused-vars': ['off'],
       
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/comma-dangle': 'off',

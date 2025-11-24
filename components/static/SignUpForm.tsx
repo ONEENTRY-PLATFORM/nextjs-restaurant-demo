@@ -2,7 +2,7 @@
 
 const SignUpForm = () => (
   <div className=" hidden md:flex absolute inset-0 backdrop-blur-[10px] justify-center z-50">
-    <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-[20px] rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
+    <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-5 rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
       <div className="flex  justify-between items-center">
         <div className="group">
           <svg
@@ -37,10 +37,10 @@ const SignUpForm = () => (
         </div>
       </div>
       <div className="max-w-[460px] mx-auto px-[30px] pt-[25px]">
-        <p className="font-normal text-[20px] text-white leading-150 mt-[20px]">
+        <p className="font-normal text-[20px] text-white leading-150 mt-5">
           Sign in or create account to quickly manage order
         </p>
-        <form className="flex flex-col gap-[20px] mt-[20px]">
+        <form className="flex flex-col gap-5 mt-5">
           <div>
             <label className="cart_label" htmlFor="">
               First name

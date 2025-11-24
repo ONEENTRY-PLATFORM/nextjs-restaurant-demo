@@ -88,11 +88,13 @@ const CartPage: FC<CartPageProps> = ({ dict, deliveryData }) => {
               setProducts((prevProducts) => {
                 // Create a copy of the current products
                 const newProducts = [...prevProducts];
-                newProducts[index] = {
-                  ...products[index], // Preserve existing product properties
-                  price: newPrice, // Update the price with the new value
-                  statusIdentifier: res?.product?.status?.identifier, // Update the status identifier
-                };
+                if (newProducts[index]) {
+                  newProducts[index] = {
+                    ...newProducts[index], // Preserve existing product properties
+                    price: newPrice, // Update the price with the new value
+                    statusIdentifier: res?.product?.status?.identifier, // Update the status identifier
+                  };
+                }
                 return newProducts; // Return the updated products array
               });
             }
@@ -105,6 +107,7 @@ const CartPage: FC<CartPageProps> = ({ dict, deliveryData }) => {
         }
       }
     }
+    return undefined;
     // Dependency array: effect will run when 'data' changes
   }, [data]);
 

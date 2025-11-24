@@ -4,9 +4,9 @@
 const FavoritesModal = () => {
   return (
     <div className="md:flex absolute inset-0 backdrop-blur-[10px]  justify-center z-50">
-      <div className="max-w-[1100px] bg-[rgba(76,77,86,0.8)] p-[40px] rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
+      <div className="max-w-[1100px] bg-[rgba(76,77,86,0.8)] p-10 rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
         <div className="flex  justify-end">
-          <div className=" bg-transparent border w-[46px] h-[46px] flex justify-center items-center rounded-full mt-[-10px] hover:border-[#EC722B] group">
+          <div className=" bg-transparent border w-[46px] h-[46px] flex justify-center items-center rounded-full -mt-2.5 hover:border-[#EC722B] group">
             <svg
               className="rounded-full stroke-current text-[#dfe9f9] hover-target"
               width="15"
@@ -23,13 +23,13 @@ const FavoritesModal = () => {
           </div>
         </div>
         <div className="w-full flex justify-center gap-[30px] flex-wrap mt-[60px]">
-          <div className="w-50%-gap min-w-[370px] p-[10px] flex justify-between items-center border border-gray-300 rounded-[5px]">
+          <div className="w-50%-gap min-w-[370px] p-2.5 flex justify-between items-center border border-gray-300 rounded-[5px]">
             <img src="./picture/favorites1.png" alt="favorites" />
             <div className="flex flex-col w-1/2">
               <p className="favorites_title">
                 Сream soup with salmon and greenery
               </p>
-              <div className="flex justify-start items-center gap-[10px]">
+              <div className="flex justify-start items-center gap-2.5">
                 <p className="favorites_weight">356 g</p>
                 <p className="favorites_price">$ 24</p>
               </div>
@@ -75,11 +75,11 @@ const FavoritesModal = () => {
               </div>
             </div>
           </div>
-          <div className="w-50%-gap min-w-[370px] p-[10px] flex justify-between items-center border border-gray-300 rounded-[5px]">
+          <div className="w-50%-gap min-w-[370px] p-2.5 flex justify-between items-center border border-gray-300 rounded-[5px]">
             <img src="./picture/favorites2.png" alt="favorites" />
             <div className="flex flex-col w-1/2">
               <p className="favorites_title">Сappuccino with cinnamon</p>
-              <div className="flex justify-start items-center gap-[10px]">
+              <div className="flex justify-start items-center gap-2.5">
                 <p className="favorites_weight">356 g</p>
                 <p className="favorites_price">$ 24</p>
               </div>
@@ -125,13 +125,13 @@ const FavoritesModal = () => {
               </div>
             </div>
           </div>
-          <div className="w-50%-gap min-w-[370px] p-[10px] flex justify-between items-center border border-gray-300 rounded-[5px]">
+          <div className="w-50%-gap min-w-[370px] p-2.5 flex justify-between items-center border border-gray-300 rounded-[5px]">
             <img src="./picture/favorites3.png" alt="favorites" />
             <div className="flex flex-col w-1/2">
               <p className="favorites_title">
                 Apple strudel and ice cream with caramel sauce
               </p>
-              <div className="flex justify-start items-center gap-[10px]">
+              <div className="flex justify-start items-center gap-2.5">
                 <p className="favorites_weight">356 g</p>
                 <p className="favorites_price">$ 24</p>
               </div>
@@ -177,11 +177,11 @@ const FavoritesModal = () => {
               </div>
             </div>
           </div>
-          <div className="w-50%-gap min-w-[370px] p-[10px] flex justify-between items-center border border-gray-300 rounded-[5px]">
+          <div className="w-50%-gap min-w-[370px] p-2.5 flex justify-between items-center border border-gray-300 rounded-[5px]">
             <img src="./picture/favorites4.png" alt="favorites" />
             <div className="flex flex-col w-1/2">
               <p className="favorites_title">Greek salad</p>
-              <div className="flex justify-start items-center gap-[10px]">
+              <div className="flex justify-start items-center gap-2.5">
                 <p className="favorites_weight">356 g</p>
                 <p className="favorites_price">$ 24</p>
               </div>

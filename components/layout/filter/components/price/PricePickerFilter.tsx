@@ -165,8 +165,7 @@ const PriceFilter: FC<PriceFilterProps> = ({ prices, dict }) => {
               </div>
             </div>
           )}
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          renderThumb={({ index, props, isDragged }) => (
+          renderThumb={({ props }) => (
             <div
               {...props}
               key={props.key}

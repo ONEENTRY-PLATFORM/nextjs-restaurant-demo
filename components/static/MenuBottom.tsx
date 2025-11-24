@@ -34,7 +34,7 @@ const MenuBottom = () => (
           <a href="#">
             <svg
               id="head-heart"
-              className="fill-[#DFE9F9] hover-target w-[29px] h-[24px]"
+              className="fill-[#DFE9F9] hover-target w-[29px] h-6"
               x="0px"
               y="0px"
               viewBox="0 0 25.8 23.2"
@@ -54,18 +54,18 @@ const MenuBottom = () => (
           </a>
         </div>
       </div>
-      <div className="w-1/3  flex justify-center items-start mt-[-20px] p-[20px]">
-        <div className="bg-[#ec722b] hover:bg-[#EB4B0E] w-[46px] h-[46px] flex justify-center items-center rounded-full mt-[-10px] relative">
+      <div className="w-1/3  flex justify-center items-start -mt-5 p-5">
+        <div className="bg-[#ec722b] hover:bg-[#EB4B0E] w-[46px] h-[46px] flex justify-center items-center rounded-full -mt-2.5 relative">
           <img
             className="w-[25px] h-[23px]"
             src="/icons/cart_black.svg"
             alt="cart"
           />
-          <div className="px-[4px] absolute top-[10px] right-[8px] rounded-full bg-white">
+          <div className="px-1 absolute top-2.5 right-2 rounded-full bg-white">
             <p className="font-bold text-[8px] ">2</p>
           </div>
         </div>
-        <div className=" bg-transparent border w-[46px] h-[46px] flex justify-center items-center rounded-full mt-[-10px] hover:border-[#EC722B] group">
+        <div className=" bg-transparent border w-[46px] h-[46px] flex justify-center items-center rounded-full -mt-2.5 hover:border-[#EC722B] group">
           <svg
             className="rounded-full stroke-current text-[#dfe9f9] hover-target"
             width="15"
@@ -140,7 +140,7 @@ const MenuBottom = () => (
         </div>
       </div>
     </div>
-    <div className="clipped-div fixed bottom-[-2px] left-0 z-40 bg-black"></div>
+    <div className="clipped-div fixed -bottom-0.5 left-0 z-40 bg-black"></div>
   </div>
 );
 

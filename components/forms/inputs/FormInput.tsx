@@ -71,7 +71,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
       {type === 'list' && (
         <select
           id={field.marker}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-[40px] w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
           required={required}
           value={value}
           onChange={(val) => setValue(val.currentTarget.value)}
@@ -90,7 +90,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
         <textarea
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-[40px] w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           value={value}
@@ -102,7 +102,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
           type={type}
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-[40px] w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           autoComplete={fieldType === 'password' ? 'password' : ''}

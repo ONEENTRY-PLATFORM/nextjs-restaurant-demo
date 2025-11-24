@@ -21,12 +21,7 @@ interface GridLayoutProps {
  *
  * @returns Products grid
  */
-const ProductsGrid: FC<GridLayoutProps> = ({
-  lang,
-  dict,
-  products,
-  pagesLimit,
-}) => {
+const ProductsGrid: FC<GridLayoutProps> = ({ dict, products, pagesLimit }) => {
   return (
     <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 max-md:w-full">
       {products
@@ -38,7 +33,6 @@ const ProductsGrid: FC<GridLayoutProps> = ({
               product={product}
               index={index}
               pagesLimit={pagesLimit}
-              lang={lang}
               dict={dict}
             />
           );

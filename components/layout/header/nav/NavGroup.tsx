@@ -2,9 +2,9 @@ import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import type { FC } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
-import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import FavoritesIcon from '@/components/icons/favorites';
 
+// import { ServerProvider } from '@/app/store/providers/ServerProvider';
+// import FavoritesIcon from '@/components/icons/favorites';
 import MenuButton from './MenuButton';
 import NavItemCart from './NavItemCart';
 import NavItemFavorites from './NavItemFavorites';
@@ -16,7 +16,7 @@ import NavItemProfile from './NavItemProfile';
  */
 
 const NavGroup: FC = async () => {
-  const [dict] = ServerProvider('dict');
+  // const [dict] = ServerProvider('dict');
   const { menu, isError } = await getMenuByMarker('user_menu');
 
   if (!menu || isError) {

@@ -11,7 +11,7 @@ import FadeTransition from '@/app/animations/FadeTransition';
  * @returns
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EmptyCart: FC<{ dict: any }> = ({ dict }) => {
+const EmptyCart: FC<{ dict: any }> = () => {
   return (
     <FadeTransition
       className="relative box-border flex shrink-0 flex-col items-center text-center text-slate-800"

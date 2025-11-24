@@ -9,10 +9,11 @@ import { useRef } from 'react';
 
 /**
  * Card animations
- * @param children children ReactNode
- * @param className CSS className of ref element
- * @param index Index of element for animations stagger
- * @param pagesLimit used for animations
+ * @param props
+ * @param props.children
+ * @param props.className
+ * @param props.index
+ * @param props.pagesLimit
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  * @returns Card animations
  */
@@ -27,7 +28,6 @@ const CardAnimations: FC<{
 
   const ref = useRef(null);
   const delay = (index - (currentPage - 1) * pagesLimit) / 10;
-  const inView = ref.current && ScrollTrigger.isInViewport(ref.current, 0.05);
 
   // entering animations
   useGSAP(() => {
@@ -65,12 +65,14 @@ const CardAnimations: FC<{
     if (!ref.current) {
       return;
     }
-    if (inView === true || inView === null) {
+    const isInViewport = ScrollTrigger.isInViewport(ref.current, 0.05);
+
+    if (isInViewport === true || isInViewport === null) {
       (ref.current as HTMLDivElement).classList.add('in-view');
     } else {
       (ref.current as HTMLDivElement).classList.remove('in-view');
     }
-  }, [inView]);
+  }, []);
 
   return (
     <div className={className} ref={ref}>

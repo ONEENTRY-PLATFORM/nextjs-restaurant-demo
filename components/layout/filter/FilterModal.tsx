@@ -19,12 +19,11 @@ interface FilterModalProps {
 /**
  * FilterModal
  * @param prices prices fromTo extracted from one product
- * @param lang Current language shortcode
  * @param dict dictionary from server api
  *
  * @returns FilterModal
  */
-const FilterModal: FC<FilterModalProps> = ({ prices, lang, dict }) => {
+const FilterModal: FC<FilterModalProps> = ({ prices, dict }) => {
   return (
     <FilterModalAnimations>
       <div
@@ -33,7 +32,7 @@ const FilterModal: FC<FilterModalProps> = ({ prices, lang, dict }) => {
       >
         <FilterHeader dict={dict} />
         <Suspense fallback={<Loader />}>
-          <FiltersForm prices={prices} lang={lang} dict={dict} />
+          <FiltersForm prices={prices} dict={dict} />
         </Suspense>
       </div>
       <ModalBackdrop />

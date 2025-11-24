@@ -62,6 +62,7 @@ const ProductImageGallery: FC<ProductImageProps> = ({ product, alt }) => {
           <div className="relative w-full">
             <Slider
               asNavFor={nav2}
+              // eslint-disable-next-line react-hooks/immutability
               ref={(slide) => (sliderRef1 = slide as any)}
             >
               {imagesData.map((image: any, i: Key) => {

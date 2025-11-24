@@ -72,6 +72,10 @@ const ContactUsForm: FC<{ className: string }> = ({ className }) => {
       await api.FormData.postFormsData({
         formIdentifier: 'contact_us',
         formData: transformedFormData,
+        formModuleConfigId: 0,
+        moduleEntityIdentifier: '',
+        replayTo: null,
+        status: '',
       });
     } catch (error: any) {
       setError(error.message);

@@ -76,6 +76,7 @@ const ProductSingle: FC<ProductSingleProps> = async ({ product, dict }) => {
           } else if (block === 'similar') {
             return <RelatedItems key={block} marker={block} dict={dict} />;
           }
+          return;
         })}
     </section>
   );

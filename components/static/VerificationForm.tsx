@@ -1,7 +1,7 @@
 const VerificationForm = () => {
   return (
     <div className="md:flex absolute inset-0 backdrop-blur-[10px] justify-center z-50">
-      <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-[20px] rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
+      <div className="w-[730px] bg-[rgba(76,77,86,0.8)] p-5 rounded-[20px] mt-[200px] mb-auto transform scale-100 opacity-100 transition-all duration-1000">
         <div className="flex justify-between items-center">
           <div className="group">
             <svg
@@ -38,13 +38,13 @@ const VerificationForm = () => {
           </div>
         </div>
 
-        <div className="max-w-[460px] mx-auto px-[30px] pt-[40px] pb-[60px]">
+        <div className="max-w-[460px] mx-auto px-[30px] pt-10 pb-[60px]">
           <div>
             <p className="font-normal text-[20px] text-white text-center">
               Enter your OTP code here
             </p>
 
-            <div className="flex justify-between h-[60px] mx-auto mt-[20px]">
+            <div className="flex justify-between h-[60px] mx-auto mt-5">
               <div className="border border-white rounded-[5px] opacity-90 w-[50px]"></div>
               <div className="border border-white rounded-[5px] opacity-90 w-[50px]"></div>
               <div className="border border-white rounded-[5px] opacity-90 w-[50px]"></div>
@@ -53,7 +53,7 @@ const VerificationForm = () => {
               <div className="border border-white rounded-[5px] opacity-90 w-[50px]"></div>
             </div>
 
-            <p className="font-normal text-[18px] text-white mt-[20px] text-center">
+            <p className="font-normal text-[18px] text-white mt-5 text-center">
               Did not receive the OTP?{' '}
               <span className="font-semibold text-[#ec722b] uppercase">
                 RESEND

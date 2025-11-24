@@ -17,7 +17,7 @@ import ProductSingle from '@/components/layout/product';
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string; lang: string };
+  params: Promise<{ handle: string; lang: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
   const { isError, product } = await getProductById(Number(handle));
@@ -63,8 +63,10 @@ export async function generateMetadata({
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns Product page layout JSX.Element
  */
-const ProductPageLayout: FC<{ params: any }> = async ({ params }) => {
-  const { handle, lang } = await params;
+const ProductPageLayout: FC<{
+  params: Promise<{ handle: string; lang: string }>;
+}> = async ({ params }) => {
+  const { handle } = await params;
   // Get the dictionary from the API and set the server provider.
   const dict = await getDictionary();
 

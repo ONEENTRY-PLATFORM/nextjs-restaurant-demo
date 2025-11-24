@@ -29,8 +29,9 @@ interface AddToCartProps {
 
 /**
  * AddToCart button with qty selector
- * @param id product id
- * @param units product units qty
+ * @param props
+ * @param props.id product id
+ * @param props.units product units qty
  *
  * @returns Button | Qty selector
  */

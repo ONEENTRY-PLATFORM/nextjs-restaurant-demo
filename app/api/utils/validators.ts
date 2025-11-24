@@ -11,10 +11,10 @@ export type Validators = {
 };
 
 export const validators: Validators = {
-  requiredValidator: (value: string, validator: any) => {
+  requiredValidator: (value: string, _validator: any) => {
     return !!value.length;
   },
-  emailInspectionValidator: (value: string, validator?: any) => {
+  emailInspectionValidator: (value: string, _validator?: any) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{1,7}$/;
     return emailRegex.test(value);
   },

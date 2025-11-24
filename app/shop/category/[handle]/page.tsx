@@ -76,9 +76,11 @@ export async function generateMetadata({
  * @returns Shop page layout JSX.Element
  */
 const ShopCategoryLayout: FC<PageProps> = async (props) => {
-  const searchParams = (await props).searchParams;
-  const params = (await props).params;
-  const { handle } = await params;
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
+  const { handle } = params;
   // Get the dictionary from the API and set the server provider.
   const [dict] = ServerProvider('dict', await getDictionary());
 
@@ -97,7 +99,7 @@ const ShopCategoryLayout: FC<PageProps> = async (props) => {
       <div className="flex w-full flex-col items-center gap-5">
         <Suspense fallback={<ProductsGridLoader />}>
           <ProductsGridLayout
-            searchParams={searchParams}
+            searchParams={searchParams ?? {}}
             pagesLimit={pagesLimit}
             params={params}
             dict={dict}

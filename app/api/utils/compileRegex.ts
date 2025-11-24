@@ -13,7 +13,7 @@ function maskToRegex(mask: string) {
   // eslint-disable-next-line no-restricted-syntax
   for (const key in maskRules) {
     const regex = new RegExp(key, 'g');
-    regexPattern = regexPattern?.replace(regex, maskRules[key]);
+    regexPattern = regexPattern.replace(regex, maskRules[key] ?? '');
   }
   return regexPattern;
 }

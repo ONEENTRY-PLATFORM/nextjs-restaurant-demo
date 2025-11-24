@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import type { MetadataParams, PageProps } from '@/app/types/global';
+import type { PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -75,8 +75,10 @@ export async function generateMetadata(): Promise<Metadata> {
  * @returns Shop page layout JSX.Element
  */
 const ShopPageLayout: FC<PageProps> = async (props) => {
-  const searchParams = (await props).searchParams;
-  const params = (await props).params;
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
   // Get the dictionary from the API and set the server provider.
   const [dict] = ServerProvider('dict', await getDictionary());
 
@@ -98,7 +100,7 @@ const ShopPageLayout: FC<PageProps> = async (props) => {
             pagesLimit={pagesLimit}
             dict={dict}
             params={params}
-            searchParams={searchParams}
+            searchParams={searchParams ?? {}}
           />
         </Suspense>
       </div>

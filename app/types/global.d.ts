@@ -7,14 +7,14 @@ declare type LocalizeInfo = {
   title: string;
 };
 
-declare type PageProps = Promise<{
-  params: { page: string; handle: string };
-  searchParams?: {
+declare type PageProps = {
+  params: Promise<{ page: string; handle: string }>;
+  searchParams?: Promise<{
     search?: string;
     page?: string;
     filters?: IFilterParams[];
-  };
-}>;
+  }>;
+};
 
 declare type SimplePageProps = {
   page?: IPagesEntity;
@@ -28,7 +28,7 @@ declare type LoaderProps = {
 };
 
 declare type MetadataParams = {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 };
 
 export type CartState = {

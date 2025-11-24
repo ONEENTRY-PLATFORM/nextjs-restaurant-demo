@@ -18,7 +18,10 @@ import { sortArrayByPosition } from '@/components/utils';
 // export const dynamicParams = true;
 
 const IndexPageLayout: FC<PageProps> = async (props) => {
-  const { searchParams, params } = await props;
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
   // set dict
   const [dict] = ServerProvider('dict', await getDictionary());
   // get page
@@ -46,7 +49,7 @@ const IndexPageLayout: FC<PageProps> = async (props) => {
                   pagesLimit={block.quantity || 4}
                   dict={dict}
                   params={params}
-                  searchParams={searchParams}
+                  searchParams={searchParams ?? {}}
                 />
               </Suspense>
             </div>
@@ -70,7 +73,7 @@ const IndexPageLayout: FC<PageProps> = async (props) => {
       // case 'reviews_carousel':
       //   return <ReviewsCarousel key={index} block={block} />;
       default:
-        break;
+        return null;
     }
   });
 };

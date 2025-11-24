@@ -25,7 +25,7 @@ export const useCreateOrder = () => {
    * @param id - Order ID for creating a session
    * @returns Promise resolving to payment state marker or void
    */
-  const createSession = async (id: number) => {
+  const createSession = async (id: number): Promise<string | undefined> => {
     if (!id) return;
 
     setIsLoading(true);
@@ -46,9 +46,11 @@ export const useCreateOrder = () => {
       } else {
         setError('An unexpected error occurred');
       }
+      return undefined;
     } finally {
       setIsLoading(false);
     }
+    return undefined;
   };
 
   /**

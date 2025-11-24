@@ -5,10 +5,10 @@ import { notFound } from 'next/navigation';
 import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
-import { ServerProvider } from '@/app/store/providers/ServerProvider';
+// import { ServerProvider } from '@/app/store/providers/ServerProvider';
 
 // import type { PageProps } from '@/app/types/global';
-import { getDictionary } from '../api/utils/dictionaries';
+// import { getDictionary } from '../api/utils/dictionaries';
 // import PaymentPage from '@/components/layout/payment';
 // import ProfilePage from '@/components/layout/profile';
 // import AboutPage from '@/components/pages/AboutPage';
@@ -61,10 +61,12 @@ export async function generateMetadata({
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns page layout JSX.Element
  */
-const PageLayout: FC<{ params: any }> = async ({ params }) => {
+const PageLayout: FC<{
+  params: Promise<{ page: string; handle: string }>;
+}> = async ({ params }) => {
   const { page: p } = await params;
   // Get dictionary and set to server provider
-  const [dict] = ServerProvider('dict', await getDictionary());
+  // const [dict] = ServerProvider('dict', await getDictionary());
 
   // Get page by current url
   const { page, isError } = await getPageByUrl(p);

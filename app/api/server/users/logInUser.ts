@@ -30,6 +30,7 @@ export const logInUser = async ({ method, login, password }: LogInProps) => {
     if (result && result.accessToken && result.refreshToken) {
       return { data: result };
     }
+    return { error: 'Authentication failed' };
   } catch (e: unknown) {
     return { error: (e as Error).message };
   }

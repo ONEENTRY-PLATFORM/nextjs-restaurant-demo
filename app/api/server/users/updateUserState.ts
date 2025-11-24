@@ -95,6 +95,8 @@ export const updateUserState = async ({
   if (res === true) {
     return true;
   }
+
+  return false;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

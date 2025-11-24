@@ -11,16 +11,16 @@ import { updateUserState } from '@/app/api/server/users/updateUserState';
 
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
-  addProductToCart,
+  // addProductToCart,
   selectCartData,
   selectCartVersion,
   setCartVersion,
 } from '../reducers/CartSlice';
 import {
-  addFavorites,
+  // addFavorites,
   selectFavoritesItems,
   selectFavoritesVersion,
-  setFavoritesVersion,
+  // setFavoritesVersion,
 } from '../reducers/FavoritesSlice';
 
 type ContextProps = {
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const inCart = useAppSelector((state) => state.cartReducer);
 
   const cartVersion = useAppSelector(selectCartVersion) as number;
-  const favoritesVersion = useAppSelector(selectFavoritesVersion) as number;
+  // const favoritesVersion = useAppSelector(selectFavoritesVersion) as number;
   const productsInCart = useAppSelector(selectCartData);
   const favoritesIds = useAppSelector(
     (state: { favoritesReducer: { products: number[] } }) =>
@@ -115,13 +115,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Update user state on server
    * @async
    */
-  const updateUser = async () => {
-    await updateUserState({
-      cart: productsInCart,
-      favorites: favoritesIds,
-      user: user,
-    });
-  };
+  // const updateUser = async () => {
+  //   await updateUserState({
+  //     cart: productsInCart,
+  //     favorites: favoritesIds,
+  //     user: user,
+  //   });
+  // };
 
   // Update user data on auth
   useEffect(() => {

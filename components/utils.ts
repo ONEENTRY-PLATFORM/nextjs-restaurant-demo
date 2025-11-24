@@ -78,7 +78,11 @@ export const flatMenuToNested = (
   }, []);
 };
 
-// typeError checker
+/**
+ * typeError checker
+ * @param {IError | unknown} res - any
+ * @returns {res is IError} - boolean
+ */
 export function typeError(res: IError | unknown): res is IError {
   if ((res as IError)?.statusCode) {
     return true;

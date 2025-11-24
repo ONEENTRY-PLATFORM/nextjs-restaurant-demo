@@ -96,7 +96,6 @@ const rootReducer = combineReducers({
 
 /**
  * Setup redux store with persistence - save redux state in storage
- *
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */
 export const setupStore = () => {

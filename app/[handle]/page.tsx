@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
-// import { ServerProvider } from '@/app/store/providers/ServerProvider';
 
+// import { ServerProvider } from '@/app/store/providers/ServerProvider';
 // import type { PageProps } from '@/app/types/global';
 // import { getDictionary } from '../api/utils/dictionaries';
 // import PaymentPage from '@/components/layout/payment';
@@ -22,11 +21,12 @@ import WithSidebar from './WithSidebar';
 
 /**
  * Generate page metadata
- * @async server component
- * @param params page params
+ * @async
+ * @param params        page params
+ * @param params.params
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns metadata
+ * @returns             metadata
  */
 export async function generateMetadata({
   params,
@@ -55,11 +55,12 @@ export async function generateMetadata({
 
 /**
  * Simple page
- * @async server component
- * @param params page params
+ * @async
+ * @param params        page params
+ * @param params.params
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns page layout JSX.Element
+ * @returns             page layout JSX.Element
  */
 const PageLayout: FC<{
   params: Promise<{ page: string; handle: string }>;

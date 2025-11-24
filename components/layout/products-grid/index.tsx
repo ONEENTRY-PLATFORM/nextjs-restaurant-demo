@@ -25,12 +25,6 @@ interface GridLayoutProps {
 
 /**
  * Products grid layout
- * @param params page params
- * @param searchParams search params from query string
- * @param dict dictionary from server api
- * @param pagesLimit used for animations
- * @param isCategory
- *
  * @returns ProductsGrid
  */
 const ProductsGridLayout: FC<GridLayoutProps> = async ({

@@ -1,7 +1,7 @@
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 import { useContext, useMemo } from 'react';
 import { toast } from 'react-toastify';
 
@@ -28,12 +28,19 @@ interface AddToCartProps {
 }
 
 /**
- * AddToCart button with qty selector
- * @param props
- * @param props.id product id
- * @param props.units product units qty
- *
- * @returns Button | Qty selector
+ * AddToCart button with quantity selector component.
+ * Displays either an "Add to Cart" button or a quantity selector based on product availability and cart status.
+ * Handles product addition to cart with user state synchronization and event subscriptions.
+ * Shows "Out of Stock" button when product is not available.
+ * @param   {object}           props                  - Component properties.
+ * @param   {number}           props.id               - Product ID for identification.
+ * @param   {number}           props.units            - Available product units/quantity.
+ * @param   {string}           props.productTitle     - Product title for display and accessibility.
+ * @param   {string}           props.statusIdentifier - Product status identifier (e.g., 'in_stock').
+ * @param   {string}           props.className        - CSS class name for styling.
+ * @param   {number}           props.height           - Component height for quantity selector.
+ * @param   {IAttributeValues} props.dict             - Dictionary from server API containing localized text values.
+ * @returns {JSX.Element}                             Button or quantity selector component.
  */
 const AddToCartButton: FC<AddToCartProps> = ({
   id,
@@ -43,7 +50,15 @@ const AddToCartButton: FC<AddToCartProps> = ({
   className,
   height,
   dict,
-}) => {
+}: {
+  id: number;
+  units: number;
+  productTitle: string;
+  statusIdentifier: string;
+  className: string;
+  height: number;
+  dict: IAttributeValues;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector((state) => selectIsInCart(state, id));
   const items = useAppSelector((state) => state.cartReducer.productsData);

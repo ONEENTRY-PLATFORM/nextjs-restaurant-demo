@@ -3,9 +3,8 @@ import type { FC } from 'react';
 
 /**
  * Empty image placeholder
- *
  * @param className wrapper className
- *
+ * @param className.className
  * @returns Placeholder
  */
 const Placeholder: FC<{ className?: string }> = ({ className }) => {

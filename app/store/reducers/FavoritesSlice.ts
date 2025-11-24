@@ -45,9 +45,9 @@ export const {
 
 /**
  * Select favorites items
- *
  * @param state
- *
+ * @param state.favoritesReducer
+ * @param state.favoritesReducer.products
  * @returns
  */
 export const selectFavoritesItems = (state: {
@@ -56,10 +56,10 @@ export const selectFavoritesItems = (state: {
 
 /**
  * Select is favorites by product id
- *
  * @param state
+ * @param state.favoritesReducer
+ * @param state.favoritesReducer.products
  * @param id
- *
  * @returns
  */
 export const selectIsFavorites = (
@@ -77,9 +77,9 @@ export const selectIsFavorites = (
 
 /**
  * Select favorites version
- *
  * @param state
- *
+ * @param state.favoritesReducer
+ * @param state.favoritesReducer.version
  * @returns
  */
 export const selectFavoritesVersion = (state: {

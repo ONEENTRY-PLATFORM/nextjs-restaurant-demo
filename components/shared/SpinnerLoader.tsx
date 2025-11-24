@@ -8,7 +8,6 @@ import Spinner from './Spinner';
 
 /**
  * Loader
- *
  * @returns Loader
  */
 const SpinnerLoader: FC<LoaderProps> = () => {

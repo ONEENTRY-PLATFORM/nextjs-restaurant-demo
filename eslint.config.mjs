@@ -148,7 +148,7 @@ const eslintConfig = [
       'no-console': 'warn',
       
       // JSDoc rules
-      'jsdoc/check-line-alignment': ['warn', 'always'],
+      // 'jsdoc/check-line-alignment': ['warn', 'always'],
     },
   }
 ];

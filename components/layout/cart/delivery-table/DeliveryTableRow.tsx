@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 

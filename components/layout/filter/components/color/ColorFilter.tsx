@@ -7,7 +7,7 @@ import type {
 } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import ColorPicker from './ColorPicker';
 

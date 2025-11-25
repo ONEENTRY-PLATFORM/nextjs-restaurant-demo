@@ -1,7 +1,7 @@
 'use client';
 
 import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
 import { selectCartItemWithIdLength } from '@/app/store/reducers/CartSlice';

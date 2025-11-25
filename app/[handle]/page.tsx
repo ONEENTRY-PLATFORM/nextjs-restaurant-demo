@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
@@ -56,15 +55,17 @@ export async function generateMetadata({
 /**
  * Simple page
  * @async
- * @param params        page params
- * @param params.params
+ * @param props        - page props
+ * @param props.params - page params
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @returns             page layout JSX.Element
  */
-const PageLayout: FC<{
+const PageLayout = async ({
+  params,
+}: {
   params: Promise<{ page: string; handle: string }>;
-}> = async ({ params }) => {
+}) => {
   const { page: p } = await params;
   // Get dictionary and set to server provider
   // const [dict] = ServerProvider('dict', await getDictionary());

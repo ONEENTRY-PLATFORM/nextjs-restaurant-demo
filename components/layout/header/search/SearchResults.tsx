@@ -4,7 +4,7 @@
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { Dispatch, FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getPageById } from '@/app/api';
 import { useSearchProducts } from '@/app/api/hooks/useSearchProducts';

@@ -16,7 +16,7 @@ interface ProductCardProps {
   product: IProductsEntity;
   selected: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dict: any;
+  dict?: any;
   index: number;
 }
 
@@ -32,7 +32,6 @@ interface ProductCardProps {
 const ProductCard: FC<ProductCardProps> = ({
   product,
   selected,
-  dict,
   index,
 }) => {
   const dispatch = useAppDispatch();
@@ -85,7 +84,6 @@ const ProductCard: FC<ProductCardProps> = ({
           <PriceDisplay
             currentPrice={sale?.value}
             originalPrice={price?.value}
-            dict={dict}
           />
         </div>
 

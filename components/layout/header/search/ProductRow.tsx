@@ -5,7 +5,6 @@ import Link from 'next/link';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { FC } from 'react';
-import React from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {

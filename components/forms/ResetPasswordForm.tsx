@@ -2,7 +2,7 @@
 'use client';
 
 import type { FC, FormEvent } from 'react';
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { api } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';

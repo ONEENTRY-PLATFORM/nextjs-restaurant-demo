@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { FC, FormEvent } from 'react';
-import React, { Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
 import SearchIcon from '@/components/icons/search';

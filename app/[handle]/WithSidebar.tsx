@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { JSX, ReactNode } from 'react';
 
 import FadeTransition from '@/app/animations/FadeTransition';
 import SidebarMenu from '@/components/layout/sidebar';
@@ -7,12 +7,15 @@ import SidebarMenu from '@/components/layout/sidebar';
  * Sidebar layout
  * @async server component
  *
- * @param children children ReactNode
- * @returns Sidebar layout JSX.Element
+ * @param props
+ * @param props.children children ReactNode
+ * @returns {Promise<JSX.Element>} Sidebar layout
  */
-const WithSidebar: FC<{
-  children: React.ReactNode;
-}> = async ({ children }) => {
+const WithSidebar = async ({
+  children,
+}: {
+  children: ReactNode;
+}): Promise<JSX.Element> => {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-row max-md:flex-row max-md:flex-wrap">

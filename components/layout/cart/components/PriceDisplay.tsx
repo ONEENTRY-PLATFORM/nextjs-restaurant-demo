@@ -1,23 +1,16 @@
-import React from 'react';
-
 import { UsePrice } from '@/components/utils';
-
-interface PriceDisplayProps {
-  currentPrice: number;
-  originalPrice: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dict?: any;
-}
 
 /**
  * Description
- * @param param0 param0
  *
  * @returns
  */
-const PriceDisplay: React.FC<PriceDisplayProps> = ({
+const PriceDisplay = ({
   currentPrice,
   originalPrice,
+}: {
+  currentPrice: number;
+  originalPrice: number;
 }) => {
   if (!currentPrice && !originalPrice) {
     return;

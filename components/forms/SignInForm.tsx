@@ -2,7 +2,7 @@
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -21,14 +21,16 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
 
 /**
  * SignIn form
- * @param dict dictionary from server api
- * @returns SignIn form
  */
-const SignInForm: FC<{
+const SignInForm = ({
+  dict,
+  className,
+  isActive,
+}: {
   dict: IAttributeValues;
   className: string;
   isActive: boolean;
-}> = ({ dict, className, isActive }) => {
+}): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const { setOpen } = useContext(OpenDrawerContext);
 

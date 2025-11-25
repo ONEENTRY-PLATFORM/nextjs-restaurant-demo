@@ -3,7 +3,7 @@
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
 
 import { api, useGetProductsByIdsQuery } from '@/app/api';
@@ -21,11 +21,6 @@ import Loader from '@/components/shared/Spinner';
 
 import DeliveryForm from './delivery-table/DeliveryForm';
 
-interface CartPageProps {
-  dict: IAttributeValues;
-  deliveryData: IProductsEntity;
-}
-
 /**
  * Cart page
  * @param dict dictionary from server api
@@ -33,7 +28,13 @@ interface CartPageProps {
  *
  * @returns
  */
-const CartPage: FC<CartPageProps> = ({ dict, deliveryData }) => {
+const CartPage = ({
+  dict,
+  deliveryData,
+}: {
+  dict: IAttributeValues;
+  deliveryData: IProductsEntity;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const { isAuth } = useContext(AuthContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
@@ -136,7 +137,6 @@ const CartPage: FC<CartPageProps> = ({ dict, deliveryData }) => {
               index={i}
               product={product}
               selected={productsCartData[i]?.selected}
-              dict={dict}
             />
           );
         })}

@@ -2,18 +2,18 @@
 
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import HomeIcon from '@/components/icons/home';
 
 /**
  * Home navItem menu element
- * @param item menu element object.
- * @returns JSX.Element
  */
-const NavItemHome: FC<{ item: IMenusPages }> = ({
+const NavItemHome = ({
   item: { localizeInfos },
-}) => {
+}: {
+  item: IMenusPages;
+}): JSX.Element => {
   return (
     <Link
       href={'/'}

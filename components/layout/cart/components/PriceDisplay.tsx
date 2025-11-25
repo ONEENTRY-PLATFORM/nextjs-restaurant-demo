@@ -1,9 +1,9 @@
+import type { JSX } from 'react';
+
 import { UsePrice } from '@/components/utils';
 
 /**
- * Description
- *
- * @returns
+ * Price display component
  */
 const PriceDisplay = ({
   currentPrice,
@@ -11,9 +11,9 @@ const PriceDisplay = ({
 }: {
   currentPrice: number;
   originalPrice: number;
-}) => {
+}): JSX.Element => {
   if (!currentPrice && !originalPrice) {
-    return;
+    return <></>;
   }
   const price = UsePrice({ amount: currentPrice });
   const oldPrice = UsePrice({

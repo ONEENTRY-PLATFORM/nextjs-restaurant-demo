@@ -1,5 +1,5 @@
 @import "tailwindcss";
-/* @import "./styles/main.css"; */
+@reference "./styles/main.css";
 
 :root {
   --background: #000000;

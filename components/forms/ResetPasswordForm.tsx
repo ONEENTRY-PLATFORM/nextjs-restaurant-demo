@@ -78,7 +78,6 @@ const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
         password?.value || '', // New password entered by the user
         password_confirm?.value || '', // Confirmation of the new password
       );
-      console.log(result);
 
       if (result) {
         // If the password change is successful, switch to the sign-in form

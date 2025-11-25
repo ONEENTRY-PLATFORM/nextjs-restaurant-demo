@@ -67,7 +67,6 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
       })),
     [fields, formFields],
   );
-  // console.log(formData);
 
   // Handle sign up
   const onSignUpHandle = useCallback(

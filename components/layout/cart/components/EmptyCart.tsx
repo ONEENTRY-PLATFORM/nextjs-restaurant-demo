@@ -1,17 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import FadeTransition from '@/app/animations/FadeTransition';
 
 /**
  * Empty cart page
- * @param lang Current language shortcode
- *
- * @returns
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EmptyCart: FC<{ dict: any }> = () => {
+const EmptyCart = (): JSX.Element => {
   return (
     <FadeTransition
       className="relative box-border flex shrink-0 flex-col items-center text-center text-slate-800"

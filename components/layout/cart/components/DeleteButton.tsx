@@ -1,4 +1,5 @@
-import { type FC, useContext } from 'react';
+import type { JSX } from 'react';
+import { useContext } from 'react';
 
 import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch } from '@/app/store/hooks';
@@ -11,11 +12,8 @@ import DeleteIcon from '@/components/icons/delete';
 
 /**
  * Delete product from cart button
- * @param productId product Id
- *
- * @returns
  */
-const DeleteButton: FC<{ productId: number }> = ({ productId }) => {
+const DeleteButton = ({ productId }: { productId: number }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 

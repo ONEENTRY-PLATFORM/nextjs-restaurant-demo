@@ -1,13 +1,8 @@
 'use client';
 
-import type { FC } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-
-interface CreateAccountButtonProps {
-  title: string;
-}
 
 /**
  * Create account button
@@ -15,8 +10,10 @@ interface CreateAccountButtonProps {
  *
  * @returns Create account button
  */
-const CreateAccountButton: FC<CreateAccountButtonProps> = ({
+const CreateAccountButton = ({
   title = 'Create account',
+}: {
+  title: string;
 }) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 

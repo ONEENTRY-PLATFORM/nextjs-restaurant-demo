@@ -1,22 +1,19 @@
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-interface DeliveryRowProps {
-  delivery: IProductsEntity;
-}
 /**
  * Delivery form row
- * @param lang Current language shortcode
- * @param delivery Represents a product entity object.
- *
- * @returns
  */
-const DeliveryRow: FC<DeliveryRowProps> = ({ delivery }) => {
+const DeliveryRow = ({
+  delivery,
+}: {
+  delivery: IProductsEntity;
+}): JSX.Element => {
   return (
     <TableRowAnimations
       className="tr h-[100px] border-b border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"

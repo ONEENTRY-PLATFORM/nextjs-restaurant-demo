@@ -8,55 +8,6 @@ import { getDictionary } from '@/app/dictionaries';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * Generate page metadata
- * @async server component
- * @param params page params
- * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
- * @returns metadata
- */
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ handle: string; lang: string }>;
-}): Promise<Metadata> {
-  const { handle } = await params;
-  const { isError, product } = await getProductById(Number(handle));
-
-  if (isError || !product) {
-    return notFound();
-  }
-
-  const { downloadLink, alt = 'alt' } =
-    product.attributeValues.pic?.value || {};
-  const indexable = product.isVisible;
-
-  return {
-    title: product?.localizeInfos.title,
-    description: product?.attributeValues.description?.value[0]?.plainValue,
-    robots: {
-      index: indexable,
-      follow: indexable,
-      googleBot: {
-        index: indexable,
-        follow: indexable,
-      },
-    },
-    openGraph: downloadLink
-      ? {
-          images: [
-            {
-              url: downloadLink,
-              width: 300,
-              height: 300,
-              alt,
-            },
-          ],
-        }
-      : null,
-  };
-}
-
-/**
  * Product page
  * @async server component
  * @param params page params
@@ -118,3 +69,52 @@ const ProductPageLayout: FC<{
 };
 
 export default ProductPageLayout;
+
+/**
+ * Generate page metadata
+ * @async server component
+ * @param params page params
+ * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
+ * @returns metadata
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string; lang: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+  const { isError, product } = await getProductById(Number(handle));
+
+  if (isError || !product) {
+    return notFound();
+  }
+
+  const { downloadLink, alt = 'alt' } =
+    product.attributeValues.pic?.value || {};
+  const indexable = product.isVisible;
+
+  return {
+    title: product?.localizeInfos.title,
+    description: product?.attributeValues.description?.value[0]?.plainValue,
+    robots: {
+      index: indexable,
+      follow: indexable,
+      googleBot: {
+        index: indexable,
+        follow: indexable,
+      },
+    },
+    openGraph: downloadLink
+      ? {
+          images: [
+            {
+              url: downloadLink,
+              width: 300,
+              height: 300,
+              alt,
+            },
+          ],
+        }
+      : null,
+  };
+}

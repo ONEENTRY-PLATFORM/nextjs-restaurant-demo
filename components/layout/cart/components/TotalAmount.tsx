@@ -1,5 +1,5 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useLayoutEffect, useState } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
@@ -8,19 +8,16 @@ import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-interface TotalAmountProps {
-  dict: IAttributeValues;
-  className: string;
-}
-
 /**
  * Total amount price of all products in cart
- * @param dict dictionary from server api
- * @param className CSS className of ref elements
- *
- * @returns
  */
-const TotalAmount: FC<TotalAmountProps> = ({ dict, className }) => {
+const TotalAmount = ({
+  dict,
+  className,
+}: {
+  dict: IAttributeValues;
+  className: string;
+}): JSX.Element => {
   const [cartTotal, setCartTotal] = useState(0);
   const total = useAppSelector(selectCartTotal);
   const deliveryPrice = useAppSelector((state) => {

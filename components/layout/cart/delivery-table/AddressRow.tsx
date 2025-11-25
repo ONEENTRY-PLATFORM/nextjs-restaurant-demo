@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext, useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -13,11 +13,8 @@ import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
  * Address row
- * @param placeholder
- *
- * @returns
  */
-const AddressRow: FC<{ placeholder: string }> = ({ placeholder }) => {
+const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);

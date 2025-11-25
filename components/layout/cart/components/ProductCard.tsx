@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { deselectProduct } from '@/app/store/reducers/CartSlice';
@@ -12,28 +12,18 @@ import ProductAnimations from '../animations/ProductAnimations';
 import DeleteButton from './DeleteButton';
 import PriceDisplay from './PriceDisplay';
 
-interface ProductCardProps {
-  product: IProductsEntity;
-  selected: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dict?: any;
-  index: number;
-}
-
 /**
  * Product card in cart
- * @param product product entity object.
- * @param selected product selected?
- * @param dict dictionary from server api
- * @param index index of element in array for stagger
- *
- * @returns ProductCard with animations
  */
-const ProductCard: FC<ProductCardProps> = ({
+const ProductCard = ({
   product,
   selected,
   index,
-}) => {
+}: {
+  product: IProductsEntity;
+  selected: boolean;
+  index: number;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   // extract data from product
   const {

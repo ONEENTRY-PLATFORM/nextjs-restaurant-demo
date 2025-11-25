@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { AuthContext } from '@/app/store/providers/AuthContext';
@@ -11,11 +11,8 @@ import ProfileIcon from '@/components/icons/profile';
 
 /**
  * Nav item profile link / SignInForm button
- * @param item
- * @param userMenu Represents a menu object.
- * @returns JSX.Element
  */
-const NavItemProfile: FC<{ item: IMenusPages }> = ({ item }) => {
+const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
   const title = item.localizeInfos?.menuTitle || item.localizeInfos?.title;

@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 import { toast } from 'react-toastify';
 
@@ -14,29 +14,22 @@ import {
   setCartTransition,
 } from '@/app/store/reducers/CartSlice';
 
-interface ProductAnimationsProps {
-  children: ReactNode;
-  className: string;
-  index: number;
-  product: IProductsEntity;
-}
-
 /**
  * Product animations
- *
- * @param children children ReactNode
- * @param className CSS className of ref element
- * @param product product entity object
- * @param index index of element in array for stagger
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  * @returns
  */
-const ProductAnimations: FC<ProductAnimationsProps> = ({
+const ProductAnimations = ({
   children,
   className,
   product,
   index,
-}) => {
+}: {
+  children: ReactNode;
+  className: string;
+  index: number;
+  product: IProductsEntity;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const ref = useRef(null);
   const { transitionId } = useAppSelector(getTransition);

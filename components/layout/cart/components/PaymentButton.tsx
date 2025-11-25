@@ -1,20 +1,17 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-interface PaymentButtonProps {
-  className?: string;
-  text: string;
-}
-
 /**
  * Payment button
- * @param className CSS className of ref element
- * @param text
- *
- * @returns
  */
-const PaymentButton: FC<PaymentButtonProps> = ({ className, text }) => {
+const PaymentButton = ({
+  className,
+  text,
+}: {
+  className?: string;
+  text: string;
+}): JSX.Element => {
   return (
     <TableRowAnimations className={'mx-auto flex'} index={10}>
       <button

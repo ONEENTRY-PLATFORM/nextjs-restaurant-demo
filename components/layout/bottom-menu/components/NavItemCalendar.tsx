@@ -2,19 +2,15 @@
 
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
 import CalendarIcon from '@/components/icons/calendar';
 
 /**
  * Nav item cart button
- * @param item
- * @returns JSX.Element
  */
-const NavItemCalendar: FC<{
-  item: IMenusPages;
-}> = ({ item }) => {
+const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
   // get count from cart reducer
   const cartCount = useAppSelector((state) => {
     return state.cartReducer.servicesData?.length;

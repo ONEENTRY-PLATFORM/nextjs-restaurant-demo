@@ -4,7 +4,7 @@
 import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
-import type { FC, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -27,10 +27,8 @@ export type InputValue = {
 
 /**
  * User form
- * @param dict dictionary from server api
- * @returns User form
  */
-const UserForm: FC<FormProps> = ({ dict }) => {
+const UserForm = ({ dict }: FormProps): JSX.Element => {
   const { isAuth, refreshUser, user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isError, setError] = useState('');

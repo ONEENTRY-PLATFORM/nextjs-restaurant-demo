@@ -1,7 +1,7 @@
 import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC, Key } from 'react';
+import type { JSX, Key } from 'react';
 import { useContext, useEffect } from 'react';
 
 import { useGetFormByMarkerQuery } from '@/app/api';
@@ -15,19 +15,16 @@ import AddressRow from './AddressRow';
 import DeliveryRow from './DeliveryRow';
 import DeliveryTableRow from './DeliveryTableRow';
 
-interface DeliveryTableProps {
-  delivery: IProductsEntity;
-  dict: IAttributeValues;
-}
-
 /**
  * Delivery table
- * @param delivery Represents a product entity object.
- * @param dict dictionary from server api
- *
- * @returns
  */
-const DeliveryTable: FC<DeliveryTableProps> = ({ delivery, dict }) => {
+const DeliveryTable = ({
+  delivery,
+  dict,
+}: {
+  delivery: IProductsEntity;
+  dict: IAttributeValues;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);
@@ -98,7 +95,6 @@ const DeliveryTable: FC<DeliveryTableProps> = ({ delivery, dict }) => {
             return (
               <DeliveryTableRow
                 key={i}
-                field={attr}
                 value={new Date(deliveryData.date).toLocaleDateString('en-US')}
                 icon={'/icons/calendar.svg'}
                 label={order_info_date_placeholder?.value}
@@ -110,7 +106,6 @@ const DeliveryTable: FC<DeliveryTableProps> = ({ delivery, dict }) => {
             return (
               <DeliveryTableRow
                 key={i}
-                field={attr}
                 value={deliveryData.time}
                 icon={'/icons/time.svg'}
                 label={order_info_time_placeholder?.value}

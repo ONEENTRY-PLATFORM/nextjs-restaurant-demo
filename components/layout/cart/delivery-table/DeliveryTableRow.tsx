@@ -1,36 +1,25 @@
 import Image from 'next/image';
-import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-interface TableRowProps {
-  field: IAttributes;
-  label: string;
-  value: string;
-  placeholder: string;
-  icon?: string;
-}
-
 /**
  * Delivery table row
- * @param label
- * @param value
- * @param icon icon url
- * @param placeholder placeholder text in table row input
- *
- * @returns
  */
-const DeliveryTableRow: FC<TableRowProps> = ({
-  // field,
+const DeliveryTableRow = ({
   label,
   value,
   icon,
   placeholder,
-}) => {
+}: {
+  label: string;
+  value: string;
+  icon?: string;
+  placeholder: string;
+}): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (

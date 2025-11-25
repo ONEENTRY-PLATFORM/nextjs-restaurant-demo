@@ -1,5 +1,5 @@
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { type Key } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
@@ -13,7 +13,7 @@ import NavItemProfile from './components/NavItemProfile';
  * Bottom menu for mobile devices
  * @returns bottom mobile menu JSX.Element
  */
-const BottomMobileMenu: FC = async () => {
+const BottomMobileMenu = async (): Promise<JSX.Element> => {
   // Get Menu by marker from api
   const { menu, isError } = await getMenuByMarker('bottom_web');
 

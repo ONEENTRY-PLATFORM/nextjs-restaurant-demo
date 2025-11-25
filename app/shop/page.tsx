@@ -9,6 +9,50 @@ import type { PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
+/**
+ * Shop page
+ * @async server component
+ * @param params page params
+ * @param searchParams dynamic search params
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * @returns Shop page layout JSX.Element
+ */
+const ShopPageLayout: FC<PageProps> = async (props) => {
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
+  // Get the dictionary from the API and set the server provider.
+  const [dict] = ServerProvider('dict', await getDictionary());
+
+  // Get current Page ByUrl from api
+  const { page } = await getPageByUrl('shop');
+
+  // !!! Get pages limit
+  const pagesLimit = 10;
+
+  if (!page) {
+    return notFound();
+  }
+
+  return (
+    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
+      <div className="flex w-full flex-col items-center gap-5">
+        <Suspense fallback={<ProductsGridLoader />}>
+          <ProductsGridLayout
+            pagesLimit={pagesLimit}
+            dict={dict}
+            params={params}
+            searchParams={searchParams ?? {}}
+          />
+        </Suspense>
+      </div>
+    </section>
+  );
+};
+
+export default ShopPageLayout;
+
 import { getDictionary } from '../dictionaries';
 
 /**
@@ -65,47 +109,3 @@ export async function generateMetadata(): Promise<Metadata> {
       : null,
   };
 }
-
-/**
- * Shop page
- * @async server component
- * @param params page params
- * @param searchParams dynamic search params
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Shop page layout JSX.Element
- */
-const ShopPageLayout: FC<PageProps> = async (props) => {
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
-  // Get the dictionary from the API and set the server provider.
-  const [dict] = ServerProvider('dict', await getDictionary());
-
-  // Get current Page ByUrl from api
-  const { page } = await getPageByUrl('shop');
-
-  // !!! Get pages limit
-  const pagesLimit = 10;
-
-  if (!page) {
-    return notFound();
-  }
-
-  return (
-    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
-      <div className="flex w-full flex-col items-center gap-5">
-        <Suspense fallback={<ProductsGridLoader />}>
-          <ProductsGridLayout
-            pagesLimit={pagesLimit}
-            dict={dict}
-            params={params}
-            searchParams={searchParams ?? {}}
-          />
-        </Suspense>
-      </div>
-    </section>
-  );
-};
-
-export default ShopPageLayout;

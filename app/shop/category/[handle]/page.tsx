@@ -10,6 +10,53 @@ import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
 /**
+ * Shop category page layout
+ * @async server component
+ * @param params page params
+ * @param searchParams dynamic search params
+ * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * @returns Shop page layout JSX.Element
+ */
+const ShopCategoryLayout: FC<PageProps> = async (props) => {
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
+  const { handle } = params;
+  // Get the dictionary from the API and set the server provider.
+  const [dict] = ServerProvider('dict', await getDictionary());
+
+  // get page by url from api
+  const { page } = await getPageByUrl(handle);
+
+  // !!!extract products per page limit from global settings
+  const pagesLimit = 10;
+
+  if (!page) {
+    return notFound();
+  }
+
+  return (
+    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
+      <div className="flex w-full flex-col items-center gap-5">
+        <Suspense fallback={<ProductsGridLoader />}>
+          <ProductsGridLayout
+            searchParams={searchParams ?? {}}
+            pagesLimit={pagesLimit}
+            params={params}
+            dict={dict}
+            isCategory={true}
+          />
+        </Suspense>
+      </div>
+    </section>
+  );
+};
+
+export default ShopCategoryLayout;
+
+/**
  * Generate page metadata
  * @async server component
  * @param params page params
@@ -65,50 +112,3 @@ export async function generateMetadata({
       : null,
   };
 }
-
-/**
- * Shop category page layout
- * @async server component
- * @param params page params
- * @param searchParams dynamic search params
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Shop page layout JSX.Element
- */
-const ShopCategoryLayout: FC<PageProps> = async (props) => {
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
-  const { handle } = params;
-  // Get the dictionary from the API and set the server provider.
-  const [dict] = ServerProvider('dict', await getDictionary());
-
-  // get page by url from api
-  const { page } = await getPageByUrl(handle);
-
-  // !!!extract products per page limit from global settings
-  const pagesLimit = 10;
-
-  if (!page) {
-    return notFound();
-  }
-
-  return (
-    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
-      <div className="flex w-full flex-col items-center gap-5">
-        <Suspense fallback={<ProductsGridLoader />}>
-          <ProductsGridLayout
-            searchParams={searchParams ?? {}}
-            pagesLimit={pagesLimit}
-            params={params}
-            dict={dict}
-            isCategory={true}
-          />
-        </Suspense>
-      </div>
-    </section>
-  );
-};
-
-export default ShopCategoryLayout;

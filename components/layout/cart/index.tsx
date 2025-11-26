@@ -26,7 +26,7 @@ import DeliveryForm from './delivery-table/DeliveryForm';
  * @param dict dictionary from server api
  * @param deliveryData Represents a product entity object.
  *
- * @returns
+ * @returns {JSX.Element} Cart page
  */
 const CartPage = ({
   dict,
@@ -124,7 +124,7 @@ const CartPage = ({
   }
 
   if (!products || products.length < 1) {
-    return <EmptyCart dict={undefined} />;
+    return <EmptyCart />;
   }
 
   return (

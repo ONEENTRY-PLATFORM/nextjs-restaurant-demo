@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FC, Key } from 'react';
+import type { JSX, Key } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch } from '@/app/store/hooks';
@@ -12,14 +12,8 @@ import EyeOpenIcon from '@/components/icons/eye-o';
 
 /**
  * FormInput
- * @param value field value
- * @param index Index of element for animations stagger
- *
- * @returns FormInput
  */
-const FormInput: FC<IAttributes & { value?: string; index: number }> = (
-  field,
-) => {
+const FormInput = ( field: IAttributes & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;
   const [value, setValue] = useState<string>(field.value || '');
   const [type, setType] = useState<string>('');
@@ -55,7 +49,7 @@ const FormInput: FC<IAttributes & { value?: string; index: number }> = (
   }, [fieldType]);
 
   if (!field || !type) {
-    return;
+    return <></>;
   }
 
   return (

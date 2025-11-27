@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
@@ -13,11 +13,11 @@ import {
   // setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
-const ProductRow: FC<{ pageData: any; product: any; setState: any }> = ({
+const ProductRow = ({
   pageData,
   product,
   setState,
-}) => {
+}: { pageData: any; product: any; setState: any }): JSX.Element => {
   const dispatch = useAppDispatch();
   const serviceId = useAppSelector(selectServiceId);
 

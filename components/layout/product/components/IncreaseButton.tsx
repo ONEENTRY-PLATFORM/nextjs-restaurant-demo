@@ -1,26 +1,19 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
-interface ButtonProps {
+/**
+ * Increase button component
+ */
+const IncreaseButton = ({ id, qty, units }: {
   id: number;
   qty: number;
   units: number;
-}
-
-/**
- * Increase button
- * @param id - product id
- * @param qty - current cart count
- * @param units - count of product in shop
- *
- * @returns Increase button
- */
-const IncreaseButton: FC<ButtonProps> = ({ id, qty, units }) => {
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   if (qty < 1) {
-    return;
+    return <></>;
   }
 
   // Increase product quantity

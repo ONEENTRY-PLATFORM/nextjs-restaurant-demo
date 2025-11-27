@@ -7,26 +7,20 @@
 
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC, Key, RefObject } from 'react';
+import type { JSX, Key, RefObject } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
 
 import FavoritesButton from '@/components/shared/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';
 
-interface ProductImageProps {
-  alt: string;
-  product: IProductsEntity;
-}
-
 /**
  * Product images gallery/placeholder
- * @param product product entity object.
- * @param alt alt text for image
- *
- * @returns Product images gallery/placeholder
  */
-const ProductImageGallery: FC<ProductImageProps> = ({ product, alt }) => {
+const ProductImageGallery = ({ product, alt }: {
+  alt: string;
+  product: IProductsEntity;
+}): JSX.Element => {
   const [nav1, setNav1] = useState<Slider>();
   const [nav2, setNav2] = useState<Slider>();
   let sliderRef1 = useRef<RefObject<Slider | null>>(null);

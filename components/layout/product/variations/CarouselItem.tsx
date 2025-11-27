@@ -1,33 +1,24 @@
 import clsx from 'clsx';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { Dispatch, FC, SetStateAction } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
 
 import CarouselItemImage from './CarouselItemImage';
 import CarouselItemTitle from './CarouselItemTitle';
 
-interface VariationProps {
-  index: number;
-  item: IProductsEntity;
-  currentIndex: number;
-  setCurrentIndex: Dispatch<SetStateAction<number>>;
-}
-
 /**
- * CarouselItem
- *
- * @param item product object
- * @param index index of slide
- * @param currentIndex index of current slide
- * @param setCurrentIndex Set state action
- *
- * @returns Carousel card
+ * CarouselItem component
  */
-const CarouselItem: FC<VariationProps> = ({
+const CarouselItem = ({
   item,
   index,
   currentIndex,
   setCurrentIndex,
-}) => {
+}: {
+  index: number;
+  item: IProductsEntity;
+  currentIndex: number;
+  setCurrentIndex: Dispatch<SetStateAction<number>>;
+}): JSX.Element => {
   const isActive = index === currentIndex;
 
   const onSelectHandle = () => {

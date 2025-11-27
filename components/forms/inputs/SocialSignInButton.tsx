@@ -1,18 +1,13 @@
 import Image from 'next/image';
-import type { FC } from 'react';
-
-interface SocialSignInButtonProps {
-  imageSrc: string;
-  alt: string;
-}
+import type { JSX } from 'react';
 
 /**
  * Social SignIn button
- * @param imageSrc icon url
- *
- * @returns Social SignIn button
  */
-const SocialSignInButton: FC<SocialSignInButtonProps> = ({ imageSrc, alt }) => {
+const SocialSignInButton = ({ imageSrc, alt }: {
+  imageSrc: string;
+  alt: string;
+}): JSX.Element => {
   return (
     <button
       type="button"

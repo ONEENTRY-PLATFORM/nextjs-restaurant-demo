@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import FavoritesIcon from '@/components/icons/favorites';
 
@@ -9,7 +9,7 @@ import FavoritesIcon from '@/components/icons/favorites';
  * Nav item favorites button
  * @returns JSX.Element
  */
-const NavItemFavorites: FC = () => {
+const NavItemFavorites = (): JSX.Element => {
   return (
     <Link
       prefetch={false}

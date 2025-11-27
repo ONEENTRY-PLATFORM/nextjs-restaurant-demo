@@ -1,13 +1,11 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 // import { copyrightsData } from '@/components/data';
 
 /**
  * Copyrights component
- * Displays copyright information including date and company name.
- * @returns JSX.Element
  */
-const Copyrights: FC = () => {
+const Copyrights = (): JSX.Element => {
   return (
     <>
       {/* <span className="leading-5">{copyrightsData.date}</span>

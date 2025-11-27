@@ -1,18 +1,13 @@
-import type { Dispatch, FC, SetStateAction } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
-interface PriceFromInputProps {
+/**
+ * PriceFrom Input component
+ */
+const PriceFromInput = ({ price, setPrice }: {
   price: number;
   setPrice: Dispatch<SetStateAction<number>>;
-}
-
-/**
- * PriceFrom Input
- * @param dict dictionary from server api
- *
- * @returns
- */
-const PriceFromInput: FC<PriceFromInputProps> = ({ price, setPrice }) => {
+}): JSX.Element => {
   return (
     <input
       type="number"

@@ -1,6 +1,6 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC, Key } from 'react';
+import type { JSX, Key } from 'react';
 
 import { getBlockByMarker } from '@/app/api';
 
@@ -8,25 +8,18 @@ import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations
 import ProductCard from '../products-grid/components/product-card/ProductCard';
 import ProductAnimations from './animations/ProductAnimations';
 
-interface RelatedItemsProps {
+/**
+ * RelatedItems component
+ */
+const RelatedItems = async ({ marker, dict }: {
   marker: string;
   dict: IAttributeValues;
-}
-
-/**
- * RelatedItems
- *
- * @param marker
- * @param dict dictionary from server api
- *
- * @returns RelatedItems
- */
-const RelatedItems: FC<RelatedItemsProps> = async ({ marker, dict }) => {
+}): Promise<JSX.Element> => {
   // Get related items block from api
   const { isError, block } = await getBlockByMarker(marker);
 
   if (isError || !block || !block.similarProducts) {
-    return null;
+    return <></>;
   }
 
   return (

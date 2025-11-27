@@ -2,24 +2,19 @@
 
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import type { FC, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Mobile menu open/close animations
- * @param children children ReactNode
- * @param className CSS className of ref element
- * @param id
- *
- * @returns Mobile menu wrapper with animations
  */
-const MobileMenuAnimations: FC<{
+const MobileMenuAnimations = ({ children, className, id }: {
   children: ReactNode;
   className: string;
   id: string;
-}> = ({ children, className, id }) => {
+}): JSX.Element => {
   const { open, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const ref = useRef(null);
@@ -67,7 +62,7 @@ const MobileMenuAnimations: FC<{
   }, [open, transition]);
 
   if (!open) {
-    return;
+    return <></>;
   }
 
   return (

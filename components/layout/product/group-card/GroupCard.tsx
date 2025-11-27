@@ -1,6 +1,6 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import Placeholder from '@/components/shared/Placeholder';
 
@@ -8,20 +8,13 @@ import ApplyButton from './ApplyButton';
 import PriceDisplay from './PriceDisplay';
 import ProductImage from './ProductImage';
 
-interface GroupCardProps {
+/**
+ * Products group card component
+ */
+const GroupCard = ({ product, dict }: {
   product: IProductsEntity;
   dict: IAttributeValues;
-}
-
-/**
- * Products group card
- *
- * @param product product entity object
- * @param dict dictionary from server api
- *
- * @returns Products group card
- */
-const GroupCard: FC<GroupCardProps> = ({ product, dict }) => {
+}): JSX.Element => {
   const attributeValues =
     product.attributeValues['en_US'] || product.attributeValues;
   const title =

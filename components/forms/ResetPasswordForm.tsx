@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { FC, FormEvent } from 'react';
+import type { JSX, FormEvent } from 'react';
 import { useContext, useState } from 'react';
 
 import { api } from '@/app/api';
@@ -35,10 +35,8 @@ export const resetPasswordFormFields = [
 
 /**
  * Reset password form
- * @param dict dictionary from server api
- * @returns Reset password form
  */
-const ResetPasswordForm: FC<FormProps> = ({ dict }) => {
+const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
   // Destructure form field values from the Redux store using a selector
   const { email, password, password_confirm, otp_code } = useAppSelector(
     (state) => state.formFieldsReducer.fields,

@@ -3,28 +3,21 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useTransitionState } from 'next-transition-router';
-import type { FC, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
-
-interface CategoryAnimationsProps {
-  children: ReactNode;
-  className: string;
-  index: number;
-}
 
 /**
  * Category card stage entering/leaving animations
- * @param children children ReactNode
- * @param className category card wrapper className
- * @param index index of element in array for stagger
- * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
- * @returns category card wrapper with animations
  */
-const CategoryAnimations: FC<CategoryAnimationsProps> = ({
+const CategoryAnimations = ({
   children,
   className,
   index,
-}) => {
+}: {
+  children: ReactNode;
+  className: string;
+  index: number;
+}): JSX.Element => {
   const { stage } = useTransitionState();
   const ref = useRef(null);
 

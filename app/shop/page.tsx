@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { Suspense } from 'react';
 
 import { getPageByUrl } from '@/app/api';
@@ -11,13 +11,8 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 /**
  * Shop page
- * @async server component
- * @param params page params
- * @param searchParams dynamic search params
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Shop page layout JSX.Element
  */
-const ShopPageLayout: FC<PageProps> = async (props) => {
+const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,

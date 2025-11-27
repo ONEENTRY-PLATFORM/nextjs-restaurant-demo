@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import Spinner from '@/components/shared/Spinner';
@@ -11,17 +11,12 @@ interface FormSubmitButtonProps {
 
 /**
  * Form submit button
- * @param title button title
- * @param isLoading loading state
- * @param index Index of element for animations stagger
- *
- * @returns Form submit button
  */
-const FormSubmitButton: FC<FormSubmitButtonProps> = ({
+const FormSubmitButton = ({
   title = 'Submit',
   isLoading,
   index,
-}) => {
+}: FormSubmitButtonProps): JSX.Element => {
   return (
     <FormFieldAnimations index={index} className="w-full">
       <button

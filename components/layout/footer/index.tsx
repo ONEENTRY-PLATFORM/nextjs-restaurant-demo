@@ -1,12 +1,11 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import MenuSection from './components/MenuSection';
 
 /**
- * Footer section
- * @returns React component
+ * Footer section of the website
  */
-const Footer: FC = async () => {
+const Footer = async (): Promise<JSX.Element> => {
   return (
     <footer className="fade-in bg-gradient-1 max-w-full">
       <MenuSection />

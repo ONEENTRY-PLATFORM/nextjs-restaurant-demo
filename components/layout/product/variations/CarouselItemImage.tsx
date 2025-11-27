@@ -1,22 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import Placeholder from '@/components/shared/Placeholder';
 
-interface CarouselItemImageProps {
-  item: IProductsEntity;
-}
-
 /**
- * CarouselItem image
- *
- * @param item product object
- *
- * @returns
+ * CarouselItem image component
  */
-const CarouselItemImage: FC<CarouselItemImageProps> = ({ item }) => {
+const CarouselItemImage = ({ item }: {
+  item: IProductsEntity;
+}): JSX.Element => {
   const title = item.localizeInfos.title;
   const picVal = item.attributeValues.pic?.value || '';
   const imageSrc = Array.isArray(picVal)

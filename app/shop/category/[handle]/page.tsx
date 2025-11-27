@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { type FC, Suspense } from 'react';
+import { type JSX, Suspense } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
@@ -11,14 +11,8 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 /**
  * Shop category page layout
- * @async server component
- * @param params page params
- * @param searchParams dynamic search params
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Shop page layout JSX.Element
  */
-const ShopCategoryLayout: FC<PageProps> = async (props) => {
+const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
@@ -58,11 +52,6 @@ export default ShopCategoryLayout;
 
 /**
  * Generate page metadata
- * @async server component
- * @param params page params
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
- * @returns metadata
  */
 export async function generateMetadata({
   params,

@@ -1,25 +1,19 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { UsePrice } from '../../../utils';
 
-interface PriceDisplayProps {
-  currentPrice: number;
-  originalPrice: number;
-}
-
 /**
- * Price display
- * @param currentPrice
- * @param originalPrice
- *
- * @returns Price display with current/old prices
+ * Price display component
  */
-const PriceDisplay: FC<PriceDisplayProps> = ({
+const PriceDisplay = ({
   currentPrice,
   originalPrice,
-}) => {
+}: {
+  currentPrice: number;
+  originalPrice: number;
+}): JSX.Element => {
   if (!currentPrice && !originalPrice) {
-    return;
+    return <></>;
   }
   const price = UsePrice({ amount: currentPrice });
   const oldPrice = UsePrice({

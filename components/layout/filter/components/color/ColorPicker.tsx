@@ -1,26 +1,19 @@
-import type { Dispatch, FC, SetStateAction } from 'react';
-
-interface ColorPickerProps {
-  code: string;
-  name: string;
-  setActiveColor: Dispatch<SetStateAction<string>>;
-  activeColor: string;
-}
+import type { Dispatch, JSX, SetStateAction } from 'react';
 
 /**
- * Color picker
- * @param code color code
- * @param name color name
- * @param setActiveColor setActiveColor function
- *
- * @returns single color picker
+ * Color picker component
  */
-const ColorPicker: FC<ColorPickerProps> = ({
+const ColorPicker = ({
   code,
   name,
   activeColor,
   setActiveColor,
-}) => {
+}: {
+  code: string;
+  name: string;
+  setActiveColor: Dispatch<SetStateAction<string>>;
+  activeColor: string;
+}): JSX.Element => {
   return (
     <button
       className={

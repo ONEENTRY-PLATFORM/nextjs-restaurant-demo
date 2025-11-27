@@ -3,7 +3,7 @@
 
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { Dispatch, FC } from 'react';
+import type { Dispatch, JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { getPageById } from '@/app/api';
@@ -13,25 +13,18 @@ import Spinner from '@/components/shared/Spinner';
 import CloseSearch from './CloseSearch';
 import ProductRow from './ProductRow';
 
-interface SearchResultsProps {
-  searchValue: string;
-  state: boolean;
-  setState: Dispatch<React.SetStateAction<boolean>>;
-}
-
 /**
  * Search results
- * @param searchValue
- * @param state
- * @param setState
- *
- * @returns JSX.Element
  */
-const SearchResults: FC<SearchResultsProps> = ({
+const SearchResults = ({
   searchValue,
   state,
   setState,
-}) => {
+}: {
+  searchValue: string;
+  state: boolean;
+  setState: Dispatch<React.SetStateAction<boolean>>;
+}): JSX.Element => {
   const [pages, setPages] = useState<{
     [key: number]: {
       page?: IPagesEntity;
@@ -69,7 +62,7 @@ const SearchResults: FC<SearchResultsProps> = ({
   }
 
   if (!state) {
-    return null;
+    return <></>;
   }
 
   return (

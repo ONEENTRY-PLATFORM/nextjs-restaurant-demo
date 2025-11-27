@@ -2,7 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useRef } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
@@ -10,11 +10,11 @@ import type { AnimationsProps } from '@/app/types/global';
 /**
  * Table row animations
  */
-const TableRowAnimations: FC<AnimationsProps> = ({
+const TableRowAnimations = ({
   children,
   className,
   index,
-}) => {
+}: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
 
   // first load animations

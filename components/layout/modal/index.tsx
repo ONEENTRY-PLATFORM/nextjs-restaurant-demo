@@ -1,7 +1,7 @@
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -11,6 +11,9 @@ import ModalAnimations from '@/components/layout/modal/animations/ModalAnimation
 import CloseModal from './components/CloseModal';
 import ModalBackdrop from './components/ModalBackdrop';
 
+/**
+ * Modal component
+ */
 const useTitleData = ({
   dict,
   component,
@@ -59,23 +62,17 @@ const useTitleData = ({
 
 /**
  * Forms modal component
- * @param dict dictionary from server api
- * @returns Modal with form component
  */
-const Modal: FC<{ dict: IAttributeValues }> = ({ dict }) => {
+const Modal = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { component } = useContext(OpenDrawerContext);
 
   // select form component by component name
-  const Form: FC<{
-    className: string;
-    dict: IAttributeValues;
-    isActive: boolean;
-  }> = forms[component as keyof typeof forms] || null;
+  const Form = forms[component as keyof typeof forms] || null;
 
   const title = useTitleData({ dict, component });
 
   if (!Form) {
-    return null;
+    return <></>;
   }
 
   return (

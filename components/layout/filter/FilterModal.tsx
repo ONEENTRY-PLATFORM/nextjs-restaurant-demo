@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { Suspense } from 'react';
 
 import Loader from '@/components/shared/Loader';
@@ -10,20 +10,14 @@ import FilterModalAnimations from './animations/FilterModalAnimations';
 import FilterHeader from './components/header/FilterHeader';
 import FiltersForm from './FiltersForm';
 
-interface FilterModalProps {
+/**
+ * FilterModal component
+ */
+const FilterModal = ({ prices, dict }: {
   prices: any | undefined;
   lang: string;
   dict: IAttributeValues;
-}
-
-/**
- * FilterModal
- * @param prices prices fromTo extracted from one product
- * @param dict dictionary from server api
- *
- * @returns FilterModal
- */
-const FilterModal: FC<FilterModalProps> = ({ prices, dict }) => {
+}): JSX.Element => {
   return (
     <FilterModalAnimations>
       <div

@@ -4,27 +4,21 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { getTrackBackground, Range } from 'react-range';
 
 import PriceFromInput from './PriceFromInput';
 import PriceToInput from './PriceToInput';
 
-interface PriceFilterProps {
+/**
+ * Price filter component
+ */
+const PriceFilter = ({ prices, dict }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prices: any;
   dict: IAttributeValues;
-}
-
-/**
- * Price filter
- * @param prices prices fromTo extracted from one product
- * @param dict dictionary from server api
- *
- * @returns
- */
-const PriceFilter: FC<PriceFilterProps> = ({ prices, dict }) => {
+}): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();

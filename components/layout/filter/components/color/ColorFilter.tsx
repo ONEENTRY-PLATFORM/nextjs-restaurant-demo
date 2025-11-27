@@ -6,15 +6,10 @@ import type {
   IListTitle,
 } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import ColorPicker from './ColorPicker';
-
-interface ColorFilterProps {
-  title?: string;
-  attributes: IAttributesSetsEntity | IError;
-}
 
 type Color = {
   code: string;
@@ -23,13 +18,12 @@ type Color = {
 };
 
 /**
- * Color filter
- * @param title
- * @param attributes Represents a template entity object.
- *
- * @returns Color filter
+ * Color filter component
  */
-const ColorFilter: FC<ColorFilterProps> = ({ title, attributes }) => {
+const ColorFilter = ({ title, attributes }: {
+  title?: string;
+  attributes: IAttributesSetsEntity | IError;
+}): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();
 

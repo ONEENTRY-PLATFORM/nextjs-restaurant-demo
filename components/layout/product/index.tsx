@@ -1,6 +1,6 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getRelatedProductsById } from '@/app/api';
 
@@ -12,23 +12,16 @@ import ProductsGroup from './ProductsGroup';
 import RelatedItems from './RelatedItems';
 import VariationsCarousel from './variations/VariationsCarousel';
 
-interface ProductSingleProps {
+/**
+ * Product single
+ */
+const ProductSingle = async ({ product, dict }: {
   product: IProductsEntity & {
     blocks?: Array<string>;
     productPages?: [];
   };
   dict: IAttributeValues;
-}
-
-/**
- * Product single
- *
- * @param product product entity object
- * @param dict dictionary from server api
- *
- * @returns Product single
- */
-const ProductSingle: FC<ProductSingleProps> = async ({ product, dict }) => {
+}): Promise<JSX.Element> => {
   // extract data from product
   const { attributeValues, localizeInfos, blocks, id } = product;
 

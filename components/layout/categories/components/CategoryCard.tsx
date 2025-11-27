@@ -1,14 +1,9 @@
 import { Baloo_2 as Baloo } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import CategoryAnimations from '../animations/CategoryAnimations';
-
-interface CategoryCardProps {
-  category: { title: string; link: string; imgSrc: string };
-  index: number;
-}
 
 const baloo = Baloo({
   subsets: ['latin'],
@@ -17,15 +12,14 @@ const baloo = Baloo({
 
 /**
  * Category card
- * @param category
- * @param index index of element in array for stagger
- *
- * @returns category card with animations
  */
-const CategoryCard: FC<CategoryCardProps> = ({
+const CategoryCard = ({
   category: { imgSrc, title, link },
   index,
-}) => {
+}: {
+  category: { title: string; link: string; imgSrc: string };
+  index: number;
+}): JSX.Element => {
   return (
     <CategoryAnimations
       className={`${baloo.className} block-card group relative flex w-1/4 grow flex-col justify-center overflow-hidden rounded-3xl text-2xl font-bold text-white transition-shadow duration-500 hover:shadow-xl max-md:w-full`}

@@ -1,21 +1,19 @@
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import LogoIcon from '../../shared/LogoIcon';
 
 /**
- * Logo
- *
- * @returns JSX.Element
+ * Logo component
  */
-const Logo: FC = () => {
+const Logo = (): JSX.Element => {
   return (
     <Link
       href={'/'}
       prefetch={false}
       className="fade-in logo w-full focus:outline-none"
     >
-      <LogoIcon className={'max-w-full'} fill={'#292A2C'} stroke={'#292A2C'} />
+      <LogoIcon className={'max-w-full'} fill={'#292A2C'} />
     </Link>
   );
 };

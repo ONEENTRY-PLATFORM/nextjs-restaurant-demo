@@ -2,7 +2,7 @@
 'use client';
 
 import type { IAttributes, IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC, FormEvent } from 'react';
+import type { JSX, FormEvent } from 'react';
 import { useContext, useState } from 'react';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
@@ -21,10 +21,8 @@ interface ForgotPasswordFormProps {
 
 /**
  * ForgotPassword form
- * @param dict dictionary from server api
- * @returns ForgotPassword form
  */
-export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ dict }) => {
+export const ForgotPasswordForm = ({ dict }: ForgotPasswordFormProps): JSX.Element => {
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [isError, setError] = useState<string>('');
 

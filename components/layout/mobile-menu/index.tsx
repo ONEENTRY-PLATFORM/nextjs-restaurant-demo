@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext, useEffect } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -17,13 +17,10 @@ import MobileMenu from './components/MobileMenu';
 
 /**
  * Mobile menu offscreen modal
- * @param menu Represents a menu - array of objects.
- *
- * @returns Mobile menu list item
  */
-const OffscreenModal: FC<{
+const OffscreenModal = ({ menu }: {
   menu: IMenusEntity;
-}> = ({ menu }) => {
+}): JSX.Element => {
   const pathname = usePathname();
   const { open, setOpen, component } = useContext(OpenDrawerContext);
 
@@ -47,7 +44,7 @@ const OffscreenModal: FC<{
   }, [pathname]);
 
   if (!open || component !== 'MobileMenu') {
-    return;
+    return <></>;
   }
 
   return (

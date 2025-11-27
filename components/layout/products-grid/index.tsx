@@ -1,6 +1,6 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
-import { type FC } from 'react';
+import { type JSX } from 'react';
 
 import { getProducts, getProductsByPageUrl } from '@/app/api';
 import FilterModal from '@/components/layout/filter/FilterModal';
@@ -10,7 +10,16 @@ import LoadMore from './components/LoadMore';
 import ProductsGrid from './components/ProductsGrid';
 import ProductsNotFound from './components/ProductsNotFound';
 
-interface GridLayoutProps {
+/**
+ * Products grid layout
+ */
+const ProductsGridLayout = async ({
+  params,
+  searchParams: sp,
+  dict,
+  pagesLimit,
+  isCategory,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any;
   searchParams?: {
@@ -21,19 +30,7 @@ interface GridLayoutProps {
   dict: IAttributeValues;
   pagesLimit: number;
   isCategory?: boolean;
-}
-
-/**
- * Products grid layout
- * @returns ProductsGrid
- */
-const ProductsGridLayout: FC<GridLayoutProps> = async ({
-  params,
-  searchParams: sp,
-  dict,
-  pagesLimit,
-  isCategory,
-}) => {
+}): Promise<JSX.Element> => {
   const p = await params;
   const searchParams = await sp;
   const currentPage = Number(searchParams?.page) || 1;

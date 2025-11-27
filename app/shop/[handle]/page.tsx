@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { Suspense } from 'react';
 
 import { getPageByUrl } from '@/app/api';
@@ -13,13 +13,8 @@ import { getDictionary } from '../../dictionaries';
 
 /**
  * Shop catalog page
- * @async server component
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @param params page params
- * @param searchParams
- * @returns Shop page layout JSX.Element
  */
-const ShopCatalogPage: FC<PageProps> = async (props) => {
+const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
@@ -59,10 +54,6 @@ export default ShopCatalogPage;
 
 /**
  * Generate page metadata
- * @async server component
- * @param params page params
- * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
- * @returns metadata
  */
 export async function generateMetadata({
   params,

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type FC, Suspense } from 'react';
+import { type JSX, Suspense } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
 // import SearchIcon from '@/components/icons/search';
@@ -45,7 +45,7 @@ const SearchFallback = () => (
  * @returns React component
  */
 
-const Header: FC = async () => {
+const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
   return (
@@ -95,7 +95,7 @@ const Header: FC = async () => {
                 <img src="/icons/phone.svg" alt="call" />
               </a>
               <a href="/">
-                <img src="/icons/logo_mobile.svg" alt="logo" />
+                <img src="/images/logo_mobile.svg" alt="logo" />
               </a>
               <div className="cursor-pointer group_stroke">
                 <svg

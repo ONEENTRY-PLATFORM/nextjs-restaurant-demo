@@ -1,13 +1,10 @@
-import Image from 'next/image';
-import type { FC } from 'react';
+import type { JSX } from 'react';
+import LogoIcon from './LogoIcon';
 
 /**
  * Empty image placeholder
- * @param className wrapper className
- * @param className.className
- * @returns Placeholder
  */
-const Placeholder: FC<{ className?: string }> = ({ className }) => {
+const Placeholder = ({ className }: { className?: string }): JSX.Element => {
   return (
     <div
       className={
@@ -15,13 +12,7 @@ const Placeholder: FC<{ className?: string }> = ({ className }) => {
         className
       }
     >
-      <Image
-        fill
-        sizes="(min-width: 600px) 50vw, 100vw"
-        src={'/images/logo-250x70.svg'}
-        alt={'OneEntry'}
-        className={'mx-auto size-full max-w-[60%] ' + className}
-      />
+      <LogoIcon fill={'gray-100'} />
     </div>
   );
 };

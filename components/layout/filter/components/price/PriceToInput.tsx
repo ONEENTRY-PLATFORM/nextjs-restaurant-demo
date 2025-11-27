@@ -1,18 +1,13 @@
-import type { Dispatch, FC, SetStateAction } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
-interface PriceToInputProps {
+/**
+ * History Back Button
+ */
+const PriceToInput = ({ price, setPrice }: {
   price: number;
   setPrice: Dispatch<SetStateAction<number>>;
-}
-
-/**
- * History
- * @param dict dictionary from server api
- *
- * @returns
- */
-const PriceToInput: FC<PriceToInputProps> = ({ price, setPrice }) => {
+}): JSX.Element => {
   return (
     <input
       type="number"

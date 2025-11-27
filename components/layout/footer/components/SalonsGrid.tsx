@@ -1,14 +1,12 @@
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
 
 /**
- * SalonsGrid
- * @async
- * @returns JSX.Element
+ * SalonsGrid component
  */
-const SalonsGrid: FC = async () => {
+const SalonsGrid = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('salons');
 
   const contactsData = pages?.map((page: IPagesEntity) => {

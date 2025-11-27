@@ -1,6 +1,6 @@
 'use client';
 
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
@@ -10,31 +10,22 @@ import DecreaseButton from './DecreaseButton';
 import IncreaseButton from './IncreaseButton';
 import QuantityInput from './QuantityInput';
 
-interface QuantitySelectorProps {
-  id: number;
-  units: number;
-  title: string;
-  className?: string;
-  height: number;
-}
-
 /**
  * Quantity selector
- * @param id - product id
- * @param units - count of product in shop
- * @param title
- * @param height
- * @param className CSS className of ref element
- *
- * @returns Quantity selector with increase decrease buttons
  */
-const QuantitySelector: FC<QuantitySelectorProps> = ({
+const QuantitySelector = ({
   id,
   units,
   title,
   height,
   className,
-}) => {
+}: {
+  id: number;
+  units: number;
+  title: string;
+  className?: string;
+  height: number;
+}): JSX.Element => {
   const [qty, setQty] = useState(0);
 
   // extract data from cartSlice
@@ -51,7 +42,7 @@ const QuantitySelector: FC<QuantitySelectorProps> = ({
   }, [quantity]);
 
   if (qty < 1 || !quantity) {
-    return;
+    return <></>;
   }
 
   return (

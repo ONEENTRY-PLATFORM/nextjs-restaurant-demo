@@ -2,30 +2,23 @@
 
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import type { FC, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-interface FormFieldAnimationsProps {
-  children: ReactNode;
-  className: string;
-  index: number;
-}
-
 /**
  * Form field animations
- * @param children children ReactNode
- * @param className CSS className of ref element
- * @param index Index of element for animations stagger
- *
- * @returns Form field animations
  */
-const FormFieldAnimations: FC<FormFieldAnimationsProps> = ({
+const FormFieldAnimations = ({
   children,
   className,
   index,
-}) => {
+}: {
+  children: ReactNode;
+  className: string;
+  index: number;
+}): JSX.Element => {
   const { open, transition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 

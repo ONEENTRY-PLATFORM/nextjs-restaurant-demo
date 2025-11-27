@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { FC, FormEvent } from 'react';
+import type { JSX, FormEvent } from 'react';
 import { Suspense, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
@@ -10,12 +10,9 @@ import SearchIcon from '@/components/icons/search';
 import SearchResults from './SearchResults';
 
 /**
- * SearchBar
- * @param dict dictionary from server api
- *
- * @returns JSX.Element
+ * SearchBar component
  */
-const SearchBar: FC<{ placeholder: string }> = ({ placeholder }) => {
+const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const pathname = usePathname();

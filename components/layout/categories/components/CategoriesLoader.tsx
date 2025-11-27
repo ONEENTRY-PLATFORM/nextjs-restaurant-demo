@@ -1,14 +1,11 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import type { LoaderProps } from '@/app/types/global';
 
 /**
  * Categories loader animations
- * @param limit
- *
- * @returns Categories loader with animations
  */
-export const CategoriesLoader: FC<LoaderProps> = ({ limit = 4 }) => {
+export const CategoriesLoader = ({ limit = 4 }: LoaderProps): JSX.Element => {
   return (
     <div className="flex w-full flex-wrap justify-between gap-5 max-md:flex-col">
       {Array.from(Array(limit).keys()).map((item) => (

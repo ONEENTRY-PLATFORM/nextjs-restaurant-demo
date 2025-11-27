@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
-const CloseSearch: FC<{ setState: any }> = ({ setState }) => {
+/**
+ * Close search component
+ */
+const CloseSearch = ({ setState }: { setState: any }): JSX.Element => {
   return (
     <button
       className="absolute right-3 top-3 size-4"

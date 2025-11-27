@@ -1,18 +1,15 @@
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Apply filter button
- * @param dict dictionary from server api
- *
- * @returns ApplyButton
+ * Apply filter button component
  */
-const ApplyButton: FC<{ dict: IAttributeValues }> = ({ dict }) => {
+const ApplyButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);
   const { apply_button_placeholder } = dict;
 

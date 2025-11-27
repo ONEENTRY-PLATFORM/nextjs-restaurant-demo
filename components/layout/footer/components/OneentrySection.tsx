@@ -1,14 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 
 /**
- * OneentryFooter section
- * @returns React component
+ * OneentryFooter section component
  */
-const OneentrySection: FC = () => {
+const OneentrySection = (): JSX.Element => {
   const [dict] = ServerProvider('dict');
 
   const currentYear = new Date().getFullYear();

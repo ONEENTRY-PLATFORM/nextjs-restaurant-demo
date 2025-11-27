@@ -1,6 +1,6 @@
 // import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
-import { type FC, Suspense } from 'react';
+import { JSX, Suspense } from 'react';
 
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
@@ -17,7 +17,10 @@ import { sortArrayByPosition } from '@/components/utils';
 // export const revalidate = 10;
 // export const dynamicParams = true;
 
-const IndexPageLayout: FC<PageProps> = async (props) => {
+/**
+ * Page component
+ */
+const IndexPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
@@ -29,7 +32,7 @@ const IndexPageLayout: FC<PageProps> = async (props) => {
   // get page blocks
   const { blocks } = await getBlocksByPageUrl({ pageUrl: page?.pageUrl || '' });
   if (isError || !page || !blocks) {
-    return 'isError';
+    return <>isError</>;
   }
 
   const sortedBlocks = sortArrayByPosition(blocks);

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { AuthContext } from '@/app/store/providers/AuthContext';
@@ -11,17 +11,12 @@ import ProfileIcon from '@/components/icons/profile';
 
 import UserProfileMenu from './user-menu/UserProfileMenu';
 
-interface NavItemProfileProps {
-  userMenu?: IMenusEntity;
-}
-
 /**
  * Nav item profile link / SignInForm button
- * @param userMenu Represents a menu object.
- *
- * @returns JSX.Element
  */
-const NavItemProfile: FC<NavItemProfileProps> = ({ userMenu }) => {
+const NavItemProfile = ({ userMenu }: {
+  userMenu?: IMenusEntity;
+}): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
 

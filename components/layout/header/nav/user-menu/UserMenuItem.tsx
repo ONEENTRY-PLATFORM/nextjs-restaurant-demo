@@ -2,21 +2,15 @@
 
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
-
-interface UserMenuItemProps {
-  page: IMenusPages;
-  setState: (state: boolean) => void;
-}
+import type { JSX } from 'react';
 
 /**
  * User menu item link component.
- *
- * @param page - The page object containing URL and localization info.
- * @param setState - Function to update state.
- * @returns JSX.Element representing a user menu item link.
  */
-const UserMenuItem: FC<UserMenuItemProps> = ({ page, setState }) => (
+const UserMenuItem = ({ page, setState }: {
+  page: IMenusPages;
+  setState: (state: boolean) => void;
+}): JSX.Element => (
   <Link
     prefetch={false}
     href={`/${page.pageUrl}`}

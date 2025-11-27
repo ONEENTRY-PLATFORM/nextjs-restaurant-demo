@@ -1,5 +1,5 @@
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { flatMenuToNested } from '@/components/utils';
 
@@ -8,10 +8,8 @@ import NavigationMenu from './components/NavigationMenu';
 
 /**
  * Main menu component.
- * @async
- * @returns JSX.Element representing the main navigation menu or a loading/error state.
  */
-const MainMenu: FC<{ menu: IMenusEntity }> = async ({ menu }) => {
+const MainMenu = async ({ menu }: { menu: IMenusEntity }): Promise<JSX.Element> => {
   if (!menu?.pages) {
     return <MainMenuLoader limit={4} />;
   }

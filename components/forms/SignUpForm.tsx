@@ -3,7 +3,7 @@
 
 import type { ISignUpData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FC, FormEvent } from 'react';
+import type { JSX, FormEvent } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
 import { api, logInUser, useGetFormByMarkerQuery } from '@/app/api';
@@ -20,10 +20,8 @@ import SubmitButton from './inputs/FormSubmitButton';
 
 /**
  * SignUp form
- * @param dict dictionary from server api
- * @returns SignUp form
  */
-const SignUpForm: FC<FormProps> = ({ dict }) => {
+const SignUpForm = ({ dict }: FormProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

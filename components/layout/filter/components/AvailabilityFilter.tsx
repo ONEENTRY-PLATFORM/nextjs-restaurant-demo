@@ -1,20 +1,15 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-interface AvailabilityFilterProps {
-  title?: string;
-}
-
 /**
- * History
- * @param dict dictionary from server api
- *
- * @returns
+ * Availability filter component
  */
-const AvailabilityFilter: FC<AvailabilityFilterProps> = ({ title }) => {
+const AvailabilityFilter = ({ title }: {
+  title?: string;
+}): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();
 

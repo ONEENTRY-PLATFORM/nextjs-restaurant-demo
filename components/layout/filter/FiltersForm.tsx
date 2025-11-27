@@ -2,7 +2,7 @@
 import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getSingleAttributeByMarkerSet } from '@/app/api';
 import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
@@ -16,20 +16,13 @@ import ResetButton from './components/buttons/ResetButton';
 import ColorFilter from './components/color/ColorFilter';
 import PricePickerFilter from './components/price/PricePickerFilter';
 
-interface FiltersFormProps {
-  prices: any;
-  dict: IAttributeValues;
-}
-
 /**
  * Products filters form
- *
- * @param prices prices fromTo extracted from one product
- * @param dict dictionary from server api
- *
- * @returns Filters form
  */
-const FiltersForm: FC<FiltersFormProps> = async ({ prices, dict }) => {
+const FiltersForm = async ({ prices, dict }: {
+  prices: any;
+  dict: IAttributeValues;
+}): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('catalog_filters');
   const data = await getSingleAttributeByMarkerSet({
     setMarker: 'product',
@@ -42,7 +35,7 @@ const FiltersForm: FC<FiltersFormProps> = async ({ prices, dict }) => {
   );
 
   if (isError) {
-    return error?.message;
+    return <>{error?.message}</>;
   }
 
   if (!sortedAttributes) {

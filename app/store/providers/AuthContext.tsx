@@ -2,7 +2,7 @@
 
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
 import { reDefine, useLazyGetMeQuery } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
@@ -22,20 +22,27 @@ import {
   // setFavoritesVersion,
 } from '../reducers/FavoritesSlice';
 
-type ContextProps = {
-  isAuth: boolean;
-  isLoading: boolean;
-  userToken?: string;
-  user?: IUserEntity | undefined;
-  authenticate: () => void;
-  refreshUser: () => void;
-};
-
 type AuthProviderProps = {
   children: ReactNode;
 };
 
-export const AuthContext = createContext<ContextProps>({
+/**
+ * Authentication context
+ * @property {boolean}     isAuth       - Authentication status
+ * @property {boolean}     isLoading    - Loading status
+ * @property {string}      userToken    - User token
+ * @property {IUserEntity} user         - User entity
+ * @property {void}        authenticate - Authentication function
+ * @property {void}        refreshUser  - User refresh function
+ */
+export const AuthContext = createContext<{
+  isAuth: boolean;
+  isLoading: boolean;
+  userToken?: string;
+  user?: IUserEntity;
+  authenticate: () => void;
+  refreshUser: () => void;
+}>({
   isAuth: false,
   isLoading: false,
   authenticate: () => {},
@@ -109,7 +116,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
    * status based on the response. It updates the authentication state accordingly.
    * @async
    */
-  const checkToken = async () => {
+  const checkToken = useCallback(async () => {
     /** Trigger user data fetch */
     trigger('en_US')
       .then(async (res) => {
@@ -129,7 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         localStorage.setItem('refresh-token', '');
         setIsAuth(false);
       });
-  };
+  }, [trigger]);
 
   /**
    * Update user state on server with cart and favorites data
@@ -214,7 +221,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const value = {
     isAuth,
     isLoading,
-    user,
+    ...(user && { user }),
     authenticate: () => setRefetch(!refetch),
     refreshUser: () => setRefetchUser(!refetchUser),
   };

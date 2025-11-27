@@ -2,7 +2,7 @@
 'use client';
 
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FC, FormEvent } from 'react';
+import type { JSX, FormEvent } from 'react';
 import { useState } from 'react';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
@@ -16,10 +16,8 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
  * ContactUs form
- * @param className CSS className of ref element
- * @returns ContactUs form
  */
-const ContactUsForm: FC<{ className: string }> = ({ className }) => {
+const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');

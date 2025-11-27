@@ -1,27 +1,19 @@
 import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import AddToCartButton from '../components/AddToCartButton';
 import PriceDisplay from '../components/PriceDisplay';
 import ProductUnits from './ProductUnits';
 
-interface ProductDetailsProps {
+/**
+ * Product details component
+ */
+const ProductDetails = async ({ product, dict }: {
   product: IProductsEntity & { productPages?: [] };
   dict: IAttributeValues;
-}
-
-/**
- * Product details
- *
- * @param product product entity object
- * @param lang current language shortcode
- * @param dict dictionary from server api
- *
- * @returns Product details
- */
-const ProductDetails: FC<ProductDetailsProps> = async ({ product, dict }) => {
+}): Promise<JSX.Element> => {
   // Extract data from product
   const {
     id,

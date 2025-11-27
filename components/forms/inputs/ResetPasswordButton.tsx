@@ -1,6 +1,6 @@
 'use client';
 
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -10,9 +10,9 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param title button title
  * @returns Reset password button
  */
-const ResetPasswordButton: FC<{
+const ResetPasswordButton = ({ title }: {
   title: string;
-}> = ({ title }) => {
+}): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (

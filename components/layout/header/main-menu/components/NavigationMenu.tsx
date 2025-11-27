@@ -1,20 +1,16 @@
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import { type FC } from 'react';
+import { type JSX } from 'react';
 
 // import MenuAnimations from '../../animations/MenuAnimations';
 import NavigationMenuItem from './NavigationMenuItem';
 
-interface MainMenuProps {
-  menu: IMenusPages[];
-}
-
 /**
  * Main navigation menu component.
- * @param menu - Represents a menu array of objects.
- * @returns JSX.Element representing the main navigation menu.
  */
-const NavigationMenu: FC<MainMenuProps> = ({ menu }) => {
+const NavigationMenu = ({ menu }: {
+  menu: IMenusPages[];
+}): JSX.Element => {
   return (
     <nav className="fade-in hidden text-neutral-600 lg:flex">
       <ul className="nav-menu my-auto flex flex-row flex-wrap gap-5">

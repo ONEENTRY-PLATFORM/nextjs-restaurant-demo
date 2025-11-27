@@ -1,4 +1,4 @@
-import { type FC, useContext } from 'react';
+import { type JSX, useContext } from 'react';
 import { toast } from 'react-toastify';
 
 import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
@@ -9,23 +9,18 @@ import {
   removeProduct,
 } from '@/app/store/reducers/CartSlice';
 
-interface ButtonProps {
+/**
+ * Decrease qty button
+ */
+const DecreaseButton = ({ id, qty, title }: {
   id: number;
   qty: number;
   title: string;
-}
-
-/**
- * Decrease qty button
- * @param id product id
- *
- * @returns Button
- */
-const DecreaseButton: FC<ButtonProps> = ({ id, qty, title }) => {
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   if (qty < 1) {
-    return;
+    return <></>;
   }
 
   /**

@@ -1,22 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getProductById } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * Product page
- * @async server component
- * @param params page params
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Product page layout JSX.Element
+ * Product page layout for product page
  */
-const ProductPageLayout: FC<{
+const ProductPageLayout = async ({ params }: {
   params: Promise<{ handle: string; lang: string }>;
-}> = async ({ params }) => {
+}): Promise<JSX.Element> => {
   const { handle } = await params;
   // Get the dictionary from the API and set the server provider.
   const dict = await getDictionary();

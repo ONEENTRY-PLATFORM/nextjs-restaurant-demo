@@ -1,29 +1,23 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getBlockByMarker } from '@/app/api';
 
 import ProductAnimations from './animations/ProductAnimations';
 import GroupCard from './group-card/GroupCard';
 
-interface ProductsGroupProps {
+/**
+ * ProductsGroup component
+ */
+const ProductsGroup = async ({ marker, dict }: {
   marker: string;
   dict: IAttributeValues;
-}
-
-/**
- * ProductsGroup
- * @param marker
- * @param dict dictionary from server api
- *
- * @returns ProductsGroup
- */
-const ProductsGroup: FC<ProductsGroupProps> = async ({ marker, dict }) => {
+}): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);
 
   if (isError || !block) {
-    return;
+    return <></>;
   }
 
   return (

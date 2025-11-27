@@ -1,14 +1,12 @@
 'use client';
 
-import type { FC, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
-interface MenuAnimationsProps {
+const MenuAnimations = ({ children, className }: {
   children: ReactNode;
   className: string;
-}
-
-const MenuAnimations: FC<MenuAnimationsProps> = ({ children, className }) => {
+}): JSX.Element => {
   const ref = useRef<HTMLUListElement>(null);
 
   return (

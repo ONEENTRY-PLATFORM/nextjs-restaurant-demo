@@ -1,16 +1,14 @@
 'use client';
 
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Close modal button
- *
- * @returns close modal button
+ * Close modal button component
  */
-const CloseModal: FC = () => {
+const CloseModal = (): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);
   return (
     <button

@@ -4,32 +4,24 @@ import clsx from 'clsx';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { type FC, useMemo } from 'react';
+import { type JSX, useMemo } from 'react';
 
 const DropdownIcon = dynamic(() => import('./DropdownIcon'), {
   ssr: false,
 });
 
-interface NavigationItemProps {
-  label: string;
-  href: string;
-  hasDropdown?: boolean;
-}
-
 /**
  * Main navigation menu item component.
- *
- * @param props - The properties for the navigation menu item.
- * @param props.label - The label for the menu item.
- * @param props.href - The URL for the menu item.
- * @param props.hasDropdown - Boolean indicating if the item has a dropdown.
- * @returns JSX.Element representing the main navigation menu item.
  */
-const NavigationMenuItem: FC<NavigationItemProps> = ({
+const NavigationMenuItem = ({
   label,
   href,
   hasDropdown = false,
-}) => {
+}: {
+  label: string;
+  href: string;
+  hasDropdown?: boolean;
+}): JSX.Element => {
   const pathname = usePathname();
   const isActive = useMemo(() => pathname === href, [pathname, href]);
 

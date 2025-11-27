@@ -1,4 +1,4 @@
-import type { FC, Key } from 'react';
+import type { JSX, Key } from 'react';
 
 import CategoriesGridAnimations from './animations/CategoriesGridAnimations';
 import { CategoriesLoader } from './components/CategoriesLoader';
@@ -10,17 +10,12 @@ interface CategoryCardProps {
   imgSrc: string;
 }
 
-interface CategoriesGridProps {
-  categories: CategoryCardProps[];
-}
-
 /**
- * Categories grid
- * @param categories
- *
- * @returns categories grid with animations
+ * Categories grid component
  */
-const CategoriesGrid: FC<CategoriesGridProps> = ({ categories }) => {
+const CategoriesGrid = ({ categories }: {
+  categories: CategoryCardProps[];
+}): JSX.Element => {
   if (!categories) {
     return <CategoriesLoader />;
   }

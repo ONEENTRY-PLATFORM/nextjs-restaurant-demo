@@ -5,7 +5,7 @@ import type {
   IMenusEntity,
   IMenusPages,
 } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useState } from 'react';
 
 import ProfileIcon from '@/components/icons/profile';
@@ -14,18 +14,12 @@ import ProfileMenuAnimations from '../../animations/ProfileMenuAnimations';
 import LogoutMenuItem from './LogoutMenuItem';
 import UserMenuItem from './UserMenuItem';
 
-interface UserProfileMenuProps {
-  userMenu: IMenusEntity;
-}
-
 /**
  * User Profile menu component.
- *
- * @param props - The properties for the user profile menu.
- * @param props.userMenu - Represents a menu object.
- * @returns JSX.Element representing the user profile menu.
  */
-const UserProfileMenu: FC<UserProfileMenuProps> = ({ userMenu }) => {
+const UserProfileMenu = ({ userMenu }: {
+  userMenu: IMenusEntity;
+}): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Ensure pages are defined and of correct type

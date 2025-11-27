@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import CartIcon from '@/components/icons/cart';
 
@@ -9,7 +9,7 @@ import CartIcon from '@/components/icons/cart';
  * Nav item cart button
  * @returns JSX.Element
  */
-const NavItemCart: FC = () => {
+const NavItemCart = (): JSX.Element => {
   return (
     <Link
       prefetch={false}

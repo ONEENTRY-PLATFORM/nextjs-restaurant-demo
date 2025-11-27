@@ -1,5 +1,5 @@
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
 
@@ -12,10 +12,9 @@ import NavItemProfile from './NavItemProfile';
 
 /**
  * User navigation group
- * @returns JSX.Element
  */
 
-const NavGroup: FC = async () => {
+const NavGroup = async (): Promise<JSX.Element> => {
   // const [dict] = ServerProvider('dict');
   const { menu, isError } = await getMenuByMarker('user_menu');
 

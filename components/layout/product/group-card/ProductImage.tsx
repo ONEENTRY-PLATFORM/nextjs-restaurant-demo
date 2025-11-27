@@ -1,17 +1,12 @@
 import Image from 'next/image';
-import type { FC } from 'react';
-
-interface ProductImageProps {
-  imageSrc: string;
-}
+import type { JSX } from 'react';
 
 /**
- * Group product image
- * @param imageSrc
- *
- * @returns Group product image
+ * Group product image component
  */
-const ProductImage: FC<ProductImageProps> = ({ imageSrc }) => {
+const ProductImage = ({ imageSrc }: {
+  imageSrc: string;
+}): JSX.Element => {
   return (
     <div
       className="relative h-[130px] w-[110px] shrink-0"

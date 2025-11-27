@@ -4,27 +4,21 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import * as icons from '../../../icons';
 
-interface SidebarMenuItemProps {
-  menuItem: IMenusPages & { isActive: boolean };
-}
-
 /**
  * SidebarMenu item
- *
- * @param menuItem
- *
- * @returns SidebarMenu Item
  */
-const SidebarMenuItem: FC<SidebarMenuItemProps> = ({ menuItem }) => {
+const SidebarMenuItem = ({ menuItem }: {
+  menuItem: IMenusPages & { isActive: boolean };
+}): JSX.Element => {
   const paths = usePathname();
   const pathNames = paths.split('/').filter((path: unknown) => path);
 
   if (!menuItem) {
-    return;
+    return <></>;
   }
   const { pageUrl, localizeInfos } = menuItem;
   const Icon = icons[pageUrl as keyof typeof icons];

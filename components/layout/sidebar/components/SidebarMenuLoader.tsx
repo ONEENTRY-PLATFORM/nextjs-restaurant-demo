@@ -1,16 +1,13 @@
 'use client';
 
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import type { LoaderProps } from '@/app/types/global';
 
 /**
  * SidebarMenu Loader
- * @param limit
- *
- * @returns SidebarMenu Loader
  */
-const SidebarMenuLoader: FC<LoaderProps> = ({ limit = 5 }) => {
+const SidebarMenuLoader = ({ limit = 5 }: LoaderProps): JSX.Element => {
   return (
     <ul className="flex w-full flex-row gap-2 overflow-hidden py-3 text-base md:max-w-[165px] md:flex-col md:gap-5 md:py-0">
       {Array.from(Array(limit).keys()).map((item) => (

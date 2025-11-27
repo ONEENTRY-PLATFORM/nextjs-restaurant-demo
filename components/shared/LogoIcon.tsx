@@ -2,10 +2,6 @@ import { JSX } from "react";
 
 /**
  * LogoIcon
- * @param props - LogoIcon props
- * @param {string} props.fill - LogoIcon fill color
- * @param {string} [props.className] - LogoIcon className
- * @returns {JSX.Element} LogoIcon JSX Element
  */
 const LogoIcon = ({ fill = 'white' }: {
   fill: string;

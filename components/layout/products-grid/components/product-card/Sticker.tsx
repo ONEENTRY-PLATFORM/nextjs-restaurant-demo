@@ -1,7 +1,10 @@
 import Image from 'next/image';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
-interface StickerProps {
+/**
+ * Sticker
+ */
+const Sticker = ({ sticker }: {
   sticker: {
     value: {
       title: string;
@@ -13,17 +16,9 @@ interface StickerProps {
       };
     };
   };
-}
-
-/**
- * Sticker
- * @param sticker
- *
- * @returns Sticker
- */
-const Sticker: FC<StickerProps> = ({ sticker }) => {
+}): JSX.Element => {
   if (!sticker?.value) {
-    return;
+    return <></>;
   }
 
   // Extract data from sticker

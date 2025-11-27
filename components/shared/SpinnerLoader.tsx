@@ -1,16 +1,13 @@
 'use client';
 
-import type { FC } from 'react';
-
-import type { LoaderProps } from '@/app/types/global';
+import type { JSX } from 'react';
 
 import Spinner from './Spinner';
 
 /**
- * Loader
- * @returns Loader
+ * Loader for spinner
  */
-const SpinnerLoader: FC<LoaderProps> = () => {
+const SpinnerLoader = (): JSX.Element => {
   return (
     <div className="relative aspect-square size-full max-h-[250px] overflow-hidden">
       <Spinner />

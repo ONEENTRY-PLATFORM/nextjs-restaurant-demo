@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import { type FC, useMemo } from 'react';
+import { type JSX, useMemo } from 'react';
 
 import AddToCartButton from '@/components/layout/product/components/AddToCartButton';
 import FavoritesButton from '@/components/shared/FavoritesButton';
@@ -11,29 +11,20 @@ import PriceDisplay from './PriceDisplay';
 import ProductImage from './ProductImage';
 import Stickers from './Stickers';
 
-interface ProductCardProps {
-  product: IProductsEntity;
-  index: number;
-  dict: IAttributeValues;
-  pagesLimit: number;
-}
-
 /**
  * Product card
- *
- * @param product product entity object
- * @param dict dictionary from server api
- * @param index Index of element for animations stagger
- * @param pagesLimit used for animations
- *
- * @returns Product card
  */
-const ProductCard: FC<ProductCardProps> = ({
+const ProductCard = ({
   product,
   dict,
   index,
   pagesLimit,
-}) => {
+}: {
+  product: IProductsEntity;
+  index: number;
+  dict: IAttributeValues;
+  pagesLimit: number;
+}): JSX.Element => {
   const { id, statusIdentifier, attributeValues, localizeInfos } = product;
 
   const attributes = useMemo(

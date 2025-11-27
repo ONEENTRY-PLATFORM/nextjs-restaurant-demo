@@ -1,7 +1,3 @@
-// CategoryModal
-
-// import { title } from 'process';
-
 const Icon = () => {
   return (
     <svg

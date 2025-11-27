@@ -3,21 +3,17 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useTransitionState } from 'next-transition-router';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
  * ProductsGrid loader animations
- * @param children children ReactNode
- * @param className CSS className of ref element
- * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
- * @returns loader with animations
  */
-const ProductsGridLoaderAnimations: FC<{
+const ProductsGridLoaderAnimations = ({ children, className }: {
   children: ReactNode;
   className: string;
-}> = ({ children, className }) => {
+}): JSX.Element => {
   const { stage } = useTransitionState();
   const ref = useRef(null);
 

@@ -1,11 +1,9 @@
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 /**
  * Spinner
- *
- * @returns Animated Spinner
  */
-const Spinner: FC = () => {
+const Spinner = (): JSX.Element => {
   return (
     <div className="absolute left-[calc(50%-12px)] top-[calc(50%-12px)] aspect-square size-full overflow-hidden">
       <svg

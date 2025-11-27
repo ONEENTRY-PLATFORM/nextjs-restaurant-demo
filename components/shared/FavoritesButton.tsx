@@ -2,7 +2,7 @@
 
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -22,10 +22,8 @@ import HeartOpenIcon from '@/components/icons/heart-o';
 
 /**
  * Favorites button
- * @param product product entity object.
- * @returns Favorites button
  */
-const FavoritesButton: FC<IProductsEntity> = (product) => {
+const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const [isFav, setIsFav] = useState(false);
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
@@ -81,7 +79,7 @@ const FavoritesButton: FC<IProductsEntity> = (product) => {
   }, [isFavorites]);
 
   if (!product) {
-    return;
+    return <></>;
   }
 
   return (

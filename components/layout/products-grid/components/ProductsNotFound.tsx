@@ -1,23 +1,16 @@
 import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import { type FC } from 'react';
+import { type JSX } from 'react';
 
 import FilterModal from '@/components/layout/filter/FilterModal';
 
-interface GridLayoutProps {
-  lang: string;
-  dict: IAttributeValues;
-}
-
 /**
  * ProductsNotFound
- *
- * @param lang Current language shortcode
- * @param dict dictionary from server api
- *
- * @returns ProductsNotFound
  */
-const ProductsNotFound: FC<GridLayoutProps> = async ({ lang, dict }) => {
+const ProductsNotFound = async ({ lang, dict }: {
+  lang: string;
+  dict: IAttributeValues;
+}): Promise<JSX.Element> => {
   return (
     <div className="text-center">
       <Image

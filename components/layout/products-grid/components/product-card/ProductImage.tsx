@@ -1,22 +1,16 @@
 import Image from 'next/image';
 import type { AttributeType } from 'oneentry/dist/base/utils';
-import type { FC } from 'react';
+import type { JSX } from 'react';
 
 import Placeholder from '@/components/shared/Placeholder';
 
-interface ProductImageProps {
-  attributes: AttributeType;
-  alt: string;
-}
-
 /**
  * Product image
- * @param attributes
- * @param alt
- *
- * @returns Product image/placeholder
  */
-const ProductImage: FC<ProductImageProps> = ({ attributes: { pic }, alt }) => {
+const ProductImage = ({ attributes: { pic }, alt }: {
+  attributes: AttributeType;
+  alt: string;
+}): JSX.Element => {
   const productImage = pic?.value;
   const imageSrc = Array.isArray(productImage)
     ? productImage[0]?.downloadLink

@@ -20,7 +20,6 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
  * VerificationForm component
- * @param dict - Dictionary from server API
  */
 const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   const router = useTransitionRouter();

@@ -10,9 +10,6 @@ import MobileMenu from './MobileMenu';
 
 /**
  * Mobile menu list item
- * @param item Represents a menu item objects.
- *
- * @returns Mobile menu list item
  */
 function MobileMenuItem({
   item,

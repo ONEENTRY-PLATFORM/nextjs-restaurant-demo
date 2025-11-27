@@ -7,8 +7,6 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Reset password button
- * @param title button title
- * @returns Reset password button
  */
 const ResetPasswordButton = ({ title }: {
   title: string;

@@ -23,10 +23,6 @@ import DeliveryForm from './delivery-table/DeliveryForm';
 
 /**
  * Cart page
- * @param dict dictionary from server api
- * @param deliveryData Represents a product entity object.
- *
- * @returns {JSX.Element} Cart page
  */
 const CartPage = ({
   dict,

@@ -18,7 +18,7 @@ const NavItemCart = (): JSX.Element => {
       aria-label="Cart"
     >
       <CartIcon />
-      <div className="py-[2px] px-[5px] absolute top-[-3px] right-[-7px] rounded-full bg-[#ec722b]">
+      <div className="py-0.5 px-[5px] absolute top-[-3px] right-[-7px] rounded-full bg-[#ec722b]">
         <p className="font-bold text-[8px] text-black">2</p>
       </div>
     </Link>

@@ -3,8 +3,6 @@ import { api } from '@/app/api';
 
 /**
  * Subscribe events with Events API
- * @param id product id
- * @returns void
  */
 export const onSubscribeEvents = async (id: number) => {
   try {
@@ -18,8 +16,6 @@ export const onSubscribeEvents = async (id: number) => {
 
 /**
  * Unsubscribe events with Events API
- * @param id product id
- * @returns void
  */
 export const onUnsubscribeEvents = async (id: number) => {
   try {

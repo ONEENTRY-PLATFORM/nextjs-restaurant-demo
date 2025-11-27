@@ -6,11 +6,6 @@ import MobileMenuItem from './MobileMenuItem';
 
 /**
  * Mobile menu list
- *
- * @param menu Represents a menu - array of objects.
- * @param className CSS className of ref element
- *
- * @returns Mobile menu list
  */
 function MobileMenu({
   menu,

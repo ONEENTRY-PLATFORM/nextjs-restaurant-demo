@@ -7,7 +7,6 @@ import { api } from '@/app/api';
 
 /**
  * Post forms data with FormData API
- * @returns object
  */
 export const useSetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);

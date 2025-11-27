@@ -42,8 +42,6 @@ const lato = Lato({
 
 /**
  * Homepage static metadata
- * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata Next.js docs}
- * @param params page params
  */
 export const metadata: Metadata = {
   title: 'OneEntry Beauty',
@@ -55,11 +53,6 @@ export const metadata: Metadata = {
 
 /**
  * Root layout
- * @async
- * @param   {any} params          page params
- * @param   {any} params.children
- * @returns {any}                 Root layout JSX.Element
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/layout Next.js docs}
  */
 export default async function RootLayout({
   children,

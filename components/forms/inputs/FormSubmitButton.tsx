@@ -3,12 +3,6 @@ import type { JSX } from 'react';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import Spinner from '@/components/shared/Spinner';
 
-interface FormSubmitButtonProps {
-  title: string;
-  isLoading: boolean;
-  index: number;
-}
-
 /**
  * Form submit button
  */
@@ -16,7 +10,11 @@ const FormSubmitButton = ({
   title = 'Submit',
   isLoading,
   index,
-}: FormSubmitButtonProps): JSX.Element => {
+}: {
+  title: string;
+  isLoading: boolean;
+  index: number;
+}): JSX.Element => {
   return (
     <FormFieldAnimations index={index} className="w-full">
       <button

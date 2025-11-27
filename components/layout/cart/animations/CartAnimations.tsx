@@ -10,7 +10,6 @@ import type { AnimationsProps } from '@/app/types/global';
 
 /**
  * Cart wrapper stage leaving animations
- * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
 const CartAnimations = ({
   children,

@@ -5,11 +5,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get form by marker.
- *
- * @param marker Menu marker
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns a single form object
  */
 export const getFormByMarker = async (
   marker: string,

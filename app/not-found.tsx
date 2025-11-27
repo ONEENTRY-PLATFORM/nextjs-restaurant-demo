@@ -5,10 +5,6 @@ import { getPageByUrl } from '@/app/api';
 
 /**
  * 404 page layout
- * @async
- * @returns {Promise<JSX.Element>} page layout JSX.Element
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/not-found Next.js docs}
  */
 const NotFound = async (): Promise<JSX.Element> => {
   /** get page by url from the API. */

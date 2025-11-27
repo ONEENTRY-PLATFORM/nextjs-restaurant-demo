@@ -11,15 +11,6 @@ interface HandleProps {
 }
 /**
  * Getting all orders from the orders storage object created by the user
- *
- * @description This method requires user authorization. For more information about configuring the authorization module, see the documentation in the configuration settings section of the SDK.
- *
- * @param marker The text identifier of the order storage object
- * @param limit Limit parameter. Default 30
- * @param offset Offset parameter. Default 0
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns All user orders
  */
 export const getAllOrdersByMarker = async ({
   marker,

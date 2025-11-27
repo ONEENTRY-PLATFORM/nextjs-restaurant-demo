@@ -13,12 +13,6 @@ interface HandleProps {
 
 /**
  * Get a single attribute with data from the attribute sets.
- *
- * @param attributeMarker Text identifier (marker) of the attribute in the set.
- * @param setMarker Text identifier (marker) of the attribute set.
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns SingleAttribute|Error object.
  */
 export const getAdminsInfo = async ({
   body,

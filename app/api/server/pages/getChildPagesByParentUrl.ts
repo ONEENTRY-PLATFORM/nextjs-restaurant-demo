@@ -6,11 +6,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get child pages object with information as an array.
- *
- * @param url Page URL
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns Returns all created pages as an array of PageEntity objects or an empty array [] (if there is no data) for the selected parent
  */
 export const getChildPagesByParentUrl = async (
   url: string,

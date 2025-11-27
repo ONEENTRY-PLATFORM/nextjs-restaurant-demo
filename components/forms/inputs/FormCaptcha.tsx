@@ -10,11 +10,6 @@ type Props = {
 
 /**
  * FormCaptcha
- * @param setToken
- * @param setIsCaptcha
- * @param captchaKey
- *
- * @returns FormCaptcha
  */
 const FormCaptcha = ({ setIsCaptcha }: Props) => {
   const testKey = '6LdF4HcqAAAAAD7Mia-zF5SMzY-XjHd_SU2xr0uQ';

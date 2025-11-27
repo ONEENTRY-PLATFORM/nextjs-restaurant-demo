@@ -5,11 +5,6 @@ import SidebarMenu from '@/components/layout/sidebar';
 
 /**
  * Sidebar layout
- * @async server component
- *
- * @param props
- * @param props.children children ReactNode
- * @returns {Promise<JSX.Element>} Sidebar layout
  */
 const WithSidebar = async ({
   children,

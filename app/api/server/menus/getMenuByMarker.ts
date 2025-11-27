@@ -6,11 +6,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get pages includes in menu by marker.
- *
- * @param marker Menu marker
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns a single menu object as a ContentMenu object with included pages
  */
 export const getMenuByMarker = async (
   marker: string,

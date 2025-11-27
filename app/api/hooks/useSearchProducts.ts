@@ -7,8 +7,6 @@ import { api } from '@/app/api';
 
 /**
  * Search products with Products API
- * @param name product name
- * @returns Array with ProductEntity objects
  */
 export const useSearchProducts = ({ name }: { name: string }) => {
   const [loading, setLoading] = useState<boolean>(false);

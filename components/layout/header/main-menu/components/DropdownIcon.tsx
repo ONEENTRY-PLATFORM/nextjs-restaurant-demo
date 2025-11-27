@@ -9,7 +9,7 @@ const DropdownIcon = ({ isActive }: { isActive: boolean }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={clsx(
-        'size-[14px]',
+        'size-3.5',
         isActive ? 'fill-fuchsia-500 text-fuchsia-500' : 'fill-current',
         'transition-colors',
       )}

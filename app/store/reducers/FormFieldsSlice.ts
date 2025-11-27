@@ -18,8 +18,6 @@ const initialState: InitialStateType = {
 
 /**
  * Get first key
- * @param   {any}                obj - object
- * @returns {string | undefined}     first key
  */
 function getFirstKey(obj: Record<string, FieldType>): string | undefined {
   const keys = Object.keys(obj);

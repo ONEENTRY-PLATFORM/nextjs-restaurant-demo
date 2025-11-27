@@ -10,11 +10,6 @@ interface HandleProps {
 
 /**
  * Get all blocks by page url.
- *
- * @param pageUrl Page URL
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns all blocks as an array of PositionBlock objects or an empty array [] (if there is no data) for the selected parent
  */
 export const getBlocksByPageUrl = async ({
   pageUrl,

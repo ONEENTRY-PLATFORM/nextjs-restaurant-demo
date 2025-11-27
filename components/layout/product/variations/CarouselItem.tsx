@@ -38,7 +38,7 @@ const CarouselItem = ({
       }
     >
       <div className="flex w-full flex-col gap-1 overflow-hidden pb-1 text-center text-sm">
-        <div className="flex h-[80px] w-full items-center">
+        <div className="flex h-20 w-full items-center">
           <CarouselItemImage item={item} />
         </div>
         <h3 className="w-full text-center text-xs leading-4">

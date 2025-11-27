@@ -5,12 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get all related product page objects with API.Products
- *
- * @param id Product page identifier for which to find relationship.
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns  Array with ProductEntity objects
+ * Get all related Products objects with API.
  */
 export const getRelatedProductsById = async (
   id: number,

@@ -11,7 +11,6 @@ import NavItemProfile from './components/NavItemProfile';
 
 /**
  * Bottom menu for mobile devices
- * @returns bottom mobile menu JSX.Element
  */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   // Get Menu by marker from api

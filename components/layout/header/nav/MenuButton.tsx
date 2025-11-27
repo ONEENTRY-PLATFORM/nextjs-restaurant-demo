@@ -6,7 +6,6 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Mobile menu trigger button
- * @returns JSX.Element representing a mobile menu trigger button
  */
 const MobileMenuTrigger = () => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

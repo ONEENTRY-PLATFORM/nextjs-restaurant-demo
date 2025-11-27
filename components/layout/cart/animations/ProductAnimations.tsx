@@ -16,8 +16,6 @@ import {
 
 /**
  * Product animations
- * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
- * @returns
  */
 const ProductAnimations = ({
   children,

@@ -19,47 +19,7 @@ import { getPageByUrl } from '@/app/api';
 import WithSidebar from './WithSidebar';
 
 /**
- * Generate page metadata
- * @async
- * @param params        page params
- * @param params.params
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns             metadata
- */
-export async function generateMetadata({
-  params,
-}: {
-  params: any;
-}): Promise<Metadata> {
-  const { page: pageData } = await params;
-  // get page by Url
-  const { page, isError } = await getPageByUrl(pageData);
-
-  if (isError || !page) {
-    return notFound();
-  }
-
-  // extract data from page
-  const { localizeInfos } = page;
-
-  return {
-    title: localizeInfos?.title,
-    description: localizeInfos?.title,
-    openGraph: {
-      type: 'article',
-    },
-  };
-}
-
-/**
  * Simple page
- * @async
- * @param props        - page props
- * @param props.params - page params
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns             page layout JSX.Element
  */
 const PageLayout = async ({
   params,
@@ -137,3 +97,32 @@ const PageLayout = async ({
 };
 
 export default PageLayout;
+
+
+/**
+ * Generate page metadata
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: any;
+}): Promise<Metadata> {
+  const { page: pageData } = await params;
+  // get page by Url
+  const { page, isError } = await getPageByUrl(pageData);
+
+  if (isError || !page) {
+    return notFound();
+  }
+
+  // extract data from page
+  const { localizeInfos } = page;
+
+  return {
+    title: localizeInfos?.title,
+    description: localizeInfos?.title,
+    openGraph: {
+      type: 'article',
+    },
+  };
+}

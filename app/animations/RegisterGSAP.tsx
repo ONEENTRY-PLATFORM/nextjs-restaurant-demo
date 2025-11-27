@@ -9,8 +9,6 @@ import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 
 /**
  * Register GSAP plugins
- *
- * @returns void
  */
 const RegisterGSAP = () => {
   useIsomorphicLayoutEffect(() => {

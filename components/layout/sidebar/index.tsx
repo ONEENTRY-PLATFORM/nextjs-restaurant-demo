@@ -9,10 +9,6 @@ import SidebarMenuLoader from './components/SidebarMenuLoader';
 
 /**
  * SidebarMenu
- *
- * @param lang Current language shortcode
- *
- * @returns SidebarMenu
  */
 const SidebarMenu = async () => {
   const { isError, menu } = await getMenuByMarker('side_web');

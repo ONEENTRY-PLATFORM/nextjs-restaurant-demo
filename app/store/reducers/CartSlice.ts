@@ -213,11 +213,6 @@ export const {
 
 /**
  * selectIsInCart
- * @param state
- * @param state.cartReducer
- * @param state.cartReducer.productsData
- * @param id                             product id
- * @returns
  */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number }[] } },
@@ -234,10 +229,6 @@ export const selectIsInCart = (
 
 /**
  * Select cart data
- * @param   {any} state                          slice state
- * @param   {any} state.cartReducer              cart slice
- * @param   {any} state.cartReducer.servicesData cart data
- * @returns {any}                                productsData
  */
 export const selectCartData = (state: {
   cartReducer: { servicesData: any[] };
@@ -245,13 +236,6 @@ export const selectCartData = (state: {
 
 /**
  * Select delivery data
- * @param state                                  slice state
- * @param state.cartReducer
- * @param state.cartReducer.deliveryData
- * @param state.cartReducer.deliveryData.date
- * @param state.cartReducer.deliveryData.time
- * @param state.cartReducer.deliveryData.address
- * @returns
  */
 export const selectDeliveryData = (state: {
   cartReducer: {
@@ -265,11 +249,6 @@ export const selectDeliveryData = (state: {
 
 /**
  * Select cart total price
- * @param state                          slice state
- * @param state.cartReducer
- * @param state.cartReducer.serviceId
- * @param state.cartReducer.servicesData
- * @returns
  */
 export const selectCartTotal = (state: {
   cartReducer: {
@@ -288,10 +267,6 @@ export const selectCartTotal = (state: {
 
 /**
  * Select ServiceId
- * @param state                       slice state
- * @param state.cartReducer
- * @param state.cartReducer.serviceId
- * @returns                           productsData
  */
 export const selectServiceId = (state: {
   cartReducer: { serviceId: number };
@@ -299,11 +274,6 @@ export const selectServiceId = (state: {
 
 /**
  * Select TabsState
- * @param key
- * @param state                       slice state
- * @param state.cartReducer
- * @param state.cartReducer.tabsState
- * @returns                           productsData
  */
 export const selectTabsState = (
   key: string,
@@ -312,11 +282,6 @@ export const selectTabsState = (
 
 /**
  * Select TabsState
- * @param key
- * @param state                       slice state
- * @param state.cartReducer
- * @param state.cartReducer.tabsState
- * @returns                           productsData
  */
 export const selectTabsData = (
   key: string,
@@ -325,11 +290,6 @@ export const selectTabsData = (
 
 /**
  * Select cart item by product id
- * @param state                          slice state
- * @param state.cartReducer
- * @param state.cartReducer.productsData
- * @param id                             product id
- * @returns
  */
 export const selectCartItemWithIdLength = (
   state: {
@@ -343,10 +303,6 @@ export const selectCartItemWithIdLength = (
 
 /**
  * Get transition - get product id for animations
- * @param state                          slice state
- * @param state.cartReducer
- * @param state.cartReducer.transitionId
- * @returns                              transitionId
  */
 export const getTransition = (state: {
   cartReducer: {
@@ -356,10 +312,6 @@ export const getTransition = (state: {
 
 /**
  * Select cart version
- * @param state                          slice state
- * @param state.favoritesReducer
- * @param state.favoritesReducer.version
- * @returns                              cart version
  */
 export const selectCartVersion = (state: {
   favoritesReducer: { version: number };

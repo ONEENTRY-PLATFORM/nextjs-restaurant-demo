@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
     workerThreads: false,
-    cpus: 1,
+    cpus: 4,
   },
   typescript: {
     ignoreBuildErrors: false,

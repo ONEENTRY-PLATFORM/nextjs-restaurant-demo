@@ -10,9 +10,6 @@ import { getDictionary } from '../dictionaries';
 
 /**
  * Cart page
- * @async server component
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns Cart page layout JSX.Element
  */
 const CartPageLayout = async ():  Promise<JSX.Element> => {
   // Get dictionary and set to server provider

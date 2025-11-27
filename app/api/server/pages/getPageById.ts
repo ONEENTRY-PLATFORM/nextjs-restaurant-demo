@@ -6,11 +6,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get page object with information about forms, blocks, menus, linked to the page.
- *
- * @param id Page id
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns Returns PageEntity object
  */
 export const getPageById = async (
   id: number,

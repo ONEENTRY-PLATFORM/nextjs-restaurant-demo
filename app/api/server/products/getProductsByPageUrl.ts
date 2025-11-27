@@ -7,11 +7,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get all products with pagination for the selected category.
- *
- * @param props
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns Array with ProductEntity objects
  */
 export const getProductsByPageUrl = async (props: {
   limit: number;

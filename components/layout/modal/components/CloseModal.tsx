@@ -7,8 +7,6 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Close modal button
- *
- * @returns Close modal button
  */
 const CloseModal = (): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);

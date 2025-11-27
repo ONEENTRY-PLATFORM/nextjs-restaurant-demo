@@ -4,9 +4,6 @@ const cache = new Map();
 
 /**
  * Get cached data
- * @param key
- * @param fetchFn
- * @returns
  */
 const getCachedData = async (
   key: string,

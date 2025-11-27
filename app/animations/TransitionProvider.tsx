@@ -7,9 +7,6 @@ import { useRef } from 'react';
 
 /**
  * Transition provider - main 'stage' transition provider
- *
- * @param children children ReactNode
- * @returns TransitionRouter
  */
 export default function TransitionProvider({
   children,

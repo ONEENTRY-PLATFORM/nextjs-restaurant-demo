@@ -6,11 +6,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get pages objects.
- *
- * @param url Page URL
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns Returns PageEntity object
  */
 export const getPagesByIds = async (
   ids: [],

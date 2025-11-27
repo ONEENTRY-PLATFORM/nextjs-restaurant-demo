@@ -9,13 +9,6 @@ import type { AnimationsProps } from '../types/global';
 
 /**
  * Fade transition animations
- *
- * @param props - Animations props
- * @param props.children - children ReactNode
- * @param props.className - CSS className of ref element
- * @param props.index - Index of element for animations stagger
- * @returns {JSX.Element} with animated ref
- * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
 const FadeTransition = ({
   children,

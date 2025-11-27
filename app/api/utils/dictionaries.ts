@@ -5,8 +5,6 @@ import getCachedData from './getCachedData';
 
 /**
  * Get dictionary
- * @param locale
- *
  */
 export const getDictionary = async () => {
   try {

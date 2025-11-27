@@ -6,9 +6,6 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Create account button
- * @param title
- *
- * @returns Create account button
  */
 const CreateAccountButton = ({
   title = 'Create account',

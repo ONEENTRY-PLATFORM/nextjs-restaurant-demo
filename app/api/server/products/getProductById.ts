@@ -6,11 +6,6 @@ import { typeError } from '@/components/utils';
 
 /**
  * Get product by id.
- *
- * @param id Product id.
- * @see {@link https://oneentry.cloud/instructions/npm OneEntry docs}
- *
- * @returns ProductEntity object
  */
 export const getProductById = async (
   id: number,

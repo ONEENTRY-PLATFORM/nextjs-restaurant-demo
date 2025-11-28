@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
-import { Suspense } from 'react';
+import { memo, Suspense } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
@@ -13,31 +13,44 @@ import { getDictionary } from '../../dictionaries';
 
 /**
  * Shop catalog page
+ * @async
+ * @param   {object}                                                    props              - page props
+ * @param   {Promise<{ handle: string; lang: string }>}                 props.params       - page params
+ * @param   {Promise<{ [key: string]: string | string[] | undefined }>} props.searchParams - search params
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * @returns {Promise<JSX.Element>}                                                         Shop page layout JSX.Element
  */
 const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
+  /** Extract search parameters from the request */
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
   ]);
+  /** Extract route parameters from the request */
   const { handle } = params;
 
-  // Get the dictionary from the API and set the server provider.
+  /** Get the dictionary from the API and set the server provider. */
   const [dict] = ServerProvider('dict', await getDictionary());
 
   // get page by url from the API
   const { page, isError } = await getPageByUrl(handle);
 
-  // !!!extract products per page limit from global settings
+  /** Set the number of products to display per page */
+  // TODO: Extract products per page limit from global settings
   const pagesLimit = 10;
+
+  /** Memoize the loader component to prevent unnecessary re-renders */
+  const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
   if (!page || isError) {
     return notFound();
   }
 
+  /** Render the shop catalog page layout */
   return (
     <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
       <div className="flex w-full flex-col items-center gap-5">
-        <Suspense fallback={<ProductsGridLoader />}>
+        <Suspense fallback={<MemoizedProductsGridLoader />}>
           <ProductsGridLayout
             params={{ handle }}
             searchParams={searchParams ?? {}}

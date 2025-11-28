@@ -17,31 +17,39 @@ import { getPageByUrl } from '@/app/api';
 // import type { Locale } from '@/i18n-config';
 // import { getDictionary } from '../dictionaries';
 import WithSidebar from './WithSidebar';
+import { JSX } from 'react';
 
 /**
- * Simple page
+ * Simple page layout
+ * @async
+ * @param   {object}                                  params        - Page parameters
+ * @param   {Promise<{ page: string; lang: string }>} params.params - The page and language parameters
+ * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * @returns {Promise<JSX.Element>}                                  page layout JSX.Element
  */
 const PageLayout = async ({
   params,
 }: {
   params: Promise<{ page: string; handle: string }>;
-}) => {
+}): Promise<JSX.Element> => {
+  /** Extract page name from params */
   const { page: p } = await params;
-  // Get dictionary and set to server provider
+  /** Get dictionary and set to server provider for internationalization */
   // const [dict] = ServerProvider('dict', await getDictionary());
 
-  // Get page by current url
+  /** Get page data by current url */
   const { page, isError } = await getPageByUrl(p);
 
-  // if error return notFound
+  /** if error return notFound */
   if (isError || !page) {
     return notFound();
   }
 
-  // extract data from page
+  /** extract data from page */
   const { pageUrl, templateIdentifier } = page;
 
-  // array of pages components with additional settings for next router
+  /** array of pages components with additional settings for next router */
   const pages = [
     {
       templateType: templateIdentifier,
@@ -80,42 +88,57 @@ const PageLayout = async ({
     // },
   ];
 
+  /** Render the page component based on the page URL and template type */
   return (
     <div className="mx-auto flex min-h-80 w-full max-w-(--breakpoint-xl) flex-col overflow-hidden">
-      {pages.map((p, i) => {
-        if (pageUrl !== p.name) {
-          return;
-        }
-        return p.templateType === 'withSidebar' ? (
-          <WithSidebar key={i}>{p.component}</WithSidebar>
-        ) : (
-          <div key={i}>{p.component}</div>
-        );
-      })}
+      {Array.isArray(pages) ? (
+        pages.map((p, i) => {
+          if (pageUrl !== p.name) {
+            return null;
+          }
+          return p.templateType === 'withSidebar' ? (
+            <WithSidebar key={i}>
+              {p.component}
+            </WithSidebar>
+          ) : (
+            <div key={i}>{p.component}</div>
+          );
+        })
+      ) : (
+        <div>Page not found</div>
+      )}
     </div>
   );
 };
 
 export default PageLayout;
 
-
 /**
  * Generate page metadata
+ * @async
+ * @param   {object}                                  params        - Page params
+ * @param   {Promise<{ page: string; lang: string }>} params.params - The page and language parameters
+ * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * @returns {Promise<Metadata>}                                     page metadata
  */
 export async function generateMetadata({
   params,
 }: {
   params: any;
 }): Promise<Metadata> {
+  /** Extract page name from params */
   const { page: pageData } = await params;
-  // get page by Url
+
+  /** Get page data by current url */
   const { page, isError } = await getPageByUrl(pageData);
 
+  /** if error return notFound */
   if (isError || !page) {
     return notFound();
   }
 
-  // extract data from page
+  /** extract data from page */
   const { localizeInfos } = page;
 
   return {

@@ -7,9 +7,7 @@ import HistoryBack from './HistoryBack';
 /**
  * Filter Header component
  */
-const FilterHeader = ({ dict }: {
-  dict: IAttributeValues;
-}): JSX.Element => {
+const FilterHeader = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { open_filters_button } = dict;
 
   return (

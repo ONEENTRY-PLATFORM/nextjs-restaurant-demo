@@ -1,41 +1,59 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useTransitionRouter } from 'next-transition-router';
+import type { IOrderProductData } from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
 import { api } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { removeAllServices } from '@/app/store/reducers/CartSlice';
+import { removeProduct } from '@/app/store/reducers/CartSlice';
 import { removeOrder } from '@/app/store/reducers/OrderSlice';
+import { handleApiError } from '@/app/utils/errorHandler';
 
 /**
  * Custom hook to handle order creation and payment session
- * @returns Object containing order-related functions and state
+ * @returns {object} useCreateOrder object with onConfirmOrder function, loading state and error state
  */
-export const useCreateOrder = () => {
+export const useCreateOrder = (): object => {
+  /** Initialize router for navigation */
   const router = useTransitionRouter();
+  /** Get dispatch function for Redux actions */
   const dispatch = useAppDispatch();
-  const order = useAppSelector((state) => state.orderReducer.order);
+  /** Get order data from Redux store */
+  const order = useAppSelector(
+    (state: { orderReducer: { order: any } }) => state.orderReducer.order,
+  );
 
+  /** Loading state for async operations */
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  /** Error state for handling API errors */
   const [error, setError] = useState<string>('');
 
   /**
    * Create payment session with Payments API
-   * @param id - Order ID for creating a session
-   * @returns Promise resolving to payment state marker or void
+   * @param   {number}          id - Order id
+   * @returns {Promise<string>}    Payment status
+   * @see {@link https://doc.oneentry.cloud/docs/payments OneEntry CMS docs}
    */
   const createSession = async (id: number): Promise<string | undefined> => {
-    if (!id) return;
-
+    /** Return error status if no order ID provided */
+    if (!id) {
+      return 'error';
+    }
+    /** Set loading state to true */
     setIsLoading(true);
 
+    /** Handle payment session creation */
     try {
+      /** Create payment session using Payments API */
+      const { paymentUrl } = await api.Payments.createSession(id, 'session');
+      /** Create payment session using Payments API */
       if (order?.paymentAccountIdentifier === 'cash') {
         router.push('/profile');
         return 'payment_success';
       }
-      const { paymentUrl } = await api.Payments.createSession(id, 'session');
+      /** Redirect to payment URL if available */
       if (paymentUrl) {
         router.push(paymentUrl);
         return 'payment_method';
@@ -54,52 +72,57 @@ export const useCreateOrder = () => {
   };
 
   /**
-   * Confirm order and create it using Orders API
-   * @returns Promise<void>
+   * On confirm order Create order with Orders API
+   * @returns {Promise<void>} Promise that resolves when order is confirmed
    */
   const onConfirmOrder = async (): Promise<void> => {
-    if (!order?.formIdentifier || !order?.paymentAccountIdentifier) return;
-
     setIsLoading(true);
+    if (order?.formIdentifier && order?.paymentAccountIdentifier) {
+      /** prepare order data */
+      const orderFormData = order.formData
+        .slice()
+        .filter((element: { marker: string }) => element.marker !== 'time')
+        .map((data: { marker: string; type: string; value: any }) => {
+          return {
+            marker: data.marker,
+            type: data.type,
+            value: data.value,
+          };
+        });
 
-    try {
-      // Prepare order data
-      const orderFormData = order.formData.map(({ marker, type, value }) => ({
-        marker,
-        type,
-        value,
-      }));
+      try {
+        /** Create order with Orders API */
+        const { id, paymentAccountIdentifier } = await api.Orders.createOrder(
+          'order',
+          {
+            // ...order,
+            formData: orderFormData,
+            products: order.products,
+            paymentAccountIdentifier: order.paymentAccountIdentifier,
+            formIdentifier: order.formIdentifier,
+          },
+        );
 
-      // Create order with Orders API
-      const { id, paymentAccountIdentifier } = await api.Orders.createOrder(
-        'orders',
-        {
-          ...order,
-          formData: orderFormData,
-          formIdentifier: order.formIdentifier,
-          paymentAccountIdentifier: order.paymentAccountIdentifier,
-        },
-      );
+        /** remove all ordered products from cart */
+        order.products.forEach((product: IOrderProductData) => {
+          dispatch(removeProduct(product.productId));
+        });
 
-      // removeAllServices from cart
-      dispatch(removeAllServices());
+        /** remove order */
+        dispatch(removeOrder());
 
-      // Remove order from store
-      dispatch(removeOrder());
-
-      // Handle payment session based on payment method
-      if (paymentAccountIdentifier !== 'cash') {
-        await createSession(id);
-      } else {
-        router.push('/profile');
+        if (paymentAccountIdentifier !== 'cash') {
+          await createSession(id);
+        } else {
+          router.push('/orders');
+        }
+      } catch (error) {
+        const apiError = handleApiError('onConfirmOrder', error);
+        setError(apiError.message);
+        setIsLoading(false);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('An unexpected error occurred');
-      }
-    } finally {
+    } else {
+      setError('Please select a payment method');
       setIsLoading(false);
     }
   };

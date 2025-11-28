@@ -10,7 +10,10 @@ import ProductUnits from './ProductUnits';
 /**
  * Product details component
  */
-const ProductDetails = async ({ product, dict }: {
+const ProductDetails = async ({
+  product,
+  dict,
+}: {
   product: IProductsEntity & { productPages?: [] };
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {

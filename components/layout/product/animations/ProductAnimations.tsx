@@ -9,7 +9,11 @@ import { useRef, useState } from 'react';
 /**
  * Product animations wrapper
  */
-const ProductAnimations = ({ children, className, index }: {
+const ProductAnimations = ({
+  children,
+  className,
+  index,
+}: {
   children: ReactNode;
   className: string;
   index: number;

@@ -3,7 +3,10 @@
 import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
-const MenuAnimations = ({ children, className }: {
+const MenuAnimations = ({
+  children,
+  className,
+}: {
   children: ReactNode;
   className: string;
 }): JSX.Element => {

@@ -7,7 +7,11 @@ import ProductCard from './product-card/ProductCard';
 /**
  * Products grid
  */
-const ProductsGrid = ({ dict, products, pagesLimit }: {
+const ProductsGrid = ({
+  dict,
+  products,
+  pagesLimit,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lang: any;
   dict: IAttributeValues;

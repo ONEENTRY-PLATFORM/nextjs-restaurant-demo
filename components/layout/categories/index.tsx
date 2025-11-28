@@ -13,7 +13,9 @@ interface CategoryCardProps {
 /**
  * Categories grid component
  */
-const CategoriesGrid = ({ categories }: {
+const CategoriesGrid = ({
+  categories,
+}: {
   categories: CategoryCardProps[];
 }): JSX.Element => {
   if (!categories) {

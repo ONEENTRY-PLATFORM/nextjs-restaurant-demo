@@ -4,7 +4,10 @@ import { memo } from 'react';
 /**
  * PriceFrom Input component
  */
-const PriceFromInput = ({ price, setPrice }: {
+const PriceFromInput = ({
+  price,
+  setPrice,
+}: {
   price: number;
   setPrice: Dispatch<SetStateAction<number>>;
 }): JSX.Element => {

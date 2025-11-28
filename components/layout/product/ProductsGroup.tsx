@@ -10,7 +10,10 @@ import GroupCard from './group-card/GroupCard';
 /**
  * ProductsGroup component
  */
-const ProductsGroup = async ({ marker, dict }: {
+const ProductsGroup = async ({
+  marker,
+  dict,
+}: {
   marker: string;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {

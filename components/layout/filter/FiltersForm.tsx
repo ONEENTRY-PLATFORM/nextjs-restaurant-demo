@@ -19,7 +19,10 @@ import PricePickerFilter from './components/price/PricePickerFilter';
 /**
  * Products filters form
  */
-const FiltersForm = async ({ prices, dict }: {
+const FiltersForm = async ({
+  prices,
+  dict,
+}: {
   prices: any;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {

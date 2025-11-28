@@ -6,7 +6,11 @@ import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 /**
  * Increase button component
  */
-const IncreaseButton = ({ id, qty, units }: {
+const IncreaseButton = ({
+  id,
+  qty,
+  units,
+}: {
   id: number;
   qty: number;
   units: number;

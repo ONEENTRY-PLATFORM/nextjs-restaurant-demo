@@ -20,7 +20,10 @@ type Color = {
 /**
  * Color filter component
  */
-const ColorFilter = ({ title, attributes }: {
+const ColorFilter = ({
+  title,
+  attributes,
+}: {
   title?: string;
   attributes: IAttributesSetsEntity | IError;
 }): JSX.Element => {

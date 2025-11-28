@@ -26,7 +26,7 @@ type ProductResponse = {
  * @returns {Promise<JSX.Element>}              Cart page layout JSX.Element
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
-const CartPageLayout = async ():  Promise<JSX.Element> => {
+const CartPageLayout = async (): Promise<JSX.Element> => {
   /** Get dictionary and set to server provider */
   const [dict] = ServerProvider('dict', await getDictionary());
 
@@ -43,7 +43,10 @@ const CartPageLayout = async ():  Promise<JSX.Element> => {
     <section className="relative mx-auto box-border flex min-h-80 w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
       <div className="flex w-full flex-col items-center gap-5">
         <WithSidebar>
-          <CartPage dict={dict} deliveryData={deliveryData as IProductsEntity} />
+          <CartPage
+            dict={dict}
+            deliveryData={deliveryData as IProductsEntity}
+          />
         </WithSidebar>
       </div>
     </section>

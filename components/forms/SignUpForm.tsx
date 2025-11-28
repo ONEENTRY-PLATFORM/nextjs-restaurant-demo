@@ -3,7 +3,7 @@
 
 import type { ISignUpData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { JSX, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
 import { api, logInUser, useGetFormByMarkerQuery } from '@/app/api';

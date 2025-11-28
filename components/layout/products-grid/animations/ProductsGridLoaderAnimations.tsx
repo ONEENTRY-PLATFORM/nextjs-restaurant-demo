@@ -10,7 +10,10 @@ import { useRef } from 'react';
 /**
  * ProductsGrid loader animations
  */
-const ProductsGridLoaderAnimations = ({ children, className }: {
+const ProductsGridLoaderAnimations = ({
+  children,
+  className,
+}: {
   children: ReactNode;
   className: string;
 }): JSX.Element => {

@@ -17,7 +17,11 @@ import {
 const ApplyButton = ({
   product,
   dict,
-}: { product: any; dict: IAttributeValues }): JSX.Element => {
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  product: any;
+  dict: IAttributeValues;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const [productInCart, setInCart] = useState(false);
   const { apply_button_placeholder, cancel_text } = dict;

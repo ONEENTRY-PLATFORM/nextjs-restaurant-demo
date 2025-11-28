@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { JSX, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { api } from '@/app/api';

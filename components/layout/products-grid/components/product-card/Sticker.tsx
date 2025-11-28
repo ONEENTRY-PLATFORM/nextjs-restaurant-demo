@@ -4,7 +4,9 @@ import type { JSX } from 'react';
 /**
  * Sticker
  */
-const Sticker = ({ sticker }: {
+const Sticker = ({
+  sticker,
+}: {
   sticker: {
     value: {
       title: string;

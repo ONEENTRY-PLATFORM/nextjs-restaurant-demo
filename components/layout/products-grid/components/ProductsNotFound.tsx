@@ -7,8 +7,9 @@ import FilterModal from '@/components/layout/filter/FilterModal';
 /**
  * ProductsNotFound
  */
-const ProductsNotFound = async ({ lang, dict }: {
-  lang: string;
+const ProductsNotFound = async ({
+  dict,
+}: {
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   return (
@@ -21,7 +22,7 @@ const ProductsNotFound = async ({ lang, dict }: {
         className="mx-auto mb-5 size-20"
       />
       <div className="text-center text-lg">Products not found</div>
-      <FilterModal prices={null} lang={lang} dict={dict} />
+      <FilterModal prices={null} dict={dict} />
     </div>
   );
 };

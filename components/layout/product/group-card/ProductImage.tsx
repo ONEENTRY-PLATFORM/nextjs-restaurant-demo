@@ -4,9 +4,7 @@ import type { JSX } from 'react';
 /**
  * Group product image component
  */
-const ProductImage = ({ imageSrc }: {
-  imageSrc: string;
-}): JSX.Element => {
+const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (
     <div
       className="relative h-[130px] w-[110px] shrink-0"

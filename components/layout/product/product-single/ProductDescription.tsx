@@ -4,7 +4,9 @@ import type { JSX } from 'react';
 /**
  * Product description component
  */
-const ProductDescription = ({ description }: {
+const ProductDescription = ({
+  description,
+}: {
   description: {
     value: {
       htmlValue: string;

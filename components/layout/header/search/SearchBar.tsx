@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { JSX, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { Suspense, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 

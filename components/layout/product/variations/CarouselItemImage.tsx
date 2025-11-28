@@ -8,7 +8,9 @@ import Placeholder from '@/components/shared/Placeholder';
 /**
  * CarouselItem image component
  */
-const CarouselItemImage = ({ item }: {
+const CarouselItemImage = ({
+  item,
+}: {
   item: IProductsEntity;
 }): JSX.Element => {
   const title = item.localizeInfos.title;

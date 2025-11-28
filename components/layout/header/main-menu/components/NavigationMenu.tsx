@@ -8,9 +8,7 @@ import NavigationMenuItem from './NavigationMenuItem';
 /**
  * Main navigation menu component.
  */
-const NavigationMenu = ({ menu }: {
-  menu: IMenusPages[];
-}): JSX.Element => {
+const NavigationMenu = ({ menu }: { menu: IMenusPages[] }): JSX.Element => {
   return (
     <nav className="fade-in hidden text-neutral-600 lg:flex">
       <ul className="nav-menu my-auto flex flex-row flex-wrap gap-5">

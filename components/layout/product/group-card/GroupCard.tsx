@@ -11,7 +11,10 @@ import ProductImage from './ProductImage';
 /**
  * Products group card component
  */
-const GroupCard = ({ product, dict }: {
+const GroupCard = ({
+  product,
+  dict,
+}: {
   product: IProductsEntity;
   dict: IAttributeValues;
 }): JSX.Element => {

@@ -8,7 +8,11 @@ import { setProductQty } from '@/app/store/reducers/CartSlice';
 /**
  * Product quantity input
  */
-const QuantityInput = ({ id, qty, units }: {
+const QuantityInput = ({
+  id,
+  qty,
+  units,
+}: {
   id: number;
   qty: number;
   units: number;

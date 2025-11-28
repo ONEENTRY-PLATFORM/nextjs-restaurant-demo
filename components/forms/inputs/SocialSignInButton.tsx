@@ -4,7 +4,10 @@ import type { JSX } from 'react';
 /**
  * Social SignIn button
  */
-const SocialSignInButton = ({ imageSrc, alt }: {
+const SocialSignInButton = ({
+  imageSrc,
+  alt,
+}: {
   imageSrc: string;
   alt: string;
 }): JSX.Element => {

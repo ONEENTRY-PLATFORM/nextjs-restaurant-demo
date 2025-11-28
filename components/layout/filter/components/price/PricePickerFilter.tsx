@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
@@ -14,7 +13,10 @@ import PriceToInput from './PriceToInput';
 /**
  * Price filter component
  */
-const PriceFilter = ({ prices, dict }: {
+const PriceFilter = ({
+  prices,
+  dict,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prices: any;
   dict: IAttributeValues;

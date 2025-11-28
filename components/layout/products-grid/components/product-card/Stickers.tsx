@@ -6,7 +6,9 @@ import Sticker from './Sticker';
 /**
  * Stickers
  */
-const Stickers = ({ product: { attributeValues } }: {
+const Stickers = ({
+  product: { attributeValues },
+}: {
   product: IProductsEntity;
 }): JSX.Element => {
   // extract attributes from attributeValues field of product
@@ -14,30 +16,30 @@ const Stickers = ({ product: { attributeValues } }: {
 
   // Get stickers array directly or use empty array as fallback
   const stickers = attributes?.stickers || [];
-  
+
   // Map through stickers and render Sticker components
   return (
     <>
-      {Array.isArray(stickers) ? 
-        stickers.map(
-          (
-            sticker: {
-              value: {
-                value: string;
-                title: string;
-                extended: {
-                  value: {
-                    downloadLink: string;
+      {Array.isArray(stickers)
+        ? stickers.map(
+            (
+              sticker: {
+                value: {
+                  value: string;
+                  title: string;
+                  extended: {
+                    value: {
+                      downloadLink: string;
+                    };
                   };
                 };
-              };
+              },
+              i: Key,
+            ) => {
+              return <Sticker key={i} sticker={sticker} />;
             },
-            i: Key,
-          ) => {
-            return <Sticker key={i} sticker={sticker} />;
-          },
-        ) : null
-      }
+          )
+        : null}
     </>
   );
 };

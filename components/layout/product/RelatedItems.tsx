@@ -11,7 +11,10 @@ import ProductAnimations from './animations/ProductAnimations';
 /**
  * RelatedItems component
  */
-const RelatedItems = async ({ marker, dict }: {
+const RelatedItems = async ({
+  marker,
+  dict,
+}: {
   marker: string;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {

@@ -17,7 +17,11 @@ const ProductRow = ({
   pageData,
   product,
   setState,
-}: { pageData: any; product: any; setState: any }): JSX.Element => {
+}: {
+  pageData: any;
+  product: any;
+  setState: any;
+}): JSX.Element => {
   const dispatch = useAppDispatch();
   const serviceId = useAppSelector(selectServiceId);
 

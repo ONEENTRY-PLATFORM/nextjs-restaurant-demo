@@ -7,7 +7,10 @@ import type { JSX } from 'react';
 /**
  * User menu item link component.
  */
-const UserMenuItem = ({ page, setState }: {
+const UserMenuItem = ({
+  page,
+  setState,
+}: {
   page: IMenusPages;
   setState: (state: boolean) => void;
 }): JSX.Element => (

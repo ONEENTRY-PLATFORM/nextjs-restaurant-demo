@@ -18,9 +18,7 @@ import MobileMenu from './components/MobileMenu';
 /**
  * Mobile menu offscreen modal
  */
-const OffscreenModal = ({ menu }: {
-  menu: IMenusEntity;
-}): JSX.Element => {
+const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();
   const { open, setOpen, component } = useContext(OpenDrawerContext);
 

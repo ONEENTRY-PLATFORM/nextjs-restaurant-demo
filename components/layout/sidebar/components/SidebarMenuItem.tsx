@@ -11,7 +11,9 @@ import * as icons from '../../../icons';
 /**
  * SidebarMenu item
  */
-const SidebarMenuItem = ({ menuItem }: {
+const SidebarMenuItem = ({
+  menuItem,
+}: {
   menuItem: IMenusPages & { isActive: boolean };
 }): JSX.Element => {
   const paths = usePathname();

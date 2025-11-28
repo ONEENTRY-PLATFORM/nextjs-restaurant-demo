@@ -9,27 +9,34 @@ import ProductSingle from '@/components/layout/product';
 
 /**
  * Product page layout for product page
+ * @param   {object}                                    props        - Page props.
+ * @param   {Promise<{ handle: string; lang: string }>} props.params - Page params with handle and lang.
+ * @returns {Promise<JSX.Element>}                                   Promise<JSX.Element> - Product page layout.
+ * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
-const ProductPageLayout = async ({ params }: {
+const ProductPageLayout = async ({
+  params,
+}: {
   params: Promise<{ handle: string; lang: string }>;
 }): Promise<JSX.Element> => {
   const { handle } = await params;
-  // Get the dictionary from the API and set the server provider.
+  /** Get the dictionary from the API and set the server provider. */
   const dict = await getDictionary();
 
-  // Get product by current Id
+  /** Get product by current Id */
   const { isError, product } = await getProductById(Number(handle));
 
+  /** Return 404 page if product not found or an error occurred */
   if (isError || !product) {
     return notFound();
   }
 
-  // extract data from product
+  /** Extract data from product for structured data generation */
   const { attributeValues, localizeInfos, additional, statusIdentifier } =
     product;
 
   /**
-   * product Json liked data
+   * Product JSON-LD structured data for SEO
    * https://json-ld.org/
    */
   const productJsonLd = {

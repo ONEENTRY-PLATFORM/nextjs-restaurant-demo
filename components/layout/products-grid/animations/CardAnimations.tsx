@@ -10,7 +10,12 @@ import { useRef } from 'react';
 /**
  * Card animations component
  */
-const CardAnimations = ({ children, className, index, pagesLimit }: {
+const CardAnimations = ({
+  children,
+  className,
+  index,
+  pagesLimit,
+}: {
   children: ReactNode;
   className: string;
   index: number;

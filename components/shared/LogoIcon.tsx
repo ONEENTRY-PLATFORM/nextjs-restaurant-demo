@@ -1,9 +1,11 @@
-import { JSX } from "react";
+import type { JSX } from 'react';
 
 /**
  * LogoIcon
  */
-const LogoIcon = ({ fill = 'white' }: {
+const LogoIcon = ({
+  fill = 'white',
+}: {
   fill: string;
   className?: string;
 }): JSX.Element => {

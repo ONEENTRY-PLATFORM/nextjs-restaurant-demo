@@ -4,7 +4,10 @@ import { memo } from 'react';
 /**
  * History Back Button
  */
-const PriceToInput = ({ price, setPrice }: {
+const PriceToInput = ({
+  price,
+  setPrice,
+}: {
   price: number;
   setPrice: Dispatch<SetStateAction<number>>;
 }): JSX.Element => {

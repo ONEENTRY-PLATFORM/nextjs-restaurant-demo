@@ -11,7 +11,10 @@ import NavigationButton from './NavigationButton';
 /**
  * Variations carousel
  */
-const VariationsCarousel = ({ items, total }: {
+const VariationsCarousel = ({
+  items,
+  total,
+}: {
   items: Array<IProductsEntity> | undefined;
   total?: number;
 }): JSX.Element => {

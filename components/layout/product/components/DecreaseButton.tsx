@@ -12,7 +12,11 @@ import {
 /**
  * Decrease qty button
  */
-const DecreaseButton = ({ id, qty, title }: {
+const DecreaseButton = ({
+  id,
+  qty,
+  title,
+}: {
   id: number;
   qty: number;
   title: string;

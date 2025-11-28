@@ -17,7 +17,10 @@ import Placeholder from '@/components/shared/Placeholder';
 /**
  * Product images gallery/placeholder
  */
-const ProductImageGallery = ({ product, alt }: {
+const ProductImageGallery = ({
+  product,
+  alt,
+}: {
   alt: string;
   product: IProductsEntity;
 }): JSX.Element => {

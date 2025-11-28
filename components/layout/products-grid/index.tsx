@@ -53,7 +53,7 @@ const ProductsGridLayout = async ({
       });
 
   if (!products || total < 1 || isError) {
-    return <ProductsNotFound lang={lang} dict={dict} />;
+    return <ProductsNotFound dict={dict} />;
   }
 
   const totalPages = Math.ceil(total / pagesLimit);
@@ -78,7 +78,7 @@ const ProductsGridLayout = async ({
           )}
         </section>
       </CardsGridAnimations>
-      <FilterModal prices={fromToPrices} lang={lang} dict={dict} />
+      <FilterModal prices={fromToPrices} dict={dict} />
     </>
   );
 };

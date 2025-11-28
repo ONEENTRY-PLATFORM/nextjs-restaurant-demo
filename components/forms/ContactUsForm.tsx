@@ -2,7 +2,7 @@
 'use client';
 
 import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { JSX, FormEvent } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useState } from 'react';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';

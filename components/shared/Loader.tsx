@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import Spinner from './Spinner';
 
 /**
- * Loader 
+ * Loader
  */
 const Loader = (): JSX.Element => {
   return (

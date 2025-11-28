@@ -17,7 +17,9 @@ import UserMenuItem from './UserMenuItem';
 /**
  * User Profile menu component.
  */
-const UserProfileMenu = ({ userMenu }: {
+const UserProfileMenu = ({
+  userMenu,
+}: {
   userMenu: IMenusEntity;
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);

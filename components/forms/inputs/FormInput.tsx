@@ -13,7 +13,9 @@ import EyeOpenIcon from '@/components/icons/eye-o';
 /**
  * FormInput
  */
-const FormInput = ( field: IAttributes & { value?: string; index: number }): JSX.Element => {
+const FormInput = (
+  field: IAttributes & { value?: string; index: number },
+): JSX.Element => {
   const { localizeInfos } = field;
   const [value, setValue] = useState<string>(field.value || '');
   const [type, setType] = useState<string>('');

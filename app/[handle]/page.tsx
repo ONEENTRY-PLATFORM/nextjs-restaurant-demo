@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
@@ -17,7 +18,6 @@ import { getPageByUrl } from '@/app/api';
 // import type { Locale } from '@/i18n-config';
 // import { getDictionary } from '../dictionaries';
 import WithSidebar from './WithSidebar';
-import { JSX } from 'react';
 
 /**
  * Simple page layout
@@ -97,9 +97,7 @@ const PageLayout = async ({
             return null;
           }
           return p.templateType === 'withSidebar' ? (
-            <WithSidebar key={i}>
-              {p.component}
-            </WithSidebar>
+            <WithSidebar key={i}>{p.component}</WithSidebar>
           ) : (
             <div key={i}>{p.component}</div>
           );

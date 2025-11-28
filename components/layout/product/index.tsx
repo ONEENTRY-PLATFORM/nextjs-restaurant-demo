@@ -15,7 +15,10 @@ import VariationsCarousel from './variations/VariationsCarousel';
 /**
  * Product single
  */
-const ProductSingle = async ({ product, dict }: {
+const ProductSingle = async ({
+  product,
+  dict,
+}: {
   product: IProductsEntity & {
     blocks?: Array<string>;
     productPages?: [];

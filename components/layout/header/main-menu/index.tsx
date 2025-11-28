@@ -9,7 +9,11 @@ import NavigationMenu from './components/NavigationMenu';
 /**
  * Main menu component.
  */
-const MainMenu = async ({ menu }: { menu: IMenusEntity }): Promise<JSX.Element> => {
+const MainMenu = async ({
+  menu,
+}: {
+  menu: IMenusEntity;
+}): Promise<JSX.Element> => {
   if (!menu?.pages) {
     return <MainMenuLoader limit={4} />;
   }

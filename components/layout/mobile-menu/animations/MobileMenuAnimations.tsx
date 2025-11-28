@@ -10,7 +10,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * Mobile menu open/close animations
  */
-const MobileMenuAnimations = ({ children, className, id }: {
+const MobileMenuAnimations = ({
+  children,
+  className,
+  id,
+}: {
   children: ReactNode;
   className: string;
   id: string;

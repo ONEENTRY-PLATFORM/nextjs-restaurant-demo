@@ -10,7 +10,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * Filter modal animations
  */
-const FilterModalAnimations = ({ children }: { children: ReactNode }): JSX.Element => {
+const FilterModalAnimations = ({
+  children,
+}: {
+  children: ReactNode;
+}): JSX.Element => {
   const { open, component, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const ref = useRef(null);

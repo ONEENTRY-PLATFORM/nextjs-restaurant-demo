@@ -13,7 +13,7 @@
   "dependencies": {
     "gsap": "^3.13.0",
     "html-react-parser": "^5.2.10",
-    "next": "^16.0.4",
+    "next": "^16.0.5",
     "next-transition-router": "^0.2.11",
     "oneentry": "^1.0.131",
     "react": "^19.2.0",
@@ -26,10 +26,9 @@
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
     "@gsap/react": "^2.1.2",
-    "@next/env": "^16.0.4",
-    "@next/eslint-plugin-next": "^16.0.4",
+    "@next/env": "^16.0.5",
+    "@next/eslint-plugin-next": "^16.0.5",
     "@reduxjs/toolkit": "^2.11.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/postcss": "^4.1.17",
@@ -47,7 +46,7 @@
     "critters": "^0.0.25",
     "cssnano": "^7.1.2",
     "eslint": "^9.39.1",
-    "eslint-config-next": "^16.0.4",
+    "eslint-config-next": "^16.0.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^61.4.1",
@@ -56,6 +55,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-tailwindcss": "^4.0.0-beta.0",
+    "image-size": "^2.0.2",
     "lqip-modern": "^2.2.1",
     "next-redux-wrapper": "^8.1.0",
     "postcss": "^8.5.6",

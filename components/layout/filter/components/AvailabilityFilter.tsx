@@ -7,9 +7,7 @@ import { useEffect, useState } from 'react';
 /**
  * Availability filter component
  */
-const AvailabilityFilter = ({ title }: {
-  title?: string;
-}): JSX.Element => {
+const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();
 

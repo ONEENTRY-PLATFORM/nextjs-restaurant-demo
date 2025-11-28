@@ -14,7 +14,9 @@ import UserProfileMenu from './user-menu/UserProfileMenu';
 /**
  * Nav item profile link / SignInForm button
  */
-const NavItemProfile = ({ userMenu }: {
+const NavItemProfile = ({
+  userMenu,
+}: {
   userMenu?: IMenusEntity;
 }): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);

@@ -7,7 +7,10 @@ import Placeholder from '@/components/shared/Placeholder';
 /**
  * Product image
  */
-const ProductImage = ({ attributes: { pic }, alt }: {
+const ProductImage = ({
+  attributes: { pic },
+  alt,
+}: {
   attributes: AttributeType;
   alt: string;
 }): JSX.Element => {

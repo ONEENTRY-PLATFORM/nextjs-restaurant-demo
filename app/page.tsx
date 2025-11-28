@@ -1,6 +1,7 @@
 // import dynamic from 'next/dynamic';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
-import { JSX, Suspense } from 'react';
+import type { JSX } from 'react';
+import { Suspense } from 'react';
 
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
@@ -19,6 +20,7 @@ import { sortArrayByPosition } from '@/components/utils';
 
 /**
  * Page component
+ * @param props
  */
 const IndexPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([

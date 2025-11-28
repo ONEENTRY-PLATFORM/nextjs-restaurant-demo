@@ -13,9 +13,11 @@ import FiltersForm from './FiltersForm';
 /**
  * FilterModal component
  */
-const FilterModal = ({ prices, dict }: {
+const FilterModal = ({
+  prices,
+  dict,
+}: {
   prices: any | undefined;
-  lang: string;
   dict: IAttributeValues;
 }): JSX.Element => {
   return (

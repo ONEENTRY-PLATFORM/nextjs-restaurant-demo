@@ -13,7 +13,10 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 const ModalAnimations = ({
   children,
   component,
-}: { children: ReactNode; component: string }): JSX.Element => {
+}: {
+  children: ReactNode;
+  component: string;
+}): JSX.Element => {
   const { open, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const ref = useRef(null);

@@ -79,7 +79,7 @@ const FormInput = (
       {type === 'list' && (
         <select
           id={field.marker}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full focus:outline-muted"
           required={required}
           value={value}
           onChange={(val) => setValue(val.currentTarget.value)}
@@ -98,7 +98,7 @@ const FormInput = (
         <textarea
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           value={value}
@@ -110,7 +110,7 @@ const FormInput = (
           type={type}
           id={field.marker}
           placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce]"
+          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
           required={required}
           onChange={(val) => setValue(val.currentTarget.value)}
           autoComplete={fieldType === 'password' ? 'password' : ''}

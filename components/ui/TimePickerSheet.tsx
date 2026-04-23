@@ -42,9 +42,9 @@ const TimePickerSheet = ({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-[29px] backdrop-blur-[10px]">
-      <div className="mx-auto max-w-[310px] bg-transparent">
-        <div className="grid grid-cols-4 gap-[10px]">
+    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px]">
+      <div className="mx-auto max-w-77.5 bg-transparent">
+        <div className="grid grid-cols-4 gap-2.5">
           {slots.map((slot) => {
             const active = slot === selected;
             return (
@@ -67,7 +67,7 @@ const TimePickerSheet = ({
             type="button"
             disabled={!selected}
             onClick={() => onApply(selected)}
-            className="mx-auto block rounded-[5px] border border-brand px-[15px] py-[5px] font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
+            className="mx-auto block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
           >
             Apply
           </button>
@@ -75,14 +75,14 @@ const TimePickerSheet = ({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-[5px] border border-paper px-[15px] py-[5px] font-bold text-[20px] text-paper hover_btn_white"
+              className="rounded-[5px] border border-paper px-3.75 py-1.25 font-bold text-[20px] text-paper hover_btn_white"
             >
               Cancel
             </button>
           ) : null}
         </div>
       </div>
-      <div className="h-[100px] border-none bg-transparent" />
+      <div className="h-25 border-none bg-transparent" />
     </div>
   );
 };

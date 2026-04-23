@@ -68,7 +68,7 @@ const PromoDetailPage = async ({
           ) : null}
           <button
             type="button"
-            className="mx-auto mt-8 block h-[50px] w-full max-w-[615px] rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover"
+            className="mx-auto mt-8 block h-12.5 w-full max-w-153.75 rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover"
           >
             {cta}
           </button>

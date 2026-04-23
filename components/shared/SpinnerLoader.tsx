@@ -9,7 +9,7 @@ import Spinner from './Spinner';
  */
 const SpinnerLoader = (): JSX.Element => {
   return (
-    <div className="relative aspect-square size-full max-h-[250px] overflow-hidden">
+    <div className="relative aspect-square size-full max-h-62.5 overflow-hidden">
       <Spinner />
     </div>
   );

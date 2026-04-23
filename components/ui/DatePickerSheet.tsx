@@ -121,8 +121,8 @@ const DatePickerSheet = ({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-[29px] backdrop-blur-[10px]">
-      <div className="mx-auto max-w-[350px] bg-transparent">
+    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px]">
+      <div className="mx-auto max-w-87.5 bg-transparent">
         <div className="grid grid-cols-7">
           {WEEK.map((w) => (
             <div key={w} className="calend_mon">
@@ -174,7 +174,7 @@ const DatePickerSheet = ({
               />
             </svg>
           </button>
-          <div className="flex gap-[15px]">
+          <div className="flex gap-3.75">
             <h2 className="font-semibold text-[20px] text-brand">
               {MONTH_NAMES[month]}
             </h2>
@@ -208,7 +208,7 @@ const DatePickerSheet = ({
           <button
             type="button"
             onClick={() => onApply(selected)}
-            className="mx-auto block rounded-[5px] border border-brand px-[15px] py-[5px] font-bold text-[20px] text-brand hover_btn_transp"
+            className="mx-auto block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_transp"
           >
             Apply
           </button>
@@ -216,14 +216,14 @@ const DatePickerSheet = ({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-[5px] border border-paper px-[15px] py-[5px] font-bold text-[20px] text-paper hover_btn_white"
+              className="rounded-[5px] border border-paper px-3.75 py-1.25 font-bold text-[20px] text-paper hover_btn_white"
             >
               Cancel
             </button>
           ) : null}
         </div>
       </div>
-      <div className="h-[100px] border-none bg-transparent" />
+      <div className="h-25 border-none bg-transparent" />
     </div>
   );
 };

@@ -49,7 +49,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
           type="search"
           id="searchInput"
           name="quick-search"
-          className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-10 text-[#dfe9f9] cursor-pointer"
+          className="rounded md:w-62.5 lg:w-83.75 h-9.5 backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-10 text-paper cursor-pointer"
           placeholder={placeholder}
           aria-label={placeholder}
         />

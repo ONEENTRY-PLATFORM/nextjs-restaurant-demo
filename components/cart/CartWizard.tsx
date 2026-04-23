@@ -70,7 +70,7 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
   }
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[393px] flex-col gap-6 px-[20px] pt-[15px] md:max-w-107.5 md:px-0">
+    <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:max-w-107.5 md:px-0">
       {/* Step header — back button + title (mirrors service_table.html chrome) */}
       <div className="flex items-center justify-between">
         <button
@@ -97,11 +97,11 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
         <p className="font-normal text-[24px] text-paper">
           {STEP_TITLES[step]}
         </p>
-        <span className="w-[27px]" aria-hidden="true" />
+        <span className="w-6.75" aria-hidden="true" />
       </div>
 
       {/* Bottom-sheet style panel (glass, rounded-top, matches static-html) */}
-      <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-[20px] py-[25px] backdrop-blur-[10px]">
+      <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-5 py-6.25 backdrop-blur-[10px]">
         {step === 'time' && <StepTime />}
         {step === 'signin' && <StepSignIn />}
         {step === 'address' && <StepAddress />}

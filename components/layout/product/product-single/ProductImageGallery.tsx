@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 // import '@/app/styles/image-gallery.css';
@@ -7,8 +6,8 @@
 
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { JSX, Key, RefObject } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { JSX, Key } from 'react';
+import { useState } from 'react';
 import Slider from 'react-slick';
 
 import FavoritesButton from '@/components/shared/FavoritesButton';
@@ -24,18 +23,10 @@ const ProductImageGallery = ({
   alt: string;
   product: IProductsEntity;
 }): JSX.Element => {
-  const [nav1, setNav1] = useState<Slider>();
-  const [nav2, setNav2] = useState<Slider>();
-  let sliderRef1 = useRef<RefObject<Slider | null>>(null);
-  let sliderRef2 = useRef<RefObject<Slider | null>>(null);
+  const [nav1, setNav1] = useState<Slider | null>(null);
+  const [nav2, setNav2] = useState<Slider | null>(null);
   // extract attributeValues from product
   const { attributeValues } = product;
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setNav1(sliderRef1 as any);
-    setNav2(sliderRef2 as any);
-  }, []);
 
   // extract images from attributeValues
   const imageSrc = attributeValues.pic?.value as
@@ -63,11 +54,7 @@ const ProductImageGallery = ({
       {imagesData ? (
         isGallery ? (
           <div className="relative w-full">
-            <Slider
-              asNavFor={nav2}
-              // eslint-disable-next-line react-hooks/immutability
-              ref={(slide) => (sliderRef1 = slide as any)}
-            >
+            <Slider asNavFor={nav2 ?? undefined} ref={setNav1}>
               {(
                 imagesData as Array<{ original?: string; thumbnail?: string }>
               ).map((image, i: Key) => {
@@ -86,9 +73,8 @@ const ProductImageGallery = ({
               })}
             </Slider>
             <Slider
-              asNavFor={nav1}
-              // eslint-disable-next-line react-hooks/immutability
-              ref={(slide) => (sliderRef2 = slide as any)}
+              asNavFor={nav1 ?? undefined}
+              ref={setNav2}
               slidesToShow={3}
               swipeToSlide={true}
               focusOnSelect={true}

@@ -31,34 +31,37 @@ const ProductCard = ({
   const title = localizeInfos?.title || '';
   return (
     <CardAnimations
-      className="product-card group"
+      className="menu_item group"
       index={index}
       pagesLimit={pagesLimit}
     >
-      <div className="z-10 flex justify-between gap-5 self-stretch">
+      {/* Stickers (top-left) + Favorites heart (top-right) */}
+      <div className="z-10 flex justify-between items-start gap-2 self-stretch">
         <Stickers product={product} />
-        <FavoritesButton {...product} />
+        <div className="heart_card">
+          <FavoritesButton {...product} />
+        </div>
       </div>
 
       {/* ProductImage */}
       <ProductImage attributes={attributes} alt={title} />
 
-      {/* Product Data */}
-      <div className="z-10 mb-5 mt-auto flex w-full max-w-40 flex-col gap-2.5">
-        <h2 className="text-center text-sm leading-4 text-neutral-600">
-          {title}
-        </h2>
-
+      {/* Price strip overlaying image bottom */}
+      <div className="descr">
         <PriceDisplay attributes={attributes} />
+      </div>
 
+      {/* Product Data */}
+      <div className="z-10 flex flex-col gap-2.5 px-1">
+        <h3 className="menu_item-title">{title}</h3>
         <AddToCartButton
           id={id}
           productTitle={title}
           statusIdentifier={statusIdentifier || ''}
           units={(attributeValues.units_product?.value as number) ?? 0}
           dict={dict}
-          height={42}
-          className="btn btn-md btn-primary"
+          height={46}
+          className="bg-brand hover:bg-brand-hover w-[46px] h-[46px] flex justify-center items-center rounded-full mt-[-10px] relative text-white font-bold text-2xl leading-none"
         />
       </div>
 
@@ -66,7 +69,8 @@ const ProductCard = ({
         prefetch={true}
         href={'/shop/product/' + id}
         className="absolute left-0 top-0 z-0 flex size-full"
-      ></Link>
+        aria-label={title}
+      />
     </CardAnimations>
   );
 };

@@ -29,6 +29,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static HTML mockup folder (uploaded design reference, not app code)
+    "static-html/**",
   ]),
 
   // Main ruleset for JS/TS/JSX/TSX

@@ -44,8 +44,8 @@ const lato = Lato({
  * Homepage static metadata
  */
 export const metadata: Metadata = {
-  title: 'OneEntry Beauty',
-  description: 'OneEntry next-js Beauty description',
+  title: 'Restaurant — Excellence taste in every bite',
+  description: 'Restaurant ordering platform built with Next.js + OneEntry CMS',
   openGraph: {
     type: 'website',
   },
@@ -65,9 +65,9 @@ export default async function RootLayout({
   const dict = dictValue;
 
   return (
-    <html lang={'en_US'}>
+    <html lang="en">
       <body
-        className={`${lato.variable} antialiased flex flex-col min-h-screen`}
+        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen max-w-480 mx-auto relative`}
       >
         <RegisterGSAP />
         <StoreProvider>

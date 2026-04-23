@@ -7,7 +7,8 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        main: ['Lato'],
+        main: ['var(--font-lato)', 'Lato', 'sans-serif'],
+        lato: ['var(--font-lato)', 'Lato', 'sans-serif'],
       },
       variants: {
         extend: {
@@ -15,6 +16,15 @@ const config = {
         },
       },
       colors: {
+        // Brand tokens (aliases for consistency)
+        brand: {
+          DEFAULT: '#ec722b',
+          hover: '#eb4b0e',
+        },
+        ink: '#4c4d56',
+        paper: '#dfe9f9',
+        muted: '#b0bcce',
+        // Legacy aliases (kept for backward compat)
         custom_orange: '#ec722b',
         currentColor: '#ec722b',
         custom_btnorange: 'rgba(236, 114, 43, 0.8)',
@@ -52,8 +62,10 @@ const config = {
       },
       screens: {
         xs: '480px',
+        mobile_wide: '500px',
         sm: '640px',
         md: '768px',
+        md_wide: { min: '1020px', max: '1279px' },
         lg: '1024px',
         xl: '1240px',
         '2xl': '1536px',

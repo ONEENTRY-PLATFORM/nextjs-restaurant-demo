@@ -7,12 +7,25 @@ import type {
 
 import type { IAppOrder } from '@/app/types/global';
 
+export type CheckoutStep =
+  | 'cart'
+  | 'time'
+  | 'signin'
+  | 'verification'
+  | 'address'
+  | 'payment'
+  | 'add_card'
+  | 'success'
+  | 'error';
+
 type InitialStateType = {
   order: IAppOrder;
   currency?: string;
   paymentMethods?: Array<{
     identifier: string;
   }>;
+  step: CheckoutStep;
+  stepError?: string;
 };
 
 const initialState: InitialStateType = {
@@ -21,6 +34,7 @@ const initialState: InitialStateType = {
     products: [],
     formIdentifier: 'order',
   },
+  step: 'cart',
 };
 
 const orderReducer = createSlice({
@@ -82,6 +96,16 @@ const orderReducer = createSlice({
       }
       state.currency = action.payload;
     },
+    setStep(state, action: PayloadAction<CheckoutStep>) {
+      state.step = action.payload;
+      if (action.payload !== 'error') {
+        delete state.stepError;
+      }
+    },
+    setStepError(state, action: PayloadAction<string>) {
+      state.step = 'error';
+      state.stepError = action.payload;
+    },
   },
 });
 
@@ -93,6 +117,16 @@ export const {
   addPaymentMethods,
   addPaymentMethod,
   addOrderCurrency,
+  setStep,
+  setStepError,
 } = orderReducer.actions;
+
+export const selectCheckoutStep = (state: {
+  orderReducer: InitialStateType;
+}): CheckoutStep => state.orderReducer.step;
+
+export const selectCheckoutStepError = (state: {
+  orderReducer: InitialStateType;
+}): string | undefined => state.orderReducer.stepError;
 
 export default orderReducer.reducer;

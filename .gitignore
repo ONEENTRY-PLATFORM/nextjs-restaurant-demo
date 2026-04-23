@@ -47,3 +47,5 @@ package-lock.json
 
 GIT-SETUP.md
 git-setup.sh
+static-html
+.vscode

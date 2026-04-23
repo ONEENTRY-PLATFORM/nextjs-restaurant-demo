@@ -9,6 +9,7 @@ import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import PromoGrid from '@/components/promo/PromoGrid';
 import { sortArrayByPosition } from '@/components/utils';
 
 // const HomeHero = dynamic(() => import('@/components/layout/home-hero'), {
@@ -40,7 +41,46 @@ const IndexPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const sortedBlocks = sortArrayByPosition(blocks);
   // console.log(sortedBlocks);
 
-  return sortedBlocks?.map((block: IBlockEntity) => {
+  return (
+    <>
+      <PromoGrid />
+      {sortedBlocks?.map((block: IBlockEntity) => {
+        return (
+          <BlockSwitch
+            key={block.identifier}
+            block={block}
+            dict={dict}
+            params={params}
+            searchParams={searchParams ?? {}}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+type BlockSwitchProps = {
+  block: IBlockEntity;
+  dict: Awaited<ReturnType<typeof getDictionary>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  searchParams: any;
+};
+
+/**
+ * Render block by its identifier — keeps the block switch out of the main
+ * page component so React doesn't warn about creating components in render.
+ * @param   {BlockSwitchProps}   props - Block render props.
+ * @returns {JSX.Element | null}       Block JSX or null.
+ */
+const BlockSwitch = ({
+  block,
+  dict,
+  params,
+  searchParams,
+}: BlockSwitchProps): JSX.Element | null => {
+  return (() => {
     switch (block.identifier) {
       case 'recommended_web':
         return (
@@ -80,7 +120,7 @@ const IndexPageLayout = async (props: PageProps): Promise<JSX.Element> => {
       default:
         return null;
     }
-  });
+  })();
 };
 
 export default IndexPageLayout;

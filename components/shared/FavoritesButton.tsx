@@ -3,7 +3,7 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -24,11 +24,10 @@ import HeartOpenIcon from '@/components/icons/heart-o';
  * Favorites button
  */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
-  const [isFav, setIsFav] = useState(false);
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
-  const isFavorites = useAppSelector((state) =>
+  const isFav = useAppSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, id),
   );
@@ -72,12 +71,6 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
       toast('Auth error! ' + e?.message);
     }
   };
-
-  // set Favorites on data change
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsFav(isFavorites);
-  }, [isFavorites]);
 
   if (!product) {
     return <></>;

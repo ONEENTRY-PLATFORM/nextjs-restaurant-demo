@@ -1,0 +1,113 @@
+'use client';
+
+import type { JSX } from 'react';
+import { useState } from 'react';
+
+import { submitReview } from '@/app/actions/review';
+
+import StarRating from './StarRating';
+
+/**
+ * Fixed-position slide-up review panel — replicates the bottom sheet on
+ * `about_reviews.html`. Visible on mobile (`md:hidden`) by default. Submits
+ * the review via {@link submitReview} Server Action.
+ *
+ * Uses Tailwind `.animate-slide-up` defined in `app/styles/main.css`.
+ * @param   {object} props                - Component props.
+ * @param   {number} props.productId      - Product ID for review attachment.
+ * @param   {string} [props.title]        - Panel title override.
+ * @param   {string} [props.description]  - Panel description override.
+ * @returns {JSX.Element}                 Panel JSX.
+ */
+const ReviewsSlideUpPanel = ({
+  productId,
+  title = 'Reviews',
+  description = 'Please leave a review about your visit',
+}: {
+  productId: number;
+  title?: string;
+  description?: string;
+}): JSX.Element => {
+  const [rating, setRating] = useState(0);
+  const [text, setText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const onApply = async () => {
+    if (!text.trim()) {
+      setError('Please write a review.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    const res = await submitReview({
+      rating: rating || 5,
+      text: text.trim(),
+      author: 'Anonymous',
+      productId,
+    });
+    setLoading(false);
+    if (res.ok) {
+      setSuccess(true);
+      setRating(0);
+      setText('');
+    } else {
+      setError(res.message);
+    }
+  };
+
+  return (
+    <div className="animate-slide-up fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-[22px] backdrop-blur-[10px] md:hidden">
+      <div className="mx-auto max-w-[355px]">
+        <div className="flex items-center justify-center gap-1.25">
+          <p className="text-center font-bold text-[20px] text-brand">
+            {title}
+          </p>
+        </div>
+        <p className="mt-5 font-normal text-[16px] text-paper">{description}</p>
+
+        <div className="mt-4 flex justify-center">
+          <StarRating value={rating} onChange={setRating} size={24} />
+        </div>
+
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.currentTarget.value)}
+          className="mt-5 w-full resize-none rounded-[5px] border border-brand bg-transparent p-2 text-paper"
+          rows={4}
+        />
+
+        <div className="mt-5 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={onApply}
+            disabled={loading || success}
+            className="flex h-[35px] w-[95px] items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
+          >
+            {success ? 'Sent' : loading ? '...' : 'Apply'}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setText('');
+              setRating(0);
+              setSuccess(false);
+              setError('');
+            }}
+            className="flex h-[35px] w-[95px] items-center justify-center rounded-[5px] border border-paper text-paper hover_btn_white"
+          >
+            Edit
+          </button>
+        </div>
+
+        {error ? (
+          <p className="mt-2 text-center text-sm text-red-400">{error}</p>
+        ) : null}
+      </div>
+      <div className="h-[100px] border-none bg-transparent"></div>
+    </div>
+  );
+};
+
+export default ReviewsSlideUpPanel;

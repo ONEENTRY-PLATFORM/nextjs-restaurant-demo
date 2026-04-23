@@ -132,7 +132,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
         onSubmit={onSubmitHandle}
       >
         <div className="relative mb-5 box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-gray-400 max-md:max-w-full">
+          <p className="text-xs text-paper/60 max-md:max-w-full">
             Enter your OTP code here
           </p>
         </div>
@@ -144,12 +144,12 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
             numInputs={6}
             renderInput={(props) => <input {...props} />}
             containerStyle="grid max-w-full grid-cols-6 justify-between gap-2 max-md:gap-2"
-            inputStyle="relative box-border flex h-[70px] min-w-[14%] flex-col rounded border border-solid border-neutral-100 bg-neutral-100 p-2.5 text-center text-2xl font-medium text-neutral-600"
+            inputStyle="relative box-border flex h-[70px] min-w-[14%] flex-col rounded border border-solid border-paper/30 bg-transparent p-2.5 text-center text-2xl font-medium text-white"
           />
-          <div className="self-end text-xs text-fuchsia-500 max-md:mr-2.5">
-            <span className="text-gray-400">{receive_otp_text?.value} </span>
+          <div className="self-end text-xs text-brand max-md:mr-2.5">
+            <span className="text-paper/60">{receive_otp_text?.value} </span>
             <button
-              className="font-bold text-fuchsia-500"
+              className="font-bold text-brand"
               type="button"
               onClick={onResendHandle}
             >

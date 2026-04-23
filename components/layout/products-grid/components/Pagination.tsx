@@ -30,9 +30,9 @@ const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
         <button
           key={item}
           className={
-            'size-8 rounded-full border border-neutral-100 border-solid hover:text-orange-500 hover:border-orange-500 text-neutral-700 transition-colors ' +
+            'size-8 rounded-full border border-white/30 border-solid hover:text-brand hover:border-brand text-white/90 transition-colors ' +
             (currentPage === Number(item)
-              ? 'border-orange-500 text-orange-500'
+              ? 'border-brand text-brand'
               : '')
           }
           onClick={() => {

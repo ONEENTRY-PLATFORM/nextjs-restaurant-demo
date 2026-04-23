@@ -70,7 +70,7 @@ const ProductPageLayout = async ({
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      <div className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-col bg-white">
+      <div className="mx-auto flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col bg-white">
         <ProductSingle product={product as any} dict={dict} />
       </div>
     </>

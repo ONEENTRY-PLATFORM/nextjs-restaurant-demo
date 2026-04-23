@@ -85,7 +85,7 @@ const DeliveryTable = ({
 
   return (
     <TableRowAnimations
-      className="table w-full border-collapse text-neutral-600"
+      className="table w-full border-collapse text-white/90"
       index={5}
     >
       <div>

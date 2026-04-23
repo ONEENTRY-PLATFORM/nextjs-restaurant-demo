@@ -99,7 +99,7 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
         onSubmit={onResetSubmit}
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="max-w-full text-xs text-gray-400">
+          <p className="max-w-full text-xs text-paper/60">
             {new_password_desc?.value || 'New password'}
           </p>
         </div>

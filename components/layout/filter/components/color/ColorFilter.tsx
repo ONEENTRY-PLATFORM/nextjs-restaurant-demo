@@ -71,16 +71,16 @@ const ColorFilter = ({
   if (!attributes) {
     return (
       <div>
-        <div className="mb-5 h-5 bg-slate-100">{title}</div>
-        <div className="mb-9 flex h-5 flex-wrap gap-5 whitespace-nowrap bg-slate-100 text-sm leading-8"></div>
+        <div className="mb-5 h-5 bg-ink/30">{title}</div>
+        <div className="mb-9 flex h-5 flex-wrap gap-5 whitespace-nowrap bg-ink/30 text-sm leading-8"></div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="mb-5 text-lg text-[#4C4D56]">{title}</div>
-      <div className="mb-9 flex flex-wrap gap-1 whitespace-nowrap text-sm leading-8 text-slate-400">
+      <div className="filter_title mb-5">{title}</div>
+      <div className="mb-9 flex flex-wrap gap-1 whitespace-nowrap text-sm leading-8 text-paper/70">
         {colorFilters.map((color, index) => {
           return (
             <ColorPicker

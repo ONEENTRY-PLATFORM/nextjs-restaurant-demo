@@ -27,7 +27,7 @@ const GroupCard = ({
   const pic2 = images?.[1]?.downloadLink;
 
   return (
-    <div className="flex min-h-42.5 flex-row justify-between rounded-xl bg-[#F6F7F9] p-4 transition-shadow hover:shadow-lg max-md:flex-col">
+    <div className="flex min-h-42.5 flex-row justify-between rounded-[5px] bg-[rgba(76,77,86,0.8)] p-4 transition-shadow hover:shadow-lg max-md:flex-col">
       <div className="flex min-w-full gap-2.5">
         <div className="flex w-[37%] flex-col">
           <h3 className="mb-5 text-sm leading-4 text-neutral-600">{title}</h3>
@@ -44,7 +44,7 @@ const GroupCard = ({
           ) : (
             <Placeholder className="min-h-27.5" />
           )}
-          <div className="my-auto aspect-square w-4 shrink-0 fill-neutral-600 text-center">
+          <div className="my-auto aspect-square w-4 shrink-0 text-white/90 text-center">
             +
           </div>
           {pic2 ? (

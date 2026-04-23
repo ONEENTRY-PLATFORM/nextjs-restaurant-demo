@@ -114,7 +114,7 @@ const SignInForm = ({
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <FormFieldAnimations
             index={1}
-            className="max-w-full text-xs text-gray-400"
+            className="max-w-full text-xs text-paper/60"
           >
             {['email', 'phone'].map((type) => (
               <button
@@ -147,7 +147,7 @@ const SignInForm = ({
           index={6}
           className="mx-auto mb-10 flex justify-between gap-5"
         >
-          <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300">
+          <div className="w-auto basis-auto text-lg text-paper/60 transition-colors duration-300">
             {(forgot_password_text?.value as string) || 'Forgot Password?'}
           </div>
           <ResetPasswordButton

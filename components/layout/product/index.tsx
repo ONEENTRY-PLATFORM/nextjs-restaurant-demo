@@ -32,7 +32,7 @@ const ProductSingle = async ({
   const { products, total } = await getRelatedProductsById(id);
 
   return (
-    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
+    <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
       <div className="flex flex-row gap-10 max-md:max-w-full max-md:gap-4 max-sm:flex-wrap">
         {/* ProductImage - col-1 */}
         <ProductAnimations

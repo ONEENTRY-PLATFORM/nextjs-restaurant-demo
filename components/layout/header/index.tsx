@@ -4,9 +4,6 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
-// import SearchIcon from '@/components/icons/search';
-// import NavigationMenu from '@/components/layout/header/main-menu';
-// import CategoryModal from '@/components/static/CategoryModal';
 import FilterBottom from '@/components/static/FilterBottom';
 import MenuBottom from '@/components/static/MenuBottom';
 
@@ -58,14 +55,16 @@ const Header = async (): Promise<JSX.Element> => {
             <div className="flex items-center justify-start md:gap-7.5 gap-15">
               <Logo />
               <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-100 lg:max-w-110">
-                Excellence taste in{' '}
-                <span className="text-custom_orange">every bite</span>
+                Excellence taste
+                <br /> in <span className="text-custom_orange">every bite</span>
               </h1>
             </div>
             <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
+              {/* SearchBar */}
               <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'Search'} />
+                <SearchBar placeholder={'soup'} />
               </Suspense>
+              {/* filter button */}
               <div className="cursor-pointer group">
                 <svg
                   className="fill-[#DFE9F9] hover-target"
@@ -90,7 +89,7 @@ const Header = async (): Promise<JSX.Element> => {
 
       <div className="relative pb-7.5 md:pb-0 bg-custom">
         <div className="relative">
-          <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col">
+          <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
               <a className="w-4.5 h-4.5" href="#">
                 <img src="icons/phone.svg" alt="call" />
@@ -125,7 +124,7 @@ const Header = async (): Promise<JSX.Element> => {
 
             <div className="relative max-w-120  mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
               <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'Search'} />
+                <SearchBar placeholder={'soup'} />
               </Suspense>
               <div className="cursor-pointer group">
                 <svg
@@ -178,7 +177,6 @@ const Header = async (): Promise<JSX.Element> => {
           </section>
         </div>
       </div>
-      {/* <CategoryModal /> */}
       <MenuBottom />
       <FilterBottom />
     </div>

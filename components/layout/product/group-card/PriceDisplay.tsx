@@ -23,14 +23,14 @@ const PriceDisplay = ({
   return (
     <div className="mb-5 mr-auto flex gap-2 py-1">
       {currentPrice && (
-        <div className="grow text-lg font-bold leading-4 text-orange-500">
+        <div className="grow text-lg font-bold leading-4 text-brand">
           {price}
         </div>
       )}
       <div
         className={
           'leading-4 ' +
-          (currentPrice ? 'text-gray-400 text-sm' : 'text-orange-500 text-lg')
+          (currentPrice ? 'text-paper text-sm line-through' : 'text-brand text-lg')
         }
       >
         {oldPrice}

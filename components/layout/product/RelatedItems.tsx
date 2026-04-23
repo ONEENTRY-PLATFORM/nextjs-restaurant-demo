@@ -28,11 +28,11 @@ const RelatedItems = async ({
   return (
     <section className="flex flex-col max-md:max-w-full">
       <ProductAnimations className={''} index={0}>
-        <h3 className="mb-5 text-base uppercase leading-5 text-neutral-600 max-md:max-w-full">
+        <h3 className="title_name max-md:max-w-full">
           {block.attributeValues?.block_title?.value as string | undefined}
         </h3>
       </ProductAnimations>
-      <CardsGridAnimations className="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 max-md:w-full">
+      <CardsGridAnimations className="menu_items w-full max-md:w-full">
         {block?.similarProducts?.items?.map(
           (product: IProductsEntity, i: Key | number) => {
             return (

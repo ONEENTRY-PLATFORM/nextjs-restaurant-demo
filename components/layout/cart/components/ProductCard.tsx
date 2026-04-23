@@ -55,11 +55,11 @@ const ProductCard = ({
           />
         </div>
 
-        <div className="relative h-37.5 w-32.5 shrink-0 rounded-xl bg-slate-50">
+        <div className="relative h-17.25 w-17.25 shrink-0">
           {imgSrc ? (
             <Image
-              width={130}
-              height={150}
+              width={69}
+              height={69}
               loading="lazy"
               src={imgSrc}
               alt={title}
@@ -70,8 +70,8 @@ const ProductCard = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-5 self-start text-neutral-600">
-          <h2 className="text-base leading-8">{title}</h2>
+        <div className="flex flex-col gap-2 self-start text-white/90">
+          <h2 className="font-normal text-[14px] max-w-35">{title}</h2>
           <PriceDisplay
             currentPrice={(sale?.value as number) ?? 0}
             originalPrice={(price?.value as number) ?? 0}
@@ -84,7 +84,7 @@ const ProductCard = ({
           className="absolute left-0 top-0 z-0 flex size-full"
         ></Link>
       </div>
-      <div className="z-10 flex items-center gap-5 self-start text-xl font-bold leading-8 text-neutral-600 max-sm:ml-8 max-sm:flex">
+      <div className="z-10 flex items-center gap-3.75 self-start text-white/90 max-sm:ml-8 max-sm:flex">
         <QuantitySelector
           id={id}
           units={(units_product?.value as number) ?? 0}

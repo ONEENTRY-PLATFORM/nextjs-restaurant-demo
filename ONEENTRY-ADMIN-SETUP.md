@@ -148,7 +148,7 @@ Attribute set для филиалов:
 | `promo_cta`        | string | Текст кнопки (дефолт `"Order now"`)         |
 | `promo_color`      | string | Опционально, HEX акцентного цвета           |
 
-**Где используется**: [components/promo/PromoCard.tsx](components/promo/PromoCard.tsx), [components/promo/PromoGrid.tsx](components/promo/PromoGrid.tsx), [app/promo/[handle]/page.tsx](app/promo/%5Bhandle%5D/page.tsx).
+**Где используется**: [components/promo/PromoCard.tsx](components/promo/PromoCard.tsx), [app/promo/[handle]/page.tsx](app/promo/%5Bhandle%5D/page.tsx).
 
 ---
 
@@ -235,7 +235,6 @@ Attribute set для филиалов:
 | marker      | Где используется                                 |
 |-------------|--------------------------------------------------|
 | `user_menu` | [NavGroup.tsx](components/layout/header/nav/NavGroup.tsx) (desktop header) |
-| `side_web`  | [sidebar/index.tsx](components/layout/sidebar/index.tsx) (mobile sidebar)  |
 | `bottom_web`| [bottom-menu/index.tsx](components/layout/bottom-menu/index.tsx) (mobile bottom nav) |
 
 ### 7.2. Главная страница

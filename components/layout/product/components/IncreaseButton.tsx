@@ -34,7 +34,7 @@ const IncreaseButton = ({
   return (
     <button
       onClick={() => onIncreaseHandle()}
-      className="relative m-1 box-border size-8 rounded-full text-center text-slate-700 transition-all duration-500 hover:bg-slate-100 hover:text-orange-500 hover:shadow-inner"
+      className="relative m-1 box-border size-8 rounded-full text-center text-white/90 transition-all duration-500 hover:bg-white/10 hover:text-brand"
       aria-label="Increase quantity"
     >
       +

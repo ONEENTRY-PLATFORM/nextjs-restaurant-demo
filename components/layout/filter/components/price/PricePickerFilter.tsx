@@ -77,30 +77,30 @@ const PriceFilter = ({
 
   return (
     <div className="relative box-border flex shrink-0 flex-col">
-      <div className="mb-5 self-start text-lg font-medium leading-8 text-[#4C4D56]">
+      <div className="filter_title mb-5 self-start">
         {filter_price_title?.value as string | undefined}
       </div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
-        <div className="flex flex-1 gap-2.5 rounded-3xl bg-[#F6F7F9] px-3 py-1.5">
-          <span className="text-base leading-8 text-slate-300">
+        <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
+          <span className="text-base leading-8 text-paper/60">
             {price_from?.value as string | undefined}
           </span>
-          <span className="text-lg leading-8 text-neutral-600">
+          <span className="text-lg leading-8 text-white/90">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
           </span>
         </div>
-        <div className="flex flex-1 gap-2.5 rounded-3xl bg-[#F6F7F9] px-3 py-1.5">
-          <span className="self-start text-base leading-8 text-slate-300">
+        <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
+          <span className="self-start text-base leading-8 text-paper/60">
             {price_to?.value as string | undefined}
           </span>
-          <span className="text-lg leading-8 text-neutral-600">
+          <span className="text-lg leading-8 text-white/90">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />
           </span>
         </div>
       </div>
 
-      <div className="flex w-full justify-between gap-5 self-center text-base leading-8 text-slate-300">
+      <div className="flex w-full justify-between gap-5 self-center text-base leading-8 text-paper/60">
         <span>{MIN}</span>
         <span>{(MAX - MIN) / 2}</span>
         <span>{MAX}</span>

@@ -20,7 +20,7 @@ const ProductDescription = ({
   const descript =
     description.value[0]?.htmlValue || description.value[0]?.plainValue;
   return (
-    <div className="text-sm leading-5 text-neutral-600">
+    <div className="font-normal text-[14px] tracking-[0.02em] text-white/90">
       {descript && parse(descript)}
     </div>
   );

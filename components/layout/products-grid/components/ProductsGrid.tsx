@@ -19,7 +19,7 @@ const ProductsGrid = ({
   products: IProductsEntity[];
 }): JSX.Element => {
   return (
-    <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 max-md:w-full">
+    <div className="menu_items w-full max-md:w-full">
       {products
         ?.filter((item) => item.isVisible)
         .map((product: IProductsEntity, index: number) => {

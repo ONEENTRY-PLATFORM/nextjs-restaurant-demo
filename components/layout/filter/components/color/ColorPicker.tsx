@@ -19,8 +19,8 @@ const ColorPicker = ({
       className={
         'flex gap-1.5 rounded-full pl-1 pr-2 transition-colors w-24 ' +
         (code === activeColor
-          ? 'bg-slate-100 text-neutral-700'
-          : 'hover:bg-slate-100')
+          ? 'bg-brand text-white'
+          : 'hover:bg-white/10 text-paper/80')
       }
       onClick={() => {
         if (code !== activeColor) {

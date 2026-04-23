@@ -69,7 +69,7 @@ export const ForgotPasswordForm = ({
         onSubmit={handleSubmit}
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-gray-400 max-md:max-w-full">
+          <p className="text-xs text-paper/60 max-md:max-w-full">
             {reset_descr?.value as string | undefined}
           </p>
         </div>

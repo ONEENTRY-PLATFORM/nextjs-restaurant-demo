@@ -31,17 +31,17 @@ const ProductDetails = async ({
 
   return (
     <>
-      <h1 className="text-xl leading-6 text-neutral-600">{title}</h1>
+      <h1 className="font-bold text-[20px] tracking-[0.02em] text-white">
+        {title}
+      </h1>
 
-      {/* !!! category */}
-      <p className="mt-3 text-sm leading-4 text-neutral-600">
+      <p className="mt-3 font-normal text-[16px] text-[#969696]">
         <Link prefetch={true} href={'/shop/category/' + category?.value}>
           {category?.title}
         </Link>
       </p>
-      {/* !!! category */}
 
-      <div className="mb-5 mt-4 text-left text-xl font-bold leading-8 text-neutral-600">
+      <div className="mb-5 mt-4 text-left text-xl font-bold leading-8 text-white">
         <PriceDisplay
           currentPrice={(sale?.value as number) ?? 0}
           originalPrice={(price?.value as number) ?? 0}

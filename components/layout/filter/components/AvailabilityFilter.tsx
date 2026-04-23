@@ -31,7 +31,7 @@ const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
     <div className="mb-9 flex gap-5">
       <label
         htmlFor="availability"
-        className="flex-auto text-lg leading-8 text-[#4C4D56]"
+        className="flex-auto text-lg leading-8 text-white/90"
       >
         {title}
       </label>

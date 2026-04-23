@@ -1,7 +1,6 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import WithSidebar from '@/app/[handle]/WithSidebar';
 import { getProductById } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import CartWizard from '@/components/cart/CartWizard';
@@ -38,19 +37,17 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
     ? undefined
     : (response as ProductResponse).product;
 
-  /** Render cart page layout with sidebar + background per cart_*.html */
+  /** Cart layout — mobile-centric `max-w-[390px]` flow per static-html/cart*.html */
   return (
     <section
-      className="relative mx-auto box-border flex min-h-screen w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch bg-cover bg-no-repeat"
+      className="min-h-screen bg-black bg-cover bg-no-repeat"
       style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
     >
-      <div className="flex w-full flex-col items-center gap-5">
-        <WithSidebar>
-          <CartWizard
-            dict={dict}
-            deliveryData={deliveryData as IProductsEntity}
-          />
-        </WithSidebar>
+      <div className="max-w-97.5 mx-auto">
+        <CartWizard
+          dict={dict}
+          deliveryData={deliveryData as IProductsEntity}
+        />
       </div>
     </section>
   );

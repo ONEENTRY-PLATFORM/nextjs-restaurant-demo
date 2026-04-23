@@ -48,7 +48,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
 
   /** Render the shop catalog page layout */
   return (
-    <section className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
+    <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
       <div className="flex w-full flex-col items-center gap-5">
         <Suspense fallback={<MemoizedProductsGridLoader />}>
           <ProductsGridLayout

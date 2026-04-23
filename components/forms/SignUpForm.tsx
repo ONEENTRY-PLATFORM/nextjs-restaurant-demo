@@ -152,7 +152,7 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
         className="mx-auto flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-gray-400 max-md:max-w-full">
+          <p className="text-xs text-paper/60 max-md:max-w-full">
             <button
               onClick={() => setComponent('SignInForm')}
               className="underline"

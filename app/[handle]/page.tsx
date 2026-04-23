@@ -17,7 +17,6 @@ import { getPageByUrl } from '@/app/api';
 // import ServicesPage from '@/components/pages/ServicesPage';
 // import type { Locale } from '@/i18n-config';
 // import { getDictionary } from '../dictionaries';
-import WithSidebar from './WithSidebar';
 
 /**
  * Simple page layout
@@ -90,17 +89,13 @@ const PageLayout = async ({
 
   /** Render the page component based on the page URL and template type */
   return (
-    <div className="mx-auto flex min-h-80 w-full max-w-(--breakpoint-xl) flex-col overflow-hidden">
+    <div className="mx-auto flex min-h-80 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col overflow-hidden">
       {Array.isArray(pages) ? (
         pages.map((p, i) => {
           if (pageUrl !== p.name) {
             return null;
           }
-          return p.templateType === 'withSidebar' ? (
-            <WithSidebar key={i}>{p.component}</WithSidebar>
-          ) : (
-            <div key={i}>{p.component}</div>
-          );
+          return <div key={i}>{p.component}</div>;
         })
       ) : (
         <div>Page not found</div>

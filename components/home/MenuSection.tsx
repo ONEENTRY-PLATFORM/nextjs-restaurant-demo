@@ -97,14 +97,12 @@ const MenuSection = async ({
       </div>
 
       {hasRealProducts ? (
-        <div className={gridClassName}>
-          <ProductsGrid
-            lang="en_US"
-            dict={dict}
-            pagesLimit={limit}
-            products={products}
-          />
-        </div>
+        <ProductsGrid
+          lang="en_US"
+          dict={dict}
+          pagesLimit={limit}
+          products={products}
+        />
       ) : (
         <>
           <div className={gridClassName}>

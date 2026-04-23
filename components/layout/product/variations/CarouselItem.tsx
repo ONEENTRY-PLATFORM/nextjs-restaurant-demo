@@ -32,8 +32,8 @@ const CarouselItem = ({
         'relative rounded-lg box-border flex w-[100px] min-h-[130px] shrink-0 flex-col ' +
         clsx(
           isActive
-            ? 'border border-solid border-slate-50 text-slate-700'
-            : 'border border-solid border-transparent text-slate-300',
+            ? 'border border-solid border-brand text-white'
+            : 'border border-solid border-transparent text-paper/60',
         )
       }
     >

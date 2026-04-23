@@ -33,7 +33,7 @@ const DeliveryForm = ({
       <div id="total" className="mt-4 flex w-full flex-col">
         <TotalAmount
           dict={dict}
-          className="flex self-center text-lg font-bold leading-6 text-slate-700 lg:self-end"
+          className="flex self-center text-lg font-bold leading-6 text-white lg:self-end"
         />
         <PaymentButton
           text={(dict.go_to_pay_placeholder?.value as string) ?? ''}

@@ -28,7 +28,7 @@ const ProductsGroup = async ({
       className="mb-8 flex flex-col max-md:max-w-full"
       index={4}
     >
-      <h2 className="mb-5 text-base uppercase leading-5 text-neutral-600 max-md:max-w-full">
+      <h2 className="title_name max-md:max-w-full">
         {block.attributeValues?.together_title?.value as string | undefined}
       </h2>
       <div className="flex w-full flex-row flex-wrap items-stretch justify-start gap-2.5">

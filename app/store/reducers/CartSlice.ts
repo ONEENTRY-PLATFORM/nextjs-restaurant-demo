@@ -3,9 +3,21 @@
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+
+/**
+ * Reservation entry in cart-slice — represents a table booking slot for a
+ * single restaurant branch. Replaces the legacy `salon`/`master` fields
+ * (from the original salon template this repo was cloned from).
+ */
+type ReservationEntry = {
+  id: number;
+  restaurant?: IPagesEntity;
+  product?: IProductsEntity;
+  date?: Date;
+  interval?: Date[];
+};
 
 type InitialStateType = {
   products: IProductsEntity[];
@@ -16,16 +28,8 @@ type InitialStateType = {
     time: string;
     address: string;
   };
-  serviceId: number;
-  servicesData: {
-    id: number;
-    salon?: IPagesEntity;
-    service?: IPagesEntity;
-    product?: IProductsEntity;
-    master?: IAdminEntity;
-    date?: Date;
-    interval?: Date[];
-  }[];
+  reservationId: number;
+  reservations: ReservationEntry[];
   transitionId: number;
   version: number;
 };
@@ -39,14 +43,12 @@ const initialState: InitialStateType = {
     time: '',
     address: '',
   },
-  serviceId: 0,
-  servicesData: [
+  reservationId: 0,
+  reservations: [
     {
       id: 0,
-      salon: {} as IPagesEntity,
-      service: {} as IPagesEntity,
+      restaurant: {} as IPagesEntity,
       product: {} as IProductsEntity,
-      master: {} as IAdminEntity,
       date: {} as Date,
       interval: [] as Date[],
     },
@@ -59,29 +61,18 @@ export const cartSlice = createSlice({
   name: 'cart-slice',
   initialState,
   reducers: {
-    addServiceToCart(
-      state,
-      action: PayloadAction<{
-        id: number;
-        salon?: IPagesEntity;
-        service?: IPagesEntity;
-        product?: IProductsEntity;
-        master?: IAdminEntity;
-        date?: Date;
-        interval?: Date[];
-      }>,
-    ) {
-      if (state.servicesData.length < 1) {
-        state.servicesData.push(action.payload);
+    addReservationToCart(state, action: PayloadAction<ReservationEntry>) {
+      if (state.reservations.length < 1) {
+        state.reservations.push(action.payload);
       }
-      state.servicesData = state.servicesData.map((service) => {
-        if (action.payload.id === service.id) {
+      state.reservations = state.reservations.map((entry) => {
+        if (action.payload.id === entry.id) {
           return {
-            ...service,
+            ...entry,
             ...action.payload,
           };
         } else {
-          return service;
+          return entry;
         }
       });
     },
@@ -182,8 +173,8 @@ export const cartSlice = createSlice({
         }
       });
     },
-    removeAllServices(state) {
-      state.servicesData = initialState.servicesData;
+    removeAllReservations(state) {
+      state.reservations = initialState.reservations;
     },
     setCartTransition(state, action: PayloadAction<{ productId: number }>) {
       state.transitionId = action.payload.productId;
@@ -195,14 +186,14 @@ export const cartSlice = createSlice({
 });
 
 export const {
-  addServiceToCart,
+  addReservationToCart,
   addProductsToCart,
   addDeliveryToCart,
   setDeliveryData,
   setProductQty,
   setCartTransition,
   deselectProduct,
-  removeAllServices,
+  removeAllReservations,
   removeAllProducts,
   setCartVersion,
   addProductToCart,
@@ -231,8 +222,8 @@ export const selectIsInCart = (
  * Select cart data
  */
 export const selectCartData = (state: {
-  cartReducer: { servicesData: any[] };
-}): any => state.cartReducer.servicesData;
+  cartReducer: { reservations: any[] };
+}): any => state.cartReducer.reservations;
 
 /**
  * Select delivery data
@@ -252,25 +243,25 @@ export const selectDeliveryData = (state: {
  */
 export const selectCartTotal = (state: {
   cartReducer: {
-    serviceId: any;
-    servicesData: any;
+    reservationId: any;
+    reservations: any;
   };
 }) => {
-  const sId = state.cartReducer.serviceId;
-  const product = state.cartReducer.servicesData[sId]?.product;
+  const rId = state.cartReducer.reservationId;
+  const product = state.cartReducer.reservations[rId]?.product;
   const price = product?.price;
   // salePrice === oldPrice
-  const salePrice = product.attributeValues?.sale?.value;
+  const salePrice = product?.attributeValues?.sale?.value;
 
   return price || salePrice;
 };
 
 /**
- * Select ServiceId
+ * Select active reservation id
  */
-export const selectServiceId = (state: {
-  cartReducer: { serviceId: number };
-}) => state.cartReducer.serviceId;
+export const selectReservationId = (state: {
+  cartReducer: { reservationId: number };
+}) => state.cartReducer.reservationId;
 
 /**
  * Select TabsState

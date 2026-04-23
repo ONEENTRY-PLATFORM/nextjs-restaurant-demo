@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
@@ -10,6 +10,7 @@ import { getChildPagesByParentUrl } from '@/app/api';
 import FilterBottom from '@/components/static/FilterBottom';
 import MenuBottom from '@/components/static/MenuBottom';
 
+import CategoriesScroller from './CategoriesScroller';
 import Logo from './Logo';
 import NavGroup from './nav/NavGroup';
 import SearchBar from './search/SearchBar';
@@ -173,26 +174,7 @@ const Header = async (): Promise<JSX.Element> => {
               />
             </svg>
 
-            <ul
-              id="menuItems"
-              className="flex gap-2.75 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
-            >
-              {pages?.map((page: any) => {
-                return (
-                  <li
-                    key={page.id}
-                    className="border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start"
-                  >
-                    <a
-                      className="block rounded-[5px] px-3.25 py-1.25 md:px-3.75 md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
-                      href="#"
-                    >
-                      {page.localizeInfos.title}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+            <CategoriesScroller pages={(pages ?? []) as IPagesEntity[]} />
           </section>
         </div>
       </div>

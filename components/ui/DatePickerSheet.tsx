@@ -1,0 +1,231 @@
+'use client';
+
+import type { JSX } from 'react';
+import { useMemo, useState } from 'react';
+
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+
+type DayCell = {
+  day: number;
+  monthOffset: -1 | 0 | 1;
+  iso: string;
+};
+
+/**
+ * Build a 6×7 grid of calendar days for the given year/month, padded with
+ * trailing days of the previous month and leading days of the next month so
+ * the grid is always rectangular.
+ * @param   {number}      year  - Target year.
+ * @param   {number}      month - Target month (0-based).
+ * @returns {DayCell[]}         42 cells (6 rows × 7 columns).
+ */
+const buildMonthGrid = (year: number, month: number): DayCell[] => {
+  const first = new Date(year, month, 1);
+  const firstDow = (first.getDay() + 6) % 7; // 0 = Mon
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrev = new Date(year, month, 0).getDate();
+
+  const cells: DayCell[] = [];
+
+  for (let i = firstDow - 1; i >= 0; i -= 1) {
+    const day = daysInPrev - i;
+    const d = new Date(year, month - 1, day);
+    cells.push({
+      day,
+      monthOffset: -1,
+      iso: d.toISOString().slice(0, 10),
+    });
+  }
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const d = new Date(year, month, day);
+    cells.push({
+      day,
+      monthOffset: 0,
+      iso: d.toISOString().slice(0, 10),
+    });
+  }
+  let nextDay = 1;
+  while (cells.length < 42) {
+    const d = new Date(year, month + 1, nextDay);
+    cells.push({
+      day: nextDay,
+      monthOffset: 1,
+      iso: d.toISOString().slice(0, 10),
+    });
+    nextDay += 1;
+  }
+  return cells;
+};
+
+type DatePickerSheetProps = {
+  value?: string;
+  onApply: (iso: string) => void;
+  onClose?: () => void;
+  minDate?: string;
+};
+
+/**
+ * Fixed bottom-sheet date picker (mobile) — replicates `service_date.html`.
+ * Uses `.calend_mon` and `.calend_days` utility classes from
+ * `app/styles/main.css`. Accepts any ISO `yyyy-MM-dd` value and emits the
+ * same shape via {@link onApply}.
+ * @param   {DatePickerSheetProps} props - Component props.
+ * @returns {JSX.Element}                Sheet JSX.
+ */
+const DatePickerSheet = ({
+  value,
+  onApply,
+  onClose,
+  minDate,
+}: DatePickerSheetProps): JSX.Element => {
+  const today = useMemo(() => new Date(), []);
+  const initial = value ? new Date(value) : today;
+  const [year, setYear] = useState(initial.getFullYear());
+  const [month, setMonth] = useState(initial.getMonth());
+  const [selected, setSelected] = useState(
+    value ?? today.toISOString().slice(0, 10),
+  );
+
+  const grid = useMemo(() => buildMonthGrid(year, month), [year, month]);
+
+  const goPrev = () => {
+    if (month === 0) {
+      setYear((y) => y - 1);
+      setMonth(11);
+    } else {
+      setMonth((m) => m - 1);
+    }
+  };
+  const goNext = () => {
+    if (month === 11) {
+      setYear((y) => y + 1);
+      setMonth(0);
+    } else {
+      setMonth((m) => m + 1);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-[29px] backdrop-blur-[10px]">
+      <div className="mx-auto max-w-[350px] bg-transparent">
+        <div className="grid grid-cols-7">
+          {WEEK.map((w) => (
+            <div key={w} className="calend_mon">
+              {w}
+            </div>
+          ))}
+          {grid.map((cell) => {
+            const active = cell.iso === selected && cell.monthOffset === 0;
+            const disabled =
+              (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
+            return (
+              <button
+                key={cell.iso + cell.monthOffset}
+                type="button"
+                disabled={disabled}
+                onClick={() => setSelected(cell.iso)}
+                className={
+                  'calend_days ' +
+                  (active ? 'bg-brand text-white font-bold ' : '') +
+                  (disabled ? 'opacity-40 pointer-events-none ' : '')
+                }
+              >
+                {String(cell.day).padStart(2, '0')}
+              </button>
+            );
+          })}
+        </div>
+        <div className="mb-5 mt-4 flex items-center justify-around">
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous month"
+            className="group"
+          >
+            <svg
+              className="hover-target"
+              width="7"
+              height="13"
+              viewBox="0 0 7 13"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 1.5L1 6.5L6 11.5"
+                stroke="#B0BCCE"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <div className="flex gap-[15px]">
+            <h2 className="font-semibold text-[20px] text-brand">
+              {MONTH_NAMES[month]}
+            </h2>
+            <h3 className="font-light text-[20px] text-brand">{year}</h3>
+          </div>
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next month"
+            className="group"
+          >
+            <svg
+              className="hover-target"
+              width="7"
+              height="13"
+              viewBox="0 0 7 13"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 11.5L6 6.5L1 1.5"
+                stroke="#B0BCCE"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="mb-4 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => onApply(selected)}
+            className="mx-auto block rounded-[5px] border border-brand px-[15px] py-[5px] font-bold text-[20px] text-brand hover_btn_transp"
+          >
+            Apply
+          </button>
+          {onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-[5px] border border-paper px-[15px] py-[5px] font-bold text-[20px] text-paper hover_btn_white"
+            >
+              Cancel
+            </button>
+          ) : null}
+        </div>
+      </div>
+      <div className="h-[100px] border-none bg-transparent" />
+    </div>
+  );
+};
+
+export default DatePickerSheet;

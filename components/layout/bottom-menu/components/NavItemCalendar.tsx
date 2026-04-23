@@ -11,9 +11,9 @@ import CalendarIcon from '@/components/icons/calendar';
  * Nav item cart button
  */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
-  // get count from cart reducer
+  // get count of active reservations from cart reducer
   const cartCount = useAppSelector((state) => {
-    return state.cartReducer.servicesData?.length;
+    return state.cartReducer.reservations?.length;
   });
 
   const { pageUrl, localizeInfos } = item;

@@ -2,17 +2,24 @@
 'use client';
 
 import Link from 'next/link';
-import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
-  addServiceToCart,
-  selectServiceId,
-  // setTabsState,
+  addReservationToCart,
+  selectReservationId,
 } from '@/app/store/reducers/CartSlice';
 
+/**
+ * Row renderer for search results — links to product page and records the
+ * product as the active reservation entry (used by cart/price selectors).
+ * @param   {object}        props          - Component props.
+ * @param   {any}           props.pageData - Parent page data (category).
+ * @param   {any}           props.product  - Product entity from search.
+ * @param   {any}           props.setState - External state setter to close search modal.
+ * @returns {JSX.Element}                  Row JSX.
+ */
 const ProductRow = ({
   pageData,
   product,
@@ -23,22 +30,17 @@ const ProductRow = ({
   setState: any;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const serviceId = useAppSelector(selectServiceId);
+  const reservationId = useAppSelector(selectReservationId);
 
   const onApplyHandle = () => {
     setState(false);
-    // add product
     dispatch(
-      addServiceToCart({
-        id: serviceId,
+      addReservationToCart({
+        id: reservationId,
         product,
-        service: pageData || ({} as IPagesEntity),
-        salon: {} as IPagesEntity,
-        master: {} as IAdminEntity,
+        restaurant: (pageData ?? {}) as IPagesEntity,
       }),
     );
-    // dispatch(setTabsState({ key: 'products', value: true }));
-    // dispatch(setTabsState({ key: 'services', value: true }));
   };
 
   return (

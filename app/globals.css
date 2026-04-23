@@ -32,6 +32,32 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-lato), Lato, Arial, Helvetica, sans-serif;
   --font-lato: var(--font-lato), Lato, Arial, Helvetica, sans-serif;
+
+  /* Brand / design-token colors — exposed to Tailwind v4 so @apply works
+   * inside components and styles/main.css. Values must match
+   * tailwind.config.js `theme.extend.colors` entries. */
+  --color-brand: #ec722b;
+  --color-brand-hover: #eb4b0e;
+  --color-ink: #4c4d56;
+  --color-paper: #dfe9f9;
+  --color-muted: #b0bcce;
+  --color-custom_orange: #ec722b;
+  --color-custom_btnorange: rgba(236, 114, 43, 0.8);
+  --color-custom_transparent: rgba(106, 108, 122, 0.5);
+  --color-custom_gray: rgba(176, 188, 206, 0.8);
+  --color-custom_gray_pk: #4c4d56;
+  --color-custom_header: rgba(106, 108, 122, 0.5);
+  --color-custom_black: rgba(0, 0, 0, 0.6);
+  --color-custom_white: rgba(255, 255, 255, 0.9);
+  --color-btn_hover: rgba(236, 114, 43, 0.5);
+
+  /* Screens */
+  --breakpoint-mobile_wide: 500px;
+  --breakpoint-md_wide: 1020px;
+
+  /* Custom width utilities */
+  --spacing-50\%-gap: calc(50% - 30px);
+  --spacing-30\%-gap: calc(32% - 5px);
 }
 
 body {

@@ -75,6 +75,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
 
   // set Favorites on data change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsFav(isFavorites);
   }, [isFavorites]);
 
@@ -85,7 +86,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   return (
     <button
       type="button"
-      className="group relative ml-auto box-border flex size-[26px] shrink-0 flex-col items-center justify-center"
+      className="group relative ml-auto box-border flex size-6.5 shrink-0 flex-col items-center justify-center"
       onClick={() => {
         if (user && isAuth && (user as IUserEntity).id) {
           onUpdateUserFavoritesHandle();

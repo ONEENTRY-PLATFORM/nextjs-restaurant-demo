@@ -13,11 +13,14 @@ const CarouselItemImage = ({
 }: {
   item: IProductsEntity;
 }): JSX.Element => {
-  const title = item.localizeInfos.title;
-  const picVal = item.attributeValues.pic?.value || '';
+  const title = item.localizeInfos.title ?? '';
+  const picVal = item.attributeValues.pic?.value as
+    | { downloadLink?: string }
+    | Array<{ downloadLink?: string }>
+    | undefined;
   const imageSrc = Array.isArray(picVal)
     ? picVal[0]?.downloadLink
-    : picVal.downloadLink;
+    : picVal?.downloadLink;
 
   return (
     <Link href={'/shop/product/' + item.id} title={title}>

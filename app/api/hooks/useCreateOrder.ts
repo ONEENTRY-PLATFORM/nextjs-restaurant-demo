@@ -5,7 +5,7 @@ import { useTransitionRouter } from 'next-transition-router';
 import type { IOrderProductData } from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
-import { api } from '@/app/api';
+import { api, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { removeProduct } from '@/app/store/reducers/CartSlice';
 import { removeOrder } from '@/app/store/reducers/OrderSlice';
@@ -47,13 +47,18 @@ export const useCreateOrder = (): object => {
     /** Handle payment session creation */
     try {
       /** Create payment session using Payments API */
-      const { paymentUrl } = await api.Payments.createSession(id, 'session');
+      const session = await api.Payments.createSession(id, 'session');
+      if (isError(session)) {
+        setError((session as { message?: string }).message || 'Payment error');
+        return undefined;
+      }
       /** Create payment session using Payments API */
       if (order?.paymentAccountIdentifier === 'cash') {
         router.push('/profile');
         return 'payment_success';
       }
       /** Redirect to payment URL if available */
+      const paymentUrl = (session as { paymentUrl?: string }).paymentUrl;
       if (paymentUrl) {
         router.push(paymentUrl);
         return 'payment_method';
@@ -92,16 +97,27 @@ export const useCreateOrder = (): object => {
 
       try {
         /** Create order with Orders API */
-        const { id, paymentAccountIdentifier } = await api.Orders.createOrder(
-          'order',
-          {
-            // ...order,
-            formData: orderFormData,
-            products: order.products,
-            paymentAccountIdentifier: order.paymentAccountIdentifier,
-            formIdentifier: order.formIdentifier,
-          },
-        );
+        const created = await api.Orders.createOrder('order', {
+          // ...order,
+          formData: orderFormData,
+          products: order.products,
+          paymentAccountIdentifier: order.paymentAccountIdentifier,
+          formIdentifier: order.formIdentifier,
+        });
+
+        if (isError(created)) {
+          setError(
+            (created as { message?: string }).message ||
+              'Order creation failed',
+          );
+          setIsLoading(false);
+          return;
+        }
+
+        const { id, paymentAccountIdentifier } = created as {
+          id: number;
+          paymentAccountIdentifier: string;
+        };
 
         /** remove all ordered products from cart */
         order.products.forEach((product: IOrderProductData) => {

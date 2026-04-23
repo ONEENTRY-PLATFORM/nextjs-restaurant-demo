@@ -139,7 +139,7 @@ const SignInForm = ({
 
         <FormSubmitButton
           index={5}
-          title={sign_in_text?.value}
+          title={(sign_in_text?.value as string) ?? ''}
           isLoading={loading}
         />
 
@@ -148,16 +148,16 @@ const SignInForm = ({
           className="mx-auto mb-10 flex justify-between gap-5"
         >
           <div className="w-auto basis-auto text-lg text-gray-400 transition-colors duration-300">
-            {forgot_password_text?.value || 'Forgot Password?'}
+            {(forgot_password_text?.value as string) || 'Forgot Password?'}
           </div>
           <ResetPasswordButton
-            title={reset_password_text?.value || 'Reset Password'}
+            title={(reset_password_text?.value as string) || 'Reset Password'}
           />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
           <CreateAccountButton
-            title={create_account_text?.value || 'Create account'}
+            title={(create_account_text?.value as string) || 'Create account'}
           />
         </FormFieldAnimations>
 

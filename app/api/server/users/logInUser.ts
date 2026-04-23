@@ -1,6 +1,9 @@
-import type { IAuthPostBody } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type {
+  IAuthEntity,
+  IAuthPostBody,
+} from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-import { api } from '@/app/api';
+import { api, isError } from '@/app/api';
 
 type LogInProps = { method: string; login: string; password: string };
 
@@ -22,8 +25,11 @@ export const logInUser = async ({ method, login, password }: LogInProps) => {
       ],
     };
     const result = await api.AuthProvider.auth(method, preparedData);
-    if (result && result.accessToken && result.refreshToken) {
-      return { data: result };
+    if (!isError(result)) {
+      const auth = result as IAuthEntity;
+      if (auth.accessToken && auth.refreshToken) {
+        return { data: auth };
+      }
     }
     return { error: 'Authentication failed' };
   } catch (e: unknown) {

@@ -31,8 +31,9 @@ const ProductCard = ({
     attributeValues: { pic, price, sale, units_product },
     localizeInfos,
   } = product;
-  const imgSrc = pic?.value.downloadLink;
-  const title = localizeInfos?.title;
+  const imgSrc = (pic?.value as { downloadLink?: string } | undefined)
+    ?.downloadLink;
+  const title = localizeInfos?.title ?? '';
 
   return (
     <ProductAnimations
@@ -54,7 +55,7 @@ const ProductCard = ({
           />
         </div>
 
-        <div className="relative h-[150px] w-[130px] shrink-0 rounded-xl bg-slate-50">
+        <div className="relative h-37.5 w-32.5 shrink-0 rounded-xl bg-slate-50">
           {imgSrc ? (
             <Image
               width={130}
@@ -72,8 +73,8 @@ const ProductCard = ({
         <div className="flex flex-col gap-5 self-start text-neutral-600">
           <h2 className="text-base leading-8">{title}</h2>
           <PriceDisplay
-            currentPrice={sale?.value}
-            originalPrice={price?.value}
+            currentPrice={(sale?.value as number) ?? 0}
+            originalPrice={(price?.value as number) ?? 0}
           />
         </div>
 
@@ -86,7 +87,7 @@ const ProductCard = ({
       <div className="z-10 flex items-center gap-5 self-start text-xl font-bold leading-8 text-neutral-600 max-sm:ml-8 max-sm:flex">
         <QuantitySelector
           id={id}
-          units={units_product?.value}
+          units={(units_product?.value as number) ?? 0}
           title={title}
           height={42}
         />

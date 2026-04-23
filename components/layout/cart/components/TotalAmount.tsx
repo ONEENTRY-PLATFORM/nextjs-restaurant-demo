@@ -27,6 +27,7 @@ const TotalAmount = ({
   // set total on data change
   useLayoutEffect(() => {
     if (!total) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCartTotal(0);
     } else {
       setCartTotal(total + deliveryPrice);
@@ -35,7 +36,7 @@ const TotalAmount = ({
 
   return (
     <TableRowAnimations className={className} index={12}>
-      {dict?.order_info_total?.value}:{' '}
+      {dict?.order_info_total?.value as string | undefined}:{' '}
       {UsePrice({
         amount: cartTotal,
       })}

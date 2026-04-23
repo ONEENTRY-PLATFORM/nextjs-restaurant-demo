@@ -18,7 +18,7 @@ const NavItemCatalog = ({
     <Link
       prefetch={false}
       href={'/' + pageUrl}
-      title={localizeInfos.menuTitle}
+      title={localizeInfos.menuTitle ?? undefined}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >
       <CatalogIcon />

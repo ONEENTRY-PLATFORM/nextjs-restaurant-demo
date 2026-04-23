@@ -4,7 +4,12 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
-import { reDefine, useLazyGetMeQuery } from '@/app/api';
+import {
+  getLang,
+  hasActiveSession,
+  reDefine,
+  useLazyGetMeQuery,
+} from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 
 // import { updateUserState } from '@/app/api/server/users/updateUserState';
@@ -103,8 +108,14 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       setIsAuth(false);
       return;
     }
-    /** Redefine user session with refresh token */
-    await reDefine(refresh);
+    /**
+     * Redefine user session with refresh token.
+     * Guard with hasActiveSession — each reDefine hits /refresh and would
+     * otherwise burn the current token on every re-mount.
+     */
+    if (!hasActiveSession()) {
+      await reDefine(refresh, getLang());
+    }
     /** Check token validity */
     await checkToken();
   };
@@ -116,14 +127,15 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
    * status based on the response. It updates the authentication state accordingly.
    * @async
    */
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang is a stable module-level function
   const checkToken = useCallback(async () => {
-    /** Trigger user data fetch */
-    trigger('en_US')
+    /** Trigger user data fetch using the SDK's current langCode */
+    trigger(getLang())
       .then(async (res) => {
         /** Check if response has error or no user ID */
         if ((res.isError && !res.isLoading) || !res.data?.id) {
           /** Clear refresh token and set auth to false */
-          localStorage.setItem('refresh-token', '');
+          localStorage.removeItem('refresh-token');
           setIsAuth(false);
         } else {
           /** Set user data and auth status to true */
@@ -133,7 +145,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       })
       .catch(async () => {
         /** Clear refresh token and set auth to false on error */
-        localStorage.setItem('refresh-token', '');
+        localStorage.removeItem('refresh-token');
         setIsAuth(false);
       });
   }, [trigger]);
@@ -176,7 +188,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     }
 
     /** Add each product from user state to Redux cart */
-    user.state.cart?.forEach((product: IProducts) => {
+    (user.state.cart as IProducts[] | undefined)?.forEach((product) => {
       const productInCart = productsInCart?.find(
         (p: { id: number }) => p.id === product.id,
       );
@@ -193,6 +205,10 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
   // Refetch
   useEffect(() => {
+    // Pre-existing pattern: sync setState in effect body to signal "loading"
+    // before starting async onInit. Refactoring to derived state is out of
+    // scope for the OneEntry SDK alignment task.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     onInit().then(() => {
       setIsLoading(false);
@@ -204,8 +220,11 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   useEffect(() => {
     const refresh = localStorage.getItem('refresh-token');
     if (isError && refresh) {
+      // Pre-existing reactive setState chain — architecturally unchanged;
+      // proper fix would hoist to an event handler.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRefetch(true);
-      localStorage.setItem('refresh-token', '');
+      localStorage.removeItem('refresh-token');
       setIsAuth(false);
     }
   }, [isError]);

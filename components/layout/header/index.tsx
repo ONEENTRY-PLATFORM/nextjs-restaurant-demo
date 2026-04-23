@@ -17,7 +17,7 @@ import SearchBar from './search/SearchBar';
 const SearchFallback = () => (
   <form className="relative">
     <input
-      className="rounded md:w-[250px] lg:w-[335px] h-[38px] backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-10 text-[#dfe9f9] cursor-pointer"
+      className="rounded md:w-62.5 lg:w-83.75 h-9.5 backdrop-blur-[10px] bg-[rgba(106,108,122,0.5)] pl-10 text-[#dfe9f9] cursor-pointer"
       type="text"
       placeholder="soup"
     />
@@ -50,18 +50,18 @@ const Header = async (): Promise<JSX.Element> => {
 
   return (
     <div id="header">
-      <header className="hidden md:block md:pt-[62px] md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
-        <div className="container md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto flex flex-col">
+      <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
+        <div className="container md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
           <NavGroup />
-          <div className="flex justify-between items-center  md:gap-[60px] lg:gap-0">
-            <div className="flex items-center justify-start md:gap-[30px] gap-[60px]">
+          <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
+            <div className="flex items-center justify-start md:gap-7.5 gap-15">
               <Logo />
-              <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-[400px] lg:max-w-[440px]">
+              <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-100 lg:max-w-110">
                 Excellence taste in{' '}
                 <span className="text-custom_orange">every bite</span>
               </h1>
             </div>
-            <div className="flex justify-between items-center md:gap-5 gap-[38px] lg:mt-[-45px]">
+            <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
@@ -87,11 +87,11 @@ const Header = async (): Promise<JSX.Element> => {
         </div>
       </header>
 
-      <div className="relative pb-[30px] md:pb-0 bg-custom">
+      <div className="relative pb-7.5 md:pb-0 bg-custom">
         <div className="relative">
-          <header className="header_mobile pt-[30px] px-2.5 max-w-[352px] mx-auto flex flex-col">
+          <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col">
             <div className="flex justify-between items-center">
-              <a className="w-[18px] h-[18px]" href="#">
+              <a className="w-4.5 h-4.5" href="#">
                 <img src="/icons/phone.svg" alt="call" />
               </a>
               <a href="/">
@@ -122,7 +122,7 @@ const Header = async (): Promise<JSX.Element> => {
               </div>
             </div>
 
-            <div className="relative max-w-[480px]  mx-auto mt-[17px] gap-4 flex justify-between items-center md:hidden">
+            <div className="relative max-w-120  mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
@@ -146,9 +146,9 @@ const Header = async (): Promise<JSX.Element> => {
             </div>
           </header>
 
-          <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto md:pb-[59px] xl:pb-[59px] flex justify-between items-end overflow-visible">
+          <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             <svg
-              className="hidden md:block md:w-20 md:h-[35px] md:mr-[25px] lg:mr-10 ml-[-15px]"
+              className="hidden md:block md:w-20 md:h-8.75 md:mr-6.25 lg:mr-10 -ml-3.75"
               viewBox="0 0 40 35"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ const Header = async (): Promise<JSX.Element> => {
 
             <ul
               id="menuItems"
-              className="flex gap-[11px] md:gap-[25px] my-[23px] md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
+              className="flex gap-2.75 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-pointer snap-x snap-mandatory"
             >
               {pages?.map((page: any) => {
                 return (
@@ -184,7 +184,7 @@ const Header = async (): Promise<JSX.Element> => {
                     className="border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start"
                   >
                     <a
-                      className="block rounded-[5px] px-[13px] py-[5px] md:px-[15px] md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
+                      className="block rounded-[5px] px-3.25 py-1.25 md:px-3.75 md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b]"
                       href="#"
                     >
                       {page.localizeInfos.title}

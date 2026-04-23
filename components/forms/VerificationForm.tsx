@@ -103,6 +103,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   );
 
   // Function to handle resending of the OTP code
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const onResendHandle = useCallback(async () => {
     try {
       // Set loading state to true
@@ -127,7 +128,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
-        className="mx-auto flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"
+        className="mx-auto flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
         onSubmit={onSubmitHandle}
       >
         <div className="relative mb-5 box-border flex shrink-0 flex-col gap-2.5">

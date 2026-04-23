@@ -12,14 +12,14 @@ export const getChildPagesByParentUrl = async (
 ): Promise<{
   isError: boolean;
   error?: IError;
-  pages?: IPagesEntity[] | IError;
+  pages?: IPagesEntity[];
 }> => {
   try {
     const data = await api.Pages.getChildPagesByParentUrl(url);
     if (typeError(data)) {
-      return { isError: true, error: data };
+      return { isError: true, error: data as IError };
     } else {
-      return { isError: false, pages: data };
+      return { isError: false, pages: data as IPagesEntity[] };
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {

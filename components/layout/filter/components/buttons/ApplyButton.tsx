@@ -18,7 +18,7 @@ const ApplyButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       onClick={() => setTransition('close')}
       className="btn btn-xl btn-primary w-full"
     >
-      {apply_button_placeholder?.value}
+      {apply_button_placeholder?.value as string | undefined}
     </button>
   );
 };

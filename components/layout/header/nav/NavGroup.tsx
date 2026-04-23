@@ -16,10 +16,14 @@ import NavItemProfile from './NavItemProfile';
 
 const NavGroup = async (): Promise<JSX.Element> => {
   // const [dict] = ServerProvider('dict');
-  const { menu, isError } = await getMenuByMarker('user_menu');
+  const { menu, isError, error } = await getMenuByMarker('user_menu');
 
   if (!menu || isError) {
-    return <p>Menu not found</p>;
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[NavGroup] Menu "user_menu" unavailable — rendering without profile nav item.',
+      error,
+    );
   }
 
   return (
@@ -52,7 +56,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
         </div>
         <NavItemCart />
         <NavItemFavorites />
-        <NavItemProfile userMenu={menu as IMenusEntity} />
+        {menu ? <NavItemProfile userMenu={menu as IMenusEntity} /> : null}
       </div>
       <MenuButton />
     </div>

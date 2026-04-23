@@ -24,10 +24,13 @@ const CategoryPage = async (): Promise<JSX.Element> => {
 
   /** Extract categories data from pages for display in the grid */
   const categories = pages.map((page: IPagesEntity) => {
+    const og = page.attributeValues.opengraph_image?.value as
+      | Array<{ downloadLink?: string }>
+      | undefined;
     return {
       title: page.localizeInfos.title,
       link: '/shop/category/' + page.pageUrl,
-      imgSrc: page.attributeValues.opengraph_image?.value[0]?.downloadLink,
+      imgSrc: og?.[0]?.downloadLink ?? '',
     };
   });
 
@@ -116,7 +119,8 @@ export async function generateMetadata(): Promise<Metadata> {
     height,
     altText: alt,
   } = {
-    url: attributeValues.icon?.downloadLink,
+    url: (attributeValues.icon as { downloadLink?: string } | undefined)
+      ?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos.title,
@@ -124,7 +128,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: localizeInfos.title,
-    description: localizeInfos.plainContent,
+    description: (localizeInfos as { plainContent?: string }).plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { AttributeType } from 'oneentry/dist/base/utils';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 
 import Placeholder from '@/components/shared/Placeholder';
@@ -8,13 +8,16 @@ import Placeholder from '@/components/shared/Placeholder';
  * Product image
  */
 const ProductImage = ({
-  attributes: { pic },
+  attributes,
   alt,
 }: {
-  attributes: AttributeType;
+  attributes: IAttributeValues;
   alt: string;
 }): JSX.Element => {
-  const productImage = pic?.value;
+  const productImage = attributes?.pic?.value as
+    | { downloadLink?: string }
+    | Array<{ downloadLink?: string }>
+    | undefined;
   const imageSrc = Array.isArray(productImage)
     ? productImage[0]?.downloadLink
     : productImage?.downloadLink;

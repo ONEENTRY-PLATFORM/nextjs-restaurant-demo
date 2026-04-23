@@ -32,13 +32,19 @@ const ProductImageGallery = ({
   const { attributeValues } = product;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNav1(sliderRef1 as any);
     setNav2(sliderRef2 as any);
   }, []);
 
   // extract images from attributeValues
-  const imageSrc = attributeValues.pic.value;
-  const morePic = attributeValues.more_pic.value;
+  const imageSrc = attributeValues.pic?.value as
+    | { downloadLink?: string }
+    | undefined;
+  const morePic =
+    (attributeValues.more_pic?.value as
+      | Array<{ downloadLink?: string }>
+      | undefined) ?? [];
   const isGallery = morePic.length > 0;
   const imagesData = isGallery
     ? [imageSrc, ...morePic].map((img) => {
@@ -62,14 +68,16 @@ const ProductImageGallery = ({
               // eslint-disable-next-line react-hooks/immutability
               ref={(slide) => (sliderRef1 = slide as any)}
             >
-              {imagesData.map((image: any, i: Key) => {
+              {(
+                imagesData as Array<{ original?: string; thumbnail?: string }>
+              ).map((image, i: Key) => {
                 return (
                   <div key={i} className="w-full items-center">
                     <Image
                       width={360}
                       height={280}
                       sizes="(min-width: 1024px) 66vw, 100vw"
-                      src={image.original}
+                      src={image.original ?? ''}
                       alt={''}
                       className="mx-auto self-center"
                     />
@@ -79,19 +87,22 @@ const ProductImageGallery = ({
             </Slider>
             <Slider
               asNavFor={nav1}
+              // eslint-disable-next-line react-hooks/immutability
               ref={(slide) => (sliderRef2 = slide as any)}
               slidesToShow={3}
               swipeToSlide={true}
               focusOnSelect={true}
               arrows={false}
             >
-              {imagesData.map((image: any, i: Key) => {
+              {(
+                imagesData as Array<{ original?: string; thumbnail?: string }>
+              ).map((image, i: Key) => {
                 return (
                   <div key={i} className="w-full items-center">
                     <Image
                       width={80}
                       height={80}
-                      src={image.thumbnail}
+                      src={image.thumbnail ?? ''}
                       alt={''}
                       className="mx-auto self-center"
                     />
@@ -104,7 +115,7 @@ const ProductImageGallery = ({
           <Image
             fill
             sizes="(min-width: 1024px) 66vw, 100vw"
-            src={imageSrc.downloadLink}
+            src={imageSrc?.downloadLink ?? ''}
             alt={alt}
           />
         )

@@ -1,5 +1,5 @@
-import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, Key } from 'react';
 import { useContext, useEffect } from 'react';
@@ -41,7 +41,7 @@ const DeliveryTable = ({
   } = dict;
 
   const attrs = data?.attributes.filter(
-    (attr: IAttributes) => attr.marker !== 'time2',
+    (attr: IFormAttribute) => attr.marker !== 'time2',
   );
   const addressReg =
     user?.formData.find((el) => el.marker === 'address_reg')?.value || '';
@@ -89,7 +89,7 @@ const DeliveryTable = ({
       index={5}
     >
       <div>
-        {attrs?.map((attr: IAttributes, i: Key) => {
+        {attrs?.map((attr: IFormAttribute, i: Key) => {
           const marker = attr.marker;
           if (marker === 'date') {
             return (
@@ -97,8 +97,8 @@ const DeliveryTable = ({
                 key={i}
                 value={new Date(deliveryData.date).toLocaleDateString('en-US')}
                 icon={'/icons/calendar.svg'}
-                label={order_info_date_placeholder?.value}
-                placeholder={order_info_date_placeholder?.value}
+                label={order_info_date_placeholder?.value as string}
+                placeholder={order_info_date_placeholder?.value as string}
               />
             );
           }
@@ -106,10 +106,10 @@ const DeliveryTable = ({
             return (
               <DeliveryTableRow
                 key={i}
-                value={deliveryData.time}
+                value={deliveryData.time as string}
                 icon={'/icons/time.svg'}
-                label={order_info_time_placeholder?.value}
-                placeholder={order_info_time_placeholder?.value}
+                label={order_info_time_placeholder?.value as string}
+                placeholder={order_info_time_placeholder?.value as string}
               />
             );
           }
@@ -117,7 +117,7 @@ const DeliveryTable = ({
             return (
               <AddressRow
                 key={i}
-                placeholder={order_info_address_placeholder?.value}
+                placeholder={order_info_address_placeholder?.value as string}
               />
             );
           }

@@ -39,12 +39,18 @@ const ProductPageLayout = async ({
    * Product JSON-LD structured data for SEO
    * https://json-ld.org/
    */
+  const descriptionValue = attributeValues.description?.value as
+    | Array<{ plainValue?: string }>
+    | undefined;
+  const picValue = attributeValues.pic?.value as
+    | { downloadLink?: string; alt?: string }
+    | undefined;
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: localizeInfos.title,
-    description: attributeValues.description?.value[0]?.plainValue,
-    image: attributeValues.pic?.value?.downloadLink,
+    description: descriptionValue?.[0]?.plainValue,
+    image: picValue?.downloadLink,
     offers: {
       '@type': 'AggregateOffer',
       availability: statusIdentifier
@@ -88,13 +94,18 @@ export async function generateMetadata({
     return notFound();
   }
 
-  const { downloadLink, alt = 'alt' } =
-    product.attributeValues.pic?.value || {};
+  const picValue = product.attributeValues.pic?.value as
+    | { downloadLink?: string; alt?: string }
+    | undefined;
+  const { downloadLink, alt = 'alt' } = picValue || {};
+  const descValue = product.attributeValues.description?.value as
+    | Array<{ plainValue?: string }>
+    | undefined;
   const indexable = product.isVisible;
 
   return {
     title: product?.localizeInfos.title,
-    description: product?.attributeValues.description?.value[0]?.plainValue,
+    description: descValue?.[0]?.plainValue,
     robots: {
       index: indexable,
       follow: indexable,

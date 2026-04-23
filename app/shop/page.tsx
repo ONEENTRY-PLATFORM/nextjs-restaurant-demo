@@ -13,6 +13,9 @@ import { getImageUrl } from '../api/hooks/useAttributesData';
 import { getDictionary } from '../dictionaries';
 import { generatePageMetadata } from '../utils/generatePageMetadata';
 
+/** Memoize the loader component to prevent unnecessary re-renders */
+const MemoizedProductsGridLoader = memo(ProductsGridLoader);
+
 export const dynamic = 'force-dynamic';
 
 /**
@@ -36,9 +39,6 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Set the number of products to display per page */
   // TODO: Extract products per page limit from global settings
   const pagesLimit = 10;
-
-  /** Memoize the loader component to prevent unnecessary re-renders */
-  const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
   /** Return 404 page if shop page not found */
   if (!page) {
@@ -120,7 +120,8 @@ export async function generateMetadata({
   return generatePageMetadata({
     handle: handle,
     title: localizeInfos.title,
-    description: localizeInfos.plainContent,
+    description:
+      (localizeInfos as { plainContent?: string }).plainContent ?? '',
     isVisible: isVisible,
     imageUrl: getImageUrl('opengraph_image', attributeValues),
     imageAlt: localizeInfos.title,

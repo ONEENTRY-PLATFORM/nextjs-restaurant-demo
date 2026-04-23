@@ -62,6 +62,7 @@ const PriceFilter = ({
   // setPriceFrom
   useEffect(() => {
     if (!params.get('minPrice')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPriceFrom(MIN);
     }
   }, [params.get('minPrice')]);
@@ -69,6 +70,7 @@ const PriceFilter = ({
   // setPriceTo
   useEffect(() => {
     if (!params.get('maxPrice')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPriceTo(MAX);
     }
   }, [params.get('maxPrice')]);
@@ -76,13 +78,13 @@ const PriceFilter = ({
   return (
     <div className="relative box-border flex shrink-0 flex-col">
       <div className="mb-5 self-start text-lg font-medium leading-8 text-[#4C4D56]">
-        {filter_price_title?.value}
+        {filter_price_title?.value as string | undefined}
       </div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
         <div className="flex flex-1 gap-2.5 rounded-3xl bg-[#F6F7F9] px-3 py-1.5">
           <span className="text-base leading-8 text-slate-300">
-            {price_from?.value}
+            {price_from?.value as string | undefined}
           </span>
           <span className="text-lg leading-8 text-neutral-600">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
@@ -90,7 +92,7 @@ const PriceFilter = ({
         </div>
         <div className="flex flex-1 gap-2.5 rounded-3xl bg-[#F6F7F9] px-3 py-1.5">
           <span className="self-start text-base leading-8 text-slate-300">
-            {price_to?.value}
+            {price_to?.value as string | undefined}
           </span>
           <span className="text-lg leading-8 text-neutral-600">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />

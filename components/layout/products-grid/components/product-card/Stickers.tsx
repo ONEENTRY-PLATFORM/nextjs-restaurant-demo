@@ -11,11 +11,8 @@ const Stickers = ({
 }: {
   product: IProductsEntity;
 }): JSX.Element => {
-  // extract attributes from attributeValues field of product
-  const attributes = attributeValues['en_US'] || attributeValues;
-
   // Get stickers array directly or use empty array as fallback
-  const stickers = attributes?.stickers || [];
+  const stickers = attributeValues?.stickers || [];
 
   // Map through stickers and render Sticker components
   return (

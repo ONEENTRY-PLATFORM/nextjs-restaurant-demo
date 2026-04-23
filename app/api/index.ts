@@ -1,4 +1,12 @@
-export { api, reDefine } from './api/api';
+export {
+  api,
+  getApi,
+  getImageUrl,
+  getLang,
+  hasActiveSession,
+  isError,
+  reDefine,
+} from './api/api';
 export {
   RTKApi,
   useGetAccountsQuery,

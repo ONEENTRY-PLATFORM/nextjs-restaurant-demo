@@ -69,7 +69,7 @@ const eslintConfig = defineConfig([
       },
     },
     plugins: {
-      '@typescript-eslint': typescriptPlugin,
+      // '@typescript-eslint' is already registered by eslint-config-next/typescript
       prettier: prettierPlugin,
       react: reactPlugin,
       next: nextPlugin,

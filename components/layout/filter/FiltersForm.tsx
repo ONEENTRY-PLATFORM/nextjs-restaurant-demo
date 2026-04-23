@@ -33,15 +33,24 @@ const FiltersForm = async ({
   });
   const { isError, error, attribute } = data;
 
-  const sortedAttributes: Record<any, any> = sortObjectFieldsByPosition(
-    (pageInfo.page as IPagesEntity)?.attributeValues,
-  );
-
   if (isError) {
     return <>{error?.message}</>;
   }
 
-  if (!sortedAttributes) {
+  if (pageInfo.isError || !pageInfo.page) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[FiltersForm] Page "catalog_filters" unavailable — skipping filters.',
+      pageInfo.error,
+    );
+    return <></>;
+  }
+
+  const sortedAttributes: Record<any, any> = sortObjectFieldsByPosition(
+    (pageInfo.page as IPagesEntity)?.attributeValues,
+  );
+
+  if (!sortedAttributes || Object.keys(sortedAttributes).length === 0) {
     return <Loader />;
   }
 

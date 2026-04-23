@@ -29,7 +29,7 @@ const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       onClick={onResetHandle}
       className="btn btn-xl btn-o btn-o-primary w-full"
     >
-      {reset_button_placeholder?.value}
+      {reset_button_placeholder?.value as string | undefined}
     </button>
   );
 };

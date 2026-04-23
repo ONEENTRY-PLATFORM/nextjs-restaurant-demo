@@ -36,7 +36,7 @@ const ProductSingle = async ({
       <div className="flex flex-row gap-10 max-md:max-w-full max-md:gap-4 max-sm:flex-wrap">
         {/* ProductImage - col-1 */}
         <ProductAnimations
-          className="relative mb-10 flex min-h-[280px] w-[30%] grow flex-col max-md:mb-4 max-md:w-4/12 max-md:max-w-[48%] max-sm:w-full max-sm:max-w-full"
+          className="relative mb-10 flex min-h-70 w-[30%] grow flex-col max-md:mb-4 max-md:w-4/12 max-md:max-w-[48%] max-sm:w-full max-sm:max-w-full"
           index={0}
         >
           <ProductImage alt={localizeInfos.title} product={product} />
@@ -52,7 +52,13 @@ const ProductSingle = async ({
           </div>
 
           {/* ProductDescription */}
-          <ProductDescription description={attributeValues.description} />
+          <ProductDescription
+            description={
+              attributeValues.description as unknown as {
+                value: { htmlValue: string; plainValue: string }[];
+              }
+            }
+          />
         </ProductAnimations>
 
         {/* ProductDetails - col-3 */}

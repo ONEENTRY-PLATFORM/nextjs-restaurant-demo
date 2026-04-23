@@ -9,26 +9,20 @@ import { getChildPagesByParentUrl } from '@/app/api';
 const SalonsGrid = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('salons');
 
-  const contactsData = pages?.map((page: IPagesEntity) => {
-    return {
-      title: page.localizeInfos?.title,
-      address: page.attributeValues?.salon_address?.value,
-      phone: page.attributeValues?.salon_phone?.value,
-      phoneFormatted: page.attributeValues?.salon_phone_formatted?.value,
-    };
-  });
+  const contactsData =
+    pages?.map((page: IPagesEntity) => {
+      return {
+        title: (page.localizeInfos?.title ?? '') as string,
+        address: (page.attributeValues?.salon_address?.value ?? '') as string,
+        phone: (page.attributeValues?.salon_phone?.value ?? '') as string,
+        phoneFormatted: (page.attributeValues?.salon_phone_formatted?.value ??
+          '') as string,
+      };
+    }) ?? [];
 
-  return contactsData?.map(
-    (
-      item: {
-        title: string;
-        address: string;
-        phone: string;
-        phoneFormatted: string;
-      },
-      i: number,
-    ) => {
-      return (
+  return (
+    <>
+      {contactsData.map((item, i: number) => (
         <div key={i} className="flex">
           <div className="flex flex-col">
             <h2 className="mb-5 text-base uppercase tracking-wide max-sm:mb-3">
@@ -48,8 +42,8 @@ const SalonsGrid = async (): Promise<JSX.Element> => {
             <div className="relative ml-4 box-border flex h-[110%] w-px shrink-0 flex-col self-stretch bg-black max-md:flex max-sm:hidden"></div>
           )}
         </div>
-      );
-    },
+      ))}
+    </>
   );
 };
 

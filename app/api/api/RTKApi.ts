@@ -225,7 +225,7 @@ export const RTKApi = createApi({
     /**
      * Getting the data of an authorized user.
      */
-    getMe: build.query<IUserEntity, 'en_US'>({
+    getMe: build.query<IUserEntity, string>({
       queryFn: async () => {
         const result = await api.Users.getUser();
         if (typeError(result)) {
@@ -256,7 +256,7 @@ export const RTKApi = createApi({
      */
     getOrderStorageByMarker: build.query<IOrdersEntity, { marker: string }>({
       queryFn: async ({ marker }) => {
-        const result = await api.Orders.getOrderByMarker(marker);
+        const result = await api.Orders.getOrdersStorageByMarker(marker);
         if (typeError(result)) {
           return { error: result };
         }

@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { ISignUpData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type {
+  ISignUpData,
+  ISignUpEntity,
+} from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
@@ -103,30 +107,32 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
         // Attempt to sign up the user using the provided API
         const res = await api.AuthProvider.signUp('email', data);
 
-        // If the response indicates the account is active, log in the user
-        if (res?.isActive) {
-          await logInUser({
-            method: 'email',
-            login: res.identifier, // Use the identifier from the response
-            password: fields.password_reg?.value || '', // Use the entered password
-          });
-          // Authenticate the user
-          authenticate();
-          // Close any open modals or forms
-          setOpen(false);
-        }
-        // If the account is not active or there's an error, handle accordingly
-        else if (res && (!res.isActive || typeError(res))) {
-          // Open a modal or form
+        if (typeError(res)) {
+          // Open Verification form to activate user
           setOpen(true);
-          // Set the component to display VerificationForm
           setComponent('VerificationForm');
-          // Set the action to activate the user
           setAction('activateUser');
+          setError(
+            `Error ${(res as { statusCode?: number }).statusCode ?? ''}`,
+          );
+        } else {
+          const entity = res as ISignUpEntity;
+          // If the response indicates the account is active, log in the user
+          if (entity.isActive) {
+            await logInUser({
+              method: 'email',
+              login: entity.identifier,
+              password: fields.password_reg?.value || '',
+            });
+            authenticate();
+            setOpen(false);
+          } else {
+            setOpen(true);
+            setComponent('VerificationForm');
+            setAction('activateUser');
+          }
+          setError('');
         }
-
-        // Set an error message if there's an error type in the response
-        setError(typeError(res) ? `Error ${res.status}` : '');
       } catch (e: any) {
         // Catch any errors and set the error message
         setError(e.message);
@@ -143,7 +149,7 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
         onSubmit={onSignUpHandle}
-        className="mx-auto flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"
+        className="mx-auto flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-gray-400 max-md:max-w-full">
@@ -151,22 +157,26 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
               onClick={() => setComponent('SignInForm')}
               className="underline"
             >
-              {sign_in_text?.value || 'Sign in'}
+              {(sign_in_text?.value as string) || 'Sign in'}
             </button>{' '}
-            {create_account_text?.value || 'Create account'}
+            {(create_account_text?.value as string) || 'Create account'}
           </p>
         </div>
 
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
           {data?.attributes.map(
-            (field: IAttributes, index: number) =>
+            (field: IFormAttribute, index: number) =>
               field.marker !== 'email_notification_reg' && (
-                <FormInput key={index} index={index} {...field} />
+                <FormInput
+                  key={index}
+                  index={index}
+                  {...(field as unknown as IAttributes)}
+                />
               ),
           )}
         </div>
         <SubmitButton
-          title={sign_up_text?.value}
+          title={(sign_up_text?.value as string) ?? ''}
           isLoading={loading || isLoading}
           index={10}
         />

@@ -15,7 +15,7 @@ const NavigationMenu = ({ menu }: { menu: IMenusPages[] }): JSX.Element => {
         {menu.map((item, index) => (
           <li key={index} className={item.children ? 'group' : ''}>
             <NavigationMenuItem
-              label={item.localizeInfos.menuTitle}
+              label={item.localizeInfos.menuTitle ?? ''}
               href={`/${item.pageUrl !== 'home' ? item.pageUrl : ''}`}
               hasDropdown={Boolean(item.children)}
             />

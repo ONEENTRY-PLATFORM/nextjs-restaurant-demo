@@ -10,8 +10,10 @@ const CarouselItemTitle = ({
 }: {
   item: IProductsEntity;
 }): JSX.Element => {
-  const title = localizeInfos.title;
-  const colors = attributeValues?.color?.value;
+  const title = localizeInfos.title ?? '';
+  const colors =
+    (attributeValues?.color?.value as Array<{ title: string }> | undefined) ??
+    [];
 
   return (
     <Link href={'/shop/product/' + id} title={title}>

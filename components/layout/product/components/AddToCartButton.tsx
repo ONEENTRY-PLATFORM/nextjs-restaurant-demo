@@ -55,7 +55,7 @@ const AddToCartButton = ({
   if (notInStock && out_of_stock_button) {
     return (
       <div className={'btn btn-o btn-o-gray ' + className}>
-        {out_of_stock_button?.value}
+        {out_of_stock_button?.value as string | undefined}
       </div>
     );
   }
@@ -95,7 +95,7 @@ const AddToCartButton = ({
       className={className}
       aria-label={`Add ${productTitle} to cart`}
     >
-      {add_to_cart_button?.value}
+      {add_to_cart_button?.value as string | undefined}
     </button>
   ) : (
     <QuantitySelector

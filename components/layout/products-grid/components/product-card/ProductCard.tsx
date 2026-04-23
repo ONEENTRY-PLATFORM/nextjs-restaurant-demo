@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import { type JSX, useMemo } from 'react';
+import type { JSX } from 'react';
 
 import AddToCartButton from '@/components/layout/product/components/AddToCartButton';
 import FavoritesButton from '@/components/shared/FavoritesButton';
@@ -27,14 +27,8 @@ const ProductCard = ({
 }): JSX.Element => {
   const { id, statusIdentifier, attributeValues, localizeInfos } = product;
 
-  const attributes = useMemo(
-    () => attributeValues?.['en_US'] || attributeValues,
-    [attributeValues],
-  );
-  const title = useMemo(
-    () => localizeInfos?.['en_US']?.title || localizeInfos?.title || '',
-    [localizeInfos],
-  );
+  const attributes = attributeValues;
+  const title = localizeInfos?.title || '';
   return (
     <CardAnimations
       className="product-card group"
@@ -61,7 +55,7 @@ const ProductCard = ({
           id={id}
           productTitle={title}
           statusIdentifier={statusIdentifier || ''}
-          units={attributeValues.units_product?.value}
+          units={(attributeValues.units_product?.value as number) ?? 0}
           dict={dict}
           height={42}
           className="btn btn-md btn-primary"

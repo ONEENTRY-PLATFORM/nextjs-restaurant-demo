@@ -30,9 +30,20 @@ const FormInput = (
         : (field.type as any)
   ];
 
-  const required = field.validators['requiredValidator']?.strict || false;
-  const minLength = field.validators['stringInspectionValidator']?.stringMin;
-  const maxLength = field.validators['stringInspectionValidator']?.stringMax;
+  const validators = field.validators as Record<string, any> | undefined;
+  const required =
+    (validators?.['requiredValidator'] as { strict?: boolean } | undefined)
+      ?.strict || false;
+  const minLength = (
+    validators?.['stringInspectionValidator'] as
+      | { stringMin?: number }
+      | undefined
+  )?.stringMin;
+  const maxLength = (
+    validators?.['stringInspectionValidator'] as
+      | { stringMax?: number }
+      | undefined
+  )?.stringMax;
 
   useEffect(() => {
     dispatch(
@@ -47,6 +58,7 @@ const FormInput = (
   }, [value, valid]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setType(fieldType || 'text');
   }, [fieldType]);
 

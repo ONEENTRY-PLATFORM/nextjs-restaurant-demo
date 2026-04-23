@@ -29,8 +29,7 @@ const ProductsGroup = async ({
       index={4}
     >
       <h2 className="mb-5 text-base uppercase leading-5 text-neutral-600 max-md:max-w-full">
-        {block.attributeValues['en_US']?.together_title?.value ||
-          block.attributeValues?.together_title?.value}
+        {block.attributeValues?.together_title?.value as string | undefined}
       </h2>
       <div className="flex w-full flex-row flex-wrap items-stretch justify-start gap-2.5">
         {block.products?.map((product: IProductsEntity) => (

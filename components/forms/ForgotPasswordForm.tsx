@@ -2,6 +2,7 @@
 'use client';
 
 import type { IAttributes, IAttributeValues } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
@@ -64,25 +65,29 @@ export const ForgotPasswordForm = ({
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
-        className="mx-auto flex min-h-[480px] max-w-[350px] flex-col gap-4 text-xl leading-5"
+        className="mx-auto flex min-h-120 max-w-87.5 flex-col gap-4 text-xl leading-5"
         onSubmit={handleSubmit}
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-gray-400 max-md:max-w-full">
-            {reset_descr?.value}
+            {reset_descr?.value as string | undefined}
           </p>
         </div>
 
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
           {data.attributes
-            .filter((field: IAttributes) => field.marker === 'email_reg')
-            .map((field: IAttributes, index: number) => (
-              <FormInput key={index} index={index} {...field} />
+            .filter((field: IFormAttribute) => field.marker === 'email_reg')
+            .map((field: IFormAttribute, index: number) => (
+              <FormInput
+                key={index}
+                index={index}
+                {...(field as unknown as IAttributes)}
+              />
             ))}
         </div>
 
         <FormSubmitButton
-          title={send_text?.value}
+          title={(send_text?.value as string) ?? ''}
           isLoading={isLoading}
           index={10}
         />

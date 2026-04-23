@@ -40,10 +40,10 @@ const ColorFilter = ({
   // get colorFilters from attributes
   const colorFilters = useMemo(() => {
     let colors: Color[] = [];
-    if (!attributes) {
+    if (!attributes || !('listTitles' in attributes)) {
       return colors;
     }
-    colors = attributes.listTitles.reduce(
+    colors = (attributes as IAttributesSetsEntity).listTitles.reduce(
       (arr: Color[], option: IListTitle) => {
         const color: Color = {
           code: option.value.toString(),

@@ -11,6 +11,9 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 import { getDictionary } from '../../dictionaries';
 
+/** Memoize the loader component to prevent unnecessary re-renders */
+const MemoizedProductsGridLoader = memo(ProductsGridLoader);
+
 /**
  * Shop catalog page
  * @async
@@ -38,9 +41,6 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   /** Set the number of products to display per page */
   // TODO: Extract products per page limit from global settings
   const pagesLimit = 10;
-
-  /** Memoize the loader component to prevent unnecessary re-renders */
-  const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
   if (!page || isError) {
     return notFound();
@@ -87,7 +87,8 @@ export async function generateMetadata({
     height,
     altText: alt,
   } = {
-    url: attributeValues?.icon?.downloadLink,
+    url: (attributeValues?.icon as { downloadLink?: string } | undefined)
+      ?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos?.title,
@@ -95,7 +96,8 @@ export async function generateMetadata({
 
   return {
     title: localizeInfos?.title,
-    description: localizeInfos?.plainContent,
+    description: (localizeInfos as { plainContent?: string } | undefined)
+      ?.plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

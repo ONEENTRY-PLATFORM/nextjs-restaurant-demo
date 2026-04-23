@@ -28,6 +28,7 @@ const ApplyButton = ({
   const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInCart(inCart);
   }, [inCart]);
 
@@ -44,14 +45,14 @@ const ApplyButton = ({
       onClick={() => addToCartHandle()}
       className="btn btn-md btn-o btn-o-primary mt-auto text-sm font-bold"
     >
-      {apply_button_placeholder?.value}
+      {apply_button_placeholder?.value as string | undefined}
     </button>
   ) : (
     <button
       onClick={() => removeFromCartHandle()}
       className="btn btn-md btn-o btn-o-primary mt-auto text-sm font-bold"
     >
-      {cancel_text?.value}
+      {cancel_text?.value as string | undefined}
     </button>
   );
 };

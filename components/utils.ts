@@ -47,10 +47,15 @@ export const sortArrayByPosition = (array: Record<any, any>) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sortObjectFieldsByPosition = (obj: Record<any, any>) => {
+export const sortObjectFieldsByPosition = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  obj: Record<any, any> | null | undefined,
+) => {
+  if (!obj || typeof obj !== 'object') {
+    return {};
+  }
   const entries = Object.entries(obj);
-  entries.sort((a, b) => a[1].position - b[1].position);
+  entries.sort((a, b) => (a[1]?.position ?? 0) - (b[1]?.position ?? 0));
   const sortedObj = {};
   for (const [key, value] of entries) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -24,7 +24,10 @@ const ProductDetails = async ({
     localizeInfos: { title },
     attributeValues: { sale, price, units_product },
   } = product;
-  const units = units_product?.value;
+  const units = (units_product?.value as number) ?? 0;
+  const category = product.attributeValues.category?.value as
+    | { value?: string; title?: string }
+    | undefined;
 
   return (
     <>
@@ -32,19 +35,17 @@ const ProductDetails = async ({
 
       {/* !!! category */}
       <p className="mt-3 text-sm leading-4 text-neutral-600">
-        <Link
-          prefetch={true}
-          href={
-            '/shop/category/' + product.attributeValues.category?.value.value
-          }
-        >
-          {product.attributeValues.category?.value.title}
+        <Link prefetch={true} href={'/shop/category/' + category?.value}>
+          {category?.title}
         </Link>
       </p>
       {/* !!! category */}
 
       <div className="mb-5 mt-4 text-left text-xl font-bold leading-8 text-neutral-600">
-        <PriceDisplay currentPrice={sale?.value} originalPrice={price?.value} />
+        <PriceDisplay
+          currentPrice={(sale?.value as number) ?? 0}
+          originalPrice={(price?.value as number) ?? 0}
+        />
       </div>
 
       <ProductUnits units={units} />

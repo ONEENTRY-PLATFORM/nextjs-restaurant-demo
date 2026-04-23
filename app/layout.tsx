@@ -60,7 +60,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // Get dictionary and set to server provider
-  const [dict] = ServerProvider('dict', await getDictionary());
+  const dictValue = await getDictionary();
+  ServerProvider('dict', dictValue);
+  const dict = dictValue;
 
   return (
     <html lang={'en_US'}>

@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-import { api } from '@/app/api';
+import { api, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
@@ -11,6 +11,7 @@ import { typeError } from '@/components/utils';
 export const getProductsByPageUrl = async (props: {
   limit: number;
   offset: number;
+  langCode?: string;
   params: {
     handle: string;
     searchParams?: {
@@ -27,14 +28,14 @@ export const getProductsByPageUrl = async (props: {
   products?: IProductsEntity[];
   total: number;
 }> => {
-  const { limit, offset, params } = props;
+  const { limit, offset, langCode, params } = props;
   const expandedFilters = getSearchParams(params.searchParams);
 
   try {
     const data = await api.Products.getProductsByPageUrl(
       params.handle,
       expandedFilters,
-      'en_US',
+      langCode || getLang(),
       {
         sortOrder: 'DESC',
         sortKey: 'date',

@@ -55,6 +55,7 @@ const CartPage = ({
   useEffect(() => {
     // Check if there is data available to set products
     if (data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProducts(data); // Initialize products state with fetched data
 
       // If the user is authenticated, establish a WebSocket connection
@@ -124,7 +125,7 @@ const CartPage = ({
   }
 
   return (
-    <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-[730px]">
+    <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {products?.map((product: IProductsEntity, i: number) => {
           return (

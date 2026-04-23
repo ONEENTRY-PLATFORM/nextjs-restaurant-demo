@@ -39,7 +39,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
 
   return (
     <TableRowAnimations
-      className="tr h-[50px] border-y border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"
+      className="tr h-12.5 border-y border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"
       index={7}
     >
       <div className="td w-3/12 items-center self-stretch text-sm">
@@ -49,7 +49,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
         <input
           size={40}
           type="text"
-          value={deliveryData.address || addressReg || ''}
+          value={(deliveryData.address || addressReg || '') as string}
           id="address"
           name="address"
           placeholder={placeholder}

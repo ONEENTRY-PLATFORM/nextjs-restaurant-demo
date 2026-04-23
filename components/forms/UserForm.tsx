@@ -3,6 +3,7 @@
 
 import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IAttributes } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
@@ -43,7 +44,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
 
   const formData = useMemo(() => {
     return data?.attributes
-      .map((field: IAttributes) => {
+      .map((field: IFormAttribute) => {
         if (field.marker !== 'email_notification_reg') {
           return {
             marker: field.marker,
@@ -57,6 +58,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
   }, [data?.attributes, fields]);
 
   // Update user data
+  /* eslint-disable react-hooks/preserve-manual-memoization */
   const onUpdateUserData = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -93,6 +95,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
     },
     [fields, formData, refreshUser, user?.formIdentifier],
   );
+  /* eslint-enable react-hooks/preserve-manual-memoization */
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -104,7 +107,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
 
   return (
     <form
-      className="flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"
+      className="flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
       onSubmit={onUpdateUserData}
     >
       <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
@@ -113,19 +116,24 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
             (field: { marker: string }) =>
               field.marker !== 'email_notification_reg',
           )
-          .map((field: IAttributes, index: number) => {
+          .map((field: IFormAttribute, index: number) => {
             const fieldData =
               Array.isArray(user?.formData) &&
               (user.formData.find(
                 (item) => item.marker === field.marker,
-              ) as FormDataType[]);
+              ) as unknown as FormDataType[]);
             return (
-              <FormInput key={index} index={index} {...field} {...fieldData} />
+              <FormInput
+                key={index}
+                index={index}
+                {...(field as unknown as IAttributes)}
+                {...fieldData}
+              />
             );
           })}
       </div>
       <SubmitButton
-        title={dict?.save_button_text?.value}
+        title={(dict?.save_button_text?.value as string) ?? ''}
         isLoading={loading}
         index={10}
       />

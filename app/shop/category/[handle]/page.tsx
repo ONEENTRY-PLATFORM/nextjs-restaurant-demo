@@ -9,6 +9,9 @@ import type { MetadataParams, PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
+/** Memoize the loader component to prevent unnecessary re-renders */
+const MemoizedProductsGridLoader = memo(ProductsGridLoader);
+
 /**
  * Shop category page layout
  * @param   {object}               props              - Page props
@@ -35,9 +38,6 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Set products per page limit */
   // TODO: Extract products per page limit from global settings
   const pagesLimit = 10;
-
-  /** Memoize the loader component to prevent unnecessary re-renders */
-  const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
   /** Show 404 page if category page not found */
   if (!page) {
@@ -117,7 +117,8 @@ export async function generateMetadata({
     height,
     altText: alt,
   } = {
-    url: attributeValues.icon?.downloadLink,
+    url: (attributeValues.icon as { downloadLink?: string } | undefined)
+      ?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos.title,
@@ -125,7 +126,7 @@ export async function generateMetadata({
 
   return {
     title: localizeInfos.title,
-    description: localizeInfos.plainContent,
+    description: (localizeInfos as { plainContent?: string }).plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

@@ -23,7 +23,7 @@ const DeliveryForm = ({
 
   return (
     <form
-      className="flex w-[730px] max-w-full flex-col pb-5"
+      className="flex w-182.5 max-w-full flex-col pb-5"
       onSubmit={(e) => {
         e.preventDefault();
         router.push('/payment');
@@ -36,7 +36,7 @@ const DeliveryForm = ({
           className="flex self-center text-lg font-bold leading-6 text-slate-700 lg:self-end"
         />
         <PaymentButton
-          text={dict.go_to_pay_placeholder?.value}
+          text={(dict.go_to_pay_placeholder?.value as string) ?? ''}
           className="self-end max-lg:self-center"
         />
       </div>

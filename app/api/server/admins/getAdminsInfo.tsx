@@ -2,13 +2,14 @@
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 
-import { api } from '@/app/api';
+import { api, getLang } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
   body: any[];
   offset: number;
   limit: number;
+  langCode?: string;
 }
 
 /**
@@ -18,13 +19,19 @@ export const getAdminsInfo = async ({
   body,
   offset,
   limit,
+  langCode,
 }: HandleProps): Promise<{
   isError: boolean;
   error?: IError;
   admins?: IAdminEntity[];
 }> => {
   try {
-    const data = await api.Admins.getAdminsInfo(body, 'en_US', offset, limit);
+    const data = await api.Admins.getAdminsInfo(
+      body,
+      langCode || getLang(),
+      offset,
+      limit,
+    );
     if (typeError(data)) {
       return { isError: true, error: data as IError };
     } else {

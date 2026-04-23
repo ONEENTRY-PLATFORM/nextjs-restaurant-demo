@@ -2,6 +2,7 @@
 'use client';
 
 import type { IAttributes } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useState } from 'react';
 
@@ -88,11 +89,11 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
 
   return (
     <form
-      className={`flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5 ${className}`}
+      className={`flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5 ${className}`}
       onSubmit={handleSubmit}
     >
       <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
-        {formFields?.map((field: IAttributes, index: number) => {
+        {formFields?.map((field: IFormAttribute, index: number) => {
           switch (field.type) {
             case 'button':
               return (
@@ -109,12 +110,21 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
                   <FormCaptcha
                     setToken={setToken}
                     setIsCaptcha={() => {}}
-                    captchaKey={field.settings?.captchaKey || ''}
+                    captchaKey={
+                      (field.settings as { captchaKey?: string } | undefined)
+                        ?.captchaKey || ''
+                    }
                   />
                 </div>
               );
             default:
-              return <FormInput key={index} index={index} {...field} />;
+              return (
+                <FormInput
+                  key={index}
+                  index={index}
+                  {...(field as unknown as IAttributes)}
+                />
+              );
           }
         })}
       </div>

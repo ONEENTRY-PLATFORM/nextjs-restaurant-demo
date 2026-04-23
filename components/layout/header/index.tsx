@@ -93,7 +93,7 @@ const Header = async (): Promise<JSX.Element> => {
           <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col">
             <div className="flex justify-between items-center">
               <a className="w-4.5 h-4.5" href="#">
-                <img src="/icons/phone.svg" alt="call" />
+                <img src="icons/phone.svg" alt="call" />
               </a>
               <a href="/">
                 <img src="/images/logo_mobile.svg" alt="logo" />

@@ -1,126 +1,101 @@
-// import dynamic from 'next/dynamic';
-import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { JSX } from 'react';
-import { Suspense } from 'react';
 
-import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
+
+export const dynamic = 'force-dynamic';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import type { PageProps } from '@/app/types/global';
-import ProductsGridLayout from '@/components/layout/products-grid';
-import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
-import PromoGrid from '@/components/promo/PromoGrid';
-import { sortArrayByPosition } from '@/components/utils';
-
-// const HomeHero = dynamic(() => import('@/components/layout/home-hero'), {
-//   ssr: true,
-// });
-
-// export const revalidate = 10;
-// export const dynamicParams = true;
+import HomePromo from '@/components/home/HomePromo';
+import MenuSection from '@/components/home/MenuSection';
+import {
+  beveragesItems,
+  breakfastItems,
+  desertItems,
+  firstCourseItems,
+  lunchItems,
+  mainCourseItems,
+  recommendedItems,
+} from '@/components/home/mockMenuData';
 
 /**
- * Page component
- * @param props
+ * Home page — 1:1 port of `static-html/index.html` (header chrome comes
+ * from the shared `RootLayout`; body sections live here).
+ *
+ * Each `MenuSection` below:
+ *   - Accepts a `categoryMarker` (OneEntry `pageUrl`) so the real
+ *     `ProductsGrid`/`ProductCard` is used when the CMS returns items.
+ *   - Falls back to the mock dataset from `mockMenuData.ts` otherwise,
+ *     matching the look in `static-html/index.html` 1:1.
+ * @returns {JSX.Element} Home page JSX.
  */
-const IndexPageLayout = async (props: PageProps): Promise<JSX.Element> => {
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
-  // set dict
+const HomePage = async (): Promise<JSX.Element> => {
   const [dict] = ServerProvider('dict', await getDictionary());
-  // get page
-  const { page, isError } = await getPageByUrl('home_web');
-  // get page blocks
-  const { blocks } = await getBlocksByPageUrl({ pageUrl: page?.pageUrl || '' });
-  if (isError || !page || !blocks) {
-    return <>isError</>;
-  }
-
-  const sortedBlocks = sortArrayByPosition(blocks);
-  // console.log(sortedBlocks);
 
   return (
     <>
-      <PromoGrid />
-      {sortedBlocks?.map((block: IBlockEntity) => {
-        return (
-          <BlockSwitch
-            key={block.identifier}
-            block={block}
-            dict={dict}
-            params={params}
-            searchParams={searchParams ?? {}}
-          />
-        );
-      })}
+      <HomePromo />
+
+      <MenuSection
+        title="Recomended"
+        categoryMarker="recommended"
+        items={recommendedItems}
+        viewAllCount={8}
+        dict={dict}
+        className="recomended max-w-[350px] md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto mt-[30px] md:mt-[50px] pb-[5px] w-full"
+        gridClassName="menu_items"
+      />
+
+      <MenuSection
+        title="Brackfast"
+        categoryMarker="breakfast"
+        items={breakfastItems}
+        viewAllCount={8}
+        dict={dict}
+        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+      />
+
+      <MenuSection
+        title="LUNCH"
+        categoryMarker="lunch"
+        items={lunchItems}
+        viewAllCount={6}
+        dict={dict}
+      />
+
+      <MenuSection
+        title="FIRST COURSE / SOUP"
+        categoryMarker="first_courses"
+        items={firstCourseItems}
+        viewAllCount={8}
+        dict={dict}
+        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+      />
+
+      <MenuSection
+        title="MAIN COURSE"
+        categoryMarker="main_courses"
+        items={mainCourseItems}
+        viewAllCount={8}
+        dict={dict}
+      />
+
+      <MenuSection
+        title="DESERT"
+        categoryMarker="dessert"
+        items={desertItems}
+        viewAllCount={8}
+        dict={dict}
+        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+      />
+
+      <MenuSection
+        title="BEVERAGEs"
+        categoryMarker="beverages"
+        items={beveragesItems}
+        viewAllCount={8}
+        dict={dict}
+      />
     </>
   );
 };
 
-type BlockSwitchProps = {
-  block: IBlockEntity;
-  dict: Awaited<ReturnType<typeof getDictionary>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  params: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  searchParams: any;
-};
-
-/**
- * Render block by its identifier — keeps the block switch out of the main
- * page component so React doesn't warn about creating components in render.
- * @param   {BlockSwitchProps}   props - Block render props.
- * @returns {JSX.Element | null}       Block JSX or null.
- */
-const BlockSwitch = ({
-  block,
-  dict,
-  params,
-  searchParams,
-}: BlockSwitchProps): JSX.Element | null => {
-  return (() => {
-    switch (block.identifier) {
-      case 'recommended_web':
-        return (
-          <section
-            key={block.identifier}
-            className="relative mx-auto box-border flex w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch"
-          >
-            <div className="flex w-full flex-col items-center gap-5">
-              <Suspense fallback={<ProductsGridLoader />}>
-                <ProductsGridLayout
-                  pagesLimit={block.quantity || 4}
-                  dict={dict}
-                  params={params}
-                  searchParams={searchParams ?? {}}
-                />
-              </Suspense>
-            </div>
-          </section>
-        );
-      //   return <HomeHero key={index} block={block} />;
-      // case 'home_catalog':
-      //   return (
-      //     <div className="px-5 py-8" key={index}>
-      //       <CatalogSection block={block} />
-      //     </div>
-      //   );
-      // case 'home_gallery':
-      //   return <GalleryFeed key={index} block={block} />;
-      // case 'home_offers_feed':
-      //   return <OffersFeed key={index} block={block} />;
-      // case 'home_discounts':
-      //   return <HomeDiscount key={index} block={block} />;
-      // case 'home_masters':
-      //   return <MastersFeed key={index} block={block} />;
-      // case 'reviews_carousel':
-      //   return <ReviewsCarousel key={index} block={block} />;
-      default:
-        return null;
-    }
-  })();
-};
-
-export default IndexPageLayout;
+export default HomePage;

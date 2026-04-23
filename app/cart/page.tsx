@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 import WithSidebar from '@/app/[handle]/WithSidebar';
 import { getProductById } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import CartPage from '@/components/layout/cart';
+import CartWizard from '@/components/cart/CartWizard';
 
 import { getDictionary } from '../dictionaries';
 
@@ -38,12 +38,15 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
     ? undefined
     : (response as ProductResponse).product;
 
-  /** Render cart page layout with sidebar */
+  /** Render cart page layout with sidebar + background per cart_*.html */
   return (
-    <section className="relative mx-auto box-border flex min-h-80 w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch">
+    <section
+      className="relative mx-auto box-border flex min-h-screen w-full max-w-(--breakpoint-xl) shrink-0 grow flex-col self-stretch bg-cover bg-no-repeat"
+      style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
+    >
       <div className="flex w-full flex-col items-center gap-5">
         <WithSidebar>
-          <CartPage
+          <CartWizard
             dict={dict}
             deliveryData={deliveryData as IProductsEntity}
           />

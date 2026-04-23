@@ -56,41 +56,46 @@ const ReservationPage = async (): Promise<JSX.Element> => {
   const descriptionHtml = description?.[0]?.htmlValue ?? '';
 
   return (
-    <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
-      <div className="mb-8 overflow-hidden rounded-[20px] bg-ink/60">
-        {heroImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={heroImage}
-            alt={title}
-            className="h-auto w-full object-cover"
-          />
-        ) : null}
-        <div className="p-6 md:p-10">
-          <h1 className="mb-5 font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
-            {title}
-          </h1>
-          {descriptionHtml ? (
-            <div
-              className="mb-6 text-base text-paper/90"
-              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+    <section
+      className="min-h-screen bg-cover bg-no-repeat"
+      style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
+    >
+      <div className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
+        <div className="mb-8 overflow-hidden rounded-[20px] bg-ink/60">
+          {heroImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={heroImage}
+              alt={title}
+              className="h-auto w-full object-cover"
             />
           ) : null}
+          <div className="p-6 md:p-10">
+            <h1 className="mb-5 font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
+              {title}
+            </h1>
+            {descriptionHtml ? (
+              <div
+                className="mb-6 text-base text-paper/90"
+                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+              />
+            ) : null}
+          </div>
         </div>
-      </div>
 
-      {formRes.isError || !formRes.form ? (
-        <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/80">
-          Reservation form is not available. Please configure form{' '}
-          <code className="text-brand">reservation</code> in OneEntry admin.
-        </div>
-      ) : (
-        <ReservationForm
-          form={formRes.form}
-          dict={dict}
-          restaurants={restaurants}
-        />
-      )}
+        {formRes.isError || !formRes.form ? (
+          <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/80">
+            Reservation form is not available. Please configure form{' '}
+            <code className="text-brand">reservation</code> in OneEntry admin.
+          </div>
+        ) : (
+          <ReservationForm
+            form={formRes.form}
+            dict={dict}
+            restaurants={restaurants}
+          />
+        )}
+      </div>
     </section>
   );
 };

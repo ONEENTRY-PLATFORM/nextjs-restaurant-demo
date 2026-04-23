@@ -28,7 +28,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         | Array<{ downloadLink?: string }>
         | null
         | undefined,
-    ) || '/img/icons/logo.svg';
+    ) || '/images/icons/logo.svg';
   const bg = getImageUrl(
     attrs.service_bg_image?.value as
       | { downloadLink?: string }
@@ -53,7 +53,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
       style={
         bg
           ? { backgroundImage: `url('${bg}')` }
-          : { backgroundImage: `url('/img/picture/bg_service.png')` }
+          : { backgroundImage: `url('/images/picture/bg_service.png')` }
       }
     >
       <div className="mx-auto max-w-[393px] px-5">

@@ -75,7 +75,7 @@ input[type="radio"]:checked + .radio-custom::before {
 .bg-custom::before {
   content: '';
   @apply absolute top-0 left-0 w-full h-full bg-cover bg-center;
-  background-image: url('/img/picture/bg-mobile.png');
+  background-image: url('/images/picture/bg-mobile.png');
 }
 
 @media (min-width: 768px) {

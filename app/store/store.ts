@@ -38,7 +38,7 @@ const cartReducer = persistReducer(
     key: 'cart-slice',
     storage: storage,
     version: version,
-    whitelist: ['servicesData', 'tabsState'],
+    whitelist: ['productsData', 'reservations'],
   },
   cartSlice,
 );

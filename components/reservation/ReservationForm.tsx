@@ -23,18 +23,17 @@ type PickerMode = 'date' | 'time' | null;
 
 /**
  * Fields rendered in the 2-column rows (per `service_table.html` layout).
+ * Markers aligned with admin `booking_order` form.
  * @private
  */
 const ROW_PAIRS: Array<[string, string]> = [
-  ['reservation_name', 'reservation_surname'],
-  ['reservation_phone', 'guests_count'],
-  ['reservation_date', 'reservation_time'],
+  ['name', 'surname'],
+  ['phone', 'people_count'],
 ];
 
-const TEXT_MARKER = 'reservation_notes';
-const RESTAURANT_MARKER = 'reservation_restaurant';
-const DATE_MARKER = 'reservation_date';
-const TIME_MARKER = 'reservation_time';
+const TEXT_MARKER = 'user_preferences';
+const RESTAURANT_MARKER = 'restaurant';
+const TIME_SLOT_MARKER = 'time_slot';
 
 /**
  * Map OneEntry form attribute type + marker to native HTML input `type`.
@@ -284,23 +283,24 @@ const ReservationForm = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Slide-up pickers */}
+      {/* Slide-up pickers — date first, then time, both write to TIME_SLOT_MARKER */}
       {picker === 'date' ? (
         <DatePickerSheet
-          value={values[DATE_MARKER] || todayIso}
+          value={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || todayIso}
           minDate={todayIso}
           onApply={(iso) => {
-            onChange(DATE_MARKER, iso);
-            setPicker(null);
+            onChange(TIME_SLOT_MARKER, iso);
+            setPicker('time');
           }}
           onClose={() => setPicker(null)}
         />
       ) : null}
       {picker === 'time' ? (
         <TimePickerSheet
-          value={values[TIME_MARKER] ?? ''}
+          value={values[TIME_SLOT_MARKER]?.split(' ')?.[1] ?? ''}
           onApply={(t) => {
-            onChange(TIME_MARKER, t);
+            const d = values[TIME_SLOT_MARKER]?.split(' ')?.[0] ?? todayIso;
+            onChange(TIME_SLOT_MARKER, `${d} ${t}`);
             setPicker(null);
           }}
           onClose={() => setPicker(null)}
@@ -333,11 +333,10 @@ const Field = ({
   onOpenPicker,
 }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;
-  const isUppercase =
-    attr.marker === 'reservation_name' || attr.marker === 'reservation_surname';
+  const isUppercase = attr.marker === 'name' || attr.marker === 'surname';
 
-  if (attr.marker === DATE_MARKER) {
-    const v = values[DATE_MARKER];
+  if (attr.type === 'timeInterval' || attr.marker === 'time_slot') {
+    const v = values[attr.marker];
     return (
       <button
         type="button"
@@ -345,21 +344,7 @@ const Field = ({
         className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
         <span className="font-normal text-[16px] text-[#dfe9f9]">{label}</span>
-        <span className="cart_input block">{v || 'Select date'}</span>
-      </button>
-    );
-  }
-
-  if (attr.marker === TIME_MARKER) {
-    const v = values[TIME_MARKER];
-    return (
-      <button
-        type="button"
-        onClick={() => onOpenPicker('time')}
-        className="flex flex-1 flex-col border-b border-b-muted text-left"
-      >
-        <span className="font-normal text-[16px] text-[#dfe9f9]">{label}</span>
-        <span className="cart_input block">{v || 'Select time'}</span>
+        <span className="cart_input block">{v || 'Select date & time'}</span>
       </button>
     );
   }

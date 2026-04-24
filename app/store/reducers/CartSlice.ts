@@ -219,9 +219,17 @@ export const selectIsInCart = (
 };
 
 /**
- * Select cart data
+ * Select cart products (items added via addProductToCart).
+ * Shape per entry: `{ id, selected, quantity }`.
  */
 export const selectCartData = (state: {
+  cartReducer: { productsData: any[] };
+}): any => state.cartReducer.productsData;
+
+/**
+ * Select reservations list (table bookings — separate from product cart).
+ */
+export const selectReservations = (state: {
   cartReducer: { reservations: any[] };
 }): any => state.cartReducer.reservations;
 

@@ -26,6 +26,7 @@ import { ToastContainer } from 'react-toastify';
 const lato = Lato({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
+  style: ['normal', 'italic'],
   display: 'swap',
   preload: true,
   adjustFontFallback: true,

@@ -53,7 +53,7 @@ const MenuItemCard = ({ item }: { item: MenuItemData }): JSX.Element => {
       <div className="menu_items_btn">
         <p className="counter">{item.counter}</p>
         <svg
-          className="w-[20px] h-[19px] md:w-[29px] md:h-[27px]"
+          className="w-5 h-4.75 md:w-7.25 md:h-6.75"
           viewBox="0 0 29 27"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@ const MenuItemCard = ({ item }: { item: MenuItemData }): JSX.Element => {
       </div>
 
       <svg
-        className="heart_card w-[26px] h-[21px] md:w-[38px] md:h-[30px]"
+        className="heart_card w-6.5 h-5.25 md:w-9.5 md:h-7.5"
         viewBox="0 0 38 30"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

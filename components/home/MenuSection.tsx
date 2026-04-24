@@ -57,7 +57,7 @@ const MenuSection = async ({
   viewAllCount,
   dict = {} as IAttributeValues,
   limit = 8,
-  className = 'max-w-[350px] md:max-w-[700px] lg:max-w-[1000px] xl:max-w-[1292px] mx-auto pt-[15px] w-full',
+  className = 'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full',
   wrapperClassName,
   gridClassName = 'menu_items pt-[12px]',
 }: MenuSectionProps): Promise<JSX.Element> => {

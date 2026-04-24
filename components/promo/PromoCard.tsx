@@ -13,7 +13,8 @@ import { getImageUrl } from '@/app/api';
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};
-  const imageValue = attrs.promo_image?.value;
+  // admin `blog_page` set: banner/title/description/action_type
+  const imageValue = attrs.banner?.value ?? attrs.promo_image?.value;
   const image = getImageUrl(
     imageValue as
       | { downloadLink?: string }
@@ -22,18 +23,27 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
       | undefined,
   );
   const title =
+    (attrs.title?.value as string | undefined) ??
     (attrs.promo_title?.value as string | undefined) ??
     page.localizeInfos?.title ??
     '';
   const subtitle =
+    (attrs.description?.value as Array<{ plainValue?: string }> | undefined) ??
     (attrs.promo_subtitle?.value as
       | Array<{ plainValue?: string }>
       | string
-      | undefined) ?? '';
+      | undefined) ??
+    '';
   const subtitleText = Array.isArray(subtitle)
     ? (subtitle[0]?.plainValue ?? '')
     : subtitle;
-  const cta = (attrs.promo_cta?.value as string | undefined) ?? 'Learn more';
+  const actionType = attrs.action_type?.value as
+    | Array<{ title?: string }>
+    | undefined;
+  const cta =
+    actionType?.[0]?.title ??
+    (attrs.promo_cta?.value as string | undefined) ??
+    'Learn more';
 
   return (
     <Link

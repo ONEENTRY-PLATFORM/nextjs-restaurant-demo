@@ -31,7 +31,7 @@ const initialState: InitialStateType = {
   order: {
     formData: [],
     products: [],
-    formIdentifier: 'order',
+    formIdentifier: 'delivery_order',
   },
   step: 'cart',
 };

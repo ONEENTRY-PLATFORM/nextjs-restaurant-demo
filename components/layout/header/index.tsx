@@ -53,7 +53,7 @@ const Header = async (): Promise<JSX.Element> => {
           <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
             <div className="flex items-center justify-start md:gap-7.5 gap-15">
               <Logo />
-              <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-100 lg:max-w-110">
+              <h1 className="font-lato italic font-bold md:text-[30px] lg:text-[48px] xl:text-[62px] leading-[97%] tracking-[0.02em] text-white md:max-w-100 lg:max-w-120">
                 Excellence taste
                 <br /> in <span className="text-custom_orange">every bite</span>
               </h1>
@@ -88,6 +88,7 @@ const Header = async (): Promise<JSX.Element> => {
 
       <div className="relative pb-7.5 md:pb-0 bg-custom">
         <div className="relative">
+          {/* header_mobile */}
           <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
               <a className="w-4.5 h-4.5" href="#">
@@ -145,6 +146,7 @@ const Header = async (): Promise<JSX.Element> => {
             </div>
           </header>
 
+          {/* navigation */}
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             <svg
               className="hidden md:block md:w-20 md:h-8.75 md:mr-6.25 lg:mr-10 -ml-3.75"

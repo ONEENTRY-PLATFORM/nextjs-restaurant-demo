@@ -28,7 +28,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
     const address = deliveryData.address || addressReg || '';
     dispatch(
       addData({
-        marker: 'order_address',
+        marker: 'delivery_address',
         type: 'string',
         value: address,
         valid: address ? true : false,

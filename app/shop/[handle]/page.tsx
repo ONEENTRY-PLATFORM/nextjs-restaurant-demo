@@ -56,6 +56,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
             searchParams={searchParams ?? {}}
             pagesLimit={pagesLimit}
             dict={dict}
+            isCategory={true}
           />
         </Suspense>
       </div>

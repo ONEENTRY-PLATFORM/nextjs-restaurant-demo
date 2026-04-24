@@ -20,40 +20,55 @@ export const dynamic = 'force-dynamic';
  * @returns {Promise<JSX.Element>} Reservation page JSX.
  */
 const ReservationPage = async (): Promise<JSX.Element> => {
-  const [pageRes, formRes, restaurantsRes, dict] = await Promise.all([
-    getPageByUrl('bookings'),
-    getFormByMarker('booking_order'),
-    getChildPagesByParentUrl('restaurants'),
-    getDictionary(),
-  ]);
+  const [pageRes, formRes, restaurantsParentRes, restaurantsRes, dict] =
+    await Promise.all([
+      getPageByUrl('bookings'),
+      getFormByMarker('booking_order'),
+      getPageByUrl('restaurants'),
+      getChildPagesByParentUrl('restaurants'),
+      getDictionary(),
+    ]);
 
   const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map(
     (p: IPagesEntity) => ({
       value: p.pageUrl ?? String(p.id),
       label:
-        ((p.attributeValues?.restaurant_address?.value as string | undefined) ??
-          (p.attributeValues?.address?.value as string | undefined) ??
+        ((p.attributeValues?.address?.value as string | undefined) ??
+          (p.attributeValues?.restaurant_address?.value as string | undefined) ??
           p.localizeInfos?.title) ||
         'Restaurant',
     }),
   );
 
-  const heroImage = getImageUrl(
-    pageRes.page?.attributeValues?.reservation_hero_image?.value as
-      | { downloadLink?: string }
-      | Array<{ downloadLink?: string }>
-      | null
-      | undefined,
-  );
+  // Use parent `restaurants` page rich content (title/description/photos) as hero
+  const parent = restaurantsParentRes.page;
+  const photos = (parent?.attributeValues?.photos?.value as
+    | Array<{ downloadLink?: string }>
+    | undefined) ?? [];
+  const heroImage =
+    photos[0]?.downloadLink ??
+    getImageUrl(
+      pageRes.page?.attributeValues?.reservation_hero_image?.value as
+        | { downloadLink?: string }
+        | Array<{ downloadLink?: string }>
+        | null
+        | undefined,
+    );
   const title =
+    (parent?.attributeValues?.title?.value as string | undefined) ??
     (pageRes.page?.attributeValues?.reservation_title?.value as
       | string
       | undefined) ??
     pageRes.page?.localizeInfos?.title ??
     'Book a table';
-  const description = pageRes.page?.attributeValues?.reservation_description
-    ?.value as Array<{ htmlValue?: string; plainValue?: string }> | undefined;
-  const descriptionHtml = description?.[0]?.htmlValue ?? '';
+  const descriptionRaw =
+    (parent?.attributeValues?.description?.value as
+      | Array<{ htmlValue?: string; plainValue?: string }>
+      | undefined) ??
+    (pageRes.page?.attributeValues?.reservation_description?.value as
+      | Array<{ htmlValue?: string; plainValue?: string }>
+      | undefined);
+  const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
 
   return (
     <section

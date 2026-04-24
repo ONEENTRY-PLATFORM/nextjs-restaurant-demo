@@ -31,14 +31,10 @@ const DeliveryTable = ({
 
   // get form by marker with RTK
   const { data } = useGetFormByMarkerQuery({
-    marker: 'order',
+    marker: 'delivery_order',
   });
 
-  const {
-    order_info_date_placeholder,
-    order_info_time_placeholder,
-    order_info_address_placeholder,
-  } = dict;
+  const { order_info_date_placeholder, order_info_address_placeholder } = dict;
 
   const attrs = data?.attributes.filter(
     (attr: IFormAttribute) => attr.marker !== 'time2',
@@ -46,7 +42,7 @@ const DeliveryTable = ({
   const addressReg =
     user?.formData.find((el) => el.marker === 'address_reg')?.value || '';
 
-  // set delivery data onChange
+  // set delivery data onChange — markers aligned with admin `delivery_order` form
   useEffect(() => {
     const date = deliveryData.date;
     const time = deliveryData.time;
@@ -54,27 +50,19 @@ const DeliveryTable = ({
 
     dispatch(
       addData({
-        marker: 'date',
-        type: 'date',
+        marker: 'delivery_time',
+        type: 'timeInterval',
         value: {
           fullDate: new Date(date).toISOString(),
-          formattedValue: new Date(date).toDateString() + ' 00:00',
-          formatString: 'YYYY-MM-DD',
+          formattedValue: `${new Date(date).toDateString()} ${time ?? ''}`,
+          formatString: 'YYYY-MM-DD HH:mm',
         },
         valid: date ? true : false,
       }),
     );
     dispatch(
       addData({
-        marker: 'time',
-        type: 'string',
-        value: time,
-        valid: time ? true : false,
-      }),
-    );
-    dispatch(
-      addData({
-        marker: 'order_address',
+        marker: 'delivery_address',
         type: 'string',
         value: address,
         valid: address ? true : false,
@@ -91,33 +79,26 @@ const DeliveryTable = ({
       <div>
         {attrs?.map((attr: IFormAttribute, i: Key) => {
           const marker = attr.marker;
-          if (marker === 'date') {
+          if (marker === 'delivery_time') {
             return (
               <DeliveryTableRow
                 key={i}
-                value={new Date(deliveryData.date).toLocaleDateString('en-US')}
+                value={
+                  deliveryData.date
+                    ? `${new Date(deliveryData.date).toLocaleDateString('en-US')} ${deliveryData.time ?? ''}`
+                    : ''
+                }
                 icon={'/icons/calendar.svg'}
-                label={order_info_date_placeholder?.value as string}
-                placeholder={order_info_date_placeholder?.value as string}
+                label={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
+                placeholder={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
               />
             );
           }
-          if (marker === 'time') {
-            return (
-              <DeliveryTableRow
-                key={i}
-                value={deliveryData.time as string}
-                icon={'/icons/time.svg'}
-                label={order_info_time_placeholder?.value as string}
-                placeholder={order_info_time_placeholder?.value as string}
-              />
-            );
-          }
-          if (marker === 'order_address') {
+          if (marker === 'delivery_address') {
             return (
               <AddressRow
                 key={i}
-                placeholder={order_info_address_placeholder?.value as string}
+                placeholder={(order_info_address_placeholder?.value as string) ?? 'Delivery address'}
               />
             );
           }

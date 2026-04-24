@@ -52,7 +52,7 @@ export async function submitReservation(
       '';
 
     const res = await api.FormData.postFormsData({
-      formIdentifier: 'reservation',
+      formIdentifier: 'booking_order',
       formData: payload.formData,
       formModuleConfigId,
       moduleEntityIdentifier,

@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import type { JSX } from 'react';
 
+import { useAppSelector } from '@/app/store/hooks';
+import { selectCartData } from '@/app/store/reducers/CartSlice';
 import CartIcon from '@/components/icons/cart';
 
-/**
- * Nav item cart button
- * @returns JSX.Element
- */
 const NavItemCart = (): JSX.Element => {
+  const items = useAppSelector(selectCartData) as Array<{ id: number }>;
+  const count = items?.length ?? 0;
+
   return (
     <Link
       prefetch={false}
@@ -18,9 +19,11 @@ const NavItemCart = (): JSX.Element => {
       aria-label="Cart"
     >
       <CartIcon />
-      <div className="py-0.5 px-[5px] absolute top-[-3px] right-[-7px] rounded-full bg-[#ec722b]">
-        <p className="font-bold text-[8px] text-black">2</p>
-      </div>
+      {count > 0 && (
+        <div className="py-0.5 px-[5px] absolute top-[-3px] right-[-7px] rounded-full bg-[#ec722b]">
+          <p className="font-bold text-[8px] text-black">{count}</p>
+        </div>
+      )}
     </Link>
   );
 };

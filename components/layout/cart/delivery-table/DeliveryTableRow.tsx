@@ -24,7 +24,7 @@ const DeliveryTableRow = ({
 
   return (
     <TableRowAnimations
-      className="tr h-[50px] border-t border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"
+      className="tr h-[50px] border-t border-solid border-muted max-md:max-w-full max-md:flex-wrap"
       index={7}
     >
       <div className="td w-3/12 align-middle text-sm">
@@ -44,7 +44,7 @@ const DeliveryTableRow = ({
             setOpen(true);
             setComponent('CalendarForm');
           }}
-          className="w-full"
+          className="w-full bg-transparent text-paper focus:outline-none"
         />
       </div>
       <div className="td w-1/12 pl-5 align-middle">

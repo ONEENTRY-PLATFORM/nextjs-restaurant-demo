@@ -57,7 +57,7 @@ const ProductDetails = async ({
         productTitle={title || ''}
         dict={dict}
         height={50}
-        className="btn btn-lg btn-primary"
+        className="rounded-[10px] bg-custom-gradient font-bold uppercase text-white hover:bg-gradient-to-r-hover py-3 px-6"
       />
     </>
   );

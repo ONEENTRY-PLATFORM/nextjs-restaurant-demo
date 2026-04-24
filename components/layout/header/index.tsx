@@ -42,7 +42,6 @@ const SearchFallback = () => (
  * Header section
  * @returns React component
  */
-
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 

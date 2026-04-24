@@ -112,7 +112,7 @@ const FavoriteRow = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <li className="flex min-w-[370px] w-[calc(50%-16px)] items-center justify-between gap-3 rounded-[5px] border border-gray-300 p-[10px]">
+    <li className="flex min-w-[370px] w-[calc(50%-16px)] items-center justify-between gap-3 rounded-[5px] border border-paper/40 p-[10px]">
       <div className="relative h-[122px] w-[122px] shrink-0 overflow-hidden rounded-[5px] bg-ink/50">
         {imageSrc ? (
           <Image

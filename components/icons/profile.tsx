@@ -7,8 +7,8 @@ const ProfileIcon = (props?: { active?: boolean }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={
-        'group-hover:fill-[#DFE9F9] transition-colors duration-300 ' +
-        (props?.active ? 'fill-[#DFE9F9]' : 'fill-[#DFE9F9]')
+        'hover-target transition-colors duration-300 group-hover:fill-brand ' +
+        (props?.active ? 'fill-brand' : 'fill-paper')
       }
     >
       <path

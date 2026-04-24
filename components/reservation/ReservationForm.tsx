@@ -218,7 +218,7 @@ const ReservationForm = ({
 
       {/* Preferences textarea (full width) */}
       {hasNotes ? (
-        <div className="flex flex-col border-b border-b-[#b0bcce]">
+        <div className="flex flex-col border-b border-b-muted">
           <label
             htmlFor={TEXT_MARKER}
             className="font-normal text-[16px] text-[#dfe9f9]"
@@ -342,7 +342,7 @@ const Field = ({
       <button
         type="button"
         onClick={() => onOpenPicker('date')}
-        className="flex flex-1 flex-col border-b border-b-[#b0bcce] text-left"
+        className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
         <span className="font-normal text-[16px] text-[#dfe9f9]">{label}</span>
         <span className="cart_input block">{v || 'Select date'}</span>
@@ -356,7 +356,7 @@ const Field = ({
       <button
         type="button"
         onClick={() => onOpenPicker('time')}
-        className="flex flex-1 flex-col border-b border-b-[#b0bcce] text-left"
+        className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
         <span className="font-normal text-[16px] text-[#dfe9f9]">{label}</span>
         <span className="cart_input block">{v || 'Select time'}</span>
@@ -366,7 +366,7 @@ const Field = ({
 
   if (attr.type === 'text') {
     return (
-      <div className="flex flex-1 flex-col border-b border-b-[#b0bcce]">
+      <div className="flex flex-1 flex-col border-b border-b-muted">
         <label
           htmlFor={attr.marker}
           className="font-normal text-[16px] text-[#dfe9f9]"
@@ -386,7 +386,7 @@ const Field = ({
   }
 
   return (
-    <div className="flex flex-1 flex-col border-b border-b-[#b0bcce]">
+    <div className="flex flex-1 flex-col border-b border-b-muted">
       <label
         htmlFor={attr.marker}
         className="font-normal text-[16px] text-[#dfe9f9]"

@@ -22,7 +22,7 @@ const MobileMenuTrigger = () => {
       className="flex size-10 flex-col items-center justify-center gap-1 rounded-md transition-colors lg:hidden"
     >
       {[...Array(3)].map((_, index) => (
-        <span key={index} className="block h-0.5 w-8 bg-gray-600"></span>
+        <span key={index} className="block h-0.5 w-8 bg-paper"></span>
       ))}
     </button>
   );

@@ -18,25 +18,28 @@ const tabs: Array<{ href: string; label: string }> = [
 const ProfileTabs = (): JSX.Element => {
   const pathname = usePathname();
   return (
-    <nav className="mb-6 flex gap-2 overflow-x-auto no-scrollbar">
+    <ul className="mb-6 flex gap-2 overflow-x-auto no-scrollbar p-0">
       {tabs.map((t) => {
         const active = pathname === t.href;
         return (
-          <Link
+          <li
             key={t.href}
-            href={t.href}
             className={
-              'whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ' +
-              (active
-                ? 'bg-brand text-white'
-                : 'border border-muted text-paper/80 hover:border-brand hover:text-brand')
+              'list_item ' + (active ? 'border-brand' : '')
             }
           >
-            {t.label}
-          </Link>
+            <Link
+              href={t.href}
+              className={
+                'list_link ' + (active ? 'bg-brand text-white' : '')
+              }
+            >
+              {t.label}
+            </Link>
+          </li>
         );
       })}
-    </nav>
+    </ul>
   );
 };
 

@@ -54,12 +54,12 @@
 
 Источник верстки: `service_table.html`, `about_reservation.html`.
 
-### 2.1. Родительская страница `restaurants`
+### 2.1. Родительская страница `restaurants` ✅
 
 - **pageUrl**: `restaurants` (родитель филиалов)
 - **localizeInfos.title**: `Our restaurants`
 
-### 2.2. Дочерние страницы (филиалы)
+### 2.2. Дочерние страницы (филиалы) ✅
 
 Создать child pages у `restaurants` — каждая представляет отдельный ресторан. Пример из верстки:
 
@@ -70,7 +70,7 @@
 | `london_str20`  | `restaurant_address: "London, ONEENTRY. str, 20"`, ...          |
 | `london_str10`  | `restaurant_address: "London, ONEENTRY. str, 10"`, ...          |
 
-Attribute set для филиалов:
+Attribute set для филиалов ✅:
 
 | marker                  | type   | Назначение                                  |
 |-------------------------|--------|---------------------------------------------|
@@ -225,6 +225,26 @@ Attribute set для филиалов:
 ### 6.3. Форма `contact_us` (уже существует)
 
 Используется в [ContactUsForm.tsx](components/forms/ContactUsForm.tsx) + [app/support/page.tsx](app/support/page.tsx).
+
+---
+
+## 6a. Services / каталог-страница ✅
+
+Источник верстки: `index_category.html`, `about.html` (детальная страница товара).
+
+### 6a.1. Страница `services` ✅
+
+- **pageUrl**: `services`
+- **localizeInfos.title**: `Services` / `Меню`
+- Attribute set: `catalog_page`
+
+### 6a.2. Attribute set `catalog_page` ✅
+
+Общий набор атрибутов для каталоговых страниц (корневой каталог + категории `menu/*` + товары). Конкретные маркеры заполняются по мере необходимости — компоненты читают их через `page.attributeValues.*`.
+
+**Где используется**: [app/shop/page.tsx](app/shop/page.tsx) (`getPageByUrl('shop')` — может потребоваться смена на `'services'` если переименовано), [app/shop/category/[handle]/page.tsx](app/shop/category/%5Bhandle%5D/page.tsx), [app/shop/product/[handle]/page.tsx](app/shop/product/%5Bhandle%5D/page.tsx), [app/shop/[handle]/page.tsx](app/shop/%5Bhandle%5D/page.tsx).
+
+> Если pageUrl `services` должен использоваться вместо `shop` — нужно обновить `getPageByUrl('shop')` в 4 файлах выше на `getPageByUrl('services')`.
 
 ---
 

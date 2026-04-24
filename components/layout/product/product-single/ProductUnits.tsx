@@ -9,10 +9,10 @@ const ProductUnits = ({ units }: { units: number }): JSX.Element => {
 
   return (
     <div className="relative mb-6 box-border flex shrink-0 flex-col ">
-      <div className="self-end text-sm text-slate-300">{units} units</div>
-      <div className="z-10 mt-1.5 flex w-full flex-row justify-start rounded-xl bg-zinc-300">
+      <div className="self-end text-sm text-paper/60">{units} units</div>
+      <div className="z-10 mt-1.5 flex w-full flex-row justify-start rounded-xl bg-paper/20">
         <div
-          className={'mr-auto h-[3px] shrink-0 rounded-xl bg-orange-500'}
+          className={'mr-auto h-[3px] shrink-0 rounded-xl bg-brand'}
           style={{
             width: width + '%',
           }}

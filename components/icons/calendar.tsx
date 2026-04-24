@@ -7,8 +7,8 @@ const CalendarIcon = (props?: { active?: boolean }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={
-        'size-full group-hover:fill-fuchsia-500 transition-colors duration-300 ' +
-        (props?.active ? 'fill-fuchsia-500' : 'fill-slate-700')
+        'size-full group-hover:fill-brand transition-colors duration-300 ' +
+        (props?.active ? 'fill-brand' : 'fill-paper')
       }
     >
       <path

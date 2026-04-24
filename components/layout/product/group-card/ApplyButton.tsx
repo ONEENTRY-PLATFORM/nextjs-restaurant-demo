@@ -43,14 +43,14 @@ const ApplyButton = ({
   return !productInCart || !inCart ? (
     <button
       onClick={() => addToCartHandle()}
-      className="btn btn-md btn-o btn-o-primary mt-auto text-sm font-bold"
+      className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
       {apply_button_placeholder?.value as string | undefined}
     </button>
   ) : (
     <button
       onClick={() => removeFromCartHandle()}
-      className="btn btn-md btn-o btn-o-primary mt-auto text-sm font-bold"
+      className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
       {cancel_text?.value as string | undefined}
     </button>

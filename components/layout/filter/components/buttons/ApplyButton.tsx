@@ -16,7 +16,7 @@ const ApplyButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   return (
     <button
       onClick={() => setTransition('close')}
-      className="btn btn-xl btn-primary w-full"
+      className="rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white h-12.5 hover:bg-gradient-to-r-hover w-full"
     >
       {apply_button_placeholder?.value as string | undefined}
     </button>

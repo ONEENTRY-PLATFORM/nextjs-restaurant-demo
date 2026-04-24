@@ -17,7 +17,7 @@ const PaymentButton = ({
       <button
         type="submit"
         onClick={() => {}}
-        className={'btn btn-lg btn-primary mt-9 self-center px-16 ' + className}
+        className={'rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover py-3 mt-9 self-center px-16 ' + className}
         title={text}
       >
         {text}

@@ -18,7 +18,7 @@ const UserMenuItem = ({
     prefetch={false}
     href={`/${page.pageUrl}`}
     title={page.localizeInfos.menuTitle ?? undefined}
-    className="group relative box-border flex p-2 text-slate-800 hover:text-fuchsia-500"
+    className="group relative box-border flex p-2 text-paper hover:text-brand"
     onClick={() => setState(false)}
   >
     {page.localizeInfos.menuTitle}

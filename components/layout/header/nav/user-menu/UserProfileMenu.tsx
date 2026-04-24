@@ -39,9 +39,9 @@ const UserProfileMenu = ({
       <ProfileMenuAnimations
         state={isOpen}
         setState={setIsOpen}
-        className="absolute right-0 top-8 h-0 w-48 overflow-hidden rounded-md bg-white px-4 text-slate-800 shadow-lg"
+        className="absolute right-0 top-8 h-0 w-48 overflow-hidden rounded-[10px] bg-[rgba(76,77,86,0.8)] px-4 text-paper shadow-lg backdrop-blur-[10px]"
       >
-        <ul className="my-4 text-gray-800">
+        <ul className="my-4 text-paper">
           {pages.map((page, index) => (
             <li key={index}>
               <UserMenuItem page={page} setState={setIsOpen} />

@@ -51,7 +51,7 @@ const ProductCard = ({
             name={'deselectProduct-' + id}
             id={'deselectProduct-' + id}
             checked={selected}
-            className="size-5 border-spacing-3 accent-orange-500 ring-2 ring-orange-700"
+            className="size-5 border-spacing-3 accent-brand ring-2 ring-brand-hover"
           />
         </div>
 

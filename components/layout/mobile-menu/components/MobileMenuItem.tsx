@@ -31,7 +31,7 @@ function MobileMenuItem({
     <li
       key={item.localizeInfos.menuTitle}
       className={
-        'flex w-full flex-col py-2 text-lg text-slate-700 transition-colors hover:text-fuchsia-500'
+        'flex w-full flex-col py-2 text-lg text-paper transition-colors hover:text-brand'
       }
     >
       <div className={'flex ' + (hasChild && '')}>

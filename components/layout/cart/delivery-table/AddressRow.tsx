@@ -39,7 +39,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
 
   return (
     <TableRowAnimations
-      className="tr h-12.5 border-y border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"
+      className="tr h-12.5 border-y border-solid border-muted max-md:max-w-full max-md:flex-wrap"
       index={7}
     >
       <div className="td w-3/12 items-center self-stretch text-sm">
@@ -53,6 +53,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
           id="address"
           name="address"
           placeholder={placeholder}
+          className="w-full bg-transparent text-paper focus:outline-none"
           onChange={(e) => {
             dispatch(
               setDeliveryData({

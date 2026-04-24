@@ -48,7 +48,7 @@ const ProductRow = ({
       prefetch={false}
       href={`/shop/${pageData?.pageUrl || ''}`}
       onClick={() => onApplyHandle()}
-      className="flex w-full py-2 text-black hover:text-orange-500"
+      className="flex w-full py-2 text-paper hover:text-brand"
     >
       {product.localizeInfos?.title}
     </Link>

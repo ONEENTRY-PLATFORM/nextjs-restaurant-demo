@@ -65,7 +65,7 @@ const VariationsCarousel = ({
               alignSelf: 'center',
             },
             className:
-              'absolute top-[calc(50%-15px)] z-10 right-0 size-[30px] group flex aspect-square items-center justify-center rounded-full border border-neutral-200 bg-white p-2 transition-colors hover:border-orange-500',
+              'absolute top-[calc(50%-15px)] z-10 right-0 size-[30px] group flex aspect-square items-center justify-center rounded-full border border-paper/40 bg-transparent p-2 transition-colors hover:border-brand',
           }}
           backwardBtnProps={{
             children: <NavigationButton direction="left" />,
@@ -74,7 +74,7 @@ const VariationsCarousel = ({
               alignSelf: 'center',
             },
             className:
-              'absolute top-[calc(50%-15px)] z-10 left-0 size-[30px] group flex aspect-square items-center justify-center rounded-full border border-neutral-200 bg-white p-2 transition-colors hover:border-orange-500',
+              'absolute top-[calc(50%-15px)] z-10 left-0 size-[30px] group flex aspect-square items-center justify-center rounded-full border border-paper/40 bg-transparent p-2 transition-colors hover:border-brand',
           }}
           preventScrollOnSwipe
           swipeTreshold={60}

@@ -27,7 +27,7 @@ const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   return (
     <button
       onClick={onResetHandle}
-      className="btn btn-xl btn-o btn-o-primary w-full"
+      className="rounded-[10px] border border-brand text-brand font-bold text-[16px] uppercase h-12.5 hover_btn_white w-full"
     >
       {reset_button_placeholder?.value as string | undefined}
     </button>

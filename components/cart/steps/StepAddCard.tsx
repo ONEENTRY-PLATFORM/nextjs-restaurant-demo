@@ -33,7 +33,7 @@ const StepAddCard = (): JSX.Element => {
         Add card
       </h2>
 
-      <label className="flex flex-col gap-1 border-b border-b-[#b0bcce]">
+      <label className="flex flex-col gap-1 border-b border-b-muted">
         <span className="cart_label">Card number</span>
         <input
           type="text"
@@ -47,7 +47,7 @@ const StepAddCard = (): JSX.Element => {
       </label>
 
       <div className="flex gap-[15px]">
-        <label className="flex flex-1 flex-col gap-1 border-b border-b-[#b0bcce]">
+        <label className="flex flex-1 flex-col gap-1 border-b border-b-muted">
           <span className="cart_label">Expiry (MM/YY)</span>
           <input
             type="text"
@@ -59,7 +59,7 @@ const StepAddCard = (): JSX.Element => {
             placeholder="MM/YY"
           />
         </label>
-        <label className="flex flex-1 flex-col gap-1 border-b border-b-[#b0bcce]">
+        <label className="flex flex-1 flex-col gap-1 border-b border-b-muted">
           <span className="cart_label">CVC</span>
           <input
             type="password"
@@ -73,7 +73,7 @@ const StepAddCard = (): JSX.Element => {
         </label>
       </div>
 
-      <label className="flex flex-col gap-1 border-b border-b-[#b0bcce]">
+      <label className="flex flex-col gap-1 border-b border-b-muted">
         <span className="cart_label">Cardholder name</span>
         <input
           type="text"

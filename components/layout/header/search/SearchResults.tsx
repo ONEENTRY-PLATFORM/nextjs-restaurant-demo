@@ -66,7 +66,7 @@ const SearchResults = ({
   }
 
   return (
-    <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-2xl bg-white p-5 shadow-lg">
+    <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-[10px] bg-[rgba(76,77,86,0.8)] p-5 shadow-lg backdrop-blur-[10px]">
       <CloseSearch setState={setState} />
       {products.length > 0 ? (
         products.map((product: IProductsEntity, i: number) => {

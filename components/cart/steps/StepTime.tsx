@@ -55,7 +55,7 @@ const StepTime = (): JSX.Element => {
       <button
         type="button"
         onClick={() => setPicker('date')}
-        className="flex flex-col items-start gap-1 border-b border-b-[#b0bcce] py-2 text-left"
+        className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
         <span className="cart_label">Date</span>
         <span className="text-lg text-paper">{date || 'Select date'}</span>
@@ -64,7 +64,7 @@ const StepTime = (): JSX.Element => {
       <button
         type="button"
         onClick={() => setPicker('time')}
-        className="flex flex-col items-start gap-1 border-b border-b-[#b0bcce] py-2 text-left"
+        className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
         <span className="cart_label">Time</span>
         <span className="text-lg text-paper">{time || 'Select time'}</span>

@@ -20,12 +20,6 @@ const BottomMenu = dynamic(() => import('@/components/layout/bottom-menu'), {
 const Header = dynamic(() => import('@/components/layout/header'), {
   ssr: true,
 });
-const Footer = dynamic(() => import('@/components/layout/footer'), {
-  ssr: true,
-});
-// const IntroAnimations = dynamic(() => import('./animations/IntroAnimations'), {
-//   ssr: true,
-// });
 
 import './globals.css';
 
@@ -78,7 +72,6 @@ export default async function RootLayout({
                 <main className="flex flex-col grow overflow-hidden">
                   {children}
                 </main>
-                <Footer />
               </TransitionProvider>
               <BottomMenu />
               <Modal dict={dict} />

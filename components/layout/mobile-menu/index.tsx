@@ -48,9 +48,9 @@ const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   return (
     <MobileMenuAnimations
       id="modalBody"
-      className="z-450 fixed flex size-full flex-col overflow-auto p-6 pt-12 shadow-xl md:overflow-hidden md:rounded-3xl lg:h-auto lg:w-[360px] lg:p-10"
+      className="z-450 fixed flex size-full flex-col overflow-auto p-6 pt-12 shadow-xl md:overflow-hidden md:rounded-[20px] lg:h-auto lg:w-90 lg:p-10"
     >
-      <div className="fixed inset-0 z-50 flex size-full max-w-[360px] flex-col bg-white pb-6">
+      <div className="fixed inset-0 z-50 flex size-full max-w-90 flex-col bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] pb-6">
         <div className="p-6">
           <CloseModal />
           <div className="mb-4 w-full">

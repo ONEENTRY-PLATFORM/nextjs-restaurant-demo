@@ -16,7 +16,7 @@ const DeliveryRow = ({
 }): JSX.Element => {
   return (
     <TableRowAnimations
-      className="tr h-[100px] border-b border-solid border-[#B0BCCE] max-md:max-w-full max-md:flex-wrap"
+      className="tr h-[100px] border-b border-solid border-muted max-md:max-w-full max-md:flex-wrap"
       index={10}
     >
       <div className="td w-3/12 align-middle">

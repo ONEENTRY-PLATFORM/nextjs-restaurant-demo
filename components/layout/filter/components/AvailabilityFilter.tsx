@@ -41,11 +41,11 @@ const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
           type="checkbox"
           checked={params.get('in_stock') ? true : false}
           onChange={() => setAvailability(!available)}
-          className="toggle-checkbox absolute block size-6 cursor-pointer appearance-none rounded-full border-4 bg-white transition-all duration-300 hover:border-orange-500"
+          className="toggle-checkbox absolute block size-6 cursor-pointer appearance-none rounded-full border-4 bg-paper transition-all duration-300 hover:border-brand"
         />
         <label
           htmlFor="availability"
-          className="toggle-label block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-300 transition-all duration-300"
+          className="toggle-label block h-6 cursor-pointer overflow-hidden rounded-full bg-paper/30 transition-all duration-300"
         ></label>
       </div>
     </div>

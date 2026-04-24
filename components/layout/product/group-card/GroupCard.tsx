@@ -30,7 +30,7 @@ const GroupCard = ({
     <div className="flex min-h-42.5 flex-row justify-between rounded-[5px] bg-[rgba(76,77,86,0.8)] p-4 transition-shadow hover:shadow-lg max-md:flex-col">
       <div className="flex min-w-full gap-2.5">
         <div className="flex w-[37%] flex-col">
-          <h3 className="mb-5 text-sm leading-4 text-neutral-600">{title}</h3>
+          <h3 className="mb-5 text-sm leading-4 text-white/90">{title}</h3>
           <PriceDisplay
             currentPrice={(attributeValues?.sale?.value as number) ?? 0}
             originalPrice={product.price as number}

@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -17,7 +16,7 @@ const DeliveryTableRow = ({
 }: {
   label: string;
   value: string;
-  icon?: string;
+  icon?: ReactNode;
   placeholder: string;
 }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
@@ -47,21 +46,14 @@ const DeliveryTableRow = ({
           className="w-full bg-transparent text-paper focus:outline-none"
         />
       </div>
-      <div className="td w-1/12 pl-5 align-middle">
-        {icon && (
-          <Image
-            width={20}
-            height={20}
-            loading="lazy"
-            src={icon}
-            alt={placeholder}
-            className="aspect-square w-5"
-            onClick={() => {
-              setOpen(true);
-              setComponent('CalendarForm');
-            }}
-          />
-        )}
+      <div
+        className="td w-1/12 pl-5 align-middle"
+        onClick={() => {
+          setOpen(true);
+          setComponent('CalendarForm');
+        }}
+      >
+        {icon}
       </div>
     </TableRowAnimations>
   );

@@ -12,9 +12,6 @@ import ProductAnimations from '../animations/ProductAnimations';
 import DeleteButton from './DeleteButton';
 import PriceDisplay from './PriceDisplay';
 
-/**
- * Product card in cart
- */
 const ProductCard = ({
   product,
   selected,
@@ -25,10 +22,9 @@ const ProductCard = ({
   index: number;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  // extract data from product (admin `dish` set uses `cover`; legacy `pic` as fallback)
   const {
     id,
-    attributeValues: { pic, cover, price, sale, units_product },
+    attributeValues: { pic, cover, price, sale, units_product, weight },
     localizeInfos,
   } = product;
   const imageAttr = (cover?.value ?? pic?.value) as
@@ -36,28 +32,30 @@ const ProductCard = ({
     | undefined;
   const imgSrc = imageAttr?.downloadLink;
   const title = localizeInfos?.title ?? '';
+  const weightValue = weight?.value as string | number | undefined;
 
   return (
     <ProductAnimations
-      className="product-in-cart"
+      className="product-in-cart flex items-center justify-between gap-2.5 p-2.5 hover:rounded-[5px] hover:border hover:border-brand"
       product={product}
       index={index}
     >
-      <div className="relative flex justify-between gap-5">
-        <div className="relative z-10 mb-auto box-border flex shrink-0 flex-row self-center overflow-hidden rounded-md">
-          <input
-            onChange={() => {
-              dispatch(deselectProduct(id));
-            }}
-            type="checkbox"
-            name={'deselectProduct-' + id}
-            id={'deselectProduct-' + id}
-            checked={selected}
-            className="size-5 border-spacing-3 accent-brand ring-2 ring-brand-hover"
-          />
-        </div>
+      <div className="flex items-center gap-2.5">
+        <input
+          onChange={() => dispatch(deselectProduct(id))}
+          type="checkbox"
+          name={'deselectProduct-' + id}
+          id={'deselectProduct-' + id}
+          checked={selected}
+          className="size-5 shrink-0 accent-brand"
+        />
 
-        <div className="relative h-17.25 w-17.25 shrink-0">
+        <Link
+          prefetch={true}
+          href={'/shop/product/' + id}
+          className="relative size-17.25 shrink-0 overflow-hidden rounded"
+          aria-label={title}
+        >
           {imgSrc ? (
             <Image
               width={69}
@@ -65,35 +63,39 @@ const ProductCard = ({
               loading="lazy"
               src={imgSrc}
               alt={title}
-              className="size-full shrink-0 self-start object-cover"
+              className="size-full object-cover"
             />
           ) : (
             <Placeholder />
           )}
-        </div>
+        </Link>
 
-        <div className="flex flex-col gap-2 self-start text-white/90">
-          <h2 className="font-normal text-[14px] max-w-35">{title}</h2>
-          <PriceDisplay
-            currentPrice={(sale?.value as number) ?? 0}
-            originalPrice={(price?.value as number) ?? 0}
-          />
+        <div className="flex flex-col justify-between gap-2 self-center text-white/90">
+          <h2 className="max-w-35 font-normal text-[14px] opacity-90">
+            {title}
+          </h2>
+          <div className="flex items-center gap-2.5">
+            {weightValue ? (
+              <p className="font-normal text-[14px] text-brand">
+                {weightValue} g
+              </p>
+            ) : null}
+            <PriceDisplay
+              currentPrice={(sale?.value as number) ?? 0}
+              originalPrice={(price?.value as number) ?? 0}
+            />
+          </div>
         </div>
-
-        <Link
-          prefetch={true}
-          href={`/shop/product/` + id}
-          className="absolute left-0 top-0 z-0 flex size-full"
-        ></Link>
       </div>
-      <div className="z-10 flex items-center gap-3.75 self-start text-white/90 max-sm:ml-8 max-sm:flex">
+
+      <div className="flex shrink-0 items-center gap-3.75">
+        <DeleteButton productId={id} />
         <QuantitySelector
           id={id}
           units={(units_product?.value as number) ?? 0}
           title={title}
           height={42}
         />
-        <DeleteButton productId={id} />
       </div>
     </ProductAnimations>
   );

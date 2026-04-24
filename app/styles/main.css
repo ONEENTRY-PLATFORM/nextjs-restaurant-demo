@@ -148,11 +148,11 @@ html {
 }
 
 .list_item {
-  @apply border border-[rgba(255,255,255,0.9)] rounded-[5px] list-none whitespace-nowrap hover:border-transparent snap-start;
+  @apply border border-[rgba(255,255,255,0.9)] list-none whitespace-nowrap hover:border-transparent snap-start;
 }
 
 .list_link {
-  @apply  block rounded-[5px] px-3.25 py-1.25 md:px-3.75 md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b];
+  @apply  block px-3.25 py-1.25 md:px-3.75 md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b];
 }
 
 .title {
@@ -178,7 +178,7 @@ html {
 }
 
 .descr {
-  @apply  h-8.5 md:h-11 -mt-8 md:-mt-10.75 bg-black flex justify-around items-center font-normal text-xs md:text-base tracking-[0.02em] text-white px-1.25 md:px-2.5;
+  @apply relative z-10 h-8.5 md:h-11 -mt-8 md:-mt-10.75 bg-custom_black flex justify-around items-center font-normal text-xs md:text-base tracking-[0.02em] text-white px-1.25 md:px-2.5;
 }
 
 @layer components {
@@ -231,6 +231,13 @@ html {
 }
 .favorites_price {
   @apply font-bold text-[20px] text-[#ec722b];
+}
+
+.tr {
+  @apply flex items-center;
+}
+.td {
+  @apply flex items-center;
 }
 
 .label {

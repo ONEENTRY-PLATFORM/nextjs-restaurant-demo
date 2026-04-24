@@ -7,6 +7,7 @@ import type { JSX } from 'react';
 import { UsePrice } from '@/components/utils';
 
 import CardAnimations from '../../animations/CardAnimations';
+import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
@@ -96,7 +97,11 @@ const ProductCard = ({
 
       <p className="menu_item-title">{title}</p>
 
-      <div className="menu_items_btn">
+      <CartButton
+        id={id}
+        title={title}
+        units={attrs.units_product?.value as number | undefined}
+      >
         <p className="counter">x1</p>
         <svg
           className="w-5 h-4.75 md:w-7.25 md:h-6.75"
@@ -122,7 +127,7 @@ const ProductCard = ({
           />
         </svg>
         <p className="text-base md:text-[22px]">{formattedPrice}</p>
-      </div>
+      </CartButton>
 
       <svg
         className="heart_card w-6.5 h-5.25 md:w-9.5 md:h-7.5"

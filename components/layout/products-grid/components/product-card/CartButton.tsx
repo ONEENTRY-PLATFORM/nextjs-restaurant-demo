@@ -1,0 +1,97 @@
+'use client';
+
+import type { JSX, MouseEvent, ReactNode } from 'react';
+import { toast } from 'react-toastify';
+
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import {
+  addProductToCart,
+  decreaseProductQty,
+  increaseProductQty,
+  removeProduct,
+  selectCartItemWithIdLength,
+} from '@/app/store/reducers/CartSlice';
+
+const stop = (e: MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault();
+  e.stopPropagation();
+};
+
+const CartButton = ({
+  id,
+  title,
+  units,
+  children,
+}: {
+  id: number;
+  title: string;
+  units?: number;
+  children: ReactNode;
+}): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const item = useAppSelector((state) =>
+    selectCartItemWithIdLength(state, id),
+  ) as { quantity?: number } | undefined;
+  const qty = item?.quantity ?? 0;
+  const maxUnits = units && units > 0 ? units : 99;
+
+  if (qty > 0) {
+    return (
+      <div
+        className="menu_items_btn relative z-10"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Decrease quantity"
+          className="text-brand"
+          onClick={(e) => {
+            stop(e);
+            if (qty <= 1) {
+              dispatch(removeProduct(id));
+              toast('Product ' + title + ' removed from cart!');
+            } else {
+              dispatch(decreaseProductQty({ id, quantity: 1 }));
+            }
+          }}
+        >
+          −
+        </button>
+        <p className="counter">x{qty}</p>
+        <button
+          type="button"
+          aria-label="Increase quantity"
+          className="text-brand"
+          onClick={(e) => {
+            stop(e);
+            dispatch(
+              increaseProductQty({ id, quantity: 1, units: maxUnits }),
+            );
+          }}
+        >
+          +
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        stop(e);
+        dispatch(addProductToCart({ id, selected: true, quantity: 1 }));
+        toast('Product ' + title + ' added to cart!');
+      }}
+      aria-label={`Add ${title} to cart`}
+      className="menu_items_btn relative z-10"
+    >
+      {children}
+    </button>
+  );
+};
+
+export default CartButton;

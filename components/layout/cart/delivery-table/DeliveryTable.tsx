@@ -10,6 +10,8 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
 
+import CalendarIcon from '@/components/icons/calendar';
+
 import TableRowAnimations from '../animations/TableRowAnimations';
 import AddressRow from './AddressRow';
 import DeliveryRow from './DeliveryRow';
@@ -88,7 +90,11 @@ const DeliveryTable = ({
                     ? `${new Date(deliveryData.date).toLocaleDateString('en-US')} ${deliveryData.time ?? ''}`
                     : ''
                 }
-                icon={'/icons/calendar.svg'}
+                icon={
+                  <span className="inline-block size-5">
+                    <CalendarIcon />
+                  </span>
+                }
                 label={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
                 placeholder={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
               />

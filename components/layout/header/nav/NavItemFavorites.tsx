@@ -13,7 +13,7 @@ const NavItemFavorites = (): JSX.Element => {
   return (
     <Link
       prefetch={false}
-      href="/favorites"
+      href="/profile/favorites"
       className="group relative my-auto box-border flex shrink-0"
       aria-label="Favorites"
     >

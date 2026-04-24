@@ -16,7 +16,7 @@ const EmptyCart = (): JSX.Element => {
       <Image
         width={100}
         height={100}
-        src={'/icons/cart.svg'}
+        src={'/images/icons/cart.svg'}
         alt={'empty_cart'}
         className="mb-5 size-20 opacity-20"
       />

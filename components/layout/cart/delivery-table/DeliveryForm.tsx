@@ -36,7 +36,7 @@ const DeliveryForm = ({
           className="flex self-center text-lg font-bold leading-6 text-white lg:self-end"
         />
         <PaymentButton
-          text={(dict.go_to_pay_placeholder?.value as string) ?? ''}
+          text={(dict.go_to_pay_placeholder?.value as string) ?? 'Go to payment'}
           className="self-end max-lg:self-center"
         />
       </div>

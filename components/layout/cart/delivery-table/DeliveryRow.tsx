@@ -22,7 +22,7 @@ const DeliveryRow = ({
       <div className="td w-3/12 align-middle">
         <Image
           loading="lazy"
-          src="/icons/delivery.svg"
+          src="/images/icons/delivery.svg"
           alt="delivery"
           width={125}
           height={107}

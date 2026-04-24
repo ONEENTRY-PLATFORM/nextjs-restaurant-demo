@@ -31,9 +31,7 @@ const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
           key={item}
           className={
             'size-8 rounded-full border border-white/30 border-solid hover:text-brand hover:border-brand text-white/90 transition-colors ' +
-            (currentPage === Number(item)
-              ? 'border-brand text-brand'
-              : '')
+            (currentPage === Number(item) ? 'border-brand text-brand' : '')
           }
           onClick={() => {
             router.push(

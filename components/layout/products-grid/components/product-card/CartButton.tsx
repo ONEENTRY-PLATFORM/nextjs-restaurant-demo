@@ -67,9 +67,7 @@ const CartButton = ({
           className="text-brand"
           onClick={(e) => {
             stop(e);
-            dispatch(
-              increaseProductQty({ id, quantity: 1, units: maxUnits }),
-            );
+            dispatch(increaseProductQty({ id, quantity: 1, units: maxUnits }));
           }}
         >
           +

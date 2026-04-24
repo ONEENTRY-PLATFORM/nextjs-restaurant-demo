@@ -202,6 +202,7 @@ export const desertItems: MenuItemData[] = [
   makeItem('de-5', '/images/picture/DESERT5.png', 'Cheesecake with raspberry'),
   makeItem('de-6', '/images/picture/DESERT6.png', 'Creme brulee with caramel'),
   makeItem('de-7', '/images/picture/DESERT7.png', 'Panna cotta with berries'),
+  makeItem('de-8', '/images/picture/DESERT8.png', 'Macarons assortment box'),
 ];
 
 export const beveragesItems: MenuItemData[] = [

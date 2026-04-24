@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
@@ -57,7 +58,7 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
       <div className="p-5">
         {/* Cart header — back arrow + "Cart" + hamburger per cart_cart.html */}
         <div className="flex justify-between items-center">
-          <a href="/" className="group_white" aria-label="Back">
+          <Link href="/" className="group_white" aria-label="Back">
             <svg
               className="fill-[#EC722B] hover-target"
               width="26"
@@ -71,7 +72,7 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
                 fill="#EC722B"
               />
             </svg>
-          </a>
+          </Link>
           <p className="font-normal text-[24px] text-white">Cart</p>
           <div className="group_white">
             <svg

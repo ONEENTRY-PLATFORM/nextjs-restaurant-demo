@@ -42,7 +42,8 @@ const ProductPageLayout = async ({
   const descriptionValue = attributeValues.description?.value as
     | Array<{ plainValue?: string }>
     | undefined;
-  const picValue = (attributeValues.cover?.value ?? attributeValues.pic?.value) as
+  const picValue = (attributeValues.cover?.value ??
+    attributeValues.pic?.value) as
     | { downloadLink?: string; alt?: string }
     | undefined;
   const productJsonLd = {
@@ -94,7 +95,8 @@ export async function generateMetadata({
     return notFound();
   }
 
-  const picValue = (product.attributeValues.cover?.value ?? product.attributeValues.pic?.value) as
+  const picValue = (product.attributeValues.cover?.value ??
+    product.attributeValues.pic?.value) as
     | { downloadLink?: string; alt?: string }
     | undefined;
   const { downloadLink, alt = 'alt' } = picValue || {};

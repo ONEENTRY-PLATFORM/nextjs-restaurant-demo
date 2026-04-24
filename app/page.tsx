@@ -24,11 +24,11 @@ import {
  * Sections, in mockup order with exact card counts from the verstka:
  *   1. `HomePromo` — desktop "DEAL OF THE DAY -50%" + mobile promo strip.
  *   2. Recomended (6 cards).
- *   3. Brackfast (8 cards, dark wrapper).
+ *   3. Brackfast (8 cards).
  *   4. LUNCH (6 cards).
- *   5. FIRST COURSE / SOUP (8 cards, dark wrapper).
+ *   5. FIRST COURSE / SOUP (8 cards).
  *   6. MAIN COURSE (8 cards).
- *   7. DESERT (7 cards, dark wrapper).
+ *   7. DESERT (8 cards).
  *   8. BEVERAGEs (8 cards).
  *
  * Data: mock content from `components/home/mockMenuData.ts` (verstka doesn't
@@ -37,6 +37,9 @@ import {
  * @returns {JSX.Element} Home page JSX.
  */
 const HomePage = (): JSX.Element => {
+  const sectionBase =
+    'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
+
   return (
     <>
       <HomePromo />
@@ -45,6 +48,7 @@ const HomePage = (): JSX.Element => {
         title="Recomended"
         categoryMarker="recommended"
         items={recommendedItems}
+        className={`${sectionBase} mt-7.5 md:mt-12.5 pb-1.25`}
         gridClassName="menu_items"
       />
 
@@ -52,35 +56,48 @@ const HomePage = (): JSX.Element => {
         title="Brackfast"
         categoryMarker="breakfast"
         items={breakfastItems}
-        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+        className={`${sectionBase} pt-3.75`}
       />
 
-      <MenuSection title="LUNCH" categoryMarker="lunch" items={lunchItems} />
+      <MenuSection
+        title="LUNCH"
+        categoryMarker="lunch"
+        items={lunchItems}
+        className={`${sectionBase} pt-3.75 md:pt-8.75`}
+        gridClassName="menu_items pt-[25px] md:pt-[10px]"
+      />
 
       <MenuSection
         title="FIRST COURSE / SOUP"
         categoryMarker="first_courses"
         items={firstCourseItems}
-        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+        className={`${sectionBase} pt-3.75`}
+        gridClassName="menu_items pt-[14px]"
+        mobileGridClassName="menu_items md:hidden pt-[14px]"
       />
 
       <MenuSection
         title="MAIN COURSE"
         categoryMarker="main_courses"
         items={mainCourseItems}
+        className={`${sectionBase} pt-3.75 md:pt-8.75`}
+        gridClassName="menu_items"
       />
 
       <MenuSection
         title="DESERT"
         categoryMarker="desserts"
         items={desertItems}
-        wrapperClassName="bg-[rgba(76,77,86,0.8)]"
+        className={`${sectionBase} pt-3.75`}
+        gridClassName="menu_items pt-[13px]"
       />
 
       <MenuSection
         title="BEVERAGEs"
         categoryMarker="cold_beverages"
         items={beveragesItems}
+        className={`${sectionBase} pt-3.75 md:pt-6.25`}
+        gridClassName="menu_items pt-[13px] md:pt-[20px]"
       />
     </>
   );

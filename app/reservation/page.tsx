@@ -34,7 +34,9 @@ const ReservationPage = async (): Promise<JSX.Element> => {
       value: p.pageUrl ?? String(p.id),
       label:
         ((p.attributeValues?.address?.value as string | undefined) ??
-          (p.attributeValues?.restaurant_address?.value as string | undefined) ??
+          (p.attributeValues?.restaurant_address?.value as
+            | string
+            | undefined) ??
           p.localizeInfos?.title) ||
         'Restaurant',
     }),
@@ -42,9 +44,10 @@ const ReservationPage = async (): Promise<JSX.Element> => {
 
   // Use parent `restaurants` page rich content (title/description/photos) as hero
   const parent = restaurantsParentRes.page;
-  const photos = (parent?.attributeValues?.photos?.value as
-    | Array<{ downloadLink?: string }>
-    | undefined) ?? [];
+  const photos =
+    (parent?.attributeValues?.photos?.value as
+      | Array<{ downloadLink?: string }>
+      | undefined) ?? [];
   const heroImage =
     photos[0]?.downloadLink ??
     getImageUrl(

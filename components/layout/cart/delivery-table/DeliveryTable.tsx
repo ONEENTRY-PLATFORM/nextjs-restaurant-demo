@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
-
 import CalendarIcon from '@/components/icons/calendar';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
@@ -95,8 +94,14 @@ const DeliveryTable = ({
                     <CalendarIcon />
                   </span>
                 }
-                label={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
-                placeholder={(order_info_date_placeholder?.value as string) ?? 'Delivery time'}
+                label={
+                  (order_info_date_placeholder?.value as string) ??
+                  'Delivery time'
+                }
+                placeholder={
+                  (order_info_date_placeholder?.value as string) ??
+                  'Delivery time'
+                }
               />
             );
           }
@@ -104,7 +109,10 @@ const DeliveryTable = ({
             return (
               <AddressRow
                 key={i}
-                placeholder={(order_info_address_placeholder?.value as string) ?? 'Delivery address'}
+                placeholder={
+                  (order_info_address_placeholder?.value as string) ??
+                  'Delivery address'
+                }
               />
             );
           }

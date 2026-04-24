@@ -29,9 +29,8 @@ const ProductImageGallery = ({
   const { attributeValues } = product;
 
   // extract images from attributeValues (admin `dish` set uses `cover`; `pic` legacy)
-  const imageSrc = (attributeValues.cover?.value ?? attributeValues.pic?.value) as
-    | { downloadLink?: string }
-    | undefined;
+  const imageSrc = (attributeValues.cover?.value ??
+    attributeValues.pic?.value) as { downloadLink?: string } | undefined;
   const morePic =
     (attributeValues.more_pic?.value as
       | Array<{ downloadLink?: string }>

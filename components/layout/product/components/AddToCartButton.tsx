@@ -54,7 +54,11 @@ const AddToCartButton = ({
   // If not InStock show out_of_stock button
   if (notInStock && out_of_stock_button) {
     return (
-      <div className={'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className}>
+      <div
+        className={
+          'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className
+        }
+      >
         {out_of_stock_button?.value as string | undefined}
       </div>
     );

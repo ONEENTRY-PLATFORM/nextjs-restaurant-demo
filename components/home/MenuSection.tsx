@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
@@ -27,10 +28,10 @@ type MenuSectionProps = {
   limit?: number;
   /** Optional wrapping section className override. */
   className?: string;
-  /** Optional extra wrapper (e.g. `bg-[rgba(76,77,86,0.8)]`). */
-  wrapperClassName?: string;
   /** Extra padding-top for the first menu_items grid (per static-html). */
   gridClassName?: string;
+  /** Extra className for the mobile-only second grid (per static-html). */
+  mobileGridClassName?: string;
 };
 
 /**
@@ -58,10 +59,11 @@ const MenuSection = async ({
   dict = {} as IAttributeValues,
   limit = 8,
   className = 'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full',
-  wrapperClassName,
   gridClassName = 'menu_items pt-[12px]',
+  mobileGridClassName = 'menu_items md:hidden pt-0',
 }: MenuSectionProps): Promise<JSX.Element> => {
   let products: IProductsEntity[] = [];
+  let total = 0;
   if (categoryMarker) {
     const byCat = await getProductsByPageUrl({
       offset: 0,
@@ -70,10 +72,12 @@ const MenuSection = async ({
     });
     if (!byCat.isError && byCat.products && byCat.products.length > 0) {
       products = byCat.products;
+      total = byCat.total;
     } else {
       const all = await getProducts({ offset: 0, limit });
       if (!all.isError && all.products && all.products.length > 0) {
         products = all.products.slice(0, limit);
+        total = all.products.length;
       }
     }
   }
@@ -81,19 +85,21 @@ const MenuSection = async ({
   const hasRealProducts = products.length > 0;
   const mockTop = items.slice(0, 4);
   const mockBottom = items.slice(4);
-  const count =
-    viewAllCount ?? (hasRealProducts ? products.length : items.length);
+  const count = viewAllCount ?? (hasRealProducts ? total : items.length);
+  const viewAllHref = categoryMarker
+    ? '/shop/category/' + categoryMarker
+    : '/shop';
 
-  const content = (
+  return (
     <section className={className}>
       <div className="title">
         <h2 className="title_name">{title}</h2>
-        <a
-          className="subtitle border-b border-white pb-[3px] hover:text-[#ec722b] hover:border-[#ec722b]"
-          href="#"
+        <Link
+          className="subtitle border-b border-white pb-0.75 hover:text-[#ec722b] hover:border-[#ec722b]"
+          href={viewAllHref}
         >
           View all ({count})
-        </a>
+        </Link>
       </div>
 
       {hasRealProducts ? (
@@ -111,7 +117,7 @@ const MenuSection = async ({
             ))}
           </div>
           {mockBottom.length > 0 ? (
-            <div className="menu_items md:hidden pt-0">
+            <div className={mobileGridClassName}>
               {mockBottom.map((item) => (
                 <MenuItemCard key={item.id} item={item} />
               ))}
@@ -121,11 +127,6 @@ const MenuSection = async ({
       )}
     </section>
   );
-
-  if (wrapperClassName) {
-    return <div className={wrapperClassName}>{content}</div>;
-  }
-  return content;
 };
 
 export default MenuSection;

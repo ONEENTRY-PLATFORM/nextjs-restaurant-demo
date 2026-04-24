@@ -66,9 +66,10 @@ const ProductDetails = async ({
   const ratingVal = rating?.value as number | undefined;
   const cookingVal = cooking_time?.value as number | undefined;
 
-  const prefs = (preferences?.value as Array<{ title: string; value: string }>)
-    ?.filter((o) => o?.title)
-    ?.map((o) => o.title) ?? [];
+  const prefs =
+    (preferences?.value as Array<{ title: string; value: string }>)
+      ?.filter((o) => o?.title)
+      ?.map((o) => o.title) ?? [];
 
   const ingredientsText = ingredients?.value as string | undefined;
   const priceVal = price?.value as number | undefined;

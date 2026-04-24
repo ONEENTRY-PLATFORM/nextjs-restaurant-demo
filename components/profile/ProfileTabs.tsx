@@ -24,15 +24,11 @@ const ProfileTabs = (): JSX.Element => {
         return (
           <li
             key={t.href}
-            className={
-              'list_item ' + (active ? 'border-brand' : '')
-            }
+            className={'list_item ' + (active ? 'border-brand' : '')}
           >
             <Link
               href={t.href}
-              className={
-                'list_link ' + (active ? 'bg-brand text-white' : '')
-              }
+              className={'list_link ' + (active ? 'bg-brand text-white' : '')}
             >
               {t.label}
             </Link>

@@ -96,8 +96,8 @@ export const useCreateOrder = (): object => {
         });
 
       try {
-        /** Create order with Orders API */
-        const created = await api.Orders.createOrder('order', {
+        /** Create order with Orders API (storage marker: `delivery_order` per admin) */
+        const created = await api.Orders.createOrder('delivery_order', {
           // ...order,
           formData: orderFormData,
           products: order.products,

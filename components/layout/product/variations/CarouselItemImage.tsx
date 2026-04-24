@@ -14,7 +14,8 @@ const CarouselItemImage = ({
   item: IProductsEntity;
 }): JSX.Element => {
   const title = item.localizeInfos.title ?? '';
-  const picVal = item.attributeValues.pic?.value as
+  const picVal = (item.attributeValues.cover?.value ??
+    item.attributeValues.pic?.value) as
     | { downloadLink?: string }
     | Array<{ downloadLink?: string }>
     | undefined;

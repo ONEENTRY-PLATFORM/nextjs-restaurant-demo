@@ -26,7 +26,7 @@ const FiltersForm = async ({
   prices: any;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {
-  const pageInfo = await getPageByUrl('catalog_filters');
+  const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({
     setMarker: 'product',
     attributeMarker: 'color',
@@ -40,7 +40,7 @@ const FiltersForm = async ({
   if (pageInfo.isError || !pageInfo.page) {
     // eslint-disable-next-line no-console
     console.warn(
-      '[FiltersForm] Page "catalog_filters" unavailable — skipping filters.',
+      '[FiltersForm] Page "filters" unavailable — skipping filters.',
       pageInfo.error,
     );
     return <></>;

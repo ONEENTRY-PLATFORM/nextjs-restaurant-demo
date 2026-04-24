@@ -6,9 +6,10 @@ import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * Product image — 1:1 port of the `.menu_item > img.w-full` from
- * `static-html/index.html`. Reads `attributes.pic.value` (product image
- * from OneEntry; supports both object and array shapes), falls back to
- * {@link Placeholder} when no image is configured.
+ * `static-html/index.html`. Reads `attributes.cover.value` (main product image
+ * from OneEntry `dish` attribute set — supports both object and array shapes;
+ * legacy fallback to `pic`), falls back to {@link Placeholder} when no image
+ * is configured.
  * @param   {object}          props            - Component props.
  * @param   {IAttributeValues} props.attributes - `product.attributeValues`.
  * @param   {string}          props.alt        - Accessibility alt text.
@@ -21,7 +22,7 @@ const ProductImage = ({
   attributes: IAttributeValues;
   alt: string;
 }): JSX.Element => {
-  const productImage = attributes?.pic?.value as
+  const productImage = (attributes?.cover?.value ?? attributes?.pic?.value) as
     | { downloadLink?: string }
     | Array<{ downloadLink?: string }>
     | undefined;

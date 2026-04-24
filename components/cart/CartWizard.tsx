@@ -12,7 +12,6 @@ import {
 } from '@/app/store/reducers/OrderSlice';
 import CartPage from '@/components/layout/cart';
 
-import StepAddCard from './steps/StepAddCard';
 import StepAddress from './steps/StepAddress';
 import StepPayment from './steps/StepPayment';
 import StepResult from './steps/StepResult';
@@ -31,7 +30,6 @@ const STEP_TITLES: Record<CheckoutStep, string> = {
   verification: 'Verification',
   address: 'Delivery address',
   payment: 'Payment',
-  add_card: 'Add card',
   success: 'Success',
   error: 'Error',
 };
@@ -145,7 +143,6 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
         {step === 'signin' && <StepSignIn />}
         {step === 'address' && <StepAddress />}
         {step === 'payment' && <StepPayment />}
-        {step === 'add_card' && <StepAddCard />}
         {step === 'success' && <StepResult variant="success" />}
         {step === 'error' && <StepResult variant="error" />}
       </div>

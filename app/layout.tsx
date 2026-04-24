@@ -2,13 +2,11 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
-// import { getMenuByMarker } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StoreProvider from '@/app/store/providers/StoreProvider';
-// import OffscreenModal from '@/components/layout/mobile-menu';
 import Modal from '@/components/layout/modal';
 
 import RegisterGSAP from './animations/RegisterGSAP';
@@ -75,10 +73,8 @@ export default async function RootLayout({
               </TransitionProvider>
               <BottomMenu />
               <Modal dict={dict} />
-              {/* <OffscreenModal menu={menu} /> */}
             </OpenDrawerProvider>
           </AuthProvider>
-          {/* <IntroAnimations /> */}
         </StoreProvider>
         <ToastContainer position="bottom-right" autoClose={2000} />
       </body>

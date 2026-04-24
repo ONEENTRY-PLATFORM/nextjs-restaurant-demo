@@ -98,7 +98,7 @@ const FavoriteRow = ({
   );
   const attrs = product.attributeValues ?? {};
   const imageSrc = getImageUrl(
-    attrs.pic?.value as
+    (attrs.cover?.value ?? attrs.pic?.value) as
       | { downloadLink?: string }
       | Array<{ downloadLink?: string }>
       | null

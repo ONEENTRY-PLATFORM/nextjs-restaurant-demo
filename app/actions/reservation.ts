@@ -28,7 +28,7 @@ export async function submitReservation(
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
     const api = getApi();
-    const form = await api.Forms.getFormByMarker('reservation');
+    const form = await api.Forms.getFormByMarker('booking_order');
     if (isError(form)) {
       return {
         ok: false,

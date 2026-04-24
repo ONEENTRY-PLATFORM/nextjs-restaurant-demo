@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
  * @returns {Promise<JSX.Element>} Service entry page JSX.
  */
 const ServicePage = async (): Promise<JSX.Element> => {
-  const { page } = await getPageByUrl('service');
+  const { page } = await getPageByUrl('services');
   const attrs = page?.attributeValues ?? {};
 
   const logo =
@@ -91,7 +91,7 @@ export default ServicePage;
  * @returns {Promise<Metadata>} Page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('service');
+  const { page } = await getPageByUrl('services');
   const title =
     page?.localizeInfos?.title ?? 'Restaurant — Delivery & Reservation';
   return {

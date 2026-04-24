@@ -25,14 +25,16 @@ const ProductCard = ({
   index: number;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  // extract data from product
+  // extract data from product (admin `dish` set uses `cover`; legacy `pic` as fallback)
   const {
     id,
-    attributeValues: { pic, price, sale, units_product },
+    attributeValues: { pic, cover, price, sale, units_product },
     localizeInfos,
   } = product;
-  const imgSrc = (pic?.value as { downloadLink?: string } | undefined)
-    ?.downloadLink;
+  const imageAttr = (cover?.value ?? pic?.value) as
+    | { downloadLink?: string }
+    | undefined;
+  const imgSrc = imageAttr?.downloadLink;
   const title = localizeInfos?.title ?? '';
 
   return (

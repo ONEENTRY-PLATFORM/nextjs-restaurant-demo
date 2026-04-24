@@ -21,8 +21,8 @@ export const dynamic = 'force-dynamic';
  */
 const ReservationPage = async (): Promise<JSX.Element> => {
   const [pageRes, formRes, restaurantsRes, dict] = await Promise.all([
-    getPageByUrl('reservation'),
-    getFormByMarker('reservation'),
+    getPageByUrl('bookings'),
+    getFormByMarker('booking_order'),
     getChildPagesByParentUrl('restaurants'),
     getDictionary(),
   ]);
@@ -107,7 +107,7 @@ export default ReservationPage;
  * @returns {Promise<Metadata>} Page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('reservation');
+  const { page } = await getPageByUrl('bookings');
   const title =
     (page?.attributeValues?.reservation_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??

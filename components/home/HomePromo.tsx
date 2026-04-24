@@ -13,7 +13,7 @@ const HomePromo = (): JSX.Element => {
   return (
     <>
       <section
-        className="promotion hidden w-full md:bg-center md:bg-cover md:bg-no-repeat md:h-48 md:max-w-175 lg:max-w-250 xl:max-w-323 md:mx-auto md:flex md:items-center"
+        className="promotion hidden md:bg-center md:bg-cover md:bg-no-repeat md:h-48 md:max-w-175 lg:max-w-250 xl:max-w-323 md:mx-auto md:flex md:items-center"
         style={{ backgroundImage: "url('/images/picture/promo.png')" }}
       >
         <div className="promotion_counter rounded-full bg-[#ec722b] font-black text-[40px] text-white mr-10 ml-33.75 px-3 py-7.5 -mt-2.5">

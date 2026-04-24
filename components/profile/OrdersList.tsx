@@ -56,7 +56,7 @@ const OrdersList = (): JSX.Element => {
     let cancelled = false;
     (async () => {
       const res = await getAllOrdersByMarker({
-        marker: 'orders',
+        marker: 'delivery_order',
         offset: 0,
         limit: 50,
       });

@@ -34,7 +34,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [dict] = ServerProvider('dict', await getDictionary());
 
   /** Get current Page ByUrl from api */
-  const { page } = await getPageByUrl('shop');
+  const { page } = await getPageByUrl('services');
 
   /** Set the number of products to display per page */
   // TODO: Extract products per page limit from global settings
@@ -106,7 +106,7 @@ export async function generateMetadata({
   /** Extract handle and language from route parameters */
   const { handle, lang } = await params;
   /** Fetch the shop page by URL */
-  const { isError, page } = await getPageByUrl('shop');
+  const { isError, page } = await getPageByUrl('services');
 
   /** Return 404 page if page not found or an error occurred */
   if (isError || !page) {

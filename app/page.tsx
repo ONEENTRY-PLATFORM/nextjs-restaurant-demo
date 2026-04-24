@@ -72,14 +72,14 @@ const HomePage = (): JSX.Element => {
 
       <MenuSection
         title="DESERT"
-        categoryMarker="dessert"
+        categoryMarker="desserts"
         items={desertItems}
         wrapperClassName="bg-[rgba(76,77,86,0.8)]"
       />
 
       <MenuSection
         title="BEVERAGEs"
-        categoryMarker="beverages"
+        categoryMarker="cold_beverages"
         items={beveragesItems}
       />
     </>

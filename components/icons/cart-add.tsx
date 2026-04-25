@@ -1,10 +1,6 @@
 import type { JSX } from 'react';
 
-const CartAddIcon = ({
-  className,
-}: {
-  className?: string;
-}): JSX.Element => {
+const CartAddIcon = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg
       className={className}

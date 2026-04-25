@@ -20,7 +20,7 @@ export const resetPasswordFormFields = [
     isVisible: true,
     localizeInfos: { title: 'Password' },
     placeholder: '•••••',
-    marker: 'password_reg',
+    marker: 'password',
     required: true,
   },
   {

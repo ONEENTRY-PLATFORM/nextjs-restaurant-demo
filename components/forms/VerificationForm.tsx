@@ -47,7 +47,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
         // If the action is not to activate a user, check the OTP code
         const result = await api.AuthProvider.checkCode(
           'email', // Method of verification via email
-          fields.email_reg?.value || '', // User's email address from form fields
+          fields.email?.value || '', // User's email address from form fields
           'otp', // Type of verification code (One-Time Password)
           otp, // The OTP entered by the user
         );
@@ -56,15 +56,15 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
         // If the action is to activate a user
         const result = await api.AuthProvider.activateUser(
           'email', // Activation method via email
-          fields.email_reg?.value || '', // User's email address from form fields
+          fields.email?.value || '', // User's email address from form fields
           otp, // The OTP entered by the user
         );
         if (result) {
           // On successful activation, log in the user
           await logInUser({
             method: 'email', // Login method via email
-            login: fields.email_reg?.value || '', // User's email for login
-            password: fields.password_reg?.value || '', // User's password for login
+            login: fields.email?.value || '', // User's email for login
+            password: fields.password?.value || '', // User's password for login
           });
           authenticate(); // Call function to set authentication state
           router.push('/profile'); // Redirect to the user's profile page
@@ -112,7 +112,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
       setError('');
       await api.AuthProvider.generateCode(
         'email', // Method to generate code via email
-        fields.email_reg?.value || '', // User's email address from form fields
+        fields.email?.value || '', // User's email address from form fields
         'generate_code', // Action type to generate a new code
       );
     } catch (e: any) {
@@ -123,7 +123,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
       setLoading(false);
     }
     // Dependency for useCallback
-  }, [fields.email_reg?.value]);
+  }, [fields.email?.value]);
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>

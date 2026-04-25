@@ -12,14 +12,18 @@ type LogInProps = { method: string; login: string; password: string };
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {
+    // Markers must match the form fields tied to the auth provider:
+    // verified via /inspect-api auth-providers — `email` provider links to
+    // form `user` whose login field has marker `email` (isLogin=true) and
+    // password field has marker `password` (isPassword=true).
     const preparedData: IAuthPostBody = {
       authData: [
         {
-          marker: 'email_reg',
+          marker: 'email',
           value: login,
         },
         {
-          marker: 'password_reg',
+          marker: 'password',
           value: password,
         },
       ],

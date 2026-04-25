@@ -48,7 +48,7 @@ export const updateUserState = async ({
       },
       i: Key,
     ) => {
-      if (item.marker === 'email_reg') {
+      if (item.marker === 'email') {
         return user.formData[i as keyof typeof user.formData].value;
       }
     },
@@ -61,7 +61,7 @@ export const updateUserState = async ({
       },
       i: Key,
     ) => {
-      if (item.marker === 'phone_reg') {
+      if (item.marker === 'phone') {
         return user.formData[i as keyof typeof user.formData].value;
       }
     },

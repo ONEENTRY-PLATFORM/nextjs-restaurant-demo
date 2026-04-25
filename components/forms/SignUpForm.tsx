@@ -122,7 +122,7 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
             await logInUser({
               method: 'email',
               login: entity.identifier,
-              password: fields.password_reg?.value || '',
+              password: fields.password?.value || '',
             });
             authenticate();
             setOpen(false);

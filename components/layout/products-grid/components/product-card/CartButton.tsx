@@ -25,7 +25,7 @@ const CartButton = ({
 }: {
   id: number;
   title: string;
-  units?: number;
+  units?: number | undefined;
   children: ReactNode;
 }): JSX.Element => {
   const dispatch = useAppDispatch();

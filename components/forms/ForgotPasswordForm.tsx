@@ -42,7 +42,7 @@ export const ForgotPasswordForm = ({
       // Generate verification code with API
       await api.AuthProvider.generateCode(
         'email',
-        fields.email_reg?.value || '',
+        fields.email?.value || '',
         'generate_otp',
       );
       // Open Verification form
@@ -76,7 +76,7 @@ export const ForgotPasswordForm = ({
 
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
           {data.attributes
-            .filter((field: IFormAttribute) => field.marker === 'email_reg')
+            .filter((field: IFormAttribute) => field.marker === 'email')
             .map((field: IFormAttribute, index: number) => (
               <FormInput
                 key={index}

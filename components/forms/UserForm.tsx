@@ -71,14 +71,14 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
             formData,
             authData: [
               {
-                marker: 'password_reg',
-                value: fields['password_reg']?.value || '',
+                marker: 'password',
+                value: fields['password']?.value || '',
               },
             ],
             notificationData: {
-              email: fields['email_reg']?.value || '',
+              email: fields['email']?.value || '',
               phonePush: [],
-              phoneSMS: fields['phone_reg']?.value || '',
+              phoneSMS: fields['phone']?.value || '',
             },
             state: {},
           });

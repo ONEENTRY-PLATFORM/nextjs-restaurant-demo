@@ -52,12 +52,14 @@ const HomePage = (): JSX.Element => {
         gridClassName="menu_items"
       />
 
-      <MenuSection
-        title="Brackfast"
-        categoryMarker="breakfast"
-        items={breakfastItems}
-        className={`${sectionBase} pt-3.75`}
-      />
+      <div className="bg-[rgba(76,77,86,0.8)]">
+        <MenuSection
+          title="Brackfast"
+          categoryMarker="breakfast"
+          items={breakfastItems}
+          className={`${sectionBase} pt-3.75`}
+        />
+      </div>
 
       <MenuSection
         title="LUNCH"
@@ -67,14 +69,16 @@ const HomePage = (): JSX.Element => {
         gridClassName="menu_items pt-[25px] md:pt-[10px]"
       />
 
-      <MenuSection
-        title="FIRST COURSE / SOUP"
-        categoryMarker="first_courses"
-        items={firstCourseItems}
-        className={`${sectionBase} pt-3.75`}
-        gridClassName="menu_items pt-[14px]"
-        mobileGridClassName="menu_items md:hidden pt-[14px]"
-      />
+      <div className="bg-[rgba(76,77,86,0.8)]">
+        <MenuSection
+          title="FIRST COURSE / SOUP"
+          categoryMarker="first_courses"
+          items={firstCourseItems}
+          className={`${sectionBase} pt-3.75`}
+          gridClassName="menu_items pt-[14px]"
+          mobileGridClassName="menu_items md:hidden pt-[14px]"
+        />
+      </div>
 
       <MenuSection
         title="MAIN COURSE"
@@ -84,13 +88,15 @@ const HomePage = (): JSX.Element => {
         gridClassName="menu_items"
       />
 
-      <MenuSection
-        title="DESERT"
-        categoryMarker="desserts"
-        items={desertItems}
-        className={`${sectionBase} pt-3.75`}
-        gridClassName="menu_items pt-[13px]"
-      />
+      <div className="bg-[rgba(76,77,86,0.8)]">
+        <MenuSection
+          title="DESERT"
+          categoryMarker="desserts"
+          items={desertItems}
+          className={`${sectionBase} pt-3.75`}
+          gridClassName="menu_items pt-[13px]"
+        />
+      </div>
 
       <MenuSection
         title="BEVERAGEs"

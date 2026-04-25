@@ -3,6 +3,8 @@
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
+import ChevronDownIcon from '@/components/icons/chevron-down';
+
 export type RestaurantOption = {
   value: string;
   label: string;
@@ -44,32 +46,18 @@ const RestaurantSelect = ({
   }, []);
 
   return (
-    <div ref={ref} className="custom-select relative mt-[25px] w-full">
+    <div ref={ref} className="custom-select relative mt-6.25 w-full">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full cursor-pointer items-center justify-between rounded-md border-none bg-custom_transparent px-4 py-[5px] text-lg text-brand backdrop-blur-md"
+        className="flex w-full cursor-pointer items-center justify-between rounded-md border-none bg-custom_transparent px-4 py-1.25 text-lg text-brand backdrop-blur-md"
       >
         <span>{selectedLabel ?? placeholder}</span>
-        <svg
-          width="15"
-          height="10"
-          viewBox="0 0 15 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <ChevronDownIcon
           className={
             'transition-transform duration-200 ' + (open ? 'rotate-180' : '')
           }
-          aria-hidden="true"
-        >
-          <path
-            d="M2 2L7.5 8L13 2"
-            stroke="#EC722B"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        />
       </button>
       {open ? (
         <ul

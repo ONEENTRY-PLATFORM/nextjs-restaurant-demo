@@ -14,6 +14,39 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     cpus: 4,
   },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: [
+          {
+            loader: '@svgr/webpack',
+            options: { icon: false, svgo: true, titleProp: true },
+          },
+        ],
+        as: '*.js',
+      },
+    },
+  },
+  webpack(config) {
+    const fileLoaderRule = config.module.rules.find(
+      (rule: { test?: { test?: (s: string) => boolean } }) =>
+        rule?.test?.test?.('.svg'),
+    );
+    if (fileLoaderRule) {
+      fileLoaderRule.exclude = /\.svg$/i;
+    }
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: { icon: false, svgo: true, titleProp: true },
+        },
+      ],
+    });
+    return config;
+  },
   typescript: {
     ignoreBuildErrors: false,
   },

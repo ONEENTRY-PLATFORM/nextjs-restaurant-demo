@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { type JSX, useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
+import CloseXIcon from '@/components/icons/close-x';
 
 type Category = {
   label: string;
@@ -111,21 +113,9 @@ const CategoryFilter = (): JSX.Element => {
             aria-label="Back"
             className="group_white"
           >
-            <svg
-              className="fill-[#EC722B] hover-target"
-              width="26"
-              height="20"
-              viewBox="0 0 26 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.5271 0.532945C11.1788 0.1917 10.7065 0 10.214 0C9.72159 0 9.2493 0.1917 8.90103 0.532945L0.543755 8.72407C0.195589 9.06542 0 9.52832 0 10.011C0 10.4937 0.195589 10.9566 0.543755 11.2979L8.90103 19.489C9.25129 19.8206 9.72042 20.0041 10.2074 19.9999C10.6943 19.9958 11.1601 19.8043 11.5044 19.4669C11.8488 19.1294 12.0441 18.6728 12.0483 18.1956C12.0526 17.7183 11.8654 17.2585 11.5271 16.9152L6.4997 11.8312H24.1428C24.6354 11.8312 25.1078 11.6395 25.456 11.2981C25.8043 10.9567 26 10.4937 26 10.011C26 9.52823 25.8043 9.06524 25.456 8.72388C25.1078 8.38251 24.6354 8.19074 24.1428 8.19074H6.4997L11.5271 3.10678C11.8752 2.76543 12.0708 2.30253 12.0708 1.81986C12.0708 1.3372 11.8752 0.874292 11.5271 0.532945Z"
-                fill="#EC722B"
-              />
-            </svg>
+            <ArrowBackOrangeIcon />
           </button>
-          <p className="font-normal text-[20px] tracking-[0.02em] text-[#dfe9f9]">
+          <p className="font-normal text-[20px] tracking-[0.02em] text-paper">
             Category
           </p>
           <button
@@ -134,21 +124,7 @@ const CategoryFilter = (): JSX.Element => {
             aria-label="Close"
             className="group_white"
           >
-            <svg
-              className="stroke-[#EC722B] hover-target"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2 2L18 18M18 2L2 18"
-                stroke="#EC722B"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
+            <CloseXIcon />
           </button>
         </div>
         <div className="max-w-80 mx-auto pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
@@ -161,8 +137,8 @@ const CategoryFilter = (): JSX.Element => {
             >
               <div
                 className={
-                  'w-[110px] h-[110px] rounded-full flex items-center justify-center ' +
-                  (cat.highlight ? 'bg-[#ec722b]' : 'bg-[#dfe9f9]')
+                  'w-27.5 h-27.5 rounded-full flex items-center justify-center ' +
+                  (cat.highlight ? 'bg-[#ec722b]' : 'bg-paper')
                 }
               >
                 <Image
@@ -173,7 +149,7 @@ const CategoryFilter = (): JSX.Element => {
                   style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
-              <p className="font-bold uppercase text-[16px] text-[#dfe9f9] mt-2.5 leading-4 text-center whitespace-pre-line">
+              <p className="font-bold uppercase text-[16px] text-paper mt-2.5 leading-4 text-center whitespace-pre-line">
                 {cat.label}
               </p>
             </Link>

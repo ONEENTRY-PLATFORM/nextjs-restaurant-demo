@@ -173,7 +173,7 @@ const ReservationForm = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="mx-auto flex w-full max-w-[393px] flex-col gap-[20px] px-[20px] md:max-w-107.5 md:px-0"
+      className="mx-auto flex w-full max-w-98.25 flex-col gap-5 px-5 md:max-w-107.5 md:px-0"
     >
       {hasRestaurant ? (
         <RestaurantSelect
@@ -190,7 +190,7 @@ const ReservationForm = ({
         const rightAttr = attrByMarker.get(right);
         if (!leftAttr && !rightAttr) return null;
         return (
-          <div key={left + right} className="flex justify-between gap-[15px]">
+          <div key={left + right} className="flex justify-between gap-3.75">
             {leftAttr ? (
               <Field
                 attr={leftAttr}
@@ -220,7 +220,7 @@ const ReservationForm = ({
         <div className="flex flex-col border-b border-b-muted">
           <label
             htmlFor={TEXT_MARKER}
-            className="font-normal text-[16px] text-[#dfe9f9]"
+            className="font-normal text-[16px] text-paper"
           >
             {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
               'Preferences'}
@@ -269,11 +269,11 @@ const ReservationForm = ({
       ) : null}
 
       {/* Primary submit */}
-      <div className="mt-[30px] flex flex-col items-center justify-center gap-5">
+      <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
         <button
           type="submit"
           disabled={loading}
-          className="flex h-[37px] w-[125px] items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
+          className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
         >
           {loading
             ? '...'
@@ -343,7 +343,7 @@ const Field = ({
         onClick={() => onOpenPicker('date')}
         className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
-        <span className="font-normal text-[16px] text-[#dfe9f9]">{label}</span>
+        <span className="font-normal text-[16px] text-paper">{label}</span>
         <span className="cart_input block">{v || 'Select date & time'}</span>
       </button>
     );
@@ -354,7 +354,7 @@ const Field = ({
       <div className="flex flex-1 flex-col border-b border-b-muted">
         <label
           htmlFor={attr.marker}
-          className="font-normal text-[16px] text-[#dfe9f9]"
+          className="font-normal text-[16px] text-paper"
         >
           {label}
         </label>
@@ -374,7 +374,7 @@ const Field = ({
     <div className="flex flex-1 flex-col border-b border-b-muted">
       <label
         htmlFor={attr.marker}
-        className="font-normal text-[16px] text-[#dfe9f9]"
+        className="font-normal text-[16px] text-paper"
       >
         {label}
       </label>

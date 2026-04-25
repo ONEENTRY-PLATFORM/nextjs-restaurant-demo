@@ -4,6 +4,8 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
 import { getChildPagesByParentUrl } from '@/app/api';
+import BurgerIcon from '@/components/icons/burger';
+import SearchIcon from '@/components/icons/search';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
 import MenuBottom from '@/components/static/MenuBottom';
@@ -22,22 +24,9 @@ const SearchFallback = () => (
       type="text"
       placeholder="soup"
     />
-    <svg
-      className="absolute top-2 left-2.5"
-      width="22"
-      height="22"
-      viewBox="0 0 22 22"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M15.3043 15.3044L20 20M16.8696 9.43476C16.8696 13.5409 13.5409 16.8695 9.4348 16.8695C5.32867 16.8695 2 13.5409 2 9.43476C2 5.32866 5.32867 2 9.4348 2C13.5409 2 16.8696 5.32866 16.8696 9.43476Z"
-        stroke="#EC722B"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span className="absolute top-2 left-2.5">
+      <SearchIcon />
+    </span>
   </form>
 );
 
@@ -84,27 +73,7 @@ const Header = async (): Promise<JSX.Element> => {
                 <img src="/images/logo_mobile.svg" alt="logo" />
               </a>
               <div className="cursor-pointer group_stroke">
-                <svg
-                  className="stroke-[#DFE9F9] hover-target"
-                  width="21"
-                  height="17"
-                  viewBox="0 0 21 17"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.95599 2H19.0868H1.95599ZM1.95599 8.5H19.0868H1.95599ZM1.95599 15H19.0868H1.95599Z"
-                    fill="#4C4D56"
-                    fillOpacity="0.5"
-                  />
-                  <path
-                    d="M1.95599 2H19.0868M1.95599 8.5H19.0868M1.95599 15H19.0868"
-                    stroke="#DFE9F9"
-                    strokeWidth="3"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <BurgerIcon />
               </div>
             </div>
 
@@ -118,14 +87,18 @@ const Header = async (): Promise<JSX.Element> => {
 
           {/* navigation */}
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
+            {/* Category Button */}
             <CategoryButton />
-
+            {/* Categories Scroller */}
             <CategoriesScroller pages={(pages ?? []) as IPagesEntity[]} />
           </section>
         </div>
       </div>
+      {/* Menu Bottom */}
       <MenuBottom />
+      {/* Filter Bottom */}
       <FilterBottom />
+      {/* Category Filter */}
       <CategoryFilter />
     </div>
   );

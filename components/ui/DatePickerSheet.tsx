@@ -3,6 +3,9 @@
 import type { JSX } from 'react';
 import { useMemo, useState } from 'react';
 
+import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
+import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
+
 const MONTH_NAMES = [
   'January',
   'February',
@@ -157,22 +160,7 @@ const DatePickerSheet = ({
             aria-label="Previous month"
             className="group"
           >
-            <svg
-              className="hover-target"
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6 1.5L1 6.5L6 11.5"
-                stroke="#B0BCCE"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronMiniLeftIcon />
           </button>
           <div className="flex gap-3.75">
             <h2 className="font-semibold text-[20px] text-brand">
@@ -186,22 +174,7 @@ const DatePickerSheet = ({
             aria-label="Next month"
             className="group"
           >
-            <svg
-              className="hover-target"
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 11.5L6 6.5L1 1.5"
-                stroke="#B0BCCE"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronMiniRightIcon />
           </button>
         </div>
         <div className="mb-4 flex items-center justify-center gap-3">

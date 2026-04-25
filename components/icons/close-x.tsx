@@ -1,0 +1,23 @@
+import type { JSX } from 'react';
+
+const CloseXIcon = (): JSX.Element => {
+  return (
+    <svg
+      className="stroke-[#EC722B] hover-target"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 2L18 18M18 2L2 18"
+        stroke="#EC722B"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
+export default CloseXIcon;

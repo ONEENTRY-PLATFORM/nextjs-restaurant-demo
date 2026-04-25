@@ -60,7 +60,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
           : undefined
       }
     >
-      <div className="flex min-h-[192px] flex-col justify-end gap-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5">
+      <div className="flex min-h-48 flex-col justify-end gap-2 bg-linear-to-t from-black/70 via-black/20 to-transparent p-5">
         <h3 className="font-bold text-[20px] uppercase tracking-[0.02em] text-brand">
           {title}
         </h3>

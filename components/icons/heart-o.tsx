@@ -6,7 +6,7 @@ const HeartOpenIcon = () => {
       viewBox="0 0 20 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="fill-ink transition-colors duration-300 group-hover:fill-brand"
+      className="fill-white transition-colors duration-300 group-hover:fill-brand"
     >
       <path
         fillRule="evenodd"

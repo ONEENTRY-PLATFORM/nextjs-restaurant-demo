@@ -46,31 +46,33 @@ const ProductImageGallery = ({
     : imageSrc;
 
   return (
-    <div className="flex flex-row flex-wrap gap-2">
-      <div className="absolute right-2 top-2 z-10">
+    <div className="relative w-full">
+      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-[10px]">
         <FavoritesButton {...product} />
       </div>
       {imagesData ? (
         isGallery ? (
           <div className="relative w-full">
-            <Slider asNavFor={nav2 ?? undefined} ref={setNav1}>
-              {(
-                imagesData as Array<{ original?: string; thumbnail?: string }>
-              ).map((image, i: Key) => {
-                return (
-                  <div key={i} className="w-full items-center">
-                    <Image
-                      width={360}
-                      height={280}
-                      sizes="(min-width: 1024px) 66vw, 100vw"
-                      src={image.original ?? ''}
-                      alt={''}
-                      className="mx-auto self-center"
-                    />
-                  </div>
-                );
-              })}
-            </Slider>
+            <div className="relative aspect-4/3 w-full overflow-hidden">
+              <Slider asNavFor={nav2 ?? undefined} ref={setNav1}>
+                {(
+                  imagesData as Array<{ original?: string; thumbnail?: string }>
+                ).map((image, i: Key) => {
+                  return (
+                    <div key={i} className="w-full items-center">
+                      <Image
+                        width={615}
+                        height={615}
+                        sizes="(min-width: 1024px) 615px, 100vw"
+                        src={image.original ?? ''}
+                        alt={''}
+                        className="aspect-square size-full object-cover"
+                      />
+                    </div>
+                  );
+                })}
+              </Slider>
+            </div>
             <Slider
               asNavFor={nav1 ?? undefined}
               ref={setNav2}
@@ -97,12 +99,16 @@ const ProductImageGallery = ({
             </Slider>
           </div>
         ) : (
-          <Image
-            fill
-            sizes="(min-width: 1024px) 66vw, 100vw"
-            src={imageSrc?.downloadLink ?? ''}
-            alt={alt}
-          />
+          <div className="relative aspect-4/3 w-full overflow-hidden">
+            <Image
+              width={615}
+              height={615}
+              sizes="(min-width: 1024px) 615px, 100vw"
+              src={imageSrc?.downloadLink ?? ''}
+              alt={alt}
+              className="size-full object-cover"
+            />
+          </div>
         )
       ) : (
         <Placeholder />

@@ -2,7 +2,7 @@
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
@@ -14,6 +14,7 @@ import {
   selectIsInCart,
 } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
+import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
 
@@ -38,7 +39,17 @@ const AddToCartButton = ({
   dict: IAttributeValues;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const inCart = useAppSelector((state) => selectIsInCart(state, id));
+  // Cart state hydrates from localStorage on the client → render the server-
+  // safe variant (Add-to-cart button) до гидрации, иначе hydration mismatch
+  // когда товар уже в корзине из persisted storage. useSyncExternalStore
+  // вместо useEffect+setState — чтобы не было cascading-render warning.
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
+  const inCartRaw = useAppSelector((state) => selectIsInCart(state, id));
+  const inCart = mounted && inCartRaw;
   const items = useAppSelector((state) => state.cartReducer.productsData);
   const favoritesIds: number[] = useAppSelector(
     (state: { favoritesReducer: { products: number[] } }) =>
@@ -92,6 +103,9 @@ const AddToCartButton = ({
     }
   };
 
+  const addToCartLabel =
+    (add_to_cart_button?.value as string | undefined) || 'ADD TO CART';
+
   return !inCart ? (
     <button
       onClick={() => addToCartHandle()}
@@ -99,7 +113,8 @@ const AddToCartButton = ({
       className={className}
       aria-label={`Add ${productTitle} to cart`}
     >
-      {add_to_cart_button?.value as string | undefined}
+      {addToCartLabel}
+      <CartAddIcon className="w-5 h-4.5" />
     </button>
   ) : (
     <QuantitySelector

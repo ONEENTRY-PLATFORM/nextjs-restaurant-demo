@@ -58,8 +58,8 @@ const ReviewsSlideUpPanel = ({
   };
 
   return (
-    <div className="animate-slide-up fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-[22px] backdrop-blur-[10px] md:hidden">
-      <div className="mx-auto max-w-[355px]">
+    <div className="animate-slide-up fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-5.5 backdrop-blur-[10px] md:hidden">
+      <div className="mx-auto max-w-88.75">
         <div className="flex items-center justify-center gap-1.25">
           <p className="text-center font-bold text-[20px] text-brand">
             {title}
@@ -83,7 +83,7 @@ const ReviewsSlideUpPanel = ({
             type="button"
             onClick={onApply}
             disabled={loading || success}
-            className="flex h-[35px] w-[95px] items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
           >
             {success ? 'Sent' : loading ? '...' : 'Apply'}
           </button>
@@ -95,7 +95,7 @@ const ReviewsSlideUpPanel = ({
               setSuccess(false);
               setError('');
             }}
-            className="flex h-[35px] w-[95px] items-center justify-center rounded-[5px] border border-paper text-paper hover_btn_white"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-paper text-paper hover_btn_white"
           >
             Edit
           </button>
@@ -105,7 +105,7 @@ const ReviewsSlideUpPanel = ({
           <p className="mt-2 text-center text-sm text-red-400">{error}</p>
         ) : null}
       </div>
-      <div className="h-[100px] border-none bg-transparent"></div>
+      <div className="h-25 border-none bg-transparent"></div>
     </div>
   );
 };

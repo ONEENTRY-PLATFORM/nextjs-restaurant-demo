@@ -1,106 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
-// import { ServerProvider } from '@/app/store/providers/ServerProvider';
-// import type { PageProps } from '@/app/types/global';
-// import { getDictionary } from '../api/utils/dictionaries';
-// import PaymentPage from '@/components/layout/payment';
-// import ProfilePage from '@/components/layout/profile';
-// import AboutPage from '@/components/pages/AboutPage';
-// import ContactsPage from '@/components/pages/ContactsPage';
-// import PaymentCanceled from '@/components/pages/PaymentCanceled';
-// import PaymentSuccess from '@/components/pages/PaymentSuccess';
-// import ServicesPage from '@/components/pages/ServicesPage';
-// import type { Locale } from '@/i18n-config';
-// import { getDictionary } from '../dictionaries';
-
 /**
- * Simple page layout
- * @async
- * @param   {object}                                  params        - Page parameters
- * @param   {Promise<{ page: string; lang: string }>} params.params - The page and language parameters
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns {Promise<JSX.Element>}                                  page layout JSX.Element
+ * Generic CMS page renderer — catch-all для произвольных страниц OneEntry,
+ * у которых нет специализированного роута (`/shop`, `/cart`, `/profile`, и т.п.).
+ *
+ * Берёт `localizeInfos.title` и `attributeValues.description.value[0].htmlValue`
+ * (стандартный rich-text атрибут OneEntry). Если `description` нет — рендерится
+ * только заголовок. Для специфичных шаблонов (about / contact / payment_*)
+ * нужны отдельные компоненты — добавлять по мере реальной потребности, а не
+ * заранее.
+ * @param   {object}                          props        - Page props.
+ * @param   {Promise<{ handle: string }>}     props.params - Route params.
+ * @returns {Promise<JSX.Element>}                         Generic page JSX.
  */
 const PageLayout = async ({
   params,
 }: {
-  params: Promise<{ page: string; handle: string }>;
+  params: Promise<{ handle: string }>;
 }): Promise<JSX.Element> => {
-  /** Extract page name from params */
-  const { page: p } = await params;
-  /** Get dictionary and set to server provider for internationalization */
-  // const [dict] = ServerProvider('dict', await getDictionary());
+  const { handle } = await params;
+  const { page, isError } = await getPageByUrl(handle);
 
-  /** Get page data by current url */
-  const { page, isError } = await getPageByUrl(p);
-
-  /** if error return notFound */
   if (isError || !page) {
     return notFound();
   }
 
-  /** extract data from page */
-  const { pageUrl, templateIdentifier } = page;
+  const title = page.localizeInfos?.title ?? '';
+  const descriptionRaw = page.attributeValues?.description?.value as
+    | Array<{ htmlValue?: string; plainValue?: string }>
+    | undefined;
+  const html = descriptionRaw?.[0]?.htmlValue ?? '';
 
-  /** array of pages components with additional settings for next router */
-  const pages = [
-    {
-      templateType: templateIdentifier,
-      name: 'profile',
-      component: null,
-    },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'payment',
-    //   component: <PaymentPage page={page} lang={lang} dict={dict} />,
-    // },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'about_us',
-    //   component: <AboutPage page={page} lang={lang} dict={dict} />,
-    // },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'services',
-    //   component: <ServicesPage page={page} lang={lang} dict={dict} />,
-    // },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'contact_us',
-    //   component: <ContactsPage page={page} lang={lang} dict={dict} />,
-    // },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'payment_success',
-    //   component: <PaymentSuccess page={page} lang={lang} dict={dict} />,
-    // },
-    // {
-    //   templateType: templateIdentifier,
-    //   name: 'payment_canceled',
-    //   component: <PaymentCanceled page={page} lang={lang} dict={dict} />,
-    // },
-  ];
-
-  /** Render the page component based on the page URL and template type */
   return (
-    <div className="mx-auto flex min-h-80 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col overflow-hidden">
-      {Array.isArray(pages) ? (
-        pages.map((p, i) => {
-          if (pageUrl !== p.name) {
-            return null;
-          }
-          return <div key={i}>{p.component}</div>;
-        })
+    <article className="mx-auto flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
+      {title ? (
+        <h1 className="font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
+          {title}
+        </h1>
+      ) : null}
+      {html ? (
+        <div
+          className="text-base text-paper/90"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       ) : (
-        <div>Page not found</div>
+        <p className="text-paper/70">
+          This page has no content yet. Configure attribute{' '}
+          <code className="text-brand">description</code> for page{' '}
+          <code className="text-brand">{handle}</code> in OneEntry admin.
+        </p>
       )}
-    </div>
+    </article>
   );
 };
 
@@ -108,37 +62,25 @@ export default PageLayout;
 
 /**
  * Generate page metadata
- * @async
- * @param   {object}                                  params        - Page params
- * @param   {Promise<{ page: string; lang: string }>} params.params - The page and language parameters
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns {Promise<Metadata>}                                     page metadata
+ * @param   {object}                          props        - Page props.
+ * @param   {Promise<{ handle: string }>}     props.params - Route params.
+ * @returns {Promise<Metadata>}                            Page metadata.
  */
 export async function generateMetadata({
   params,
 }: {
-  params: any;
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
-  /** Extract page name from params */
-  const { page: pageData } = await params;
+  const { handle } = await params;
+  const { page, isError } = await getPageByUrl(handle);
 
-  /** Get page data by current url */
-  const { page, isError } = await getPageByUrl(pageData);
-
-  /** if error return notFound */
   if (isError || !page) {
     return notFound();
   }
 
-  /** extract data from page */
-  const { localizeInfos } = page;
-
   return {
-    title: localizeInfos?.title,
-    description: localizeInfos?.title,
-    openGraph: {
-      type: 'article',
-    },
+    title: page.localizeInfos?.title,
+    description: page.localizeInfos?.title,
+    openGraph: { type: 'article' },
   };
 }

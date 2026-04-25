@@ -48,7 +48,7 @@ const QuantitySelector = ({
   return (
     <div
       className={
-        'flex items-center justify-between rounded-[5px] border border-white px-2 text-white/90 ' +
+        'flex items-center mt-2.5 min-h-16 justify-between rounded-[5px] border border-white px-2 text-white/90 ' +
         className
       }
       style={{ height: height }}

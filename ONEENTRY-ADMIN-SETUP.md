@@ -6,9 +6,9 @@
 
 ---
 
-## 1. Permissions (если ещё не выставлены)
+## 1. Permissions ✅
 
-`PROJECT_URL/users/groups/edit-group/1` (Guests) и Users — read без ограничений для: Pages, Menus, Products, Blocks, Attributes Sets, Forms, Auth Providers, Product Statuses; create — FormsData + Orders (Users). Без этого API отдаёт `"Resource is closed"` и всё идёт в fallback.
+`PROJECT_URL/users/groups/edit-group/1` (Guests) и Users — read без ограничений для: Pages, Menus, Products, Blocks, Attributes Sets, Forms, Auth Providers, Product Statuses; create — FormsData + Orders (Users). Подтверждено клиентом — все группы выставлены, fallback `"Resource is closed"` не наблюдается.
 
 ---
 
@@ -28,7 +28,16 @@
 
 ### 2.2. `contact_us` — форма поддержки
 
-Нужна для [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) + [app/support/page.tsx](app/support/page.tsx). Поля: name/email/message + spam.
+Нужна для [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) + [app/support/page.tsx](app/support/page.tsx).
+
+| marker    | type   | title       |
+|-----------|--------|-------------|
+| `name`    | string | Your name   |
+| `email`   | email  | Your email  |
+| `message` | text   | Message     |
+| `spam`    | spam   | reCAPTCHA   |
+
+> ❓ **Уточнить у клиента:** в вёрстке [static-html/service_support.html](static-html/service_support.html) на этом экране нет формы с полями — только два блока с быстрыми контактами (WhatsApp / звонок). Что должно быть на странице поддержки: классическая форма обратной связи (текущая реализация), блок с контактами как в макете, или оба варианта? Пока оставляем форму, ждём решение.
 
 ---
 
@@ -37,8 +46,16 @@
 ### 3.1. `support`
 
 - pageUrl: `support`
-- Attribute set с полями: `support_title` (string), `support_description` (text), `support_phone` (string), `support_whatsapp_url` (string), `support_email` (string).
 - Используется в [app/support/page.tsx](app/support/page.tsx).
+- Attribute set с полями:
+
+  | marker                 | type   | title          |
+  |------------------------|--------|----------------|
+  | `support_title`        | string | Title          |
+  | `support_description`  | text   | Description    |
+  | `support_phone`        | string | Phone          |
+  | `support_whatsapp_url` | string | WhatsApp URL   |
+  | `support_email`        | email  | Email          |
 
 ### 3.2. Недостающие дочерние категории под `menu`
 
@@ -48,7 +65,14 @@
 
 ### 3.3. Дочерние страницы под `blog` (акции)
 
-В админке только `birthday_offer`. В верстке также нужны: `business_lunch`, `deal_of_the_day`, `kids_menu`, `happy_monday`, `dinner_fix_price` — создать child-pages под `blog` с attribute set `blog_page` (маркеры `promo_image`, `promo_title`, `promo_subtitle`, `promo_cta`).
+В админке только `birthday_offer`. В верстке также нужны: `business_lunch`, `deal_of_the_day`, `kids_menu`, `happy_monday`, `dinner_fix_price` — создать child-pages под `blog` с attribute set `blog_page`:
+
+| marker          | type   | title         |
+|-----------------|--------|---------------|
+| `promo_image`   | image  | Promo image   |
+| `promo_title`   | string | Title         |
+| `promo_subtitle`| string | Subtitle      |
+| `promo_cta`     | string | CTA label     |
 
 ---
 

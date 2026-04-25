@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
@@ -10,18 +9,13 @@ import WeightIcon from '@/components/icons/weight.svg';
 
 import AddToCartButton from '../components/AddToCartButton';
 
-type ProductPageLink = { categoryPath?: string };
-
-type DishProduct = IProductsEntity & {
-  productPages?: ProductPageLink[];
-};
-
 /**
- * Product details column — верстка `details_personal.html`.
+ * Product details panel — порт правой колонки `static-html/details.html`.
+ *
+ * Не рендерит category/title — их выводит `ProductSingle` сверху над колонками
+ * (мобильный заголовок) и в shared header-блоке (md+).
  *
  * Fields (OneEntry `dish` attribute set):
- *   - `localizeInfos.title` — заголовок
- *   - `productPages[0].categoryPath` → `menu/<slug>` — категория
  *   - `weight` (integer) — граммы
  *   - `calorrage` (integer) — ккал
  *   - `rating` (float)
@@ -29,14 +23,14 @@ type DishProduct = IProductsEntity & {
  *   - `preferences` (list) — теги
  *   - `ingredients` (string)
  *   - `price` + `currency`
- * @param   {{product: DishProduct; dict: IAttributeValues}} props - component props
- * @returns {JSX.Element} Product details column JSX
+ * @param   {{product: IProductsEntity; dict: IAttributeValues}} props - component props
+ * @returns {JSX.Element} Product details panel JSX
  */
 const ProductDetails = async ({
   product,
   dict,
 }: {
-  product: DishProduct;
+  product: IProductsEntity;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   const {
@@ -53,18 +47,7 @@ const ProductDetails = async ({
       price,
       currency,
     },
-    productPages,
   } = product;
-
-  // Parse "menu/desserts" → "desserts"
-  const categoryPath = productPages?.[0]?.categoryPath ?? '';
-  const categorySlug = categoryPath.split('/').pop() ?? '';
-  const categoryLabel = categorySlug
-    ? categorySlug
-        .split('_')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ')
-    : '';
 
   const weightVal = weight?.value as number | undefined;
   const calorrageVal = calorrage?.value as number | undefined;
@@ -88,44 +71,42 @@ const ProductDetails = async ({
 
   return (
     <div className="flex flex-col gap-3.75">
-      {/* Category + title */}
-      {categoryLabel ? (
-        <Link
-          href={'/shop/category/' + categorySlug}
-          className="font-normal text-[16px] text-[#969696]"
-        >
-          Category / {categoryLabel}
-        </Link>
-      ) : null}
-      <h1 className="font-bold text-[20px] tracking-[0.02em] text-white">
-        {title}
-      </h1>
+      {/* Metrics row + price badge — single line per static-html/details.html:130 */}
+      <div className="flex justify-between items-start gap-3.75 lg:flex-row-reverse">
+        <div className="flex flex-col gap-3.75 mt-2.5">
+          {/* Weight / calorrage / rating */}
+          <div className="flex gap-1.25 md:gap-3.75 items-center">
+            {weightVal != null ? (
+              <>
+                <WeightIcon />
+                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                  {weightVal} g
+                </p>
+              </>
+            ) : null}
+            {calorrageVal != null ? (
+              <>
+                <FlameIcon />
+                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                  {calorrageVal} ccal
+                </p>
+              </>
+            ) : null}
+            {ratingVal != null ? (
+              <>
+                <StarPuffyIcon />
+                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                  {ratingVal}
+                </p>
+              </>
+            ) : null}
+          </div>
+        </div>
 
-      {/* Weight / calorrage / rating row */}
-      <div className="flex gap-1.25 md:gap-3.75 items-center">
-        {weightVal != null ? (
-          <>
-            <WeightIcon />
-            <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
-              {weightVal} g
-            </p>
-          </>
-        ) : null}
-        {calorrageVal != null ? (
-          <>
-            <FlameIcon />
-            <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
-              {calorrageVal} ccal
-            </p>
-          </>
-        ) : null}
-        {ratingVal != null ? (
-          <>
-            <StarPuffyIcon />
-            <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
-              {ratingVal}
-            </p>
-          </>
+        {priceFormatted ? (
+          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient flex justify-center items-center font-bold text-white text-[20px] shrink-0">
+            {priceFormatted}
+          </div>
         ) : null}
       </div>
 
@@ -136,13 +117,6 @@ const ProductDetails = async ({
           <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
             {cookingVal} min
           </p>
-        </div>
-      ) : null}
-
-      {/* Price badge */}
-      {priceFormatted ? (
-        <div className="rounded-[10px] w-18 h-13 bg-custom-gradient flex justify-center items-center font-bold text-white text-[20px]">
-          {priceFormatted}
         </div>
       ) : null}
 

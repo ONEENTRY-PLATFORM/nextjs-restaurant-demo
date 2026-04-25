@@ -90,6 +90,7 @@ const ProductCard = ({
             alt="star"
             width={16}
             height={16}
+            style={{ width: 'auto', height: 'auto' }}
           />
           <p>{rating}</p>
         </div>

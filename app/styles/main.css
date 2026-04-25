@@ -148,28 +148,73 @@ html {
 }
 
 .list_item {
-  @apply border border-[rgba(255,255,255,0.9)] list-none whitespace-nowrap hover:border-transparent snap-start;
+  @apply 
+    border 
+    border-custom_white 
+    list-none 
+    whitespace-nowrap 
+    hover:border-transparent 
+    snap-start 
+    rounded-md;
 }
 
 .list_link {
-  @apply  block px-3.25 py-1.25 md:px-3.75 md:py-1.5 font-normal text-base tracking-[0.02em] text-[#dfe9f9] no-underline transition-colors duration-500 hover:bg-[rgba(106,108,122,0.5)] active:bg-[#ec722b];
+  @apply 
+    block 
+    px-3.25 
+    py-1.25 
+    md:px-3.75 
+    md:py-1.5 
+    font-normal 
+    text-base 
+    tracking-[0.02em] 
+    text-paper 
+    no-underline 
+    transition-colors 
+    duration-500 
+    hover:bg-[rgba(106,108,122,0.5)] 
+    active:bg-[#ec722b] 
+    rounded-md;
 }
 
 .title {
-  @apply flex md:justify-between items-center gap-5;
+  @apply 
+    flex 
+    md:justify-between 
+    items-center 
+    gap-5;
 }
 
 .title_name {
- @apply md:mb-4.25 text-[16px] font-bold md:text-[20px] uppercase text-[#ec722b];
+  @apply 
+    md:mb-4.25 
+    text-[16px] 
+    font-bold 
+    md:text-[20px] 
+    uppercase 
+    text-[#ec722b];
 }
 
 .subtitle {
-  @apply hidden md:block font-normal text-xs text-white;
+  @apply 
+    hidden 
+    md:block 
+    font-normal 
+    text-xs 
+    text-white;
 }
 
 @layer components {
   .menu_items {
-    @apply gap-5 pb-5 pt-2.5 md:pt-5 md:pb-6 flex md:justify-between flex-wrap;
+    @apply 
+      gap-5 
+      pb-5 
+      pt-2.5 
+      md:pt-5 
+      md:pb-6 
+      flex 
+      md:justify-between 
+      flex-wrap;
   }
 }
 
@@ -183,7 +228,7 @@ html {
 
 @layer components {
   .menu_item-title {
-    @apply grow font-normal text-[15px] md:text-base tracking-[0.02em] text-[#dfe9f9] md:h-11.5 mt-3 mb-2 md:mt-4.25 md:mb-3 md:leading-normal;
+    @apply grow font-normal text-[15px] md:text-base tracking-[0.02em] text-paper md:h-11.5 mt-3 mb-2 md:mt-4.25 md:mb-3 md:leading-normal;
   }
 }
 
@@ -191,10 +236,10 @@ html {
   @apply flex items-center justify-between;
 }
 .rating_img {
-  @apply mt-[5px] mr-0 md:mr-2.5;
+  @apply mt-1.25 mr-0 md:mr-2.5;
 }
 .menu_items_btn {
-  @apply flex items-center justify-center text-white border-[1.39px] border-[rgba(255,255,255,0.9)] rounded-[7px] px-4.75 py-0.75 md:py-1.5 gap-2.5 md:gap-3.25 cursor-pointer hover:border-custom_orange;
+  @apply flex items-center justify-center text-white border-[1.39px] border-custom_white rounded-[7px] px-4.75 py-0.75 md:py-1.5 gap-2.5 md:gap-3.25 cursor-pointer hover:border-custom_orange;
 }
 .heart_card {
   @apply absolute top-3.75 md:top-5 right-2.5 md:right-3.75 cursor-pointer active:fill-white hover:fill-white focus:fill-white transition-all duration-1000;
@@ -211,23 +256,23 @@ html {
 
 @layer components {
   .filter_btn {
-    @apply font-normal text-[20px] tracking-[0.02em] text-[#dfe9f9];
+    @apply font-normal text-[20px] tracking-[0.02em] text-paper;
   }
 }
 
 .filter_item {
-  @apply border border-[#dfe9f9] rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-[#dfe9f9] hover:bg-[#ec722b] active:bg-[#ec722b] hover:border-none active:border-none;
+  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-[#ec722b] active:bg-[#ec722b] hover:border-none active:border-none;
 }
 .filter_title {
   @apply w-full font-bold text-[16px] tracking-[0.02em] text-[#ec722b];
 }
 
 .favorites_title {
-  @apply font-normal text-[16px] tracking-[0.02em] text-[#dfe9f9] w-35;
+  @apply font-normal text-[16px] tracking-[0.02em] text-paper w-35;
 }
 
 .favorites_weight {
-  @apply font-normal text-[14px] tracking-[0.02em] text-[#dfe9f9];
+  @apply font-normal text-[14px] tracking-[0.02em] text-paper;
 }
 .favorites_price {
   @apply font-bold text-[20px] text-[#ec722b];
@@ -241,10 +286,10 @@ html {
 }
 
 .label {
-  @apply font-normal text-[16px] text-[#dfe9f9] w-27.5
+  @apply font-normal text-[16px] text-paper w-27.5
 }
 .input {
-  @apply border border-[#b0bcce] rounded-[3px] w-42.5 h-6.75 px-2.5 bg-transparent text-[#dfe9f9] focus:border-[#b0bcce] active:border-[#b0bcce] focus:outline-[#b0bcce];
+  @apply border border-muted rounded-[3px] w-42.5 h-6.75 px-2.5 bg-transparent text-paper focus:border-muted active:border-muted focus:outline-muted;
 }
 @layer components {
   .cart_btn {
@@ -252,33 +297,76 @@ html {
   }
 }
 .cart_input {
-  @apply bg-transparent border-none text-white text-[20px] font-normal h-10 w-full  focus:outline-[#b0bcce];
+  @apply 
+    bg-transparent 
+    border-none 
+    text-white 
+    text-[20px] 
+    font-normal 
+    h-10 
+    w-full 
+    focus:outline-muted;
 }
 .cart_label {
-  @apply font-normal text-[16px] text-white;
+  @apply 
+    font-normal 
+    text-[16px] 
+    text-white;
 }
 @layer components {
   .keyb {
-    @apply bg-custom_transparent w-30%-gap h-10 rounded-[5px] flex justify-center items-center text-white font-semibold text-[24px] cursor-pointer hover:bg-custom_btnorange active:bg-custom_btnorange transition-all duration-500 touch-auto;
+    @apply 
+      bg-custom_transparent 
+      w-30%-gap 
+      h-10 
+      rounded-[5px] 
+      flex 
+      justify-center 
+      items-center 
+      text-white 
+      font-semibold 
+      text-[24px] 
+      cursor-pointer 
+      hover:bg-custom_btnorange 
+      active:bg-custom_btnorange 
+      transition-all 
+      duration-500 
+      touch-auto;
   }
 }
 
 .calend_days {
-  @apply text-center p-2 rounded-[5px] font-light text-[16px] text-[#dfe9f9] hover:bg-[#ec722b] hover:text-white active:bg-[#ec722b] active:text-white focus:bg-[#ec722b] focus:text-white;
+  @apply 
+    text-center 
+    p-2 
+    rounded-[5px] 
+    font-light 
+    text-[16px] 
+    text-paper 
+    hover:bg-[#ec722b] 
+    hover:text-white 
+    active:bg-[#ec722b] 
+    active:text-white 
+    focus:bg-[#ec722b] 
+    focus:text-white;
 }
 .calend_mon {
-  @apply font-medium text-[16px] text-[#ec722b] text-center;
+  @apply 
+    font-medium 
+    text-[16px] 
+    text-[#ec722b] 
+    text-center;
 }
 .service_time {
   @apply 
     border 
-    border-[#dfe9f9] 
+    border-paper 
     rounded-[5px] 
     py-2 
     px-3.5 
     font-light 
     text-[15px] 
-    text-[#dfe9f9] 
+    text-paper 
     hover:border-[#ec722b] 
     hover:text-[#ec722b] 
     hover:font-extrabold 

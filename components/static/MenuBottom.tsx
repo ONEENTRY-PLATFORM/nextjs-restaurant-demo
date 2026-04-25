@@ -58,7 +58,7 @@ const MenuBottom = () => (
         <div className="bg-[#ec722b] hover:bg-[#EB4B0E] w-[46px] h-[46px] flex justify-center items-center rounded-full -mt-2.5 relative">
           <img
             className="w-[25px] h-[23px]"
-            src="/icons/cart_black.svg"
+            src="/images/icons/cart_black.svg"
             alt="cart"
           />
           <div className="px-1 absolute top-2.5 right-2 rounded-full bg-white">

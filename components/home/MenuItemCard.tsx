@@ -43,6 +43,7 @@ const MenuItemCard = ({ item }: { item: MenuItemData }): JSX.Element => {
             alt="star"
             width={16}
             height={16}
+            style={{ width: 'auto', height: 'auto' }}
           />
           <p>{item.rating}</p>
         </div>

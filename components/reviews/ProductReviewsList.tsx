@@ -3,25 +3,24 @@
 import type { JSX } from 'react';
 import { useState } from 'react';
 
+import type { ProductReview } from '@/app/api';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
 import ChevronPagerLeftIcon from '@/components/icons/chevron-pager-left.svg';
 import ChevronPagerRightIcon from '@/components/icons/chevron-pager-right.svg';
 import StarCardIcon from '@/components/icons/star-card';
 
-import type { ProductReview } from './mockReviews';
-import { mockProductReviews } from './mockReviews';
-
 /**
  * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
- * `static-html/details.html`. Карусель: трек `flex` со всеми отзывами в
- * полную ширину, активный сдвигается через `translateX(-index * 100%)` с
- * плавным transition. Высота трека = высоте самого длинного отзыва, поэтому
- * стрелки переключения (md+) не скачут при смене индекса.
+ * `static-html/details.html`. Данные ожидаются в нормализованной форме
+ * `ProductReview[]` (см. `getProductReviews`); рендер скрыт, если пусто.
+ * @param   {object}            props         - Component props.
+ * @param   {ProductReview[]}   props.reviews - Top-level reviews.
+ * @returns {JSX.Element|null}                Carousel JSX or `null` when empty.
  */
 const ProductReviewsList = ({
-  reviews = mockProductReviews,
+  reviews,
 }: {
-  reviews?: ProductReview[];
+  reviews: ProductReview[];
 }): JSX.Element | null => {
   const [index, setIndex] = useState(0);
 

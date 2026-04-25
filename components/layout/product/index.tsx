@@ -3,7 +3,7 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import ProductReviewsList from '@/components/reviews/ProductReviewsList';
+import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
 
 import ProductAnimations from './animations/ProductAnimations';
 import ProductDetails from './product-single/ProductDetails';
@@ -22,7 +22,7 @@ type DishProduct = IProductsEntity & {
  * Product single — порт `static-html/details.html`. Двухколоночный layout
  * (md+): большая картинка слева (контейнер фиксированной аспектной высоты),
  * правая панель с метаданными, ингредиентами, тегами, кнопкой Add-to-cart и
- * блоком отзывов с pager-стрелками (`ProductReviewsList`). Сверху над
+ * блоком отзывов с pager-стрелками (`ProductReviewsListServer`). Сверху над
  * колонками — breadcrumb «Category / X» и название блюда. Под колонками —
  * trailing-секция «Featured objects» через `RelatedItems` блок.
  * @param   {object}                                       props         - props
@@ -96,7 +96,7 @@ const ProductSingle = async ({
           <ProductDetails product={product} dict={dict} />
 
           {/* Reviews — внутри правой колонки, как в static-html/details.html */}
-          <ProductReviewsList />
+          <ProductReviewsListServer productId={product.id} />
         </ProductAnimations>
       </div>
 

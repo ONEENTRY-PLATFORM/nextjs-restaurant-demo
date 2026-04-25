@@ -3,81 +3,109 @@
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 
 import { getApi, isError } from '@/app/api';
+import type { FormAttribute } from '@/components/reviews/utils/transformFormData';
+import {
+  transformFormField,
+  validateFormData,
+} from '@/components/reviews/utils/transformFormData';
+
+const FORM_MARKER = 'review_form';
+const FORM_STATUS = 'approved';
+const DEFAULT_MODULE_CONFIG_ID = 5;
+
+/**
+ * Markers expected on the `comment_to_product` form in OneEntry.
+ * The UI only collects a star rating + free-text body; any other form
+ * fields the admin adds (images, spam, etc.) are still posted via
+ * {@link transformFormField}'s default branch and stay empty.
+ */
+const RATING_MARKER = 'review_rating';
+const TEXT_MARKER = 'review_text';
 
 /**
  * Review submission payload collected from the client.
+ * Author identity is resolved from the OneEntry auth session by the SDK
+ * (the form is gated behind sign-in in the UI). The product association
+ * is carried by `moduleEntityIdentifier`, not by a hidden form field.
  * @property {number} rating    - Star rating 1–5.
  * @property {string} text      - Review body.
- * @property {string} author    - Author display name.
- * @property {number} productId - ID of the reviewed product.
+ * @property {number} productId - ID of the reviewed product (becomes `moduleEntityIdentifier`).
  */
 export type ReviewPayload = {
   rating: number;
   text: string;
-  author: string;
   productId: number;
 };
 
 /**
- * Submit a product review to OneEntry FormsData API (`review` form marker).
+ * Submit a product review to OneEntry FormsData (`review_form` marker).
+ *
+ * Mirrors the submission contract used in `oneentry-next-shop`:
+ * - form fields are read dynamically from the form schema, sorted by `position`,
+ *   and transformed per type via {@link transformFormField};
+ * - `moduleEntityIdentifier` carries the product id so each review is scoped
+ *   to its product without a hidden `productId` field on the form;
+ * - `formModuleConfigId` is read from the form's `moduleFormConfigs[0].id`
+ *   with a project-wide fallback;
+ * - `status: 'approved'` matches the reference shop — flip in OneEntry if
+ *   moderation should hold reviews before publication.
  * @param   {ReviewPayload}                                        payload - Review data.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Result.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Submission result.
  */
 export async function submitReview(
   payload: ReviewPayload,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
     const api = getApi();
-    const form = await api.Forms.getFormByMarker('review');
+    const form = await api.Forms.getFormByMarker(FORM_MARKER);
     if (isError(form)) {
       return {
         ok: false,
         message:
           (form as { message?: string }).message ||
-          'Review form is not configured in CMS',
+          `Form "${FORM_MARKER}" is not configured in CMS`,
       };
     }
 
     const formMeta = form as unknown as {
-      moduleFormConfigs?: Array<{
-        id?: number;
-        entityIdentifiers?: Array<{ id?: string }>;
-      }>;
+      identifier?: string;
+      attributes?: FormAttribute[];
+      moduleFormConfigs?: Array<{ id?: number }>;
     };
-    const formModuleConfigId = formMeta.moduleFormConfigs?.[0]?.id ?? 0;
-    const moduleEntityIdentifier =
-      formMeta.moduleFormConfigs?.[0]?.entityIdentifiers?.[0]?.id ?? '';
 
-    const formData: FormDataType[] = [
-      {
-        marker: 'review_rating',
-        type: 'integer',
-        value: payload.rating,
-      } as unknown as FormDataType,
-      {
-        marker: 'review_text',
-        type: 'text',
-        value: [{ htmlValue: payload.text, plainValue: payload.text }],
-      } as unknown as FormDataType,
-      {
-        marker: 'review_author',
-        type: 'string',
-        value: payload.author,
-      } as unknown as FormDataType,
-      {
-        marker: 'review_product_id',
-        type: 'integer',
-        value: payload.productId,
-      } as unknown as FormDataType,
-    ];
+    const sortedFields = [...(formMeta.attributes ?? [])].sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    );
+
+    const valuesByMarker: Record<string, unknown> = {
+      [RATING_MARKER]: payload.rating,
+      [TEXT_MARKER]: payload.text,
+    };
+
+    const formData: FormDataType[] = sortedFields.map((field) =>
+      transformFormField({
+        marker: field.marker,
+        type: field.type,
+        value: valuesByMarker[field.marker],
+        productId: payload.productId,
+      }),
+    );
+
+    const validation = validateFormData(formData);
+    if (!validation.isValid) {
+      return { ok: false, message: validation.error || 'Invalid form data' };
+    }
+
+    const formModuleConfigId =
+      formMeta.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
     const res = await api.FormData.postFormsData({
-      formIdentifier: 'review',
+      formIdentifier: formMeta.identifier ?? FORM_MARKER,
       formData,
       formModuleConfigId,
-      moduleEntityIdentifier,
+      moduleEntityIdentifier: String(payload.productId),
       replayTo: null,
-      status: '',
+      status: FORM_STATUS,
     });
 
     if (isError(res)) {

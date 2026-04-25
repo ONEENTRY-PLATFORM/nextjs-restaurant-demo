@@ -1,9 +1,11 @@
 'use client';
 
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { submitReview } from '@/app/actions/review';
+import { AuthContext } from '@/app/store/providers/AuthContext';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import StarRating from './StarRating';
 
@@ -11,6 +13,9 @@ import StarRating from './StarRating';
  * Fixed-position slide-up review panel — replicates the bottom sheet on
  * `about_reviews.html`. Visible on mobile (`md:hidden`) by default. Submits
  * the review via {@link submitReview} Server Action.
+ *
+ * Author identity comes from {@link AuthContext}; when the visitor isn't
+ * authenticated the panel renders a sign-in CTA instead of the form.
  *
  * Uses Tailwind `.animate-slide-up` defined in `app/styles/main.css`.
  * @param   {object} props                - Component props.
@@ -28,6 +33,9 @@ const ReviewsSlideUpPanel = ({
   title?: string;
   description?: string;
 }): JSX.Element => {
+  const { isAuth } = useContext(AuthContext);
+  const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
+
   const [rating, setRating] = useState(0);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,6 +43,11 @@ const ReviewsSlideUpPanel = ({
   const [success, setSuccess] = useState(false);
 
   const onApply = async () => {
+    if (!isAuth) {
+      setComponent('SignInForm');
+      setOpen(!open);
+      return;
+    }
     if (!text.trim()) {
       setError('Please write a review.');
       return;
@@ -44,7 +57,6 @@ const ReviewsSlideUpPanel = ({
     const res = await submitReview({
       rating: rating || 5,
       text: text.trim(),
-      author: 'Anonymous',
       productId,
     });
     setLoading(false);
@@ -65,7 +77,9 @@ const ReviewsSlideUpPanel = ({
             {title}
           </p>
         </div>
-        <p className="mt-5 font-normal text-[16px] text-paper">{description}</p>
+        <p className="mt-5 font-normal text-[16px] text-paper">
+          {isAuth ? description : 'Sign in to leave a review.'}
+        </p>
 
         <div className="mt-4 flex justify-center">
           <StarRating value={rating} onChange={setRating} size={24} />
@@ -74,7 +88,8 @@ const ReviewsSlideUpPanel = ({
         <textarea
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
-          className="mt-5 w-full resize-none rounded-[5px] border border-brand bg-transparent p-2 text-paper"
+          disabled={!isAuth}
+          className="mt-5 w-full resize-none rounded-[5px] border border-brand bg-transparent p-2 text-paper disabled:opacity-60"
           rows={4}
         />
 
@@ -85,7 +100,13 @@ const ReviewsSlideUpPanel = ({
             disabled={loading || success}
             className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
           >
-            {success ? 'Sent' : loading ? '...' : 'Apply'}
+            {!isAuth
+              ? 'Sign in'
+              : success
+                ? 'Sent'
+                : loading
+                  ? '...'
+                  : 'Apply'}
           </button>
           <button
             type="button"

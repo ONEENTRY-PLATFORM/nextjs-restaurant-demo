@@ -38,17 +38,16 @@ const HOME_BLOCK_IDENTIFIERS = new Set([
  *   2. Fetch its attached blocks via `getBlocksByPageUrl`, sorted by
  *      `block.position`.
  *   3. For each block, dispatch by `block.identifier`:
- *        - `home_promo`      → curated promo via {@link HomeBlockServer}
+ *        - `home_promo`      → static {@link HomePromo} banner (DEAL OF
+ *                              THE DAY -50%). The CMS block is used only
+ *                              as a positional anchor; banner content is
+ *                              hardcoded until the block exposes
+ *                              title/product/image attributes.
  *        - `recommended`     → curated grid via {@link HomeBlockServer}
  *        - `home_categories` → all menu category sections via
  *                              {@link HomeCategoriesSection}
- *      Swapping the position of `home_categories` with `home_promo` in
- *      admin moves the entire category list above the promo banner —
- *      the page render mirrors block ordering exactly.
- *
- * `<HomePromo />` (the static mobile-only carousel of promo PNGs) stays
- * pinned above the dynamic blocks since it serves a different visual
- * purpose and isn't yet block-driven.
+ *      Reordering blocks in admin (`block.position`) reorders sections on
+ *      the page without code changes.
  * @returns {Promise<JSX.Element>} Home page JSX.
  */
 const HomePage = async (): Promise<JSX.Element> => {
@@ -64,8 +63,10 @@ const HomePage = async (): Promise<JSX.Element> => {
 
   return (
     <>
-      <HomePromo />
       {sortedBlocks.map((block) => {
+        if (block.identifier === 'home_promo') {
+          return <HomePromo key={block.id} />;
+        }
         if (block.identifier === 'home_categories') {
           return <HomeCategoriesSection key={block.id} />;
         }

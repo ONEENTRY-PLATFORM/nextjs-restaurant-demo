@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen max-w-480 mx-auto relative`}
+        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative`}
       >
         <RegisterGSAP />
         <StoreProvider>
@@ -68,7 +68,7 @@ export default async function RootLayout({
             <OpenDrawerProvider>
               <Header />
               <TransitionProvider>
-                <main className="flex flex-col grow overflow-hidden">
+                <main className="flex flex-col grow overflow-hidden w-full">
                   {children}
                 </main>
               </TransitionProvider>

@@ -62,6 +62,11 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 64, 96, 128, 256],
     qualities: [50, 75],
     unoptimized: false,
+    // OneEntry CDN at *.oneentry.cloud resolves through the NAT64 prefix
+    // (64:ff9b::/96), which Next's image optimizer flags as a private IP
+    // and refuses to fetch ("resolved to private ip"). The host is a real
+    // public CDN — opting in here is safe.
+    dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: 'https',

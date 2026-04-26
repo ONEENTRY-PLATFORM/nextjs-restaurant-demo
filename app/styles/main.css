@@ -187,7 +187,6 @@ html {
 
 .title_name {
   @apply 
-    md:mb-4.25 
     text-[16px] 
     font-bold 
     md:text-[20px] 

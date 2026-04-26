@@ -32,7 +32,7 @@ const ProductImage = ({
 
   if (!imageSrc) {
     return (
-      <div className="relative aspect-[164/138] w-full md:aspect-[340/280] md_wide:aspect-[220/180] lg:aspect-[278/230]">
+      <div className="relative aspect-square w-full">
         <Placeholder />
       </div>
     );

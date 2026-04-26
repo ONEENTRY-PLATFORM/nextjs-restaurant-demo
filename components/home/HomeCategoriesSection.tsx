@@ -70,7 +70,7 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
             className={sectionClass}
           />
         );
-        return idx % 2 === 1 ? (
+        return idx % 2 === 0 ? (
           <div key={page.id} className="bg-[rgba(76,77,86,0.8)] w-full">
             {node}
           </div>

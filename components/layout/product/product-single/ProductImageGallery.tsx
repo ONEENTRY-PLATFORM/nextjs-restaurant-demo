@@ -29,35 +29,36 @@ const ProductImageGallery = ({
   const { attributeValues } = product;
 
   // extract images from attributeValues (admin `dish` set uses `cover`; `pic` legacy)
-  const imageSrc = (attributeValues.cover?.value ??
-    attributeValues.pic?.value) as { downloadLink?: string } | undefined;
+  const coverRaw = (attributeValues.cover?.value ??
+    attributeValues.pic?.value) as
+    | { downloadLink?: string }
+    | Array<{ downloadLink?: string }>
+    | undefined;
+  const imageSrc = Array.isArray(coverRaw) ? coverRaw[0] : coverRaw;
   const morePic =
     (attributeValues.more_pic?.value as
       | Array<{ downloadLink?: string }>
       | undefined) ?? [];
-  const isGallery = morePic.length > 0;
-  const imagesData = isGallery
-    ? [imageSrc, ...morePic].map((img) => {
-        return {
-          original: img?.downloadLink,
-          thumbnail: img?.downloadLink,
-        };
-      })
-    : imageSrc;
+  const imagesData = [imageSrc, ...morePic]
+    .filter((img) => Boolean(img?.downloadLink))
+    .map((img) => ({
+      original: img?.downloadLink,
+      thumbnail: img?.downloadLink,
+    }));
+  const isGallery = imagesData.length > 1;
+  const hasImages = imagesData.length > 0;
 
   return (
     <div className="relative w-full">
       <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-[10px]">
         <FavoritesButton {...product} />
       </div>
-      {imagesData ? (
+      {hasImages ? (
         isGallery ? (
           <div className="relative w-full">
             <div className="relative aspect-4/3 w-full overflow-hidden">
               <Slider asNavFor={nav2 ?? undefined} ref={setNav1}>
-                {(
-                  imagesData as Array<{ original?: string; thumbnail?: string }>
-                ).map((image, i: Key) => {
+                {imagesData.map((image, i: Key) => {
                   return (
                     <div key={i} className="w-full items-center">
                       <Image
@@ -81,9 +82,7 @@ const ProductImageGallery = ({
               focusOnSelect={true}
               arrows={false}
             >
-              {(
-                imagesData as Array<{ original?: string; thumbnail?: string }>
-              ).map((image, i: Key) => {
+              {imagesData.map((image, i: Key) => {
                 return (
                   <div key={i} className="w-full items-center">
                     <Image
@@ -104,14 +103,16 @@ const ProductImageGallery = ({
               width={615}
               height={615}
               sizes="(min-width: 1024px) 615px, 100vw"
-              src={imageSrc?.downloadLink ?? ''}
+              src={imagesData[0]?.original ?? ''}
               alt={alt}
               className="size-full object-cover"
             />
           </div>
         )
       ) : (
-        <Placeholder />
+        <div className="relative aspect-4/3 w-full overflow-hidden">
+          <Placeholder />
+        </div>
       )}
     </div>
   );

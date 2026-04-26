@@ -2,7 +2,7 @@
 
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
-import { type JSX, useContext } from 'react';
+import { type JSX, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -36,10 +36,18 @@ const HeartCardButton = ({
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
-  const isFav = useAppSelector((state) =>
+  const isFavStored = useAppSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, product.id),
   );
+  // Favorites are restored from localStorage on the client after hydration,
+  // so SSR sees `false` while the client may see `true` — render the empty
+  // state until mount to keep the first client paint consistent with SSR.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  const isFav = hydrated && isFavStored;
 
   const title = product.localizeInfos?.title ?? '';
 

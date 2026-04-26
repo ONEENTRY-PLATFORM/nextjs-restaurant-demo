@@ -16,6 +16,7 @@ import {
 } from '@/app/store/reducers/FavoritesSlice';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
+import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * Favorites list — row-layout per `pk_favorites.html`: image + title +
@@ -124,7 +125,9 @@ const FavoriteRow = ({
             sizes="122px"
             className="object-cover"
           />
-        ) : null}
+        ) : (
+          <Placeholder />
+        )}
       </div>
 
       <div className="flex w-1/2 flex-col">

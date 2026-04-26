@@ -274,9 +274,7 @@ const ReservationForm = ({
           disabled={loading}
           className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
         >
-          {loading
-            ? '...'
-            : ((dict?.submit_text?.value as string) ?? 'Book')}
+          {loading ? '...' : ((dict?.submit_text?.value as string) ?? 'Book')}
         </button>
       </div>
 

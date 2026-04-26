@@ -20,15 +20,10 @@ const COLS_CLASS: Record<number, string> = {
 };
 
 type HomeBlockSectionProps = {
-  /** Section title — `block.localizeInfos.title`. */
   title: string;
-  /** Pre-fetched products from the OneEntry block (already sliced to `block.quantity`). */
   products: IProductsEntity[];
-  /** `block.countElementsPerRow` — number of columns at md+ breakpoints. */
   countElementsPerRow?: number | undefined;
-  /** Wrapping section className override. */
   className?: string | undefined;
-  /** Dictionary forwarded to `ProductCard` (unused there but kept for API parity). */
   dict?: IAttributeValues | undefined;
 };
 

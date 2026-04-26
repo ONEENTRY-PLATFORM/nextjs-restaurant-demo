@@ -7,7 +7,6 @@ import { getChildPagesByParentUrl } from '@/app/api';
 import BurgerIcon from '@/components/icons/burger';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
-import MenuBottom from '@/components/static/MenuBottom';
 
 import CategoriesScroller from './CategoriesScroller';
 import CategoryButton from './CategoryButton';
@@ -81,8 +80,6 @@ const Header = async (): Promise<JSX.Element> => {
           </section>
         </div>
       </div>
-      {/* Menu Bottom */}
-      <MenuBottom />
       {/* Filter Bottom */}
       <FilterBottom />
       {/* Category Filter */}

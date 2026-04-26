@@ -5,7 +5,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
-import CalendarIcon from '@/components/icons/calendar';
+import HeartScriptIcon from '@/components/icons/heart-script';
 
 /**
  * Nav item cart button
@@ -25,7 +25,7 @@ const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
       title={localizeInfos?.menuTitle ?? undefined}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >
-      <CalendarIcon />
+      <HeartScriptIcon />
       {cartCount && (
         <div className="absolute right-1 top-1 z-10 size-4 rounded-full bg-brand text-center text-sm leading-4">
           {cartCount}

@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative`}
+        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative pb-19 md:pb-0`}
       >
         <RegisterGSAP />
         <StoreProvider>

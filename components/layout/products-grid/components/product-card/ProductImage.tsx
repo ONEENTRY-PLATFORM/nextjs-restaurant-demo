@@ -43,10 +43,10 @@ const ProductImage = ({
       src={imageSrc}
       alt={alt}
       width={340}
-      height={280}
+      height={340}
       sizes="(min-width: 1240px) 278px, (min-width: 1020px) 220px, (min-width: 768px) 340px, 164px"
       loading="lazy"
-      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+      className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
     />
   );
 };

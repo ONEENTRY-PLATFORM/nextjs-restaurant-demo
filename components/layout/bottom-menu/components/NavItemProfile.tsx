@@ -7,7 +7,7 @@ import { useContext } from 'react';
 
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import ProfileIcon from '@/components/icons/profile';
+import EyeCircleIcon from '@/components/icons/eye-circle';
 
 /**
  * Nav item profile link / SignInForm button
@@ -26,7 +26,7 @@ const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
       title={title}
       className="group relative box-border flex size-6 shrink-0"
     >
-      <ProfileIcon />
+      <EyeCircleIcon />
     </button>
   ) : (
     <Link
@@ -35,7 +35,7 @@ const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
       title={title}
       className="group relative box-border flex size-6 shrink-0"
     >
-      <ProfileIcon />
+      <EyeCircleIcon />
     </Link>
   );
 };

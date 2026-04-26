@@ -14,13 +14,13 @@ const ProductsGridLoader = ({ limit = 10 }: LoaderProps): JSX.Element => {
     <ProductsGridLoaderAnimations
       className={'relative box-border flex w-full shrink-0 flex-col'}
     >
-      <section className="relative mx-auto box-border flex min-h-[100px] w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
-        <div className="menu_items w-full max-md:w-full">
+      <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
+        <div className="menu_items w-full">
           {Array.from(Array(limit).keys()).map((item) => (
             <div
               key={item}
               className={
-                'menu_item product-card relative flex min-h-[360px] flex-col items-center rounded-[5px] bg-ink/30 p-4 opacity-40'
+                'menu_item product-card relative flex min-h-90 flex-col items-center rounded-[5px] bg-ink/30 p-4 opacity-40'
               }
             >
               <div className="relative mb-3 size-36 w-full rounded-md bg-paper/20 opacity-40"></div>

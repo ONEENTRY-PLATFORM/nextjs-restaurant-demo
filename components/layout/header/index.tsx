@@ -86,7 +86,7 @@ const Header = async (): Promise<JSX.Element> => {
       {/* Filter Bottom */}
       <FilterBottom />
       {/* Category Filter */}
-      <CategoryFilter />
+      <CategoryFilter pages={(pages ?? []) as IPagesEntity[]} />
     </div>
   );
 };

@@ -54,7 +54,7 @@ const HomeBlockSection = ({
       <div className="title">
         <h2 className="title_name">{title}</h2>
       </div>
-      <div className={`grid grid-cols-2 gap-3.75 w-full pt-3 ${colsClass}`}>
+      <div className={`menu_items w-full ${colsClass}`}>
         {visible.map((product, i) => (
           <ProductCard
             key={product.id}

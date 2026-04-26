@@ -39,7 +39,33 @@
   | `support_whatsapp_url` | string | WhatsApp URL   |
   | `support_email`        | email  | Email          |
 
-### 2.2. Дочерние страницы под `blog` (акции)
+### 2.2. Иконки категорий (`menu` → child pages)
+
+Атрибут `icon` (image) у дочерних страниц `menu` уже определён в attribute set, но **значения не загружены** для большинства категорий. Используется в [components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx) (левый drawer категорий) и потенциально в `CategoriesScroller`. Сейчас при пустом `icon` есть fallback на файл `/public/images/icons/<pageUrl>.svg`, но это временный костыль — для админ-управляемой вёрстки иконки должны жить в CMS.
+
+| pageUrl          | состояние `icon` |
+|------------------|------------------|
+| `appetizers`     | ❌ нет атрибута    |
+| `kids_menu`      | ❌ нет атрибута    |
+| `snacks`         | ❌ нет атрибута    |
+| `dinner`         | ⚠️ пусто (массив 0) |
+| `fresh_juice`    | ⚠️ пусто           |
+| `soup`           | ⚠️ пусто           |
+| `hot_meals`      | ⚠️ пусто           |
+| `meat`           | ⚠️ пусто           |
+| `fish`           | ⚠️ пусто           |
+| `lunch`          | ⚠️ пусто           |
+| `breakfast`      | ⚠️ пусто           |
+| `salads`         | ✅ загружено        |
+| `desserts`       | ✅ загружено        |
+| `cold_beverages` | ✅ загружено        |
+| `first_courses`  | ✅ загружено        |
+| `pizza`          | ✅ загружено        |
+
+- Для категорий без атрибута — добавить `icon` (тип `image`) в attribute set дочерних страниц `menu`.
+- Для категорий с пустым атрибутом — загрузить иконку. Источник — `static-html/public/images/icons/<pageUrl>.svg` (`first_courses.svg`, `main_courses.svg`, `salads.svg`, `snackes.svg`, `hot_beverages.svg`, `fresh_juice.svg`, `dessert.svg`, `appetizers.svg`, `kids_menu.svg`, `booking_table.svg`).
+
+### 2.3. Дочерние страницы под `blog` (акции)
 
 В админке только `birthday_offer`. В верстке также нужны: `business_lunch`, `deal_of_the_day`, `kids_menu`, `happy_monday`, `dinner_fix_price` — создать child-pages под `blog` с attribute set `blog_page`:
 

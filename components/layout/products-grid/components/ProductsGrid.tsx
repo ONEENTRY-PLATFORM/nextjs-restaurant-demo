@@ -19,7 +19,7 @@ const ProductsGrid = ({
   products: IProductsEntity[];
 }): JSX.Element => {
   return (
-    <div className="menu_items w-full max-md:w-full">
+    <div className="menu_items w-full">
       {products
         ?.filter((item) => item.isVisible)
         .map((product: IProductsEntity, index: number) => {

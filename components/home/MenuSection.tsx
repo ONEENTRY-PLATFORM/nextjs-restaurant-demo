@@ -6,19 +6,12 @@ import type { JSX } from 'react';
 import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
 
 type MenuSectionProps = {
-  /** Section title — usually `page.localizeInfos.title`. */
   title: string;
-  /** Category page URL — used for the "View all" link target. */
   categoryMarker: string;
-  /** Pre-fetched products for the category (server-side, in `app/page.tsx`). */
   products: IProductsEntity[];
-  /** Total number of products in the category (for the "View all (N)" badge). */
   total: number;
-  /** Dictionary of localized strings forwarded to ProductsGrid → ProductCard. */
   dict?: IAttributeValues;
-  /** Visible items limit on the home page (matches the product fetch limit). */
   limit?: number;
-  /** Wrapping section className override. */
   className?: string;
 };
 

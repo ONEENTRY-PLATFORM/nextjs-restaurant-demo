@@ -16,8 +16,9 @@ export const getChildPagesByParentUrl = async (
 }> => {
   try {
     const data = await api.Pages.getChildPagesByParentUrl(url);
+
     if (typeError(data)) {
-      return { isError: true, error: data as IError };
+      return { isError: true, error: data };
     } else {
       return { isError: false, pages: data as IPagesEntity[] };
     }

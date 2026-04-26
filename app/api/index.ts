@@ -31,6 +31,8 @@ export { useSetForm } from './hooks/useSetForm';
 export { getAdminsInfo } from './server/admins/getAdminsInfo';
 export { getSingleAttributeByMarkerSet } from './server/attributes/getSingleAttributeByMarkerSet';
 export { getBlockByMarker } from './server/blocks/getBlockByMarker';
+export { getBlockProducts } from './server/blocks/getBlockProducts';
+export type { BlockProducts } from './server/blocks/getBlockProducts';
 export { getBlocks } from './server/blocks/getBlocks';
 export { getBlocksByPageUrl } from './server/blocks/getBlocksByPageUrl';
 export { getFormByMarker } from './server/forms/getFormByMarker';

@@ -1,10 +1,10 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
-import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
+import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
+import HomeBlockServer from '@/components/home/HomeBlockServer';
+import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
-import MenuSection from '@/components/home/MenuSection';
 
 // Opt out of static prerender — the shared layout chain includes client
 // components that read `useSearchParams()` (search bar, filter bottom
@@ -12,78 +12,69 @@ import MenuSection from '@/components/home/MenuSection';
 // generation. Rendering dynamically sidesteps the prerender-time bailout.
 export const dynamic = 'force-dynamic';
 
-const SECTION_LIMIT = 8;
 const SECTION_BASE =
   'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
 
 /**
- * Home page — port of `static-html/index.html`.
+ * Block identifier → section type. Each block attached to the `home_web`
+ * page acts as a positional marker for one of these section components,
+ * so reordering blocks in the OneEntry admin (`block.position`) reorders
+ * sections on the page without code changes.
  *
- * Sections are no longer hardcoded: every visible child page of the OneEntry
- * `menu` page becomes one section, sorted by `position`. Products for each
- * category are fetched sequentially (parallel `Promise.all` over the SDK
- * occasionally returned empty results for some categories — likely rate
- * limiting or shared SDK auth state being mutated mid-flight) so every
- * section gets a deterministic response. Light/dark background alternation
- * runs by index parity (even = transparent, odd = `bg-[rgba(76,77,86,0.8)]`),
- * matching the rhythm in the verstka.
+ * Identifiers not listed here are skipped silently — the editor can
+ * stage new blocks without breaking the build, and we add a renderer
+ * for them when the visual story is ready.
+ */
+const HOME_BLOCK_IDENTIFIERS = new Set([
+  'home_promo',
+  'recommended',
+  'home_categories',
+]);
+
+/**
+ * Home page — fully driven by OneEntry CMS:
+ *   1. Fetch the `home_web` page entity to verify it exists (and to keep
+ *      a hook for future page-level metadata / hero attributes).
+ *   2. Fetch its attached blocks via `getBlocksByPageUrl`, sorted by
+ *      `block.position`.
+ *   3. For each block, dispatch by `block.identifier`:
+ *        - `home_promo`      → curated promo via {@link HomeBlockServer}
+ *        - `recommended`     → curated grid via {@link HomeBlockServer}
+ *        - `home_categories` → all menu category sections via
+ *                              {@link HomeCategoriesSection}
+ *      Swapping the position of `home_categories` with `home_promo` in
+ *      admin moves the entire category list above the promo banner —
+ *      the page render mirrors block ordering exactly.
  *
- * "View all" links navigate to `/shop/category/<pageUrl>` — the catalog
- * page mirrors `index_category.html` from the mockup.
+ * `<HomePromo />` (the static mobile-only carousel of promo PNGs) stays
+ * pinned above the dynamic blocks since it serves a different visual
+ * purpose and isn't yet block-driven.
  * @returns {Promise<JSX.Element>} Home page JSX.
  */
 const HomePage = async (): Promise<JSX.Element> => {
-  const { pages = [] } = await getChildPagesByParentUrl('menu');
-  const visiblePages = pages
-    .filter((p) => p.isVisible !== false)
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-
-  type Section = {
-    page: (typeof visiblePages)[number];
-    products: IProductsEntity[];
-    total: number;
-  };
-  const sections: Section[] = [];
-  for (const page of visiblePages) {
-    const res = await getProductsByPageUrl({
-      offset: 0,
-      limit: SECTION_LIMIT,
-      params: { handle: page.pageUrl },
-    });
-    sections.push({
-      page,
-      products: res.isError ? [] : (res.products ?? []),
-      total: res.isError ? 0 : res.total,
-    });
+  const { page } = await getPageByUrl('home_web');
+  if (!page) {
+    notFound();
   }
+
+  const { blocks = [] } = await getBlocksByPageUrl({ pageUrl: 'home_web' });
+  const sortedBlocks = [...blocks]
+    .filter((b) => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   return (
     <>
       <HomePromo />
-      {sections.map(({ page, products, total }, idx) => {
-        if (products.length === 0) return null;
-        const title = page.localizeInfos?.title || page.pageUrl;
-        const sectionClass =
-          idx === 0
-            ? `${SECTION_BASE} mt-7.5 md:mt-12.5 pb-1.25`
-            : `${SECTION_BASE} pt-3.75 md:pt-6.25`;
-        const node = (
-          <MenuSection
-            title={title}
-            categoryMarker={page.pageUrl}
-            products={products}
-            total={total}
-            limit={SECTION_LIMIT}
-            dict={{} as IAttributeValues}
-            className={sectionClass}
+      {sortedBlocks.map((block) => {
+        if (block.identifier === 'home_categories') {
+          return <HomeCategoriesSection key={block.id} />;
+        }
+        return (
+          <HomeBlockServer
+            key={block.id}
+            marker={block.identifier as string}
+            className={`${SECTION_BASE} pt-3.75 md:pt-6.25 pb-1.25`}
           />
-        );
-        return idx % 2 === 1 ? (
-          <div key={page.id} className="bg-[rgba(76,77,86,0.8)] w-full">
-            {node}
-          </div>
-        ) : (
-          <section key={page.id}>{node}</section>
         );
       })}
     </>

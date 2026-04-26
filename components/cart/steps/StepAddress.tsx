@@ -1,5 +1,6 @@
 'use client';
 
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
@@ -22,9 +23,11 @@ type DeliveryMode = 'asap' | 'scheduled';
  * Address: text input with edit pencil icon on the right.
  * Time: two radio options — "40-45 min" (ASAP) or "by the time" (scheduled,
  * text input like `18.06.24 10.00`).
- * @returns {JSX.Element} Step JSX.
+ * @param   {object}           props      - Step props.
+ * @param   {IAttributeValues} props.dict - Static-content dictionary.
+ * @returns {JSX.Element}                 Step JSX.
  */
-const StepAddress = (): JSX.Element => {
+const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
   const [address, setAddress] = useState(
@@ -52,7 +55,9 @@ const StepAddress = (): JSX.Element => {
       {/* Address header */}
       <div className="flex items-center gap-2.5 text-paper">
         <PinIcon />
-        <p className="font-normal text-[20px] text-paper">Address</p>
+        <p className="font-normal text-[20px] text-paper">
+          {(dict?.address_text?.value as string | undefined) ?? 'Address'}
+        </p>
       </div>
 
       {/* Address input with pencil */}
@@ -70,7 +75,9 @@ const StepAddress = (): JSX.Element => {
       {/* Time header */}
       <div className="mt-5 flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
-        <p className="font-normal text-[20px] text-paper">Time</p>
+        <p className="font-normal text-[20px] text-paper">
+          {(dict?.time_text?.value as string | undefined) ?? 'Time'}
+        </p>
       </div>
 
       {/* ASAP radio */}
@@ -105,7 +112,9 @@ const StepAddress = (): JSX.Element => {
           htmlFor="time-scheduled"
           className="radio-custom flex cursor-pointer select-none items-center"
         >
-          <span className="ml-2 text-paper">by the time</span>
+          <span className="ml-2 text-paper">
+            {(dict?.by_the_time?.value as string | undefined) ?? 'by the time'}
+          </span>
         </label>
         <input
           type="text"

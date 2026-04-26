@@ -36,7 +36,7 @@ const TotalAmount = ({
 
   return (
     <TableRowAnimations className={className} index={12}>
-      {(dict?.order_info_total?.value as string | undefined) ?? 'Total'}:{' '}
+      {(dict?.total_amount_text?.value as string | undefined) ?? 'Total'}:{' '}
       {UsePrice({
         amount: cartTotal,
       })}

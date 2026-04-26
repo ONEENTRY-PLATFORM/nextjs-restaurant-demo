@@ -36,12 +36,11 @@ export const getProductsByPageUrl = async (props: {
       params.handle,
       expandedFilters,
       langCode || getLang(),
-      {
-        sortOrder: 'DESC',
-        sortKey: 'date',
-        offset: offset,
-        limit: limit,
-      },
+      // Sort key/order is configured per-page in OneEntry admin —
+      // omitting `sortKey`/`sortOrder` lets the server apply whatever
+      // the editor selected (manual position, price, date, …) and
+      // honors per-product position locks set in the admin.
+      { offset, limit },
     );
 
     if (typeError(data)) {

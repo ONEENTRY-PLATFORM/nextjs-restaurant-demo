@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
-import { getDictionary } from '@/app/api/utils/dictionaries';
+import { getDictionary } from '@/app/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';

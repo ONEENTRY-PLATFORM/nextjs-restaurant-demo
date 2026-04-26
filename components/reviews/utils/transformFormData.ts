@@ -81,9 +81,7 @@ export const validateFormData = (
   if (data.length === 0) {
     return { isValid: false, error: 'No form data to submit' };
   }
-  const content = data.filter(
-    (f) => f.type !== 'spam' && f.type !== 'button',
-  );
+  const content = data.filter((f) => f.type !== 'spam' && f.type !== 'button');
   const hasContent = content.some((f) => {
     const v = f.value;
     if (Array.isArray(v)) return v.length > 0;

@@ -52,17 +52,14 @@ const HomeBlockSection = ({
   const visible = products.filter((p) => p.isVisible !== false);
   if (visible.length === 0) return null;
 
-  const colsClass =
-    COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4';
+  const colsClass = COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4';
 
   return (
     <section className={className}>
       <div className="title">
         <h2 className="title_name">{title}</h2>
       </div>
-      <div
-        className={`grid grid-cols-2 gap-3.75 w-full pt-3 ${colsClass}`}
-      >
+      <div className={`grid grid-cols-2 gap-3.75 w-full pt-3 ${colsClass}`}>
         {visible.map((product, i) => (
           <ProductCard
             key={product.id}

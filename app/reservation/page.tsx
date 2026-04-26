@@ -8,7 +8,7 @@ import {
   getImageUrl,
   getPageByUrl,
 } from '@/app/api';
-import { getDictionary } from '@/app/api/utils/dictionaries';
+import { getDictionary } from '@/app/dictionaries';
 import ReservationForm from '@/components/reservation/ReservationForm';
 import type { RestaurantOption } from '@/components/reservation/RestaurantSelect';
 

@@ -1,5 +1,6 @@
 'use client';
 
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
@@ -19,9 +20,11 @@ type PickerMode = 'date' | 'time' | null;
  * ({@link DatePickerSheet}, {@link TimePickerSheet}) that replicate
  * `service_date.html` / `service_time.html`. Tapping the field opens the
  * corresponding sheet; `Apply` persists value and closes.
- * @returns {JSX.Element} Step JSX.
+ * @param   {object}           props      - Step props.
+ * @param   {IAttributeValues} props.dict - Static-content dictionary (для Time/Date лейблов).
+ * @returns {JSX.Element}                 Step JSX.
  */
-const StepTime = (): JSX.Element => {
+const StepTime = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
 
@@ -66,7 +69,9 @@ const StepTime = (): JSX.Element => {
         onClick={() => setPicker('time')}
         className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
-        <span className="cart_label">Time</span>
+        <span className="cart_label">
+          {(dict?.time_text?.value as string | undefined) ?? 'Time'}
+        </span>
         <span className="text-lg text-paper">{time || 'Select time'}</span>
       </button>
 

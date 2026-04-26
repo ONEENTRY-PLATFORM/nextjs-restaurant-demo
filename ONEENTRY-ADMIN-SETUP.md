@@ -52,12 +52,44 @@
 
 ---
 
-## 3. Платежи
+## 3. Похожие товары (related products)
+
+Страница [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) рендерит секцию «Featured objects» через [components/layout/product/RelatedItems.tsx](components/layout/product/RelatedItems.tsx) → SDK `Products.getRelatedProductsById`. Чтобы секция реально что-то показывала:
+
+- В админке для каждого блюда открыть карточку товара и привязать минимум 4–6 «похожих» через стандартный механизм OneEntry «Related products». Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
+- (Опционально) Заголовок секции — берётся из `static_content.featured_objects` (string), fallback `"Featured objects"`. Если хочется локализованный заголовок — добавить атрибут:
+
+  | marker              | type   | title             |
+  |---------------------|--------|-------------------|
+  | `featured_objects`  | string | Featured objects  |
+
+---
+
+## 4. Словарь `static_content` — что осталось
+
+Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже есть 59 маркеров. Все обращения в коде переведены на существующие маркеры — несуществующие маркеры удалены из кода (использованы ближайшие по смыслу из 59):
+
+- [RelatedItems.tsx](components/layout/product/RelatedItems.tsx) — `featured_objects` → хардкод `'Featured objects'` (нет подходящего маркера).
+- [ReservationForm.tsx](components/reservation/ReservationForm.tsx) — `reservation_submit_text` → `submit_text`, `reservation_success_title` → `info_text`, `reservation_success_text` → `reservation_confirmed`.
+- [UserForm.tsx](components/forms/UserForm.tsx) — `save_button_text` → `submit_text`.
+- [PhoneAuthForm.tsx](components/forms/PhoneAuthForm.tsx) — `sign_in_phone_label` → хардкод `'Phone number'` (нет подходящего маркера).
+
+Хардкод-фразы, которые ждут wiring (компонент пока не получает `dict` сверху, нужен мини-рефактор для проброса):
+
+- [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx): «Order waiting time» → `order_waiting_time`, «Preferences» → `preferences_text`, «Clear all filters» (если есть) → `clear_all_filters_text`.
+- [components/reviews/ReviewForm.tsx](components/reviews/ReviewForm.tsx): «Leave a review» → `leave_review`, «Your review» → `your_review`, «Your rating» → `your_rating`, «Share experience» → `share_experience`, «Camera» → `camera_text`, «Gallery» → `gallery_text`.
+- [components/profile/FavoritesList.tsx](components/profile/FavoritesList.tsx): aria-label «Add to cart» → `add_to_cart`.
+- [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): «Pay with cash» → `pay_cash_text`, «Pay with stripe» → `pay_stripe_text`, «Comment to the order» → `comment_order`, «Subtotal»/«Delivery»/«Total amount» → `subtotal_text`/`delivery_text`/`total_amount_text`.
+- [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) — STEP_TITLES уже подцеплены к `sign_in_text`/`verification_text`/`address_text`/`select_payment_text`. «Cart», «Select time», «Success», «Error» — нет соответствующих маркеров, оставлены хардкодом.
+
+---
+
+## 5. Платежи
 
 `PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). Карточная оплата отключена в UI, отдельный `card`-аккаунт пока не нужен.
 
 ---
 
-## 4. Локализация (опционально)
+## 5. Локализация (опционально)
 
 Если нужен `fr_FR` — добавить локаль в `PROJECT_URL/locales` и заполнить `localizeInfos.fr_FR.*` на сущностях. Маршрутизация `[locale]` в Next.js пока не реализована — включать по мере надобности.

@@ -14,15 +14,18 @@ import StarRating from './StarRating';
  * Resolve a display name for the logged-in user — falls back through
  * `name_reg` → `email_reg` → SDK identifier so the "Posting as …" line
  * never lands on an empty string.
- * @param   {{ identifier?: string; formData?: Array<{ marker: string; value: unknown }> }} user - Logged-in user entity.
- * @returns {string}                                                                              Display name.
+ * @param   {{ identifier?: string; formData?: unknown }} user - Logged-in user entity.
+ * @returns {string}                                            Display name.
  */
 const resolveAuthorName = (user: {
   identifier?: string;
-  formData?: Array<{ marker: string; value: unknown }>;
+  formData?: unknown;
 }): string => {
+  const formData = Array.isArray(user.formData)
+    ? (user.formData as Array<{ marker?: unknown; value?: unknown }>)
+    : [];
   const byMarker = (marker: string) => {
-    const field = user.formData?.find((f) => f.marker === marker);
+    const field = formData.find((f) => f && f.marker === marker);
     return typeof field?.value === 'string' ? field.value.trim() : '';
   };
   return byMarker('name_reg') || byMarker('email_reg') || user.identifier || '';
@@ -113,8 +116,7 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
         Leave a review
       </h3>
       <p className="text-sm text-paper/70">
-        Posting as{' '}
-        <span className="text-paper">{resolveAuthorName(user)}</span>
+        Posting as <span className="text-paper">{resolveAuthorName(user)}</span>
       </p>
       <div className="flex items-center gap-3">
         <span className="text-sm text-paper/80">Rating:</span>

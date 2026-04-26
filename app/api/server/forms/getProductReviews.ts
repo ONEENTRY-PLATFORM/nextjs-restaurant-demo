@@ -141,7 +141,9 @@ export const getProductReviews = async (
         return {
           id: String(item.id),
           author: item.userIdentifier?.trim() || 'Anonymous',
-          date: item.time ? new Date(item.time).toLocaleDateString('en-US') : '',
+          date: item.time
+            ? new Date(item.time).toLocaleDateString('en-US')
+            : '',
           rating: readNumber(ratingField?.value),
           text: readPlainText(textField?.value),
         };

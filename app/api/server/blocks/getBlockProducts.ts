@@ -71,8 +71,10 @@ export const getBlockProducts = async (
       isError: false,
       title,
       products,
-      quantity: block.quantity,
-      countElementsPerRow: block.countElementsPerRow,
+      ...(block.quantity !== undefined && { quantity: block.quantity }),
+      ...(block.countElementsPerRow !== undefined && {
+        countElementsPerRow: block.countElementsPerRow,
+      }),
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {

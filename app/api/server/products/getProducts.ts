@@ -35,12 +35,10 @@ export const getProducts = async (props: {
     const data = await api.Products.getProducts(
       expandedFilters,
       langCode || getLang(),
-      {
-        sortOrder: 'ASC',
-        sortKey: 'date',
-        offset: offset,
-        limit: limit,
-      },
+      // Sort key/order is configured in OneEntry admin —
+      // omitting `sortKey`/`sortOrder` lets the server apply whatever
+      // the editor selected and honors per-product position locks.
+      { offset, limit },
     );
     if (typeError(data)) {
       return { isError: true, error: data, total: 0 };

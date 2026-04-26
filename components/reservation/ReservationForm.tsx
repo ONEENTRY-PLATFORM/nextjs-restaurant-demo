@@ -154,11 +154,10 @@ const ReservationForm = ({
     return (
       <div className="mx-auto max-w-107.5 rounded-xl bg-ink/60 p-6 text-center">
         <h3 className="mb-2 font-bold text-[20px] uppercase text-brand">
-          {(dict?.reservation_success_title?.value as string) ??
-            'Table reserved!'}
+          {(dict?.info_text?.value as string) ?? 'Table reserved!'}
         </h3>
         <p className="text-paper/90">
-          {(dict?.reservation_success_text?.value as string) ??
+          {(dict?.reservation_confirmed?.value as string) ??
             'We will contact you shortly to confirm.'}
         </p>
       </div>
@@ -277,7 +276,7 @@ const ReservationForm = ({
         >
           {loading
             ? '...'
-            : ((dict?.reservation_submit_text?.value as string) ?? 'Book')}
+            : ((dict?.submit_text?.value as string) ?? 'Book')}
         </button>
       </div>
 

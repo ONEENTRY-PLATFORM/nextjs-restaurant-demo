@@ -27,16 +27,21 @@ type CartWizardProps = {
   deliveryData: IProductsEntity;
 };
 
-const STEP_TITLES: Record<CheckoutStep, string> = {
+const buildStepTitles = (
+  dict: IAttributeValues,
+): Record<CheckoutStep, string> => ({
   cart: 'Cart',
   time: 'Select time',
-  signin: 'Sign in',
-  verification: 'Verification',
-  address: 'Delivery address',
-  payment: 'Payment',
+  signin: (dict?.sign_in_text?.value as string | undefined) ?? 'Sign in',
+  verification:
+    (dict?.verification_text?.value as string | undefined) ?? 'Verification',
+  address:
+    (dict?.address_text?.value as string | undefined) ?? 'Delivery address',
+  payment:
+    (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
   success: 'Success',
   error: 'Error',
-};
+});
 
 /**
  * CartWizard — multi-step checkout driven by `orderReducer.step`.
@@ -55,6 +60,7 @@ const STEP_TITLES: Record<CheckoutStep, string> = {
 const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const step = useAppSelector(selectCheckoutStep);
+  const STEP_TITLES = buildStepTitles(dict);
 
   if (step === 'cart') {
     return (
@@ -103,9 +109,9 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
 
       {/* Bottom-sheet style panel (glass, rounded-top, matches static-html) */}
       <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-5 py-6.25 backdrop-blur-[10px]">
-        {step === 'time' && <StepTime />}
+        {step === 'time' && <StepTime dict={dict} />}
         {step === 'signin' && <StepSignIn />}
-        {step === 'address' && <StepAddress />}
+        {step === 'address' && <StepAddress dict={dict} />}
         {step === 'payment' && <StepPayment />}
         {step === 'success' && <StepResult variant="success" />}
         {step === 'error' && <StepResult variant="error" />}

@@ -100,13 +100,7 @@ const ReviewsSlideUpPanel = ({
             disabled={loading || success}
             className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
           >
-            {!isAuth
-              ? 'Sign in'
-              : success
-                ? 'Sent'
-                : loading
-                  ? '...'
-                  : 'Apply'}
+            {!isAuth ? 'Sign in' : success ? 'Sent' : loading ? '...' : 'Apply'}
           </button>
           <button
             type="button"

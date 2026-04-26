@@ -133,7 +133,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
           })}
       </div>
       <SubmitButton
-        title={(dict?.save_button_text?.value as string) ?? ''}
+        title={(dict?.submit_text?.value as string) ?? ''}
         isLoading={loading}
         index={10}
       />

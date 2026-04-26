@@ -37,7 +37,7 @@ const ProductSingle = async ({
   product: DishProduct;
   dict: IAttributeValues;
 }): Promise<JSX.Element> => {
-  const { localizeInfos, blocks, productPages } = product;
+  const { id, localizeInfos, blocks, productPages } = product;
 
   // Parse "menu/desserts" → "desserts"
   const categoryPath = productPages?.[0]?.categoryPath ?? '';
@@ -100,17 +100,17 @@ const ProductSingle = async ({
         </ProductAnimations>
       </div>
 
-      {/* blocks → "Featured objects" / similar */}
+      {/* blocks → bulk-purchase offer ("multiply_items_offer") */}
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {
             return <ProductsGroup key={block} marker={block} dict={dict} />;
           }
-          if (block === 'similar') {
-            return <RelatedItems key={block} marker={block} dict={dict} />;
-          }
           return null;
         })}
+
+      {/* Похожие товары — канонический OneEntry getRelatedProductsById */}
+      <RelatedItems productId={id} dict={dict} />
     </section>
   );
 };

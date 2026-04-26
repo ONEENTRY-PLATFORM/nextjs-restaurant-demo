@@ -3,20 +3,45 @@ import 'server-only';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 
 import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
+import getCachedData from './api/utils/getCachedData';
 
 /**
- * Get dictionary from block by marker
- * @returns {Promise<IAttributeValues>} Current lang dictionary
+ * Загружает атрибут-сет `static_content` и нормализует его в
+ * `Record<marker, IAttributeValue>`, чтобы шаблонное обращение
+ * `dict?.MARKER?.value` отдавало строку (а не undefined по индексу массива).
+ *
+ * Поле `value` атрибут-сета — это локализационная мапа, в этом проекте
+ * пока пустая `{}`, поэтому в нормализованной записи `value`
+ * проставляется из `initialValue` (английский дефолт из админки).
+ * @returns {Promise<IAttributeValues>} Map маркеров → атрибут с строковым `value`.
  */
-const dict = async (): Promise<IAttributeValues> => {
+const fetchDictionary = async (): Promise<IAttributeValues> => {
   try {
-    // get attributes by marker from api
-    const { attributes } = await getAttributesByMarker({
+    const { isError, attributes } = await getAttributesByMarker({
       attributeMarker: 'static_content',
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return attributes || ({} as any);
+    if (isError || !Array.isArray(attributes)) {
+      return {} as IAttributeValues;
+    }
+
+    const dict = {} as IAttributeValues;
+    for (const raw of attributes as unknown as Array<{
+      marker: string;
+      value?: unknown;
+      initialValue?: string;
+    }>) {
+      const isEmpty =
+        raw.value == null ||
+        (typeof raw.value === 'object' &&
+          Object.keys(raw.value as object).length === 0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (dict as any)[raw.marker] = {
+        ...raw,
+        value: isEmpty ? (raw.initialValue ?? '') : raw.value,
+      };
+    }
+    return dict;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -25,7 +50,9 @@ const dict = async (): Promise<IAttributeValues> => {
 };
 
 /**
- * Get dictionary
- * @returns {void} Current lang dictionary
+ * Кешированный словарь `static_content` для использования в server-компонентах.
+ * Обращение в шаблонах: `dict?.add_to_cart?.value as string`.
+ * @returns {Promise<IAttributeValues>} Кешированный нормализованный словарь.
  */
-export const getDictionary = async (): Promise<IAttributeValues> => dict();
+export const getDictionary = async (): Promise<IAttributeValues> =>
+  getCachedData('dictionary', fetchDictionary);

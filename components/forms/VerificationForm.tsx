@@ -31,7 +31,8 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  const { receive_otp_text, verify_now_text } = dict;
+  const { receive_otp_text, verify_now_text, resend_text, enter_otp_code } =
+    dict;
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   useEffect(() => {
@@ -133,7 +134,8 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
       >
         <div className="relative mb-5 box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-paper/60 max-md:max-w-full">
-            Enter your OTP code here
+            {(enter_otp_code?.value as string | undefined) ??
+              'Enter your OTP code here'}
           </p>
         </div>
 
@@ -153,7 +155,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
               type="button"
               onClick={onResendHandle}
             >
-              Resend
+              {(resend_text?.value as string | undefined) ?? 'Resend'}
             </button>
           </div>
         </div>

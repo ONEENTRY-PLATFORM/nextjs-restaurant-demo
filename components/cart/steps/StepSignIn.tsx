@@ -1,13 +1,15 @@
 'use client';
 
-import type { JSX } from 'react';
+import type { FormEvent, JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
 
+import { getApi, isError } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import PhoneAuthForm from '@/components/forms/PhoneAuthForm';
+import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 type AuthTab = 'options' | 'phone';
 
@@ -26,6 +28,9 @@ const StepSignIn = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
   const [tab, setTab] = useState<AuthTab>('options');
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [phoneLoading, setPhoneLoading] = useState(false);
 
   useEffect(() => {
     if (isAuth) {
@@ -37,9 +42,42 @@ const StepSignIn = (): JSX.Element => {
     return <div className="text-paper/80 text-center">Loading...</div>;
   }
 
+  const onPhoneSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!phone.trim()) {
+      setPhoneError('Please enter your phone number.');
+      return;
+    }
+    setPhoneLoading(true);
+    setPhoneError('');
+    try {
+      const res = await getApi().AuthProvider.generateCode(
+        'phone',
+        phone.trim(),
+        'generate_otp',
+      );
+      if (isError(res)) {
+        setPhoneError(
+          (res as { message?: string }).message ??
+            'Could not send the code. Please try again.',
+        );
+        return;
+      }
+      dispatch(addField({ phone: { valid: true, value: phone.trim() } }));
+      dispatch(setStep('verification'));
+    } catch (err: unknown) {
+      setPhoneError(
+        (err as { message?: string }).message ??
+          'Could not send the code. Please try again.',
+      );
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
   if (tab === 'phone') {
     return (
-      <div className="flex flex-col gap-4">
+      <form onSubmit={onPhoneSubmit} className="flex flex-col gap-4">
         <button
           type="button"
           onClick={() => setTab('options')}
@@ -47,8 +85,32 @@ const StepSignIn = (): JSX.Element => {
         >
           ← Back
         </button>
-        <PhoneAuthForm />
-      </div>
+        <div className="flex flex-col gap-2 border-b border-b-muted">
+          <label
+            htmlFor="cart_phone_auth"
+            className="font-normal text-[18px] text-custom_white"
+          >
+            Phone number
+          </label>
+          <input
+            id="cart_phone_auth"
+            type="tel"
+            autoComplete="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.currentTarget.value)}
+            placeholder="+7 ( )"
+            className="cart_input placeholder:font-semibold"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={phoneLoading}
+          className="cart_btn mt-10 disabled:opacity-60"
+        >
+          {phoneLoading ? '...' : 'SIGN IN'}
+        </button>
+        {phoneError ? <ErrorMessage error={phoneError} /> : null}
+      </form>
     );
   }
 

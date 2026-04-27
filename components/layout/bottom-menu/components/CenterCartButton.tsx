@@ -1,25 +1,31 @@
 'use client';
 
-import Link from 'next/link';
 /* eslint-disable @next/next/no-img-element */
 import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { openCartPopup } from '@/app/store/reducers/CartSlice';
 
 /**
  * Central protruding cart button — 1:1 port of the orange ball from
  * `static-html/.../MenuBottom`. Reads cart count from `cartReducer.productsData`
- * and links to `/cart`.
+ * and opens the cart popup (`cart_cart.html`). Badge is mount-gated to avoid
+ * a hydration mismatch when the persisted cart rehydrates client-side.
  */
 const CenterCartButton = (): JSX.Element => {
+  const dispatch = useAppDispatch();
   const count = useAppSelector(
     (state) => state.cartReducer.productsData?.length ?? 0,
   );
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
-    <Link
-      href="/cart"
-      prefetch={false}
+    <button
+      type="button"
+      onClick={() => dispatch(openCartPopup())}
+      aria-label="Open cart"
       className="bg-[#ec722b] hover:bg-[#EB4B0E] w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 relative"
     >
       <img
@@ -27,12 +33,12 @@ const CenterCartButton = (): JSX.Element => {
         src="/images/icons/cart_black.svg"
         alt="cart"
       />
-      {count > 0 && (
+      {mounted && count > 0 && (
         <div className="px-1 absolute top-2.5 right-2 rounded-full bg-white">
           <p className="font-bold text-[8px] text-black">{count}</p>
         </div>
       )}
-    </Link>
+    </button>
   );
 };
 

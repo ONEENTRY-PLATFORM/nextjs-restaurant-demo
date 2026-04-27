@@ -47,7 +47,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
             : scheduleAt || (delivery?.time as string | undefined) || '',
       }),
     );
-    dispatch(setStep('payment'));
+    dispatch(setStep('order'));
   };
 
   return (

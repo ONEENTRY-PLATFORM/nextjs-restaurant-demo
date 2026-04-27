@@ -24,7 +24,7 @@ const HomePromo = (): JSX.Element => {
         </div>
       </section>
 
-      <section className="md:hidden">
+      <section className="md:hidden pt-3">
         <h2 className="title_name max-w-88 mx-auto md:hidden">Actions</h2>
         <div className="flex overflow-x-auto overflow-y-hidden max-w-full gap-2.5 mt-3.75 no-scrollbar">
           {mobilePromos.map((src) => (

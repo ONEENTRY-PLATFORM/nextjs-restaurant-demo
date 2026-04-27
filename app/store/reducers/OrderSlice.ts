@@ -13,7 +13,9 @@ export type CheckoutStep =
   | 'signin'
   | 'verification'
   | 'address'
+  | 'order'
   | 'payment'
+  | 'add_card'
   | 'success'
   | 'error';
 

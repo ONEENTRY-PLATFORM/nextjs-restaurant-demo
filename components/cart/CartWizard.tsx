@@ -16,11 +16,14 @@ import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartPage from '@/components/layout/cart';
 
+import StepAddCard from './steps/StepAddCard';
 import StepAddress from './steps/StepAddress';
+import StepOrder from './steps/StepOrder';
 import StepPayment from './steps/StepPayment';
 import StepResult from './steps/StepResult';
 import StepSignIn from './steps/StepSignIn';
 import StepTime from './steps/StepTime';
+import StepVerification from './steps/StepVerification';
 
 type CartWizardProps = {
   dict: IAttributeValues;
@@ -37,8 +40,10 @@ const buildStepTitles = (
     (dict?.verification_text?.value as string | undefined) ?? 'Verification',
   address:
     (dict?.address_text?.value as string | undefined) ?? 'Delivery address',
+  order: 'Order',
   payment:
     (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
+  add_card: (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
   success: 'Success',
   error: 'Error',
 });
@@ -47,8 +52,9 @@ const buildStepTitles = (
  * CartWizard — multi-step checkout driven by `orderReducer.step`.
  *
  * Flow:
- * `cart` → `time` → `signin` (auto-skip if authed) → `address` → `payment`
- *   → `add_card` (only for card) → `success` | `error`
+ * `cart` → `time` → `signin` (auto-skip if authed; phone branch → `verification`)
+ *   → `address` → `order` (review + promo) → `payment`
+ *   → `add_card` (only when card method picked) → `success` | `error`
  *
  * Non-cart steps are wrapped in a "bottom-sheet"-style container (per
  * `cart_time.html` / `cart_Sign_in.html` / `cart_add_card.html` etc.): glass
@@ -111,8 +117,11 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
       <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-5 py-6.25 backdrop-blur-[10px]">
         {step === 'time' && <StepTime dict={dict} />}
         {step === 'signin' && <StepSignIn />}
+        {step === 'verification' && <StepVerification />}
         {step === 'address' && <StepAddress dict={dict} />}
+        {step === 'order' && <StepOrder dict={dict} />}
         {step === 'payment' && <StepPayment />}
+        {step === 'add_card' && <StepAddCard />}
         {step === 'success' && <StepResult variant="success" />}
         {step === 'error' && <StepResult variant="error" />}
       </div>

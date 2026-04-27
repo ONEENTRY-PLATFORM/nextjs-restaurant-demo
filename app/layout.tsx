@@ -18,6 +18,7 @@ const BottomMenu = dynamic(() => import('@/components/layout/bottom-menu'), {
 const Header = dynamic(() => import('@/components/layout/header'), {
   ssr: true,
 });
+const CartPopup = dynamic(() => import('@/components/cart/CartPopup'));
 
 import './globals.css';
 
@@ -73,6 +74,7 @@ export default async function RootLayout({
                 </main>
               </TransitionProvider>
               <BottomMenu />
+              <CartPopup />
               <Modal dict={dict} />
             </OpenDrawerProvider>
           </AuthProvider>

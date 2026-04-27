@@ -4,11 +4,21 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useSearchParams } from 'next/navigation';
-import type { JSX, ReactNode } from 'react';
+import type { CSSProperties, JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
+const HIDDEN_STYLE: CSSProperties = {
+  opacity: 0,
+  visibility: 'hidden',
+  transform: 'scale(0)',
+};
+
 /**
- * Card animations component
+ * Card reveal animation. Cards start hidden via inline style (no flash before
+ * GSAP boots), then either animate in immediately (if already in viewport on
+ * mount, with a small stagger by `index`) or wait for `ScrollTrigger` to
+ * fire when scrolled into view. Toggles `.in-view` so {@link CardsGridAnimations}
+ * can target only visible cards in the leaving animation.
  */
 const CardAnimations = ({
   children,
@@ -24,56 +34,62 @@ const CardAnimations = ({
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const ref = useRef(null);
-  const delay = (index - (currentPage - 1) * pagesLimit) / 10;
-
-  // entering animations
-  useGSAP(() => {
-    const tl = gsap.timeline({});
-
-    const img =
-      ref.current &&
-      (ref.current as HTMLDivElement).getElementsByTagName('img');
-
-    tl.set(ref.current, {
-      autoAlpha: 0,
-      scale: 0,
-    })
-      .set(img, {
-        autoAlpha: 0,
-      })
-      .to(ref.current, {
-        autoAlpha: 1,
-        scale: 1,
-        delay: delay > 0 ? delay : 0,
-        duration: 0.6,
-      })
-      .to(img, {
-        autoAlpha: 1,
-        duration: 0.6,
-        stagger: 0.1,
-      });
-
-    return () => {
-      tl.kill();
-    };
-  }, []);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const delay = Math.max(0, (index - (currentPage - 1) * pagesLimit) / 10);
 
   useGSAP(() => {
-    if (!ref.current) {
+    const el = ref.current;
+    if (!el) {
       return;
     }
-    const isInViewport = ScrollTrigger.isInViewport(ref.current, 0.05);
+    const img = el.getElementsByTagName('img');
 
-    if (isInViewport === true || isInViewport === null) {
-      (ref.current as HTMLDivElement).classList.add('in-view');
+    const reveal = () => {
+      el.classList.add('in-view');
+      const tl = gsap.timeline();
+      tl.to(el, {
+        autoAlpha: 1,
+        scale: 1,
+        duration: 0.6,
+        delay,
+      }).to(
+        img,
+        {
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.1,
+        },
+        '-=0.3',
+      );
+      return tl;
+    };
+
+    gsap.set(img, { autoAlpha: 0 });
+
+    let tl: gsap.core.Timeline | null = null;
+    let trigger: ScrollTrigger | null = null;
+
+    if (ScrollTrigger.isInViewport(el, 0.05)) {
+      tl = reveal();
     } else {
-      (ref.current as HTMLDivElement).classList.remove('in-view');
+      trigger = ScrollTrigger.create({
+        trigger: el,
+        start: 'top 95%',
+        once: true,
+        onEnter: () => {
+          tl = reveal();
+        },
+      });
     }
-  }, []);
+
+    return () => {
+      tl?.kill();
+      trigger?.kill();
+    };
+  }, [delay]);
 
   return (
-    <div className={className} ref={ref}>
+    <div ref={ref} className={className} style={HIDDEN_STYLE}>
       {children}
     </div>
   );

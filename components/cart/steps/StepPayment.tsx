@@ -10,15 +10,19 @@ import CardLineIcon from '@/components/icons/card-line.svg';
 
 /**
  * Checkout step — choose payment method (per `cart_PAYMENT.html`).
- * Card payment is disabled for now (OneEntry `card` payment account не настроен).
- * Renders: PayPal / cash radios — оба ведут на `success`.
+ * Renders: PayPal / cash / card radios. Card → {@link StepAddCard} sheet
+ * (per `cart_add_card.html`); PayPal/cash → straight to `success`.
  * @returns {JSX.Element} Step JSX.
  */
 const StepPayment = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const [method, setMethod] = useState<'cash' | 'paypal'>('cash');
+  const [method, setMethod] = useState<'cash' | 'paypal' | 'card'>('cash');
 
   const onNext = () => {
+    if (method === 'card') {
+      dispatch(setStep('add_card'));
+      return;
+    }
     dispatch(addPaymentMethod(method));
     dispatch(setStep('success'));
   };
@@ -70,6 +74,24 @@ const StepPayment = (): JSX.Element => {
           className="radio-custom flex items-center cursor-pointer select-none"
         >
           <span className="ml-2 text-paper">Cash on delivery</span>
+        </label>
+      </div>
+
+      {/* Card */}
+      <div className="flex items-center gap-2.5 text-paper">
+        <input
+          type="radio"
+          id="pay-card"
+          name="payment-method"
+          checked={method === 'card'}
+          onChange={() => setMethod('card')}
+          className="hidden peer"
+        />
+        <label
+          htmlFor="pay-card"
+          className="radio-custom flex items-center cursor-pointer select-none"
+        >
+          <span className="ml-2 text-paper">Card</span>
         </label>
       </div>
 

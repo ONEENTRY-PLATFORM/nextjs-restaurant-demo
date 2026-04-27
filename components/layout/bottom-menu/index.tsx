@@ -1,5 +1,5 @@
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { JSX } from 'react';
+import type { ComponentType, JSX } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
 
@@ -10,16 +10,24 @@ import NavItemCatalog from './components/NavItemCatalog';
 import NavItemHome from './components/NavItemHome';
 import NavItemProfile from './components/NavItemProfile';
 
-const HOME_URL = 'home_web';
-const CATALOG_URL = 'menu';
-const CALENDAR_URL = 'reservation';
-const PROFILE_URL = 'profile';
+type NavConfig = {
+  Component: ComponentType<{ item: IMenusPages }>;
+  groupClass: string;
+};
+
+const NAV_BY_URL: Record<string, NavConfig> = {
+  home_web: { Component: NavItemHome, groupClass: 'group' },
+  bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
+  reservation: { Component: NavItemCalendar, groupClass: 'group_stroke' },
+  menu: { Component: NavItemCatalog, groupClass: 'group' },
+  profile: { Component: NavItemProfile, groupClass: 'group' },
+};
 
 /**
  * Bottom fixed navigation for mobile — 1:1 port of `static-html/.../MenuBottom`:
  * clipped polygon notch background, two left/right icon groups driven by
- * OneEntry `bottom_web` menu, and central protruding orange cart + outlined
- * close pair as the design centerpiece.
+ * OneEntry `bottom_web` menu (in CMS order), and central protruding orange
+ * cart + outlined close pair as the design centerpiece.
  */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');
@@ -35,25 +43,24 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const pages: IMenusPages[] =
     menu && Array.isArray(menu.pages) ? menu.pages : [];
 
-  const homeItem = pages.find((p) => p.pageUrl === 'home_web');
-  const calendarItem = pages.find((p) => p.pageUrl === 'reservation');
-  const catalogItem = pages.find((p) => p.pageUrl === 'menu');
-  const profileItem = pages.find((p) => p.pageUrl === 'profile');
+  const navItems = pages.flatMap((page) => {
+    const config = page.pageUrl ? NAV_BY_URL[page.pageUrl] : undefined;
+    return config ? [{ page, ...config }] : [];
+  });
+
+  const half = Math.ceil(navItems.length / 2);
+  const leftItems = navItems.slice(0, half);
+  const rightItems = navItems.slice(half);
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 z-30 w-full h-19 bg-cover bg-center">
       <div className="max-w-87.5 mx-auto flex justify-between h-19">
         <div className="flex justify-start gap-11.25 mobile_wide:gap-7.5 items-center mx-auto w-1/3 z-50">
-          {homeItem && (
-            <div className="group">
-              <NavItemHome item={homeItem} />
+          {leftItems.map(({ page, Component, groupClass }) => (
+            <div key={page.pageUrl} className={groupClass}>
+              <Component item={page} />
             </div>
-          )}
-          {calendarItem && (
-            <div className="group_stroke">
-              <NavItemCalendar item={calendarItem} />
-            </div>
-          )}
+          ))}
         </div>
 
         <div className="w-1/3 flex justify-center items-start -mt-5 p-5">
@@ -62,19 +69,14 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
         </div>
 
         <div className="flex justify-end gap-11.25 mobile_wide:gap-7.5 items-center mx-auto w-1/3 z-50">
-          {catalogItem && (
-            <div className="group">
-              <NavItemCatalog item={catalogItem} />
+          {rightItems.map(({ page, Component, groupClass }) => (
+            <div key={page.pageUrl} className={groupClass}>
+              <Component item={page} />
             </div>
-          )}
-          {profileItem && (
-            <div className="group">
-              <NavItemProfile item={profileItem} />
-            </div>
-          )}
+          ))}
         </div>
       </div>
-      <div className="clipped-div fixed -bottom-0.5 left-0 z-40 bg-black" />
+      <div className="clipped-div fixed -bottom-0.5 left-0 z-40 bg-custom_black" />
     </div>
   );
 };

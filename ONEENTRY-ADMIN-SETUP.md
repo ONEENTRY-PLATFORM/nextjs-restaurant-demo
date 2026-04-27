@@ -112,7 +112,11 @@
 
 ## 5. Платежи
 
-`PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). Карточная оплата отключена в UI, отдельный `card`-аккаунт пока не нужен.
+`PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). PayPal/cash работают через `addPaymentMethod`; карточная оплата теперь активна в UI ([StepPayment](components/cart/steps/StepPayment.tsx) → [StepAddCard](components/cart/steps/StepAddCard.tsx) per `cart_add_card.html`), но завершает заказ синтетическим `card:<id>` — нужно создать `card`-payment-account и подключить реальный gateway, иначе платёж в OneEntry не пройдёт.
+
+Дополнительно: [StepOrder](components/cart/steps/StepOrder.tsx) (per `cart_Order.html`) показывает поле «Promo Code» с кнопкой «Apply Code» — обработчик пока no-op. Уточнить:
+
+> ❓ **Уточнить у клиента:** есть ли в OneEntry/бэкенде механизм промокодов (скидка % / фикс / free delivery)? Если да — какой API/marker и как привязывать к заказу. Пока кнопка не делает ничего и поле декоративное.
 
 ---
 

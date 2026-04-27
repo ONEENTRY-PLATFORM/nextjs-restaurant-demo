@@ -31,9 +31,12 @@ const ProductImage = ({
     : productImage?.downloadLink;
 
   if (!imageSrc) {
+    // pb-12 pushes the centered logo upward to visually compensate for the
+    // info strip ("30-45 min · 50g · ★ 4") overlaid on the lower edge of the
+    // card image — without it, the logo reads as off-center.
     return (
       <div className="relative aspect-square w-full">
-        <Placeholder />
+        <Placeholder className="pb-8" />
       </div>
     );
   }

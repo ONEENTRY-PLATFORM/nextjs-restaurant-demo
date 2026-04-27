@@ -8,24 +8,21 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Form modal animations — slide-up + backdrop blur, mirroring the cart /
- * filter drawer pattern. On `md+` the body is centered (CSS), so the slide-up
- * still reads as a card rising into view. The `component` prop is kept for
- * back-compat (was used to extend the close duration for `CalendarForm`).
+ * Cart popup open/close animations — mirrors {@link FilterModalAnimations}.
+ * Backdrop fades in, body slides up from the bottom (mobile) /
+ * in from the right (md+ — same idiom as filter).
  */
-const ModalAnimations = ({
+const CartPopupAnimations = ({
   children,
-  component,
 }: {
   children: ReactNode;
-  component: string;
 }): JSX.Element => {
-  const { open, transition, setOpen, setTransition } =
+  const { open, component, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
-    if (!ref.current || !open) {
+    if (!open || component !== 'CartPopup') {
       return;
     }
     const tl = gsap.timeline({
@@ -39,9 +36,8 @@ const ModalAnimations = ({
       },
     });
 
-    const modalBg = ref.current.querySelector('#modalBg');
-    const modalBody = ref.current.querySelector('#modalBody');
-    const slowKey = component === 'CalendarForm' ? 1.5 : 0.5;
+    const modalBg = ref.current?.querySelector('#modalBg') ?? null;
+    const modalBody = ref.current?.querySelector('#modalBody') ?? null;
 
     gsap.set(modalBg, { autoAlpha: 0 });
     gsap.set(modalBody, { yPercent: 100 });
@@ -49,13 +45,13 @@ const ModalAnimations = ({
     tl.to(modalBg, {
       autoAlpha: 1,
       backdropFilter: 'blur(10px)',
-      duration: slowKey,
+      duration: 0.5,
     }).to(
       modalBody,
       {
         autoAlpha: 1,
         yPercent: 0,
-        duration: slowKey,
+        duration: 0.5,
       },
       '-=0.25',
     );
@@ -71,15 +67,15 @@ const ModalAnimations = ({
     };
   }, [open, transition]);
 
-  if (!open) {
+  if (!open || component !== 'CartPopup') {
     return <></>;
   }
 
   return (
-    <div ref={ref} className="z-500 fixed inset-0 flex h-screen w-full">
+    <div ref={ref} className="fixed inset-0 z-50 flex h-screen w-full">
       {children}
     </div>
   );
 };
 
-export default ModalAnimations;
+export default CartPopupAnimations;

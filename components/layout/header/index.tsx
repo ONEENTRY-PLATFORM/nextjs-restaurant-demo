@@ -63,9 +63,9 @@ const Header = async (): Promise<JSX.Element> => {
               </div>
             </div>
 
-            <div className="relative max-w-120  mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
+            <div className="relative max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
               <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'soup'} />
+                <SearchBar placeholder={'Search'} />
               </Suspense>
               <FilterButton />
             </div>

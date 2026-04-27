@@ -2,29 +2,38 @@
 
 /* eslint-disable @next/next/no-img-element */
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { openCartPopup } from '@/app/store/reducers/CartSlice';
+import { useAppSelector } from '@/app/store/hooks';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Central protruding cart button — 1:1 port of the orange ball from
- * `static-html/.../MenuBottom`. Reads cart count from `cartReducer.productsData`
- * and opens the cart popup (`cart_cart.html`). Badge is mount-gated to avoid
- * a hydration mismatch when the persisted cart rehydrates client-side.
+ * `static-html/.../MenuBottom`. Opens the cart drawer via `OpenDrawerContext`
+ * (`component === 'CartPopup'`) — same drawer pattern as the filter sheet.
+ * Hidden while any drawer is open so it doesn't overlap the open sheet.
+ * Badge is mount-gated to avoid a hydration mismatch when the persisted cart
+ * rehydrates client-side.
  */
-const CenterCartButton = (): JSX.Element => {
-  const dispatch = useAppDispatch();
+const CenterCartButton = (): JSX.Element | null => {
+  const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(
     (state) => state.cartReducer.productsData?.length ?? 0,
   );
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  if (open) {
+    return null;
+  }
+
   return (
     <button
       type="button"
-      onClick={() => dispatch(openCartPopup())}
+      onClick={() => {
+        setComponent('CartPopup');
+        setOpen(true);
+      }}
       aria-label="Open cart"
       className="bg-[#ec722b] hover:bg-[#EB4B0E] w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 relative"
     >
@@ -34,8 +43,10 @@ const CenterCartButton = (): JSX.Element => {
         alt="cart"
       />
       {mounted && count > 0 && (
-        <div className="px-1 absolute top-2.5 right-2 rounded-full bg-white">
-          <p className="font-bold text-[8px] text-black">{count}</p>
+        <div className="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-white border border-[#ec722b]">
+          <p className="font-bold text-[10px] leading-none text-black">
+            {count}
+          </p>
         </div>
       )}
     </button>

@@ -3,31 +3,37 @@
 import { useRouter } from 'next/navigation';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 
 import { useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
   addProductsToCart,
-  closeCartPopup,
   selectCartData,
-  selectIsCartPopupOpen,
 } from '@/app/store/reducers/CartSlice';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
+import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import Loader from '@/components/shared/Spinner';
+import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+
+import CartPopupAnimations from './animations/CartPopupAnimations';
 
 /**
- * Cart slide-in popup — port of `static-html/cart_cart.html` triggered from
- * the bottom-menu cart button. Shows the current cart items and an APPLY
- * button that hands off to the full `/cart` checkout flow.
+ * Cart drawer popup — port of `static-html/cart_cart.html` opened from the
+ * bottom-menu cart button. Mirrors the {@link FilterModal} drawer pattern:
+ * driven by `OpenDrawerContext` (`open` + `component === 'CartPopup'`),
+ * wrapped in slide-in animation + backdrop. APPLY hands off to the full
+ * `/cart` checkout flow.
  */
-const CartPopup = (): JSX.Element | null => {
+const CartPopup = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const isOpen = useAppSelector(selectIsCartPopupOpen);
+  const { open, component, setTransition } = useContext(OpenDrawerContext);
+  const isOpen = open && component === 'CartPopup';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const productsCartData = useAppSelector(selectCartData) as any[];
@@ -42,85 +48,74 @@ const CartPopup = (): JSX.Element | null => {
     }
   }, [data, dispatch]);
 
-  // Lock body scroll while popup is open
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [isOpen]);
-
-  if (!isOpen) {
-    return null;
-  }
-
-  const close = () => dispatch(closeCartPopup());
+  const close = () => setTransition('close');
   const handleApply = () => {
     close();
     router.push('/cart');
   };
 
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  useSwipeToClose(sheetRef, close);
+
   const products = (data ?? []) as IProductsEntity[];
 
   return (
-    <div className="fixed inset-0 z-100 overflow-y-auto bg-black bg-cover bg-no-repeat font-main">
+    <CartPopupAnimations>
       <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-cover bg-no-repeat"
-        style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
-      />
-      <div className="max-w-97.5 mx-auto p-5 pb-24">
-        <div className="flex justify-between items-center">
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close cart"
-            className="group_white"
-          >
-            <ArrowBackOrangeIcon />
-          </button>
-          <p className="font-normal text-[24px] text-white">Cart</p>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Menu"
-            className="group_white"
-          >
-            <BurgerOrangeIcon />
-          </button>
-        </div>
+        id="modalBody"
+        ref={sheetRef}
+        className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] min-h-[60vh] overflow-y-auto bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:min-h-[90vh] md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
+      >
+        <div className="max-w-97.5 mx-auto p-5 pb-24">
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Close cart"
+              className="group_white"
+            >
+              <ArrowBackOrangeIcon />
+            </button>
+            <p className="font-normal text-[24px] text-white">Cart</p>
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Menu"
+              className="group_white"
+            >
+              <BurgerOrangeIcon />
+            </button>
+          </div>
 
-        <div className="max-w-88.75 mx-auto mt-10 mb-10 flex flex-col gap-3.75">
-          {isLoading ? (
-            <Loader />
-          ) : products.length === 0 ? (
-            <EmptyCart />
-          ) : (
-            <>
-              {products.map((product, i) => (
-                <ProductCard
-                  key={product.id}
-                  index={i}
-                  product={product}
-                  selected={productsCartData[i]?.selected}
-                />
-              ))}
-              <button
-                type="button"
-                onClick={handleApply}
-                className="cart_btn mt-7.5 mx-auto"
-              >
-                APPLY
-              </button>
-            </>
-          )}
+          <div className="max-w-88.75 mx-auto mt-10 mb-10 flex flex-col gap-3.75">
+            {isLoading ? (
+              <Loader />
+            ) : products.length === 0 ? (
+              <EmptyCart />
+            ) : (
+              <>
+                {products.map((product, i) => (
+                  <ProductCard
+                    key={product.id}
+                    index={i}
+                    product={product}
+                    selected={productsCartData[i]?.selected}
+                  />
+                ))}
+                <button
+                  type="button"
+                  onClick={handleApply}
+                  className="cart_btn mt-7.5 mx-auto"
+                >
+                  APPLY
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <ModalBackdrop />
+    </CartPopupAnimations>
   );
 };
 

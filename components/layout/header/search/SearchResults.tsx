@@ -18,10 +18,12 @@ import ProductRow from './ProductRow';
  */
 const SearchResults = ({
   searchValue,
+  isPending = false,
   state,
   setState,
 }: {
   searchValue: string;
+  isPending?: boolean;
   state: boolean;
   setState: Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element => {
@@ -57,18 +59,18 @@ const SearchResults = ({
     }
   }, [products]);
 
-  if (loading) {
-    return <Spinner />;
-  }
-
   if (!state) {
     return <></>;
   }
 
+  const isBusy = loading || isPending;
+
   return (
     <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-[10px] bg-[rgba(76,77,86,0.8)] p-5 shadow-lg backdrop-blur-[10px]">
       <CloseSearch setState={setState} />
-      {products.length > 0 ? (
+      {isBusy ? (
+        <Spinner />
+      ) : products.length > 0 ? (
         products.map((product: IProductsEntity, i: number) => {
           const { id, attributeSetIdentifier } = product;
 

@@ -32,7 +32,6 @@ type InitialStateType = {
   reservations: ReservationEntry[];
   transitionId: number;
   version: number;
-  isPopupOpen: boolean;
 };
 
 const initialState: InitialStateType = {
@@ -56,7 +55,6 @@ const initialState: InitialStateType = {
   ],
   transitionId: 0,
   version: 0,
-  isPopupOpen: false,
 };
 
 export const cartSlice = createSlice({
@@ -184,15 +182,6 @@ export const cartSlice = createSlice({
     setCartVersion(state, action: PayloadAction<number>) {
       state.version = action.payload;
     },
-    openCartPopup(state) {
-      state.isPopupOpen = true;
-    },
-    closeCartPopup(state) {
-      state.isPopupOpen = false;
-    },
-    toggleCartPopup(state) {
-      state.isPopupOpen = !state.isPopupOpen;
-    },
   },
 });
 
@@ -211,9 +200,6 @@ export const {
   removeProduct,
   increaseProductQty,
   decreaseProductQty,
-  openCartPopup,
-  closeCartPopup,
-  toggleCartPopup,
 } = cartSlice.actions;
 
 /**
@@ -329,12 +315,5 @@ export const getTransition = (state: {
 export const selectCartVersion = (state: {
   favoritesReducer: { version: number };
 }) => state.favoritesReducer.version;
-
-/**
- * Select cart popup open state
- */
-export const selectIsCartPopupOpen = (state: {
-  cartReducer: { isPopupOpen: boolean };
-}): boolean => state.cartReducer.isPopupOpen;
 
 export default cartSlice.reducer;

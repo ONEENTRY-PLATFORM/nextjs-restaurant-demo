@@ -41,7 +41,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative grow">
       <form className="relative" onSubmit={handleSubmit}>
         <input
           defaultValue={debouncedValue}
@@ -61,6 +61,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
       <Suspense fallback={'...'}>
         <SearchResults
           searchValue={debouncedValue}
+          isPending={searchValue !== debouncedValue}
           state={isSearchActive}
           setState={setIsSearchActive}
         />

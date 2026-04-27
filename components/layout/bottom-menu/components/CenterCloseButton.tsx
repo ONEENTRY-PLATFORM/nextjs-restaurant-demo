@@ -7,11 +7,13 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 
 /**
- * Central outlined close button — visible only while a drawer (cart, sign-in,
- * etc.) is open. Clicking it dismisses the drawer.
+ * Central outlined close button — visible only while a drawer (cart popup,
+ * filter, sign-in modal, etc.) is open. Replaces the protruding cart button
+ * for the duration of the drawer. Dispatches `setTransition('close')` so the
+ * drawer's own GSAP reverse animation plays before unmount.
  */
 const CenterCloseButton = (): JSX.Element | null => {
-  const { open, setOpen } = useContext(OpenDrawerContext);
+  const { open, setTransition } = useContext(OpenDrawerContext);
 
   if (!open) {
     return null;
@@ -21,7 +23,7 @@ const CenterCloseButton = (): JSX.Element | null => {
     <button
       type="button"
       aria-label="close"
-      onClick={() => setOpen(false)}
+      onClick={() => setTransition('close')}
       className="bg-transparent border w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 hover:border-[#EC722B] group"
     >
       <CloseXMiniIcon />

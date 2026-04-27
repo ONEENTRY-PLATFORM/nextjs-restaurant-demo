@@ -43,7 +43,8 @@ const buildStepTitles = (
   order: 'Order',
   payment:
     (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
-  add_card: (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
+  add_card:
+    (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
   success: 'Success',
   error: 'Error',
 });

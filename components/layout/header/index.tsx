@@ -3,7 +3,7 @@
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
-import { getChildPagesByParentUrl } from '@/app/api';
+import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 import BurgerIcon from '@/components/icons/burger';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
@@ -22,6 +22,25 @@ import SearchFallback from './search/SearchFallback';
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
+
+  // Drop categories that have no products — empty links read as broken in
+  // the scroller. Probe each child page with a `limit:1` call and keep
+  // those where `total > 0`.
+  const childPages = (pages ?? []) as IPagesEntity[];
+  const counts = await Promise.all(
+    childPages.map(async (p) =>
+      p.pageUrl
+        ? (
+            await getProductsByPageUrl({
+              limit: 1,
+              offset: 0,
+              params: { handle: p.pageUrl },
+            })
+          ).total
+        : 0,
+    ),
+  );
+  const populatedPages = childPages.filter((_, i) => (counts[i] ?? 0) > 0);
 
   return (
     <div id="header">
@@ -76,14 +95,14 @@ const Header = async (): Promise<JSX.Element> => {
             {/* Category Button */}
             <CategoryButton />
             {/* Categories Scroller */}
-            <CategoriesScroller pages={(pages ?? []) as IPagesEntity[]} />
+            <CategoriesScroller pages={populatedPages} />
           </section>
         </div>
       </div>
       {/* Filter Bottom */}
       <FilterBottom />
       {/* Category Filter */}
-      <CategoryFilter pages={(pages ?? []) as IPagesEntity[]} />
+      <CategoryFilter pages={populatedPages} />
     </div>
   );
 };

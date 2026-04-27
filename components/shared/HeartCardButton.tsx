@@ -2,7 +2,7 @@
 
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
-import { type JSX, useContext, useEffect, useState } from 'react';
+import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -41,12 +41,17 @@ const HeartCardButton = ({
     selectIsFavorites(state as any, product.id),
   );
   // Favorites are restored from localStorage on the client after hydration,
-  // so SSR sees `false` while the client may see `true` — render the empty
-  // state until mount to keep the first client paint consistent with SSR.
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
+  // so SSR sees `false` while the client may see `true` — gate via
+  // useSyncExternalStore so the server snapshot is `false` and the client
+  // flips to `true` after mount, matching the persisted slice.
+  const hydrated = useSyncExternalStore(
+    (cb) => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false,
+  );
   const isFav = hydrated && isFavStored;
 
   const title = product.localizeInfos?.title ?? '';

@@ -1,8 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import type { JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { type JSX, useContext, useSyncExternalStore } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -20,8 +19,16 @@ const CenterCartButton = (): JSX.Element | null => {
   const count = useAppSelector(
     (state) => state.cartReducer.productsData?.length ?? 0,
   );
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // Persisted Redux slice rehydrates client-side — gate the badge with
+  // useSyncExternalStore so the server/client markup matches.
+  const mounted = useSyncExternalStore(
+    (cb) => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false,
+  );
 
   if (open) {
     return null;

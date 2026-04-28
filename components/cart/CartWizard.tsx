@@ -121,7 +121,7 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
         {step === 'verification' && <StepVerification />}
         {step === 'address' && <StepAddress dict={dict} />}
         {step === 'order' && <StepOrder dict={dict} />}
-        {step === 'payment' && <StepPayment />}
+        {step === 'payment' && <StepPayment dict={dict} />}
         {step === 'add_card' && <StepAddCard />}
         {step === 'success' && <StepResult variant="success" />}
         {step === 'error' && <StepResult variant="error" />}

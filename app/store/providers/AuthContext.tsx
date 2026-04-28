@@ -194,7 +194,11 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       );
       /** If product not in cart, add to cart */
       if (!productInCart) {
-        dispatch(addProductToCart(product));
+        // Reducer expects `{ id, selected, quantity }`; without quantity here
+        // the cart QuantitySelector hides itself and totals stay at $0.
+        dispatch(
+          addProductToCart({ id: product.id, selected: true, quantity: 1 }),
+        );
       }
     });
 

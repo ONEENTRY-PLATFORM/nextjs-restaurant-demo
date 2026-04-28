@@ -49,3 +49,4 @@ GIT-SETUP.md
 git-setup.sh
 static-html
 .vscode
+.playwright-mcp

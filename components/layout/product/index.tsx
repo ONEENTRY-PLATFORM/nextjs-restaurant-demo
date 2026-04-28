@@ -109,8 +109,9 @@ const ProductSingle = async ({
           return null;
         })}
 
-      {/* Похожие товары — канонический OneEntry getRelatedProductsById */}
-      <RelatedItems productId={id} dict={dict} />
+      {/* Похожие товары: канонический getRelatedProductsById или
+          fallback на блок типа similar_products_block из product.blocks */}
+      <RelatedItems productId={id} blocks={blocks} dict={dict} />
     </section>
   );
 };

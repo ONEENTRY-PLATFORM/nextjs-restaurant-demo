@@ -19,6 +19,10 @@ const Header = dynamic(() => import('@/components/layout/header'), {
   ssr: true,
 });
 const CartPopup = dynamic(() => import('@/components/cart/CartPopup'));
+const FavoritesPopup = dynamic(
+  () => import('@/components/profile/FavoritesPopup'),
+);
+const ProfilePopup = dynamic(() => import('@/components/profile/ProfilePopup'));
 
 import './globals.css';
 
@@ -75,6 +79,8 @@ export default async function RootLayout({
               </TransitionProvider>
               <BottomMenu />
               <CartPopup />
+              <FavoritesPopup />
+              <ProfilePopup />
               <Modal dict={dict} />
             </OpenDrawerProvider>
           </AuthProvider>

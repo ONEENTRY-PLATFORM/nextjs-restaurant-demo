@@ -7,8 +7,8 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { deselectProduct } from '@/app/store/reducers/CartSlice';
 import Placeholder from '@/components/shared/Placeholder';
 
-import QuantitySelector from '../../product/components/QuantitySelector';
 import ProductAnimations from '../animations/ProductAnimations';
+import CartQuantityControl from './CartQuantityControl';
 import DeleteButton from './DeleteButton';
 import PriceDisplay from './PriceDisplay';
 
@@ -90,11 +90,10 @@ const ProductCard = ({
 
       <div className="flex shrink-0 items-center gap-3.75">
         <DeleteButton productId={id} />
-        <QuantitySelector
+        <CartQuantityControl
           id={id}
           units={(units_product?.value as number) ?? 0}
           title={title}
-          height={42}
         />
       </div>
     </ProductAnimations>

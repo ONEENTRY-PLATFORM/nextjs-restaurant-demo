@@ -43,24 +43,24 @@
 
 Атрибут `icon` (image) у дочерних страниц `menu` уже определён в attribute set, но **значения не загружены** для большинства категорий. Используется в [components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx) (левый drawer категорий) и потенциально в `CategoriesScroller`. Сейчас при пустом `icon` есть fallback на файл `/public/images/icons/<pageUrl>.svg`, но это временный костыль — для админ-управляемой вёрстки иконки должны жить в CMS.
 
-| pageUrl          | состояние `icon` |
-|------------------|------------------|
-| `appetizers`     | ❌ нет атрибута    |
-| `kids_menu`      | ❌ нет атрибута    |
-| `snacks`         | ❌ нет атрибута    |
-| `dinner`         | ⚠️ пусто (массив 0) |
-| `fresh_juice`    | ⚠️ пусто           |
-| `soup`           | ⚠️ пусто           |
-| `hot_meals`      | ⚠️ пусто           |
-| `meat`           | ⚠️ пусто           |
-| `fish`           | ⚠️ пусто           |
-| `lunch`          | ⚠️ пусто           |
-| `breakfast`      | ⚠️ пусто           |
-| `salads`         | ✅ загружено        |
-| `desserts`       | ✅ загружено        |
-| `cold_beverages` | ✅ загружено        |
-| `first_courses`  | ✅ загружено        |
-| `pizza`          | ✅ загружено        |
+| pageUrl          | состояние `icon`   |
+|------------------|--------------------|
+| `appetizers`     | ✅ загружено       |
+| `kids_menu`      | ✅ загружено       |
+| `snacks`         | ✅ загружено       |
+| `dinner`         | ✅ загружено       |
+| `fresh_juice`    | ✅ загружено       |
+| `soup`           | ✅ загружено       |
+| `hot_meals`      | ✅ загружено       |
+| `meat`           | ✅ загружено       |
+| `fish`           | ✅ загружено       |
+| `lunch`          | ✅ загружено       |
+| `breakfast`      | ✅ загружено       |
+| `salads`         | ✅ загружено       |
+| `desserts`       | ✅ загружено       |
+| `cold_beverages` | ✅ загружено       |
+| `first_courses`  | ✅ загружено       |
+| `pizza`          | ✅ загружено       |
 
 - Для категорий без атрибута — добавить `icon` (тип `image`) в attribute set дочерних страниц `menu`.
 - Для категорий с пустым атрибутом — загрузить иконку. Источник — `static-html/public/images/icons/<pageUrl>.svg` (`first_courses.svg`, `main_courses.svg`, `salads.svg`, `snackes.svg`, `hot_beverages.svg`, `fresh_juice.svg`, `dessert.svg`, `appetizers.svg`, `kids_menu.svg`, `booking_table.svg`).
@@ -119,7 +119,3 @@
 > ❓ **Уточнить у клиента:** есть ли в OneEntry/бэкенде механизм промокодов (скидка % / фикс / free delivery)? Если да — какой API/marker и как привязывать к заказу. Пока кнопка не делает ничего и поле декоративное.
 
 ---
-
-## 5. Локализация (опционально)
-
-Если нужен `fr_FR` — добавить локаль в `PROJECT_URL/locales` и заполнить `localizeInfos.fr_FR.*` на сущностях. Маршрутизация `[locale]` в Next.js пока не реализована — включать по мере надобности.

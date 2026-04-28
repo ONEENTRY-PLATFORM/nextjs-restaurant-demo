@@ -8,6 +8,7 @@ const getSearchParams = (
     search?: string;
     in_stock?: string;
     color?: string;
+    preferences?: string;
     minPrice?: string;
     maxPrice?: string;
   },
@@ -57,6 +58,17 @@ const getSearchParams = (
       isNested: false,
     };
     expandedFilters.push(newFilter);
+  }
+
+  if (searchParams?.preferences) {
+    const preferencesFilter: IFilterParams = {
+      attributeMarker: 'preferences',
+      conditionMarker: 'in',
+      conditionValue: searchParams.preferences,
+      title: searchParams.search || '',
+      isNested: false,
+    };
+    expandedFilters.push(preferencesFilter);
   }
 
   return expandedFilters;

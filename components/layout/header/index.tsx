@@ -1,14 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
+import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
-import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
+import {
+  getChildPagesByParentUrl,
+  getProductsByPageUrl,
+  getSingleAttributeByMarkerSet,
+} from '@/app/api';
 import BurgerIcon from '@/components/icons/burger';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
 
-import CategoriesScroller from './CategoriesScroller';
+import CategoriesScroller, {
+  type PreferenceOption,
+} from './CategoriesScroller';
 import CategoryButton from './CategoryButton';
 import FilterButton from './FilterButton';
 import Logo from './Logo';
@@ -41,6 +48,22 @@ const Header = async (): Promise<JSX.Element> => {
     ),
   );
   const populatedPages = childPages.filter((_, i) => (counts[i] ?? 0) > 0);
+
+  // Preferences scroller — list-type attribute on `dish` set; each
+  // listTitle becomes a chip that links to `/shop?preferences=<value>`.
+  const preferencesAttr = await getSingleAttributeByMarkerSet({
+    setMarker: 'dish',
+    attributeMarker: 'preferences',
+  });
+  const preferenceOptions: PreferenceOption[] =
+    !preferencesAttr.isError &&
+    preferencesAttr.attribute &&
+    'listTitles' in preferencesAttr.attribute
+      ? (preferencesAttr.attribute.listTitles as IListTitle[]).map((o) => ({
+          title: o.title,
+          value: String(o.value),
+        }))
+      : [];
 
   return (
     <div id="header">
@@ -95,7 +118,7 @@ const Header = async (): Promise<JSX.Element> => {
             {/* Category Button */}
             <CategoryButton />
             {/* Categories Scroller */}
-            <CategoriesScroller pages={populatedPages} />
+            <CategoriesScroller preferences={preferenceOptions} />
           </section>
         </div>
       </div>

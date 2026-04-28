@@ -18,6 +18,7 @@ export const getProductsByPageUrl = async (props: {
       search?: string;
       in_stock?: string;
       color?: string;
+      preferences?: string;
       minPrice?: string;
       maxPrice?: string;
     };

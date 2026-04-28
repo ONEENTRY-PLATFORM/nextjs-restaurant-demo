@@ -89,6 +89,20 @@
 
 ---
 
+## 2.4. Атрибут `preferences` (list) на attribute set `dish`
+
+[components/layout/header/CategoriesScroller.tsx](components/layout/header/CategoriesScroller.tsx) теперь рендерит горизонтальный фильтр-скроллер по значениям атрибута `preferences` (list-type) у блюд. Каждый чип — Link на `/shop?preferences=<value>`, фильтр прокидывается в `Products.getProducts` через [app/api/utils/getSearchParams.ts](app/api/utils/getSearchParams.ts) (`attributeMarker: 'preferences', conditionMarker: 'in'`).
+
+| marker        | type | title       |
+|---------------|------|-------------|
+| `preferences` | list | Preferences |
+
+- listTitles задаются в админке (например: `Meat`, `Fish`, `Vegetable`, `Sugar Free`, `Gluten free`, `Vegetarian`, `Spicy dish`, `Diabetic`, …) — те же значения, что в [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx).
+- Атрибут уже используется на product detail ([ProductDetails.tsx:45](components/layout/product/product-single/ProductDetails.tsx#L45)) — если listTitles пустые, scroller рендерится пустым (graceful fallback).
+- Каждое блюдо должно иметь выбранные значения `preferences`, иначе фильтр `preferences in <value>` вернёт пусто.
+
+---
+
 ## 3. Похожие товары (related products)
 
 Страница [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) рендерит секцию «Featured objects» через [components/layout/product/RelatedItems.tsx](components/layout/product/RelatedItems.tsx) → SDK `Products.getRelatedProductsById`. Чтобы секция реально что-то показывала:

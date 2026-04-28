@@ -48,9 +48,8 @@ const formatOrderDate = (when: string | number | Date | undefined): string => {
  * @returns {string}                  Display label.
  */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
-  const localized = (
-    o.statusLocalizeInfos as { title?: string } | undefined
-  )?.title;
+  const localized = (o.statusLocalizeInfos as { title?: string } | undefined)
+    ?.title;
   if (localized) return localized;
   const id = o.statusIdentifier;
   if (!id) return '—';

@@ -50,7 +50,7 @@ const ProductSingle = async ({
     : '';
 
   return (
-    <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
+    <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch px-4">
       {/* Breadcrumb + title — md+ above the columns */}
       <div className="hidden md:block">
         {categoryLabel ? (
@@ -111,7 +111,11 @@ const ProductSingle = async ({
 
       {/* Похожие товары: канонический getRelatedProductsById или
           fallback на блок типа similar_products_block из product.blocks */}
-      <RelatedItems productId={id} blocks={blocks} dict={dict} />
+      <RelatedItems
+        productId={id}
+        {...(blocks ? { blocks } : {})}
+        dict={dict}
+      />
     </section>
   );
 };

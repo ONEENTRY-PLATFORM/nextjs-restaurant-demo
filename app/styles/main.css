@@ -212,6 +212,7 @@ html {
       md:pt-5 
       md:pb-6 
       flex 
+      justify-center 
       md:justify-between 
       flex-wrap;
   }

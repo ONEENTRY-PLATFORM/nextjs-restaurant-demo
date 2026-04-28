@@ -43,7 +43,7 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
       className="min-h-screen bg-black bg-cover bg-no-repeat"
       style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
     >
-      <div className="max-w-97.5 mx-auto">
+      <div className="max-w-97.5 mx-auto px-4">
         <CartWizard
           dict={dict}
           deliveryData={deliveryData as IProductsEntity}

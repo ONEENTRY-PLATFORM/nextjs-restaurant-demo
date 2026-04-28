@@ -13,7 +13,7 @@ import HomePromo from '@/components/home/HomePromo';
 export const dynamic = 'force-dynamic';
 
 const SECTION_BASE =
-  'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
+  'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full px-4';
 
 /**
  * Block identifier → section type. Each block attached to the `home_web`

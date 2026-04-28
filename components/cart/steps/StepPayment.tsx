@@ -34,10 +34,18 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
 
   const persistOrderFields = () => {
     if (comment.trim()) {
-      dispatch(addData({ marker: 'comment', value: comment.trim() }));
+      dispatch(
+        addData({ marker: 'comment', type: 'text', value: comment.trim() }),
+      );
     }
     if (altReceiver && altPhone.trim()) {
-      dispatch(addData({ marker: 'alt_phone', value: altPhone.trim() }));
+      dispatch(
+        addData({
+          marker: 'alt_phone',
+          type: 'string',
+          value: altPhone.trim(),
+        }),
+      );
     }
   };
 

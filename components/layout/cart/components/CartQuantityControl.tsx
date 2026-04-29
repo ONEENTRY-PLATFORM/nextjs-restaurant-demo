@@ -1,15 +1,11 @@
 'use client';
 
-import { type JSX, useContext } from 'react';
-import { toast } from 'react-toastify';
+import type { JSX } from 'react';
 
-import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
   decreaseProductQty,
   increaseProductQty,
-  removeProduct,
   selectCartItemWithIdLength,
 } from '@/app/store/reducers/CartSlice';
 
@@ -23,14 +19,16 @@ type CartQuantityControlProps = {
  * Cart-only compact quantity control — vertical `+ / qty / -` stack inside a
  * thin bordered box, per `cart_cart.html`. Always renders for items present
  * in `productsData` (defaults qty to 1 if upstream forgot to set it).
+ *
+ * `-` decrements but does NOT remove the line — clamped at 1 by the
+ * reducer. Removing a product is a separate action exposed via the trash
+ * icon (`DeleteButton`) next to the control.
  */
 const CartQuantityControl = ({
   id,
   units,
-  title,
 }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { user } = useContext(AuthContext);
   const data = useAppSelector((state) => selectCartItemWithIdLength(state, id));
   const qty = (data?.quantity as number | undefined) ?? 1;
 
@@ -38,15 +36,7 @@ const CartQuantityControl = ({
     dispatch(increaseProductQty({ id, quantity: 1, units }));
   };
 
-  const onDecrease = async () => {
-    if (qty <= 1) {
-      dispatch(removeProduct(id));
-      toast('Product ' + title + ' removed from cart!');
-      if (user) {
-        await onUnsubscribeEvents(id);
-      }
-      return;
-    }
+  const onDecrease = () => {
     dispatch(decreaseProductQty({ id, quantity: 1 }));
   };
 

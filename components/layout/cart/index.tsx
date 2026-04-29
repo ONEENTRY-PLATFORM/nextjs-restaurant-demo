@@ -128,12 +128,19 @@ const CartPage = ({
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {products?.map((product: IProductsEntity, i: number) => {
+          // Look up selection by id, not index — `productsCartData` may be
+          // in a different order than `products` (RTK query response order
+          // is not guaranteed) and changing one entry's `selected` mutates
+          // the array reference, so an index-based lookup desynchronises.
+          const cartEntry = productsCartData.find(
+            (p: { id: number }) => p.id === product.id,
+          );
           return (
             <ProductCard
-              key={i}
+              key={product.id}
               index={i}
               product={product}
-              selected={productsCartData[i]?.selected}
+              selected={cartEntry?.selected ?? false}
             />
           );
         })}

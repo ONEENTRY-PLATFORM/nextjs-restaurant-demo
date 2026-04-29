@@ -103,11 +103,15 @@ export const cartSlice = createSlice({
       );
       const qty = state.productsData[index].quantity + action.payload.quantity;
 
+      // `units_product` attribute doesn't exist in the live `dish` set →
+      // callers pass `0`/`undefined`. Treat falsy `units` as "no stock cap"
+      // (otherwise `+` button would clamp qty back to 0). When `units > 0`
+      // is provided, still respect it as the real upper bound.
+      const cap = action.payload.units;
       state.productsData[index] = {
         ...state.productsData[index],
         selected: state.productsData[index].selected,
-        quantity:
-          qty > action.payload.units ? Number(action.payload.units) : qty,
+        quantity: cap && qty > cap ? Number(cap) : qty,
       };
     },
     decreaseProductQty(
@@ -132,16 +136,14 @@ export const cartSlice = createSlice({
         (product: { id: number }) => product.id === action.payload.id,
       );
       const qty = action.payload.quantity;
+      const cap = action.payload.units;
 
       state.productsData[index] = {
         ...state.productsData[index],
         selected: state.productsData[index].selected,
-        quantity:
-          qty <= 0
-            ? 0
-            : qty > action.payload.units
-              ? action.payload.units
-              : qty,
+        // Same falsy-cap guard as `increaseProductQty` — treat `units = 0`
+        // as "no upper bound" since the attribute isn't populated in CMS.
+        quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
       };
     },
     removeProduct(state, action: PayloadAction<number>) {
@@ -167,11 +169,12 @@ export const cartSlice = createSlice({
       };
     },
     deselectProduct(state, action: PayloadAction<number>) {
-      state.productsData.map((product) => {
-        if (product.id === action.payload) {
-          product.selected = !product.selected;
-        }
-      });
+      const entry = state.productsData.find(
+        (product: { id: number }) => product.id === action.payload,
+      );
+      if (entry) {
+        entry.selected = !entry.selected;
+      }
     },
     removeAllReservations(state) {
       state.reservations = initialState.reservations;

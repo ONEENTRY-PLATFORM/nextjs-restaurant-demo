@@ -79,9 +79,12 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
       // If the form cannot be submitted, exit early
       if (!canSubmit) return;
 
-      // Prepare the data object for the sign-up request
+      // Prepare the data object for the sign-up request.
+      // `formIdentifier` must match the auth provider's `formIdentifier`
+      // (verified via inspect-api: email-provider → "user"). Was
+      // hardcoded `'reg'`, causing 400 Bad Request.
       const data: ISignUpData = {
-        formIdentifier: 'reg',
+        formIdentifier: 'user',
         authData: [
           {
             marker: 'email',

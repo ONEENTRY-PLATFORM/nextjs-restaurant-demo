@@ -1,3 +1,4 @@
+import CalendarForm from './CalendarForm';
 import ContactUsForm from './ContactUsForm';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import PhoneAuthForm from './PhoneAuthForm';
@@ -8,6 +9,7 @@ import UserForm from './UserForm';
 import VerificationForm from './VerificationForm';
 
 export {
+  CalendarForm,
   ContactUsForm,
   ForgotPasswordForm,
   PhoneAuthForm,

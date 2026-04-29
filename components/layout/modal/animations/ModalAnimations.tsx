@@ -41,27 +41,54 @@ const ModalAnimations = ({
 
     const modalBg = ref.current.querySelector('#modalBg');
     const modalBody = ref.current.querySelector('#modalBody');
-    const slowKey = component === 'CalendarForm' ? 1.5 : 0.5;
 
-    gsap.set(modalBg, { autoAlpha: 0 });
-    gsap.set(modalBody, { yPercent: 100 });
+    // Calendar gets a punchier scale + blur + opacity entrance — feels
+    // closer to a popup than the bottom-sheet slide-up used by auth forms.
+    if (component === 'CalendarForm') {
+      gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
+      gsap.set(modalBody, {
+        autoAlpha: 0,
+        scale: 0.85,
+        filter: 'blur(8px)',
+      });
 
-    tl.to(modalBg, {
-      autoAlpha: 1,
-      backdropFilter: 'blur(10px)',
-      duration: slowKey,
-    }).to(
-      modalBody,
-      {
+      tl.to(modalBg, {
         autoAlpha: 1,
-        yPercent: 0,
-        duration: slowKey,
-      },
-      '-=0.25',
-    );
+        backdropFilter: 'blur(10px)',
+        duration: 0.45,
+        ease: 'power2.out',
+      }).to(
+        modalBody,
+        {
+          autoAlpha: 1,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration: 0.55,
+          ease: 'back.out(1.4)',
+        },
+        '-=0.3',
+      );
+    } else {
+      gsap.set(modalBg, { autoAlpha: 0 });
+      gsap.set(modalBody, { yPercent: 100 });
+
+      tl.to(modalBg, {
+        autoAlpha: 1,
+        backdropFilter: 'blur(10px)',
+        duration: 0.5,
+      }).to(
+        modalBody,
+        {
+          autoAlpha: 1,
+          yPercent: 0,
+          duration: 0.5,
+        },
+        '-=0.25',
+      );
+    }
 
     if (transition === 'close') {
-      tl.reverse(2);
+      tl.reverse(component === 'CalendarForm' ? 1.4 : 2);
     } else {
       tl.play();
     }

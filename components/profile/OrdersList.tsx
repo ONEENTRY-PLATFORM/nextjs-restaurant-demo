@@ -377,7 +377,7 @@ const OrdersList = ({
         </div>
         <aside className="hidden lg:flex lg:w-1/2 lg:flex-col lg:gap-10">
           {promoBanners
-            .filter((b) => b.desktopImage)
+            .filter((b) => b.mobileImage)
             .map((b) => (
               <Link
                 key={b.id}
@@ -386,7 +386,7 @@ const OrdersList = ({
                 className="block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
               >
                 <Image
-                  src={b.desktopImage as string}
+                  src={b.mobileImage as string}
                   alt={b.title}
                   width={620}
                   height={240}

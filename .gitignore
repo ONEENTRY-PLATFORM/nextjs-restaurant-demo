@@ -49,3 +49,4 @@ git-setup.sh
 static-html
 .vscode
 .playwright-mcp
+.env*.local

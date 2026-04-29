@@ -92,7 +92,7 @@ const CartWizard = ({
         <p className="hidden pt-3.75 text-base text-[#969696] md:block">Cart</p>
 
         {/* Stacked on mobile, 2-col (50/50) on md+ */}
-        <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13 md:pb-0">
+        <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13">
           <div className="flex flex-col gap-4 md:w-1/2">
             <CartPage dict={dict} deliveryData={deliveryData} />
           </div>

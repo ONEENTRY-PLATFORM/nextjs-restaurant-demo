@@ -115,25 +115,25 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         })}
       </div>
 
-      {/* Promo code */}
-      <div className="mt-12 flex justify-between rounded-[5px] border border-brand p-2.5">
+      {/* Promo code — separate input + button, per pk_order.html */}
+      <div className="mt-5 flex w-full items-center justify-between gap-6.25">
         <input
           type="text"
           value={promoCode}
           onChange={(e) => setPromoCode(e.currentTarget.value)}
           placeholder="Promo Code"
-          className="flex-1 border-none bg-transparent font-normal text-[16px] text-white placeholder:text-white/60 focus:outline-none"
+          className="h-8 w-2/3 rounded-[5px] border border-brand bg-transparent text-center text-[16px] uppercase text-white placeholder:text-center placeholder:text-[16px] placeholder:uppercase placeholder:text-white focus:outline-none"
         />
         <button
           type="button"
-          className="rounded-[5px] border-none bg-brand px-2.5 text-[14px] font-normal text-black hover_btn_transp"
+          className="h-8 w-1/3 rounded-[5px] border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp lg:text-[14px]"
         >
           Apply Code
         </button>
       </div>
 
       {/* Totals */}
-      <div className="rounded-[5px] border border-brand p-2.5">
+      <div className="mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>
             {(dict?.subtotal_text?.value as string | undefined) ?? 'Subtotal'}:
@@ -159,7 +159,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <button
         type="button"
         onClick={() => dispatch(setStep('payment'))}
-        className="cart_btn mt-10"
+        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom_btnorange py-2.5 text-center font-normal text-[16px] text-white hover_btn_transp"
       >
         APPLY
       </button>

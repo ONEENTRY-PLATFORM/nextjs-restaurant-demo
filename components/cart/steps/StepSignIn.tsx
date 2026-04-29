@@ -1,36 +1,34 @@
 'use client';
 
-import type { FormEvent, JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { getApi, isError } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
+import LoginEmailIcon from '@/components/icons/login-email.svg';
+import LoginGoogleIcon from '@/components/icons/login-google.svg';
 
-type AuthTab = 'options' | 'phone';
+const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 /**
- * Checkout step — gate for authentication.
+ * Checkout step — auth gate.
  *
  * If the user is already authenticated, auto-advances to `address`.
- * Otherwise presents 3 options:
- *   - Login (opens email SignInForm modal);
- *   - Phone (reveals inline {@link PhoneAuthForm});
- *   - Sign up (opens SignUpForm modal).
+ * Otherwise renders the provider chooser from `static-html/pk_login.html`
+ * — restricted to two buttons (Email, Google) per current design.
+ *
+ * - Email opens the existing {@link SignInForm} drawer.
+ * - Google performs a top-window redirect to Google's OAuth endpoint;
+ *   the callback at `app/auth/callback/google/page.tsx` exchanges the
+ *   code via {@link oauthLogIn} → `api.AuthProvider.oauth('google', …)`.
  * @returns {JSX.Element} Step JSX.
  */
 const StepSignIn = (): JSX.Element => {
   const { isAuth, isLoading } = useContext(AuthContext);
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
-  const [tab, setTab] = useState<AuthTab>('options');
-  const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [phoneLoading, setPhoneLoading] = useState(false);
 
   useEffect(() => {
     if (isAuth) {
@@ -39,118 +37,50 @@ const StepSignIn = (): JSX.Element => {
   }, [isAuth, dispatch]);
 
   if (isLoading) {
-    return <div className="text-paper/80 text-center">Loading...</div>;
+    return <div className="text-center text-paper/80">Loading...</div>;
   }
 
-  const onPhoneSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!phone.trim()) {
-      setPhoneError('Please enter your phone number.');
-      return;
-    }
-    setPhoneLoading(true);
-    setPhoneError('');
-    try {
-      const res = await getApi().AuthProvider.generateCode(
-        'phone',
-        phone.trim(),
-        'generate_otp',
-      );
-      if (isError(res)) {
-        setPhoneError(
-          (res as { message?: string }).message ??
-            'Could not send the code. Please try again.',
-        );
-        return;
-      }
-      dispatch(addField({ phone: { valid: true, value: phone.trim() } }));
-      dispatch(setStep('verification'));
-    } catch (err: unknown) {
-      setPhoneError(
-        (err as { message?: string }).message ??
-          'Could not send the code. Please try again.',
-      );
-    } finally {
-      setPhoneLoading(false);
-    }
+  const onEmailLogin = () => {
+    setComponent('SignInForm');
+    setOpen(true);
   };
 
-  if (tab === 'phone') {
-    return (
-      <form onSubmit={onPhoneSubmit} className="flex flex-col gap-4">
-        <button
-          type="button"
-          onClick={() => setTab('options')}
-          className="self-start text-sm text-paper/70 hover:text-brand"
-        >
-          ← Back
-        </button>
-        <div className="flex flex-col gap-2 border-b border-b-muted">
-          <label
-            htmlFor="cart_phone_auth"
-            className="font-normal text-[18px] text-custom_white"
-          >
-            Phone number
-          </label>
-          <input
-            id="cart_phone_auth"
-            type="tel"
-            autoComplete="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.currentTarget.value)}
-            placeholder="+7 ( )"
-            className="cart_input placeholder:font-semibold"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={phoneLoading}
-          className="cart_btn mt-10 disabled:opacity-60"
-        >
-          {phoneLoading ? '...' : 'SIGN IN'}
-        </button>
-        {phoneError ? <ErrorMessage error={phoneError} /> : null}
-      </form>
-    );
-  }
+  const onGoogleLogin = () => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      // Fallback — Google credentials not configured yet (see ONEENTRY-ADMIN-SETUP.md).
+      onEmailLogin();
+      return;
+    }
+    const state = crypto.randomUUID();
+    sessionStorage.setItem('google-oauth-state', state);
+    const redirectUri = `${window.location.origin}/auth/callback/google`;
+    const search = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      access_type: 'offline',
+      prompt: 'consent',
+      state,
+    });
+    window.location.href = `${GOOGLE_AUTH_URL}?${search.toString()}`;
+  };
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <h2 className="text-center font-bold text-[20px] uppercase text-brand">
-        Sign in to continue
-      </h2>
-      <p className="text-paper/90 text-center">
-        Please sign in or create an account to place your order.
-      </p>
-      <div className="flex flex-col items-center gap-4">
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(true);
-            setComponent('SignInForm');
-          }}
-          className="flex h-[37px] w-[125px] items-center justify-center rounded-[5px] bg-custom_transparent font-normal text-[17px] text-brand backdrop-blur-[10px] hover_btn_transp"
-        >
-          Login
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('phone')}
-          className="flex h-[37px] w-[125px] items-center justify-center rounded-[5px] border border-brand font-normal text-[17px] text-brand hover_btn_white"
-        >
-          Phone
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(true);
-            setComponent('SignUpForm');
-          }}
-          className="flex h-[37px] w-[125px] items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp"
-        >
-          Sign up
-        </button>
-      </div>
+    <div className="mx-auto flex w-full max-w-115 flex-col">
+      <button type="button" onClick={onEmailLogin} className="cart_btn">
+        <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+          <LoginEmailIcon />
+          Login With Email
+        </div>
+      </button>
+      <button type="button" onClick={onGoogleLogin} className="cart_btn">
+        <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+          <LoginGoogleIcon />
+          Login With Google
+        </div>
+      </button>
     </div>
   );
 };

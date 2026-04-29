@@ -234,3 +234,26 @@
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
 ---
+
+## 8. Auth Providers
+
+### 8.1. `google` (OAuth) — нужен на шаге `signin` корзины
+
+В админке провайдер уже есть (`identifier: "google"`, `type: "oauth"`, `isActive: true`, `userGroupIdentifier: "guest"`), но:
+
+- **`config.oauthAuthUrl`** — сейчас **`null`**. Заполнить значением `https://accounts.google.com/o/oauth2/v2/auth` (или оставить null — тогда client редиректит на этот URL хардкодом из [StepSignIn.tsx](components/cart/steps/StepSignIn.tsx)).
+- **Google Cloud Console → OAuth 2.0 Client IDs.** Создать клиента, добавить в Authorized redirect URIs:
+  - `http://localhost:3000/auth/callback/google` (dev)
+  - `https://<vercel-host>/auth/callback/google` (prod)
+- **`.env.local`** дописать:
+
+  ```env
+  NEXT_PUBLIC_GOOGLE_CLIENT_ID=<client_id из Google Cloud Console>
+  GOOGLE_CLIENT_SECRET=<client_secret>
+  ```
+
+  Используется в [StepSignIn.tsx](components/cart/steps/StepSignIn.tsx) (редирект на Google) и [oauthLogIn.ts](app/api/server/users/oauthLogIn.ts) (server-only обмен code → token через `api.AuthProvider.oauth('google', ...)`). Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму).
+
+> ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
+
+---

@@ -4,7 +4,8 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { useAppDispatch } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import PaymentButton from '@/components/layout/cart/components/PaymentButton';
 import TotalAmount from '@/components/layout/cart/components/TotalAmount';
@@ -21,13 +22,17 @@ const DeliveryForm = ({
   deliveryData: IProductsEntity;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
+  const cartDelivery = useAppSelector(selectDeliveryData);
 
   return (
     <form
       className="flex w-182.5 max-w-full flex-col pb-5"
       onSubmit={(e) => {
         e.preventDefault();
-        dispatch(setStep('time'));
+        // Skip the time step if the user has already picked date+time via
+        // the calendar popup; jump straight to sign-in (the next stage).
+        const hasTime = Boolean(cartDelivery?.date && cartDelivery?.time);
+        dispatch(setStep(hasTime ? 'signin' : 'time'));
       }}
     >
       <DeliveryTable dict={dict} delivery={deliveryData as IProductsEntity} />

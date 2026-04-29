@@ -3,6 +3,11 @@ import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
+// Opt out of static prerender — the shared layout chain includes
+// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
+// requires to be wrapped in Suspense for static generation.
+export const dynamic = 'force-dynamic';
+
 /**
  * 404 page layout
  */

@@ -1,11 +1,19 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { getProductById } from '@/app/api';
+import { getBlogBanners, getProductById } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
+import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';
 
 import { getDictionary } from '../dictionaries';
+
+// Opt out of static prerender — the shared layout chain includes
+// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
+// requires to be wrapped in Suspense for static generation. Rendering
+// dynamically sidesteps the prerender-time bailout (same approach as the
+// home page).
+export const dynamic = 'force-dynamic';
 
 /** Define the response type */
 type ProductResponse = {
@@ -37,16 +45,20 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
     ? undefined
     : (response as ProductResponse).product;
 
-  /** Cart layout — mobile-centric `max-w-[390px]` flow per static-html/cart*.html */
+  /** Promo banners from OneEntry `blog` (desktop sidebar). */
+  const banners = await getBlogBanners();
+
+  /**
+   * Cart layout — mobile flow from `cart_cart.html` (max-w 390px), desktop
+   * 2-column flow from `pk_cart.html` (md:700 / lg:1000 / xl:1292).
+   */
   return (
-    <section
-      className="min-h-screen bg-black bg-cover bg-no-repeat"
-      style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
-    >
-      <div className="max-w-97.5 mx-auto px-4">
+    <section className="min-h-screen bg-black bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">
+      <div className="mx-auto w-full max-w-97.5 px-4 md:max-w-175 lg:max-w-250 xl:max-w-323">
         <CartWizard
           dict={dict}
           deliveryData={deliveryData as IProductsEntity}
+          promoSidebar={<CartPromoSidebar banners={banners} />}
         />
       </div>
     </section>

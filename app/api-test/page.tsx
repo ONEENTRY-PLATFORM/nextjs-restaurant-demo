@@ -3,6 +3,13 @@
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
+// Opt out of static prerender — the shared layout chain includes
+// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
+// requires to be wrapped in Suspense for static generation. Rendering
+// dynamically sidesteps the prerender-time bailout (same approach as the
+// home page).
+export const dynamic = 'force-dynamic';
+
 /**
  * The API test page component for testing API performance
  * @returns {JSX.Element} The API test page component

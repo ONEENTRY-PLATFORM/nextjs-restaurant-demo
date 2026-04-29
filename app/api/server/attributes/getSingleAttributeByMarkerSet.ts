@@ -21,8 +21,8 @@ export const getSingleAttributeByMarkerSet = async ({
 }> => {
   try {
     const attribute = await api.AttributesSets.getSingleAttributeByMarkerSet(
-      attributeMarker,
       setMarker,
+      attributeMarker,
     );
 
     if (typeError(attribute)) {

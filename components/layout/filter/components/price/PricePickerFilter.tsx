@@ -26,7 +26,9 @@ const PriceFilter = ({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
 
-  const { filter_price_title, price_from, price_to } = dict;
+  // `filter_price_title` ✅ added; `price_from`/`price_to` don't exist in
+  // the `static_content` set — using existing `from` / `to_text`.
+  const { filter_price_title, from, to_text } = dict;
 
   const STEP = 10;
   const MIN = prices?.min || 0;
@@ -78,13 +80,13 @@ const PriceFilter = ({
   return (
     <div className="relative box-border flex shrink-0 flex-col">
       <div className="filter_title mb-5 self-start">
-        {filter_price_title?.value as string | undefined}
+        {(filter_price_title?.value as string | undefined) ?? 'Price'}
       </div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="text-base leading-8 text-paper/60">
-            {price_from?.value as string | undefined}
+            {(from?.value as string | undefined) ?? 'From'}
           </span>
           <span className="text-lg leading-8 text-white/90">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
@@ -92,7 +94,7 @@ const PriceFilter = ({
         </div>
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="self-start text-base leading-8 text-paper/60">
-            {price_to?.value as string | undefined}
+            {(to_text?.value as string | undefined) ?? 'To'}
           </span>
           <span className="text-lg leading-8 text-white/90">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />

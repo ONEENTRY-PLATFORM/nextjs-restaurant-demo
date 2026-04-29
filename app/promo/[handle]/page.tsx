@@ -8,12 +8,28 @@ type PromoPageProps = {
   params: Promise<{ handle: string }>;
 };
 
+type ImageValue =
+  | { downloadLink?: string }
+  | Array<{ downloadLink?: string }>
+  | null
+  | undefined;
+
+type DescriptionValue = Array<{
+  plainValue?: string;
+  htmlValue?: string;
+  mdValue?: string;
+}>;
+
 /**
  * Promo detail page — renders a single promo campaign by `pageUrl` marker
- * (e.g. `/promo/birthday`, `/promo/business_lunch`).
+ * (e.g. `/promo/birthday_offer`, `/promo/business_lunch`).
  *
- * Content comes from OneEntry CMS page under parent `promo/` with attributes:
- * `promo_image`, `promo_title`, `promo_subtitle`, `promo_cta`.
+ * Driven by OneEntry `blog` child page attributes (`blog_page` set). Real
+ * attributes:
+ *   - `bg_image`    (image) — desktop hero;
+ *   - `banner`      (image) — mobile fallback if `bg_image` is empty;
+ *   - `description` (text)  — markdown/html body;
+ *   - `action_type` (list)  — `[{ title }]` for the CTA label.
  * @param   {PromoPageProps}       props - Next.js dynamic route props.
  * @returns {Promise<JSX.Element>}       Promo detail JSX.
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
@@ -29,25 +45,17 @@ const PromoDetailPage = async ({
   }
 
   const attrs = page.attributeValues ?? {};
-  const image = getImageUrl(
-    attrs.promo_image?.value as
-      | { downloadLink?: string }
-      | Array<{ downloadLink?: string }>
-      | null
-      | undefined,
-  );
-  const title =
-    (attrs.promo_title?.value as string | undefined) ??
-    page.localizeInfos?.title ??
-    '';
-  const subtitle = attrs.promo_subtitle?.value as
-    | Array<{ htmlValue?: string; plainValue?: string }>
-    | string
+  const image =
+    getImageUrl(attrs.bg_image?.value as ImageValue) ||
+    getImageUrl(attrs.banner?.value as ImageValue);
+  const title = page.localizeInfos?.title ?? '';
+  const description = attrs.description?.value as DescriptionValue | undefined;
+  const subtitleHtml =
+    description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const actionType = attrs.action_type?.value as
+    | Array<{ title?: string }>
     | undefined;
-  const subtitleHtml = Array.isArray(subtitle)
-    ? (subtitle[0]?.htmlValue ?? subtitle[0]?.plainValue ?? '')
-    : (subtitle ?? '');
-  const cta = (attrs.promo_cta?.value as string | undefined) ?? 'Order now';
+  const cta = actionType?.[0]?.title ?? 'Order now';
 
   return (
     <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
@@ -94,20 +102,12 @@ export async function generateMetadata({
     return { title: 'Promo' };
   }
   const attrs = page.attributeValues ?? {};
-  const title =
-    (attrs.promo_title?.value as string | undefined) ??
-    page.localizeInfos?.title ??
-    'Promo';
-  const subtitle = attrs.promo_subtitle?.value as
-    | Array<{ plainValue?: string }>
-    | string
-    | undefined;
-  const description = Array.isArray(subtitle)
-    ? (subtitle[0]?.plainValue ?? '')
-    : (subtitle ?? '');
+  const title = page.localizeInfos?.title ?? 'Promo';
+  const description = attrs.description?.value as DescriptionValue | undefined;
+  const descriptionText = description?.[0]?.plainValue ?? '';
   return {
     title,
-    description,
-    openGraph: { type: 'article', title, description },
+    description: descriptionText,
+    openGraph: { type: 'article', title, description: descriptionText },
   };
 }

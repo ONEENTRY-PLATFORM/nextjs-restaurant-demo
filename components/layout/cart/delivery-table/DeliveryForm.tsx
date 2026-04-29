@@ -1,10 +1,11 @@
 'use client';
 
-import { useTransitionRouter } from 'next-transition-router';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { useAppDispatch } from '@/app/store/hooks';
+import { setStep } from '@/app/store/reducers/OrderSlice';
 import PaymentButton from '@/components/layout/cart/components/PaymentButton';
 import TotalAmount from '@/components/layout/cart/components/TotalAmount';
 import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable';
@@ -19,14 +20,14 @@ const DeliveryForm = ({
   dict: IAttributeValues;
   deliveryData: IProductsEntity;
 }): JSX.Element => {
-  const router = useTransitionRouter();
+  const dispatch = useAppDispatch();
 
   return (
     <form
       className="flex w-182.5 max-w-full flex-col pb-5"
       onSubmit={(e) => {
         e.preventDefault();
-        router.push('/payment');
+        dispatch(setStep('time'));
       }}
     >
       <DeliveryTable dict={dict} delivery={deliveryData as IProductsEntity} />
@@ -39,7 +40,6 @@ const DeliveryForm = ({
           text={
             (dict.go_to_pay_placeholder?.value as string) ?? 'Go to payment'
           }
-          className="self-end max-lg:self-center"
         />
       </div>
     </form>

@@ -1,6 +1,7 @@
 'use client';
 
 import type { JSX, MouseEvent, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -35,7 +36,15 @@ const CartButton = ({
   const qty = item?.quantity ?? 0;
   const maxUnits = units && units > 0 ? units : 99;
 
-  if (qty > 0) {
+  // redux-persist rehydrates cart on the client, so qty may differ from SSR (0).
+  // Render the "add" button on first paint to match server, then switch after mount.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHydrated(true);
+  }, []);
+
+  if (hydrated && qty > 0) {
     return (
       <div
         className="menu_items_btn relative z-10"

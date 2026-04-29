@@ -35,7 +35,9 @@ const DeliveryTable = ({
     marker: 'delivery_order',
   });
 
-  const { order_info_date_placeholder, order_info_address_placeholder } = dict;
+  // `order_info_*_placeholder` don't exist in `static_content` — using
+  // existing `time_text` / `address_text` (verified via inspect-api).
+  const { time_text, address_text } = dict;
 
   const attrs = data?.attributes.filter(
     (attr: IFormAttribute) => attr.marker !== 'time2',
@@ -94,14 +96,8 @@ const DeliveryTable = ({
                     <CalendarIcon />
                   </span>
                 }
-                label={
-                  (order_info_date_placeholder?.value as string) ??
-                  'Delivery time'
-                }
-                placeholder={
-                  (order_info_date_placeholder?.value as string) ??
-                  'Delivery time'
-                }
+                label={(time_text?.value as string) ?? 'Time'}
+                placeholder={(time_text?.value as string) ?? 'Time'}
               />
             );
           }
@@ -109,10 +105,7 @@ const DeliveryTable = ({
             return (
               <AddressRow
                 key={i}
-                placeholder={
-                  (order_info_address_placeholder?.value as string) ??
-                  'Delivery address'
-                }
+                placeholder={(address_text?.value as string) ?? 'Address'}
               />
             );
           }

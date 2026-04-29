@@ -7,6 +7,7 @@ import CenterCartButton from './components/CenterCartButton';
 import CenterCloseButton from './components/CenterCloseButton';
 import NavItemCalendar from './components/NavItemCalendar';
 import NavItemCatalog from './components/NavItemCatalog';
+import NavItemFavorites from './components/NavItemFavorites';
 import NavItemHome from './components/NavItemHome';
 import NavItemProfile from './components/NavItemProfile';
 
@@ -21,6 +22,7 @@ const NAV_BY_URL: Record<string, NavConfig> = {
   reservation: { Component: NavItemCalendar, groupClass: 'group_stroke' },
   menu: { Component: NavItemCatalog, groupClass: 'group' },
   profile: { Component: NavItemProfile, groupClass: 'group' },
+  favorites: { Component: NavItemFavorites, groupClass: 'group_stroke' },
 };
 
 /**

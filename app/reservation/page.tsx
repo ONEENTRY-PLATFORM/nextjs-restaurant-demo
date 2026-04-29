@@ -5,7 +5,6 @@ import type { JSX } from 'react';
 import {
   getChildPagesByParentUrl,
   getFormByMarker,
-  getImageUrl,
   getPageByUrl,
 } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
@@ -29,55 +28,39 @@ const ReservationPage = async (): Promise<JSX.Element> => {
       getDictionary(),
     ]);
 
+  // Restaurant children of `restaurants`: each has `address` (string) +
+  // `localizeInfos.title`. Verified via inspect-api — no `restaurant_address`
+  // attr, so option label falls back to `address` then `title`.
   const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map(
     (p: IPagesEntity) => ({
       value: p.pageUrl ?? String(p.id),
       label:
-        ((p.attributeValues?.address?.value as string | undefined) ??
-          (p.attributeValues?.restaurant_address?.value as
-            | string
-            | undefined) ??
-          p.localizeInfos?.title) ||
+        ((p.attributeValues?.address?.value as string | undefined) ||
+          p.localizeInfos?.title) ??
         'Restaurant',
     }),
   );
 
-  // Use parent `restaurants` page rich content (title/description/photos) as hero
+  // Hero pulled from the `restaurants` parent page (`photos` groupOfImages,
+  // `description` text). The `bookings` page has only a `menu_icon`, no
+  // dedicated reservation_* attributes — verified via inspect-api.
   const parent = restaurantsParentRes.page;
   const photos =
     (parent?.attributeValues?.photos?.value as
       | Array<{ downloadLink?: string }>
       | undefined) ?? [];
-  const heroImage =
-    photos[0]?.downloadLink ??
-    getImageUrl(
-      pageRes.page?.attributeValues?.reservation_hero_image?.value as
-        | { downloadLink?: string }
-        | Array<{ downloadLink?: string }>
-        | null
-        | undefined,
-    );
+  const heroImage = photos[0]?.downloadLink;
   const title =
-    (parent?.attributeValues?.title?.value as string | undefined) ??
-    (pageRes.page?.attributeValues?.reservation_title?.value as
-      | string
-      | undefined) ??
+    parent?.localizeInfos?.title ??
     pageRes.page?.localizeInfos?.title ??
     'Book a table';
-  const descriptionRaw =
-    (parent?.attributeValues?.description?.value as
-      | Array<{ htmlValue?: string; plainValue?: string }>
-      | undefined) ??
-    (pageRes.page?.attributeValues?.reservation_description?.value as
-      | Array<{ htmlValue?: string; plainValue?: string }>
-      | undefined);
+  const descriptionRaw = parent?.attributeValues?.description?.value as
+    | Array<{ htmlValue?: string; plainValue?: string }>
+    | undefined;
   const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
 
   return (
-    <section
-      className="min-h-screen bg-cover bg-no-repeat"
-      style={{ backgroundImage: "url('/images/picture/bg_cart.png')" }}
-    >
+    <section className="min-h-screen bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">
       <div className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
         <div className="mb-8 overflow-hidden rounded-[20px] bg-ink/60">
           {heroImage ? (
@@ -126,10 +109,7 @@ export default ReservationPage;
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('bookings');
-  const title =
-    (page?.attributeValues?.reservation_title?.value as string | undefined) ??
-    page?.localizeInfos?.title ??
-    'Book a table';
+  const title = page?.localizeInfos?.title ?? 'Book a table';
   return {
     title,
     description: 'Book a table at our restaurant',

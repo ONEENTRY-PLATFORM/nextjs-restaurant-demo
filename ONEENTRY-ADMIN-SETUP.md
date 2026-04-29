@@ -32,6 +32,20 @@
 
 Сейчас `addData({ marker: 'comment' / 'alt_phone' })` отправит их при сабмите заказа — без полей в OneEntry значения отправятся, но не сохранятся.
 
+### 1.3. `delivery_review_form` — отзыв о доставке
+
+Используется в drawer-е [components/reviews/OrderReviewsPanel.tsx](components/reviews/OrderReviewsPanel.tsx) (вёрстка [static-html/index_rewiews.html](static-html/index_rewiews.html)) для последней «Delivery»-строки в списке отзывов по заказу. Сейчас заглушка [submitDeliveryReview](app/actions/review.ts) возвращает `{ ok: true }`, но в админке формы пока нет — отзыв о курьере никуда не сохраняется.
+
+| marker            | type   | title              | required |
+|-------------------|--------|--------------------|----------|
+| `review_rating`   | int    | Rating             | yes      |
+| `review_text`     | text   | Review body        | yes      |
+| `delivery_status` | string | Delivery condition | no       |
+
+После создания формы нужно поправить `submitDeliveryReview` так же, как `submitReview`: читать схему через `Forms.getFormByMarker('delivery_review_form')`, постить через `FormData.postFormsData` с `moduleEntityIdentifier=String(orderId)`.
+
+> ❓ **Уточнить у клиента:** должна ли «Delivery»-строка отзыва быть гейтом пока заказ не помечен как доставленный? В вёрстке drawer виден при статусе «In delivery», но обычно отзыв собирается уже после `delivered`.
+
 ---
 
 ## 2. Недостающие страницы
@@ -50,42 +64,36 @@
   | `support_whatsapp_url` | string | WhatsApp URL   |
   | `support_email`        | email  | Email          |
 
-### 2.2. Иконки категорий (`menu` → child pages)
-
-Атрибут `icon` (image) у дочерних страниц `menu` уже определён в attribute set, но **значения не загружены** для большинства категорий. Используется в [components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx) (левый drawer категорий) и потенциально в `CategoriesScroller`. Сейчас при пустом `icon` есть fallback на файл `/public/images/icons/<pageUrl>.svg`, но это временный костыль — для админ-управляемой вёрстки иконки должны жить в CMS.
-
-| pageUrl          | состояние `icon`   |
-|------------------|--------------------|
-| `appetizers`     | ✅ загружено       |
-| `kids_menu`      | ✅ загружено       |
-| `snacks`         | ✅ загружено       |
-| `dinner`         | ✅ загружено       |
-| `fresh_juice`    | ✅ загружено       |
-| `soup`           | ✅ загружено       |
-| `hot_meals`      | ✅ загружено       |
-| `meat`           | ✅ загружено       |
-| `fish`           | ✅ загружено       |
-| `lunch`          | ✅ загружено       |
-| `breakfast`      | ✅ загружено       |
-| `salads`         | ✅ загружено       |
-| `desserts`       | ✅ загружено       |
-| `cold_beverages` | ✅ загружено       |
-| `first_courses`  | ✅ загружено       |
-| `pizza`          | ✅ загружено       |
-
-- Для категорий без атрибута — добавить `icon` (тип `image`) в attribute set дочерних страниц `menu`.
-- Для категорий с пустым атрибутом — загрузить иконку. Источник — `static-html/public/images/icons/<pageUrl>.svg` (`first_courses.svg`, `main_courses.svg`, `salads.svg`, `snackes.svg`, `hot_beverages.svg`, `fresh_juice.svg`, `dessert.svg`, `appetizers.svg`, `kids_menu.svg`, `booking_table.svg`).
-
 ### 2.3. Дочерние страницы под `blog` (акции)
 
-В админке только `birthday_offer`. В верстке также нужны: `business_lunch`, `deal_of_the_day`, `kids_menu`, `happy_monday`, `dinner_fix_price` — создать child-pages под `blog` с attribute set `blog_page`:
+В админке: `birthday_offer`, `birthday_offer_copy4`, `business_lunch`, `deal_of_the_day`. В вёрстке также упоминаются `kids_menu`, `happy_monday`, `dinner_fix_price` — создать недостающие child-pages под `blog`. Реальный attribute set `blog_page` (по результату [inspect-api](.claude/temp/inspect-blog.mjs)):
 
-| marker          | type   | title         |
-|-----------------|--------|---------------|
-| `promo_image`   | image  | Promo image   |
-| `promo_title`   | string | Title         |
-| `promo_subtitle`| string | Subtitle      |
-| `promo_cta`     | string | CTA label     |
+| marker          | type  | title          |
+|-----------------|-------|----------------|
+| `bg_image`      | image | Desktop banner |
+| `banner`        | image | Mobile banner  |
+| `description`   | text  | Description    |
+| `action_type`   | list  | Action type    |
+
+- `bg_image` — десктоп-баннер на `/`, `/cart`, `/profile/orders` ([getBlogBanners](app/api/server/pages/getBlogBanners.ts)). И как hero на `/promo/[handle]`.
+- `banner` — мобильный баннер в горизонтальном скролле на `/` и fallback для hero на детальной странице, если `bg_image` пуст.
+- `description` — markdown/HTML текст под заголовком (используется в `[handle]/page.tsx` через `htmlValue`).
+- `action_type` — list-атрибут; `[0].title` идёт в CTA-кнопку. Сейчас у всех страниц пустой → используется fallback (`Order now` / `Learn more`).
+
+Заголовок (title) идёт из `localizeInfos.title` страницы — отдельного `title`/`promo_title` атрибута в `blog_page` нет.
+
+Состояние данных (на момент проверки):
+
+| pageUrl                 | bg_image | banner | description | action_type |
+|-------------------------|----------|--------|-------------|-------------|
+| `birthday_offer`        | ✅       | ✅     | ✅          | ❌ пусто    |
+| `birthday_offer_copy4`  | ❌ пусто | ✅     | ✅          | ❌ пусто    |
+| `business_lunch`        | ❌ пусто | ✅     | ✅          | ❌ пусто    |
+| `deal_of_the_day`       | ✅       | ✅     | ✅          | ❌ пусто    |
+
+> ❓ **Уточнить у клиента:** заполнить `bg_image` у `birthday_offer_copy4` и `business_lunch` (иначе они не попадут в десктоп-сайдбары `/cart` / `/profile/orders`). Также — наполнить `action_type` (list-options) для CTA-кнопок в карточках и на детальной странице.
+
+Десктоп-баннер берётся через [getBlogBanners](app/api/server/pages/getBlogBanners.ts) (`bg_image`), мобильный — через тот же fetcher (`banner`). Пока у дочерних страниц `blog` нет `bg_image` — десктопный hero на `/` не покажется (graceful fallback), а сайдбар `/cart` / `/profile/orders` будет пустым.
 
 ---
 
@@ -100,6 +108,8 @@
 - listTitles задаются в админке (например: `Meat`, `Fish`, `Vegetable`, `Sugar Free`, `Gluten free`, `Vegetarian`, `Spicy dish`, `Diabetic`, …) — те же значения, что в [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx).
 - Атрибут уже используется на product detail ([ProductDetails.tsx:45](components/layout/product/product-single/ProductDetails.tsx#L45)) — если listTitles пустые, scroller рендерится пустым (graceful fallback).
 - Каждое блюдо должно иметь выбранные значения `preferences`, иначе фильтр `preferences in <value>` вернёт пусто.
+
+> ❓ **Уточнить у клиента:** сейчас в `listTitles` атрибута `preferences` есть две записи с одинаковым `value = "Dinner"` — React ругается на дубликат ключа в [CategoriesScroller.tsx:52](components/layout/header/CategoriesScroller.tsx#L52). Временно дедуплицируем по `value` в [components/layout/header/index.tsx](components/layout/header/index.tsx) (первое вхождение побеждает). Убрать один из дубликатов в админке (или поменять `value` второму, если это разные смыслы) — после этого можно убрать дедуп.
 
 ---
 
@@ -165,5 +175,62 @@
 Дополнительно: [StepOrder](components/cart/steps/StepOrder.tsx) (per `cart_Order.html`) показывает поле «Promo Code» с кнопкой «Apply Code» — обработчик пока no-op. Уточнить:
 
 > ❓ **Уточнить у клиента:** есть ли в OneEntry/бэкенде механизм промокодов (скидка % / фикс / free delivery)? Если да — какой API/marker и как привязывать к заказу. Пока кнопка не делает ничего и поле декоративное.
+
+---
+
+## 7. Аудит соответствия полей коду (inspect-api)
+
+Проверка проведена через `oneentry` SDK напрямую к проекту `oe-restaurants.oneentry.cloud` (lang=`en_US`). Зафиксировано на момент проверки.
+
+### 7.1. Pages — реальные атрибуты
+
+- **`home_web`** — атрибутов нет (контент рендерится через blocks).
+- **`support`** — атрибутов нет вообще. Код читает `support_title`, `support_description`, `support_phone`, `support_whatsapp_url`, `support_email` — всё фолбэчится. См. 2.1.
+- **`services`** — `icon`, `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` существуют, но **значения пусты** → используются хардкоды [app/service/page.tsx](app/service/page.tsx).
+- **`bookings`** — только `menu_icon`. Код раньше читал `reservation_hero_image`, `reservation_title`, `reservation_description` — **исправлено**: hero теперь берётся из `restaurants.photos[0]`, `restaurants.description`, `localizeInfos.title`.
+- **`restaurants`** — `address`, `lat`, `long`, `description` (text), `photos` (groupOfImages), `comforts` (list), `schedule` (timeInterval), `menu_icon`, `phone`. Раньше читался `parent.attributeValues.title.value` — **исправлено** на `parent.localizeInfos.title`.
+- **`restaurants/*`** (`restaurant_1/2/3`) — те же что у `restaurants`. Маркер `restaurant_address` — **нет**, исправлено: используется `address`.
+- **`menu/*`** (`appetizers`, `dinner`, `soup`, `fresh_juice`, …) — `icon` (заполнен), `service_*` (пустые, унаследовано из шаблона).
+- **`filters`** — `cooking_time_filters` (json), `preferences_filters` (json), `price_filters` (string).
+- **`blog/*`** — `bg_image`, `banner`, `description`, `action_type`. См. 2.3. `title`, `promo_image`, `promo_title`, `promo_subtitle`, `promo_cta` — **исправлено** в предыдущем раунде.
+
+### 7.2. Product (attribute set `dish`)
+
+Реальные атрибуты у первого продукта (id=13):
+`weight` (integer), `calorrage` (integer), `cooking_time` (integer), `preferences` (list), `ingredients` (string), `price` (integer), `currency` (string), `rating` (float), `sku` (string), `cover` (image).
+
+- **`pic`** — ❌ нет. Удалён fallback из всех мест: [ProductImage](components/layout/products-grid/components/product-card/ProductImage.tsx), [cart ProductCard](components/layout/cart/components/ProductCard.tsx), [FavoritesGrid](components/profile/FavoritesGrid.tsx), [FavoritesPopup](components/profile/FavoritesPopup.tsx), [StepOrder](components/cart/steps/StepOrder.tsx), [shop/product/[handle]](app/shop/product/[handle]/page.tsx), [ProductImageGallery](components/layout/product/product-single/ProductImageGallery.tsx).
+- **`portion`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx), [FavoritesGrid](components/profile/FavoritesGrid.tsx), [FavoritesPopup](components/profile/FavoritesPopup.tsx).
+- **`time`, `delivery_time`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
+- **`stars`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
+- **`more_pic`** — ❌ нет. Оставлено (для будущего расширения, [ProductImageGallery](components/layout/product/product-single/ProductImageGallery.tsx)).
+- **`sale`** — ❌ нет в `dish` set. Оставлено (graceful fallback к 0 → отображается обычная цена). При появлении распродаж — добавить в админке.
+- **`units_product`** — ❌ нет. Оставлено (graceful fallback к 0 → нет лимита по складу).
+- **`description`** — ❌ нет на продукте. Читается в [ProductDetails](components/layout/product/product-single/ProductDetails.tsx) и [shop/product/[handle]](app/shop/product/[handle]/page.tsx) — текстовое тело продукта пустое. Добавить в админке если нужно описание.
+- **`stickers`** — ❌ нет. [Stickers.tsx](components/layout/products-grid/components/product-card/Stickers.tsx) ничего не рендерит. Добавить в админке для бейджей «Хит/Новинка/Скидка».
+
+> ❓ **Уточнить у клиента:** добавить ли в `dish` атрибуты `sale`, `units_product`, `description`, `stickers`, `more_pic`? Без них соответствующая логика молча падает в no-op (нет распродаж / нет лимита склада / нет описания / нет бейджей / одна картинка вместо галереи).
+
+### 7.3. Forms
+
+- **`user`** — ✅ есть, 10 атрибутов: `username`, `surname`, `email`, `phone`, `password`, `repeat_password`, `user_address`, `email_notifications`, `user_flat`, `user_floor`. Используется в [SignInForm](components/forms/SignInForm.tsx), [SignUpForm](components/forms/SignUpForm.tsx), [UserForm](components/forms/UserForm.tsx).
+- **`booking_order`** — ✅ есть: `restaurant`, `time_slot`, `surname`, `phone`, `name`, `people_count`, `user_preferences`. Используется в [ReservationForm](components/reservation/ReservationForm.tsx).
+- **`delivery_order`** — ✅ существует (используется через `getAllOrdersByMarker`, [OrdersList](components/profile/OrdersList.tsx), `StepPayment` submit).
+- **`contact_us`** — ❌ нет. Используется в [ContactUsForm](components/forms/ContactUsForm.tsx) — fetch упадёт, см. 1.1.
+- **`reservation`** — ❌ нет. В коде не используется (используется `booking_order`).
+- **`reviews`** — ❌ нет. Используется в [ReviewForm](components/reviews/ReviewForm.tsx) — fetch упадёт.
+
+### 7.4. Blocks (home_web)
+
+3 блока с identifier'ами `home_promo`, `recommended`, `home_categories`. У всех блоков **нет атрибутов**. Код использует только `block.identifier` как позиционный якорь для рендера — это работает.
+
+[components/layout/product/ProductsGroup.tsx:32](components/layout/product/ProductsGroup.tsx) читает `block.attributeValues?.together_title?.value` для блока `together` (related products) — соответствующий блок в админке надо проверить отдельно (если есть).
+
+### 7.5. Dictionary (`static_content`) — что код читает, но в CMS нет
+
+- **`go_to_pay_placeholder`** → ✅ добавлен в `static_content` (initial `Go to pay`). [DeliveryForm.tsx](components/layout/cart/delivery-table/DeliveryForm.tsx) уже читал этот маркер с fallback'ом на `Go to payment` — кода менять не пришлось.
+- **`reset_descr`, `send_text`** ([ForgotPasswordForm.tsx](components/forms/ForgotPasswordForm.tsx)) — нет.
+
+> ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
 ---

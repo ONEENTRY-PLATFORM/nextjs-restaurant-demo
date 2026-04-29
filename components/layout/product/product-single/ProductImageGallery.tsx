@@ -28,9 +28,10 @@ const ProductImageGallery = ({
   // extract attributeValues from product
   const { attributeValues } = product;
 
-  // extract images from attributeValues (admin `dish` set uses `cover`; `pic` legacy)
-  const coverRaw = (attributeValues.cover?.value ??
-    attributeValues.pic?.value) as
+  // Main image from `cover` (admin `dish` set). `more_pic` is read for
+  // backwards-compat with future admin additions but is not in the live set
+  // today (verified via inspect-api).
+  const coverRaw = attributeValues.cover?.value as
     | { downloadLink?: string }
     | Array<{ downloadLink?: string }>
     | undefined;

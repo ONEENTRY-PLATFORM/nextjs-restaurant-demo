@@ -5,45 +5,45 @@ import type { JSX } from 'react';
 import { getImageUrl } from '@/app/api';
 
 /**
- * Single promo card — renders the `promo_image`, `promo_title`, `promo_subtitle`
- * and a CTA linking to `/promo/[pageUrl]`.
+ * Single promo card — driven by OneEntry `blog` child page attributes
+ * (set: `blog_page`).
+ *
+ * Real attributes from CMS:
+ *   - `banner`      (image) — used as the card preview;
+ *   - `bg_image`    (image) — desktop fallback if `banner` is empty;
+ *   - `description` (text)  — markdown/plain/html, shown as subtitle;
+ *   - `action_type` (list)  — `[{ title, value }]`, first option becomes
+ *                             the CTA label; falls back to "Learn more".
+ *
+ * Title comes from `localizeInfos.title` (no `title` attribute exists in
+ * the admin's `blog_page` set — verified via `inspect-api`).
  * @param   {object}        props      - Component properties.
  * @param   {IPagesEntity}  props.page - Promo page entity from OneEntry CMS.
  * @returns {JSX.Element}              Promo card JSX.
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};
-  // admin `blog_page` set: banner/title/description/action_type
-  const imageValue = attrs.banner?.value ?? attrs.promo_image?.value;
-  const image = getImageUrl(
-    imageValue as
-      | { downloadLink?: string }
-      | Array<{ downloadLink?: string }>
-      | null
-      | undefined,
-  );
-  const title =
-    (attrs.title?.value as string | undefined) ??
-    (attrs.promo_title?.value as string | undefined) ??
-    page.localizeInfos?.title ??
-    '';
-  const subtitle =
-    (attrs.description?.value as Array<{ plainValue?: string }> | undefined) ??
-    (attrs.promo_subtitle?.value as
-      | Array<{ plainValue?: string }>
-      | string
-      | undefined) ??
-    '';
-  const subtitleText = Array.isArray(subtitle)
-    ? (subtitle[0]?.plainValue ?? '')
-    : subtitle;
+  type ImageValue =
+    | { downloadLink?: string }
+    | Array<{ downloadLink?: string }>
+    | null
+    | undefined;
+
+  const image =
+    getImageUrl(attrs.banner?.value as ImageValue) ||
+    getImageUrl(attrs.bg_image?.value as ImageValue);
+
+  const title = page.localizeInfos?.title ?? '';
+
+  const descriptionValue = attrs.description?.value as
+    | Array<{ plainValue?: string; htmlValue?: string; mdValue?: string }>
+    | undefined;
+  const subtitleText = descriptionValue?.[0]?.plainValue ?? '';
+
   const actionType = attrs.action_type?.value as
     | Array<{ title?: string }>
     | undefined;
-  const cta =
-    actionType?.[0]?.title ??
-    (attrs.promo_cta?.value as string | undefined) ??
-    'Learn more';
+  const cta = actionType?.[0]?.title ?? 'Learn more';
 
   return (
     <Link

@@ -3,24 +3,20 @@ import type { JSX } from 'react';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * Payment button
+ * Cart submit button — `APPLY` CTA from `cart_cart.html` / `pk_cart.html`.
+ * Solid `bg-custom_btnorange`, full width of the cart panel, h-60 on mobile
+ * and h-45 on desktop. Submits the parent form which dispatches the next
+ * checkout-wizard step.
+ * @param   {object}      props      - Button props.
+ * @param   {string}      props.text - Button label (CMS-driven).
+ * @returns {JSX.Element}            Button JSX.
  */
-const PaymentButton = ({
-  className,
-  text,
-}: {
-  className?: string;
-  text: string;
-}): JSX.Element => {
+const PaymentButton = ({ text }: { text: string }): JSX.Element => {
   return (
-    <TableRowAnimations className={'mx-auto flex'} index={10}>
+    <TableRowAnimations className={'mt-7.5 flex w-full'} index={10}>
       <button
         type="submit"
-        onClick={() => {}}
-        className={
-          'rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover py-3 mt-9 self-center px-16 ' +
-          className
-        }
+        className="flex h-15 w-full items-center justify-center rounded-[10px] bg-custom_btnorange font-normal text-[16px] text-white hover:bg-[#e44306] md:h-11.25"
         title={text}
       >
         {text}

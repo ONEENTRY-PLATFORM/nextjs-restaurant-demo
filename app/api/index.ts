@@ -44,6 +44,8 @@ export { getProductReviews } from './server/forms/getProductReviews';
 export { getMenuByMarker } from './server/menus/getMenuByMarker';
 export { getAllOrdersByMarker } from './server/orders/getAllOrdersByMarker';
 export { updateOrderByMarkerAndId } from './server/orders/updateOrderByMarkerAndId';
+export type { BlogBanner } from './server/pages/getBlogBanners';
+export { getBlogBanners } from './server/pages/getBlogBanners';
 export { getChildPagesByParentUrl } from './server/pages/getChildPagesByParentUrl';
 export { getPageById } from './server/pages/getPageById';
 export { getPageByUrl } from './server/pages/getPageByUrl';

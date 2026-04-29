@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import type {
   IOrderByMarkerEntity,
   IOrderProducts,
@@ -8,6 +9,7 @@ import type {
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
+import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import ChevronUpIcon from '@/components/icons/chevron-up.svg';
@@ -20,12 +22,6 @@ const HISTORY_STATUSES = new Set([
   'completed',
   'rejected',
 ]);
-
-const PROMO_BANNERS = [
-  { src: '/images/promo/Deal of the Day pk.png', alt: 'Deal of the Day -50%' },
-  { src: '/images/promo/Happy Birthday pk.png', alt: '25% Off Happy Birthday' },
-  { src: '/images/promo/Business Lunch pk.png', alt: 'Business Lunch 1-3 p.m' },
-];
 
 /**
  * Format an ISO / ms date as `dd.MM.yy` per `pk_active_orders.html`.
@@ -251,7 +247,11 @@ const OrderLineItem = ({
  * empty / error states.
  * @returns {JSX.Element} Orders list JSX.
  */
-const OrdersList = (): JSX.Element => {
+const OrdersList = ({
+  promoBanners = [],
+}: {
+  promoBanners?: BlogBanner[];
+} = {}): JSX.Element => {
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -376,16 +376,24 @@ const OrdersList = (): JSX.Element => {
           )}
         </div>
         <aside className="hidden lg:flex lg:w-1/2 lg:flex-col lg:gap-10">
-          {PROMO_BANNERS.map((b) => (
-            <Image
-              key={b.src}
-              src={b.src}
-              alt={b.alt}
-              width={620}
-              height={240}
-              className="h-auto w-full"
-            />
-          ))}
+          {promoBanners
+            .filter((b) => b.desktopImage)
+            .map((b) => (
+              <Link
+                key={b.id}
+                href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                title={b.title}
+                className="block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
+              >
+                <Image
+                  src={b.desktopImage as string}
+                  alt={b.title}
+                  width={620}
+                  height={240}
+                  className="h-auto w-full"
+                />
+              </Link>
+            ))}
         </aside>
       </div>
     </section>

@@ -56,21 +56,23 @@ const AddToCartButton = ({
       selectFavoritesItems(state),
   );
   const { user } = useContext(AuthContext);
-  const { out_of_stock_button, add_to_cart_button } = dict;
+  // Dict markers from `static_content`: `add_to_cart` and
+  // `out_of_stock_button` (verified via inspect-api).
+  const { add_to_cart, out_of_stock_button } = dict;
   const notInStock = useMemo(
     () => statusIdentifier !== 'in_stock',
     [statusIdentifier],
   );
 
-  // If not InStock show out_of_stock button
-  if (notInStock && out_of_stock_button) {
+  // If not InStock show out-of-stock label from CMS dict.
+  if (notInStock) {
     return (
       <div
         className={
           'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className
         }
       >
-        {out_of_stock_button?.value as string | undefined}
+        {(out_of_stock_button?.value as string | undefined) ?? 'Out of stock'}
       </div>
     );
   }
@@ -104,7 +106,7 @@ const AddToCartButton = ({
   };
 
   const addToCartLabel =
-    (add_to_cart_button?.value as string | undefined) || 'ADD TO CART';
+    (add_to_cart?.value as string | undefined) || 'ADD TO CART';
 
   return !inCart ? (
     <button

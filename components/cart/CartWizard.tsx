@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
@@ -28,6 +28,7 @@ import StepVerification from './steps/StepVerification';
 type CartWizardProps = {
   dict: IAttributeValues;
   deliveryData: IProductsEntity;
+  promoSidebar?: ReactNode;
 };
 
 const buildStepTitles = (
@@ -64,16 +65,20 @@ const buildStepTitles = (
  * @param   {CartWizardProps} props - Wizard props.
  * @returns {JSX.Element}           Wizard JSX for the current step.
  */
-const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
+const CartWizard = ({
+  dict,
+  deliveryData,
+  promoSidebar,
+}: CartWizardProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const step = useAppSelector(selectCheckoutStep);
   const STEP_TITLES = buildStepTitles(dict);
 
   if (step === 'cart') {
     return (
-      <div className="p-5">
-        {/* Cart header — back arrow + "Cart" + hamburger per cart_cart.html */}
-        <div className="flex justify-between items-center">
+      <>
+        {/* Mobile-only header — back arrow + "Cart" + hamburger per cart_cart.html */}
+        <div className="flex items-center justify-between p-5 pb-0 md:hidden">
           <Link href="/" className="group_white" aria-label="Back">
             <ArrowBackOrangeIcon />
           </Link>
@@ -82,17 +87,18 @@ const CartWizard = ({ dict, deliveryData }: CartWizardProps): JSX.Element => {
             <BurgerOrangeIcon />
           </div>
         </div>
-        <div className="flex flex-col gap-4 mt-10">
-          <CartPage dict={dict} deliveryData={deliveryData} />
-          <button
-            type="button"
-            onClick={() => dispatch(setStep('time'))}
-            className="cart_btn"
-          >
-            Proceed to checkout
-          </button>
+
+        {/* Desktop-only breadcrumb-style label per pk_cart.html */}
+        <p className="hidden pt-3.75 text-base text-[#969696] md:block">Cart</p>
+
+        {/* Stacked on mobile, 2-col (50/50) on md+ */}
+        <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13 md:pb-0">
+          <div className="flex flex-col gap-4 md:w-1/2">
+            <CartPage dict={dict} deliveryData={deliveryData} />
+          </div>
+          {promoSidebar}
         </div>
-      </div>
+      </>
     );
   }
 

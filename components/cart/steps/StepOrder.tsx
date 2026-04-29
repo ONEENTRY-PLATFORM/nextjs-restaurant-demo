@@ -72,8 +72,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
             | undefined;
           const price = product.price ?? 0;
           const unit = sale && sale > 0 ? sale : price;
-          const cover = (product.attributeValues?.cover?.value ??
-            product.attributeValues?.pic?.value) as
+          const cover = product.attributeValues?.cover?.value as
             | { downloadLink?: string }
             | undefined;
           const imgSrc = cover?.downloadLink;

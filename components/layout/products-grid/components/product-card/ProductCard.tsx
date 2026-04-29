@@ -47,23 +47,16 @@ const ProductCard = ({
   const attrs = attributeValues ?? {};
   const title = localizeInfos?.title || '';
 
-  // Descr line (time · weight · rating) — try several common OneEntry marker
-  // names; fall back to static-html defaults so the card never looks empty.
-  const timeRaw = (attrs.cooking_time?.value ??
-    attrs.time?.value ??
-    attrs.delivery_time?.value) as string | number | undefined;
+  // Descr line (time · weight · rating) — markers from `dish` attribute set
+  // (verified via inspect-api). Fall back to static-html defaults so the
+  // card never looks empty when an attribute is unset.
+  const timeRaw = attrs.cooking_time?.value as string | number | undefined;
   const time = timeRaw ? String(timeRaw) : '30-45 min';
 
-  const weightRaw = (attrs.weight?.value ?? attrs.portion?.value) as
-    | string
-    | number
-    | undefined;
+  const weightRaw = attrs.weight?.value as string | number | undefined;
   const weight = weightRaw ? `${weightRaw} g` : '250 g';
 
-  const ratingRaw = (attrs.rating?.value ?? attrs.stars?.value) as
-    | string
-    | number
-    | undefined;
+  const ratingRaw = attrs.rating?.value as string | number | undefined;
   const rating = ratingRaw ? String(ratingRaw) : '5,0';
 
   // Price

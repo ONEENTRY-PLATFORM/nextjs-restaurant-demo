@@ -120,3 +120,24 @@ export async function submitReview(
     return { ok: false, message: (e as Error).message };
   }
 }
+
+/**
+ * Placeholder Server Action for the courier/delivery review line in
+ * {@link OrderReviewsPanel}. Once the `delivery_review_form` form exists in
+ * OneEntry (see ONEENTRY-ADMIN-SETUP.md §1.3) this should mirror
+ * {@link submitReview} and post via `api.FormData.postFormsData` with
+ * `moduleEntityIdentifier=String(orderId)`. Until then it just resolves
+ * `ok` so the UI flow can be exercised end-to-end.
+ * @param   {{ rating: number; text: string; orderId: string | number }} payload - Review payload.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}              Submission result.
+ */
+export async function submitDeliveryReview(payload: {
+  rating: number;
+  text: string;
+  orderId: string | number;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!payload.text.trim()) {
+    return { ok: false, message: 'Please write a review.' };
+  }
+  return { ok: true };
+}

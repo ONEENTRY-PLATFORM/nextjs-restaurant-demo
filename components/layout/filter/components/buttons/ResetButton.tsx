@@ -13,7 +13,7 @@ const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { replace } = useRouter();
   const params = new URLSearchParams(searchParams);
 
-  const { reset_button_placeholder } = dict;
+  const { clear_all_filters_text } = dict;
 
   const onResetHandle = () => {
     params.delete('search');
@@ -29,7 +29,8 @@ const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       onClick={onResetHandle}
       className="rounded-[10px] border border-brand text-brand font-bold text-[16px] uppercase h-12.5 hover_btn_white w-full"
     >
-      {reset_button_placeholder?.value as string | undefined}
+      {(clear_all_filters_text?.value as string | undefined) ??
+        'Clear all filters'}
     </button>
   );
 };

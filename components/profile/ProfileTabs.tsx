@@ -7,6 +7,7 @@ import type { JSX } from 'react';
 const tabs: Array<{ href: string; label: string }> = [
   { href: '/profile', label: 'Personal' },
   { href: '/profile/orders', label: 'Orders' },
+  { href: '/profile/favorites', label: 'Favorites' },
 ];
 
 /**

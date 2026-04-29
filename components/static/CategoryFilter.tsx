@@ -20,7 +20,7 @@ type Category = {
 // outside the `menu` page tree (links to /reservation).
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
-  icon: '/images/icons/booking_table.svg',
+  icon: '/images/icons/categories/booking_table.svg',
   href: '/reservation',
 };
 
@@ -56,7 +56,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         const cmsIcon = getImageUrl(iconAttr);
         return {
           label: (p.localizeInfos?.title ?? p.pageUrl).toUpperCase(),
-          icon: cmsIcon || '/images/icons/' + p.pageUrl + '.svg',
+          icon: cmsIcon || '/images/icons/categories/' + p.pageUrl + '.svg',
           href: '/shop/category/' + p.pageUrl,
         };
       });

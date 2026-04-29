@@ -24,12 +24,10 @@ const ProductCard = ({
   const dispatch = useAppDispatch();
   const {
     id,
-    attributeValues: { pic, cover, price, sale, units_product, weight },
+    attributeValues: { cover, price, sale, units_product, weight },
     localizeInfos,
   } = product;
-  const imageAttr = (cover?.value ?? pic?.value) as
-    | { downloadLink?: string }
-    | undefined;
+  const imageAttr = cover?.value as { downloadLink?: string } | undefined;
   const imgSrc = imageAttr?.downloadLink;
   const title = localizeInfos?.title ?? '';
   const weightValue = weight?.value as string | number | undefined;
@@ -70,7 +68,7 @@ const ProductCard = ({
           )}
         </Link>
 
-        <div className="flex flex-col justify-between gap-2 self-center text-white/90">
+        <div className="flex grow flex-col justify-between gap-2 self-center text-white/90">
           <h2 className="max-w-35 font-normal text-[14px] opacity-90">
             {title}
           </h2>

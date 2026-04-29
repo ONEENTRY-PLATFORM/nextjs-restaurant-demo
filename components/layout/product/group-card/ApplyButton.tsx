@@ -24,7 +24,7 @@ const ApplyButton = ({
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const [productInCart, setInCart] = useState(false);
-  const { apply_button_placeholder, cancel_text } = dict;
+  const { apply_text, cancel_text } = dict;
   const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const ApplyButton = ({
       onClick={() => addToCartHandle()}
       className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
-      {apply_button_placeholder?.value as string | undefined}
+      {(apply_text?.value as string | undefined) ?? 'Apply'}
     </button>
   ) : (
     <button

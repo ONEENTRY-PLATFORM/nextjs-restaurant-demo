@@ -11,14 +11,14 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  */
 const ApplyButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);
-  const { apply_button_placeholder } = dict;
+  const { apply_text } = dict;
 
   return (
     <button
       onClick={() => setTransition('close')}
       className="rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white h-12.5 hover:bg-gradient-to-r-hover w-full"
     >
-      {apply_button_placeholder?.value as string | undefined}
+      {(apply_text?.value as string | undefined) ?? 'Apply'}
     </button>
   );
 };

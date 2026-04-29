@@ -1,48 +1,71 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import type { JSX } from 'react';
 
-import { mobilePromos } from './mockMenuData';
+import { getBlogBanners } from '@/app/api';
 
 /**
- * Desktop-only "DEAL OF THE DAY -50%" promotion banner + mobile-only
- * horizontal scroll of promo cards. Ports the two `<section>` blocks
- * right after the `navigation` in `static-html/index.html`.
- * @returns {JSX.Element} Promo stacked banners JSX.
+ * Home page promo strip — port of the two `<section>` blocks right after
+ * `navigation` in `static-html/index.html`. Driven by OneEntry `blog`
+ * children:
+ *   - Desktop hero — first `blog` child's `bg_image` (e.g. "DEAL OF THE
+ *     DAY"). The image already contains all the title / discount chrome,
+ *     so the component just renders it as a clickable banner.
+ *   - Mobile horizontal scroll — every banner's `banner` attribute.
+ *
+ * Renders nothing if the CMS has no banners.
+ * @returns {Promise<JSX.Element | null>} Promo JSX.
  */
-const HomePromo = (): JSX.Element => {
+const HomePromo = async (): Promise<JSX.Element | null> => {
+  const banners = await getBlogBanners();
+  const heroBanner = banners.find((b) => b.desktopImage) ?? null;
+  const mobileBanners = banners.filter((b) => b.mobileImage);
+
+  if (!heroBanner && mobileBanners.length === 0) return null;
+
   return (
     <>
-      <section
-        className="promotion hidden md:bg-center md:bg-cover md:bg-no-repeat md:h-48 md:max-w-175 lg:max-w-250 xl:max-w-323 md:mx-auto md:flex md:items-center w-full mb-10"
-        style={{ backgroundImage: "url('/images/picture/promo.png')" }}
-      >
-        <div className="promotion_counter rounded-full bg-[#ec722b] font-black text-[40px] text-white mr-10 ml-33.75 px-3 py-7.5 -mt-2.5">
-          -50%
-        </div>
-        <div className="promotion_item pt-8.5 pb-8.75 italic font-bold md:text-[32px] lg:text-[48px] leading-[0.83] text-center text-white md:w-87.5 lg:w-152.5 border-t border-b border-custom_white">
-          DEAL OF THE <span className="text-[#ec722b]">DAY</span>
-        </div>
-      </section>
+      {heroBanner ? (
+        <Link
+          href={heroBanner.pageUrl ? `/promo/${heroBanner.pageUrl}` : '#'}
+          title={heroBanner.title}
+          className="hidden md:block w-full mb-10 mx-auto md:max-w-175 lg:max-w-250 xl:max-w-323 overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.01]"
+        >
+          <Image
+            src={heroBanner.desktopImage as string}
+            alt={heroBanner.title}
+            width={1292}
+            height={192}
+            priority
+            sizes="(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, 700px"
+            className="h-auto w-full object-cover"
+          />
+        </Link>
+      ) : null}
 
-      <section className="md:hidden pt-3">
-        <h2 className="title_name max-w-88 mx-auto md:hidden">Actions</h2>
-        <div className="flex overflow-x-auto overflow-y-hidden max-w-full gap-2.5 mt-3.75 no-scrollbar">
-          {mobilePromos.map((src) => (
-            <div
-              key={src}
-              className="w-86.75 h-36.25 shrink-0 object-cover relative"
-            >
-              <Image
-                src={src}
-                alt="promo"
-                fill
-                sizes="347px"
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      {mobileBanners.length > 0 ? (
+        <section className="md:hidden pt-3">
+          <h2 className="title_name max-w-88 mx-auto md:hidden">Actions</h2>
+          <div className="flex overflow-x-auto overflow-y-hidden max-w-full gap-2.5 mt-3.75 no-scrollbar">
+            {mobileBanners.map((b) => (
+              <Link
+                key={b.id}
+                href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                title={b.title}
+                className="w-86.75 h-36.25 shrink-0 object-cover relative"
+              >
+                <Image
+                  src={b.mobileImage as string}
+                  alt={b.title}
+                  fill
+                  sizes="347px"
+                  className="object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </>
   );
 };

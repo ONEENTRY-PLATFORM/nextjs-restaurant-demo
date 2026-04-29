@@ -1,21 +1,21 @@
 'use client';
 
-import { type JSX, useContext, useSyncExternalStore } from 'react';
+import Link from 'next/link';
+import { type JSX, useSyncExternalStore } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
-import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
 /**
- * Nav item favorites button — opens the {@link FavoritesPopup} drawer via
- * `OpenDrawerContext` (`component === 'FavoritesPopup'`). Mirrors the
- * `static-html` heart-icon trigger: favorites are a slide-in popup, not a
- * standalone page.
+ * Nav item favorites button — desktop trigger that links to the
+ * `/profile/favorites` dashboard page (port of `static-html/pk_favorites.html`).
+ * Mirrors {@link NavItemCart}'s desktop=page pattern. The mobile popup drawer
+ * (`FavoritesPopup` mounted in `app/layout.tsx`) remains the mobile UX,
+ * triggered by click handlers in the mobile menu.
  * @returns {JSX.Element} Favorites button JSX.
  */
 const NavItemFavorites = (): JSX.Element => {
-  const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
   // Persisted slice rehydrates client-side — gate the badge to prevent
@@ -30,12 +30,9 @@ const NavItemFavorites = (): JSX.Element => {
   );
 
   return (
-    <button
-      type="button"
-      onClick={() => {
-        setComponent('FavoritesPopup');
-        setOpen(true);
-      }}
+    <Link
+      prefetch={false}
+      href="/profile/favorites"
       className="group relative my-auto box-border flex shrink-0"
       aria-label="Favorites"
     >
@@ -45,7 +42,7 @@ const NavItemFavorites = (): JSX.Element => {
           <p className="font-bold text-[8px] text-black">{count}</p>
         </div>
       )}
-    </button>
+    </Link>
   );
 };
 

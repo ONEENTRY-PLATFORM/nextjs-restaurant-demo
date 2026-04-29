@@ -55,7 +55,7 @@ const Header = async (): Promise<JSX.Element> => {
     setMarker: 'dish',
     attributeMarker: 'preferences',
   });
-  const preferenceOptions: PreferenceOption[] =
+  const rawPreferenceOptions: PreferenceOption[] =
     !preferencesAttr.isError &&
     preferencesAttr.attribute &&
     'listTitles' in preferencesAttr.attribute
@@ -64,6 +64,17 @@ const Header = async (): Promise<JSX.Element> => {
           value: String(o.value),
         }))
       : [];
+  // OneEntry currently has duplicate `Dinner` listTitles (see
+  // ONEENTRY-ADMIN-SETUP.md §2.4) which would collide on React keys —
+  // dedupe by value here, first occurrence wins.
+  const seenValues = new Set<string>();
+  const preferenceOptions: PreferenceOption[] = rawPreferenceOptions.filter(
+    (o) => {
+      if (seenValues.has(o.value)) return false;
+      seenValues.add(o.value);
+      return true;
+    },
+  );
 
   return (
     <div id="header">
@@ -81,7 +92,7 @@ const Header = async (): Promise<JSX.Element> => {
             <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
               {/* SearchBar */}
               <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'soup'} />
+                <SearchBar placeholder={'Search'} />
               </Suspense>
               <FilterButton />
             </div>
@@ -117,8 +128,12 @@ const Header = async (): Promise<JSX.Element> => {
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             {/* Category Button */}
             <CategoryButton />
-            {/* Categories Scroller */}
-            <CategoriesScroller preferences={preferenceOptions} />
+            {/* Categories Scroller — wrapped in Suspense because it reads
+                useSearchParams() and would otherwise force the whole
+                route into a CSR bailout during prerender. */}
+            <Suspense fallback={null}>
+              <CategoriesScroller preferences={preferenceOptions} />
+            </Suspense>
           </section>
         </div>
       </div>

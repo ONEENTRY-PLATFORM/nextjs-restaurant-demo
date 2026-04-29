@@ -8,11 +8,6 @@ import { getPageByUrl } from '@/app/api';
  * Generic CMS page renderer — catch-all для произвольных страниц OneEntry,
  * у которых нет специализированного роута (`/shop`, `/cart`, `/profile`, и т.п.).
  *
- * Берёт `localizeInfos.title` и `attributeValues.description.value[0].htmlValue`
- * (стандартный rich-text атрибут OneEntry). Если `description` нет — рендерится
- * только заголовок. Для специфичных шаблонов (about / contact / payment_*)
- * нужны отдельные компоненты — добавлять по мере реальной потребности, а не
- * заранее.
  * @param   {object}                          props        - Page props.
  * @param   {Promise<{ handle: string }>}     props.params - Route params.
  * @returns {Promise<JSX.Element>}                         Generic page JSX.

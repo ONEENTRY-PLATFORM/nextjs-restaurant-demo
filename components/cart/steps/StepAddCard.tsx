@@ -3,8 +3,13 @@
 import type { JSX } from 'react';
 import { useState } from 'react';
 
+import { useCreateOrder } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
-import { addPaymentMethod, setStep } from '@/app/store/reducers/OrderSlice';
+import {
+  addPaymentMethod,
+  setStep,
+  setStepError,
+} from '@/app/store/reducers/OrderSlice';
 import CardLineIcon from '@/components/icons/card-line.svg';
 
 type SavedCard = {
@@ -24,9 +29,11 @@ type SavedCard = {
  */
 const StepAddCard = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const { onConfirmOrder, isLoading } = useCreateOrder();
   const [cards, setCards] = useState<SavedCard[]>([
     { id: 'card-1', last4: '4867' },
   ]);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   const onDelete = (id: string) =>
     setCards((prev) => prev.filter((c) => c.id !== id));
@@ -36,8 +43,20 @@ const StepAddCard = (): JSX.Element => {
     setCards((prev) => [...prev, { id: `card-${Date.now()}`, last4 }]);
   };
 
-  const onContinue = (id: string) => {
-    dispatch(addPaymentMethod(`card:${id}`));
+  const onContinue = async (id: string) => {
+    const paymentAccountIdentifier = `card:${id}`;
+    dispatch(addPaymentMethod(paymentAccountIdentifier));
+    setPendingId(id);
+    const result = await onConfirmOrder({ paymentAccountIdentifier });
+    setPendingId(null);
+    if (!result.ok) {
+      dispatch(setStepError(result.error));
+      return;
+    }
+    if (result.paymentUrl) {
+      window.location.href = result.paymentUrl;
+      return;
+    }
     dispatch(setStep('success'));
   };
 
@@ -66,9 +85,10 @@ const StepAddCard = (): JSX.Element => {
             <button
               type="button"
               onClick={() => onContinue(card.id)}
-              className="ml-auto font-bold text-[16px] text-brand"
+              disabled={isLoading}
+              className="ml-auto font-bold text-[16px] text-brand disabled:opacity-60"
             >
-              Pay
+              {pendingId === card.id && isLoading ? 'Paying...' : 'Pay'}
             </button>
           </div>
         ))}

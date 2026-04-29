@@ -10,6 +10,7 @@ import { selectCartData } from '@/app/store/reducers/CartSlice';
 import {
   removeOrder,
   selectCheckoutStepError,
+  selectLastOrderId,
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 
@@ -25,14 +26,6 @@ const formatDeliveryStamp = (d: Date): string => {
     d.getFullYear(),
   ).slice(2)} ${pad(d.getHours())}.${pad(d.getMinutes())}`;
 };
-
-/**
- * Generate a fake order number in the `№XXXXXXX` format shown in mockup.
- * Real implementation would get this from the Orders API response.
- * @returns {string} Order number like `№6758910`.
- */
-const fakeOrderNumber = (): string =>
-  '№' + (6000000 + Math.floor(Math.random() * 1000000));
 
 /**
  * Checkout step — success / error message screen.
@@ -56,14 +49,16 @@ const StepResult = ({
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const stepError = useAppSelector(selectCheckoutStepError);
+  const lastOrderId = useAppSelector(selectLastOrderId);
   const cartData = useAppSelector(selectCartData) as Array<{
     id: number;
     quantity?: number;
     product?: IProductsEntity;
   }>;
-  // Capture impure `Date.now()` / `Math.random()` once into initial state so
-  // render stays pure and the value is stable for the component lifetime.
-  const [orderNumber] = useState(fakeOrderNumber);
+  // Capture impure `Date.now()` once into initial state so render stays
+  // pure and the stamp is stable for the component lifetime. Order number
+  // comes from the CMS-assigned id captured at confirm time.
+  const orderNumber = lastOrderId ? '№' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000)),
   );

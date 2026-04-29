@@ -16,9 +16,9 @@ import {
 } from '@/app/store/reducers/CartSlice';
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
+import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
-import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import Loader from '@/components/shared/Spinner';
 
 /**

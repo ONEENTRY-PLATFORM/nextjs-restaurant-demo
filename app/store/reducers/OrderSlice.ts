@@ -27,6 +27,9 @@ type InitialStateType = {
   }>;
   step: CheckoutStep;
   stepError?: string;
+  // Survives `removeOrder()` (which resets `order` to initialState) so the
+  // success screen can render the real CMS-assigned id.
+  lastOrderId?: number;
 };
 
 const initialState: InitialStateType = {
@@ -107,6 +110,9 @@ const orderReducer = createSlice({
       state.step = 'error';
       state.stepError = action.payload;
     },
+    setLastOrderId(state, action: PayloadAction<number>) {
+      state.lastOrderId = action.payload;
+    },
   },
 });
 
@@ -120,6 +126,7 @@ export const {
   addOrderCurrency,
   setStep,
   setStepError,
+  setLastOrderId,
 } = orderReducer.actions;
 
 export const selectCheckoutStep = (state: {
@@ -129,5 +136,9 @@ export const selectCheckoutStep = (state: {
 export const selectCheckoutStepError = (state: {
   orderReducer: InitialStateType;
 }): string | undefined => state.orderReducer.stepError;
+
+export const selectLastOrderId = (state: {
+  orderReducer: InitialStateType;
+}): number | undefined => state.orderReducer.lastOrderId;
 
 export default orderReducer.reducer;

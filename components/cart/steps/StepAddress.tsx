@@ -2,9 +2,10 @@
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
   selectDeliveryData,
   setDeliveryData,
@@ -13,6 +14,11 @@ import { setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
 import PinIcon from '@/components/icons/pin.svg';
+
+// Markers we look for on the user profile, ordered by priority. `address_reg`
+// is the canonical one used elsewhere in the cart (see components/layout/cart/
+// index.tsx); the others are fallbacks if the admin renamed the field.
+const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 
 type DeliveryMode = 'asap' | 'scheduled';
 
@@ -30,8 +36,18 @@ type DeliveryMode = 'asap' | 'scheduled';
 const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
+  const { user } = useContext(AuthContext);
+  // Pre-fill the address from the authenticated user's profile when the
+  // user hasn't already entered one for this checkout. `formData` holds
+  // OneEntry attribute values; markers are checked in priority order.
+  const userAddress = user?.formData
+    ? (ADDRESS_MARKERS.map((marker) => {
+        const entry = user.formData.find((el) => el.marker === marker);
+        return typeof entry?.value === 'string' ? entry.value : '';
+      }).find(Boolean) ?? '')
+    : '';
   const [address, setAddress] = useState(
-    (delivery?.address as string | undefined) ?? '',
+    (delivery?.address as string | undefined) || userAddress,
   );
   const [mode, setMode] = useState<DeliveryMode>('asap');
   const [scheduleAt, setScheduleAt] = useState<string>('');

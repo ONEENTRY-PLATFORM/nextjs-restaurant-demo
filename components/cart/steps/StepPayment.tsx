@@ -5,11 +5,13 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
+import { useCreateOrder } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import {
   addData,
   addPaymentMethod,
   setStep,
+  setStepError,
 } from '@/app/store/reducers/OrderSlice';
 import CardLineIcon from '@/components/icons/card-line.svg';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
@@ -27,6 +29,7 @@ import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
  */
 const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
+  const { onConfirmOrder, isLoading } = useCreateOrder();
   const [method, setMethod] = useState<'cash' | 'paypal' | 'card'>('cash');
   const [comment, setComment] = useState('');
   const [altReceiver, setAltReceiver] = useState(false);
@@ -49,13 +52,24 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     }
   };
 
-  const onNext = () => {
+  const onNext = async () => {
     persistOrderFields();
     if (method === 'card') {
+      // Card flow continues in StepAddCard, which calls createOrder itself
+      // after the user picks a saved card.
       dispatch(setStep('add_card'));
       return;
     }
     dispatch(addPaymentMethod(method));
+    const result = await onConfirmOrder({ paymentAccountIdentifier: method });
+    if (!result.ok) {
+      dispatch(setStepError(result.error));
+      return;
+    }
+    if (result.paymentUrl) {
+      window.location.href = result.paymentUrl;
+      return;
+    }
     dispatch(setStep('success'));
   };
 
@@ -180,10 +194,10 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
       <button
         type="button"
         onClick={onNext}
-        disabled={altReceiver && !altPhone.trim()}
+        disabled={isLoading || (altReceiver && !altPhone.trim())}
         className="cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
-        APPLY
+        {isLoading ? 'Processing...' : 'APPLY'}
       </button>
     </div>
   );

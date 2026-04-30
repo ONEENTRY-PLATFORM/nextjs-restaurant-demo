@@ -161,7 +161,7 @@ const CartWizard = ({
           <Link href="/" className="group_white" aria-label="Back">
             <ArrowBackOrangeIcon />
           </Link>
-          <p className="font-normal text-[24px] text-white">Cart</p>
+          <p className="font-normal text-2xl text-white">Cart</p>
           <div className="group_white">
             <BurgerOrangeIcon />
           </div>

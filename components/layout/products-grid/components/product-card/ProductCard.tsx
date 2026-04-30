@@ -48,24 +48,25 @@ const ProductCard = ({
   const title = localizeInfos?.title || '';
 
   // Строка descr (время · вес · рейтинг) — markers из set атрибутов `dish`
-  // (проверено через inspect-api). Fallback на дефолты static-html, чтобы
-  // карточка не выглядела пустой, если какой-то атрибут не задан.
+  // (проверено через inspect-api). Если атрибута нет в OneEntry —
+  // соответствующий блок (с подписью и иконкой) не рендерится вовсе.
   const timeRaw = attrs.cooking_time?.value as string | number | undefined;
-  const time = timeRaw ? String(timeRaw) : '30-45 min';
+  const time = timeRaw != null && timeRaw !== '' ? String(timeRaw) : null;
 
   const weightRaw = attrs.weight?.value as string | number | undefined;
-  const weight = weightRaw ? `${weightRaw} g` : '250 g';
+  const weight =
+    weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
 
   const ratingRaw = attrs.rating?.value as string | number | undefined;
-  const rating = ratingRaw ? String(ratingRaw) : '5,0';
+  const rating =
+    ratingRaw != null && ratingRaw !== '' ? String(ratingRaw) : null;
 
   // Цена
   const priceValue = (attrs.price?.value ?? product.price) as
     | number
     | undefined;
-  const formattedPrice = priceValue
-    ? UsePrice({ amount: priceValue as number })
-    : '$14';
+  const formattedPrice =
+    priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
 
   return (
     <CardAnimations
@@ -75,32 +76,34 @@ const ProductCard = ({
     >
       <ProductImage attributes={attrs} alt={title} />
 
-      <div className="descr">
-        <p> {time}</p>
-        <p>{weight}</p>
-        <div className="rating">
-          <Image
-            className="rating_img"
-            src="/images/icons/Star 16.svg"
-            alt="star"
-            width={16}
-            height={16}
-            style={{ width: 'auto', height: 'auto' }}
-          />
-          <p>{rating}</p>
+      {time || weight || rating ? (
+        <div className="descr">
+          {time ? <p> {time}</p> : null}
+          {weight ? <p>{weight}</p> : null}
+          {rating ? (
+            <div className="rating">
+              <Image
+                className="rating_img"
+                src="/images/icons/Star 16.svg"
+                alt="star"
+                width={16}
+                height={16}
+                style={{ width: 'auto', height: 'auto' }}
+              />
+              <p>{rating}</p>
+            </div>
+          ) : null}
         </div>
-      </div>
+      ) : null}
 
       <p className="menu_item-title">{title}</p>
 
-      <CartButton
-        id={id}
-        title={title}
-        units={attrs.units_product?.value as number | undefined}
-      >
+      <CartButton id={id} title={title}>
         <p className="counter">x1</p>
         <CartAddIcon className="w-5 h-4.75 md:w-7.25 md:h-6.75" />
-        <p className="text-base md:text-[22px]">{formattedPrice}</p>
+        {formattedPrice ? (
+          <p className="text-base md:text-[22px]">{formattedPrice}</p>
+        ) : null}
       </CartButton>
 
       <HeartCardButton product={product} />

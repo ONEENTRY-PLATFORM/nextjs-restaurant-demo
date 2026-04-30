@@ -74,7 +74,7 @@ const ProductDetails = async ({
       {/* Ряд метрик + price badge — одной строкой по static-html/details.html:130 */}
       <div className="flex justify-between items-start gap-3.75 lg:flex-row-reverse">
         <div className="flex flex-col gap-3.75 mt-2.5">
-          {/* Вес / калорийность / рейтинг */}
+          {/* Вес / калорийность / рейтинг + cooking_time (на мобиле) */}
           <div className="flex gap-1.25 md:gap-3.75 items-center">
             {weightVal != null ? (
               <>
@@ -100,19 +100,28 @@ const ProductDetails = async ({
                 </p>
               </>
             ) : null}
+            {/* Cooking time — мобильный/планшетный вариант, в одном ряду с метриками */}
+            {cookingVal != null && cookingVal > 0 ? (
+              <div className="flex gap-1.25 items-center lg:hidden">
+                <ClockCircleIcon variant="orange" />
+                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                  {cookingVal} min
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
 
         {priceFormatted ? (
-          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient flex justify-center items-center font-bold text-white text-[20px] shrink-0">
+          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient flex justify-center items-center font-bold text-white text-[20px] shrink-0 mt-8.5 md:mt-0">
             {priceFormatted}
           </div>
         ) : null}
       </div>
 
-      {/* Время приготовления (опционально) */}
+      {/* Cooking time — десктопный вариант, отдельной строкой ниже (lg+) */}
       {cookingVal != null && cookingVal > 0 ? (
-        <div className="flex gap-3.75 items-center">
+        <div className="hidden lg:flex gap-3.75 items-center mt-7.5">
           <ClockCircleIcon variant="orange" />
           <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
             {cookingVal} min

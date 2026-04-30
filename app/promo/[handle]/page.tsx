@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
-import { getImageUrl, getPageByUrl } from '@/app/api';
+import { getImageUrl, getPageByUrl, getProductsByPageUrl } from '@/app/api';
+import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
 
 type PromoPageProps = {
   params: Promise<{ handle: string }>;
@@ -44,6 +45,13 @@ const PromoDetailPage = async ({
     return notFound();
   }
 
+  const promoProducts = await getProductsByPageUrl({
+    offset: 0,
+    limit: 50,
+    params: { handle },
+  });
+  const products = promoProducts.isError ? [] : (promoProducts.products ?? []);
+
   const attrs = page.attributeValues ?? {};
   const image =
     getImageUrl(attrs.bg_image?.value as ImageValue) ||
@@ -82,6 +90,15 @@ const PromoDetailPage = async ({
           </button>
         </div>
       </div>
+      {products.length > 0 ? (
+        <div className="mt-10">
+          <ProductsGrid
+            dict={attrs}
+            products={products}
+            productsLimit={products.length}
+          />
+        </div>
+      ) : null}
     </section>
   );
 };

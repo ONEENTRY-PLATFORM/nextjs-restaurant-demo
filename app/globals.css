@@ -43,6 +43,12 @@
   /* Line-height scale */
   --leading-mobile: 1.3;
   --leading-150: 1.5;
+  --leading-hero: 0.97;
+
+  /* Hero h1 font-sizes (md/lg/xl) */
+  --text-hero-md: 30px;
+  --text-hero-lg: 48px;
+  --text-hero-xl: 62px;
 
   /* Screens */
   --breakpoint-xs: 480px;

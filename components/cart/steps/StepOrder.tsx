@@ -95,19 +95,19 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
                 )}
               </div>
               <div className="flex w-50 flex-col justify-between gap-1">
-                <p className="font-normal text-[14px] text-white">{title}</p>
+                <p className="font-normal text-sm text-white">{title}</p>
                 <div className="flex items-center gap-2.5">
                   {weight ? (
-                    <p className="font-normal text-[14px] text-white">
+                    <p className="font-normal text-sm text-white">
                       {weight} g
                     </p>
                   ) : null}
-                  <p className="font-bold text-[20px] text-brand">
+                  <p className="font-bold text-xl text-brand">
                     {UsePrice({ amount: unit })}
                   </p>
                 </div>
               </div>
-              <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-[16px] font-normal text-brand">
+              <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-brand">
                 x{entry.quantity ?? 1}
               </div>
             </div>
@@ -122,7 +122,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
           value={promoCode}
           onChange={(e) => setPromoCode(e.currentTarget.value)}
           placeholder="Promo Code"
-          className="h-8 w-2/3 rounded-[5px] border border-brand bg-transparent text-center text-[16px] uppercase text-white placeholder:text-center placeholder:text-[16px] placeholder:uppercase placeholder:text-white focus:outline-none"
+          className="h-8 w-2/3 rounded-[5px] border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none"
         />
         <button
           type="button"
@@ -159,7 +159,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <button
         type="button"
         onClick={() => dispatch(setStep('payment'))}
-        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-[16px] text-white hover:bg-gradient-to-r-hover"
+        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-base text-white hover:bg-gradient-to-r-hover"
       >
         APPLY
       </button>

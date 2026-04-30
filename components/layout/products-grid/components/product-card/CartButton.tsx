@@ -21,12 +21,10 @@ const stop = (e: MouseEvent<HTMLButtonElement>) => {
 const CartButton = ({
   id,
   title,
-  units,
   children,
 }: {
   id: number;
   title: string;
-  units?: number | undefined;
   children: ReactNode;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -34,7 +32,6 @@ const CartButton = ({
     selectCartItemWithIdLength(state, id),
   ) as { quantity?: number } | undefined;
   const qty = item?.quantity ?? 0;
-  const maxUnits = units && units > 0 ? units : 99;
 
   // redux-persist регидратит корзину на клиенте, поэтому qty может отличаться
   // от SSR (0). На первом paint рендерим кнопку «add», чтобы совпадало с
@@ -77,7 +74,7 @@ const CartButton = ({
           className="text-brand"
           onClick={(e) => {
             stop(e);
-            dispatch(increaseProductQty({ id, quantity: 1, units: maxUnits }));
+            dispatch(increaseProductQty({ id, quantity: 1, units: 99 }));
           }}
         >
           +

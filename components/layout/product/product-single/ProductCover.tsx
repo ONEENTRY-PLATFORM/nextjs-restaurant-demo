@@ -7,9 +7,7 @@ import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * Cover-only рендер картинки продукта. Использует только атрибут `cover`
- * (атрибут `more_pic` исключён по решению клиента, см. MISMATCH-LOG B.2.10).
- * Полноценная галерея с `more_pic` и слайдером сохранена в
- * `ProductImageGallery.tsx` для возможного возврата в будущем.
+ * (атрибут `more_pic` исключён по решению клиента).
  */
 const ProductCover = ({
   product,

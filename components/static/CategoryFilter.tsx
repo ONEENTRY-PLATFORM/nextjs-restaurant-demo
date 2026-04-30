@@ -84,11 +84,11 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       />
       <aside
         className={
-          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tr-[20px] rounded-br-[20px] transform transition-transform duration-500 ease-in-out ' +
+          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tr-[20px] rounded-br-[20px] px-4 transform transition-transform duration-500 ease-in-out ' +
           (isVisible ? 'translate-x-0' : '-translate-x-full')
         }
       >
-        <div className="flex justify-between items-center px-5 pt-6">
+        <div className="flex justify-between items-center pt-6">
           <button
             type="button"
             onClick={close}

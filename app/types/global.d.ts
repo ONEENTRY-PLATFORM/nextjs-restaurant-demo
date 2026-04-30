@@ -3,10 +3,10 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
 /**
- * Localize info.
- * @property {string} content   - Content of the page.
- * @property {string} menuTitle - Menu title of the page.
- * @property {string} title     - Title of the page.
+ * Локализованная информация.
+ * @property {string} content   - Контент страницы.
+ * @property {string} menuTitle - Заголовок страницы в меню.
+ * @property {string} title     - Заголовок страницы.
  */
 declare type LocalizeInfo = {
   content: string;
@@ -15,9 +15,9 @@ declare type LocalizeInfo = {
 };
 
 /**
- * Page props.
- * @property {object} params       - Page parameters.
- * @property {object} searchParams - Search parameters.
+ * Пропсы страницы.
+ * @property {object} params       - Параметры страницы.
+ * @property {object} searchParams - Search-параметры.
  */
 declare type PageProps = {
   params: Promise<{ page?: any; handle: string; lang: string }>;
@@ -29,11 +29,11 @@ declare type PageProps = {
 };
 
 /**
- * Simple page props.
- * @property {IPagesEntity} page  - Page object.
- * @property {string}       lang  - Language code.
- * @property {object}       dict  - Dictionary object.
- * @property {object}       [key] - Additional key-value pair.
+ * Упрощённые пропсы страницы.
+ * @property {IPagesEntity} page  - Объект страницы.
+ * @property {string}       lang  - Код языка.
+ * @property {object}       dict  - Объект словаря.
+ * @property {object}       [key] - Дополнительная пара ключ-значение.
  */
 declare type SimplePageProps = {
   page?: IPagesEntity;
@@ -43,10 +43,10 @@ declare type SimplePageProps = {
 };
 
 /**
- * Loader props.
- * @property {object} data     - Data object.
- * @property {number} [limit]  - Limit of items.
- * @property {number} [offset] - Offset of items.
+ * Пропсы лоадера.
+ * @property {object} data     - Объект данных.
+ * @property {number} [limit]  - Лимит элементов.
+ * @property {number} [offset] - Offset элементов.
  */
 declare type LoaderProps = {
   data?: Record<string, unknown>;
@@ -55,18 +55,18 @@ declare type LoaderProps = {
 };
 
 /**
- * Metadata params.
- * @property {object} params - Page parameters.
+ * Параметры метаданных.
+ * @property {object} params - Параметры страницы.
  */
 declare type MetadataParams = {
   params: Promise<{ handle: string; lang: string }>;
 };
 
 /**
- * Cart state.
- * @property {number}      quantity     - Quantity of items in cart.
- * @property {number}      id           - ID of the cart.
- * @property {IProducts[]} productsData - Array of products data.
+ * Состояние корзины.
+ * @property {number}      quantity     - Количество товаров в корзине.
+ * @property {number}      id           - ID корзины.
+ * @property {IProducts[]} productsData - Массив данных товаров.
  */
 export type CartState = {
   quantity: number;
@@ -75,10 +75,10 @@ export type CartState = {
 };
 
 /**
- * Animations props.
- * @property {React.ReactNode} children  - Children of the component.
- * @property {string}          className - Class name of the component.
- * @property {number}          index     - Index of the component.
+ * Пропсы анимаций.
+ * @property {React.ReactNode} children  - Дочерние элементы компонента.
+ * @property {string}          className - Имя класса компонента.
+ * @property {number}          index     - Индекс компонента.
  */
 export type AnimationsProps = {
   children: React.ReactNode;
@@ -87,10 +87,10 @@ export type AnimationsProps = {
 };
 
 /**
- * Product data.
- * @property {number}  id       - ID of the product.
- * @property {boolean} selected - Whether the product is selected.
- * @property {number}  quantity - Quantity of the product.
+ * Данные товара.
+ * @property {number}  id       - ID товара.
+ * @property {boolean} selected - Выбран ли товар.
+ * @property {number}  quantity - Количество товара.
  */
 export type IProducts = {
   id: number;
@@ -99,13 +99,13 @@ export type IProducts = {
 };
 
 /**
- * Product metadata.
- * @property {string} title       - Title of the product.
- * @property {string} description - Description of the product.
- * @property {string} url         - URL of the product.
- * @property {number} width       - Width of the product image.
- * @property {number} height      - Height of the product image.
- * @property {string} alt         - Alt text of the product image.
+ * Метаданные товара.
+ * @property {string} title       - Название товара.
+ * @property {string} description - Описание товара.
+ * @property {string} url         - URL товара.
+ * @property {number} width       - Ширина изображения товара.
+ * @property {number} height      - Высота изображения товара.
+ * @property {string} alt         - Alt-текст изображения товара.
  */
 interface IProductMetadata {
   title: string;
@@ -117,12 +117,12 @@ interface IProductMetadata {
 }
 
 /**
- * Page metadata.
- * @property {string}           title           - Title of the page.
- * @property {string}           description     - Description of the page.
- * @property {boolean}          isVisible       - Whether the page is visible.
- * @property {IAttributeValues} attributeValues - Attribute values of the page.
- * @property {LocalizeInfo}     localizeInfos   - Localize info of the page.
+ * Метаданные страницы.
+ * @property {string}           title           - Заголовок страницы.
+ * @property {string}           description     - Описание страницы.
+ * @property {boolean}          isVisible       - Видима ли страница.
+ * @property {IAttributeValues} attributeValues - Значения атрибутов страницы.
+ * @property {LocalizeInfo}     localizeInfos   - Локализованная информация страницы.
  */
 interface IPageMetadata {
   title: string;
@@ -140,13 +140,13 @@ interface IPageMetadata {
 }
 
 /**
- * Order product.
- * @property {number}        id           - ID of the product.
- * @property {number}        quantity     - Quantity of the product.
- * @property {string}        title        - Title of the product.
- * @property {string | null} sku          - SKU of the product.
- * @property {string | null} previewImage - Preview image of the product.
- * @property {number}        price        - Price of the product.
+ * Товар в заказе.
+ * @property {number}        id           - ID товара.
+ * @property {number}        quantity     - Количество товара.
+ * @property {string}        title        - Название товара.
+ * @property {string | null} sku          - SKU товара.
+ * @property {string | null} previewImage - Превью-изображение товара.
+ * @property {number}        price        - Цена товара.
  */
 export type IOrderProducts = {
   id: number;
@@ -158,20 +158,20 @@ export type IOrderProducts = {
 };
 
 /**
- * Image props.
- * @property {string}                                              src              - Source of the image.
- * @property {string}                                              alt              - Alt text of the image.
- * @property {boolean}                                             fill             - Whether the image should fill the available space.
- * @property {number}                                              [width]          - Width of the image.
- * @property {number}                                              [height]         - Height of the image.
- * @property {boolean}                                             [isImageLoading] - Whether the image is loading.
- * @property {string}                                              [className]      - Class name of the image.
- * @property {React.CSSProperties}                                 [style]          - Style of the image.
- * @property {string}                                              [objectFit]      - Object fit of the image.
- * @property {string}                                              [priority]       - Priority of the image.
- * @property {(result?: unknown) => void}                          [onLoad]         - Callback function when the image loading is complete.
- * @property {React.Ref<unknown>}                                  ref              - Reference of the image.
- * @property {(event: React.MouseEvent<HTMLImageElement>) => void} [onClick]        - Callback function when the image is clicked.
+ * Пропсы изображения.
+ * @property {string}                                              src              - Источник изображения.
+ * @property {string}                                              alt              - Alt-текст изображения.
+ * @property {boolean}                                             fill             - Должно ли изображение заполнять доступное пространство.
+ * @property {number}                                              [width]          - Ширина изображения.
+ * @property {number}                                              [height]         - Высота изображения.
+ * @property {boolean}                                             [isImageLoading] - Идёт ли загрузка изображения.
+ * @property {string}                                              [className]      - Имя класса изображения.
+ * @property {React.CSSProperties}                                 [style]          - Стиль изображения.
+ * @property {string}                                              [objectFit]      - Object fit изображения.
+ * @property {string}                                              [priority]       - Приоритет изображения.
+ * @property {(result?: unknown) => void}                          [onLoad]         - Колбэк по завершению загрузки изображения.
+ * @property {React.Ref<unknown>}                                  ref              - Ref изображения.
+ * @property {(event: React.MouseEvent<HTMLImageElement>) => void} [onClick]        - Колбэк клика по изображению.
  */
 export type ImageProps = {
   src: string;

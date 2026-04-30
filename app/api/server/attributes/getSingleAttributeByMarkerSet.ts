@@ -9,7 +9,7 @@ interface HandleProps {
   setMarker: string;
 }
 /**
- * Get a single attribute with data from the attribute sets.
+ * Получает один атрибут с данными из attribute sets.
  */
 export const getSingleAttributeByMarkerSet = async ({
   attributeMarker,

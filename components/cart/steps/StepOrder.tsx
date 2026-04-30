@@ -19,13 +19,13 @@ type CartEntry = {
 };
 
 /**
- * Checkout step — order review (per `cart_Order.html`).
+ * Шаг checkout — обзор заказа (по `cart_Order.html`).
  *
- * Item list (image + title + weight/price + qty pill) + promo code field +
- * subtotal/delivery/total summary + APPLY button → `payment`.
- * @param   {object}           props      - Step props.
- * @param   {IAttributeValues} props.dict - Static-content dictionary.
- * @returns {JSX.Element}                 Step JSX.
+ * Список товаров (картинка + название + вес/цена + плашка количества) + поле промо-кода +
+ * сводка subtotal/delivery/total + кнопка APPLY → `payment`.
+ * @param   {object}           props      - Пропсы шага.
+ * @param   {IAttributeValues} props.dict - Словарь статического контента.
+ * @returns {JSX.Element}                 JSX шага.
  */
 const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -59,7 +59,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Items */}
+      {/* Товары */}
       <div className="flex flex-col gap-5">
         {items.map(({ entry, product }) => {
           const title = product.localizeInfos?.title ?? 'Item';
@@ -115,7 +115,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         })}
       </div>
 
-      {/* Promo code — separate input + button, per pk_order.html */}
+      {/* Промо-код — отдельный инпут + кнопка, по pk_order.html */}
       <div className="mt-5 flex w-full items-center justify-between gap-6.25">
         <input
           type="text"
@@ -132,7 +132,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         </button>
       </div>
 
-      {/* Totals */}
+      {/* Итоги */}
       <div className="mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>

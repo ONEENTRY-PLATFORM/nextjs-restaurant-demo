@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 /**
  * useStage
- * @returns global stage data
+ * @returns глобальные данные стадии (stage)
  */
 const useStage = () => {
   const { stage } = useTransitionState();
@@ -15,15 +15,15 @@ const useStage = () => {
   const [prevStage, setPrevStage] = useState<string>('');
 
   useGSAP(() => {
-    // first loading
+    // первая загрузка
     if (stage === 'none' && prevStage === '') {
       setState('play');
     }
-    // enter stage
+    // стадия входа
     else if (stage === 'entering' && prevStage === 'leaving') {
       setState('enter');
     }
-    // leaving stage
+    // стадия выхода
     else if (stage === 'leaving' && prevStage === 'none') {
       setState('leave');
     }

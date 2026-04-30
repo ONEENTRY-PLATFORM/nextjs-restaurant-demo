@@ -11,7 +11,7 @@ import ProductsGrid from './components/ProductsGrid';
 import ProductsNotFound from './components/ProductsNotFound';
 
 /**
- * Products grid layout
+ * Layout сетки продуктов
  */
 const ProductsGridLayout = async ({
   params,
@@ -39,7 +39,7 @@ const ProductsGridLayout = async ({
     currentPage * pagesLimit > 0 ? currentPage * pagesLimit : pagesLimit;
   const combinedParams = { ...p, searchParams };
 
-  // Get all products from api or get products byPageUrl
+  // Получаем все продукты из api или продукты byPageUrl
   const { isError, products, total } = !isCategory
     ? await getProducts({
         offset: 0,

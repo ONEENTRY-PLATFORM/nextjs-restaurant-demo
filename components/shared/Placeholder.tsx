@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import LogoIcon from './LogoIcon';
 
 /**
- * Empty image placeholder
+ * Плейсхолдер пустого изображения
  */
 const Placeholder = ({ className }: { className?: string }): JSX.Element => {
   return (

@@ -2,7 +2,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
 /**
- * PriceFrom Input component
+ * Компонент инпута PriceFrom
  */
 const PriceFromInput = ({
   price,

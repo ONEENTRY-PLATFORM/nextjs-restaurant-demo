@@ -6,7 +6,7 @@ import type { JSX } from 'react';
 import { useCallback } from 'react';
 
 /**
- * Pagination
+ * Пагинация
  */
 const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();

@@ -8,7 +8,7 @@ import ProductAnimations from './animations/ProductAnimations';
 import GroupCard from './group-card/GroupCard';
 
 /**
- * ProductsGroup component
+ * Компонент ProductsGroup
  */
 const ProductsGroup = async ({
   marker,

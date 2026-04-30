@@ -23,11 +23,11 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import CartPopupAnimations from './animations/CartPopupAnimations';
 
 /**
- * Cart drawer popup — port of `static-html/cart_cart.html` opened from the
- * bottom-menu cart button. Mirrors the {@link FilterModal} drawer pattern:
- * driven by `OpenDrawerContext` (`open` + `component === 'CartPopup'`),
- * wrapped in slide-in animation + backdrop. APPLY hands off to the full
- * `/cart` checkout flow.
+ * Попап-drawer корзины — порт `static-html/cart_cart.html`, открывается с
+ * кнопки корзины в bottom-menu. Зеркалит drawer-паттерн {@link FilterModal}:
+ * управляется через `OpenDrawerContext` (`open` + `component === 'CartPopup'`),
+ * обёрнут в slide-in анимацию + backdrop. APPLY передаёт управление полному
+ * флоу checkout `/cart`.
  */
 const CartPopup = (): JSX.Element => {
   const dispatch = useAppDispatch();

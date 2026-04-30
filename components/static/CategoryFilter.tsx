@@ -16,8 +16,8 @@ type Category = {
   href: string;
 };
 
-// Trailing CTA — not a menu category, kept hardcoded because it lives
-// outside the `menu` page tree (links to /reservation).
+// Завершающий CTA — не является категорией меню, оставлен захардкоженным,
+// потому что живёт вне дерева страницы `menu` (ссылается на /reservation).
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
@@ -25,18 +25,18 @@ const BOOKING_TILE: Category = {
 };
 
 /**
- * CategoryFilter — left-side slide-in panel listing the menu categories
- * fetched from OneEntry (child pages of the `menu` page) plus a trailing
- * "Booking Table" CTA. Mirrors `static-html/about_category.html`
- * `<!-- category -->` block.
+ * CategoryFilter — выезжающая слева панель со списком категорий меню,
+ * получаемых из OneEntry (дочерние страницы страницы `menu`) плюс
+ * завершающий CTA "Booking Table". Повторяет блок `<!-- category -->` из
+ * `static-html/about_category.html`.
  *
- * Toggled via {@link OpenDrawerContext} with `component === 'CategoryFilter'`.
- * Triggered from the desktop header burger button.
- * @param   {object}          props       - Component props.
- * @param   {IPagesEntity[]}  props.pages - Child pages of the `menu` page
- *                                          (categories), supplied by the
- *                                          server `Header`.
- * @returns {JSX.Element}                 Category panel JSX.
+ * Переключается через {@link OpenDrawerContext} с `component === 'CategoryFilter'`.
+ * Открывается по клику на burger-кнопку в десктопном хедере.
+ * @param   {object}          props       - Пропсы компонента.
+ * @param   {IPagesEntity[]}  props.pages - Дочерние страницы страницы `menu`
+ *                                          (категории), передаются серверным
+ *                                          `Header`.
+ * @returns {JSX.Element}                 JSX панели категорий.
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
   const { open, component, setOpen, setComponent } =
@@ -47,7 +47,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       .filter((p) => p.isVisible !== false)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map<Category>((p) => {
-        // OneEntry attribute set: `icon` (image, array shape).
+        // Атрибутный сет OneEntry: `icon` (image, форма массива).
         const iconAttr = p.attributeValues?.icon?.value as
           | { downloadLink?: string }
           | Array<{ downloadLink?: string }>

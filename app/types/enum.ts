@@ -1,26 +1,26 @@
 /**
- * Language codes mapping
+ * Маппинг языковых кодов
  */
 export enum LanguageEnum {
   en = 'en_US',
 }
 
 /**
- * Language codes mapping
+ * Маппинг языковых кодов
  */
 export enum CurrencyEnum {
   en = 'USD',
 }
 
 /**
- * Internationalization codes mapping
+ * Маппинг кодов интернационализации
  */
 export enum IntlEnum {
   en = 'en-US',
 }
 
 /**
- * Size options
+ * Опции размеров
  */
 export enum Sizes {
   xs = 480,
@@ -32,7 +32,7 @@ export enum Sizes {
 }
 
 /**
- * Condition markers for filtering
+ * Маркеры условий для фильтрации
  */
 export enum ConditionMarkersEnum {
   IN = 'in',
@@ -46,7 +46,7 @@ export enum ConditionMarkersEnum {
 }
 
 /**
- * Form field types mapping
+ * Маппинг типов полей формы
  */
 export enum FormFieldsEnum {
   string = 'text',

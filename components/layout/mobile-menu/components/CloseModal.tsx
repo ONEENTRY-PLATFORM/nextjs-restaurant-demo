@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Close mobile menu modal button
+ * Кнопка закрытия модалки мобильного меню
  */
 const CloseModal = () => {
   const { setTransition } = useContext(OpenDrawerContext);

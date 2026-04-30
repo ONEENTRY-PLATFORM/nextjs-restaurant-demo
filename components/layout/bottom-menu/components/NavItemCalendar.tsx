@@ -8,10 +8,10 @@ import { useAppSelector } from '@/app/store/hooks';
 import HeartScriptIcon from '@/components/icons/heart-script';
 
 /**
- * Nav item cart button
+ * Кнопка nav-элемента корзины
  */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
-  // get count of active reservations from cart reducer
+  // получаем количество активных броней из редьюсера корзины
   const cartCount = useAppSelector((state) => {
     return state.cartReducer.reservations?.length;
   });

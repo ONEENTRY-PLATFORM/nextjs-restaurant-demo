@@ -16,17 +16,17 @@ type MenuSectionProps = {
 };
 
 /**
- * Category section of the homepage — title + `View all` link + grid of
- * product cards. Ported 1:1 from `static-html/index.html` (`.recomended`,
+ * Секция категории главной — заголовок + ссылка `View all` + сетка
+ * карточек продуктов. Перенесена 1:1 из `static-html/index.html` (секции `.recomended`,
  * `Brackfast`, `LUNCH`, `FIRST COURSE / SOUP`, `MAIN COURSE`, `DESERT`,
- * `BEVERAGEs` sections).
+ * `BEVERAGEs`).
  *
- * Pure render component — products are fetched in `app/page.tsx` per
- * child page of `menu`, so the section never makes its own API call and
- * the home layout stays predictable when categories are empty (parent
- * filters them out before mapping).
- * @param   {MenuSectionProps} props - Component props.
- * @returns {JSX.Element}            Section JSX.
+ * Чисто рендерный компонент — продукты фетчатся в `app/page.tsx` по
+ * каждой дочерней странице `menu`, поэтому секция никогда не делает свой API-запрос и
+ * layout главной остаётся предсказуемым при пустых категориях (родитель
+ * отфильтровывает их до маппинга).
+ * @param   {MenuSectionProps} props - Пропсы компонента.
+ * @returns {JSX.Element}            JSX секции.
  */
 const MenuSection = ({
   title,

@@ -26,10 +26,10 @@ const NAV_BY_URL: Record<string, NavConfig> = {
 };
 
 /**
- * Bottom fixed navigation for mobile — 1:1 port of `static-html/.../MenuBottom`:
- * clipped polygon notch background, two left/right icon groups driven by
- * OneEntry `bottom_web` menu (in CMS order), and central protruding orange
- * cart + outlined close pair as the design centerpiece.
+ * Нижняя фиксированная навигация для мобильных — 1:1 порт `static-html/.../MenuBottom`:
+ * фон с clipped polygon-нотчем, две группы иконок слева/справа, наполняемые из
+ * меню OneEntry `bottom_web` (в порядке CMS), и центральная пара — выступающая
+ * оранжевая корзина + outlined-крестик как смысловой центр макета.
  */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');

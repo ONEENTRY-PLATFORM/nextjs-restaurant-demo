@@ -8,7 +8,7 @@ import NavItemFavorites from './NavItemFavorites';
 import NavItemProfile from './NavItemProfile';
 
 /**
- * User navigation group
+ * Группа пользовательской навигации
  */
 const NavGroup = (): JSX.Element => {
   return (

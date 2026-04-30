@@ -19,16 +19,16 @@ type DishProduct = IProductsEntity & {
 };
 
 /**
- * Product single — порт `static-html/details.html`. Двухколоночный layout
+ * Страница одного продукта — порт `static-html/details.html`. Двухколоночный layout
  * (md+): большая картинка слева (контейнер фиксированной аспектной высоты),
  * правая панель с метаданными, ингредиентами, тегами, кнопкой Add-to-cart и
  * блоком отзывов с pager-стрелками (`ProductReviewsListServer`). Сверху над
  * колонками — breadcrumb «Category / X» и название блюда. Под колонками —
  * trailing-секция «Featured objects» через `RelatedItems` блок.
- * @param   {object}                                       props         - props
+ * @param   {object}                                       props         - пропсы
  * @param   {DishProduct}                                  props.product - продукт
  * @param   {IAttributeValues}                             props.dict    - словарь
- * @returns {Promise<JSX.Element>}                                       Product page JSX
+ * @returns {Promise<JSX.Element>}                                       JSX страницы продукта
  */
 const ProductSingle = async ({
   product,
@@ -39,7 +39,7 @@ const ProductSingle = async ({
 }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages } = product;
 
-  // Parse "menu/desserts" → "desserts"
+  // Парсим "menu/desserts" → "desserts"
   const categoryPath = productPages?.[0]?.categoryPath ?? '';
   const categorySlug = categoryPath.split('/').pop() ?? '';
   const categoryLabel = categorySlug
@@ -51,7 +51,7 @@ const ProductSingle = async ({
 
   return (
     <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch px-4">
-      {/* Breadcrumb + title — md+ above the columns */}
+      {/* Breadcrumb + заголовок — md+ над колонками */}
       <div className="hidden md:block">
         {categoryLabel ? (
           <Link
@@ -66,9 +66,9 @@ const ProductSingle = async ({
         </p>
       </div>
 
-      {/* 2-column layout (md+): image | details + reviews */}
+      {/* 2-колоночный layout (md+): картинка | детали + отзывы */}
       <div className="lg:flex lg:justify-between md:gap-15 md:mt-5">
-        {/* Image — col-1 */}
+        {/* Картинка — col-1 */}
         <ProductAnimations
           className="relative mx-auto block w-full max-w-112.5 md:max-w-175 lg:min-w-153.75 lg:max-w-153.75 lg:shrink-0"
           index={0}
@@ -76,9 +76,9 @@ const ProductSingle = async ({
           <ProductImage alt={localizeInfos.title} product={product} />
         </ProductAnimations>
 
-        {/* Details + reviews — col-2 */}
+        {/* Детали + отзывы — col-2 */}
         <ProductAnimations className="flex min-w-0 flex-1 flex-col" index={1}>
-          {/* Mobile-only category + title (above details on small screens) */}
+          {/* Только для мобильной версии — категория + заголовок (над деталями на маленьких экранах) */}
           <div className="mt-5 flex flex-col gap-2.5 md:hidden">
             {categoryLabel ? (
               <Link
@@ -100,7 +100,7 @@ const ProductSingle = async ({
         </ProductAnimations>
       </div>
 
-      {/* blocks → bulk-purchase offer ("multiply_items_offer") */}
+      {/* blocks → оффер оптовой покупки ("multiply_items_offer") */}
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {

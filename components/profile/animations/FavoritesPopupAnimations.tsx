@@ -8,11 +8,11 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Favorites popup open/close animations — centered modal entrance
- * (scale + blur + opacity), matching the `CalendarForm` modal pattern.
- * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Popup content.
- * @returns {JSX.Element}                Animation wrapper JSX.
+ * Анимации открытия/закрытия попапа избранного — появление модалки по центру
+ * (scale + blur + opacity), повторяет паттерн модалки `CalendarForm`.
+ * @param   {object}      props          - Пропсы компонента.
+ * @param   {ReactNode}   props.children - Содержимое попапа.
+ * @returns {JSX.Element}                JSX обёртки анимации.
  */
 const FavoritesPopupAnimations = ({
   children,

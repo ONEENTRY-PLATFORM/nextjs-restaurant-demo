@@ -7,17 +7,17 @@ import type { BlogBanner } from '@/app/api';
 import PromoBannerAnimations from './animations/PromoBannerAnimations';
 
 /**
- * Desktop-only promo sidebar shown next to the cart (port of the right
- * column of `static-html/pk_cart.html`). Driven by OneEntry `blog` child
- * pages — uses `attributeValues.banner` (mobile/portrait variant), which
- * matches the stacked column shape in the verstka. The wide `bg_image`
- * variant is reserved for the home-page hero only.
+ * Промо-сайдбар только для десктопа, показывается рядом с корзиной (порт правой
+ * колонки `static-html/pk_cart.html`). Управляется дочерними страницами
+ * `blog` из OneEntry — использует `attributeValues.banner` (mobile/portrait вариант),
+ * что совпадает с формой стаканной колонки в верстке. Широкий вариант `bg_image`
+ * зарезервирован только для hero на главной.
  *
- * Banner data is fetched server-side (`getBlogBanners`) and passed down
- * because the parent `CartWizard` is a client component.
- * @param   {object}        props         - Sidebar props.
- * @param   {BlogBanner[]}  props.banners - CMS-driven banner list.
- * @returns {JSX.Element}                 Sidebar JSX.
+ * Данные баннеров фетчатся на сервере (`getBlogBanners`) и пробрасываются вниз,
+ * потому что родительский `CartWizard` — клиентский компонент.
+ * @param   {object}        props         - Пропсы сайдбара.
+ * @param   {BlogBanner[]}  props.banners - Список баннеров из CMS.
+ * @returns {JSX.Element}                 JSX сайдбара.
  */
 const CartPromoSidebar = ({
   banners,

@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { setProductQty } from '@/app/store/reducers/CartSlice';
 
 /**
- * Product quantity input
+ * Инпут количества продукта
  */
 const QuantityInput = ({
   id,
@@ -19,7 +19,7 @@ const QuantityInput = ({
 }): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  // Set ProductQty in cartSlice on change input value
+  // Устанавливаем ProductQty в cartSlice при изменении значения инпута
   const onChangeQtyHandle = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setProductQty({

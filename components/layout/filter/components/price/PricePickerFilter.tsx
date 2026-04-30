@@ -11,7 +11,7 @@ import PriceFromInput from './PriceFromInput';
 import PriceToInput from './PriceToInput';
 
 /**
- * Price filter component
+ * Компонент фильтра по цене
  */
 const PriceFilter = ({
   prices,
@@ -26,8 +26,8 @@ const PriceFilter = ({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
 
-  // `filter_price_title` ✅ added; `price_from`/`price_to` don't exist in
-  // the `static_content` set — using existing `from` / `to_text`.
+  // `filter_price_title` ✅ добавлен; `price_from`/`price_to` отсутствуют в
+  // наборе `static_content` — используем существующие `from` / `to_text`.
   const { filter_price_title, from, to_text } = dict;
 
   const STEP = 10;
@@ -41,7 +41,7 @@ const PriceFilter = ({
     params.get('maxPrice') ? Number(params.get('maxPrice')) : MAX,
   );
 
-  // params minPrice
+  // параметры minPrice
   useEffect(() => {
     if (priceFrom && priceFrom !== MIN) {
       params.set('minPrice', priceFrom.toString());
@@ -51,7 +51,7 @@ const PriceFilter = ({
     replace(`${pathname}?${params.toString()}`);
   }, [priceFrom]);
 
-  // params maxPrice
+  // параметры maxPrice
   useEffect(() => {
     if (priceTo && priceTo !== MAX) {
       params.set('maxPrice', priceTo.toString());
@@ -61,7 +61,7 @@ const PriceFilter = ({
     replace(`${pathname}?${params.toString()}`);
   }, [priceTo]);
 
-  // setPriceFrom
+  // установка priceFrom
   useEffect(() => {
     if (!params.get('minPrice')) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -69,7 +69,7 @@ const PriceFilter = ({
     }
   }, [params.get('minPrice')]);
 
-  // setPriceTo
+  // установка priceTo
   useEffect(() => {
     if (!params.get('maxPrice')) {
       // eslint-disable-next-line react-hooks/set-state-in-effect

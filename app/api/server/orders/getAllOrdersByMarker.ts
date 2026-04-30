@@ -11,7 +11,7 @@ interface HandleProps {
   langCode?: string;
 }
 /**
- * Getting all orders from the orders storage object created by the user
+ * Получает все заказы из объекта хранилища заказов, созданного пользователем.
  */
 export const getAllOrdersByMarker = async ({
   marker,

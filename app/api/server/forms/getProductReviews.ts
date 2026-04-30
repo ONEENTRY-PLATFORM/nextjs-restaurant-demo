@@ -7,14 +7,14 @@ const DEFAULT_MODULE_CONFIG_ID = 5;
 const REVIEWS_LIMIT = 500;
 
 /**
- * Single OneEntry FormsData entry as returned by `getFormsDataByMarker`.
- * Loosely typed because the SDK's response shape isn't exported as a
- * stable type — only the fields we actually consume are declared.
- * @property {number}      id              - Internal FormsData record id.
- * @property {number|null} parentId        - Parent record id for threaded comments (null = top-level review).
- * @property {string}      [userIdentifier] - SDK-resolved author id (set when posted under an authed session).
- * @property {string}      [time]          - ISO submission timestamp.
- * @property {Array}       formData        - Submitted field values keyed by marker.
+ * Одна запись OneEntry FormsData, возвращаемая `getFormsDataByMarker`.
+ * Слабо типизирована, потому что форма ответа SDK не экспортируется как
+ * стабильный тип — описаны только те поля, которые мы реально используем.
+ * @property {number}      id              - Внутренний id записи FormsData.
+ * @property {number|null} parentId        - Id родительской записи для вложенных комментариев (null = отзыв верхнего уровня).
+ * @property {string}      [userIdentifier] - Id автора, разрешённый SDK (выставляется при отправке под авторизованной сессией).
+ * @property {string}      [time]          - ISO-таймстамп отправки.
+ * @property {Array}       formData        - Отправленные значения полей, ключи — маркеры.
  */
 export interface RawReviewItem {
   id: number;
@@ -29,12 +29,12 @@ export interface RawReviewItem {
 }
 
 /**
- * Normalized review entry consumed by `<ProductReviewsList />`.
- * @property {string} id     - Stable key.
- * @property {string} author - Display name (`userIdentifier` or "Anonymous").
- * @property {string} date   - Locale-formatted date string.
- * @property {number} rating - Star rating 0–5.
- * @property {string} text   - Plain-text review body.
+ * Нормализованная запись отзыва, которую использует `<ProductReviewsList />`.
+ * @property {string} id     - Стабильный ключ.
+ * @property {string} author - Отображаемое имя (`userIdentifier` или "Anonymous").
+ * @property {string} date   - Дата, отформатированная по локали.
+ * @property {number} rating - Рейтинг звёздами 0–5.
+ * @property {string} text   - Тело отзыва в plain-text.
  */
 export interface ProductReview {
   id: string;
@@ -45,11 +45,11 @@ export interface ProductReview {
 }
 
 /**
- * Pull a OneEntry text field's plain value out of the polymorphic
- * `formData[].value` shape — the SDK returns a `[{ plainValue }]` array
- * for `text` fields and a string for primitives.
- * @param   {unknown} value - Raw `formData[].value`.
- * @returns {string}        Plain text content.
+ * Извлекает plain-значение текстового поля OneEntry из полиморфной формы
+ * `formData[].value` — SDK возвращает массив `[{ plainValue }]` для полей
+ * `text` и строку для примитивов.
+ * @param   {unknown} value - Сырое `formData[].value`.
+ * @returns {string}        Содержимое в виде plain-текста.
  */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
@@ -60,10 +60,10 @@ const readPlainText = (value: unknown): string => {
 };
 
 /**
- * Coerce `formData[].value` to a number for rating fields.
- * Returns `0` for missing / non-numeric values.
- * @param   {unknown} value - Raw `formData[].value`.
- * @returns {number}        Numeric rating.
+ * Приводит `formData[].value` к числу для полей рейтинга.
+ * Возвращает `0` для отсутствующих / не-числовых значений.
+ * @param   {unknown} value - Сырое `formData[].value`.
+ * @returns {number}        Числовой рейтинг.
  */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
@@ -75,21 +75,21 @@ const readNumber = (value: unknown): number => {
 };
 
 /**
- * Fetch approved product reviews from OneEntry FormsData by `entityIdentifier`.
+ * Получает одобренные отзывы о продукте из OneEntry FormsData по `entityIdentifier`.
  *
- * Mirrors the read pattern from `oneentry-next-shop`'s `ReviewsSectionServer`:
- * - `unstable_noStore()` opts out of route caching so newly submitted reviews
- *   show up on the next render without manual revalidation;
- * - filter `status: ['approved']` matches the publish status set by
- *   `submitReview` server action;
- * - only top-level entries (`parentId === null`) are returned — threaded
- *   replies aren't rendered by the current UI.
+ * Повторяет паттерн чтения из `ReviewsSectionServer` в `oneentry-next-shop`:
+ * - `unstable_noStore()` отключает кэширование маршрута, чтобы только что отправленные
+ *   отзывы появлялись при следующем рендере без ручной revalidation;
+ * - фильтр `status: ['approved']` соответствует publish-статусу, который выставляет
+ *   server action `submitReview`;
+ * - возвращаются только записи верхнего уровня (`parentId === null`) — вложенные
+ *   ответы текущим UI не рендерятся.
  *
- * Falls back to an empty array on any SDK error or missing data so the
- * component can render `null` (per the "Resource is closed" graceful-fallback
- * rule in `ONEENTRY-ADMIN-SETUP.md`).
- * @param   {number}                    productId - Reviewed product id (becomes `entityIdentifier`).
- * @returns {Promise<ProductReview[]>}            Top-level reviews, newest first.
+ * Падает на пустой массив при любой ошибке SDK или отсутствии данных, чтобы
+ * компонент мог отрендерить `null` (согласно правилу graceful-fallback на
+ * "Resource is closed" в `ONEENTRY-ADMIN-SETUP.md`).
+ * @param   {number}                    productId - Id отзываемого продукта (становится `entityIdentifier`).
+ * @returns {Promise<ProductReview[]>}            Отзывы верхнего уровня, сначала новые.
  */
 export const getProductReviews = async (
   productId: number,

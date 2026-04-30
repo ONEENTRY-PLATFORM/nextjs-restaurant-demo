@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
 /**
- * LogoIcon
+ * Иконка логотипа
  */
 const LogoIcon = ({
   fill = 'currentColor',

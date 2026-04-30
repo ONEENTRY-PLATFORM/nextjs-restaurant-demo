@@ -39,7 +39,7 @@ const lato = Lato({
 });
 
 /**
- * Homepage static metadata
+ * Статические метаданные главной страницы
  */
 export const metadata: Metadata = {
   title: 'Restaurant — Excellence taste in every bite',
@@ -57,7 +57,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get dictionary and set to server provider
+  // Получаем словарь и проставляем в server provider
   const dictValue = await getDictionary();
   ServerProvider('dict', dictValue);
   const dict = dictValue;

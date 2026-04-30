@@ -31,7 +31,7 @@ const storage =
 const version = 1;
 
 /**
- * Persist cartReducer
+ * Persist для cartReducer
  */
 const cartReducer = persistReducer(
   {
@@ -44,7 +44,7 @@ const cartReducer = persistReducer(
 );
 
 /**
- * Persist favoritesReducer
+ * Persist для favoritesReducer
  */
 const favoritesReducer = persistReducer(
   {
@@ -57,7 +57,7 @@ const favoritesReducer = persistReducer(
 );
 
 /**
- * Persist formFieldsReducer
+ * Persist для formFieldsReducer
  */
 const formFieldsReducer = persistReducer(
   {
@@ -70,7 +70,7 @@ const formFieldsReducer = persistReducer(
 );
 
 /**
- * Persist orderReducer
+ * Persist для orderReducer
  */
 const orderReducer = persistReducer(
   {
@@ -83,7 +83,7 @@ const orderReducer = persistReducer(
 );
 
 /**
- * Combine reducers
+ * Объединяет редьюсеры
  */
 const rootReducer = combineReducers({
   cartReducer,
@@ -95,7 +95,7 @@ const rootReducer = combineReducers({
 });
 
 /**
- * Setup redux store with persistence - save redux state in storage
+ * Настраивает redux store с persist-ом — сохраняет redux state в storage
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */
 export const setupStore = () => {

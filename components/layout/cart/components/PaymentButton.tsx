@@ -3,13 +3,13 @@ import type { JSX } from 'react';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * Cart submit button — `APPLY` CTA from `cart_cart.html` / `pk_cart.html`.
- * Solid `bg-custom_btnorange`, full width of the cart panel, h-60 on mobile
- * and h-45 on desktop. Submits the parent form which dispatches the next
- * checkout-wizard step.
- * @param   {object}      props      - Button props.
- * @param   {string}      props.text - Button label (CMS-driven).
- * @returns {JSX.Element}            Button JSX.
+ * Кнопка submit корзины — CTA `APPLY` из `cart_cart.html` / `pk_cart.html`.
+ * Сплошной `bg-custom_btnorange`, на всю ширину панели корзины, h-60 на
+ * мобильных и h-45 на десктопе. Сабмитит родительскую форму, которая делает
+ * dispatch следующего шага checkout-визарда.
+ * @param   {object}      props      - Пропсы кнопки.
+ * @param   {string}      props.text - Подпись кнопки (из CMS).
+ * @returns {JSX.Element}            JSX кнопки.
  */
 const PaymentButton = ({ text }: { text: string }): JSX.Element => {
   return (

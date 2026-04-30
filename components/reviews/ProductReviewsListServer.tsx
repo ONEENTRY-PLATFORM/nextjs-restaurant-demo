@@ -5,13 +5,13 @@ import { getProductReviews } from '@/app/api';
 import ProductReviewsList from './ProductReviewsList';
 
 /**
- * Server wrapper for `<ProductReviewsList />` — fetches approved reviews
- * for the given product via `getProductReviews` and forwards them to the
- * client carousel. Caching is disabled inside `getProductReviews` so freshly
- * submitted reviews appear without manual revalidation.
- * @param   {object}               props           - Component props.
- * @param   {number}               props.productId - Product id (becomes `entityIdentifier`).
- * @returns {Promise<JSX.Element>}                 Review list JSX (or empty render when there are no reviews).
+ * Серверная обёртка для `<ProductReviewsList />` — запрашивает одобренные
+ * отзывы для данного продукта через `getProductReviews` и передаёт их в
+ * клиентскую карусель. Кеширование отключено внутри `getProductReviews`,
+ * так что свежеотправленные отзывы появляются без ручной ревалидации.
+ * @param   {object}               props           - Пропсы компонента.
+ * @param   {number}               props.productId - Product id (становится `entityIdentifier`).
+ * @returns {Promise<JSX.Element>}                 JSX списка отзывов (или пустой рендер, если отзывов нет).
  */
 const ProductReviewsListServer = async ({
   productId,

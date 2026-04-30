@@ -34,59 +34,59 @@ export const resetPasswordFormFields = [
 ];
 
 /**
- * Reset password form
+ * Форма сброса пароля
  */
 const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
-  // Destructure form field values from the Redux store using a selector
+  // Деструктурируем значения полей формы из Redux store через селектор
   const { email, password, password_confirm, otp_code } = useAppSelector(
     (state) => state.formFieldsReducer.fields,
   );
 
-  // Access functions to change the current component and action from context
+  // Получаем функции смены текущего компонента и action из контекста
   const { setComponent, setAction } = useContext(OpenDrawerContext);
 
-  // State to manage loading status during asynchronous operations
+  // State для управления статусом загрузки во время асинхронных операций
   const [isLoading, setLoading] = useState(false);
 
-  // State to manage error messages for display to the user
+  // State для управления сообщениями об ошибках для отображения пользователю
   const [isError, setError] = useState('');
 
-  // Destructure text strings from a dictionary object for localization or static text
+  // Деструктурируем строки из объекта словаря для локализации/статического текста
   const { new_password_desc, change_password_text } = dict;
 
   /**
-   * Change password with API AuthProvider
+   * Меняет пароль через API AuthProvider
    * @param e FormEvent
    */
   const onResetSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    // Prevent the default form submission behavior
+    // Предотвращаем дефолтное поведение сабмита формы
     e.preventDefault();
 
-    // Set loading state to true while processing the password reset request
+    // Включаем loading-состояние на время обработки запроса сброса пароля
     setLoading(true);
 
     try {
-      // Attempt to change the user's password using the provided API
+      // Пытаемся сменить пароль пользователя через предоставленный API
       const result = await api.AuthProvider.changePassword(
-        'email', // The method of authentication, in this case via email
-        email?.value || '', // User's email address
-        'otp', // The type of verification used, here it's an OTP (One-Time Password)
-        1, // Version or type indicator for the OTP process
-        otp_code?.value.toString() || '', // The OTP code entered by the user, converted to a string
-        password?.value || '', // New password entered by the user
-        password_confirm?.value || '', // Confirmation of the new password
+        'email', // Метод аутентификации, в данном случае через email
+        email?.value || '', // Email пользователя
+        'otp', // Тип используемой верификации, здесь OTP (One-Time Password)
+        1, // Индикатор версии или типа процесса OTP
+        otp_code?.value.toString() || '', // OTP-код, введённый пользователем, конвертированный в строку
+        password?.value || '', // Новый пароль, введённый пользователем
+        password_confirm?.value || '', // Подтверждение нового пароля
       );
 
       if (result) {
-        // If the password change is successful, switch to the sign-in form
+        // Если смена пароля успешна, переключаемся на форму sign-in
         setComponent('SignInForm');
-        setAction(''); // Clear any previous actions
+        setAction(''); // Очищаем любые предыдущие actions
       }
     } catch (error: any) {
-      // Catch any errors and set the error message
+      // Ловим любые ошибки и устанавливаем сообщение об ошибке
       setError(error.message);
     } finally {
-      // Reset loading state after processing the password reset request
+      // Сбрасываем loading-состояние после обработки запроса сброса пароля
       setLoading(false);
     }
   };

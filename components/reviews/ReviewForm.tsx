@@ -11,11 +11,11 @@ import ErrorMessage from '../forms/inputs/ErrorMessage';
 import StarRating from './StarRating';
 
 /**
- * Resolve a display name for the logged-in user — falls back through
- * `name_reg` → `email_reg` → SDK identifier so the "Posting as …" line
- * never lands on an empty string.
- * @param   {{ identifier?: string; formData?: unknown }} user - Logged-in user entity.
- * @returns {string}                                            Display name.
+ * Резолвит отображаемое имя для залогиненного пользователя — fallback по
+ * цепочке `name_reg` → `email_reg` → SDK identifier, чтобы строка "Posting as …"
+ * никогда не оказывалась пустой.
+ * @param   {{ identifier?: string; formData?: unknown }} user - Сущность залогиненного пользователя.
+ * @returns {string}                                            Отображаемое имя.
  */
 const resolveAuthorName = (user: {
   identifier?: string;
@@ -32,15 +32,15 @@ const resolveAuthorName = (user: {
 };
 
 /**
- * Product review form — star rating + text, submits via {@link submitReview}
- * Server Action to the `review_form` form in OneEntry. The form is
- * gated behind a sign-in CTA when the visitor isn't authenticated; author
- * identity is derived from {@link AuthContext} for the "Posting as …" label
- * only — author and product association are resolved server-side via the
- * SDK auth session and `moduleEntityIdentifier=productId` respectively.
- * @param   {object}      props           - Component props.
- * @param   {number}      props.productId - Product ID the review is attached to.
- * @returns {JSX.Element}                 Review form JSX.
+ * Форма отзыва на продукт — звёздный рейтинг + текст, отправляется через
+ * {@link submitReview} Server Action в форму `review_form` в OneEntry. Форма
+ * заблокирована sign-in CTA, когда посетитель не авторизован; идентификация
+ * автора берётся из {@link AuthContext} только для подписи "Posting as …" —
+ * автор и связь с продуктом резолвятся на сервере через SDK auth-сессию и
+ * `moduleEntityIdentifier=productId` соответственно.
+ * @param   {object}      props           - Пропсы компонента.
+ * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
+ * @returns {JSX.Element}                 JSX формы отзыва.
  */
 const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
   const { isAuth, user } = useContext(AuthContext);

@@ -14,23 +14,23 @@ import { mockOrderReview, type OrderReviewMock } from './mockOrderReviewData';
 import StarRating from './StarRating';
 
 /**
- * Shape consumed by {@link OrderReviewsPanel}. Mirrors a trimmed projection
- * of `IOrderByMarkerEntity` (number/status/date) plus per-line review data.
+ * Форма, которую потребляет {@link OrderReviewsPanel}. Повторяет урезанную
+ * проекцию `IOrderByMarkerEntity` (номер/статус/дата) плюс данные отзывов по строкам.
  */
 export type OrderReviewsPanelProps = {
   /**
-   * Real CMS order projection. When omitted (or with no lines) the panel
-   * falls back to {@link mockOrderReview} so the UI is never empty —
-   * matches CLAUDE.md rule 2 (mocks must visually match the layout until
-   * OneEntry data is wired).
+   * Проекция реального CMS-заказа. Когда не передана (или без строк), панель
+   * использует fallback на {@link mockOrderReview}, чтобы UI никогда не был
+   * пустым — соответствует правилу 2 из CLAUDE.md (моки должны визуально
+   * совпадать с вёрсткой, пока данные OneEntry не подключены).
    */
   order?: OrderReviewMock | null;
 };
 
 /**
- * Per-line state for the review form. Each line of the order keeps its
- * own rating / text / submission lifecycle so the user can apply or edit
- * one review without affecting the others.
+ * Состояние формы отзыва для каждой строки. У каждой позиции заказа свой
+ * жизненный цикл рейтинга / текста / отправки, чтобы пользователь мог
+ * отправить или отредактировать один отзыв, не затронув остальные.
  */
 type LineState = {
   rating: number;
@@ -49,21 +49,21 @@ const initialLineState = (): LineState => ({
 });
 
 /**
- * Fixed-position bottom-sheet "leave reviews" panel — replicates the
- * `index_rewiews.html` drawer that appears over the home page after an
- * order is delivered. Visible on mobile only (`md:hidden`).
+ * Фиксированная нижняя панель "оставить отзывы" — повторяет drawer из
+ * `index_rewiews.html`, который появляется над главной страницей после
+ * доставки заказа. Видна только на мобиле (`md:hidden`).
  *
- * Each line of the order renders as: photo + 5-star rating + review input
- * + Apply/Edit buttons. The courier line submits via
- * {@link submitDeliveryReview} (placeholder until `delivery_review_form`
- * lands in OneEntry — see `ONEENTRY-ADMIN-SETUP.md` §1.3); product lines
- * submit via {@link submitReview} with the line's `productId`.
+ * Каждая строка заказа рендерится как: фото + 5-звёздный рейтинг + поле
+ * отзыва + кнопки Apply/Edit. Строка курьера отправляется через
+ * {@link submitDeliveryReview} (placeholder, пока `delivery_review_form`
+ * не появится в OneEntry — см. `ONEENTRY-ADMIN-SETUP.md` §1.3); строки
+ * продуктов отправляются через {@link submitReview} с `productId` строки.
  *
- * Author identity is gated through {@link AuthContext}; an unauthenticated
- * visitor sees the global sign-in modal via {@link OpenDrawerContext}
- * instead of the form being silently rejected.
- * @param   {OrderReviewsPanelProps} props - Component props.
- * @returns {JSX.Element}                   Panel JSX.
+ * Идентификация автора проходит через {@link AuthContext}; неавторизованный
+ * посетитель видит глобальную модалку входа через {@link OpenDrawerContext}
+ * вместо тихого отказа формы.
+ * @param   {OrderReviewsPanelProps} props - Пропсы компонента.
+ * @returns {JSX.Element}                   JSX панели.
  */
 const OrderReviewsPanel = ({ order }: OrderReviewsPanelProps): JSX.Element => {
   const data: OrderReviewMock =

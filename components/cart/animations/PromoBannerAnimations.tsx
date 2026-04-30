@@ -6,15 +6,15 @@ import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
- * Staggered fade-in for the cart / orders promo sidebar — mirrors the
- * `ProductAnimations` first-load effect on cart line items so that the
- * sidebar banners ride in alongside the product list.
+ * Stagger fade-in для промо-сайдбара корзины / заказов — зеркалит
+ * эффект первой загрузки `ProductAnimations` на товарах корзины, чтобы
+ * баннеры сайдбара выезжали вместе со списком товаров.
  *
- * @param   {object}   props           - Component props.
- * @param   {ReactNode} props.children - Banner element to animate.
- * @param   {number}   props.index     - Position in the list (drives stagger delay).
- * @param   {string}   [props.className] - Wrapper class.
- * @returns {JSX.Element}              Wrapped banner JSX.
+ * @param   {object}   props           - Пропсы компонента.
+ * @param   {ReactNode} props.children - Элемент баннера для анимации.
+ * @param   {number}   props.index     - Позиция в списке (управляет задержкой stagger).
+ * @param   {string}   [props.className] - Класс обёртки.
+ * @returns {JSX.Element}              JSX обёрнутого баннера.
  */
 const PromoBannerAnimations = ({
   children,

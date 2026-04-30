@@ -5,12 +5,12 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * Generic CMS page renderer — catch-all для произвольных страниц OneEntry,
+ * Универсальный рендерер CMS-страницы — catch-all для произвольных страниц OneEntry,
  * у которых нет специализированного роута (`/shop`, `/cart`, `/profile`, и т.п.).
  *
- * @param   {object}                          props        - Page props.
- * @param   {Promise<{ handle: string }>}     props.params - Route params.
- * @returns {Promise<JSX.Element>}                         Generic page JSX.
+ * @param   {object}                          props        - Свойства страницы.
+ * @param   {Promise<{ handle: string }>}     props.params - Параметры маршрута.
+ * @returns {Promise<JSX.Element>}                         JSX универсальной страницы.
  */
 const PageLayout = async ({
   params,
@@ -56,10 +56,10 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * Generate page metadata
- * @param   {object}                          props        - Page props.
- * @param   {Promise<{ handle: string }>}     props.params - Route params.
- * @returns {Promise<Metadata>}                            Page metadata.
+ * Генерирует метаданные страницы.
+ * @param   {object}                          props        - Свойства страницы.
+ * @param   {Promise<{ handle: string }>}     props.params - Параметры маршрута.
+ * @returns {Promise<Metadata>}                            Метаданные страницы.
  */
 export async function generateMetadata({
   params,

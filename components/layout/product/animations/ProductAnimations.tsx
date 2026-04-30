@@ -7,7 +7,7 @@ import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
 /**
- * Product animations wrapper
+ * Обёртка анимаций продукта
  */
 const ProductAnimations = ({
   children,
@@ -22,7 +22,7 @@ const ProductAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // enter animations
+  // анимации входа
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,
@@ -41,7 +41,7 @@ const ProductAnimations = ({
     };
   }, []);
 
-  // leaving animations
+  // анимации leaving
   useGSAP(() => {
     const tl = gsap.timeline();
 

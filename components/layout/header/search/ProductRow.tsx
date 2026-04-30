@@ -12,13 +12,13 @@ import {
 } from '@/app/store/reducers/CartSlice';
 
 /**
- * Row renderer for search results — links to product page and records the
- * product as the active reservation entry (used by cart/price selectors).
- * @param   {object}        props          - Component props.
- * @param   {any}           props.pageData - Parent page data (category).
- * @param   {any}           props.product  - Product entity from search.
- * @param   {any}           props.setState - External state setter to close search modal.
- * @returns {JSX.Element}                  Row JSX.
+ * Рендерер строки результатов поиска — ссылка на страницу продукта; записывает
+ * продукт как активную запись reservation (используется селекторами cart/price).
+ * @param   {object}        props          - Пропсы компонента.
+ * @param   {any}           props.pageData - Данные родительской страницы (категории).
+ * @param   {any}           props.product  - Сущность продукта из поиска.
+ * @param   {any}           props.setState - Внешний setter state для закрытия модалки поиска.
+ * @returns {JSX.Element}                  JSX строки.
  */
 const ProductRow = ({
   pageData,

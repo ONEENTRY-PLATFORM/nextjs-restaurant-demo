@@ -3,7 +3,7 @@ import { api } from '@/app/api';
 type LogOutProps = { marker: string; token?: string };
 
 /**
- * User logOut with API AuthProvider
+ * Выход пользователя через API AuthProvider.
  */
 export const logOutUser = async ({ marker }: LogOutProps) => {
   try {

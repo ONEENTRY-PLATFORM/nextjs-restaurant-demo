@@ -11,7 +11,7 @@ import IncreaseButton from './IncreaseButton';
 import QuantityInput from './QuantityInput';
 
 /**
- * Quantity selector
+ * Селектор количества
  */
 const QuantitySelector = ({
   id,
@@ -28,11 +28,11 @@ const QuantitySelector = ({
 }): JSX.Element => {
   const [qty, setQty] = useState(0);
 
-  // extract data from cartSlice
+  // извлекаем данные из cartSlice
   const data = useAppSelector((state) => selectCartItemWithIdLength(state, id));
   const quantity = data?.quantity || 0;
 
-  // setQty state on quantity change
+  // устанавливаем стейт qty при изменении quantity
   useEffect(() => {
     if (!quantity) {
       return;

@@ -13,39 +13,39 @@ import { getImageUrl } from '../api/hooks/useAttributesData';
 import { getDictionary } from '../dictionaries';
 import { generatePageMetadata } from '../utils/generatePageMetadata';
 
-/** Memoize the loader component to prevent unnecessary re-renders */
+/** Мемоизируем компонент-лоадер, чтобы избежать лишних ре-рендеров */
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 export const dynamic = 'force-dynamic';
 
 /**
- * Shop page
- * @param   {PageProps}            props - Page props containing params and searchParams
- * @returns {Promise<JSX.Element>}       Shop page layout JSX.Element
+ * Страница магазина
+ * @param   {PageProps}            props - Пропсы страницы с params и searchParams
+ * @returns {Promise<JSX.Element>}       JSX.Element layout-а страницы магазина
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
 const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
-  /** Extract search parameters from props */
+  /** Извлекаем search-параметры из пропсов */
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
   ]);
-  /** Get the dictionary from the API and set the server provider. */
+  /** Получаем словарь из API и проставляем server provider. */
   const [dict] = ServerProvider('dict', await getDictionary());
 
-  /** Get current Page ByUrl from api */
+  /** Получаем текущую страницу по URL из API */
   const { page } = await getPageByUrl('services');
 
-  /** Set the number of products to display per page */
-  // TODO: Extract products per page limit from global settings
+  /** Устанавливаем количество товаров для отображения на странице */
+  // TODO: Вынести лимит товаров на странице в global settings
   const pagesLimit = 10;
 
-  /** Return 404 page if shop page not found */
+  /** Возвращаем 404, если страница магазина не найдена */
   if (!page) {
     return notFound();
   }
 
-  /** Generate structured data for breadcrumbs to improve SEO */
+  /** Генерируем structured data для хлебных крошек для улучшения SEO */
   const breadcrumbStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -65,7 +65,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
     ],
   };
 
-  /** Render the shop page with structured data and product grid */
+  /** Рендерим страницу магазина со structured data и сеткой товаров */
   return (
     <>
       <script
@@ -93,30 +93,30 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
 export default ShopPageLayout;
 
 /**
- * Generate page metadata
- * @param   {MetadataParams}                           props        - Metadata params
- * @param   {Promise<{handle: string; lang: string;}>} props.params - Page params
- * @returns {Promise<Metadata>}                                     Metadata object
+ * Генерирует метаданные страницы
+ * @param   {MetadataParams}                           props        - Параметры метаданных
+ * @param   {Promise<{handle: string; lang: string;}>} props.params - Параметры страницы
+ * @returns {Promise<Metadata>}                                     Объект метаданных
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
  */
 export async function generateMetadata({
   params,
 }: MetadataParams): Promise<Metadata> {
-  /** Extract handle and language from route parameters */
+  /** Извлекаем handle и язык из параметров маршрута */
   const { handle, lang } = await params;
-  /** Fetch the shop page by URL */
+  /** Загружаем страницу магазина по URL */
   const { isError, page } = await getPageByUrl('services');
 
-  /** Return 404 page if page not found or an error occurred */
+  /** Возвращаем 404, если страница не найдена или произошла ошибка */
   if (isError || !page) {
     return notFound();
   }
 
-  /** Extract page information from the page object */
+  /** Извлекаем информацию страницы из объекта page */
   const { localizeInfos, isVisible, attributeValues } = page;
 
-  /** Return metadata object */
+  /** Возвращаем объект метаданных */
   return generatePageMetadata({
     handle: handle,
     title: localizeInfos.title,

@@ -119,7 +119,7 @@ const FormInput = (
           value={value}
         />
       )}
-      {/* password button */}
+      {/* кнопка пароля */}
       {fieldType === 'password' && (
         <button
           onClick={(e) => {

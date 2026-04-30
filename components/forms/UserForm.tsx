@@ -27,19 +27,19 @@ export type InputValue = {
 };
 
 /**
- * User form
+ * Форма User
  */
 const UserForm = ({ dict }: FormProps): JSX.Element => {
   const { isAuth, refreshUser, user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isError, setError] = useState('');
 
-  // Get form by marker with RTK
+  // Получаем форму по маркеру через RTK
   const { data, isLoading, error } = useGetFormByMarkerQuery({
     marker: 'user',
   });
 
-  // get fields from formFieldsReducer
+  // получаем поля из formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   const formData = useMemo(() => {
@@ -57,7 +57,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
       .filter(Boolean) as IAuthFormData[];
   }, [data?.attributes, fields]);
 
-  // Update user data
+  // Обновляем данные пользователя
   /* eslint-disable react-hooks/preserve-manual-memoization */
   const onUpdateUserData = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {

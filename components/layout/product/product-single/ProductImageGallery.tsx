@@ -14,7 +14,7 @@ import FavoritesButton from '@/components/shared/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * Product images gallery/placeholder
+ * Галерея картинок продукта / placeholder
  */
 const ProductImageGallery = ({
   product,
@@ -25,12 +25,12 @@ const ProductImageGallery = ({
 }): JSX.Element => {
   const [nav1, setNav1] = useState<Slider | null>(null);
   const [nav2, setNav2] = useState<Slider | null>(null);
-  // extract attributeValues from product
+  // извлекаем attributeValues из продукта
   const { attributeValues } = product;
 
-  // Main image from `cover` (admin `dish` set). `more_pic` is read for
-  // backwards-compat with future admin additions but is not in the live set
-  // today (verified via inspect-api).
+  // Главная картинка из `cover` (админский set `dish`). `more_pic` читается
+  // для обратной совместимости с будущими дополнениями admin, но в текущем
+  // живом set'е отсутствует (проверено через inspect-api).
   const coverRaw = attributeValues.cover?.value as
     | { downloadLink?: string }
     | Array<{ downloadLink?: string }>

@@ -23,7 +23,7 @@ const Sticker = ({
     return <></>;
   }
 
-  // Extract data from sticker
+  // Извлекаем данные из sticker
   const title = sticker.value?.title;
   const imgSrc =
     sticker.value.extended?.value.downloadLink ||
@@ -31,7 +31,7 @@ const Sticker = ({
       sticker.value[0]?.extended?.value.downloadLink);
 
   return (
-    <div className="relative box-border flex size-[26px] shrink-0 flex-col items-center justify-center">
+    <div className="relative box-border flex size-6.5 shrink-0 flex-col items-center justify-center">
       {imgSrc && (
         <Image
           width={24}

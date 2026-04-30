@@ -15,7 +15,7 @@ import LogoutMenuItem from './LogoutMenuItem';
 import UserMenuItem from './UserMenuItem';
 
 /**
- * User Profile menu component.
+ * Компонент меню User Profile.
  */
 const UserProfileMenu = ({
   userMenu,
@@ -24,7 +24,7 @@ const UserProfileMenu = ({
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Ensure pages are defined and of correct type
+  // Убеждаемся, что pages определены и корректного типа
   const pages = (userMenu.pages || []) as IMenusPages[];
 
   return (

@@ -18,7 +18,7 @@ type Color = {
 };
 
 /**
- * Color filter component
+ * Компонент фильтра по цвету
  */
 const ColorFilter = ({
   title,
@@ -37,7 +37,7 @@ const ColorFilter = ({
     params.get('color') || '',
   );
 
-  // get colorFilters from attributes
+  // получаем colorFilters из attributes
   const colorFilters = useMemo(() => {
     let colors: Color[] = [];
     if (!attributes || !('listTitles' in attributes)) {
@@ -57,7 +57,7 @@ const ColorFilter = ({
     return colors;
   }, [attributes]);
 
-  // set URLSearchParams on activeColor change
+  // устанавливаем URLSearchParams при изменении activeColor
   useEffect(() => {
     if (activeColor) {
       params.set('color', activeColor);

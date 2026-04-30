@@ -18,14 +18,14 @@ type CartEntry = {
 };
 
 /**
- * Total amount for the cart — sums `price × quantity` over selected
- * `productsData` entries (joined to full product entities by id) plus the
- * delivery line item.
+ * Итоговая сумма для корзины — суммирует `price × quantity` по выбранным
+ * записям `productsData` (соединённым с полными сущностями продуктов по id),
+ * плюс позиция доставки.
  *
- * Originally tried `api.Orders.previewOrder()` but that endpoint requires
- * user auth (returns 401 for guests), so falls back to client-side
- * summation. `attributeValues.sale.value` is preferred over `price` when
- * present (so promo prices override list prices).
+ * Изначально пробовали `api.Orders.previewOrder()`, но этот эндпоинт требует
+ * авторизации пользователя (возвращает 401 для гостей), поэтому fallback —
+ * клиентское суммирование. `attributeValues.sale.value` имеет приоритет над
+ * `price`, если он присутствует (промо-цены перекрывают list-цены).
  */
 const TotalAmount = ({
   dict,

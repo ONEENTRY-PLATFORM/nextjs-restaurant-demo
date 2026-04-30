@@ -9,10 +9,10 @@ import { oauthLogIn } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
 /**
- * Google OAuth callback — exchanges the `?code` for a OneEntry session
- * via {@link oauthLogIn}, persists the refresh token, signals
- * {@link AuthContext} to re-fetch the user, then redirects back to where
- * the flow started (`?return=/cart`, defaults to `/`).
+ * Google OAuth callback — обменивает `?code` на сессию OneEntry через
+ * {@link oauthLogIn}, сохраняет refresh-токен, сигнализирует
+ * {@link AuthContext} перезапросить данные пользователя, затем редиректит
+ * туда, откуда начался флоу (`?return=/cart`, по умолчанию `/`).
  */
 const GoogleAuthCallbackInner = (): JSX.Element => {
   const params = useSearchParams();

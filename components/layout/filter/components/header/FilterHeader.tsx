@@ -5,7 +5,7 @@ import CloseModal from './CloseModal';
 import HistoryBack from './HistoryBack';
 
 /**
- * Filter Header component
+ * Компонент Filter Header
  */
 const FilterHeader = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { open_filters_button } = dict;

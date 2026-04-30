@@ -7,20 +7,20 @@ import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Central protruding cart button — 1:1 port of the orange ball from
- * `static-html/.../MenuBottom`. Opens the cart drawer via `OpenDrawerContext`
- * (`component === 'CartPopup'`) — same drawer pattern as the filter sheet.
- * Hidden while any drawer is open so it doesn't overlap the open sheet.
- * Badge is mount-gated to avoid a hydration mismatch when the persisted cart
- * rehydrates client-side.
+ * Центральная выступающая кнопка корзины — 1:1 порт оранжевого шарика из
+ * `static-html/.../MenuBottom`. Открывает drawer корзины через `OpenDrawerContext`
+ * (`component === 'CartPopup'`) — тот же паттерн drawer, что и у фильтра.
+ * Скрывается, пока открыт любой drawer, чтобы не перекрывать открытую панель.
+ * Бейдж замаунтен через mount-gate, чтобы избежать рассинхрона hydration при
+ * клиентской регидратации persisted-корзины.
  */
 const CenterCartButton = (): JSX.Element | null => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(
     (state) => state.cartReducer.productsData?.length ?? 0,
   );
-  // Persisted Redux slice rehydrates client-side — gate the badge with
-  // useSyncExternalStore so the server/client markup matches.
+  // Persisted Redux-слайс регидратится на клиенте — гейтим бейдж через
+  // useSyncExternalStore, чтобы серверная и клиентская разметка совпадали.
   const mounted = useSyncExternalStore(
     (cb) => {
       cb();

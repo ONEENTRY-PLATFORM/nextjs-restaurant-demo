@@ -12,18 +12,18 @@ import { addData } from '@/app/store/reducers/OrderSlice';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * Address row
+ * Строка адреса
  */
 const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);
 
-  // get address from user formData
+  // получаем адрес из formData пользователя
   const addressReg =
     user?.formData.find((el) => el.marker === 'address_reg')?.value || '';
 
-  // set address on change deliveryData
+  // устанавливаем адрес при изменении deliveryData
   useEffect(() => {
     const address = deliveryData.address || addressReg || '';
     dispatch(

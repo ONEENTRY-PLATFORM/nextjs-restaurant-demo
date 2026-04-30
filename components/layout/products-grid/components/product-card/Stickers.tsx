@@ -11,10 +11,10 @@ const Stickers = ({
 }: {
   product: IProductsEntity;
 }): JSX.Element => {
-  // Get stickers array directly or use empty array as fallback
+  // Получаем массив stickers напрямую или используем пустой массив как fallback
   const stickers = attributeValues?.stickers || [];
 
-  // Map through stickers and render Sticker components
+  // Маппим stickers и рендерим компоненты Sticker
   return (
     <>
       {Array.isArray(stickers)

@@ -5,34 +5,34 @@ import { LanguageEnum } from '@/app/types/enum';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 /**
- * Test route for API calls
- * @returns {Promise<NextResponse>} - Promise object that represents the result of the GET request.
+ * Тестовый маршрут для API-вызовов.
+ * @returns {Promise<NextResponse>} - Promise-объект, представляющий результат GET-запроса.
  */
 export async function GET(): Promise<NextResponse> {
   try {
-    /** Record start time for response time calculation */
+    /** Записываем стартовое время для расчёта времени ответа */
     const startTime = Date.now();
 
-    /** Test with a simple API call - replace 'home_web' with a known page URL in your system */
+    /** Тестируем простым API-вызовом — замени 'home_web' на известный URL страницы в твоей системе */
     const langCode = LanguageEnum.en;
-    /** Fetch home page data to test API connectivity */
+    /** Получаем данные главной страницы, чтобы проверить связь с API */
     const data = await api.Pages.getPageByUrl('home_web', langCode);
 
-    /** Record end time for response time calculation */
+    /** Записываем финальное время для расчёта времени ответа */
     const endTime = Date.now();
-    /** Calculate total response time in milliseconds */
+    /** Вычисляем общее время ответа в миллисекундах */
     const responseTime = endTime - startTime;
 
-    /** Return successful response with timing and data status */
+    /** Возвращаем успешный ответ с таймингами и статусом данных */
     return NextResponse.json({
       success: true,
       responseTime,
       data: data ? 'Data received' : 'No data',
     });
   } catch (error) {
-    /** Handle API connection errors */
+    /** Обрабатываем ошибки соединения с API */
     const apiError = handleApiError('function GET', error);
-    /** Return error response with error message */
+    /** Возвращаем ответ с ошибкой и сообщением */
     return NextResponse.json({
       success: false,
       error: apiError.message,

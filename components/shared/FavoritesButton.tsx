@@ -21,7 +21,7 @@ import HeartIcon from '@/components/icons/heart';
 import HeartOpenIcon from '@/components/icons/heart-o';
 
 /**
- * Favorites button
+ * Кнопка избранного
  */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   );
 
   /**
-   * Update favorites
+   * Обновить избранное
    */
   const onUpdateFavoritesHandle = () => {
     if (isFav) {
@@ -48,7 +48,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   };
 
   /**
-   * Update user data favorites
+   * Обновить данные избранного у пользователя
    * @async
    */
   const onUpdateUserFavoritesHandle = async () => {

@@ -21,17 +21,17 @@ type DescriptionValue = Array<{
 }>;
 
 /**
- * Promo detail page — renders a single promo campaign by `pageUrl` marker
- * (e.g. `/promo/birthday_offer`, `/promo/business_lunch`).
+ * Страница деталей промо-акции — рендерит одну промо-кампанию по маркеру `pageUrl`
+ * (например, `/promo/birthday_offer`, `/promo/business_lunch`).
  *
- * Driven by OneEntry `blog` child page attributes (`blog_page` set). Real
- * attributes:
- *   - `bg_image`    (image) — desktop hero;
- *   - `banner`      (image) — mobile fallback if `bg_image` is empty;
- *   - `description` (text)  — markdown/html body;
- *   - `action_type` (list)  — `[{ title }]` for the CTA label.
- * @param   {PromoPageProps}       props - Next.js dynamic route props.
- * @returns {Promise<JSX.Element>}       Promo detail JSX.
+ * Управляется атрибутами дочерних страниц `blog` в OneEntry (набор `blog_page`).
+ * Реальные атрибуты:
+ *   - `bg_image`    (image) — hero для десктопа;
+ *   - `banner`      (image) — мобильный fallback, если `bg_image` пуст;
+ *   - `description` (text)  — тело в markdown/html;
+ *   - `action_type` (list)  — `[{ title }]` для подписи CTA.
+ * @param   {PromoPageProps}       props - Пропсы динамического маршрута Next.js.
+ * @returns {Promise<JSX.Element>}       JSX страницы деталей промо.
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  */
 const PromoDetailPage = async ({
@@ -89,9 +89,9 @@ const PromoDetailPage = async ({
 export default PromoDetailPage;
 
 /**
- * Generate page metadata for the promo detail route.
- * @param   {PromoPageProps}    props - Next.js props.
- * @returns {Promise<Metadata>}       Metadata object.
+ * Генерирует метаданные страницы для маршрута деталей промо.
+ * @param   {PromoPageProps}    props - Пропсы Next.js.
+ * @returns {Promise<Metadata>}       Объект метаданных.
  */
 export async function generateMetadata({
   params,

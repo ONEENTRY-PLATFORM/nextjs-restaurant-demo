@@ -9,42 +9,42 @@ import type { MetadataParams, PageProps } from '@/app/types/global';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
-/** Memoize the loader component to prevent unnecessary re-renders */
+/** Мемоизируем компонент-лоадер, чтобы избежать лишних ре-рендеров */
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * Shop category page layout
- * @param   {object}               props              - Page props
- * @param   {object}               props.params       - page params
- * @param   {object}               props.searchParams - dynamic search params
- * @returns {Promise<JSX.Element>}                    Shop page layout JSX.Element
+ * Layout страницы категории магазина
+ * @param   {object}               props              - Пропсы страницы
+ * @param   {object}               props.params       - параметры страницы
+ * @param   {object}               props.searchParams - динамические search-параметры
+ * @returns {Promise<JSX.Element>}                    JSX.Element layout-а страницы магазина
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
 const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
-  /** Extract route parameters from props */
+  /** Извлекаем параметры маршрута из пропсов */
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
   ]);
-  /** Destructure handle from parameters */
+  /** Деструктурируем handle из параметров */
   const { handle } = params;
-  /** Get the dictionary from the API and set the server provider. */
+  /** Получаем словарь из API и проставляем server provider. */
   const [dict] = ServerProvider('dict', await getDictionary());
 
-  /** Fetch category page data from the CMS */
+  /** Загружаем данные страницы категории из CMS */
   const { page } = await getPageByUrl(handle);
 
-  /** Set products per page limit */
-  // TODO: Extract products per page limit from global settings
+  /** Устанавливаем лимит товаров на странице */
+  // TODO: Вынести лимит товаров на странице в global settings
   const pagesLimit = 10;
 
-  /** Show 404 page if category page not found */
+  /** Показываем 404, если страница категории не найдена */
   if (!page) {
     return notFound();
   }
 
-  /** Generate structured data for breadcrumbs to improve SEO */
+  /** Генерируем structured data для хлебных крошек для улучшения SEO */
   const breadcrumbStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -98,7 +98,7 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
 export default ShopCategoryLayout;
 
 /**
- * Generate page metadata
+ * Генерирует метаданные страницы
  */
 export async function generateMetadata({
   params,

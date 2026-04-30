@@ -14,9 +14,9 @@ import type { RestaurantOption } from '@/components/reservation/RestaurantSelect
 export const dynamic = 'force-dynamic';
 
 /**
- * Reservation page — renders the hero content from CMS page `reservation`
- * plus a dynamic {@link ReservationForm} fetched from `reservation` form marker.
- * @returns {Promise<JSX.Element>} Reservation page JSX.
+ * Страница бронирования — рендерит hero-контент со страницы CMS `reservation`
+ * плюс динамическую {@link ReservationForm}, подгруженную по маркеру формы `reservation`.
+ * @returns {Promise<JSX.Element>} JSX страницы бронирования.
  */
 const ReservationPage = async (): Promise<JSX.Element> => {
   const [pageRes, formRes, restaurantsParentRes, restaurantsRes, dict] =
@@ -28,9 +28,9 @@ const ReservationPage = async (): Promise<JSX.Element> => {
       getDictionary(),
     ]);
 
-  // Restaurant children of `restaurants`: each has `address` (string) +
-  // `localizeInfos.title`. Verified via inspect-api — no `restaurant_address`
-  // attr, so option label falls back to `address` then `title`.
+  // Дочерние страницы ресторанов внутри `restaurants`: у каждой есть `address` (string) +
+  // `localizeInfos.title`. Проверено через inspect-api — атрибута `restaurant_address`
+  // нет, поэтому подпись опции откатывается на `address`, затем на `title`.
   const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map(
     (p: IPagesEntity) => ({
       value: p.pageUrl ?? String(p.id),
@@ -41,9 +41,9 @@ const ReservationPage = async (): Promise<JSX.Element> => {
     }),
   );
 
-  // Hero pulled from the `restaurants` parent page (`photos` groupOfImages,
-  // `description` text). The `bookings` page has only a `menu_icon`, no
-  // dedicated reservation_* attributes — verified via inspect-api.
+  // Hero берётся с родительской страницы `restaurants` (`photos` groupOfImages,
+  // `description` text). У страницы `bookings` есть только `menu_icon`, выделенных
+  // атрибутов reservation_* нет — проверено через inspect-api.
   const parent = restaurantsParentRes.page;
   const photos =
     (parent?.attributeValues?.photos?.value as
@@ -104,8 +104,8 @@ const ReservationPage = async (): Promise<JSX.Element> => {
 export default ReservationPage;
 
 /**
- * Generate page metadata for reservation route.
- * @returns {Promise<Metadata>} Page metadata.
+ * Генерирует метаданные страницы для маршрута бронирования.
+ * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('bookings');

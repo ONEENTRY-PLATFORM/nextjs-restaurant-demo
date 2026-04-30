@@ -10,7 +10,7 @@ import SearchIcon from '@/components/icons/search';
 import SearchResults from './SearchResults';
 
 /**
- * SearchBar component
+ * Компонент SearchBar
  */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const searchParams = useSearchParams();

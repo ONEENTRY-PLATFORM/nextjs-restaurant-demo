@@ -5,9 +5,9 @@ import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces'
 import { getApi, isError } from '@/app/api';
 
 /**
- * Reservation payload sent from the client form.
- * Each entry matches the `marker`/`type` of a field defined in OneEntry
- * Forms admin for marker `reservation`.
+ * Payload бронирования, отправляемый из клиентской формы.
+ * Каждый элемент соответствует `marker`/`type` поля, определённого в OneEntry
+ * Forms admin для маркера `reservation`.
  */
 export type ReservationPayload = {
   formData: FormDataType[];
@@ -16,12 +16,12 @@ export type ReservationPayload = {
 };
 
 /**
- * Submit a table reservation to OneEntry FormsData API.
+ * Отправляет бронирование столика через OneEntry FormsData API.
  *
- * Fetches the `reservation` form first to grab `moduleFormConfigs` metadata,
- * then posts form data. Returns `{ ok: true }` on success or `{ ok: false, message }` on failure.
- * @param   {ReservationPayload}                                   payload - Reservation fields prepared on the client.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Server action result.
+ * Сначала получает форму `reservation`, чтобы извлечь метаданные `moduleFormConfigs`,
+ * затем отправляет данные формы. Возвращает `{ ok: true }` при успехе или `{ ok: false, message }` при неудаче.
+ * @param   {ReservationPayload}                                   payload - Поля бронирования, подготовленные на клиенте.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Результат серверного действия.
  */
 export async function submitReservation(
   payload: ReservationPayload,

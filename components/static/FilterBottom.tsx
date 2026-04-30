@@ -23,12 +23,13 @@ const PREFERENCES = [
 const PRICE = ['from 5', 'Under 30'];
 
 /**
- * Filter bottom sheet — 1:1 port of `static-html/index_filter.html` `#side-menu`.
+ * Нижний sheet фильтра — порт 1:1 `#side-menu` из `static-html/index_filter.html`.
  *
- * Toggled by {@link FilterButton} via `OpenDrawerContext`. Mounted in the
- * header so the panel is reachable from any page. Renders as a slide-up
- * sheet on mobile and a centered panel on md+ screens.
- * @returns {JSX.Element} Filter panel JSX.
+ * Переключается через {@link FilterButton} с помощью `OpenDrawerContext`.
+ * Смонтирован в хедере, чтобы панель была доступна с любой страницы.
+ * Рендерится как slide-up sheet на мобиле и как центрированная панель на
+ * экранах md+.
+ * @returns {JSX.Element} JSX панели фильтра.
  */
 const FilterBottom = (): JSX.Element => {
   const { open, component, setOpen, setComponent } =

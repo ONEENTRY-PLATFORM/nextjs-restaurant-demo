@@ -4,23 +4,25 @@ import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
 type Options = {
-  /** Distance in px past which the gesture commits a close. */
+  /** Расстояние в px, после которого жест приводит к закрытию. */
   threshold?: number;
-  /** Velocity in px/ms past which a flick commits even before threshold. */
+  /** Скорость в px/ms, после которой flick приводит к закрытию даже до threshold. */
   velocityThreshold?: number;
 };
 
 /**
- * Bottom-sheet swipe-to-dismiss. Drags the target element vertically with the
- * pointer; when released past the threshold (or with enough downward velocity)
- * fires `onClose`. Otherwise springs back to origin via a CSS transition.
+ * Swipe-to-dismiss для bottom-sheet. Тащит целевой элемент вертикально за
+ * указателем; когда отпускается за пределами threshold (или с достаточной
+ * скоростью движения вниз), вызывает `onClose`. Иначе пружинит обратно в
+ * исходную позицию через CSS-переход.
  *
- * Skips the gesture when the touch starts on a scrollable child that has
- * already been scrolled, so vertical scrolling inside the sheet still works.
- * @param ref - Element being dragged (typically the sheet body / modalBody).
- * @param onClose - Commit handler. Should trigger the same close transition
- * the sheet uses for its own X button.
- * @param options - Tuning knobs.
+ * Пропускает жест, когда касание начинается на прокручиваемом дочернем
+ * элементе, который уже прокручен, чтобы вертикальный скролл внутри sheet
+ * продолжал работать.
+ * @param ref - Элемент, который тащим (обычно тело sheet / modalBody).
+ * @param onClose - Обработчик подтверждения. Должен запускать тот же close-переход,
+ * что и собственная X-кнопка sheet.
+ * @param options - Настройки.
  */
 export const useSwipeToClose = (
   ref: RefObject<HTMLElement | null>,
@@ -52,8 +54,8 @@ export const useSwipeToClose = (
       if (e.touches.length !== 1) {
         return;
       }
-      // Allow inner scroll: skip if the user starts the gesture inside a
-      // scrolled container.
+      // Разрешить внутренний скролл: пропустить, если пользователь начинает
+      // жест внутри прокрученного контейнера.
       let node: HTMLElement | null = e.target as HTMLElement;
       while (node && node !== el) {
         if (node.scrollTop > 0) {

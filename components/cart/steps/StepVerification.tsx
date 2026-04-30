@@ -10,13 +10,13 @@ import { setStep, setStepError } from '@/app/store/reducers/OrderSlice';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 /**
- * Checkout step — phone OTP verification (per `cart_Verification.html`).
+ * Шаг checkout — phone OTP верификация (по `cart_Verification.html`).
  *
- * Reads the phone number entered in {@link StepSignIn}'s phone tab
- * (`formFieldsReducer.fields.phone`), accepts a 6-digit OTP and verifies it
- * via `AuthProvider.checkCode('phone', ...)`. On success advances to
- * `address`; on failure surfaces an inline error and lets the user resend.
- * @returns {JSX.Element} Step JSX.
+ * Читает номер телефона, введённый во вкладке phone {@link StepSignIn}
+ * (`formFieldsReducer.fields.phone`), принимает 6-значный OTP и верифицирует его
+ * через `AuthProvider.checkCode('phone', ...)`. При успехе переходит на
+ * `address`; при провале показывает инлайн-ошибку и даёт пользователю переотправить.
+ * @returns {JSX.Element} JSX шага.
  */
 const StepVerification = (): JSX.Element => {
   const dispatch = useAppDispatch();

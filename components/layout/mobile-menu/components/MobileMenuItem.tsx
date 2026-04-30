@@ -10,7 +10,7 @@ import ChevronDownFatIcon from '@/components/icons/chevron-down-fat';
 import MobileMenu from './MobileMenu';
 
 /**
- * Mobile menu list item
+ * Элемент списка мобильного меню
  */
 function MobileMenuItem({
   item,
@@ -20,7 +20,7 @@ function MobileMenuItem({
   parentUrl?: string;
 }) {
   const { setOpen } = useContext(OpenDrawerContext);
-  // check if item has child
+  // проверяем, есть ли у элемента дочерние
   const hasChild = Array.isArray(item.children) && item.children.length > 0;
   const [openSubmenu, setOpenSubmenu] = useState(false);
   const url =

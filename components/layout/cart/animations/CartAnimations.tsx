@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
 import type { AnimationsProps } from '@/app/types/global';
 
 /**
- * Cart wrapper stage leaving animations
+ * Анимации обёртки корзины при stage leaving
  */
 const CartAnimations = ({
   children,
@@ -19,7 +19,7 @@ const CartAnimations = ({
   const [prevStage, setPrevStage] = useState<string>('');
   const ref = useRef(null);
 
-  // stage leaving animations
+  // анимации stage leaving
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,

@@ -4,7 +4,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get form by marker.
+ * Получает форму по маркеру.
  */
 export const getFormByMarker = async (
   marker: string,

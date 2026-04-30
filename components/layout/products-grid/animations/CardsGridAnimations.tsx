@@ -7,7 +7,7 @@ import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
 /**
- * CardsGrid animations component
+ * Компонент анимаций CardsGrid
  */
 const CardsGridAnimations = ({
   children,
@@ -20,7 +20,7 @@ const CardsGridAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // leaving animations
+  // анимации leaving
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,

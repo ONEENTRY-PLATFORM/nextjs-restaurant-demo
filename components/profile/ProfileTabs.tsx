@@ -11,9 +11,9 @@ const tabs: Array<{ href: string; label: string }> = [
 ];
 
 /**
- * Profile dashboard tab navigation — highlights the active tab based on the
- * current pathname.
- * @returns {JSX.Element} Tab list JSX.
+ * Навигация по табам дашборда профиля — подсвечивает активный таб на основе
+ * текущего pathname.
+ * @returns {JSX.Element} JSX списка табов.
  */
 const ProfileTabs = (): JSX.Element => {
   const pathname = usePathname();

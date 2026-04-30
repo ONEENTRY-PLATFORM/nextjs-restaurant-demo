@@ -17,15 +17,15 @@ import CardLineIcon from '@/components/icons/card-line.svg';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 
 /**
- * Checkout step — choose payment method (per `cart_PAYMENT.html`).
+ * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
  *
- * Renders: PayPal / cash / Credit & Debit Cards radios + comments textbox +
- * "order taken by another person" checkbox toggling an alt-phone input.
- * Card → {@link StepAddCard} sheet (per `cart_add_card.html`);
- * PayPal/cash → straight to `success`.
- * @param   {object}           props      - Step props.
- * @param   {IAttributeValues} props.dict - Static-content dictionary.
- * @returns {JSX.Element}                 Step JSX.
+ * Рендерит: радио PayPal / cash / Credit & Debit Cards + textbox комментариев +
+ * чекбокс "order taken by another person", переключающий инпут альтернативного телефона.
+ * Card → sheet {@link StepAddCard} (по `cart_add_card.html`);
+ * PayPal/cash → сразу на `success`.
+ * @param   {object}           props      - Пропсы шага.
+ * @param   {IAttributeValues} props.dict - Словарь статического контента.
+ * @returns {JSX.Element}                 JSX шага.
  */
 const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -55,8 +55,8 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const onNext = async () => {
     persistOrderFields();
     if (method === 'card') {
-      // Card flow continues in StepAddCard, which calls createOrder itself
-      // after the user picks a saved card.
+      // Card-флоу продолжается в StepAddCard, который сам вызывает createOrder
+      // после того, как пользователь выберет сохранённую карту.
       dispatch(setStep('add_card'));
       return;
     }
@@ -75,7 +75,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Header */}
+      {/* Хедер */}
       <div className="flex items-center gap-2.5">
         <CardLineIcon />
         <p className="font-normal text-[20px] text-paper">
@@ -108,7 +108,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         />
       </div>
 
-      {/* Cash */}
+      {/* Наличные */}
       <div className="flex items-center gap-2.5 text-paper">
         <input
           type="radio"
@@ -129,7 +129,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         </label>
       </div>
 
-      {/* Credit & Debit Cards */}
+      {/* Кредитные и дебетовые карты */}
       <div className="flex items-center gap-2.5 text-paper">
         <input
           type="radio"
@@ -154,7 +154,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         />
       </div>
 
-      {/* Comments to the order */}
+      {/* Комментарии к заказу */}
       <input
         type="text"
         value={comment}
@@ -166,7 +166,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
 
-      {/* Order taken by another person */}
+      {/* Заказ принимает другой человек */}
       <label className="custom-checkbox text-[14px] text-paper">
         <input
           type="checkbox"
@@ -179,7 +179,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         The order will be taken by another person
       </label>
 
-      {/* Alt-receiver phone (visible when checkbox is on) */}
+      {/* Телефон альтернативного получателя (виден, когда чекбокс включён) */}
       {altReceiver ? (
         <input
           type="tel"

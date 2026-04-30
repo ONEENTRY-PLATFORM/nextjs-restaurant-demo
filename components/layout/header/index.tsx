@@ -24,15 +24,15 @@ import SearchBar from './search/SearchBar';
 import SearchFallback from './search/SearchFallback';
 
 /**
- * Header section
- * @returns React component
+ * Секция Header
+ * @returns React-компонент
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
-  // Drop categories that have no products — empty links read as broken in
-  // the scroller. Probe each child page with a `limit:1` call and keep
-  // those where `total > 0`.
+  // Отсекаем категории без продуктов — пустые ссылки читаются как «битые» в
+  // скроллере. Проверяем каждую дочернюю страницу вызовом `limit:1` и
+  // оставляем те, где `total > 0`.
   const childPages = (pages ?? []) as IPagesEntity[];
   const counts = await Promise.all(
     childPages.map(async (p) =>
@@ -49,8 +49,8 @@ const Header = async (): Promise<JSX.Element> => {
   );
   const populatedPages = childPages.filter((_, i) => (counts[i] ?? 0) > 0);
 
-  // Preferences scroller — list-type attribute on `dish` set; each
-  // listTitle becomes a chip that links to `/shop?preferences=<value>`.
+  // Preferences-скроллер — list-type атрибут на set `dish`; каждый
+  // listTitle становится чипом со ссылкой на `/shop?preferences=<value>`.
   const preferencesAttr = await getSingleAttributeByMarkerSet({
     setMarker: 'dish',
     attributeMarker: 'preferences',
@@ -64,9 +64,9 @@ const Header = async (): Promise<JSX.Element> => {
           value: String(o.value),
         }))
       : [];
-  // OneEntry currently has duplicate `Dinner` listTitles (see
-  // ONEENTRY-ADMIN-SETUP.md §2.4) which would collide on React keys —
-  // dedupe by value here, first occurrence wins.
+  // В OneEntry сейчас есть дублирующиеся listTitles `Dinner` (см.
+  // ONEENTRY-ADMIN-SETUP.md §2.4), которые коллидили бы по React-ключам —
+  // дедуплицируем по value, побеждает первое вхождение.
   const seenValues = new Set<string>();
   const preferenceOptions: PreferenceOption[] = rawPreferenceOptions.filter(
     (o) => {
@@ -128,9 +128,9 @@ const Header = async (): Promise<JSX.Element> => {
           <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             {/* Category Button */}
             <CategoryButton />
-            {/* Categories Scroller — wrapped in Suspense because it reads
-                useSearchParams() and would otherwise force the whole
-                route into a CSR bailout during prerender. */}
+            {/* Categories Scroller — обёрнут в Suspense, потому что использует
+                useSearchParams() и иначе форсил бы весь route в CSR bailout
+                во время prerender. */}
             <Suspense fallback={null}>
               <CategoriesScroller preferences={preferenceOptions} />
             </Suspense>

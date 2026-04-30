@@ -1,25 +1,25 @@
 import lqipModern from 'lqip-modern';
 
-// This file has been moved to app/api/utils/getLqipPreview.ts because it uses the lqip-modern package
-// which depends on sharp, a Node.js library that uses built-in modules like child_process and fs
-// that are not available in the browser environment.
+// Этот файл был перемещён в app/api/utils/getLqipPreview.ts, потому что использует пакет lqip-modern,
+// который зависит от sharp — Node.js-библиотеки, использующей встроенные модули вроде child_process и fs,
+// недоступные в браузерной среде.
 //
-// If you need to use this functionality in client-side code, you should either:
-// 1. Create an API endpoint that uses this server-side function
-// 2. Use a browser-compatible alternative
+// Если эта функциональность нужна в клиентском коде, следует либо:
+// 1. Создать API-эндпоинт, использующий эту серверную функцию.
+// 2. Использовать браузер-совместимую альтернативу.
 
-// Simple in-memory cache for LQIP previews
+// Простой in-memory кэш LQIP-превью
 const lqipCache = new Map<string, { dataURI: string; timestamp: number }>();
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const CACHE_DURATION = 10 * 60 * 1000; // 10 минут
 
 /**
- * Asynchronously generates a low-quality image placeholder (LQIP) from an image URL
+ * Асинхронно генерирует низкокачественный плейсхолдер изображения (LQIP) по URL изображения.
  *
- * This function fetches an image from the provided URL and generates a low-quality
- * base64-encoded preview image that can be used as a placeholder while the full
- * quality image is loading. This improves perceived performance and user experience.
- * @param   {string}          imageUrl - The URL of the image to generate a placeholder for
- * @returns {Promise<string>}          A promise that resolves to a base64-encoded data URI of the low-quality placeholder
+ * Функция получает изображение по указанному URL и генерирует низкокачественное
+ * base64-закодированное превью, которое можно использовать как плейсхолдер во время
+ * загрузки полноразмерного изображения. Это улучшает воспринимаемую производительность и UX.
+ * @param   {string}          imageUrl - URL изображения, для которого генерируется плейсхолдер.
+ * @returns {Promise<string>}          Promise, резолвящийся в base64-закодированный data URI низкокачественного плейсхолдера.
  * @example
  * ```typescript
  * const preview = await getLqipPreview('https://example.com/image.jpg');
@@ -27,37 +27,37 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
  * ```
  */
 const getLqipPreview = async (imageUrl: string): Promise<string> => {
-  /** Check cache first */
+  /** Сначала проверяем кэш */
   const cached = lqipCache.get(imageUrl);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     return cached.dataURI;
   }
 
-  /** Attempt to generate LQIP preview for the image */
+  /** Пытаемся сгенерировать LQIP-превью для изображения */
   try {
-    /** Fetch the image from the provided URL */
+    /** Получаем изображение по указанному URL */
     const image = await fetch(imageUrl);
-    /** Validate the image response */
+    /** Валидируем ответ */
     if (!image.ok) {
       throw new Error(
         `Failed to fetch image: ${image.status} ${image.statusText}`,
       );
     }
 
-    /** Convert the image response to a buffer */
+    /** Конвертируем ответ изображения в буфер */
     const imageBuffer = Buffer.from(await image.arrayBuffer());
-    /** Generate LQIP preview using lqip-modern */
+    /** Генерируем LQIP-превью через lqip-modern */
     const previewImage = await lqipModern(imageBuffer);
-    /** Extract the base64 data URI from the preview */
+    /** Извлекаем base64 data URI из превью */
     const dataURI = previewImage.metadata.dataURIBase64;
 
-    /** Cache the result */
+    /** Кэшируем результат */
     lqipCache.set(imageUrl, { dataURI, timestamp: Date.now() });
 
-    /** Return the generated data URI */
+    /** Возвращаем сгенерированный data URI */
     return dataURI;
   } catch (error) {
-    /** Return a default placeholder if LQIP generation fails */
+    /** Возвращаем дефолтный плейсхолдер, если генерация LQIP не удалась */
     // eslint-disable-next-line no-console
     console.warn(`Failed to generate LQIP for ${imageUrl}:`, error);
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=';

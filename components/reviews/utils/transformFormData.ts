@@ -1,10 +1,10 @@
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 
 /**
- * Single OneEntry form attribute as returned by `Forms.getFormByMarker`.
- * @property {string} marker     - Field marker (used as a key when posting form data).
- * @property {string} type       - OneEntry field type (`text`, `string`, `integer`, `groupOfImages`, `spam`, `button`, …).
- * @property {number} [position] - Order in which fields are rendered.
+ * Один атрибут формы OneEntry, возвращаемый `Forms.getFormByMarker`.
+ * @property {string} marker     - Маркер поля (используется как ключ при отправке данных формы).
+ * @property {string} type       - Тип поля OneEntry (`text`, `string`, `integer`, `groupOfImages`, `spam`, `button`, …).
+ * @property {number} [position] - Порядок, в котором рендерятся поля.
  */
 export interface FormAttribute {
   marker: string;
@@ -13,11 +13,11 @@ export interface FormAttribute {
 }
 
 /**
- * Per-field transform input passed to {@link transformFormField}.
- * @property {string}  marker    - Field marker.
- * @property {string}  type      - Field type from OneEntry form schema.
- * @property {unknown} value     - Raw value supplied by the UI (string / number / array).
- * @property {number}  productId - Product ID — needed to scope `groupOfImages` uploads.
+ * Входные данные для трансформации одного поля, передаваемые в {@link transformFormField}.
+ * @property {string}  marker    - Маркер поля.
+ * @property {string}  type      - Тип поля из схемы формы OneEntry.
+ * @property {unknown} value     - Сырое значение, подаваемое из UI (string / number / array).
+ * @property {number}  productId - Product ID — нужен для скоупа загрузок `groupOfImages`.
  */
 export interface TransformFieldParams {
   marker: string;
@@ -27,12 +27,12 @@ export interface TransformFieldParams {
 }
 
 /**
- * Convert a single UI value into a OneEntry `FormDataType` payload entry.
- * Mirrors the convention used in `oneentry-next-shop`'s `transformFormField`
- * — dispatches by marker first (`spam`, `send`), then by field type
- * (`text`, `groupOfImages`), falling through to a primitive default.
- * @param   {TransformFieldParams} params - Field input.
- * @returns {FormDataType}                FormData entry ready for `postFormsData`.
+ * Конвертирует одно UI-значение в payload-запись `FormDataType` OneEntry.
+ * Повторяет конвенцию из `transformFormField` в `oneentry-next-shop` —
+ * dispatch сначала по маркеру (`spam`, `send`), затем по типу поля
+ * (`text`, `groupOfImages`), с проваливанием в дефолт для примитивов.
+ * @param   {TransformFieldParams} params - Входные данные поля.
+ * @returns {FormDataType}                Запись FormData, готовая для `postFormsData`.
  */
 export const transformFormField = ({
   marker,
@@ -70,10 +70,10 @@ export const transformFormField = ({
 };
 
 /**
- * Validate that a transformed FormData array has at least one non-empty content field.
- * `spam`/`button` entries are ignored — they never carry user input.
- * @param   {FormDataType[]}                       data - Transformed form payload.
- * @returns {{ isValid: boolean; error?: string }}      Validation result.
+ * Валидирует, что трансформированный массив FormData содержит хотя бы одно непустое поле контента.
+ * Записи `spam`/`button` игнорируются — они никогда не несут пользовательский ввод.
+ * @param   {FormDataType[]}                       data - Трансформированный payload формы.
+ * @returns {{ isValid: boolean; error?: string }}      Результат валидации.
  */
 export const validateFormData = (
   data: FormDataType[],

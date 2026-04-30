@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get pages objects.
+ * Получает объекты страниц.
  */
 export const getPagesByIds = async (
   ids: [],

@@ -3,16 +3,15 @@
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-// Opt out of static prerender — the shared layout chain includes
-// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
-// requires to be wrapped in Suspense for static generation. Rendering
-// dynamically sidesteps the prerender-time bailout (same approach as the
-// home page).
+// Отключаем статический prerender — общая цепочка layout-ов включает
+// `useSearchParams()` (поисковая строка / bottom sheet фильтра), который Next.js
+// требует оборачивать в Suspense для статической генерации. Динамический рендер
+// обходит prerender-time bailout (тот же подход, что и на home-странице).
 export const dynamic = 'force-dynamic';
 
 /**
- * The API test page component for testing API performance
- * @returns {JSX.Element} The API test page component
+ * Компонент тестовой страницы API для проверки производительности API.
+ * @returns {JSX.Element} Компонент тестовой страницы API.
  */
 export default function ApiTestPage(): JSX.Element {
   const [loadingTimes, setLoadingTimes] = useState<number[]>([]);
@@ -20,13 +19,13 @@ export default function ApiTestPage(): JSX.Element {
 
   useEffect(() => {
     /**
-     * Test API performance
-     * Tests API response time by sending 20 requests to the /api/test-connection endpoint
-     * Records the time taken for each request and calculates the average response time
+     * Тестирует производительность API.
+     * Замеряет время ответа API, отправляя 20 запросов на эндпоинт /api/test-connection.
+     * Записывает время каждого запроса и вычисляет среднее время ответа.
      */
     const testApiPerformance = async (): Promise<void> => {
       const times = [];
-      /** Loop 20 times to get sufficient data points for performance analysis */
+      /** Цикл из 20 итераций, чтобы набрать достаточно точек данных для анализа производительности */
       for (let i = 0; i < 20; i++) {
         const startTime = performance.now();
         try {
@@ -41,9 +40,9 @@ export default function ApiTestPage(): JSX.Element {
         }
       }
       setLoadingTimes(times);
-      /** Filter out successful request times (values greater than 0) */
+      /** Отфильтровываем времена успешных запросов (значения больше 0) */
       const validTimes = times.filter((t) => t > 0);
-      /** Calculate and set the average response time */
+      /** Вычисляем и устанавливаем среднее время ответа */
       if (validTimes.length > 0) {
         const avg = validTimes.reduce((a, b) => a + b, 0) / validTimes.length;
         setAverageTime(avg);

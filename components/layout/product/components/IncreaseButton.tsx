@@ -4,7 +4,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
 /**
- * Increase button component
+ * Компонент кнопки увеличения
  */
 const IncreaseButton = ({
   id,
@@ -20,7 +20,7 @@ const IncreaseButton = ({
     return <></>;
   }
 
-  // Increase product quantity
+  // Увеличить количество продукта
   const onIncreaseHandle = () => {
     dispatch(
       increaseProductQty({

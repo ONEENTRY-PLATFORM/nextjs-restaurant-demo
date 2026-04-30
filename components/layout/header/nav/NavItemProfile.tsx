@@ -8,11 +8,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ProfileIcon from '@/components/icons/profile';
 
 /**
- * Nav item profile button — opens {@link ProfilePopup} for authenticated
- * users or the sign-in modal otherwise. Mirrors the `static-html`
- * details_personal.html flow where the user icon triggers a slide-in
- * profile drawer (the standalone `/profile` page is preserved as a
- * fallback for direct deep-links).
+ * Кнопка nav-элемента профиля — открывает {@link ProfilePopup} для
+ * авторизованных пользователей либо модалку входа в остальных случаях.
+ * Зеркалит флоу из `static-html` details_personal.html, где иконка
+ * пользователя триггерит выезжающий drawer профиля (отдельная страница
+ * `/profile` сохранена как fallback для прямых deep-link'ов).
  */
 const NavItemProfile = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);

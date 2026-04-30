@@ -19,7 +19,7 @@ import CartAddIcon from '@/components/icons/cart-add';
 import QuantitySelector from './QuantitySelector';
 
 /**
- * AddToCart button with quantity selector component.
+ * Кнопка AddToCart с компонентом quantity selector.
  */
 const AddToCartButton = ({
   id,
@@ -39,9 +39,9 @@ const AddToCartButton = ({
   dict: IAttributeValues;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  // Cart state hydrates from localStorage on the client → render the server-
-  // safe variant (Add-to-cart button) до гидрации, иначе hydration mismatch
-  // когда товар уже в корзине из persisted storage. useSyncExternalStore
+  // Состояние корзины гидратируется из localStorage на клиенте → рендерим
+  // server-safe вариант (Add-to-cart button) до гидрации, иначе hydration
+  // mismatch, когда товар уже в корзине из persisted storage. useSyncExternalStore
   // вместо useEffect+setState — чтобы не было cascading-render warning.
   const mounted = useSyncExternalStore(
     () => () => undefined,
@@ -56,15 +56,15 @@ const AddToCartButton = ({
       selectFavoritesItems(state),
   );
   const { user } = useContext(AuthContext);
-  // Dict markers from `static_content`: `add_to_cart` and
-  // `out_of_stock_button` (verified via inspect-api).
+  // Markers словаря из `static_content`: `add_to_cart` и
+  // `out_of_stock_button` (проверено через inspect-api).
   const { add_to_cart, out_of_stock_button } = dict;
   const notInStock = useMemo(
     () => statusIdentifier !== 'in_stock',
     [statusIdentifier],
   );
 
-  // If not InStock show out-of-stock label from CMS dict.
+  // Если не InStock — показываем подпись out-of-stock из словаря CMS.
   if (notInStock) {
     return (
       <div
@@ -77,7 +77,7 @@ const AddToCartButton = ({
     );
   }
 
-  // Update user state and subscribe to events
+  // Обновляем состояние пользователя и подписываемся на события
   const updateUserCartState = async () => {
     const updatedItems = items.some((product) => product.id === id)
       ? items.map((product) => ({
@@ -94,12 +94,12 @@ const AddToCartButton = ({
     await onSubscribeEvents(id);
   };
 
-  // Add to cart
+  // Добавляем в корзину
   const addToCartHandle = async (): Promise<void> => {
     dispatch(addProductToCart({ id: id, selected: true, quantity: 1 }));
     toast('Product ' + productTitle + ' added to cart!');
 
-    // Update user state and subscribe to events
+    // Обновляем состояние пользователя и подписываемся на события
     if (user) {
       updateUserCartState();
     }

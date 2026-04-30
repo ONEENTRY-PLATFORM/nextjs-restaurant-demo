@@ -6,7 +6,7 @@ import {
   type RootState,
 } from '@/app/store/store';
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
+// Используй по всему приложению вместо обычных `useDispatch` и `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppStore = useStore.withTypes<AppStore>();

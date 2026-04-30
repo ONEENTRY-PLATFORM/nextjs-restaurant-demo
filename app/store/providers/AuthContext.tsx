@@ -32,13 +32,13 @@ type AuthProviderProps = {
 };
 
 /**
- * Authentication context
- * @property {boolean}     isAuth       - Authentication status
- * @property {boolean}     isLoading    - Loading status
- * @property {string}      userToken    - User token
- * @property {IUserEntity} user         - User entity
- * @property {void}        authenticate - Authentication function
- * @property {void}        refreshUser  - User refresh function
+ * Контекст аутентификации
+ * @property {boolean}     isAuth       - Статус аутентификации
+ * @property {boolean}     isLoading    - Статус загрузки
+ * @property {string}      userToken    - Токен пользователя
+ * @property {IUserEntity} user         - Сущность пользователя
+ * @property {void}        authenticate - Функция аутентификации
+ * @property {void}        refreshUser  - Функция обновления пользователя
  */
 export const AuthContext = createContext<{
   isAuth: boolean;
@@ -55,30 +55,30 @@ export const AuthContext = createContext<{
 });
 
 /**
- * Auth provider
- * @param   {object}      props          - Auth provider properties
- * @param   {ReactNode}   props.children - Children ReactNode
- * @returns {JSX.Element}                AuthContext Provider
+ * Провайдер аутентификации
+ * @param   {object}      props          - Свойства провайдера аутентификации
+ * @param   {ReactNode}   props.children - Дочерний ReactNode
+ * @returns {JSX.Element}                Провайдер AuthContext
  */
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  /** Initialize Redux dispatch function */
+  /** Инициализируем функцию dispatch Redux */
   const dispatch = useAppDispatch();
-  /** Track authentication status */
+  /** Отслеживаем статус аутентификации */
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  /** Track loading status */
+  /** Отслеживаем статус загрузки */
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  /** Store user data */
+  /** Храним данные пользователя */
   const [user, setUser] = useState<IUserEntity | undefined>();
-  /** Trigger refetch of user data */
+  /** Триггер для повторной загрузки данных пользователя */
   const [refetch, setRefetch] = useState<boolean>(false);
-  /** Trigger user refresh */
+  /** Триггер для обновления пользователя */
   const [refetchUser, setRefetchUser] = useState<boolean>(false);
 
-  /** Get user data from redux AppSelector */
+  /** Получаем данные пользователя из redux AppSelector */
   const cartVersion = useAppSelector(selectCartVersion) as number;
-  /** Get favorites version from redux store */
+  /** Получаем версию favorites из redux store */
   // const favoritesVersion = useAppSelector(selectFavoritesVersion) as number;
-  /** Get products in cart from redux store */
+  /** Получаем товары корзины из redux store */
   const productsInCart = useAppSelector(selectCartData);
   const favoritesIds = useAppSelector(
     (state: { favoritesReducer: { products: number[] } }) =>
@@ -86,82 +86,82 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   );
 
   /**
-   * Check user data loop with polling interval
+   * Цикл проверки данных пользователя с polling-интервалом
    *
-   * This function checks for a refresh token in local storage and initiates
+   * Эта функция проверяет наличие refresh token в local storage и инициирует
    */
   const [trigger, { isError }] = useLazyGetMeQuery({
     pollingInterval: isAuth ? 3000 : 0,
   });
 
   /**
-   * Initialize authorization by checking refresh token
+   * Инициализирует авторизацию проверкой refresh token
    *
-   * This function checks for a refresh token in local storage and initiates
+   * Эта функция проверяет наличие refresh token в local storage и инициирует
    */
   const onInit = async () => {
-    /** Get refresh token from localStorage */
+    /** Получаем refresh token из localStorage */
     const refresh = localStorage.getItem('refresh-token');
 
-    /** If no refresh token, set auth to false */
+    /** Если refresh token отсутствует — выставляем auth в false */
     if (!refresh) {
       setIsAuth(false);
       return;
     }
     /**
-     * Redefine user session with refresh token.
-     * Guard with hasActiveSession — each reDefine hits /refresh and would
-     * otherwise burn the current token on every re-mount.
+     * Переопределяем сессию пользователя через refresh token.
+     * Защищаемся через hasActiveSession — каждый reDefine идёт на /refresh
+     * и иначе сжигал бы текущий токен при каждом ре-маунте.
      */
     if (!hasActiveSession()) {
       await reDefine(refresh, getLang());
     }
-    /** Check token validity */
+    /** Проверяем валидность токена */
     await checkToken();
   };
 
   /**
-   * Check refresh token and validate user authentication
+   * Проверяет refresh token и валидирует аутентификацию пользователя
    *
-   * This function triggers the user data fetch and validates the authentication
-   * status based on the response. It updates the authentication state accordingly.
+   * Эта функция триггерит загрузку данных пользователя и валидирует статус
+   * аутентификации на основе ответа. Соответственно обновляет состояние auth.
    * @async
    */
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang is a stable module-level function
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang — стабильная функция уровня модуля
   const checkToken = useCallback(async () => {
-    /** Trigger user data fetch using the SDK's current langCode */
+    /** Триггерим загрузку данных пользователя с текущим langCode из SDK */
     trigger(getLang())
       .then(async (res) => {
-        /** Check if response has error or no user ID */
+        /** Проверяем, есть ли ошибка в ответе или отсутствует user ID */
         if ((res.isError && !res.isLoading) || !res.data?.id) {
-          /** Clear refresh token and set auth to false */
+          /** Чистим refresh token и выставляем auth в false */
           localStorage.removeItem('refresh-token');
           setIsAuth(false);
         } else {
-          /** Set user data and auth status to true */
+          /** Сохраняем данные пользователя и выставляем auth в true */
           setUser(res.data);
           setIsAuth(true);
         }
       })
       .catch(async () => {
-        /** Clear refresh token and set auth to false on error */
+        /** При ошибке чистим refresh token и выставляем auth в false */
         localStorage.removeItem('refresh-token');
         setIsAuth(false);
       });
   }, [trigger]);
 
   /**
-   * Update user state on server with cart and favorites data
+   * Обновляет состояние пользователя на сервере данными корзины и избранного
    *
-   * This function sends the updated user state to the server,
-   * including the cart and favorites data.
+   * Эта функция отправляет обновлённое состояние пользователя на сервер,
+   * включая данные корзины и избранного.
    */
   const updateUserData = async (): Promise<void> => {
-    /** Exit if no user data */
+    /** Выходим, если данных пользователя нет */
     if (!user) {
       return;
     }
-    /** Send updated user state to server */
+    /** Отправляем обновлённое состояние пользователя на сервер */
     // await updateUserState({
     //   cart: productsInCart,
     //   favorites: favoritesIds,
@@ -169,49 +169,49 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     // });
   };
 
-  /** Update user data on auth state change */
+  /** Обновляем данные пользователя при изменении состояния auth */
   useEffect(() => {
-    /** Exit if not authenticated or no user */
+    /** Выходим, если не аутентифицирован или нет user */
     if (!isAuth || !user) {
       return;
     }
-    /** Update user data with current cart and favorites */
+    /** Обновляем данные пользователя текущей корзиной и избранным */
     updateUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, user, productsInCart, favoritesIds]);
 
-  /** Load cart from user state to Redux store */
+  /** Загружаем корзину из состояния пользователя в Redux store */
   useEffect(() => {
-    /** Exit if no user cart data or cart already loaded */
+    /** Выходим, если нет данных корзины пользователя или корзина уже загружена */
     if (!user?.state.cart || cartVersion > 0) {
       return;
     }
 
-    /** Add each product from user state to Redux cart */
+    /** Добавляем каждый товар из состояния пользователя в корзину Redux */
     (user.state.cart as IProducts[] | undefined)?.forEach((product) => {
       const productInCart = productsInCart?.find(
         (p: { id: number }) => p.id === product.id,
       );
-      /** If product not in cart, add to cart */
+      /** Если товара в корзине нет — добавляем */
       if (!productInCart) {
-        // Reducer expects `{ id, selected, quantity }`; without quantity here
-        // the cart QuantitySelector hides itself and totals stay at $0.
+        // Редьюсер ожидает `{ id, selected, quantity }`; без quantity здесь
+        // QuantitySelector в корзине скрывается, а тоталы остаются $0.
         dispatch(
           addProductToCart({ id: product.id, selected: true, quantity: 1 }),
         );
       }
     });
 
-    /** Mark cart as loaded */
+    /** Помечаем корзину как загруженную */
     dispatch(setCartVersion(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, user, dispatch, productsInCart]);
 
-  // Refetch
+  // Перезапрос
   useEffect(() => {
-    // Pre-existing pattern: sync setState in effect body to signal "loading"
-    // before starting async onInit. Refactoring to derived state is out of
-    // scope for the OneEntry SDK alignment task.
+    // Существующий паттерн: синхронный setState в теле эффекта, чтобы пометить
+    // «loading» до старта асинхронного onInit. Рефакторинг в derived state —
+    // вне scope-а задачи на выравнивание под OneEntry SDK.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     onInit().then(() => {
@@ -220,12 +220,12 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 
-  // Refetch if error and has refresh-token
+  // Refetch если ошибка и есть refresh-token
   useEffect(() => {
     const refresh = localStorage.getItem('refresh-token');
     if (isError && refresh) {
-      // Pre-existing reactive setState chain — architecturally unchanged;
-      // proper fix would hoist to an event handler.
+      // Существующая реактивная цепочка setState — архитектурно не трогаем;
+      // правильный фикс — поднять её в обработчик события.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRefetch(true);
       localStorage.removeItem('refresh-token');
@@ -233,7 +233,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     }
   }, [isError]);
 
-  // Check token on refetch
+  // Проверяем токен при refetch
   useEffect(() => {
     if (isAuth) {
       checkToken();

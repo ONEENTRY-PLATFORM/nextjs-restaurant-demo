@@ -8,10 +8,10 @@ import { getDictionary } from '@/app/dictionaries';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * Product page layout for product page
- * @param   {object}                                    props        - Page props.
- * @param   {Promise<{ handle: string; lang: string }>} props.params - Page params with handle and lang.
- * @returns {Promise<JSX.Element>}                                   Promise<JSX.Element> - Product page layout.
+ * Layout страницы товара
+ * @param   {object}                                    props        - Пропсы страницы.
+ * @param   {Promise<{ handle: string; lang: string }>} props.params - Параметры страницы с handle и lang.
+ * @returns {Promise<JSX.Element>}                                   Promise<JSX.Element> — layout страницы товара.
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
 const ProductPageLayout = async ({
@@ -20,23 +20,23 @@ const ProductPageLayout = async ({
   params: Promise<{ handle: string; lang: string }>;
 }): Promise<JSX.Element> => {
   const { handle } = await params;
-  /** Get the dictionary from the API and set the server provider. */
+  /** Получаем словарь из API и проставляем server provider. */
   const dict = await getDictionary();
 
-  /** Get product by current Id */
+  /** Получаем товар по текущему Id */
   const { isError, product } = await getProductById(Number(handle));
 
-  /** Return 404 page if product not found or an error occurred */
+  /** Возвращаем 404, если товар не найден или произошла ошибка */
   if (isError || !product) {
     return notFound();
   }
 
-  /** Extract data from product for structured data generation */
+  /** Извлекаем данные из товара для генерации structured data */
   const { attributeValues, localizeInfos, additional, statusIdentifier } =
     product;
 
   /**
-   * Product JSON-LD structured data for SEO
+   * Structured data товара в формате JSON-LD для SEO
    * https://json-ld.org/
    */
   const descriptionValue = attributeValues.description?.value as
@@ -80,7 +80,7 @@ const ProductPageLayout = async ({
 export default ProductPageLayout;
 
 /**
- * Generate page metadata
+ * Генерирует метаданные страницы
  */
 export async function generateMetadata({
   params,

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { JSX } from 'react';
 
 /**
- * Social SignIn button
+ * Кнопка Social SignIn
  */
 const SocialSignInButton = ({
   imageSrc,

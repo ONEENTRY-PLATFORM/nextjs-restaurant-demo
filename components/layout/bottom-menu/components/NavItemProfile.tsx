@@ -10,7 +10,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import EyeCircleIcon from '@/components/icons/eye-circle';
 
 /**
- * Nav item profile link / SignInForm button
+ * Ссылка nav-элемента профиля / кнопка SignInForm
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);

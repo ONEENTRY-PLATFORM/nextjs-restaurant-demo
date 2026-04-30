@@ -14,22 +14,22 @@ const FORM_STATUS = 'approved';
 const DEFAULT_MODULE_CONFIG_ID = 5;
 
 /**
- * Markers expected on the `comment_to_product` form in OneEntry.
- * The UI only collects a star rating + free-text body; any other form
- * fields the admin adds (images, spam, etc.) are still posted via
- * {@link transformFormField}'s default branch and stay empty.
+ * Маркеры, ожидаемые в форме `comment_to_product` в OneEntry.
+ * UI собирает только рейтинг (звёзды) + произвольный текст; любые другие поля
+ * формы, которые админ добавит (изображения, спам и т.п.), всё равно отправляются
+ * через ветку по умолчанию в {@link transformFormField} и остаются пустыми.
  */
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
 /**
- * Review submission payload collected from the client.
- * Author identity is resolved from the OneEntry auth session by the SDK
- * (the form is gated behind sign-in in the UI). The product association
- * is carried by `moduleEntityIdentifier`, not by a hidden form field.
- * @property {number} rating    - Star rating 1–5.
- * @property {string} text      - Review body.
- * @property {number} productId - ID of the reviewed product (becomes `moduleEntityIdentifier`).
+ * Payload отправки отзыва, собранный на клиенте.
+ * Идентичность автора берётся из сессии авторизации OneEntry в SDK
+ * (в UI форма доступна только после входа). Привязка к продукту
+ * передаётся через `moduleEntityIdentifier`, а не через скрытое поле формы.
+ * @property {number} rating    - Рейтинг звёздами 1–5.
+ * @property {string} text      - Тело отзыва.
+ * @property {number} productId - ID отзываемого продукта (становится `moduleEntityIdentifier`).
  */
 export type ReviewPayload = {
   rating: number;
@@ -38,19 +38,19 @@ export type ReviewPayload = {
 };
 
 /**
- * Submit a product review to OneEntry FormsData (`review_form` marker).
+ * Отправляет отзыв о продукте в OneEntry FormsData (маркер `review_form`).
  *
- * Mirrors the submission contract:
- * - form fields are read dynamically from the form schema, sorted by `position`,
- *   and transformed per type via {@link transformFormField};
- * - `moduleEntityIdentifier` carries the product id so each review is scoped
- *   to its product without a hidden `productId` field on the form;
- * - `formModuleConfigId` is read from the form's `moduleFormConfigs[0].id`
- *   with a project-wide fallback;
- * - `status: 'approved'` matches the reference shop — flip in OneEntry if
- *   moderation should hold reviews before publication.
- * @param   {ReviewPayload}                                        payload - Review data.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Submission result.
+ * Повторяет контракт отправки:
+ * - поля формы читаются динамически из схемы формы, сортируются по `position`
+ *   и трансформируются по типу через {@link transformFormField};
+ * - `moduleEntityIdentifier` несёт id продукта, чтобы каждый отзыв был привязан
+ *   к своему продукту без скрытого поля `productId` в форме;
+ * - `formModuleConfigId` читается из `moduleFormConfigs[0].id` формы
+ *   с общепроектным fallback;
+ * - `status: 'approved'` совпадает с эталонным магазином — переключи в OneEntry,
+ *   если модерация должна задерживать отзывы до публикации.
+ * @param   {ReviewPayload}                                        payload - Данные отзыва.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Результат отправки.
  */
 export async function submitReview(
   payload: ReviewPayload,
@@ -122,14 +122,14 @@ export async function submitReview(
 }
 
 /**
- * Placeholder Server Action for the courier/delivery review line in
- * {@link OrderReviewsPanel}. Once the `delivery_review_form` form exists in
- * OneEntry (see ONEENTRY-ADMIN-SETUP.md §1.3) this should mirror
- * {@link submitReview} and post via `api.FormData.postFormsData` with
- * `moduleEntityIdentifier=String(orderId)`. Until then it just resolves
- * `ok` so the UI flow can be exercised end-to-end.
- * @param   {{ rating: number; text: string; orderId: string | number }} payload - Review payload.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}              Submission result.
+ * Заглушка Server Action для строки отзыва о курьере/доставке в
+ * {@link OrderReviewsPanel}. Когда форма `delivery_review_form` появится в
+ * OneEntry (см. ONEENTRY-ADMIN-SETUP.md §1.3), это должно повторять
+ * {@link submitReview} и отправлять через `api.FormData.postFormsData` с
+ * `moduleEntityIdentifier=String(orderId)`. До этого просто резолвит
+ * `ok`, чтобы UI-флоу можно было пройти end-to-end.
+ * @param   {{ rating: number; text: string; orderId: string | number }} payload - Payload отзыва.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}              Результат отправки.
  */
 export async function submitDeliveryReview(payload: {
   rating: number;

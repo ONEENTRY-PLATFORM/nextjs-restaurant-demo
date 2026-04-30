@@ -11,20 +11,20 @@ const SECTION_BASE =
   'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
 
 /**
- * Async section that materializes the category list on the home page —
- * one {@link MenuSection} per visible child page of `menu`, sorted by
- * `page.position`, with up to {@link SECTION_LIMIT} products each.
+ * Асинхронная секция, которая материализует список категорий на главной —
+ * один {@link MenuSection} на каждую видимую дочернюю страницу `menu`, отсортированы по
+ * `page.position`, до {@link SECTION_LIMIT} продуктов в каждой.
  *
- * Lives behind the `home_categories` block so the editor controls
- * *where* in the page rhythm the whole category block lands (by
- * reordering blocks in OneEntry admin) without giving up the per-child
- * background alternation rhythm inside it.
+ * Живёт за блоком `home_categories`, чтобы редактор контролировал,
+ * *где* в ритме страницы окажется весь блок категорий (через
+ * пересортировку блоков в админке OneEntry), не теряя при этом ритм чередования
+ * фона по дочерним внутри.
  *
- * Product fetches run sequentially because parallel fan-out over the
- * OneEntry SDK's shared auth state has produced empty responses on some
- * categories in past testing.
- * @returns {Promise<JSX.Element|null>} Categories list JSX, or `null` when
- *                                      no categories have any products.
+ * Запросы продуктов выполняются последовательно, потому что параллельный fan-out поверх
+ * общего auth-состояния OneEntry SDK выдавал пустые ответы на некоторых
+ * категориях в прошлых тестах.
+ * @returns {Promise<JSX.Element|null>} JSX списка категорий, либо `null`, если
+ *                                      ни в одной категории нет продуктов.
  */
 const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
   const { pages = [] } = await getChildPagesByParentUrl('menu');

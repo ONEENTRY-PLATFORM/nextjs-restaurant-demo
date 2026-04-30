@@ -5,7 +5,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 
 /**
- * User menu item link component.
+ * Компонент-ссылка пункта пользовательского меню.
  */
 const UserMenuItem = ({
   page,

@@ -9,7 +9,7 @@ interface HandleProps {
 }
 
 /**
- * Get all blocks by page url.
+ * Получает все блоки по url страницы.
  */
 export const getBlocksByPageUrl = async ({
   pageUrl,

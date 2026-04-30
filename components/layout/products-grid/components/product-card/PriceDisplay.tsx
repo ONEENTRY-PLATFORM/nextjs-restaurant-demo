@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import { UsePrice } from '@/components/utils';
 
 /**
- * Price display
+ * Отображение цены
  */
 const PriceDisplay = ({
   attributes: { sale, price },
@@ -19,7 +19,7 @@ const PriceDisplay = ({
     return <></>;
   }
 
-  // Format price with Intl.NumberFormat
+  // Форматируем цену через Intl.NumberFormat
   const newPrice = UsePrice({ amount: currentPrice });
   const oldPrice = UsePrice({
     amount: originalPrice,

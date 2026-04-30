@@ -19,7 +19,7 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
- * VerificationForm component
+ * Компонент VerificationForm
  */
 const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   const router = useTransitionRouter();
@@ -41,89 +41,89 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
     }
   }, [otp, dispatch]);
 
-  // Function to handle verification of the OTP or activation of the user
+  // Функция для обработки верификации OTP или активации пользователя
   const handleVerification = async () => {
     try {
       if (action !== 'activateUser') {
-        // If the action is not to activate a user, check the OTP code
+        // Если action — не активация пользователя, проверяем OTP-код
         const result = await api.AuthProvider.checkCode(
-          'email', // Method of verification via email
-          fields.email?.value || '', // User's email address from form fields
-          'otp', // Type of verification code (One-Time Password)
-          otp, // The OTP entered by the user
+          'email', // Метод верификации через email
+          fields.email?.value || '', // Email пользователя из полей формы
+          'otp', // Тип кода верификации (One-Time Password)
+          otp, // OTP, введённый пользователем
         );
-        if (result) setComponent('ResetPasswordForm'); // Switch to Reset Password Form on success
+        if (result) setComponent('ResetPasswordForm'); // Переключаемся на Reset Password Form при успехе
       } else {
-        // If the action is to activate a user
+        // Если action — активация пользователя
         const result = await api.AuthProvider.activateUser(
-          'email', // Activation method via email
-          fields.email?.value || '', // User's email address from form fields
-          otp, // The OTP entered by the user
+          'email', // Метод активации через email
+          fields.email?.value || '', // Email пользователя из полей формы
+          otp, // OTP, введённый пользователем
         );
         if (result) {
-          // On successful activation, log in the user
+          // При успешной активации логиним пользователя
           await logInUser({
-            method: 'email', // Login method via email
-            login: fields.email?.value || '', // User's email for login
-            password: fields.password?.value || '', // User's password for login
+            method: 'email', // Метод логина через email
+            login: fields.email?.value || '', // Email пользователя для логина
+            password: fields.password?.value || '', // Пароль пользователя для логина
           });
-          authenticate(); // Call function to set authentication state
-          router.push('/profile'); // Redirect to the user's profile page
-          setOpen(false); // Close any open modal or drawer
+          authenticate(); // Вызываем функцию для установки auth-состояния
+          router.push('/profile'); // Редирект на страницу профиля пользователя
+          setOpen(false); // Закрываем любой открытый модал или drawer
         } else {
-          throw new Error('Activation failed'); // Throw an error if activation fails
+          throw new Error('Activation failed'); // Бросаем ошибку при провале активации
         }
       }
     } catch (e: any) {
-      // Catch and set any errors encountered during the process
+      // Ловим и устанавливаем любые ошибки, возникшие в процессе
       setError(e.message || 'An error occurred');
     } finally {
-      // Ensure loading state is reset after processing
+      // Гарантируем сброс loading-состояния после обработки
       setLoading(false);
     }
   };
 
-  // Function to handle form submission
+  // Функция для обработки сабмита формы
   const onSubmitHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      // Prevent default form submission behavior
+      // Предотвращаем дефолтное поведение сабмита формы
       e.preventDefault();
 
-      // Check if the OTP length is valid
+      // Проверяем валидность длины OTP
       if (otp.length === 6) {
-        // Set loading state to true
+        // Включаем loading-состояние
         setLoading(true);
-        // Clear any previous error messages
+        // Очищаем любые предыдущие сообщения об ошибках
         setError('');
-        // Call verification handler
+        // Вызываем обработчик верификации
         await handleVerification();
       }
     },
-    // Dependencies for useCallback
+    // Зависимости useCallback
     [otp, handleVerification],
   );
 
-  // Function to handle resending of the OTP code
+  // Функция для обработки переотправки OTP-кода
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const onResendHandle = useCallback(async () => {
     try {
-      // Set loading state to true
+      // Включаем loading-состояние
       setLoading(true);
-      // Clear any previous error messages
+      // Очищаем любые предыдущие сообщения об ошибках
       setError('');
       await api.AuthProvider.generateCode(
-        'email', // Method to generate code via email
-        fields.email?.value || '', // User's email address from form fields
-        'generate_code', // Action type to generate a new code
+        'email', // Метод генерации кода через email
+        fields.email?.value || '', // Email пользователя из полей формы
+        'generate_code', // Тип action для генерации нового кода
       );
     } catch (e: any) {
-      // Catch and set any errors encountered during the process
+      // Ловим и устанавливаем любые ошибки, возникшие в процессе
       setError(e.message || 'An error occurred');
     } finally {
-      // Ensure loading state is reset after processing
+      // Гарантируем сброс loading-состояния после обработки
       setLoading(false);
     }
-    // Dependency for useCallback
+    // Зависимость useCallback
   }, [fields.email?.value]);
 
   return (

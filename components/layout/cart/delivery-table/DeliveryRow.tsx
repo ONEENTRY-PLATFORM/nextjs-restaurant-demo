@@ -7,7 +7,7 @@ import { UsePrice } from '@/components/utils';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * Delivery form row
+ * Строка формы доставки
  */
 const DeliveryRow = ({
   delivery,

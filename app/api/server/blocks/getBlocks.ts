@@ -12,7 +12,7 @@ interface HandleProps {
 }
 
 /**
- * Get blocks by parameters.
+ * Получает блоки по параметрам.
  */
 export const getBlocks = async ({
   type,

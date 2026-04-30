@@ -6,7 +6,7 @@ import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
- * Profile menu animations on state change
+ * Анимации меню профиля при изменении state
  */
 const ProfileMenuAnimations = ({
   children,
@@ -23,7 +23,7 @@ const ProfileMenuAnimations = ({
 }): JSX.Element => {
   const ref = useRef(null);
 
-  // animations on state change
+  // анимации при изменении state
   useGSAP(() => {
     if (!ref.current) {
       return;

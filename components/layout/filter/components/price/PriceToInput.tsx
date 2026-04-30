@@ -2,7 +2,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
 /**
- * History Back Button
+ * Кнопка History Back
  */
 const PriceToInput = ({
   price,

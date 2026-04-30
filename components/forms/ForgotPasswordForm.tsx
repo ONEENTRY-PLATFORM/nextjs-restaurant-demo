@@ -21,7 +21,7 @@ interface ForgotPasswordFormProps {
 }
 
 /**
- * ForgotPassword form
+ * Форма ForgotPassword
  */
 export const ForgotPasswordForm = ({
   dict,
@@ -31,21 +31,21 @@ export const ForgotPasswordForm = ({
 
   const { reset_descr, send_text } = dict;
 
-  // Get form data with RTK from API
+  // Получаем данные формы из API через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
-  // Submit form
+  // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      // Generate verification code with API
+      // Генерируем код верификации через API
       await api.AuthProvider.generateCode(
         'email',
         fields.email?.value || '',
         'generate_otp',
       );
-      // Open Verification form
+      // Открываем форму Verification
       setComponent('VerificationForm');
       setAction('checkCode');
     } catch (error: any) {

@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get child pages object with information as an array.
+ * Получает объекты дочерних страниц с информацией в виде массива.
  */
 export const getChildPagesByParentUrl = async (
   url: string,

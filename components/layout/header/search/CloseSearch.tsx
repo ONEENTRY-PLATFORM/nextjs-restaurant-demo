@@ -2,7 +2,7 @@
 import type { JSX } from 'react';
 
 /**
- * Close search component
+ * Компонент закрытия поиска
  */
 const CloseSearch = ({ setState }: { setState: any }): JSX.Element => {
   return (

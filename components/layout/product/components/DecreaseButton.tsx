@@ -10,7 +10,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 
 /**
- * Decrease qty button
+ * Кнопка уменьшения количества
  */
 const DecreaseButton = ({
   id,
@@ -28,7 +28,7 @@ const DecreaseButton = ({
   }
 
   /**
-   * Remove product from cart and unsubscribe from events
+   * Удалить продукт из корзины и отписаться от событий
    */
   const onRemoveFromCart = async () => {
     dispatch(removeProduct(id));
@@ -40,7 +40,7 @@ const DecreaseButton = ({
   };
 
   /**
-   * Decrease product quantity
+   * Уменьшить количество продукта
    */
   const onDecreaseHandle = () => {
     dispatch(decreaseProductQty({ id: id, quantity: 1 }));

@@ -20,7 +20,7 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 import ResetPasswordButton from './inputs/ResetPasswordButton';
 
 /**
- * SignIn form
+ * Форма SignIn
  */
 const SignInForm = ({
   dict,
@@ -45,13 +45,13 @@ const SignInForm = ({
     sign_in_text,
   } = dict;
 
-  // Get form by marker with RTK
+  // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
-  // Get fields from formFieldsReducer
+  // Получаем поля из formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
-  // sort fields by position
+  // сортируем поля по position
   const formFields = useMemo(
     () =>
       data?.attributes
@@ -63,40 +63,40 @@ const SignInForm = ({
     [data],
   );
 
-  // SignIn with API AuthProvider
+  // SignIn через API AuthProvider
   const onSignIn = async (e: FormEvent<HTMLFormElement>) => {
-    // Prevent the default form submission behavior
+    // Предотвращаем дефолтное поведение сабмита формы
     e.preventDefault();
 
-    // Check if email and password fields are filled, exit early if not
+    // Проверяем, заполнены ли поля email и password, иначе выходим
     if (!fields.email || !fields.password) return;
 
     try {
-      // Set loading state to true while processing the sign-in request
+      // Включаем loading-состояние на время обработки запроса sign-in
       setLoading(true);
 
-      // Attempt to log in the user with the provided credentials
+      // Пытаемся залогинить пользователя с предоставленными credentials
       const result = await logInUser({
-        method: 'email', // Authentication method (e.g., 'email', 'google', etc.)
-        login: fields.email.value, // User's email
-        password: fields.password.value, // User's password
+        method: 'email', // Метод аутентификации (например, 'email', 'google' и т.д.)
+        login: fields.email.value, // Email пользователя
+        password: fields.password.value, // Пароль пользователя
       });
 
-      // If there's an error in the result, throw an error to be caught below
+      // Если в результате есть ошибка, бросаем её, чтобы поймать ниже
       if (result?.error) {
         throw new Error(result.error);
       }
 
-      // Close any open modals or forms upon successful sign-in
+      // Закрываем любые открытые модалки или формы при успешном sign-in
       setOpen(false);
-      authenticate(); // Authenticate the user session
-      setError(''); // Clear any previous errors
-      toast('You signed in!'); // Display a success message to the user
+      authenticate(); // Аутентифицируем сессию пользователя
+      setError(''); // Очищаем любые предыдущие ошибки
+      toast('You signed in!'); // Показываем сообщение об успехе пользователю
     } catch (err: any) {
-      // Catch any errors and set the error message
+      // Ловим любые ошибки и устанавливаем сообщение об ошибке
       setError(err.message);
     } finally {
-      // Reset loading state after processing the sign-in request
+      // Сбрасываем loading-состояние после обработки запроса sign-in
       setLoading(false);
     }
   };

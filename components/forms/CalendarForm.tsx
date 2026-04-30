@@ -17,19 +17,19 @@ import TimePickerSheet from '@/components/ui/TimePickerSheet';
 type PickerMode = 'date' | 'time' | null;
 
 /**
- * Calendar form — modal popup for picking delivery date + time. Opened
- * from the cart preview rows ({@link DeliveryTableRow}) via
- * `setComponent('CalendarForm')` and rendered through the shared
- * {@link Modal} layer.
+ * Calendar form — модальный попап для выбора delivery date + time. Открывается
+ * из строк превью корзины ({@link DeliveryTableRow}) через
+ * `setComponent('CalendarForm')` и рендерится через общий
+ * слой {@link Modal}.
  *
- * Persists selection into `cartReducer.deliveryData` and closes the
- * modal — the existing wizard `time` step is reserved for the full
- * checkout flow; this is the inline picker for the cart screen.
- * @param   {object}           props          - Form props.
- * @param   {IAttributeValues} props.dict     - Static-content dictionary.
- * @param   {string}           props.className - Class wrapper.
- * @param   {boolean}          props.isActive - Whether the modal is open.
- * @returns {JSX.Element}                     Form JSX.
+ * Сохраняет выбор в `cartReducer.deliveryData` и закрывает
+ * модалку — существующий шаг wizard `time` зарезервирован под полный
+ * флоу checkout; это инлайн-пикер для экрана корзины.
+ * @param   {object}           props          - Пропсы формы.
+ * @param   {IAttributeValues} props.dict     - Словарь статического контента.
+ * @param   {string}           props.className - Класс-обёртка.
+ * @param   {boolean}          props.isActive - Открыта ли модалка.
+ * @returns {JSX.Element}                     JSX формы.
  */
 const CalendarForm = ({
   dict,

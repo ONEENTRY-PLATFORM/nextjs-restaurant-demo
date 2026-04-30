@@ -5,16 +5,16 @@ import type { JSX } from 'react';
 import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 
 /**
- * Shared "X" close button used in the corner of every popup
- * (`ProfilePopup`, `FavoritesPopup`, `CartWizard`, etc.) — circular
- * `border-paper` button with a `hover-target` X glyph that turns brand-orange
- * on hover. Layout (visibility per breakpoint, top offset) is controlled by
- * the caller via `className`.
- * @param   {object}      props             - Button props.
- * @param   {() => void}  props.onClose     - Click handler (e.g. `setTransition('close')`).
- * @param   {string}      [props.ariaLabel] - Accessible label, defaults to `'Close'`.
- * @param   {string}      [props.className] - Extra utility classes (visibility, margins).
- * @returns {JSX.Element}                   Button JSX.
+ * Общая кнопка закрытия "X", используемая в углу каждого попапа
+ * (`ProfilePopup`, `FavoritesPopup`, `CartWizard` и т.д.) — круглая
+ * кнопка с `border-paper` и глифом X с классом `hover-target`, который
+ * становится оранжевым при наведении. Лейаут (видимость по брейкпоинтам,
+ * верхний отступ) контролируется вызывающим через `className`.
+ * @param   {object}      props             - Пропсы кнопки.
+ * @param   {() => void}  props.onClose     - Обработчик клика (например, `setTransition('close')`).
+ * @param   {string}      [props.ariaLabel] - Доступная подпись, по умолчанию `'Close'`.
+ * @param   {string}      [props.className] - Дополнительные утилитарные классы (видимость, отступы).
+ * @returns {JSX.Element}                   JSX кнопки.
  */
 const ClosePopupButton = ({
   onClose,

@@ -12,7 +12,7 @@ import TotalAmount from '@/components/layout/cart/components/TotalAmount';
 import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable';
 
 /**
- * Delivery form
+ * Форма доставки
  */
 const DeliveryForm = ({
   dict,
@@ -29,8 +29,8 @@ const DeliveryForm = ({
       className="flex w-182.5 max-w-full flex-col pb-5"
       onSubmit={(e) => {
         e.preventDefault();
-        // Skip the time step if the user has already picked date+time via
-        // the calendar popup; jump straight to sign-in (the next stage).
+        // Пропускаем шаг выбора времени, если пользователь уже выбрал дату+время
+        // через попап календаря; переходим сразу к sign-in (следующий шаг).
         const hasTime = Boolean(cartDelivery?.date && cartDelivery?.time);
         dispatch(setStep(hasTime ? 'signin' : 'time'));
       }}

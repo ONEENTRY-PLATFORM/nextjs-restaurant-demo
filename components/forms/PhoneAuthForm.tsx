@@ -14,13 +14,13 @@ type PhoneAuthFormProps = {
 };
 
 /**
- * Phone-number sign-in form (per `cart_Sign_in_tel.html`).
+ * Форма sign-in по номеру телефона (по `cart_Sign_in_tel.html`).
  *
- * Phone field + SIGN IN button + "Forgot Password?" row + CREATE AN ACCOUNT
- * secondary button. On submit triggers OneEntry OTP generation through
- * `AuthProvider.generateCode('phone', ...)` and opens the Verification form.
- * @param   {PhoneAuthFormProps} props - Component props.
- * @returns {JSX.Element}              Form JSX.
+ * Поле телефона + кнопка SIGN IN + строка "Forgot Password?" + вторичная
+ * кнопка CREATE AN ACCOUNT. На сабмит триггерит генерацию OTP в OneEntry через
+ * `AuthProvider.generateCode('phone', ...)` и открывает форму Verification.
+ * @param   {PhoneAuthFormProps} props - Пропсы компонента.
+ * @returns {JSX.Element}              JSX формы.
  */
 const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
   const { setComponent, setAction } = useContext(OpenDrawerContext);
@@ -84,19 +84,19 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
       <button
         type="submit"
         disabled={loading}
-        className="cart_btn mt-[170px] bg-custom_btnorange hover:bg-[#EB4B0E] disabled:opacity-60"
+        className="cart_btn mt-42.5 bg-custom_btnorange hover:bg-[#EB4B0E] disabled:opacity-60"
       >
         {loading ? '...' : 'SIGN IN'}
       </button>
 
-      <div className="mt-[25px] flex items-center justify-between">
+      <div className="mt-6.25 flex items-center justify-between">
         <p className="font-normal text-[18px] text-white">
           {(dict?.forgot_password_text?.value as string) ?? 'Forgot Password?'}
         </p>
         <button
           type="button"
           onClick={() => setComponent('ResetPasswordForm')}
-          className="border-b border-b-brand pb-[2px] font-semibold text-[18px] text-brand"
+          className="border-b border-b-brand pb-0.5 font-semibold text-[18px] text-brand"
         >
           {(dict?.reset_password_text?.value as string) ?? 'Reset Password'}
         </button>
@@ -105,7 +105,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
       <button
         type="button"
         onClick={() => setComponent('SignUpForm')}
-        className="mt-[50px] flex h-[56px] w-full items-center justify-center gap-[25px] rounded-[10px] border border-brand bg-transparent text-center font-semibold text-[17px] text-brand hover_btn_white"
+        className="mt-12.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border border-brand bg-transparent text-center font-semibold text-[17px] text-brand hover_btn_white"
       >
         {(dict?.create_account_text?.value as string) ?? 'CREATE AN ACCOUNT'}
       </button>

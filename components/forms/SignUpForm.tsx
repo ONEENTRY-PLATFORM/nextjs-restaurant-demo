@@ -23,7 +23,7 @@ import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
 
 /**
- * SignUp form
+ * Форма SignUp
  */
 const SignUpForm = ({ dict }: FormProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -34,13 +34,13 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
 
   const { sign_up_text, sign_in_text, create_account_text } = dict;
 
-  // Get form by marker with RTK
+  // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
-  // Get fields from formFieldsReducer
+  // Получаем поля из formFieldsReducer
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
-  // Memoized form fields for better performance
+  // Мемоизированные поля формы для лучшей производительности
   const formFields = useMemo(
     () => [
       'username',
@@ -53,13 +53,13 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
     [],
   );
 
-  // Check if user can submit form
+  // Проверяем, может ли пользователь засабмитить форму
   const canSubmit = useMemo(
     () => formFields.every((field) => fields[field]?.valid),
     [fields, formFields],
   );
 
-  // Prepare formData
+  // Готовим formData
   const formData = useMemo(
     () =>
       formFields.map((field) => ({
@@ -70,19 +70,19 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
     [fields, formFields],
   );
 
-  // Handle sign up
+  // Обработчик sign up
   const onSignUpHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      // Prevent the default form submission behavior
+      // Предотвращаем дефолтное поведение сабмита формы
       e.preventDefault();
 
-      // If the form cannot be submitted, exit early
+      // Если форму нельзя засабмитить, выходим
       if (!canSubmit) return;
 
-      // Prepare the data object for the sign-up request.
-      // `formIdentifier` must match the auth provider's `formIdentifier`
-      // (verified via inspect-api: email-provider → "user"). Was
-      // hardcoded `'reg'`, causing 400 Bad Request.
+      // Готовим объект data для запроса sign-up.
+      // `formIdentifier` должен совпадать с `formIdentifier` auth-провайдера
+      // (проверено через inspect-api: email-provider → "user"). Раньше был
+      // захардкожен `'reg'`, что вызывало 400 Bad Request.
       const data: ISignUpData = {
         formIdentifier: 'user',
         authData: [
@@ -103,15 +103,15 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
         },
       };
 
-      // Set loading state to true while processing the request
+      // Включаем loading-состояние на время обработки запроса
       setLoading(true);
 
       try {
-        // Attempt to sign up the user using the provided API
+        // Пытаемся зарегистрировать пользователя через предоставленный API
         const res = await api.AuthProvider.signUp('email', data);
 
         if (typeError(res)) {
-          // Open Verification form to activate user
+          // Открываем форму Verification для активации пользователя
           setOpen(true);
           setComponent('VerificationForm');
           setAction('activateUser');
@@ -120,7 +120,7 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
           );
         } else {
           const entity = res as ISignUpEntity;
-          // If the response indicates the account is active, log in the user
+          // Если ответ говорит, что аккаунт активен, логиним пользователя
           if (entity.isActive) {
             await logInUser({
               method: 'email',
@@ -137,10 +137,10 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
           setError('');
         }
       } catch (e: any) {
-        // Catch any errors and set the error message
+        // Ловим любые ошибки и устанавливаем сообщение об ошибке
         setError(e.message);
       } finally {
-        // Reset loading state after processing the request
+        // Сбрасываем loading-состояние после обработки запроса
         setLoading(false);
       }
     },

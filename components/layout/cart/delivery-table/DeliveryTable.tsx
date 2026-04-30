@@ -17,7 +17,7 @@ import DeliveryRow from './DeliveryRow';
 import DeliveryTableRow from './DeliveryTableRow';
 
 /**
- * Delivery table
+ * Таблица доставки
  */
 const DeliveryTable = ({
   delivery,
@@ -30,13 +30,13 @@ const DeliveryTable = ({
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);
 
-  // get form by marker with RTK
+  // получаем форму по marker через RTK
   const { data } = useGetFormByMarkerQuery({
     marker: 'delivery_order',
   });
 
-  // `order_info_*_placeholder` don't exist in `static_content` — using
-  // existing `time_text` / `address_text` (verified via inspect-api).
+  // `order_info_*_placeholder` отсутствуют в `static_content` — используем
+  // существующие `time_text` / `address_text` (проверено через inspect-api).
   const { time_text, address_text } = dict;
 
   const attrs = data?.attributes.filter(
@@ -45,7 +45,7 @@ const DeliveryTable = ({
   const addressReg =
     user?.formData.find((el) => el.marker === 'address_reg')?.value || '';
 
-  // set delivery data onChange — markers aligned with admin `delivery_order` form
+  // устанавливаем данные доставки onChange — markers соответствуют форме `delivery_order` в admin
   useEffect(() => {
     const date = deliveryData.date;
     const time = deliveryData.time;

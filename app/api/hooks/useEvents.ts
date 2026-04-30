@@ -2,7 +2,7 @@
 import { api } from '@/app/api';
 
 /**
- * Subscribe events with Events API
+ * Подписка на события через Events API.
  */
 export const onSubscribeEvents = async (id: number) => {
   try {
@@ -15,7 +15,7 @@ export const onSubscribeEvents = async (id: number) => {
 };
 
 /**
- * Unsubscribe events with Events API
+ * Отписка от событий через Events API.
  */
 export const onUnsubscribeEvents = async (id: number) => {
   try {

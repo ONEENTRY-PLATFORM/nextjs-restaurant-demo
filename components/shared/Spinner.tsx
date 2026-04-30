@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
 /**
- * Spinner
+ * Спиннер
  */
 const Spinner = (): JSX.Element => {
   return (

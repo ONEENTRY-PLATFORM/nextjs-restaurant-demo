@@ -11,14 +11,14 @@ export type RestaurantOption = {
 };
 
 /**
- * Custom dropdown matching the static-html `.custom-select` pattern.
- * Renders orange trigger + panel with options; closes on outside click.
- * @param   {object}                  props          - Component props.
- * @param   {RestaurantOption[]}      props.options  - Available restaurant options.
- * @param   {string}                  props.value    - Currently selected value.
- * @param   {(v: string) => void}     props.onChange - Change handler.
- * @param   {string}                  [props.placeholder] - Trigger placeholder text.
- * @returns {JSX.Element}                            Dropdown JSX.
+ * Кастомный dropdown, соответствующий паттерну `.custom-select` из static-html.
+ * Рендерит оранжевый триггер + панель с опциями; закрывается по клику снаружи.
+ * @param   {object}                  props          - Пропсы компонента.
+ * @param   {RestaurantOption[]}      props.options  - Доступные опции ресторанов.
+ * @param   {string}                  props.value    - Текущее выбранное значение.
+ * @param   {(v: string) => void}     props.onChange - Обработчик изменения.
+ * @param   {string}                  [props.placeholder] - Текст-плейсхолдер триггера.
+ * @returns {JSX.Element}                            JSX дропдауна.
  */
 const RestaurantSelect = ({
   options,

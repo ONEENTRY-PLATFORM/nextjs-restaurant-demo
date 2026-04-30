@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get all related Products objects with API.
+ * Получает все связанные объекты Products через API.
  */
 export const getRelatedProductsById = async (
   id: number,

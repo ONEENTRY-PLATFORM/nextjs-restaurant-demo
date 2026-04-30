@@ -7,9 +7,9 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
 /**
- * Reservation entry in cart-slice — represents a table booking slot for a
- * single restaurant branch. Replaces the legacy `salon`/`master` fields
- * (from the original salon template this repo was cloned from).
+ * Запись бронирования в cart-slice — представляет слот бронирования столика
+ * для одного филиала ресторана. Заменяет легаси-поля `salon`/`master`
+ * (из исходного шаблона salon, с которого этот репо клонировался).
  */
 type ReservationEntry = {
   id: number;
@@ -103,10 +103,10 @@ export const cartSlice = createSlice({
       );
       const qty = state.productsData[index].quantity + action.payload.quantity;
 
-      // `units_product` attribute doesn't exist in the live `dish` set →
-      // callers pass `0`/`undefined`. Treat falsy `units` as "no stock cap"
-      // (otherwise `+` button would clamp qty back to 0). When `units > 0`
-      // is provided, still respect it as the real upper bound.
+      // Атрибут `units_product` отсутствует в живом наборе `dish` →
+      // вызывающий код передаёт `0`/`undefined`. Считаем falsy `units` за «лимита
+      // склада нет» (иначе кнопка `+` снова обрезала бы qty до 0). Когда передан
+      // `units > 0` — всё равно уважаем его как реальный верхний предел.
       const cap = action.payload.units;
       state.productsData[index] = {
         ...state.productsData[index],
@@ -141,8 +141,8 @@ export const cartSlice = createSlice({
       state.productsData[index] = {
         ...state.productsData[index],
         selected: state.productsData[index].selected,
-        // Same falsy-cap guard as `increaseProductQty` — treat `units = 0`
-        // as "no upper bound" since the attribute isn't populated in CMS.
+        // Тот же falsy-cap guard, что и в `increaseProductQty` — считаем `units = 0`
+        // за «нет верхнего предела», т.к. атрибут не заполнен в CMS.
         quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
       };
     },
@@ -222,22 +222,22 @@ export const selectIsInCart = (
 };
 
 /**
- * Select cart products (items added via addProductToCart).
- * Shape per entry: `{ id, selected, quantity }`.
+ * Селектор товаров корзины (items, добавленные через addProductToCart).
+ * Форма каждой записи: `{ id, selected, quantity }`.
  */
 export const selectCartData = (state: {
   cartReducer: { productsData: any[] };
 }): any => state.cartReducer.productsData;
 
 /**
- * Select reservations list (table bookings — separate from product cart).
+ * Селектор списка бронирований (table bookings — отдельно от корзины товаров).
  */
 export const selectReservations = (state: {
   cartReducer: { reservations: any[] };
 }): any => state.cartReducer.reservations;
 
 /**
- * Select delivery data
+ * Селектор данных доставки
  */
 export const selectDeliveryData = (state: {
   cartReducer: {
@@ -250,7 +250,7 @@ export const selectDeliveryData = (state: {
 }) => state.cartReducer.deliveryData;
 
 /**
- * Select cart total price
+ * Селектор итоговой цены корзины
  */
 export const selectCartTotal = (state: {
   cartReducer: {
@@ -268,14 +268,14 @@ export const selectCartTotal = (state: {
 };
 
 /**
- * Select active reservation id
+ * Селектор id активного бронирования
  */
 export const selectReservationId = (state: {
   cartReducer: { reservationId: number };
 }) => state.cartReducer.reservationId;
 
 /**
- * Select TabsState
+ * Селектор TabsState
  */
 export const selectTabsState = (
   key: string,
@@ -283,7 +283,7 @@ export const selectTabsState = (
 ) => state.cartReducer.tabsState[key];
 
 /**
- * Select TabsState
+ * Селектор TabsState
  */
 export const selectTabsData = (
   key: string,
@@ -291,7 +291,7 @@ export const selectTabsData = (
 ) => state.cartReducer.tabsState[key].data;
 
 /**
- * Select cart item by product id
+ * Селектор элемента корзины по product id
  */
 export const selectCartItemWithIdLength = (
   state: {
@@ -304,7 +304,7 @@ export const selectCartItemWithIdLength = (
   state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
 /**
- * Get transition - get product id for animations
+ * Получает product id для анимаций перехода
  */
 export const getTransition = (state: {
   cartReducer: {
@@ -313,7 +313,7 @@ export const getTransition = (state: {
 }) => state.cartReducer;
 
 /**
- * Select cart version
+ * Селектор версии корзины
  */
 export const selectCartVersion = (state: {
   favoritesReducer: { version: number };

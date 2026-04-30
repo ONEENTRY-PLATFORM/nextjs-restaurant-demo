@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get pages includes in menu by marker.
+ * Получает страницы, включённые в меню, по маркеру.
  */
 export const getMenuByMarker = async (
   marker: string,

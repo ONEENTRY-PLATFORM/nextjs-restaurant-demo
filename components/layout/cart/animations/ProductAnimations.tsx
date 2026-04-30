@@ -15,7 +15,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 
 /**
- * Product animations
+ * Анимации продукта
  */
 const ProductAnimations = ({
   children,
@@ -32,7 +32,7 @@ const ProductAnimations = ({
   const ref = useRef(null);
   const { transitionId } = useAppSelector(getTransition);
 
-  // first load animations
+  // анимации первой загрузки
   useGSAP(() => {
     if (!ref.current) {
       return;
@@ -56,7 +56,7 @@ const ProductAnimations = ({
     };
   }, []);
 
-  // remove Product from cart animations
+  // анимации удаления продукта из корзины
   useGSAP(() => {
     if (!ref.current || product.id !== transitionId) {
       return;

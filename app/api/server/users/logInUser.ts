@@ -8,14 +8,14 @@ import { api, isError } from '@/app/api';
 type LogInProps = { method: string; login: string; password: string };
 
 /**
- * User authorization with API AuthProvider
+ * Авторизация пользователя через API AuthProvider.
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {
-    // Markers must match the form fields tied to the auth provider:
-    // verified via /inspect-api auth-providers — `email` provider links to
-    // form `user` whose login field has marker `email` (isLogin=true) and
-    // password field has marker `password` (isPassword=true).
+    // Маркеры должны совпадать с полями формы, связанной с auth-провайдером:
+    // проверено через /inspect-api auth-providers — провайдер `email` связан
+    // с формой `user`, у которой login-поле имеет маркер `email` (isLogin=true),
+    // а password-поле — маркер `password` (isPassword=true).
     const preparedData: IAuthPostBody = {
       authData: [
         {

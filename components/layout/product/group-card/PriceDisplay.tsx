@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import { UsePrice } from '../../../utils';
 
 /**
- * Price display component
+ * Компонент отображения цены
  */
 const PriceDisplay = ({
   currentPrice,

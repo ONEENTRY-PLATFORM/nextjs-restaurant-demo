@@ -34,26 +34,26 @@ type UseCreateOrderApi = {
 };
 
 /**
- * Creates an order via OneEntry `Orders.createOrder` and (when the chosen
- * payment method is non-cash) opens a payment session via `Payments.createSession`.
+ * Создаёт заказ через OneEntry `Orders.createOrder` и (если выбранный
+ * способ оплаты — не наличные) открывает платёжную сессию через `Payments.createSession`.
  *
- * The hook is caller-driven: it does NOT navigate, does NOT toggle wizard
- * steps, does NOT clear local state on its own. It returns a result object
- * so the caller can decide what to do next (e.g. dispatch `setStep('success')`,
- * redirect to `paymentUrl`, etc.). On success it does:
- *   - persist the new order id via `setLastOrderId` (so the success screen
- *     can show it),
- *   - clear the local cart + reset the in-progress order in Redux.
- * @returns {UseCreateOrderApi} Confirm callback + loading / error state.
+ * Хук управляется вызывающей стороной: он НЕ навигирует, НЕ переключает шаги
+ * визарда, НЕ чистит локальное состояние самостоятельно. Возвращает объект-результат,
+ * чтобы вызывающий код сам решил, что делать дальше (например, dispatch `setStep('success')`,
+ * редирект на `paymentUrl` и т.п.). При успехе хук:
+ *   - сохраняет новый id заказа через `setLastOrderId` (чтобы экран успеха
+ *     смог его показать),
+ *   - чистит локальную корзину + сбрасывает заказ в работе в Redux.
+ * @returns {UseCreateOrderApi} Колбэк подтверждения + состояние loading / error.
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
   const order = useAppSelector(
     (state: { orderReducer: { order: any } }) => state.orderReducer.order,
   );
-  // The wizard never dispatches `addProducts` to the order slice, so we
-  // collect the order line items straight from the cart slice at confirm
-  // time. `selectCartData` returns `{ id, quantity, selected }` records.
+  // Визард никогда не диспатчит `addProducts` в order slice, поэтому позиции
+  // заказа собираются напрямую из cart slice на этапе подтверждения.
+  // `selectCartData` возвращает записи `{ id, quantity, selected }`.
   const cartProducts = useAppSelector(selectCartData) as CartEntry[];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -86,9 +86,9 @@ export const useCreateOrder = (): UseCreateOrderApi => {
           value: data.value,
         }));
 
-      // Build line items from the cart slice (the order slice never gets
-      // them populated upstream). Filter to selected entries when any
-      // selection flag is present; otherwise include everything.
+      // Собираем позиции из cart slice (в order slice они не заполняются на этапе выше).
+      // Если есть хоть один selection-флаг — фильтруем только выбранные;
+      // иначе включаем всё.
       const anySelectionFlag = cartProducts.some(
         (p) => typeof p.selected === 'boolean',
       );
@@ -126,10 +126,10 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
       dispatch(setLastOrderId(id));
 
-      // Try to open a payment session for non-cash methods. Failure here
-      // does NOT roll the order back — the order exists in OneEntry; we
-      // surface it to the caller so the UI can show "paid offline" or a
-      // retry CTA.
+      // Пытаемся открыть платёжную сессию для безналичных способов. Сбой здесь
+      // НЕ откатывает заказ — заказ уже существует в OneEntry; мы пробрасываем
+      // это вызывающей стороне, чтобы UI мог показать "оплачено offline" или CTA
+      // для повтора.
       let paymentUrl: string | undefined;
       if (createdPayment !== 'cash') {
         try {
@@ -138,11 +138,11 @@ export const useCreateOrder = (): UseCreateOrderApi => {
             paymentUrl = (session as { paymentUrl?: string }).paymentUrl;
           }
         } catch {
-          // swallow — order is already created
+          // глушим — заказ уже создан
         }
       }
 
-      // Clear local cart + the in-progress order now that it's persisted.
+      // Чистим локальную корзину + заказ в работе теперь, когда он сохранён.
       dispatch(removeAllProducts());
       dispatch(removeOrder());
 

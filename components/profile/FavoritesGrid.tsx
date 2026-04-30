@@ -20,10 +20,11 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * Favorites dashboard grid — port of `static-html/pk_favorites.html` modal
- * card grid into a full-width profile page. Renders the user's favorited
- * products as 2-column cards on desktop, single column on mobile.
- * @returns {JSX.Element} Favorites grid JSX.
+ * Сетка избранного в дашборде — порт сетки карточек модалки
+ * `static-html/pk_favorites.html` в полноширинную страницу профиля. Рендерит
+ * избранные пользователем продукты как 2-колоночные карточки на десктопе и
+ * одной колонкой на мобиле.
+ * @returns {JSX.Element} JSX сетки избранного.
  */
 const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
@@ -56,12 +57,12 @@ const FavoritesGrid = (): JSX.Element => {
 };
 
 /**
- * Single favorite card in the desktop grid — mirrors the modal card from
- * `static-html/pk_favorites.html`: image | title/weight/price | cart + trash
- * action column.
- * @param   {object}          props         - Card props.
- * @param   {IProductsEntity} props.product - Favorited product entity.
- * @returns {JSX.Element}                   Card JSX.
+ * Одиночная карточка избранного в десктоп-сетке — повторяет карточку модалки
+ * из `static-html/pk_favorites.html`: изображение | название/вес/цена |
+ * колонка действий с корзиной и корзиной для мусора.
+ * @param   {object}          props         - Пропсы карточки.
+ * @param   {IProductsEntity} props.product - Сущность избранного продукта.
+ * @returns {JSX.Element}                   JSX карточки.
  */
 const FavoriteCard = ({
   product,

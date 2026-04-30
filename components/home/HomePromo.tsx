@@ -5,16 +5,16 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 
 /**
- * Home page promo strip — port of the two `<section>` blocks right after
- * `navigation` in `static-html/index.html`. Driven by OneEntry `blog`
- * children:
- *   - Desktop hero — first `blog` child's `bg_image` (e.g. "DEAL OF THE
- *     DAY"). The image already contains all the title / discount chrome,
- *     so the component just renders it as a clickable banner.
- *   - Mobile horizontal scroll — every banner's `banner` attribute.
+ * Промо-полоса главной страницы — порт двух блоков `<section>` сразу после
+ * `navigation` в `static-html/index.html`. Управляется дочерними `blog`
+ * из OneEntry:
+ *   - Hero для десктопа — `bg_image` первого дочернего `blog` (например, "DEAL OF THE
+ *     DAY"). Картинка уже содержит весь chrome заголовка / скидки,
+ *     поэтому компонент просто рендерит её как кликабельный баннер.
+ *   - Горизонтальный скролл для мобилы — атрибут `banner` каждого баннера.
  *
- * Renders nothing if the CMS has no banners.
- * @returns {Promise<JSX.Element | null>} Promo JSX.
+ * Ничего не рендерит, если в CMS нет баннеров.
+ * @returns {Promise<JSX.Element | null>} JSX промо.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();

@@ -16,20 +16,20 @@ import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
- * ContactUs form
+ * Форма ContactUs
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  // Get form by marker with RTK
+  // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'contact_us' });
 
-  // Get fields from formFieldsReducer
+  // Получаем поля из formFieldsReducer
   const fieldsData = useAppSelector((state) => state.formFieldsReducer.fields);
 
-  // Sort fields by position
+  // Сортируем поля по position
   const formFields = data?.attributes
     .slice()
     .sort(
@@ -37,7 +37,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         a.position - b.position,
     );
 
-  // Submit form
+  // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

@@ -16,13 +16,13 @@ import TimePickerSheet from '@/components/ui/TimePickerSheet';
 type PickerMode = 'date' | 'time' | null;
 
 /**
- * Checkout step — date + time selection. Uses fullscreen slide-up sheets
- * ({@link DatePickerSheet}, {@link TimePickerSheet}) that replicate
- * `service_date.html` / `service_time.html`. Tapping the field opens the
- * corresponding sheet; `Apply` persists value and closes.
- * @param   {object}           props      - Step props.
- * @param   {IAttributeValues} props.dict - Static-content dictionary (для Time/Date лейблов).
- * @returns {JSX.Element}                 Step JSX.
+ * Шаг checkout — выбор date + time. Использует фуллскрин slide-up sheets
+ * ({@link DatePickerSheet}, {@link TimePickerSheet}), которые повторяют
+ * `service_date.html` / `service_time.html`. Тап по полю открывает
+ * соответствующий sheet; `Apply` сохраняет значение и закрывает.
+ * @param   {object}           props      - Пропсы шага.
+ * @param   {IAttributeValues} props.dict - Словарь статического контента (для Time/Date лейблов).
+ * @returns {JSX.Element}                 JSX шага.
  */
 const StepTime = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();

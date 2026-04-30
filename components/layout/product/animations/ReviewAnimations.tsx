@@ -7,7 +7,7 @@ import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
 /**
- * Review animations
+ * Анимации Review
  */
 const ReviewAnimations = ({
   children,
@@ -24,7 +24,7 @@ const ReviewAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // component toggle animations
+  // анимации toggle компонента
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,
@@ -56,7 +56,7 @@ const ReviewAnimations = ({
     };
   }, [state]);
 
-  // leaving stage animations
+  // анимации stage leaving
   useGSAP(() => {
     const tl = gsap.timeline();
 

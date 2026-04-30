@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Apply filter button component
+ * Компонент кнопки применения фильтра
  */
 const ApplyButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);

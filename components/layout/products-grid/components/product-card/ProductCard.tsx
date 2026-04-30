@@ -13,25 +13,25 @@ import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
- * Product card — 1:1 port of `.menu_item` from `static-html/index.html`.
+ * Карточка продукта — 1:1 порт `.menu_item` из `static-html/index.html`.
  *
- * Structure (matches mockup exactly):
+ * Структура (точно повторяет макет):
  *   - `<img>` (ProductImage)
- *   - `<div class="descr">` with `time / weight / rating (★ 5,0)`
+ *   - `<div class="descr">` с `time / weight / rating (★ 5,0)`
  *   - `<p class="menu_item-title">`
- *   - `<div class="menu_items_btn">` with `counter (x1)` + cart SVG + price
- *   - `<svg class="heart_card">` top-right (favorite)
- *   - transparent `<Link>` overlay for click-through to `/shop/product/[id]`
+ *   - `<div class="menu_items_btn">` с `counter (x1)` + cart SVG + цена
+ *   - `<svg class="heart_card">` в правом верхнем углу (favorite)
+ *   - прозрачный оверлей `<Link>` для клика-перехода на `/shop/product/[id]`
  *
- * Animations preserved via {@link CardAnimations}. Favorites click handled
- * by a separate absolute button layered on top of the full-card link so
- * hearting a product doesn't navigate.
- * @param   {object}          props            - Component props.
- * @param   {IProductsEntity} props.product    - OneEntry product entity.
- * @param   {number}          props.index      - Grid index (for stagger animation).
- * @param   {IAttributeValues} props.dict       - Dictionary (unused — kept for API parity).
- * @param   {number}          props.pagesLimit - Animation pagesLimit.
- * @returns {JSX.Element}                      Card JSX.
+ * Анимации сохранены через {@link CardAnimations}. Клик по избранному
+ * обрабатывается отдельной absolute-кнопкой, лежащей поверх ссылки на всю
+ * карточку, чтобы лайк продукта не уводил с навигацией.
+ * @param   {object}          props            - Пропсы компонента.
+ * @param   {IProductsEntity} props.product    - Сущность продукта OneEntry.
+ * @param   {number}          props.index      - Индекс в гриде (для stagger-анимации).
+ * @param   {IAttributeValues} props.dict       - Словарь (не используется — оставлен для парности API).
+ * @param   {number}          props.pagesLimit - pagesLimit для анимации.
+ * @returns {JSX.Element}                      JSX карточки.
  */
 const ProductCard = ({
   product,
@@ -47,9 +47,9 @@ const ProductCard = ({
   const attrs = attributeValues ?? {};
   const title = localizeInfos?.title || '';
 
-  // Descr line (time · weight · rating) — markers from `dish` attribute set
-  // (verified via inspect-api). Fall back to static-html defaults so the
-  // card never looks empty when an attribute is unset.
+  // Строка descr (время · вес · рейтинг) — markers из set атрибутов `dish`
+  // (проверено через inspect-api). Fallback на дефолты static-html, чтобы
+  // карточка не выглядела пустой, если какой-то атрибут не задан.
   const timeRaw = attrs.cooking_time?.value as string | number | undefined;
   const time = timeRaw ? String(timeRaw) : '30-45 min';
 
@@ -59,7 +59,7 @@ const ProductCard = ({
   const ratingRaw = attrs.rating?.value as string | number | undefined;
   const rating = ratingRaw ? String(ratingRaw) : '5,0';
 
-  // Price
+  // Цена
   const priceValue = (attrs.price?.value ?? product.price) as
     | number
     | undefined;

@@ -8,7 +8,7 @@ import { useRef } from 'react';
 import type { AnimationsProps } from '@/app/types/global';
 
 /**
- * Table row animations
+ * Анимации строки таблицы
  */
 const TableRowAnimations = ({
   children,
@@ -17,7 +17,7 @@ const TableRowAnimations = ({
 }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
 
-  // first load animations
+  // анимации первой загрузки
   useGSAP(() => {
     if (!ref.current) {
       return;

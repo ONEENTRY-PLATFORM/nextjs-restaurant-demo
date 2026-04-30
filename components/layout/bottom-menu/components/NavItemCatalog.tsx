@@ -7,7 +7,7 @@ import type { JSX } from 'react';
 import LinesBulletsIcon from '@/components/icons/lines-bullets';
 
 /**
- * Catalog navigation menu item
+ * Элемент навигационного меню каталога
  */
 const NavItemCatalog = ({
   item: { pageUrl, localizeInfos },

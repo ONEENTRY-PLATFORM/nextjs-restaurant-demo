@@ -17,7 +17,7 @@ const initialState: InitialStateType = {
 };
 
 /**
- * Get first key
+ * Получает первый ключ
  */
 function getFirstKey(obj: Record<string, FieldType>): string | undefined {
   const keys = Object.keys(obj);

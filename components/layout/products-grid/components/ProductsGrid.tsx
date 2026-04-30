@@ -5,7 +5,7 @@ import { type JSX } from 'react';
 import ProductCard from './product-card/ProductCard';
 
 /**
- * Products grid
+ * Сетка продуктов
  */
 const ProductsGrid = ({
   dict,

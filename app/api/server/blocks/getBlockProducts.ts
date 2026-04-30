@@ -5,21 +5,21 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Normalized payload returned by {@link getBlockProducts}: the block's
- * localized title, the array of attached products (already sliced to
- * `block.quantity` when present), and the column-count hint
- * (`block.countElementsPerRow`) that the renderer uses to size the grid.
+ * Нормализованный payload, возвращаемый {@link getBlockProducts}: локализованный
+ * заголовок блока, массив прикреплённых продуктов (уже обрезанный до
+ * `block.quantity`, если задан) и подсказка о количестве колонок
+ * (`block.countElementsPerRow`), которую рендерер использует для размера сетки.
  *
- * Different OneEntry block types stash products in different fields —
- * `product_block` uses `block.products`, `similar_products_block` uses
- * `block.similarProducts.items` — this helper hides that asymmetry from
- * callers.
- * @property {boolean}            isError             - SDK call failed.
- * @property {IError}             [error]             - Underlying SDK error.
- * @property {string}             title               - Block's localized title.
- * @property {IProductsEntity[]}  products            - Items, ordered as in CMS.
- * @property {number}             [quantity]          - Editor-set max items (already applied).
- * @property {number}             [countElementsPerRow] - Editor-set columns hint.
+ * Разные типы блоков OneEntry хранят продукты в разных полях —
+ * `product_block` использует `block.products`, `similar_products_block` —
+ * `block.similarProducts.items`. Этот хелпер скрывает асимметрию от
+ * вызывающих.
+ * @property {boolean}            isError             - Вызов SDK завершился ошибкой.
+ * @property {IError}             [error]             - Исходная ошибка SDK.
+ * @property {string}             title               - Локализованный заголовок блока.
+ * @property {IProductsEntity[]}  products            - Элементы в порядке, заданном в CMS.
+ * @property {number}             [quantity]          - Заданный редактором максимум элементов (уже применён).
+ * @property {number}             [countElementsPerRow] - Заданная редактором подсказка о колонках.
  */
 export interface BlockProducts {
   isError: boolean;
@@ -31,15 +31,15 @@ export interface BlockProducts {
 }
 
 /**
- * Fetch a Block by marker and extract products + layout config in a shape
- * the homepage renderer can consume without caring about the block type.
+ * Получает блок по маркеру и извлекает продукты + конфиг раскладки в форме,
+ * которую рендерер главной страницы может использовать без знания типа блока.
  *
- * The order in `products` is the editor-curated order (drag-and-drop in
- * OneEntry admin); we don't re-sort it.
- * @param   {string}                marker - Block identifier (e.g. `recommended`).
- * @returns {Promise<BlockProducts>}        Normalized block data; `products`
- *                                          is empty on any SDK error so callers
- *                                          can render conditionally without try/catch.
+ * Порядок в `products` — это порядок, заданный редактором (drag-and-drop в
+ * OneEntry admin); мы его не пересортировываем.
+ * @param   {string}                marker - Идентификатор блока (например, `recommended`).
+ * @returns {Promise<BlockProducts>}        Нормализованные данные блока; `products`
+ *                                          пуст при любой ошибке SDK, чтобы вызывающие
+ *                                          могли рендерить условно без try/catch.
  */
 export const getBlockProducts = async (
   marker: string,

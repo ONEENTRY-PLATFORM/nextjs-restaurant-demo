@@ -27,8 +27,8 @@ type InitialStateType = {
   }>;
   step: CheckoutStep;
   stepError?: string;
-  // Survives `removeOrder()` (which resets `order` to initialState) so the
-  // success screen can render the real CMS-assigned id.
+  // Переживает `removeOrder()` (который сбрасывает `order` в initialState),
+  // чтобы success-экран мог отрендерить реальный id, присвоенный CMS.
   lastOrderId?: number;
 };
 

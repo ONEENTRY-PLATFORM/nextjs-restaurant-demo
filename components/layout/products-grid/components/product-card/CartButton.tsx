@@ -36,8 +36,9 @@ const CartButton = ({
   const qty = item?.quantity ?? 0;
   const maxUnits = units && units > 0 ? units : 99;
 
-  // redux-persist rehydrates cart on the client, so qty may differ from SSR (0).
-  // Render the "add" button on first paint to match server, then switch after mount.
+  // redux-persist регидратит корзину на клиенте, поэтому qty может отличаться
+  // от SSR (0). На первом paint рендерим кнопку «add», чтобы совпадало с
+  // сервером, и переключаемся после mount.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

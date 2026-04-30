@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 
 /**
- * Update user state with API Users
+ * Обновляет состояние пользователя через API Users.
  */
 export const updateUserState = async ({
   favorites,

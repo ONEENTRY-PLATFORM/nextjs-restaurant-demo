@@ -18,14 +18,14 @@ type SavedCard = {
 };
 
 /**
- * Checkout step — saved-cards management (per `cart_add_card.html`).
+ * Шаг checkout — управление сохранёнными картами (по `cart_add_card.html`).
  *
- * Bottom-sheet style panel listing saved cards with a Delete control + an
- * "Add Card" row. Used between {@link StepPayment} and `success` when the
- * user picks card payment. OneEntry's card payment account is not yet
- * configured (see ONEENTRY-ADMIN-SETUP.md), so the card list and "Add Card"
- * action are local stubs that complete the flow with a synthetic card id.
- * @returns {JSX.Element} Step JSX.
+ * Панель в стиле bottom-sheet со списком сохранённых карт, контролом Delete + строкой
+ * "Add Card". Используется между {@link StepPayment} и `success`, когда
+ * пользователь выбирает оплату картой. Платёжный аккаунт карт OneEntry пока не
+ * настроен (см. ONEENTRY-ADMIN-SETUP.md), поэтому список карт и действие "Add Card"
+ * — локальные заглушки, которые завершают флоу с синтетическим card id.
+ * @returns {JSX.Element} JSX шага.
  */
 const StepAddCard = (): JSX.Element => {
   const dispatch = useAppDispatch();

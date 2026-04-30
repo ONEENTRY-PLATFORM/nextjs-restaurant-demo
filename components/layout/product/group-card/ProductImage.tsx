@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { JSX } from 'react';
 
 /**
- * Group product image component
+ * Компонент картинки продукта в группе
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (

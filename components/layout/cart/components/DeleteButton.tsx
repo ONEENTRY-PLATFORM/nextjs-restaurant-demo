@@ -11,7 +11,7 @@ import {
 import DeleteIcon from '@/components/icons/delete';
 
 /**
- * Delete product from cart button
+ * Кнопка удаления продукта из корзины
  */
 const DeleteButton = ({ productId }: { productId: number }): JSX.Element => {
   const dispatch = useAppDispatch();

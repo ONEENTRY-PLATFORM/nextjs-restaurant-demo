@@ -12,7 +12,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 
 /**
- * Apply button component
+ * Компонент кнопки Apply
  */
 const ApplyButton = ({
   product,

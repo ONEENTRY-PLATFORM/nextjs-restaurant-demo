@@ -45,14 +45,15 @@ const resolveInputType = (attr: IFormAttribute): string => {
 };
 
 /**
- * Profile drawer popup — port of `static-html/details_personal.html`
- * profile overlay, opened from the user icon in the global header.
- * Three collapsible sections: My Profile (personal data form), Payment
- * (saved cards + add-card form), Address (saved addresses + map + add
- * form). Driven by `OpenDrawerContext` (`component === 'ProfilePopup'`).
- * Mirrors {@link FavoritesPopup} drawer pattern. The standalone
- * `/profile` page is preserved — popup is an additional entry point.
- * @returns {JSX.Element} Profile drawer JSX.
+ * Drawer-попап профиля — порт оверлея профиля из
+ * `static-html/details_personal.html`, открывается по иконке пользователя
+ * в глобальном хедере. Три раскрывающиеся секции: My Profile (форма личных
+ * данных), Payment (сохранённые карты + форма добавления карты), Address
+ * (сохранённые адреса + карта + форма добавления). Управляется через
+ * `OpenDrawerContext` (`component === 'ProfilePopup'`). Повторяет паттерн
+ * drawer-а {@link FavoritesPopup}. Самостоятельная страница `/profile`
+ * сохранена — попап является дополнительной точкой входа.
+ * @returns {JSX.Element} JSX drawer-а профиля.
  */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setTransition } = useContext(OpenDrawerContext);
@@ -173,7 +174,7 @@ const ProfilePopup = (): JSX.Element => {
         </div>
 
         <div className="mx-auto h-full max-w-87.5 overflow-y-auto pb-25 no-scrollbar md:pb-0">
-          {/* My Profile */}
+          {/* Мой профиль */}
           <div>
             <button
               type="button"
@@ -241,7 +242,7 @@ const ProfilePopup = (): JSX.Element => {
             )}
           </div>
 
-          {/* Address */}
+          {/* Адрес */}
           <div className="mx-auto max-w-87.5">
             <button
               type="button"
@@ -347,7 +348,7 @@ const ProfilePopup = (): JSX.Element => {
             )}
           </div>
 
-          {/* Mobile close button at bottom */}
+          {/* Кнопка закрытия для мобилы внизу */}
           <div className="mt-7.5 mb-5 flex justify-center md:hidden">
             <ClosePopupButton onClose={close} ariaLabel="Close profile" />
           </div>

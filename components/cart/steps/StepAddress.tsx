@@ -15,31 +15,31 @@ import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
 import PinIcon from '@/components/icons/pin.svg';
 
-// Markers we look for on the user profile, ordered by priority. `address_reg`
-// is the canonical one used elsewhere in the cart (see components/layout/cart/
-// index.tsx); the others are fallbacks if the admin renamed the field.
+// Маркеры, которые мы ищем в профиле пользователя, в порядке приоритета. `address_reg` —
+// канонический, используется в других местах корзины (см. components/layout/cart/
+// index.tsx); остальные — fallback, если админ переименовал поле.
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 
 type DeliveryMode = 'asap' | 'scheduled';
 
 /**
- * Checkout step — delivery address + delivery time mode (per `cart_PAYMENT.html`
- * Address + Time blocks).
+ * Шаг checkout — адрес доставки + режим времени доставки (по блокам Address + Time
+ * из `cart_PAYMENT.html`).
  *
- * Address: text input with edit pencil icon on the right.
- * Time: two radio options — "40-45 min" (ASAP) or "by the time" (scheduled,
- * text input like `18.06.24 10.00`).
- * @param   {object}           props      - Step props.
- * @param   {IAttributeValues} props.dict - Static-content dictionary.
- * @returns {JSX.Element}                 Step JSX.
+ * Адрес: text input с иконкой-карандашом редактирования справа.
+ * Время: два радио — "40-45 min" (ASAP) или "by the time" (по расписанию,
+ * text input типа `18.06.24 10.00`).
+ * @param   {object}           props      - Пропсы шага.
+ * @param   {IAttributeValues} props.dict - Словарь статического контента.
+ * @returns {JSX.Element}                 JSX шага.
  */
 const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
   const { user } = useContext(AuthContext);
-  // Pre-fill the address from the authenticated user's profile when the
-  // user hasn't already entered one for this checkout. `formData` holds
-  // OneEntry attribute values; markers are checked in priority order.
+  // Пре-заполняем адрес из профиля авторизованного пользователя, если
+  // пользователь ещё не ввёл его в этом checkout. `formData` хранит
+  // значения атрибутов OneEntry; маркеры проверяются в порядке приоритета.
   const userAddress = user?.formData
     ? (ADDRESS_MARKERS.map((marker) => {
         const entry = user.formData.find((el) => el.marker === marker);
@@ -68,7 +68,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Address header */}
+      {/* Хедер Address */}
       <div className="flex items-center gap-2.5 text-paper">
         <PinIcon />
         <p className="font-normal text-[20px] text-paper">
@@ -76,7 +76,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         </p>
       </div>
 
-      {/* Address input with pencil */}
+      {/* Инпут адреса с карандашом */}
       <div className="relative flex items-center gap-2.5 text-paper">
         <input
           type="text"
@@ -88,7 +88,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         <PencilIcon className="absolute right-1.75 top-1.75 pointer-events-none" />
       </div>
 
-      {/* Time header */}
+      {/* Хедер Time */}
       <div className="mt-5 flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
         <p className="font-normal text-[20px] text-paper">
@@ -96,7 +96,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         </p>
       </div>
 
-      {/* ASAP radio */}
+      {/* Радио ASAP */}
       <div className="flex items-center gap-2.5 text-paper">
         <input
           type="radio"
@@ -114,7 +114,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         </label>
       </div>
 
-      {/* Scheduled radio + input */}
+      {/* Радио по расписанию + инпут */}
       <div className="flex items-center gap-2.5 text-paper">
         <input
           type="radio"

@@ -3,12 +3,12 @@ import { NextResponse } from 'next/server';
 import getLqipPreview from '@/app/api/lqip/getLqipPreview';
 
 /**
- * API endpoint for generating low-quality image placeholders (LQIP)
+ * API-эндпоинт для генерации низкокачественных плейсхолдеров изображений (LQIP).
  *
- * This endpoint generates a low-quality base64-encoded preview image that can be
- * used as a placeholder while the full quality image is loading.
- * @param   {Request}               request - The incoming request with image URL in query parameters
- * @returns {Promise<NextResponse>}         A JSON response with the base64-encoded LQIP data URI
+ * Этот эндпоинт генерирует низкокачественное base64-закодированное превью,
+ * которое можно использовать как плейсхолдер во время загрузки полноразмерного изображения.
+ * @param   {Request}               request - Входящий запрос с URL изображения в query-параметрах.
+ * @returns {Promise<NextResponse>}         JSON-ответ с base64-закодированным data URI LQIP.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);

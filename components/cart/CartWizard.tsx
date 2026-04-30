@@ -33,10 +33,10 @@ type CartWizardProps = {
   promoSidebar?: ReactNode;
 };
 
-// Steps that ALWAYS render as a centered popup overlay (mobile + desktop):
-// the auth gate (`signin` = method chooser per `pk_login.html`) and the
-// confirmation code (`verification` per `pk_verif.html`). The actual sign-in
-// / sign-up forms live in a separate drawer (OpenDrawerContext), not here.
+// Шаги, которые ВСЕГДА рендерятся как центрированный попап-оверлей (мобила + десктоп):
+// auth-гейт (`signin` = выбор метода по `pk_login.html`) и
+// код подтверждения (`verification` по `pk_verif.html`). Сами формы sign-in /
+// sign-up живут в отдельном drawer (OpenDrawerContext), не здесь.
 const AUTH_POPUP_STEPS: ReadonlySet<CheckoutStep> = new Set([
   'signin',
   'verification',
@@ -61,12 +61,12 @@ const buildStepTitles = (
   error: 'Error',
 });
 
-// Tracks the md+ breakpoint (768px) on the client so we can render the
-// step body in exactly one place — inline on desktop or popup on mobile —
-// without double-mounting StepXXX components (each has its own state /
-// effects). useSyncExternalStore reads `matchMedia` synchronously on the
-// first client render, so a desktop user lands on inline mode without a
-// brief popup-flash. SSR returns `false` (mobile-first).
+// Отслеживает брейкпоинт md+ (768px) на клиенте, чтобы рендерить
+// тело шага ровно в одном месте — инлайн на десктопе или попап на мобиле —
+// без двойного маунта компонентов StepXXX (у каждого свой state /
+// effects). useSyncExternalStore читает `matchMedia` синхронно на
+// первом клиентском рендере, поэтому desktop-юзер сразу попадает в инлайн-режим без
+// мгновенного попап-флеша. SSR возвращает `false` (mobile-first).
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -79,31 +79,31 @@ const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
- * CartWizard — multi-step checkout driven by `orderReducer.step`.
+ * CartWizard — многошаговый checkout, управляемый через `orderReducer.step`.
  *
  * Flow:
- * `cart` → `time` (skipped if already picked via the calendar popup)
- *   → `signin` (auto-skip if authed; phone branch → `verification`)
+ * `cart` → `time` (пропускается, если уже выбрано через попап календаря)
+ *   → `signin` (авто-скип, если авторизован; ветка phone → `verification`)
  *   → `address` → `order` (review + promo) → `payment`
- *   → `add_card` (only when card method picked) → `success` | `error`
+ *   → `add_card` (только если выбран метод card) → `success` | `error`
  *
- * Rendering rules (per static-html `pk_*.html` desktop variants):
- * - `cart` step: cart products in left column, promo banners on right
+ * Правила рендера (по десктоп-вариантам `pk_*.html` из static-html):
+ * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа
  *   (`pk_cart.html`).
- * - Auth-related steps (`signin`, `verification`): centered popup overlay
- *   in BOTH viewports (`pk_login.html`, `pk_verif.html`). The cart is
- *   visible behind on desktop, hidden on mobile.
- * - Other non-cart steps (`time`, `address`, `order`, `payment`, …):
- *   - Desktop (md+): rendered INLINE on the cart page, replacing the cart
- *     products in the left column (`pk_order.html` pattern). Breadcrumb
- *     becomes "Cart / <Step>" with a clickable "Cart" to go back.
- *   - Mobile: fullscreen popup (`cart_*.html`).
+ * - Auth-шаги (`signin`, `verification`): центрированный попап-оверлей
+ *   на ОБОИХ вьюпортах (`pk_login.html`, `pk_verif.html`). Корзина
+ *   видна за попапом на десктопе, скрыта на мобиле.
+ * - Прочие не-cart шаги (`time`, `address`, `order`, `payment`, …):
+ *   - Десктоп (md+): рендерятся ИНЛАЙН на странице корзины, замещая
+ *     товары корзины в левой колонке (паттерн `pk_order.html`). Хлебные крошки
+ *     становятся "Cart / <Step>" с кликабельным "Cart" для возврата.
+ *   - Мобила: фуллскрин-попап (`cart_*.html`).
  *
- * The cart subtree stays mounted across all transitions (visibility
- * toggled via CSS) so GSAP mount animations on ProductAnimations /
- * TableRowAnimations don't replay when stepping forward and back.
- * @param   {CartWizardProps} props - Wizard props.
- * @returns {JSX.Element}           Wizard JSX for the current step.
+ * Поддерево корзины остаётся примонтированным между всеми переходами (видимость
+ * переключается через CSS), чтобы GSAP-анимации монтирования на ProductAnimations /
+ * TableRowAnimations не проигрывались заново при шагах вперёд и назад.
+ * @param   {CartWizardProps} props - Пропсы wizard.
+ * @returns {JSX.Element}           JSX wizard для текущего шага.
  */
 const CartWizard = ({
   dict,
@@ -117,26 +117,25 @@ const CartWizard = ({
 
   const isCartStep = step === 'cart';
   const isAuthPopup = AUTH_POPUP_STEPS.has(step);
-  // Step body is rendered ONCE — either inline (desktop, non-auth) or in
-  // the popup. These are mutually exclusive given the auth + viewport
-  // logic.
+  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп, не-auth), либо в
+  // попапе. Эти варианты взаимоисключающие, учитывая логику auth + вьюпорта.
   const showInline = !isCartStep && !isAuthPopup && isMdUp;
   const showPopup = !isCartStep && (isAuthPopup || !isMdUp);
 
-  // Cart products in the left column are kept mounted across steps; on
-  // desktop they hide via CSS when an inline step takes over the slot. On
-  // mobile the whole cart is hidden by `cartWrapperClass` already.
+  // Товары корзины в левой колонке остаются примонтированными между шагами;
+  // на десктопе они скрываются через CSS, когда инлайн-шаг занимает их слот. На
+  // мобиле вся корзина уже скрыта через `cartWrapperClass`.
   const hideCartProductsOnDesktop = !isCartStep && !isAuthPopup;
 
-  // Cart wrapper visibility:
-  // - cart step:        `contents` — visible everywhere, no extra box
-  // - any other step:   `hidden md:contents` — hidden on mobile (popup is
-  //                     fullscreen there), visible behind on md+
+  // Видимость обёртки корзины:
+  // - шаг cart:         `contents` — виден везде, без лишней коробки
+  // - любой другой шаг: `hidden md:contents` — скрыт на мобиле (попап там
+  //                     фуллскрин), виден за попапом на md+
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
-  // Desktop breadcrumb — stays "Cart" while on the cart screen or under
-  // an auth popup; switches to "Cart / <Step>" while an inline step is
-  // active so the user can click "Cart" to return.
+  // Десктопные хлебные крошки — остаются "Cart", пока находимся на экране корзины или
+  // под auth-попапом; переключаются на "Cart / <Step>", когда активен инлайн-шаг,
+  // чтобы пользователь мог кликнуть по "Cart" для возврата.
   const showStepInBreadcrumb = !isCartStep && !isAuthPopup;
 
   const stepBody = (
@@ -156,7 +155,7 @@ const CartWizard = ({
   return (
     <>
       <div className={cartWrapperClass}>
-        {/* Mobile-only header — back arrow + "Cart" + hamburger per
+        {/* Хедер только для мобилы — стрелка назад + "Cart" + бургер по
             cart_cart.html */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
           <Link href="/" className="group_white" aria-label="Back">
@@ -168,9 +167,9 @@ const CartWizard = ({
           </div>
         </div>
 
-        {/* Desktop-only breadcrumb — `pk_cart.html` shows "Cart",
-            `pk_order.html` shows "Cart / Order". When an inline step is
-            active, "Cart" is a button that returns to the cart step. */}
+        {/* Хлебные крошки только для десктопа — `pk_cart.html` показывает "Cart",
+            `pk_order.html` показывает "Cart / Order". Когда активен инлайн-шаг,
+            "Cart" — это кнопка, возвращающая на шаг корзины. */}
         <p className="hidden pt-3.75 text-base text-[#969696] md:block">
           {showStepInBreadcrumb ? (
             <>
@@ -188,12 +187,12 @@ const CartWizard = ({
           )}
         </p>
 
-        {/* Stacked on mobile, 2-col (50/50) on md+ */}
+        {/* Стак на мобиле, 2 колонки (50/50) на md+ */}
         <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13">
           <div className="flex flex-col gap-4 md:w-1/2">
-            {/* Cart products + APPLY — kept mounted; hidden on desktop
-                while an inline step occupies this slot, hidden on mobile
-                via the outer `cartWrapperClass` when a popup is active. */}
+            {/* Товары корзины + APPLY — остаются примонтированными; скрыты на десктопе,
+                пока инлайн-шаг занимает этот слот, скрыты на мобиле
+                через внешний `cartWrapperClass`, когда активен попап. */}
             <div
               className={hideCartProductsOnDesktop ? 'md:hidden' : 'contents'}
             >
@@ -208,7 +207,7 @@ const CartWizard = ({
       {showPopup && (
         <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-[10px]">
           <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 md:overflow-y-auto md:rounded-[20px] md:bg-[rgba(76,77,86,0.8)] md:p-7.5 md:backdrop-blur-[10px]">
-            {/* Popup header — back / title / close */}
+            {/* Хедер попапа — назад / заголовок / закрыть */}
             <div className="flex items-center justify-between md:mb-2">
               <button
                 type="button"
@@ -228,9 +227,8 @@ const CartWizard = ({
               <span className="md:hidden w-9" aria-hidden="true" />
             </div>
 
-            {/* Step content panel — glass card on mobile, plain inside
-                the popup on desktop (the popup itself supplies the
-                chrome). */}
+            {/* Панель контента шага — glass-карточка на мобиле, plain внутри
+                попапа на десктопе (сам попап обеспечивает обрамление). */}
             <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-5 py-6.25 backdrop-blur-[10px] md:rounded-none md:bg-transparent md:p-0 md:backdrop-blur-none">
               {stepBody}
             </div>

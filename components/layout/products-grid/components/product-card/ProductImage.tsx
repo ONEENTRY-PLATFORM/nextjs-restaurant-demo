@@ -5,14 +5,15 @@ import type { JSX } from 'react';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * Product image — 1:1 port of the `.menu_item > img.w-full` from
- * `static-html/index.html`. Reads `attributes.cover.value` (main product image
- * from OneEntry `dish` attribute set — supports both object and array shapes),
- * falls back to {@link Placeholder} when no image is configured.
- * @param   {object}          props            - Component props.
+ * Картинка продукта — 1:1 порт `.menu_item > img.w-full` из
+ * `static-html/index.html`. Читает `attributes.cover.value` (главное
+ * изображение продукта из OneEntry set'а атрибутов `dish` — поддерживает обе
+ * формы: объект и массив), fallback на {@link Placeholder}, если изображение
+ * не задано.
+ * @param   {object}          props            - Пропсы компонента.
  * @param   {IAttributeValues} props.attributes - `product.attributeValues`.
- * @param   {string}          props.alt        - Accessibility alt text.
- * @returns {JSX.Element}                      Image JSX.
+ * @param   {string}          props.alt        - Текст alt для accessibility.
+ * @returns {JSX.Element}                      JSX картинки.
  */
 const ProductImage = ({
   attributes,
@@ -30,9 +31,9 @@ const ProductImage = ({
     : productImage?.downloadLink;
 
   if (!imageSrc) {
-    // pb-12 pushes the centered logo upward to visually compensate for the
-    // info strip ("30-45 min · 50g · ★ 4") overlaid on the lower edge of the
-    // card image — without it, the logo reads as off-center.
+    // pb-12 сдвигает центрированный логотип вверх, чтобы визуально
+    // компенсировать info-полоску ("30-45 min · 50g · ★ 4"), наложенную
+    // на нижний край картинки карточки — без этого логотип кажется смещённым.
     return (
       <div className="relative aspect-square w-full">
         <Placeholder className="pb-8" />

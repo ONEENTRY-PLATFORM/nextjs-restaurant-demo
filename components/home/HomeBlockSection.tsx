@@ -5,10 +5,10 @@ import type { JSX } from 'react';
 import ProductCard from '@/components/layout/products-grid/components/product-card/ProductCard';
 
 /**
- * Static map of supported `countElementsPerRow` values to Tailwind
- * `md:grid-cols-N` classes. Tailwind's JIT can't see classes built at
- * runtime, so the keys must be enumerated explicitly. Mobile keeps a
- * fixed 2-col grid for readability regardless of editor preference.
+ * Статическая карта поддерживаемых значений `countElementsPerRow` в Tailwind-классы
+ * `md:grid-cols-N`. JIT Tailwind не видит классы, построенные в
+ * рантайме, поэтому ключи нужно перечислять явно. На мобиле остаётся
+ * фиксированная сетка в 2 колонки для читаемости, независимо от настройки в редакторе.
  */
 const COLS_CLASS: Record<number, string> = {
   1: 'md:grid-cols-1',
@@ -28,14 +28,14 @@ type HomeBlockSectionProps = {
 };
 
 /**
- * Generic homepage block — title + product grid driven entirely by
- * OneEntry block config. Lets the editor reorder, resize and recurate
- * the top of the home page without touching code: position is set on
- * the block in admin, items via drag-and-drop, columns via
- * `countElementsPerRow`, total via `quantity`.
- * @param   {HomeBlockSectionProps} props - Component props.
- * @returns {JSX.Element|null}            Section JSX, or `null` when there's
- *                                        nothing visible to render.
+ * Универсальный блок главной — заголовок + сетка продуктов, полностью управляется
+ * через конфиг блока OneEntry. Позволяет редактору пересортировывать, ресайзить и
+ * рекурировать верх главной без правки кода: позиция задаётся
+ * на блоке в админке, элементы — через drag-and-drop, колонки через
+ * `countElementsPerRow`, общее число через `quantity`.
+ * @param   {HomeBlockSectionProps} props - Пропсы компонента.
+ * @returns {JSX.Element|null}            JSX секции, либо `null`, когда нечего
+ *                                        видимого рендерить.
  */
 const HomeBlockSection = ({
   title,

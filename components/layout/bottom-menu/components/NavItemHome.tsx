@@ -7,7 +7,7 @@ import type { JSX } from 'react';
 import HouseIcon from '@/components/icons/house';
 
 /**
- * Home navItem menu element
+ * Элемент navItem меню «Главная»
  */
 const NavItemHome = ({
   item: { localizeInfos },

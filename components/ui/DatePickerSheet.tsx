@@ -30,16 +30,16 @@ type DayCell = {
 };
 
 /**
- * Build a 6×7 grid of calendar days for the given year/month, padded with
- * trailing days of the previous month and leading days of the next month so
- * the grid is always rectangular.
- * @param   {number}      year  - Target year.
- * @param   {number}      month - Target month (0-based).
- * @returns {DayCell[]}         42 cells (6 rows × 7 columns).
+ * Строит сетку 6×7 календарных дней для данного года/месяца, дополняя
+ * хвостовыми днями предыдущего месяца и начальными днями следующего, чтобы
+ * сетка всегда была прямоугольной.
+ * @param   {number}      year  - Целевой год.
+ * @param   {number}      month - Целевой месяц (0-based).
+ * @returns {DayCell[]}         42 ячейки (6 строк × 7 колонок).
  */
 const buildMonthGrid = (year: number, month: number): DayCell[] => {
   const first = new Date(year, month, 1);
-  const firstDow = (first.getDay() + 6) % 7; // 0 = Mon
+  const firstDow = (first.getDay() + 6) % 7; // 0 = Пн
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrev = new Date(year, month, 0).getDate();
 
@@ -83,12 +83,12 @@ type DatePickerSheetProps = {
 };
 
 /**
- * Fixed bottom-sheet date picker (mobile) — replicates `service_date.html`.
- * Uses `.calend_mon` and `.calend_days` utility classes from
- * `app/styles/main.css`. Accepts any ISO `yyyy-MM-dd` value and emits the
- * same shape via {@link onApply}.
- * @param   {DatePickerSheetProps} props - Component props.
- * @returns {JSX.Element}                Sheet JSX.
+ * Фиксированный bottom-sheet date picker (мобильный) — повторяет
+ * `service_date.html`. Использует утилитарные классы `.calend_mon` и
+ * `.calend_days` из `app/styles/main.css`. Принимает любое ISO-значение
+ * `yyyy-MM-dd` и эмитит ту же форму через {@link onApply}.
+ * @param   {DatePickerSheetProps} props - Пропсы компонента.
+ * @returns {JSX.Element}                JSX sheet-а.
  */
 const DatePickerSheet = ({
   value,

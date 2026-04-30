@@ -7,25 +7,25 @@ type TimePickerSheetProps = {
   value?: string;
   onApply: (time: string) => void;
   onClose?: () => void;
-  /** 24h range [fromHour, toHour], inclusive. Defaults to [10, 21]. */
+  /** Диапазон 24ч [fromHour, toHour], включительно. По умолчанию [10, 21]. */
   range?: [number, number];
-  /** Step in hours between slots. Defaults to 1. */
+  /** Шаг в часах между слотами. По умолчанию 1. */
   step?: 1 | 2;
 };
 
 /**
- * Format an hour number (0–23) as `HH.00` per the static-html `service_time`
- * display convention.
- * @param   {number} h - Hour 0–23.
- * @returns {string}   Label like `"10.00"`.
+ * Форматирует число часа (0–23) как `HH.00` согласно конвенции отображения
+ * `service_time` из static-html.
+ * @param   {number} h - Час 0–23.
+ * @returns {string}   Метка вида `"10.00"`.
  */
 const formatHour = (h: number): string => `${String(h).padStart(2, '0')}.00`;
 
 /**
- * Fixed bottom-sheet time picker — replicates `service_time.html`.
- * Uses `.service_time` utility class from `app/styles/main.css`.
- * @param   {TimePickerSheetProps} props - Component props.
- * @returns {JSX.Element}                Sheet JSX.
+ * Фиксированный bottom-sheet time picker — повторяет `service_time.html`.
+ * Использует утилитарный класс `.service_time` из `app/styles/main.css`.
+ * @param   {TimePickerSheetProps} props - Пропсы компонента.
+ * @returns {JSX.Element}                JSX sheet-а.
  */
 const TimePickerSheet = ({
   value,

@@ -19,15 +19,15 @@ import {
 import HeartCardIcon from '@/components/icons/heart-card';
 
 /**
- * HeartCardButton — toggles a product in the favorites store.
- * Uses the same `heart_card` SVG from verstka so the card visual is 1:1
- * with `static-html/index.html`. Filled stroke when favorited.
+ * HeartCardButton — переключает продукт в сторе избранного.
+ * Использует тот же SVG `heart_card` из вёрстки, так что визуал карточки 1:1
+ * с `static-html/index.html`. Заполненная обводка, когда в избранном.
  *
- * Layered above the absolute click-through `<Link>` overlay in ProductCard
- * via z-index so clicking the heart doesn't navigate.
- * @param   {object}          props         - Component props.
- * @param   {IProductsEntity} props.product - Product to toggle.
- * @returns {JSX.Element}                   Heart button JSX.
+ * Лежит над абсолютным click-through оверлеем `<Link>` в ProductCard
+ * через z-index, чтобы клик по сердцу не приводил к навигации.
+ * @param   {object}          props         - Пропсы компонента.
+ * @param   {IProductsEntity} props.product - Продукт для переключения.
+ * @returns {JSX.Element}                   JSX кнопки-сердца.
  */
 const HeartCardButton = ({
   product,
@@ -40,10 +40,10 @@ const HeartCardButton = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, product.id),
   );
-  // Favorites are restored from localStorage on the client after hydration,
-  // so SSR sees `false` while the client may see `true` — gate via
-  // useSyncExternalStore so the server snapshot is `false` and the client
-  // flips to `true` after mount, matching the persisted slice.
+  // Избранное восстанавливается из localStorage на клиенте после гидратации,
+  // так что SSR видит `false`, в то время как клиент может увидеть `true` —
+  // обойти через useSyncExternalStore, чтобы серверный снапшот был `false`,
+  // а клиент после маунта переключился на `true`, соответствуя persisted slice.
   const hydrated = useSyncExternalStore(
     (cb) => {
       cb();

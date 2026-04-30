@@ -15,24 +15,24 @@ import type {
 } from '@/components/reviews/mockOrderReviewData';
 import OrderReviewsPanel from '@/components/reviews/OrderReviewsPanel';
 
-// Opt out of static prerender — the shared layout chain includes client
-// components that read `useSearchParams()` (search bar, filter bottom
-// sheet) which Next.js requires to be wrapped in Suspense for static
-// generation. Rendering dynamically sidesteps the prerender-time bailout.
+// Отключаем static prerender — общая цепочка layout-ов включает клиентские
+// компоненты, читающие `useSearchParams()` (search bar, filter bottom sheet),
+// которые Next.js требует оборачивать в Suspense для static-генерации.
+// Рендер dynamic обходит prerender-time bailout.
 export const dynamic = 'force-dynamic';
 
 const SECTION_BASE =
   'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full px-4';
 
 /**
- * Block identifier → section type. Each block attached to the `home_web`
- * page acts as a positional marker for one of these section components,
- * so reordering blocks in the OneEntry admin (`block.position`) reorders
- * sections on the page without code changes.
+ * Block identifier → тип секции. Каждый блок, прикреплённый к странице
+ * `home_web`, выступает позиционным маркером одного из этих компонентов
+ * секций, поэтому переупорядочивание блоков в админке OneEntry (`block.position`)
+ * меняет порядок секций на странице без изменений в коде.
  *
- * Identifiers not listed here are skipped silently — the editor can
- * stage new blocks without breaking the build, and we add a renderer
- * for them when the visual story is ready.
+ * Идентификаторы, которых нет в этом списке, тихо пропускаются — редактор
+ * может ставить новые блоки, не ломая билд, а мы добавляем рендерер
+ * под них, когда визуал готов.
  */
 const HOME_BLOCK_IDENTIFIERS = new Set([
   'home_promo',
@@ -41,11 +41,11 @@ const HOME_BLOCK_IDENTIFIERS = new Set([
 ]);
 
 /**
- * Format an ISO / ms date as `dd.MM.yy` to match the order pill in
- * `static-html/index_rewiews.html`. Mirrors the helper in
+ * Форматирует ISO / ms-дату как `dd.MM.yy`, чтобы совпадало с пилюлей заказа в
+ * `static-html/index_rewiews.html`. Зеркалит хелпер в
  * [components/profile/OrdersList.tsx](../components/profile/OrdersList.tsx).
- * @param   {string | number | Date | undefined} when - Input date value.
- * @returns {string}                                    Formatted stamp.
+ * @param   {string | number | Date | undefined} when - Входное значение даты.
+ * @returns {string}                                    Отформатированная метка.
  */
 const formatDate = (when: string | number | Date | undefined): string => {
   if (!when) return '';
@@ -58,19 +58,19 @@ const formatDate = (when: string | number | Date | undefined): string => {
 };
 
 /**
- * Resolve the review-panel order projection for `?review_order=<id|orderId>`.
- * Returns `null` when the param is absent (panel won't render); falls back
- * to the {@link OrderReviewsPanel}'s built-in mock when the order can't be
- * fetched (no auth, fetch error, no match) so the drawer still shows the
- * static-html design — see CLAUDE.md rule 2 (mocks must keep the layout
- * non-empty until the CMS pipeline is ready).
- * @param   {string} reviewOrderParam - Raw `?review_order` value.
- * @returns {Promise<OrderReviewMock | null | undefined>} Order projection, mock-fallback (`undefined`), or `null`.
+ * Резолвит проекцию заказа для review-панели по `?review_order=<id|orderId>`.
+ * Возвращает `null`, когда параметр отсутствует (панель не рендерится); откатывается
+ * на встроенный мок в {@link OrderReviewsPanel}, когда заказ не получается
+ * загрузить (нет авторизации, ошибка fetch, нет совпадения), чтобы drawer всё равно
+ * показывал дизайн из static-html — см. CLAUDE.md правило 2 (моки должны держать
+ * layout непустым, пока пайплайн CMS не готов).
+ * @param   {string} reviewOrderParam - Сырое значение `?review_order`.
+ * @returns {Promise<OrderReviewMock | null | undefined>} Проекция заказа, mock-fallback (`undefined`) или `null`.
  */
 const resolveReviewOrder = async (
   reviewOrderParam: string,
 ): Promise<OrderReviewMock | null | undefined> => {
-  // Special tokens / unauth flow → use the panel's built-in mock.
+  // Специальные токены / unauth flow → используем встроенный мок панели.
   if (!reviewOrderParam || reviewOrderParam === 'demo') return undefined;
 
   const res = await getAllOrdersByMarker({
@@ -116,23 +116,23 @@ const resolveReviewOrder = async (
 };
 
 /**
- * Home page — fully driven by OneEntry CMS:
- *   1. Fetch the `home_web` page entity to verify it exists (and to keep
- *      a hook for future page-level metadata / hero attributes).
- *   2. Fetch its attached blocks via `getBlocksByPageUrl`, sorted by
- *      `block.position`.
- *   3. For each block, dispatch by `block.identifier`:
- *        - `home_promo`      → static {@link HomePromo} banner (DEAL OF
- *                              THE DAY -50%). The CMS block is used only
- *                              as a positional anchor; banner content is
- *                              hardcoded until the block exposes
- *                              title/product/image attributes.
- *        - `recommended`     → curated grid via {@link HomeBlockServer}
- *        - `home_categories` → all menu category sections via
+ * Главная страница — полностью управляется OneEntry CMS:
+ *   1. Загружает сущность страницы `home_web`, чтобы убедиться, что она существует
+ *      (и оставить хук под будущие метаданные / hero-атрибуты уровня страницы).
+ *   2. Загружает прикреплённые к ней блоки через `getBlocksByPageUrl`,
+ *      отсортированные по `block.position`.
+ *   3. Для каждого блока делает диспетч по `block.identifier`:
+ *        - `home_promo`      → статичный баннер {@link HomePromo} (DEAL OF
+ *                              THE DAY -50%). Блок CMS используется только
+ *                              как позиционный якорь; контент баннера
+ *                              захардкожен, пока у блока не появятся
+ *                              атрибуты title/product/image.
+ *        - `recommended`     → курируемая сетка через {@link HomeBlockServer}
+ *        - `home_categories` → все секции категорий меню через
  *                              {@link HomeCategoriesSection}
- *      Reordering blocks in admin (`block.position`) reorders sections on
- *      the page without code changes.
- * @returns {Promise<JSX.Element>} Home page JSX.
+ *      Переупорядочивание блоков в админке (`block.position`) меняет порядок
+ *      секций на странице без изменений в коде.
+ * @returns {Promise<JSX.Element>} JSX главной страницы.
  */
 const HomePage = async ({
   searchParams,

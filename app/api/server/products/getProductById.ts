@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get product by id.
+ * Получает продукт по id.
  */
 export const getProductById = async (
   id: number,

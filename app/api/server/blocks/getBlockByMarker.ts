@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get block by marker.
+ * Получает блок по маркеру.
  */
 export const getBlockByMarker = async (
   marker: string,

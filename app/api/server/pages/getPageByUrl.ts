@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get page object with information about forms, blocks, menus, linked to the page by URL.
+ * Получает объект страницы с информацией о формах, блоках, меню, привязанных к странице, по URL.
  */
 export const getPageByUrl = async (
   url: string,

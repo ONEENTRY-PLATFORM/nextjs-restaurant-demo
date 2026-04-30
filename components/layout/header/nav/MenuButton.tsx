@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Mobile menu trigger button
+ * Кнопка-триггер мобильного меню
  */
 const MobileMenuTrigger = () => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

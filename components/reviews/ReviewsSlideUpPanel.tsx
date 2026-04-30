@@ -10,19 +10,19 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import StarRating from './StarRating';
 
 /**
- * Fixed-position slide-up review panel — replicates the bottom sheet on
- * `about_reviews.html`. Visible on mobile (`md:hidden`) by default. Submits
- * the review via {@link submitReview} Server Action.
+ * Фиксированная slide-up панель отзыва — повторяет нижний sheet из
+ * `about_reviews.html`. По умолчанию видна только на мобиле (`md:hidden`).
+ * Отправляет отзыв через {@link submitReview} Server Action.
  *
- * Author identity comes from {@link AuthContext}; when the visitor isn't
- * authenticated the panel renders a sign-in CTA instead of the form.
+ * Идентификация автора берётся из {@link AuthContext}; когда посетитель не
+ * авторизован, панель рендерит sign-in CTA вместо формы.
  *
- * Uses Tailwind `.animate-slide-up` defined in `app/styles/main.css`.
- * @param   {object} props                - Component props.
- * @param   {number} props.productId      - Product ID for review attachment.
- * @param   {string} [props.title]        - Panel title override.
- * @param   {string} [props.description]  - Panel description override.
- * @returns {JSX.Element}                 Panel JSX.
+ * Использует Tailwind `.animate-slide-up`, определённый в `app/styles/main.css`.
+ * @param   {object} props                - Пропсы компонента.
+ * @param   {number} props.productId      - Product ID для привязки отзыва.
+ * @param   {string} [props.title]        - Переопределение заголовка панели.
+ * @param   {string} [props.description]  - Переопределение описания панели.
+ * @returns {JSX.Element}                 JSX панели.
  */
 const ReviewsSlideUpPanel = ({
   productId,

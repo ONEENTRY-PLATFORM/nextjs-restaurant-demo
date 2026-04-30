@@ -16,7 +16,7 @@ import CloseModal from './components/CloseModal';
 import MobileMenu from './components/MobileMenu';
 
 /**
- * Mobile menu offscreen modal
+ * Offscreen-модалка мобильного меню
  */
 const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();

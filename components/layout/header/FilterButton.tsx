@@ -6,9 +6,9 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FilterIcon from '@/components/icons/filter';
 
 /**
- * FilterButton — trigger for the filter modal. Mounted in both desktop
- * and mobile headers. Opens {@link FilterModal} via OpenDrawerContext.
- * @returns {JSX.Element} Filter button JSX.
+ * FilterButton — триггер модалки фильтра. Монтируется и в десктопном, и в
+ * мобильном header. Открывает {@link FilterModal} через OpenDrawerContext.
+ * @returns {JSX.Element} JSX кнопки фильтра.
  */
 const FilterButton = (): JSX.Element => {
   const { setOpen, setComponent, setTransition } =

@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import FadeTransition from '@/app/animations/FadeTransition';
 
 /**
- * Empty cart page
+ * Страница пустой корзины
  */
 const EmptyCart = (): JSX.Element => {
   return (

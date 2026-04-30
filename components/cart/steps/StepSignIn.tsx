@@ -13,17 +13,17 @@ import LoginGoogleIcon from '@/components/icons/login-google.svg';
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 /**
- * Checkout step — auth gate.
+ * Шаг checkout — auth-гейт.
  *
- * If the user is already authenticated, auto-advances to `address`.
- * Otherwise renders the provider chooser from `static-html/pk_login.html`
- * — restricted to two buttons (Email, Google) per current design.
+ * Если пользователь уже авторизован, авто-переходит на `address`.
+ * Иначе рендерит выбор провайдера из `static-html/pk_login.html`
+ * — ограничен двумя кнопками (Email, Google) по текущему дизайну.
  *
- * - Email opens the existing {@link SignInForm} drawer.
- * - Google performs a top-window redirect to Google's OAuth endpoint;
- *   the callback at `app/auth/callback/google/page.tsx` exchanges the
- *   code via {@link oauthLogIn} → `api.AuthProvider.oauth('google', …)`.
- * @returns {JSX.Element} Step JSX.
+ * - Email открывает существующий drawer {@link SignInForm}.
+ * - Google делает top-window редирект на OAuth-эндпоинт Google;
+ *   колбэк в `app/auth/callback/google/page.tsx` обменивает
+ *   код через {@link oauthLogIn} → `api.AuthProvider.oauth('google', …)`.
+ * @returns {JSX.Element} JSX шага.
  */
 const StepSignIn = (): JSX.Element => {
   const { isAuth, isLoading } = useContext(AuthContext);
@@ -48,7 +48,7 @@ const StepSignIn = (): JSX.Element => {
   const onGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     if (!clientId) {
-      // Fallback — Google credentials not configured yet (see ONEENTRY-ADMIN-SETUP.md).
+      // Fallback — Google credentials ещё не настроены (см. ONEENTRY-ADMIN-SETUP.md).
       onEmailLogin();
       return;
     }

@@ -8,10 +8,11 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Form modal animations — slide-up + backdrop blur, mirroring the cart /
- * filter drawer pattern. On `md+` the body is centered (CSS), so the slide-up
- * still reads as a card rising into view. The `component` prop is kept for
- * back-compat (was used to extend the close duration for `CalendarForm`).
+ * Анимации формы модалки — slide-up + backdrop blur, зеркалят паттерн drawer
+ * для корзины / фильтра. На `md+` тело центрируется (CSS), поэтому slide-up
+ * читается как карточка, поднимающаяся в видимую область. Пропс `component`
+ * сохранён для обратной совместимости (использовался, чтобы увеличить
+ * длительность закрытия для `CalendarForm`).
  */
 const ModalAnimations = ({
   children,
@@ -42,8 +43,8 @@ const ModalAnimations = ({
     const modalBg = ref.current.querySelector('#modalBg');
     const modalBody = ref.current.querySelector('#modalBody');
 
-    // Calendar gets a punchier scale + blur + opacity entrance — feels
-    // closer to a popup than the bottom-sheet slide-up used by auth forms.
+    // У календаря более резкий entrance со scale + blur + opacity — ощущается
+    // ближе к попапу, чем bottom-sheet slide-up, используемый формами auth.
     if (component === 'CalendarForm') {
       gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
       gsap.set(modalBody, {

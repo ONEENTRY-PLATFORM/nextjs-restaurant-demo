@@ -7,9 +7,9 @@ import ContactUsForm from '@/components/forms/ContactUsForm';
 export const dynamic = 'force-dynamic';
 
 /**
- * Support page — renders CMS-driven title/description/contacts from the
- * `support` page, plus a dynamic Contact-Us form.
- * @returns {Promise<JSX.Element>} Support page JSX.
+ * Страница поддержки — рендерит управляемые из CMS title/description/contacts со
+ * страницы `support` плюс динамическую форму Contact-Us.
+ * @returns {Promise<JSX.Element>} JSX страницы поддержки.
  */
 const SupportPage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('support');
@@ -80,8 +80,8 @@ const SupportPage = async (): Promise<JSX.Element> => {
 export default SupportPage;
 
 /**
- * Generate page metadata for the support route.
- * @returns {Promise<Metadata>} Page metadata.
+ * Генерирует метаданные страницы для маршрута support.
+ * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('support');

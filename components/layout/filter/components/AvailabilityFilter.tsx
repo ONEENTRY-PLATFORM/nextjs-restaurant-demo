@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 /**
- * Availability filter component
+ * Компонент фильтра наличия
  */
 const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
   const pathname = usePathname();

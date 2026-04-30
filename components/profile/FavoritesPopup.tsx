@@ -27,11 +27,11 @@ import Loader from '@/components/shared/Spinner';
 import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
 /**
- * Favorites popup — port of `static-html/pk_favorites.html` (lines 361–470).
- * Centered modal on desktop (matches the project's `Modal` pattern), bottom
- * sheet on mobile. Driven by `OpenDrawerContext` (`open` + `component ===
- * 'FavoritesPopup'`).
- * @returns {JSX.Element} Favorites popup JSX.
+ * Попап избранного — порт `static-html/pk_favorites.html` (строки 361–470).
+ * Модалка по центру на десктопе (соответствует паттерну `Modal` проекта),
+ * нижний sheet на мобиле. Управляется через `OpenDrawerContext` (`open` +
+ * `component === 'FavoritesPopup'`).
+ * @returns {JSX.Element} JSX попапа избранного.
  */
 const FavoritesPopup = (): JSX.Element => {
   const { open, component, setTransition } = useContext(OpenDrawerContext);
@@ -91,10 +91,10 @@ const FavoritesPopup = (): JSX.Element => {
 };
 
 /**
- * Single favorite card — replicates the `pk_favorites.html` modal card.
- * @param   {object}          props         - Card props.
- * @param   {IProductsEntity} props.product - Favorited product entity.
- * @returns {JSX.Element}                   Card JSX.
+ * Одиночная карточка избранного — повторяет карточку модалки `pk_favorites.html`.
+ * @param   {object}          props         - Пропсы карточки.
+ * @param   {IProductsEntity} props.product - Сущность избранного продукта.
+ * @returns {JSX.Element}                   JSX карточки.
  */
 const FavoriteCard = ({
   product,

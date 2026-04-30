@@ -44,14 +44,14 @@ export const {
 } = favoritesSlice.actions;
 
 /**
- * Select favorites items
+ * Селектор товаров избранного
  */
 export const selectFavoritesItems = (state: {
   favoritesReducer: { products: number[] };
 }) => state.favoritesReducer.products;
 
 /**
- * Select is favorites by product id
+ * Селектор «есть ли в избранном» по product id
  */
 export const selectIsFavorites = (
   state: { favoritesReducer: { products: number[] } },
@@ -67,7 +67,7 @@ export const selectIsFavorites = (
 };
 
 /**
- * Select favorites version
+ * Селектор версии избранного
  */
 export const selectFavoritesVersion = (state: {
   favoritesReducer: { version: number };

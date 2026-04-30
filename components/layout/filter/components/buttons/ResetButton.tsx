@@ -5,7 +5,7 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 
 /**
- * Reset filter button component
+ * Компонент кнопки сброса фильтра
  */
 const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   const searchParams = useSearchParams();

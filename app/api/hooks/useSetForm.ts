@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { api } from '@/app/api';
 
 /**
- * Post forms data with FormData API
+ * Отправка данных формы через FormData API.
  */
 export const useSetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);

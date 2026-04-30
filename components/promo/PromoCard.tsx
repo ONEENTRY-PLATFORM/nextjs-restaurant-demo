@@ -5,21 +5,21 @@ import type { JSX } from 'react';
 import { getImageUrl } from '@/app/api';
 
 /**
- * Single promo card — driven by OneEntry `blog` child page attributes
- * (set: `blog_page`).
+ * Одиночная промо-карточка — питается атрибутами дочерней страницы `blog`
+ * OneEntry (set: `blog_page`).
  *
- * Real attributes from CMS:
- *   - `banner`      (image) — used as the card preview;
- *   - `bg_image`    (image) — desktop fallback if `banner` is empty;
- *   - `description` (text)  — markdown/plain/html, shown as subtitle;
- *   - `action_type` (list)  — `[{ title, value }]`, first option becomes
- *                             the CTA label; falls back to "Learn more".
+ * Реальные атрибуты из CMS:
+ *   - `banner`      (image) — используется как превью карточки;
+ *   - `bg_image`    (image) — десктопный fallback, если `banner` пустой;
+ *   - `description` (text)  — markdown/plain/html, отображается как подзаголовок;
+ *   - `action_type` (list)  — `[{ title, value }]`, первая опция становится
+ *                             подписью CTA; fallback — "Learn more".
  *
- * Title comes from `localizeInfos.title` (no `title` attribute exists in
- * the admin's `blog_page` set — verified via `inspect-api`).
- * @param   {object}        props      - Component properties.
- * @param   {IPagesEntity}  props.page - Promo page entity from OneEntry CMS.
- * @returns {JSX.Element}              Promo card JSX.
+ * Заголовок берётся из `localizeInfos.title` (атрибута `title` в админском
+ * наборе `blog_page` нет — проверено через `inspect-api`).
+ * @param   {object}        props      - Свойства компонента.
+ * @param   {IPagesEntity}  props.page - Сущность промо-страницы из OneEntry CMS.
+ * @returns {JSX.Element}              JSX промо-карточки.
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};

@@ -14,7 +14,7 @@ interface HandleProps {
 }
 
 /**
- * Getting all orders from the orders storage object created by the user
+ * Обновляет заказ в объекте хранилища заказов, созданном пользователем.
  */
 export const updateOrderByMarkerAndId = async ({
   marker,

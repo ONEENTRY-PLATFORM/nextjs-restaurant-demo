@@ -22,7 +22,7 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * Cart page
+ * Страница корзины
  */
 const CartPage = ({
   deliveryData,
@@ -34,10 +34,10 @@ const CartPage = ({
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
 
-  // Mirror the cart's delivery state into OrderSlice.formData so the
-  // submit on `payment` step still has `delivery_time` / `delivery_address`
-  // even though the legacy DeliveryForm isn't rendered (per cart_cart.html /
-  // pk_cart.html — the cart screen is products + APPLY only).
+  // Зеркалим состояние доставки корзины в OrderSlice.formData, чтобы submit
+  // на шаге `payment` всё равно имел `delivery_time` / `delivery_address`,
+  // даже хотя legacy DeliveryForm не рендерится (по cart_cart.html /
+  // pk_cart.html — на экране корзины только продукты и APPLY).
   useEffect(() => {
     const date = cartDelivery.date;
     const time = cartDelivery.time;
@@ -71,70 +71,70 @@ const CartPage = ({
     }
   }, [cartDelivery, user, dispatch]);
 
-  // products in redux carSlice
+  // продукты в redux carSlice
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const productsCartData = useAppSelector(selectCartData) as any[];
 
-  // Get Products By Ids from api
+  // Получаем продукты по Ids из api
   const { data, isLoading } = useGetProductsByIdsQuery({
     items: productsCartData.map((p) => p.id),
   });
 
-  // add delivery Data
+  // добавляем deliveryData
   useEffect(() => {
     if (deliveryData) {
       dispatch(addDeliveryToCart(deliveryData));
     }
   }, [deliveryData]);
 
-  // add products to cart slice
+  // добавляем продукты в slice корзины
   useEffect(() => {
-    // Check if there is data available to set products
+    // Проверяем, есть ли данные для установки продуктов
     if (data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setProducts(data); // Initialize products state with fetched data
+      setProducts(data); // Инициализируем стейт продуктов полученными данными
 
-      // If the user is authenticated, establish a WebSocket connection
+      // Если пользователь авторизован, устанавливаем WebSocket-соединение
       if (isAuth) {
-        const ws = api.WS.connect(); // Connect to WebSocket
+        const ws = api.WS.connect(); // Подключаемся к WebSocket
         if (ws) {
-          // Listen for 'notification' events from the WebSocket
+          // Слушаем события 'notification' из WebSocket
           ws.on('notification', async (res) => {
             if (res?.product) {
-              // Prepare product object with additional attribute values
+              // Подготавливаем объект продукта с дополнительными значениями атрибутов
               const product = {
                 ...res.product,
                 attributeValues: res.product?.attributes,
               };
 
-              // Find the index of the product in the current data array
+              // Находим индекс продукта в текущем массиве данных
               const index = data.findIndex(
                 (p: IProductsEntity) => p.id === product.id,
               );
 
-              // Parse the new price from the notification response
+              // Парсим новую цену из ответа уведомления
               const newPrice = parseInt(
                 product?.attributeValues?.price?.value,
                 10,
               );
 
-              // Update the products state with the new price and status
+              // Обновляем стейт продуктов с новой ценой и статусом
               setProducts((prevProducts) => {
-                // Create a copy of the current products
+                // Создаём копию текущих продуктов
                 const newProducts = [...prevProducts];
                 if (newProducts[index]) {
                   newProducts[index] = {
-                    ...newProducts[index], // Preserve existing product properties
-                    price: newPrice, // Update the price with the new value
-                    statusIdentifier: res?.product?.status?.identifier, // Update the status identifier
+                    ...newProducts[index], // Сохраняем существующие свойства продукта
+                    price: newPrice, // Обновляем цену новым значением
+                    statusIdentifier: res?.product?.status?.identifier, // Обновляем идентификатор статуса
                   };
                 }
-                return newProducts; // Return the updated products array
+                return newProducts; // Возвращаем обновлённый массив продуктов
               });
             }
           });
 
-          // Cleanup function to disconnect the WebSocket when the component unmounts or dependencies change
+          // Cleanup-функция для отключения WebSocket при размонтировании компонента или изменении зависимостей
           return () => {
             ws.disconnect();
           };
@@ -142,10 +142,10 @@ const CartPage = ({
       }
     }
     return undefined;
-    // Dependency array: effect will run when 'data' changes
+    // Массив зависимостей: эффект будет выполнен при изменении 'data'
   }, [data]);
 
-  // update products in cart
+  // обновляем продукты в корзине
   useEffect(() => {
     if (products) {
       dispatch(addProductsToCart(products));
@@ -169,10 +169,10 @@ const CartPage = ({
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {products?.map((product: IProductsEntity, i: number) => {
-          // Look up selection by id, not index — `productsCartData` may be
-          // in a different order than `products` (RTK query response order
-          // is not guaranteed) and changing one entry's `selected` mutates
-          // the array reference, so an index-based lookup desynchronises.
+          // Ищем selection по id, а не по индексу — `productsCartData` может
+          // быть в другом порядке, чем `products` (порядок ответа RTK query
+          // не гарантирован), и изменение `selected` одной записи мутирует
+          // ссылку массива, так что lookup по индексу рассинхронизируется.
           const cartEntry = productsCartData.find(
             (p: { id: number }) => p.id === product.id,
           );

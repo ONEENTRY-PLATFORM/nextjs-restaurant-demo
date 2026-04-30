@@ -7,10 +7,10 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 
 /**
- * Central outlined close button — visible only while a drawer (cart popup,
- * filter, sign-in modal, etc.) is open. Replaces the protruding cart button
- * for the duration of the drawer. Dispatches `setTransition('close')` so the
- * drawer's own GSAP reverse animation plays before unmount.
+ * Центральная outlined-кнопка закрытия — видна только пока открыт drawer
+ * (попап корзины, фильтр, модалка входа и т.п.). Заменяет выступающую кнопку
+ * корзины на время drawer'а. Делает dispatch `setTransition('close')`, чтобы
+ * GSAP-анимация reverse drawer'а проигралась до размонтирования.
  */
 const CenterCloseButton = (): JSX.Element | null => {
   const { open, setTransition } = useContext(OpenDrawerContext);

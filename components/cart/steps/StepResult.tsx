@@ -15,10 +15,10 @@ import {
 } from '@/app/store/reducers/OrderSlice';
 
 /**
- * Format a date as `dd.MM.yy HH.mm` — matches `cart_PAYMENT_masseges.html`
- * `Get delivery by: 28.02.24 15.30` formatting.
- * @param   {Date}   d - Date to format.
- * @returns {string}   Formatted string.
+ * Форматирует дату как `dd.MM.yy HH.mm` — совпадает с форматированием
+ * `Get delivery by: 28.02.24 15.30` из `cart_PAYMENT_masseges.html`.
+ * @param   {Date}   d - Дата для форматирования.
+ * @returns {string}   Отформатированная строка.
  */
 const formatDeliveryStamp = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -28,19 +28,19 @@ const formatDeliveryStamp = (d: Date): string => {
 };
 
 /**
- * Checkout step — success / error message screen.
+ * Шаг checkout — экран success / error сообщения.
  *
- * Success variant (`cart_PAYMENT_masseges.html`):
- *   - Order number (orange, top) + summary of items
- *   - "Get delivery by: <date>" stamp
- *   - Horizontal divider
- *   - "Order Confirmed" heading + confirmation copy + "See you soon!"
+ * Вариант success (`cart_PAYMENT_masseges.html`):
+ *   - Номер заказа (оранжевый, сверху) + сводка товаров
+ *   - Штамп "Get delivery by: <date>"
+ *   - Горизонтальный разделитель
+ *   - Заголовок "Order Confirmed" + текст подтверждения + "See you soon!"
  *
- * Error variant (`cart_error_masseges.html`):
- *   - Two centered lines: "Something went wrong." + "Please try again."
- * @param   {object}              props         - Component props.
- * @param   {'success' | 'error'} props.variant - Which screen to render.
- * @returns {JSX.Element}                       Step JSX.
+ * Вариант error (`cart_error_masseges.html`):
+ *   - Две центрированные строки: "Something went wrong." + "Please try again."
+ * @param   {object}              props         - Пропсы компонента.
+ * @param   {'success' | 'error'} props.variant - Какой экран рендерить.
+ * @returns {JSX.Element}                       JSX шага.
  */
 const StepResult = ({
   variant,
@@ -55,9 +55,9 @@ const StepResult = ({
     quantity?: number;
     product?: IProductsEntity;
   }>;
-  // Capture impure `Date.now()` once into initial state so render stays
-  // pure and the stamp is stable for the component lifetime. Order number
-  // comes from the CMS-assigned id captured at confirm time.
+  // Захватываем нечистый `Date.now()` один раз в initial state, чтобы рендер оставался
+  // чистым, а штамп — стабильным на всё время жизни компонента. Номер заказа
+  // приходит из id, присвоенного CMS в момент подтверждения.
   const orderNumber = lastOrderId ? '№' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000)),
@@ -65,13 +65,13 @@ const StepResult = ({
 
   if (variant === 'success') {
     return (
-      <div className="flex flex-col gap-[25px]">
-        {/* Order number */}
+      <div className="flex flex-col gap-6.25">
+        {/* Номер заказа */}
         <div className="mx-auto font-medium text-[20px] text-brand">
           {orderNumber}
         </div>
 
-        {/* Items */}
+        {/* Товары */}
         {cartData
           .filter((entry) => entry.product && entry.product.id)
           .slice(0, 5)
@@ -83,7 +83,7 @@ const StepResult = ({
                 key={entry.id}
                 className="flex items-center justify-between gap-3"
               >
-                <p className="max-w-[170px] font-normal text-[16px] text-white opacity-90">
+                <p className="max-w-42.5 font-normal text-[16px] text-white opacity-90">
                   {title}
                 </p>
                 <div className="rounded-[5px] border border-white px-2 py-1.5 text-[16px] text-brand">
@@ -93,15 +93,15 @@ const StepResult = ({
             );
           })}
 
-        {/* Delivery stamp */}
-        <p className="mt-[25px] text-center font-normal text-[16px] text-brand">
+        {/* Штамп доставки */}
+        <p className="mt-6.25 text-center font-normal text-[16px] text-brand">
           Get delivery by: {deliveryStamp}
         </p>
 
-        {/* Divider */}
-        <div className="mx-auto mt-[25px] h-px w-[225px] bg-brand" />
+        {/* Разделитель */}
+        <div className="mx-auto mt-6.25 h-px w-56.25 bg-brand" />
 
-        {/* Headings */}
+        {/* Заголовки */}
         <p className="text-center font-semibold text-[27px] text-brand">
           Order Confirmed
         </p>
@@ -125,7 +125,7 @@ const StepResult = ({
   }
 
   return (
-    <div className="flex flex-col items-center gap-[25px] py-[40px] px-[10px]">
+    <div className="flex flex-col items-center gap-6.25 py-10 px-2.5">
       <p className="text-center font-light text-[32px] text-white opacity-90">
         Something went wrong.
       </p>

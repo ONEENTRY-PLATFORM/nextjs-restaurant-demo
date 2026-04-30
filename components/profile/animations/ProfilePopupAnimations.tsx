@@ -8,12 +8,12 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Profile popup open/close animations — mirrors `FavoritesPopupAnimations`.
- * Backdrop fades in, body slides up from bottom (mobile) / in from the
- * right (md+).
- * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Drawer content.
- * @returns {JSX.Element}                Animation wrapper JSX.
+ * Анимации открытия/закрытия попапа профиля — повторяет `FavoritesPopupAnimations`.
+ * Подложка плавно появляется, тело выезжает снизу (на мобиле) / справа
+ * (md+).
+ * @param   {object}      props          - Пропсы компонента.
+ * @param   {ReactNode}   props.children - Содержимое drawer-а.
+ * @returns {JSX.Element}                JSX обёртки анимации.
  */
 const ProfilePopupAnimations = ({
   children,

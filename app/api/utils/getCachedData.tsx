@@ -3,7 +3,7 @@ import 'server-only';
 const cache = new Map();
 
 /**
- * Get cached data
+ * Получает закэшированные данные.
  */
 const getCachedData = async (
   key: string,

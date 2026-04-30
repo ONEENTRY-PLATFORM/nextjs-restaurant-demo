@@ -6,22 +6,22 @@ import { useEffect, useState } from 'react';
 type Phase = 'show' | 'fading' | 'gone';
 
 /**
- * Cross-fades a skeleton overlay into the actual grid contents.
+ * Cross-fade оверлея скелетона в реальное содержимое грида.
  *
- * Bridges the gap between Suspense resolving (skeleton fallback unmounts)
- * and {@link CardAnimations} finishing its reveal — without it, viewers
- * see a brief empty state while cards are still hidden by their entry
- * `opacity:0`. Skeleton stays on top of the grid for a frame, then fades
- * out over `fadeMs` while cards animate in underneath.
- * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Real grid content (already client-
- *                                         animated by `CardAnimations`).
- * @param   {ReactNode}   props.skeleton - Skeleton/loader to overlay.
- * @param   {number}      [props.holdMs] - Time before fade starts (covers
- *                                         the worst-case stagger delay of
- *                                         the first row reveal). Default 700.
- * @param   {number}      [props.fadeMs] - Cross-fade duration. Default 350.
- * @returns {JSX.Element}                Wrapper JSX.
+ * Закрывает разрыв между resolve Suspense (fallback скелетон размонтируется) и
+ * завершением reveal-анимации в {@link CardAnimations} — без этого пользователи
+ * видят короткое пустое состояние, пока карточки ещё скрыты их стартовым
+ * `opacity:0`. Скелетон лежит поверх грида один кадр, затем затухает за
+ * `fadeMs`, пока карточки анимируются внизу.
+ * @param   {object}      props          - Пропсы компонента.
+ * @param   {ReactNode}   props.children - Настоящее содержимое грида (уже
+ *                                         анимируется на клиенте `CardAnimations`).
+ * @param   {ReactNode}   props.skeleton - Скелетон/лоадер для оверлея.
+ * @param   {number}      [props.holdMs] - Время до старта fade (покрывает
+ *                                         worst-case stagger delay reveal'а
+ *                                         первого ряда). По умолчанию 700.
+ * @param   {number}      [props.fadeMs] - Длительность cross-fade. По умолчанию 350.
+ * @returns {JSX.Element}                JSX обёртки.
  */
 const ProductsGridReveal = ({
   children,

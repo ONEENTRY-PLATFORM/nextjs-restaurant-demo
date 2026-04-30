@@ -3,9 +3,9 @@ import type { IError } from 'oneentry/dist/base/utils';
 import { toast } from 'react-toastify';
 
 /**
- * Custom error class for API errors
- * @property {number}  statusCode    - The HTTP status code of the error
- * @property {unknown} originalError - The original error object
+ * Кастомный класс ошибки для ошибок API
+ * @property {number}  statusCode    - HTTP-статус ошибки
+ * @property {unknown} originalError - Исходный объект ошибки
  */
 export class ApiError extends Error {
   statusCode: number;
@@ -20,9 +20,9 @@ export class ApiError extends Error {
 }
 
 /**
- * Type guard to check if an object is of type IError
- * @param   {unknown} error - The error object to check
- * @returns {boolean}       True if the object is an IError, false otherwise
+ * Type guard для проверки, что объект имеет тип IError
+ * @param   {unknown} error - Объект ошибки для проверки
+ * @returns {boolean}       true, если объект — IError, иначе false
  */
 export function isIError(error: unknown): error is IError {
   return (
@@ -34,14 +34,14 @@ export function isIError(error: unknown): error is IError {
 }
 
 /**
- * Centralized error handling function
- * @param   {string}   handle - The function to handle the error
- * @param   {unknown}  error  - The error to handle
- * @returns {ApiError}        An ApiError with standardized format
+ * Централизованная функция обработки ошибок
+ * @param   {string}   handle - Функция обработки ошибки
+ * @param   {unknown}  error  - Ошибка для обработки
+ * @returns {ApiError}        ApiError со стандартизированным форматом
  */
 export function handleApiError(handle: string, error: unknown): ApiError {
   if (isIError(error)) {
-    /** Log the error for debugging purposes */
+    /** Логируем ошибку для отладки */
     console.log('API Error:', {
       handle: handle,
       message: error.message,
@@ -57,7 +57,7 @@ export function handleApiError(handle: string, error: unknown): ApiError {
   }
 
   if (error instanceof Error) {
-    /** Log the error for debugging purposes */
+    /** Логируем ошибку для отладки */
     console.log('Generic Error:', {
       message: error.message,
       stack: error.stack,
@@ -67,7 +67,7 @@ export function handleApiError(handle: string, error: unknown): ApiError {
     return new ApiError(error.message || 'An error occurred', 500, error);
   }
 
-  /** Log unknown errors */
+  /** Логируем неизвестные ошибки */
   console.log('Unknown Error:', {
     error,
     timestamp: new Date().toISOString(),
@@ -77,11 +77,11 @@ export function handleApiError(handle: string, error: unknown): ApiError {
 }
 
 /**
- * Custom hook for handling API errors in React components
- * @returns {unknown} A function to handle API errors with toast notifications
+ * Кастомный хук для обработки ошибок API в React-компонентах
+ * @returns {unknown} Функция для обработки ошибок API с toast-уведомлениями
  */
 export function useApiErrorHandler(): unknown {
-  /* This would typically integrate with a notification system like toast */
+  /* Обычно интегрируется с системой уведомлений типа toast */
   return function handleApiErrorWithNotification(error: unknown): ApiError {
     const apiError = handleApiError('useApiErrorHandler', error);
     toast.error(apiError.message);
@@ -91,10 +91,10 @@ export function useApiErrorHandler(): unknown {
 }
 
 /**
- * Format error message for user display.
- * @param   {unknown} error          - The error to format
- * @param   {string}  defaultMessage - Default message to show if error is not recognized
- * @returns {string}                 Formatted error message
+ * Форматирует сообщение об ошибке для отображения пользователю.
+ * @param   {unknown} error          - Ошибка для форматирования
+ * @param   {string}  defaultMessage - Сообщение по умолчанию, если ошибка не распознана
+ * @returns {string}                 Отформатированное сообщение об ошибке
  */
 export function formatErrorMessage(
   error: unknown,

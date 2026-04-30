@@ -15,7 +15,7 @@ import FilterHeader from './components/header/FilterHeader';
 import FiltersForm from './FiltersForm';
 
 /**
- * FilterModal component
+ * Компонент FilterModal
  */
 const FilterModal = ({
   prices,

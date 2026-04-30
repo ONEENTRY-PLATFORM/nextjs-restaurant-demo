@@ -24,9 +24,9 @@ const HISTORY_STATUSES = new Set([
 ]);
 
 /**
- * Format an ISO / ms date as `dd.MM.yy` per `pk_active_orders.html`.
- * @param   {string | number | Date | undefined} when - Input date value.
- * @returns {string}                                    Formatted stamp or empty string.
+ * Форматирует ISO / ms дату как `dd.MM.yy` согласно `pk_active_orders.html`.
+ * @param   {string | number | Date | undefined} when - Входное значение даты.
+ * @returns {string}                                    Отформатированная метка или пустая строка.
  */
 const formatOrderDate = (when: string | number | Date | undefined): string => {
   if (!when) return '';
@@ -39,9 +39,9 @@ const formatOrderDate = (when: string | number | Date | undefined): string => {
 };
 
 /**
- * Resolve a human-readable order status, preferring localized info from CMS.
- * @param   {IOrderByMarkerEntity} o - Order entity.
- * @returns {string}                  Display label.
+ * Возвращает читаемый статус заказа, отдавая приоритет локализованной информации из CMS.
+ * @param   {IOrderByMarkerEntity} o - Сущность заказа.
+ * @returns {string}                  Отображаемая подпись.
  */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)
@@ -53,10 +53,10 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * Whether an order should be grouped under "Orders History" rather than
+ * Должен ли заказ попасть в группу "Orders History" вместо
  * "Active orders".
- * @param   {IOrderByMarkerEntity} o - Order entity.
- * @returns {boolean}                 True if the order is finished / cancelled.
+ * @param   {IOrderByMarkerEntity} o - Сущность заказа.
+ * @returns {boolean}                 True, если заказ завершён или отменён.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
@@ -64,11 +64,11 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 };
 
 /**
- * Compute subtotal / delivery / total for an order. Subtotal is the sum of
- * line items; delivery is the residual between order `totalSum` and the
- * subtotal (clamped at 0).
- * @param   {IOrderByMarkerEntity} o - Order entity.
- * @returns {{ subtotal: number; delivery: number; total: number }} Totals.
+ * Считает subtotal / delivery / total для заказа. Subtotal — сумма
+ * позиций; delivery — остаток между `totalSum` заказа и subtotal
+ * (обрезается до 0).
+ * @param   {IOrderByMarkerEntity} o - Сущность заказа.
+ * @returns {{ subtotal: number; delivery: number; total: number }} Итоги.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity,
@@ -83,10 +83,10 @@ const computeTotals = (
 };
 
 /**
- * Format the order number as shown in static-html (`№OE...`). Falls back to
- * the raw numeric id if the SDK does not provide a formatted code.
- * @param   {IOrderByMarkerEntity} o - Order entity.
- * @returns {string}                  Display number.
+ * Форматирует номер заказа как в static-html (`№OE...`). Возвращает чистый
+ * числовой id, если SDK не предоставляет отформатированный код.
+ * @param   {IOrderByMarkerEntity} o - Сущность заказа.
+ * @returns {string}                  Отображаемый номер.
  */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
@@ -95,17 +95,17 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * Single row: pill with order summary + collapsible body with line items,
- * totals, and CTA. Mirrors `pk_active_orders.html`.
- * @param   {object}              props          - Card props.
- * @param   {IOrderByMarkerEntity} props.order   - Order entity.
- * @param   {boolean}             props.expanded - Whether the body is open.
- * @param   {() => void}          props.onToggle - Toggle handler.
- * @param   {boolean}             props.isHistory- Whether to render the
- *                                                 history-only Repeat CTA
- *                                                 (vs. the active "Contact
- *                                                 with the courier" CTA).
- * @returns {JSX.Element}                         Card JSX.
+ * Одна строка: pill со сводкой заказа + раскрывающееся тело с позициями,
+ * итогами и CTA. Повторяет `pk_active_orders.html`.
+ * @param   {object}              props          - Пропсы карточки.
+ * @param   {IOrderByMarkerEntity} props.order   - Сущность заказа.
+ * @param   {boolean}             props.expanded - Раскрыто ли тело.
+ * @param   {() => void}          props.onToggle - Обработчик переключения.
+ * @param   {boolean}             props.isHistory- Рендерить ли CTA Repeat
+ *                                                 только для истории
+ *                                                 (вместо активного CTA
+ *                                                 "Contact with the courier").
+ * @returns {JSX.Element}                         JSX карточки.
  */
 const OrderCard = ({
   order,
@@ -188,12 +188,12 @@ const OrderCard = ({
 };
 
 /**
- * One item row inside the expanded order body.
- * @param   {object}         props         - Row props.
- * @param   {IOrderProducts} props.product - Order line item.
- * @param   {boolean}        props.first   - Whether this is the first row
- *                                           (no top margin).
- * @returns {JSX.Element}                  Row JSX.
+ * Одна строка позиции внутри раскрытого тела заказа.
+ * @param   {object}         props         - Пропсы строки.
+ * @param   {IOrderProducts} props.product - Позиция заказа.
+ * @param   {boolean}        props.first   - Является ли это первой строкой
+ *                                           (без верхнего отступа).
+ * @returns {JSX.Element}                  JSX строки.
  */
 const OrderLineItem = ({
   product,
@@ -239,13 +239,13 @@ const OrderLineItem = ({
 };
 
 /**
- * Orders dashboard view — splits the user's orders into "Active orders" and
- * "Orders History", with a desktop-only promo sidebar. Mirrors the layout in
+ * Дашборд заказов — разбивает заказы пользователя на "Active orders" и
+ * "Orders History", с промо-сайдбаром только на десктопе. Повторяет верстку
  * `static-html/pk_active_orders.html`.
  *
- * Fetches via `delivery_order` storage marker; falls back gracefully on auth /
- * empty / error states.
- * @returns {JSX.Element} Orders list JSX.
+ * Загружает данные через storage-маркер `delivery_order`; gracefully обрабатывает
+ * состояния авторизации / пустого ответа / ошибки.
+ * @returns {JSX.Element} JSX списка заказов.
  */
 const OrdersList = ({
   promoBanners = [],

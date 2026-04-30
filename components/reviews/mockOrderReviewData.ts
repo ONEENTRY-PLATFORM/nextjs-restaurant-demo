@@ -1,13 +1,14 @@
 /**
- * Static fallback for {@link OrderReviewsPanel} — mirrors the three review
- * lines hard-coded in `static-html/index_rewiews.html` (two product photos
- * + a courier line). Used when no real OneEntry order is matched by the
- * `?review_order=<id>` query param. Shape mirrors the trimmed order line
- * payload the panel consumes so swapping in a live order is a 1:1 change.
+ * Статический fallback для {@link OrderReviewsPanel} — повторяет три строки
+ * отзывов, захардкоженные в `static-html/index_rewiews.html` (две фотографии
+ * продуктов + строка курьера). Используется, когда ни один реальный заказ
+ * OneEntry не сматчился по query-параметру `?review_order=<id>`. Форма
+ * повторяет урезанный payload позиции заказа, который потребляет панель,
+ * так что замена на живой заказ — 1:1.
  */
 export type OrderReviewLineMock = {
   id: string;
-  /** Product id when the line is a dish; `null` for the courier/delivery line. */
+  /** Product id, когда строка — блюдо; `null` для строки курьера/доставки. */
   productId: number | null;
   title: string;
   imageSrc: string;

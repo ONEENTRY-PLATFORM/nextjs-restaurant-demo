@@ -14,7 +14,7 @@ import CloseSearch from './CloseSearch';
 import ProductRow from './ProductRow';
 
 /**
- * Search results
+ * Результаты поиска
  */
 const SearchResults = ({
   searchValue,
@@ -74,7 +74,7 @@ const SearchResults = ({
         products.map((product: IProductsEntity, i: number) => {
           const { id, attributeSetIdentifier } = product;
 
-          // Skip rendering for 'service_product' type
+          // Пропускаем рендер для типа 'service_product'
           if (attributeSetIdentifier === 'service_product') {
             return null;
           }

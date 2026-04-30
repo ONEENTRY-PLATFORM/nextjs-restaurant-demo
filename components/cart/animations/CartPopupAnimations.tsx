@@ -8,9 +8,9 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Cart popup open/close animations — mirrors {@link FilterModalAnimations}.
- * Backdrop fades in, body slides up from the bottom (mobile) /
- * in from the right (md+ — same idiom as filter).
+ * Анимации открытия/закрытия попапа корзины — зеркалят {@link FilterModalAnimations}.
+ * Backdrop фейдит, тело выезжает снизу (мобила) /
+ * справа (md+ — та же идиома, что у фильтра).
  */
 const CartPopupAnimations = ({
   children,

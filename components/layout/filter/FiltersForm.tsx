@@ -17,7 +17,7 @@ import ColorFilter from './components/color/ColorFilter';
 import PricePickerFilter from './components/price/PricePickerFilter';
 
 /**
- * Products filters form
+ * Форма фильтров продуктов
  */
 const FiltersForm = async ({
   prices,

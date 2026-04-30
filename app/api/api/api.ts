@@ -9,10 +9,10 @@ const APP_TOKEN = (process.env.NEXT_PUBLIC_ONEENTRY_TOKEN ||
 const DEFAULT_LANG = 'en_US';
 
 /**
- * Save refreshToken to localStorage on each SDK rotation.
+ * Сохраняет refreshToken в localStorage при каждой ротации SDK.
  *
- * Called automatically by the SDK auth layer — no manual token juggling required.
- * @param   {string}        refreshToken - Fresh refreshToken produced by the SDK.
+ * Вызывается автоматически слоем авторизации SDK — ручное жонглирование токенами не требуется.
+ * @param   {string}        refreshToken - Свежий refreshToken, выданный SDK.
  * @returns {Promise<void>}
  */
 const saveFunction = async (refreshToken: string): Promise<void> => {
@@ -26,8 +26,8 @@ const saveFunction = async (refreshToken: string): Promise<void> => {
 };
 
 /**
- * Mutable SDK instance. Recreated by {@link reDefine} on login / langCode change.
- * Exported as `api` for backward compatibility with existing imports.
+ * Мутабельный экземпляр SDK. Пересоздаётся через {@link reDefine} при логине / смене langCode.
+ * Экспортируется как `api` для обратной совместимости с существующими импортами.
  */
 export let api = defineOneEntry(PROJECT_URL, {
   langCode: DEFAULT_LANG,
@@ -38,19 +38,19 @@ export let api = defineOneEntry(PROJECT_URL, {
 });
 
 /**
- * Current SDK instance getter. Prefer this over `api` — ensures the caller
- * always sees the latest instance even after {@link reDefine}.
- * @returns {ReturnType<typeof defineOneEntry>} Current api instance.
+ * Геттер текущего экземпляра SDK. Предпочтительнее использовать его, а не `api` —
+ * гарантирует, что вызывающая сторона всегда видит актуальный экземпляр даже после {@link reDefine}.
+ * @returns {ReturnType<typeof defineOneEntry>} Текущий экземпляр api.
  */
 export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 
 /**
- * Recreate the SDK instance with a (possibly) new refreshToken and langCode.
+ * Пересоздаёт экземпляр SDK с (возможно) новым refreshToken и langCode.
  *
- * ⚠️ Always guard with {@link hasActiveSession} — each call hits `/refresh`
- * and would otherwise burn the current token.
- * @param   {string}        refreshToken - Refresh token from localStorage.
- * @param   {string}        [langCode]   - Current language code (defaults to `en_US`).
+ * ⚠️ Всегда защищай через {@link hasActiveSession} — каждый вызов идёт в `/refresh`
+ * и иначе сжёг бы текущий токен.
+ * @param   {string}        refreshToken - Refresh token из localStorage.
+ * @param   {string}        [langCode]   - Текущий код языка (по умолчанию `en_US`).
  * @returns {Promise<void>}
  */
 export async function reDefine(
@@ -71,9 +71,9 @@ export async function reDefine(
 }
 
 /**
- * Whether the current SDK instance carries an active accessToken.
+ * Содержит ли текущий экземпляр SDK активный accessToken.
  *
- * Must be checked before {@link reDefine} to avoid overwriting a live session.
+ * Должен проверяться перед {@link reDefine}, чтобы не перезаписать живую сессию.
  * @returns {boolean}
  */
 export const hasActiveSession = (): boolean => {
@@ -84,8 +84,8 @@ export const hasActiveSession = (): boolean => {
 };
 
 /**
- * Current langCode of the SDK instance.
- * @returns {string} Language code, e.g. `en_US`.
+ * Текущий langCode экземпляра SDK.
+ * @returns {string} Код языка, например `en_US`.
  */
 export const getLang = (): string => {
   const cfg = (api as unknown as { config?: { langCode?: string } }).config;
@@ -93,8 +93,8 @@ export const getLang = (): string => {
 };
 
 /**
- * Type guard for SDK responses — returns `true` if the value is an `IError`.
- * @param   {unknown} result - SDK response to check.
+ * Type guard для ответов SDK — возвращает `true`, если значение является `IError`.
+ * @param   {unknown} result - Ответ SDK для проверки.
  * @returns {boolean}
  */
 export const isError = (result: unknown): result is IError => {
@@ -112,12 +112,12 @@ type ImageField =
   | undefined;
 
 /**
- * Normalize the OneEntry `image` attribute value to a URL string.
+ * Нормализует значение атрибута `image` OneEntry в URL-строку.
  *
- * The SDK returns an object for Products and an array for Pages/Blocks —
- * this helper handles both shapes.
+ * SDK возвращает объект для Products и массив для Pages/Blocks —
+ * этот хелпер обрабатывает обе формы.
  * @param   {ImageField} value - `attributeValues.<marker>.value`.
- * @returns {string}           Download URL or empty string.
+ * @returns {string}           URL для скачивания или пустая строка.
  */
 export const getImageUrl = (value: ImageField): string => {
   if (!value) {

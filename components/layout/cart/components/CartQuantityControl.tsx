@@ -16,13 +16,14 @@ type CartQuantityControlProps = {
 };
 
 /**
- * Cart-only compact quantity control — vertical `+ / qty / -` stack inside a
- * thin bordered box, per `cart_cart.html`. Always renders for items present
- * in `productsData` (defaults qty to 1 if upstream forgot to set it).
+ * Компактный контрол количества только для корзины — вертикальный стек
+ * `+ / qty / -` в тонком бордерном боксе, по `cart_cart.html`. Всегда рендерится
+ * для позиций, присутствующих в `productsData` (по умолчанию qty = 1, если
+ * выше его забыли проставить).
  *
- * `-` decrements but does NOT remove the line — clamped at 1 by the
- * reducer. Removing a product is a separate action exposed via the trash
- * icon (`DeleteButton`) next to the control.
+ * `-` декрементит, но НЕ удаляет строку — clamp до 1 в редьюсере. Удаление
+ * продукта — отдельный action, доступный через иконку корзины (`DeleteButton`)
+ * рядом с контролом.
  */
 const CartQuantityControl = ({
   id,

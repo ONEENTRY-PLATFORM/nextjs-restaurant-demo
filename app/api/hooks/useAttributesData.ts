@@ -2,10 +2,10 @@
 import parse from 'html-react-parser';
 
 /**
- * Use String type
- * @param   {string}                  name            - Attribute name.
- * @param   {Record<string, unknown>} attributeValues - The attribute values.
- * @returns {string}                                  String value or undefined
+ * Использует тип String.
+ * @param   {string}                  name            - Имя атрибута.
+ * @param   {Record<string, unknown>} attributeValues - Значения атрибутов.
+ * @returns {string}                                  Строковое значение или undefined.
  */
 export const getString = (
   name: string,
@@ -23,11 +23,11 @@ export const getString = (
 };
 
 /**
- * Use Text type.
- * @param   {string}                name            - The name of the attribute.
- * @param   {object}                attributeValues - The attribute values object.
- * @param   {string}                type            - Type of the content.
- * @returns {string | [] | unknown}                 HTML content.
+ * Использует тип Text.
+ * @param   {string}                name            - Имя атрибута.
+ * @param   {object}                attributeValues - Объект значений атрибутов.
+ * @param   {string}                type            - Тип контента.
+ * @returns {string | [] | unknown}                 HTML-контент.
  */
 export const getText = (
   name: string,
@@ -112,7 +112,7 @@ export const getText = (
 // ): any => {};
 
 // /**
-//  * Date and Time
+//  * Дата и время
 //  *
 //  * @param name
 //  * @param attributeValues
@@ -125,7 +125,7 @@ export const getText = (
 // ): any => {};
 
 // /**
-//  * Date
+//  * Дата
 //  *
 //  * @param name
 //  * @param attributeValues
@@ -138,7 +138,7 @@ export const getText = (
 // ): any => {};
 
 // /**
-//  * time
+//  * Время
 //  *
 //  * @param name
 //  * @param attributeValues
@@ -151,7 +151,7 @@ export const getText = (
 // ): any => {};
 
 // /**
-//  * File
+//  * Файл
 //  *
 //  * @param name
 //  * @param attributeValues
@@ -164,11 +164,11 @@ export const getText = (
 // ): any => {};
 
 /**
- * Use image type - extract image URL from attribute values
- * @param   {string}  name            - The name of the attribute
- * @param   {unknown} attributeValues - The attribute values
- * @param   {string}  type            - The type of the image
- * @returns {string}                  The image URL or empty string
+ * Использует тип image — извлекает URL изображения из значений атрибута.
+ * @param   {string}  name            - Имя атрибута.
+ * @param   {unknown} attributeValues - Значения атрибутов.
+ * @param   {string}  type            - Тип изображения.
+ * @returns {string}                  URL изображения или пустая строка.
  */
 export const getImageUrl = (
   name: string,
@@ -197,7 +197,7 @@ export const getImageUrl = (
 };
 
 // /**
-//  * Group of Images
+//  * Группа изображений
 //  *
 //  * @param name
 //  * @param attributeValues
@@ -247,7 +247,7 @@ export const getImageUrl = (
 // ): string | [] | any => {};
 
 // /**
-//  * Time interval
+//  * Временной интервал
 //  *
 //  * @param name
 //  * @param attributeValues

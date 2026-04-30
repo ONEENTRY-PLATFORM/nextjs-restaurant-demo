@@ -8,7 +8,7 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Form animations
+ * Анимации формы
  */
 const FormAnimations = ({
   children,
@@ -24,7 +24,7 @@ const FormAnimations = ({
   const { open, transition, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
-  // Form transition animations
+  // Анимации перехода формы
   useGSAP(() => {
     if (!open || !ref.current || isLoading || !isActive) {
       return;

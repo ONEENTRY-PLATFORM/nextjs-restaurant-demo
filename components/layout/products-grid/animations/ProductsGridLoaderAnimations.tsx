@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
- * ProductsGrid loader animations
+ * Анимации лоадера ProductsGrid
  */
 const ProductsGridLoaderAnimations = ({
   children,

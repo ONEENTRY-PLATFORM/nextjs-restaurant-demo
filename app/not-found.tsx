@@ -3,19 +3,19 @@ import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
-// Opt out of static prerender — the shared layout chain includes
-// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
-// requires to be wrapped in Suspense for static generation.
+// Отключаем static prerender — общая цепочка layout-ов включает
+// `useSearchParams()` (search bar / filter bottom sheet), которые Next.js
+// требует оборачивать в Suspense для static-генерации.
 export const dynamic = 'force-dynamic';
 
 /**
- * 404 page layout
+ * Layout страницы 404
  */
 const NotFound = async (): Promise<JSX.Element> => {
-  /** get page by url from the API. */
+  /** получаем страницу по url из API. */
   const { page, isError } = await getPageByUrl('404');
 
-  /** if no page data return fallback */
+  /** если данных страницы нет — возвращаем fallback */
   if (isError || !page) {
     return (
       <div className="mx-auto flex min-h-80 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center py-8 text-paper">
@@ -25,7 +25,7 @@ const NotFound = async (): Promise<JSX.Element> => {
     );
   }
 
-  /** extract data from page */
+  /** извлекаем данные из page */
   const { localizeInfos, attributeValues } = page;
 
   return (

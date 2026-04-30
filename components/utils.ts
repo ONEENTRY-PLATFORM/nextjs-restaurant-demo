@@ -3,7 +3,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
 
-// UsePrice
+// UsePrice — форматирование цены
 export const UsePrice = ({ amount }: { amount: number | string }): string => {
   const currency = CurrencyEnum['en' as keyof typeof CurrencyEnum];
   const intlEnum = IntlEnum['en' as keyof typeof IntlEnum];
@@ -15,7 +15,7 @@ export const UsePrice = ({ amount }: { amount: number | string }): string => {
   return formattedPrice;
 };
 
-// UseDate
+// UseDate — форматирование даты
 export const UseDate = ({
   fullDate,
   format = 'en',
@@ -65,7 +65,7 @@ export const sortObjectFieldsByPosition = (
   return sortedObj;
 };
 
-// flatMenuToNested
+// flatMenuToNested — преобразование плоского меню в дерево
 export const flatMenuToNested = (
   data: [] | Array<IMenusPages>,
   pid: number | null,
@@ -84,7 +84,7 @@ export const flatMenuToNested = (
 };
 
 /**
- * typeError checker
+ * Проверка typeError
  * @param {IError | unknown} res - any
  * @returns {res is IError} - boolean
  */

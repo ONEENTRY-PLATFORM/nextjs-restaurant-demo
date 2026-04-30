@@ -7,7 +7,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 
 /**
- * Close modal button
+ * Кнопка закрытия модалки
  */
 const CloseModal = (): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);

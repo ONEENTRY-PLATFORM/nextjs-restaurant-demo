@@ -8,7 +8,7 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Filter modal animations
+ * Анимации модалки фильтра
  */
 const FilterModalAnimations = ({
   children,

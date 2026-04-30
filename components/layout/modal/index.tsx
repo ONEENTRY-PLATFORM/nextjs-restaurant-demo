@@ -13,7 +13,7 @@ import CloseModal from './components/CloseModal';
 import ModalBackdrop from './components/ModalBackdrop';
 
 /**
- * Modal component
+ * Компонент модалки
  */
 const useTitleData = ({
   dict,
@@ -62,7 +62,7 @@ const useTitleData = ({
 };
 
 /**
- * Forms modal component
+ * Компонент модалки форм
  */
 const Modal = ({
   dict,
@@ -71,7 +71,7 @@ const Modal = ({
 }): JSX.Element => {
   const { component, setTransition } = useContext(OpenDrawerContext);
 
-  // select form component by component name
+  // выбираем компонент формы по имени компонента
   const Form = forms[component as keyof typeof forms] || null;
 
   const title = useTitleData({ dict, component });

@@ -5,7 +5,7 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Get a single attribute with data from the attribute sets.
+ * Получает один атрибут с данными из attribute sets.
  */
 export const getAttributesByMarker = async ({
   attributeMarker,

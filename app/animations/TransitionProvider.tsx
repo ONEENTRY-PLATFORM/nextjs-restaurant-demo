@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
- * Transition provider - main 'stage' transition provider
+ * Transition provider — основной провайдер переходов 'stage'
  */
 export default function TransitionProvider({
   children,

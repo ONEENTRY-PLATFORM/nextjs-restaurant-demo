@@ -13,9 +13,9 @@ import StarCardIcon from '@/components/icons/star-card';
  * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
  * `static-html/details.html`. Данные ожидаются в нормализованной форме
  * `ProductReview[]` (см. `getProductReviews`); рендер скрыт, если пусто.
- * @param   {object}            props         - Component props.
- * @param   {ProductReview[]}   props.reviews - Top-level reviews.
- * @returns {JSX.Element|null}                Carousel JSX or `null` when empty.
+ * @param   {object}            props         - Пропсы компонента.
+ * @param   {ProductReview[]}   props.reviews - Отзывы верхнего уровня.
+ * @returns {JSX.Element|null}                JSX карусели или `null`, если пусто.
  */
 const ProductReviewsList = ({
   reviews,

@@ -10,12 +10,12 @@ import WeightIcon from '@/components/icons/weight.svg';
 import AddToCartButton from '../components/AddToCartButton';
 
 /**
- * Product details panel — порт правой колонки `static-html/details.html`.
+ * Панель деталей продукта — порт правой колонки `static-html/details.html`.
  *
  * Не рендерит category/title — их выводит `ProductSingle` сверху над колонками
  * (мобильный заголовок) и в shared header-блоке (md+).
  *
- * Fields (OneEntry `dish` attribute set):
+ * Поля (OneEntry, set атрибутов `dish`):
  *   - `weight` (integer) — граммы
  *   - `calorrage` (integer) — ккал
  *   - `rating` (float)
@@ -23,8 +23,8 @@ import AddToCartButton from '../components/AddToCartButton';
  *   - `preferences` (list) — теги
  *   - `ingredients` (string)
  *   - `price` + `currency`
- * @param   {{product: IProductsEntity; dict: IAttributeValues}} props - component props
- * @returns {JSX.Element} Product details panel JSX
+ * @param   {{product: IProductsEntity; dict: IAttributeValues}} props - пропсы компонента
+ * @returns {JSX.Element} JSX панели деталей продукта
  */
 const ProductDetails = async ({
   product,
@@ -71,10 +71,10 @@ const ProductDetails = async ({
 
   return (
     <div className="flex flex-col gap-3.75">
-      {/* Metrics row + price badge — single line per static-html/details.html:130 */}
+      {/* Ряд метрик + price badge — одной строкой по static-html/details.html:130 */}
       <div className="flex justify-between items-start gap-3.75 lg:flex-row-reverse">
         <div className="flex flex-col gap-3.75 mt-2.5">
-          {/* Weight / calorrage / rating */}
+          {/* Вес / калорийность / рейтинг */}
           <div className="flex gap-1.25 md:gap-3.75 items-center">
             {weightVal != null ? (
               <>
@@ -110,7 +110,7 @@ const ProductDetails = async ({
         ) : null}
       </div>
 
-      {/* Cooking time (optional) */}
+      {/* Время приготовления (опционально) */}
       {cookingVal != null && cookingVal > 0 ? (
         <div className="flex gap-3.75 items-center">
           <ClockCircleIcon variant="orange" />
@@ -120,14 +120,14 @@ const ProductDetails = async ({
         </div>
       ) : null}
 
-      {/* Ingredients */}
+      {/* Ингредиенты */}
       {ingredientsText ? (
         <h3 className="font-normal text-[14px] tracking-[0.02em] text-white opacity-90">
           <span className="text-brand">Ingredients:</span> {ingredientsText}
         </h3>
       ) : null}
 
-      {/* Preferences / tags */}
+      {/* Preferences / теги */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
           {prefs.map((p) => (
@@ -142,7 +142,7 @@ const ProductDetails = async ({
         </div>
       ) : null}
 
-      {/* Add to cart CTA */}
+      {/* CTA Add to cart */}
       <AddToCartButton
         id={id}
         units={0}

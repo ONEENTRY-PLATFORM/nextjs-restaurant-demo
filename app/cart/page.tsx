@@ -8,14 +8,13 @@ import CartWizard from '@/components/cart/CartWizard';
 
 import { getDictionary } from '../dictionaries';
 
-// Opt out of static prerender — the shared layout chain includes
-// `useSearchParams()` (search bar / filter bottom sheet) which Next.js
-// requires to be wrapped in Suspense for static generation. Rendering
-// dynamically sidesteps the prerender-time bailout (same approach as the
-// home page).
+// Отключаем статический prerender — общая цепочка layout-ов включает
+// `useSearchParams()` (поисковая строка / bottom sheet фильтра), который Next.js
+// требует оборачивать в Suspense для статической генерации. Динамический рендер
+// обходит prerender-time bailout (тот же подход, что и на home-странице).
 export const dynamic = 'force-dynamic';
 
-/** Define the response type */
+/** Определяет тип ответа */
 type ProductResponse = {
   isError: boolean;
   error?: {
@@ -26,31 +25,31 @@ type ProductResponse = {
 };
 
 /**
- * Cart page layout component that renders the shopping cart page
+ * Компонент layout-а страницы корзины, рендерящий страницу корзины.
  *
- * This async server component fetches dictionary data for internationalization
- * and delivery product data, then renders the cart page with sidebar layout.
- * @returns {Promise<JSX.Element>}              Cart page layout JSX.Element
+ * Этот асинхронный server-компонент загружает данные словаря для интернационализации
+ * и данные продукта-доставки, затем рендерит страницу корзины с layout-ом sidebar.
+ * @returns {Promise<JSX.Element>}              JSX.Element layout-а страницы корзины.
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
-  /** Get dictionary and set to server provider */
+  /** Получаем словарь и кладём в server provider */
   const [dict] = ServerProvider('dict', await getDictionary());
 
-  /** Get delivery(product) data by product id */
+  /** Получаем данные доставки (продукта) по id продукта */
   const response = await getProductById(83);
 
-  /** Check if response has error */
+  /** Проверяем, есть ли в ответе ошибка */
   const deliveryData = response.isError
     ? undefined
     : (response as ProductResponse).product;
 
-  /** Promo banners from OneEntry `blog` (desktop sidebar). */
+  /** Промо-баннеры из OneEntry `blog` (десктопный sidebar). */
   const banners = await getBlogBanners();
 
   /**
-   * Cart layout — mobile flow from `cart_cart.html` (max-w 390px), desktop
-   * 2-column flow from `pk_cart.html` (md:700 / lg:1000 / xl:1292).
+   * Cart layout — мобильный флоу из `cart_cart.html` (max-w 390px), десктопный
+   * 2-колоночный флоу из `pk_cart.html` (md:700 / lg:1000 / xl:1292).
    */
   return (
     <section className="min-h-screen bg-black bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">

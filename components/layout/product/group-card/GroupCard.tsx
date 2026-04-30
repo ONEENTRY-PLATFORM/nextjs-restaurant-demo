@@ -9,7 +9,7 @@ import PriceDisplay from './PriceDisplay';
 import ProductImage from './ProductImage';
 
 /**
- * Products group card component
+ * Компонент карточки группы продуктов
  */
 const GroupCard = ({
   product,

@@ -22,8 +22,8 @@ type FieldValue = string;
 type PickerMode = 'date' | 'time' | null;
 
 /**
- * Fields rendered in the 2-column rows (per `service_table.html` layout).
- * Markers aligned with admin `booking_order` form.
+ * Поля, рендерящиеся в 2-колоночных строках (согласно вёрстке `service_table.html`).
+ * Маркеры соответствуют админской форме `booking_order`.
  * @private
  */
 const ROW_PAIRS: Array<[string, string]> = [
@@ -36,9 +36,9 @@ const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
 
 /**
- * Map OneEntry form attribute type + marker to native HTML input `type`.
- * @param   {string} type   - OneEntry attribute `type`.
- * @param   {string} marker - Attribute marker, used for heuristic.
+ * Маппит тип атрибута OneEntry формы + маркер в нативный HTML input `type`.
+ * @param   {string} type   - `type` атрибута OneEntry.
+ * @param   {string} marker - Маркер атрибута, используется для эвристики.
  * @returns {string}        HTML input type.
  */
 const resolveInputType = (type: string, marker: string): string => {
@@ -57,16 +57,16 @@ type ReservationFormProps = {
 };
 
 /**
- * Reservation form — replicates the static-html `service_table.html` layout:
- * restaurant dropdown, two-column grid for name/surname/phone/guests/date/time,
- * textarea for preferences, primary submit.
+ * Форма бронирования — повторяет вёрстку `service_table.html` из static-html:
+ * дропдаун ресторана, двухколоночная сетка для name/surname/phone/guests/date/time,
+ * textarea для предпочтений, основная кнопка отправки.
  *
- * Date and time fields open fullscreen bottom-sheet pickers
- * ({@link DatePickerSheet} and {@link TimePickerSheet}) instead of native
- * `<input type="date">` — this matches `service_date.html` and
- * `service_time.html` mockups.
- * @param   {ReservationFormProps} props - Component props.
- * @returns {JSX.Element}                Reservation form JSX.
+ * Поля даты и времени открывают полноэкранные bottom-sheet пикеры
+ * ({@link DatePickerSheet} и {@link TimePickerSheet}) вместо нативного
+ * `<input type="date">` — это соответствует мокапам `service_date.html` и
+ * `service_time.html`.
+ * @param   {ReservationFormProps} props - Пропсы компонента.
+ * @returns {JSX.Element}                JSX формы бронирования.
  */
 const ReservationForm = ({
   form,
@@ -183,7 +183,7 @@ const ReservationForm = ({
         />
       ) : null}
 
-      {/* 2-column rows */}
+      {/* 2-колоночные строки */}
       {ROW_PAIRS.map(([left, right]) => {
         const leftAttr = attrByMarker.get(left);
         const rightAttr = attrByMarker.get(right);
@@ -214,7 +214,7 @@ const ReservationForm = ({
         );
       })}
 
-      {/* Preferences textarea (full width) */}
+      {/* Textarea предпочтений (полная ширина) */}
       {hasNotes ? (
         <div className="flex flex-col border-b border-b-muted">
           <label
@@ -235,7 +235,7 @@ const ReservationForm = ({
         </div>
       ) : null}
 
-      {/* Any remaining fields not placed in the grid above (fallback) */}
+      {/* Все оставшиеся поля, не размещённые в сетке выше (fallback) */}
       {attrs
         .filter(
           (a) =>
@@ -255,7 +255,7 @@ const ReservationForm = ({
           />
         ))}
 
-      {/* Captcha */}
+      {/* Капча */}
       {spamAttr ? (
         <FormCaptcha
           setToken={setCaptchaToken}
@@ -267,7 +267,7 @@ const ReservationForm = ({
         />
       ) : null}
 
-      {/* Primary submit */}
+      {/* Основная кнопка отправки */}
       <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
         <button
           type="submit"
@@ -280,7 +280,7 @@ const ReservationForm = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Slide-up pickers — date first, then time, both write to TIME_SLOT_MARKER */}
+      {/* Slide-up пикеры — сначала дата, потом время, оба пишут в TIME_SLOT_MARKER */}
       {picker === 'date' ? (
         <DatePickerSheet
           value={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || todayIso}
@@ -315,13 +315,13 @@ type FieldProps = {
 };
 
 /**
- * Single input/textarea field rendered for a form attribute. Styled per
- * `service_table.html`: bottom border, transparent bg, uppercase for name.
+ * Одиночное поле input/textarea, рендерящееся для атрибута формы. Стилизовано
+ * по `service_table.html`: нижний бордер, прозрачный фон, uppercase для имени.
  *
- * For `reservation_date` and `reservation_time` markers renders a button
- * that opens the corresponding slide-up picker instead of a native input.
- * @param   {FieldProps}  props - Field props.
- * @returns {JSX.Element}       Field JSX.
+ * Для маркеров `reservation_date` и `reservation_time` рендерит кнопку,
+ * которая открывает соответствующий slide-up пикер вместо нативного input.
+ * @param   {FieldProps}  props - Пропсы поля.
+ * @returns {JSX.Element}       JSX поля.
  */
 const Field = ({
   attr,

@@ -6,7 +6,7 @@ import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
 /**
- * Get all products with pagination and filter.
+ * Получает все продукты с пагинацией и фильтром.
  */
 export const getProducts = async (props: {
   limit: number;
@@ -36,9 +36,9 @@ export const getProducts = async (props: {
     const data = await api.Products.getProducts(
       expandedFilters,
       langCode || getLang(),
-      // Sort key/order is configured in OneEntry admin —
-      // omitting `sortKey`/`sortOrder` lets the server apply whatever
-      // the editor selected and honors per-product position locks.
+      // Sort key/order настраивается в OneEntry admin —
+      // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
+      // что выбрал редактор, и учесть per-product position-локи.
       { offset, limit },
     );
     if (typeError(data)) {

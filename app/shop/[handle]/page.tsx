@@ -11,42 +11,42 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 import { getDictionary } from '../../dictionaries';
 
-/** Memoize the loader component to prevent unnecessary re-renders */
+/** Мемоизируем компонент-лоадер, чтобы избежать лишних ре-рендеров */
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * Shop catalog page
+ * Страница каталога магазина
  * @async
- * @param   {object}                                                    props              - page props
- * @param   {Promise<{ handle: string; lang: string }>}                 props.params       - page params
- * @param   {Promise<{ [key: string]: string | string[] | undefined }>} props.searchParams - search params
+ * @param   {object}                                                    props              - пропсы страницы
+ * @param   {Promise<{ handle: string; lang: string }>}                 props.params       - параметры страницы
+ * @param   {Promise<{ [key: string]: string | string[] | undefined }>} props.searchParams - search-параметры
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns {Promise<JSX.Element>}                                                         Shop page layout JSX.Element
+ * @returns {Promise<JSX.Element>}                                                         JSX.Element layout-а страницы магазина
  */
 const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
-  /** Extract search parameters from the request */
+  /** Извлекаем search-параметры из запроса */
   const [searchParams, params] = await Promise.all([
     props.searchParams,
     props.params,
   ]);
-  /** Extract route parameters from the request */
+  /** Извлекаем параметры маршрута из запроса */
   const { handle } = params;
 
-  /** Get the dictionary from the API and set the server provider. */
+  /** Получаем словарь из API и проставляем server provider. */
   const [dict] = ServerProvider('dict', await getDictionary());
 
-  // get page by url from the API
+  // получаем страницу по url из API
   const { page, isError } = await getPageByUrl(handle);
 
-  /** Set the number of products to display per page */
-  // TODO: Extract products per page limit from global settings
+  /** Устанавливаем количество товаров для отображения на странице */
+  // TODO: Вынести лимит товаров на странице в global settings
   const pagesLimit = 10;
 
   if (!page || isError) {
     return notFound();
   }
 
-  /** Render the shop catalog page layout */
+  /** Рендерим layout страницы каталога магазина */
   return (
     <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch px-4">
       <div className="flex w-full flex-col items-center gap-5">
@@ -67,7 +67,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
 export default ShopCatalogPage;
 
 /**
- * Generate page metadata
+ * Генерирует метаданные страницы
  */
 export async function generateMetadata({
   params,
@@ -79,7 +79,7 @@ export async function generateMetadata({
     return notFound();
   }
 
-  // extract data from page
+  // извлекаем данные из page
   const { localizeInfos, isVisible, attributeValues } = page;
 
   const {

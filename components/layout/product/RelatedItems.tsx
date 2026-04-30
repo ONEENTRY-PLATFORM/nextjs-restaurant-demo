@@ -22,7 +22,7 @@ const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['multiply_items_offer']);
  *    который умеет читать `block.similarProducts.items`.
  *
  * Используется первый непустой источник в указанном порядке.
- * @param   {object}                 props           - props
+ * @param   {object}                 props           - пропсы
  * @param   {number}                 props.productId - id текущего товара
  * @param   {string[]}               [props.blocks]  - markers блоков, прикреплённых к продукту (`product.blocks`)
  * @param   {IAttributeValues}       props.dict      - словарь

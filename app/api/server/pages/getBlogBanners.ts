@@ -3,14 +3,15 @@ import { getImageUrl } from '@/app/api/api/api';
 import { getChildPagesByParentUrl } from './getChildPagesByParentUrl';
 
 /**
- * Normalised promo banner shape used by `HomePromo` (mobile carousel +
- * desktop hero), `CartPromoSidebar`, and the orders-page promo sidebar.
+ * Нормализованная форма промо-баннера, которую используют `HomePromo`
+ * (мобильная карусель + десктопный hero), `CartPromoSidebar` и
+ * промо-сайдбар на странице заказов.
  *
- * - `desktopImage` — `attributeValues.bg_image` (used in 2-col / sidebar
- *   contexts and as a wide hero background);
- * - `mobileImage`  — `attributeValues.banner` (used in narrow
- *   horizontally-scrolled lists);
- * - `pageUrl`      — links to `/promo/<pageUrl>`.
+ * - `desktopImage` — `attributeValues.bg_image` (используется в 2-колоночных /
+ *   сайдбар-контекстах и как широкий hero-фон);
+ * - `mobileImage`  — `attributeValues.banner` (используется в узких
+ *   горизонтально-прокручиваемых списках);
+ * - `pageUrl`      — ссылается на `/promo/<pageUrl>`.
  */
 export type BlogBanner = {
   id: number;
@@ -21,13 +22,13 @@ export type BlogBanner = {
 };
 
 /**
- * Fetch all child pages of the OneEntry `blog` page and return them as
- * promo banners with desktop (`bg_image`) and mobile (`banner`) image URLs.
+ * Получает все дочерние страницы страницы `blog` в OneEntry и возвращает их как
+ * промо-баннеры с URL-ами десктопного (`bg_image`) и мобильного (`banner`) изображений.
  *
- * Pages without either image are still included — the caller decides which
- * flavour to render and falls back gracefully if the relevant URL is
- * missing.
- * @returns {Promise<BlogBanner[]>} Banner list (empty on CMS error).
+ * Страницы без какого-либо из изображений всё равно включаются — вызывающая
+ * сторона решает, какой вариант рендерить, и аккуратно фолбэчится, если нужный
+ * URL отсутствует.
+ * @returns {Promise<BlogBanner[]>} Список баннеров (пустой при ошибке CMS).
  */
 export const getBlogBanners = async (): Promise<BlogBanner[]> => {
   const { isError, pages } = await getChildPagesByParentUrl('blog');

@@ -4,7 +4,7 @@ import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimatio
 import Spinner from '@/components/shared/Spinner';
 
 /**
- * Form submit button
+ * Кнопка сабмита формы
  */
 const FormSubmitButton = ({
   title = 'Submit',

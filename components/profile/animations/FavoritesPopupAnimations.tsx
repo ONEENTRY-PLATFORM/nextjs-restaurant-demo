@@ -8,11 +8,10 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Favorites popup open/close animations — mirrors `CartPopupAnimations`.
- * Backdrop fades in, body slides up from the bottom (mobile) /
- * in from the right (md+).
+ * Favorites popup open/close animations — centered modal entrance
+ * (scale + blur + opacity), matching the `CalendarForm` modal pattern.
  * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Drawer content.
+ * @param   {ReactNode}   props.children - Popup content.
  * @returns {JSX.Element}                Animation wrapper JSX.
  */
 const FavoritesPopupAnimations = ({
@@ -42,25 +41,32 @@ const FavoritesPopupAnimations = ({
     const modalBg = ref.current?.querySelector('#modalBg') ?? null;
     const modalBody = ref.current?.querySelector('#modalBody') ?? null;
 
-    gsap.set(modalBg, { autoAlpha: 0 });
-    gsap.set(modalBody, { yPercent: 100 });
+    gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
+    gsap.set(modalBody, {
+      autoAlpha: 0,
+      scale: 0.85,
+      filter: 'blur(8px)',
+    });
 
     tl.to(modalBg, {
       autoAlpha: 1,
       backdropFilter: 'blur(10px)',
-      duration: 0.5,
+      duration: 0.45,
+      ease: 'power2.out',
     }).to(
       modalBody,
       {
         autoAlpha: 1,
-        yPercent: 0,
-        duration: 0.5,
+        scale: 1,
+        filter: 'blur(0px)',
+        duration: 0.55,
+        ease: 'back.out(1.4)',
       },
-      '-=0.25',
+      '-=0.3',
     );
 
     if (transition === 'close') {
-      tl.reverse(2);
+      tl.reverse(1.4);
     } else {
       tl.play();
     }
@@ -75,7 +81,7 @@ const FavoritesPopupAnimations = ({
   }
 
   return (
-    <div ref={ref} className="fixed inset-0 z-50 flex h-screen w-full">
+    <div ref={ref} className="z-500 fixed inset-0 flex h-screen w-full">
       {children}
     </div>
   );

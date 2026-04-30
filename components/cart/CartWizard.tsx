@@ -15,8 +15,8 @@ import {
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
-import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 import CartPage from '@/components/layout/cart';
+import ClosePopupButton from '@/components/shared/ClosePopupButton';
 
 import StepAddCard from './steps/StepAddCard';
 import StepAddress from './steps/StepAddress';
@@ -221,14 +221,10 @@ const CartWizard = ({
               <p className="font-normal text-[24px] text-paper md:font-semibold md:uppercase md:text-brand">
                 {STEP_TITLES[step]}
               </p>
-              <button
-                type="button"
-                onClick={() => dispatch(setStep('cart'))}
-                aria-label="Close"
-                className="group hidden h-11.5 w-11.5 items-center justify-center rounded-full border border-paper hover:border-brand md:flex"
-              >
-                <CloseXBoldIcon className="hover-target h-3.75 w-3.75" />
-              </button>
+              <ClosePopupButton
+                onClose={() => dispatch(setStep('cart'))}
+                className="hidden md:flex"
+              />
               <span className="md:hidden w-9" aria-hidden="true" />
             </div>
 

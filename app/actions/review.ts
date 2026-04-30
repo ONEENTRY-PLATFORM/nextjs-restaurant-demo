@@ -40,7 +40,7 @@ export type ReviewPayload = {
 /**
  * Submit a product review to OneEntry FormsData (`review_form` marker).
  *
- * Mirrors the submission contract used in `oneentry-next-shop`:
+ * Mirrors the submission contract:
  * - form fields are read dynamically from the form schema, sorted by `position`,
  *   and transformed per type via {@link transformFormField};
  * - `moduleEntityIdentifier` carries the product id so each review is scoped

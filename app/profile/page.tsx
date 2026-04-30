@@ -9,9 +9,10 @@ import UserForm from '@/components/forms/UserForm';
 export const dynamic = 'force-dynamic';
 
 /**
- * Profile personal-data page — renders {@link UserForm} for the logged-in
- * user. Shows a sign-in prompt if the user is not authenticated.
- * @returns {JSX.Element} Personal page JSX.
+ * Страница персональных данных профиля — рендерит {@link UserForm} для
+ * залогиненного пользователя. Если пользователь не авторизован — показывает
+ * приглашение войти.
+ * @returns {JSX.Element} JSX страницы персональных данных.
  */
 const ProfilePage = (): JSX.Element => {
   const { isAuth, isLoading } = useContext(AuthContext);
@@ -28,7 +29,7 @@ const ProfilePage = (): JSX.Element => {
     );
   }
 
-  // UserForm expects a dict prop; pass empty fallback — the form handles it.
+  // UserForm ожидает проп dict; передаём пустой fallback — форма сама обработает.
   return <UserForm dict={{}} className="" />;
 };
 

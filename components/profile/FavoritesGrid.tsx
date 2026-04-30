@@ -47,7 +47,7 @@ const FavoritesGrid = (): JSX.Element => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-[30px]">
+    <div className="flex flex-wrap justify-center gap-7.5">
       {products.map((product) => (
         <FavoriteCard key={product.id} product={product} />
       ))}
@@ -86,7 +86,7 @@ const FavoriteCard = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full min-w-[370px] items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-[calc(50%-30px)]">
+    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-[calc(50%-30px)]">
       {imageSrc ? (
         <Image
           src={imageSrc}

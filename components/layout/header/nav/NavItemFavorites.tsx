@@ -1,21 +1,21 @@
 'use client';
 
-import Link from 'next/link';
-import { type JSX, useSyncExternalStore } from 'react';
+import { type JSX, useContext, useSyncExternalStore } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
 /**
- * Nav item favorites button — desktop trigger that links to the
- * `/profile/favorites` dashboard page (port of `static-html/pk_favorites.html`).
- * Mirrors {@link NavItemCart}'s desktop=page pattern. The mobile popup drawer
- * (`FavoritesPopup` mounted in `app/layout.tsx`) remains the mobile UX,
- * triggered by click handlers in the mobile menu.
+ * Nav item favorites button — desktop header trigger that opens the
+ * `FavoritesPopup` (centered modal port of `static-html/pk_favorites.html`).
+ * Mirrors the bottom-menu mobile trigger so favorites is a popup on every
+ * breakpoint. The `/profile/favorites` page still exists as a fallback route.
  * @returns {JSX.Element} Favorites button JSX.
  */
 const NavItemFavorites = (): JSX.Element => {
+  const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
   // Persisted slice rehydrates client-side — gate the badge to prevent
@@ -30,11 +30,14 @@ const NavItemFavorites = (): JSX.Element => {
   );
 
   return (
-    <Link
-      prefetch={false}
-      href="/profile/favorites"
-      className="group relative my-auto box-border flex shrink-0"
+    <button
+      type="button"
+      onClick={() => {
+        setComponent('FavoritesPopup');
+        setOpen(true);
+      }}
       aria-label="Favorites"
+      className="group relative my-auto box-border flex shrink-0"
     >
       <FavoritesIcon />
       {mounted && count > 0 && (
@@ -42,7 +45,7 @@ const NavItemFavorites = (): JSX.Element => {
           <p className="font-bold text-[8px] text-black">{count}</p>
         </div>
       )}
-    </Link>
+    </button>
   );
 };
 

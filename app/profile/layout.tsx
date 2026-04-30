@@ -3,11 +3,11 @@ import type { JSX, ReactNode } from 'react';
 import ProfileTabs from '@/components/profile/ProfileTabs';
 
 /**
- * Profile section layout — wraps all `/profile/**` routes with shared chrome
- * (title + tabs navigation).
- * @param   {object}      props          - Layout props.
- * @param   {ReactNode}   props.children - Nested route content.
- * @returns {JSX.Element}                Profile layout JSX.
+ * Layout раздела профиля — оборачивает все маршруты `/profile/**` общей обвязкой
+ * (заголовок + навигация по вкладкам).
+ * @param   {object}      props          - Пропсы layout-а.
+ * @param   {ReactNode}   props.children - Контент вложенного маршрута.
+ * @returns {JSX.Element}                JSX layout-а профиля.
  */
 const ProfileLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (

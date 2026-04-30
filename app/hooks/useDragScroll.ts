@@ -4,16 +4,16 @@ import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
 /**
- * Attaches mouse-based drag-to-scroll behavior to a horizontally scrollable
- * element — replicates the behavior from `static-html/script.js` on
- * `#menuItems`. Touch scrolling is already native so no handlers needed.
+ * Подключает поведение drag-to-scroll по мыши для горизонтально скроллируемого
+ * элемента — повторяет поведение из `static-html/script.js` на
+ * `#menuItems`. Touch-скролл работает нативно, обработчики не нужны.
  *
- * Usage:
+ * Использование:
  * ```tsx
  * const ref = useDragScroll<HTMLUListElement>();
  * return <ul ref={ref} className="overflow-x-auto">...</ul>;
  * ```
- * @returns {RefObject<T | null>} A ref to attach to the scrollable element.
+ * @returns {RefObject<T | null>} Ref для подключения к скроллируемому элементу.
  */
 export const useDragScroll = <
   T extends HTMLElement = HTMLElement,

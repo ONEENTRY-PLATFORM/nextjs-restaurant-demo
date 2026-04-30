@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext } from 'react';
@@ -17,22 +18,20 @@ import {
   selectFavoritesItems,
 } from '@/app/store/reducers/FavoritesSlice';
 import CartOrangeIcon from '@/components/icons/cart-orange';
-import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 import TrashIcon from '@/components/icons/trash';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
 import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
 /**
- * Favorites drawer popup — port of `static-html/details_favorites.html`
- * favorites overlay, opened from the heart icon in the global header.
- * Mirrors {@link CartPopup} drawer pattern: driven by `OpenDrawerContext`
- * (`open` + `component === 'FavoritesPopup'`), wrapped in slide-in
- * animation + backdrop. On md+ slides in from the right, on mobile fills
- * the bottom sheet.
- * @returns {JSX.Element} Favorites drawer JSX.
+ * Favorites popup — port of `static-html/pk_favorites.html` (lines 361–470).
+ * Centered modal on desktop (matches the project's `Modal` pattern), bottom
+ * sheet on mobile. Driven by `OpenDrawerContext` (`open` + `component ===
+ * 'FavoritesPopup'`).
+ * @returns {JSX.Element} Favorites popup JSX.
  */
 const FavoritesPopup = (): JSX.Element => {
   const { open, component, setTransition } = useContext(OpenDrawerContext);
@@ -51,37 +50,40 @@ const FavoritesPopup = (): JSX.Element => {
     <FavoritesPopupAnimations>
       <div
         id="modalBody"
-        className="fixed bottom-0 left-0 right-0 z-20 max-h-[100vh] min-h-[60vh] overflow-y-auto rounded-t-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:max-w-150 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
+        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex max-h-[90vh] min-h-[60vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        <div className="mx-auto h-full max-w-88.75 overflow-y-auto pb-25 no-scrollbar md:pb-0">
-          <div className="mt-2.5 md:flex md:items-center md:justify-between">
-            <p className="text-center text-xl font-normal leading-150 text-paper">
-              Favorites
-            </p>
-            <button
-              type="button"
-              onClick={close}
-              aria-label="Close favorites"
-              className="group hidden h-11.5 w-11.5 -mt-2.5 items-center justify-center rounded-full border border-paper hover:border-brand md:flex"
-            >
-              <CloseXBoldIcon className="hover-target h-3.75 w-3.75" />
-            </button>
-          </div>
-
-          <div className="flex flex-col">
-            {isLoading ? (
-              <Loader />
-            ) : products.length === 0 ? (
-              <p className="mt-5 rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-                You have no favorites yet.
-              </p>
-            ) : (
-              products.map((product) => (
-                <FavoriteRow key={product.id} product={product} />
-              ))
-            )}
-          </div>
+        <div className="flex justify-end">
+          <ClosePopupButton
+            onClose={close}
+            ariaLabel="Close favorites"
+            className="-mt-2.5"
+          />
         </div>
+
+        {isLoading ? (
+          <div className="mt-15 flex w-full justify-center">
+            <Loader />
+          </div>
+        ) : products.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center">
+            <div className="flex flex-col items-center gap-5 rounded-xl bg-ink/60 p-6 text-center">
+              <p className="text-paper/90">You have no favorites yet.</p>
+              <Link
+                href="/shop"
+                onClick={close}
+                className="rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-paper hover:bg-brand-hover"
+              >
+                Go to shop
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-15 flex w-full flex-wrap justify-center gap-7.5">
+            {products.map((product) => (
+              <FavoriteCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
       <ModalBackdrop />
     </FavoritesPopupAnimations>
@@ -89,12 +91,12 @@ const FavoritesPopup = (): JSX.Element => {
 };
 
 /**
- * Single favorite item row — replicates the `details_favorites.html` card.
- * @param   {object}          props         - Row props.
+ * Single favorite card — replicates the `pk_favorites.html` modal card.
+ * @param   {object}          props         - Card props.
  * @param   {IProductsEntity} props.product - Favorited product entity.
- * @returns {JSX.Element}                   Row JSX.
+ * @returns {JSX.Element}                   Card JSX.
  */
-const FavoriteRow = ({
+const FavoriteCard = ({
   product,
 }: {
   product: IProductsEntity;
@@ -117,7 +119,7 @@ const FavoriteRow = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="mt-5 flex items-center justify-between rounded-[5px] border border-gray-300 p-2.5">
+    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-[calc(50%-30px)]">
       {imageSrc ? (
         <Image
           src={imageSrc}
@@ -133,7 +135,7 @@ const FavoriteRow = ({
         </div>
       )}
 
-      <div className="flex flex-col">
+      <div className="flex w-1/2 flex-col">
         <p className="favorites_title">{title}</p>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}

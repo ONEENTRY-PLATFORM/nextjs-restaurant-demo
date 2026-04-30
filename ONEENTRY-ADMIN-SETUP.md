@@ -8,29 +8,15 @@
 
 ## 1. Недостающие формы
 
-### 1.1. `contact_us` — форма поддержки
+### 1.2. `delivery_order` — добавить поле `alt_phone`
 
-Нужна для [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) + [app/support/page.tsx](app/support/page.tsx).
-
-| marker    | type   | title       |
-|-----------|--------|-------------|
-| `name`    | string | Your name   |
-| `email`   | email  | Your email  |
-| `message` | text   | Message     |
-| `spam`    | spam   | reCAPTCHA   |
-
-> ❓ **Уточнить у клиента:** в вёрстке [static-html/service_support.html](static-html/service_support.html) на этом экране нет формы с полями — только два блока с быстрыми контактами (WhatsApp / звонок). Что должно быть на странице поддержки: классическая форма обратной связи (текущая реализация), блок с контактами как в макете, или оба варианта? Пока оставляем форму, ждём решение.
-
-### 1.2. `delivery_order` — добавить поля
-
-В форму заказа доставки [StepPayment.tsx](components/cart/steps/StepPayment.tsx) добавлены 2 поля per `cart_PAYMENT.html` («Comments to the order» + «order taken by another person» → phone). В `delivery_order` нужны соответствующие маркеры:
+В форму заказа доставки [StepPayment.tsx](components/cart/steps/StepPayment.tsx) добавлено поле «order taken by another person» → phone (per `cart_PAYMENT.html`). В `delivery_order` нужен соответствующий маркер:
 
 | marker      | type   | title                                     | required |
 |-------------|--------|-------------------------------------------|----------|
-| `comment`   | text   | Comments to the order                     | no       |
 | `alt_phone` | string | Phone of the alternate receiver           | no       |
 
-Сейчас `addData({ marker: 'comment' / 'alt_phone' })` отправит их при сабмите заказа — без полей в OneEntry значения отправятся, но не сохранятся.
+Сейчас `addData({ marker: 'alt_phone' })` отправит значение при сабмите заказа — без поля в OneEntry оно не сохранится. Маркер `comment` уже есть в `delivery_order`.
 
 ### 1.3. `delivery_review_form` — отзыв о доставке
 
@@ -49,20 +35,6 @@
 ---
 
 ## 2. Недостающие страницы
-
-### 2.1. `support`
-
-- pageUrl: `support`
-- Используется в [app/support/page.tsx](app/support/page.tsx).
-- Attribute set с полями:
-
-  | marker                 | type   | title          |
-  |------------------------|--------|----------------|
-  | `support_title`        | string | Title          |
-  | `support_description`  | text   | Description    |
-  | `support_phone`        | string | Phone          |
-  | `support_whatsapp_url` | string | WhatsApp URL   |
-  | `support_email`        | email  | Email          |
 
 ### 2.3. Дочерние страницы под `blog` (акции)
 
@@ -150,9 +122,6 @@
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
 
 - **Personal** — поля First Name / Second Name / Phone / E-mail / Password префилятся из `AuthContext.user.formData` (`name`, `second_name`/`lastname`, `phone`, `email`). Кнопка **Edit** не сохраняет — нужно подключить `api.Users.updateUser` по образцу [components/forms/UserForm.tsx](components/forms/UserForm.tsx) (form-marker `user`).
-- **Payment** — список карт, Add Card (номер/MM-YY/CVC), Delete. **Всё локально** (`useState`), не персистится. Нужно решение:
-
-  > ❓ **Уточнить у клиента:** где хранить сохранённые карты пользователя? Варианты: (а) custom attribute `saved_cards` (json/text) у `user` form, (б) отдельная сущность через OneEntry `state` пользователя, (в) сторонний платёжный gateway (Stripe customer + payment methods). Пока — UI без сохранения.
 
 - **Address** — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. **Локально**, не персистится. Нужно:
 
@@ -199,26 +168,12 @@
 Реальные атрибуты у первого продукта (id=13):
 `weight` (integer), `calorrage` (integer), `cooking_time` (integer), `preferences` (list), `ingredients` (string), `price` (integer), `currency` (string), `rating` (float), `sku` (string), `cover` (image).
 
-- **`pic`** — ❌ нет. Удалён fallback из всех мест: [ProductImage](components/layout/products-grid/components/product-card/ProductImage.tsx), [cart ProductCard](components/layout/cart/components/ProductCard.tsx), [FavoritesGrid](components/profile/FavoritesGrid.tsx), [FavoritesPopup](components/profile/FavoritesPopup.tsx), [StepOrder](components/cart/steps/StepOrder.tsx), [shop/product/[handle]](app/shop/product/[handle]/page.tsx), [ProductImageGallery](components/layout/product/product-single/ProductImageGallery.tsx).
-- **`portion`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx), [FavoritesGrid](components/profile/FavoritesGrid.tsx), [FavoritesPopup](components/profile/FavoritesPopup.tsx).
 - **`time`, `delivery_time`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
 - **`stars`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
-- **`more_pic`** — ❌ нет. Оставлено (для будущего расширения, [ProductImageGallery](components/layout/product/product-single/ProductImageGallery.tsx)).
-- **`sale`** — ❌ нет в `dish` set. Оставлено (graceful fallback к 0 → отображается обычная цена). При появлении распродаж — добавить в админке.
-- **`units_product`** — ❌ нет. Оставлено (graceful fallback к 0 → нет лимита по складу).
-- **`description`** — ❌ нет на продукте. Читается в [ProductDetails](components/layout/product/product-single/ProductDetails.tsx) и [shop/product/[handle]](app/shop/product/[handle]/page.tsx) — текстовое тело продукта пустое. Добавить в админке если нужно описание.
-- **`stickers`** — ❌ нет. [Stickers.tsx](components/layout/products-grid/components/product-card/Stickers.tsx) ничего не рендерит. Добавить в админке для бейджей «Хит/Новинка/Скидка».
-
-> ❓ **Уточнить у клиента:** добавить ли в `dish` атрибуты `sale`, `units_product`, `description`, `stickers`, `more_pic`? Без них соответствующая логика молча падает в no-op (нет распродаж / нет лимита склада / нет описания / нет бейджей / одна картинка вместо галереи).
 
 ### 7.3. Forms
 
-- **`user`** — ✅ есть, 10 атрибутов: `username`, `surname`, `email`, `phone`, `password`, `repeat_password`, `user_address`, `email_notifications`, `user_flat`, `user_floor`. Используется в [SignInForm](components/forms/SignInForm.tsx), [SignUpForm](components/forms/SignUpForm.tsx), [UserForm](components/forms/UserForm.tsx).
-- **`booking_order`** — ✅ есть: `restaurant`, `time_slot`, `surname`, `phone`, `name`, `people_count`, `user_preferences`. Используется в [ReservationForm](components/reservation/ReservationForm.tsx).
-- **`delivery_order`** — ✅ существует (используется через `getAllOrdersByMarker`, [OrdersList](components/profile/OrdersList.tsx), `StepPayment` submit).
-- **`contact_us`** — ❌ нет. Используется в [ContactUsForm](components/forms/ContactUsForm.tsx) — fetch упадёт, см. 1.1.
 - **`reservation`** — ❌ нет. В коде не используется (используется `booking_order`).
-- **`reviews`** — ❌ нет. Используется в [ReviewForm](components/reviews/ReviewForm.tsx) — fetch упадёт.
 
 ### 7.4. Blocks (home_web)
 
@@ -228,7 +183,6 @@
 
 ### 7.5. Dictionary (`static_content`) — что код читает, но в CMS нет
 
-- **`go_to_pay_placeholder`** → ✅ добавлен в `static_content` (initial `Go to pay`). [DeliveryForm.tsx](components/layout/cart/delivery-table/DeliveryForm.tsx) уже читал этот маркер с fallback'ом на `Go to payment` — кода менять не пришлось.
 - **`reset_descr`, `send_text`** ([ForgotPasswordForm.tsx](components/forms/ForgotPasswordForm.tsx)) — нет.
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?

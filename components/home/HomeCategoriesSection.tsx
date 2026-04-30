@@ -7,8 +7,6 @@ import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 import MenuSection from './MenuSection';
 
 const SECTION_LIMIT = 8;
-const SECTION_BASE =
-  'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
 
 /**
  * Асинхронная секция, которая материализует список категорий на главной —
@@ -57,17 +55,17 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
   return (
     <>
       {populated.map(({ page, products, total }, idx) => {
-        const title = page.localizeInfos?.title || page.pageUrl;
-        const sectionClass = `${SECTION_BASE} pt-3.75 md:pt-6.25`;
         const node = (
           <MenuSection
-            title={title}
+            title={page.localizeInfos?.title || page.pageUrl}
             categoryMarker={page.pageUrl}
             products={products}
             total={total}
             limit={SECTION_LIMIT}
             dict={{} as IAttributeValues}
-            className={sectionClass}
+            className={
+              'max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full pt-3.75 md:pt-6.25'
+            }
           />
         );
         return idx % 2 === 0 ? (

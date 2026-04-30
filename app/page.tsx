@@ -21,9 +21,6 @@ import OrderReviewsPanel from '@/components/reviews/OrderReviewsPanel';
 // Рендер dynamic обходит prerender-time bailout.
 export const dynamic = 'force-dynamic';
 
-const SECTION_BASE =
-  'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full px-4';
-
 /**
  * Block identifier → тип секции. Каждый блок, прикреплённый к странице
  * `home_web`, выступает позиционным маркером одного из этих компонентов
@@ -168,7 +165,9 @@ const HomePage = async ({
           <HomeBlockServer
             key={block.id}
             marker={block.identifier as string}
-            className={`${SECTION_BASE} pt-3.75 md:pt-6.25 pb-1.25`}
+            className={
+              'max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full px-4 pt-3.75 md:pt-6.25 pb-1.25'
+            }
           />
         );
       })}

@@ -46,15 +46,14 @@ const HomeBlockSection = ({
 }: HomeBlockSectionProps): JSX.Element | null => {
   const visible = products.filter((p) => p.isVisible !== false);
   if (visible.length === 0) return null;
-
-  const colsClass = COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4';
-
   return (
     <section className={className}>
       <div className="title">
         <h2 className="title_name">{title}</h2>
       </div>
-      <div className={`menu_items w-full ${colsClass}`}>
+      <div
+        className={`menu_items w-full ${COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4'}`}
+      >
         {visible.map((product, i) => (
           <ProductCard
             key={product.id}

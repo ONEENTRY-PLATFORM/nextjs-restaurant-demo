@@ -35,7 +35,7 @@ const MenuSection = ({
   total,
   dict = {} as IAttributeValues,
   limit = 8,
-  className = 'max-w-87.5 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full',
+  className = 'max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full',
 }: MenuSectionProps): JSX.Element => {
   const viewAllHref = '/shop/category/' + categoryMarker;
   return (

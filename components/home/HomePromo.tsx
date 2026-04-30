@@ -13,14 +13,15 @@ import { getBlogBanners } from '@/app/api';
  *     поэтому компонент просто рендерит её как кликабельный баннер.
  *   - Горизонтальный скролл для мобилы — атрибут `banner` каждого баннера.
  *
- * Ничего не рендерит, если в CMS нет баннеров.
  * @returns {Promise<JSX.Element | null>} JSX промо.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();
   const heroBanner = banners.find((b) => b.desktopImage) ?? null;
   const mobileBanners = banners.filter((b) => b.mobileImage);
+  console.log(banners);
 
+  // Ничего не рендерит, если в CMS нет баннеров.
   if (!heroBanner && mobileBanners.length === 0) return null;
 
   return (

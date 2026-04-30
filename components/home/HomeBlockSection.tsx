@@ -4,21 +4,6 @@ import type { JSX } from 'react';
 
 import ProductCard from '@/components/layout/products-grid/components/product-card/ProductCard';
 
-/**
- * Статическая карта поддерживаемых значений `countElementsPerRow` в Tailwind-классы
- * `md:grid-cols-N`. JIT Tailwind не видит классы, построенные в
- * рантайме, поэтому ключи нужно перечислять явно. На мобиле остаётся
- * фиксированная сетка в 2 колонки для читаемости, независимо от настройки в редакторе.
- */
-const COLS_CLASS: Record<number, string> = {
-  1: 'md:grid-cols-1',
-  2: 'md:grid-cols-2',
-  3: 'md:grid-cols-3',
-  4: 'md:grid-cols-4',
-  5: 'md:grid-cols-5',
-  6: 'md:grid-cols-6',
-};
-
 type HomeBlockSectionProps = {
   title: string;
   products: IProductsEntity[];
@@ -40,7 +25,6 @@ type HomeBlockSectionProps = {
 const HomeBlockSection = ({
   title,
   products,
-  countElementsPerRow,
   className,
   dict = {} as IAttributeValues,
 }: HomeBlockSectionProps): JSX.Element | null => {
@@ -52,7 +36,7 @@ const HomeBlockSection = ({
         <h2 className="title_name">{title}</h2>
       </div>
       <div
-        className={`menu_items grid w-full grid-cols-2 max-md:[&>.menu_item]:w-full ${COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4'}`}
+        className={`menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full`}
       >
         {visible.map((product, i) => (
           <ProductCard

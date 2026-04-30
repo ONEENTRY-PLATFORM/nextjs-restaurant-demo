@@ -5,9 +5,6 @@ import { getBlockProducts } from '@/app/api';
 
 import HomeBlockSection from './HomeBlockSection';
 
-const SECTION_BASE =
-  'max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full';
-
 /**
  * Асинхронная обёртка для {@link HomeBlockSection}, которая фетчит блок OneEntry
  * по маркеру и пробрасывает его title, курированный список продуктов и конфиг
@@ -38,7 +35,7 @@ const HomeBlockServer = async ({
       title={data.title}
       products={data.products}
       countElementsPerRow={data.countElementsPerRow}
-      className={className ?? `${SECTION_BASE} pt-3.75 md:pt-6.25 pb-1.25`}
+      className={className ?? 'section_layout'}
       dict={{} as IAttributeValues}
     />
   );

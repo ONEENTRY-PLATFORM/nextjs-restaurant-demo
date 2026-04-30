@@ -38,7 +38,7 @@ const CategoriesSection = ({
 }: CategoriesSectionProps): JSX.Element => {
   const viewAllHref = '/shop/category/' + categoryMarker;
   return (
-    <section className="max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full px-4">
+    <section className="section_layout">
       <div className="title">
         <h2 className="title_name">{title}</h2>
         <Link

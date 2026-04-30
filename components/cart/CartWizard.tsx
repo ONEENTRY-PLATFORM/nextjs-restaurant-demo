@@ -9,6 +9,7 @@ import { useSyncExternalStore } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   type CheckoutStep,
+  goBackStep,
   selectCheckoutStep,
   setStep,
 } from '@/app/store/reducers/OrderSlice';
@@ -211,7 +212,7 @@ const CartWizard = ({
             <div className="flex items-center justify-between md:mb-2">
               <button
                 type="button"
-                onClick={() => dispatch(setStep('cart'))}
+                onClick={() => dispatch(goBackStep())}
                 aria-label="Back"
                 className="group flex h-9 w-9 items-center justify-center"
               >

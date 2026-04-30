@@ -11,7 +11,7 @@ import ProfileTabs from '@/components/profile/ProfileTabs';
  */
 const ProfileLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (
-    <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
+    <section className="section_layout">
       <h1 className="mb-6 font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
         My Account
       </h1>

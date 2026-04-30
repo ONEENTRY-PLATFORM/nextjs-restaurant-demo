@@ -72,7 +72,7 @@ const PromoDetailPage = async ({
     actionType?.[0]?.title ?? (dict.promo_default_cta?.value as string);
 
   return (
-    <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
+    <section className="section_layout">
       <div className="relative overflow-hidden rounded-[20px] bg-ink">
         {image ? (
           <Image

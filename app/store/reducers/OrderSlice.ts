@@ -33,6 +33,10 @@ type InitialStateType = {
     identifier: string;
   }>;
   step: CheckoutStep;
+  // Стек предыдущих шагов — пушится при каждом `setStep`, попается через
+  // `goBackStep`. Позволяет кнопке «назад» в попапе вернуться к
+  // фактическому предыдущему шагу, а не безусловно на `cart`.
+  stepHistory: CheckoutStep[];
   stepError?: string;
   // Переживает `removeOrder()` (который сбрасывает `order` в initialState),
   // чтобы success-экран мог отрендерить реальный id, присвоенный CMS.
@@ -47,6 +51,7 @@ const initialState: InitialStateType = {
     formIdentifier: 'delivery_order',
   },
   step: 'cart',
+  stepHistory: [],
 };
 
 const orderReducer = createSlice({
@@ -116,12 +121,33 @@ const orderReducer = createSlice({
       state.currency = action.payload;
     },
     setStep(state, action: PayloadAction<CheckoutStep>) {
+      // Игнорируем no-op переходы и не пушим историю при возврате на тот же шаг.
+      if (state.step !== action.payload) {
+        // Cap у стека — на случай длинных циклов вперёд/назад в одном попапе.
+        state.stepHistory.push(state.step);
+        if (state.stepHistory.length > 16) {
+          state.stepHistory.shift();
+        }
+      }
       state.step = action.payload;
       if (action.payload !== 'error') {
         delete state.stepError;
       }
     },
+    /**
+     * Возврат к фактическому предыдущему шагу из стека `stepHistory`.
+     * Если стек пуст — фолбэк на `cart` (это закроет попап, т.к. при
+     * `step === 'cart'` `showPopup` в `CartWizard` равен `false`).
+     */
+    goBackStep(state) {
+      const previous = state.stepHistory.pop();
+      state.step = previous ?? 'cart';
+      delete state.stepError;
+    },
     setStepError(state, action: PayloadAction<string>) {
+      if (state.step !== 'error') {
+        state.stepHistory.push(state.step);
+      }
       state.step = 'error';
       state.stepError = action.payload;
     },
@@ -140,6 +166,7 @@ export const {
   addPaymentMethod,
   addOrderCurrency,
   setStep,
+  goBackStep,
   setStepError,
   setLastOrderId,
   setAppliedCoupon,

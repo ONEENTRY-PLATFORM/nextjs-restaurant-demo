@@ -204,16 +204,36 @@ html {
 }
 
 @layer components {
+  /*
+   * Стандартная контентная секция страницы — повторяющийся паттерн
+   * (mx-auto + max-width-ladder по брейкпоинтам + px-4 + py-10).
+   * Использовать вместо копирования полного className на каждой странице.
+   */
+  .section_layout {
+    @apply
+      mx-auto
+      w-full
+      max-w-88
+      sm:max-w-175
+      md:max-w-175
+      lg:max-w-250
+      xl:max-w-323
+      px-4
+      py-10;
+  }
+}
+
+@layer components {
   .menu_items {
-    @apply 
-      gap-5 
-      pb-5 
-      pt-2.5 
-      md:pt-5 
-      md:pb-6 
-      flex 
-      justify-center 
-      md:justify-between 
+    @apply
+      gap-5
+      pb-5
+      pt-2.5
+      md:pt-5
+      md:pb-6
+      flex
+      justify-center
+      md:justify-between
       flex-wrap;
   }
 }
@@ -222,10 +242,7 @@ html {
   @apply 
     flex flex-col 
     justify-between 
-    w-38 
-    md:w-85 
-    md_wide:w-55 
-    lg:w-69.5 
+    w-full 
     overflow-hidden 
     relative 
     transition-transform 

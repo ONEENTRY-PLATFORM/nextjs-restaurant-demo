@@ -64,7 +64,7 @@ const ReservationPage = async (): Promise<JSX.Element> => {
 
   return (
     <section className="min-h-screen bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">
-      <div className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
+      <div className="section_layout">
         <div className="mb-8 overflow-hidden rounded-[20px] bg-ink/60">
           {heroImage ? (
             <Image

@@ -50,12 +50,12 @@ const CardAnimations = ({
       tl.to(el, {
         autoAlpha: 1,
         scale: 1,
-        duration: 0.6,
+        duration: 0.3,
         delay,
       }).to(img, {
         autoAlpha: 1,
-        duration: 0.6,
-        stagger: 0.1,
+        duration: 0.3,
+        stagger: 0.05,
       });
       return tl;
     };

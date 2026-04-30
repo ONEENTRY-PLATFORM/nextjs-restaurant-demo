@@ -146,13 +146,7 @@ const HomePage = async ({
           return <HomeCategoriesSection key={block.id} />;
         }
         return (
-          <HomeBlockServer
-            key={block.id}
-            marker={block.identifier as string}
-            className={
-              'max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full px-4 pt-3.75 md:pt-6.25 pb-1.25'
-            }
-          />
+          <HomeBlockServer key={block.id} marker={block.identifier as string} />
         );
       })}
       {reviewOrderRaw ? (

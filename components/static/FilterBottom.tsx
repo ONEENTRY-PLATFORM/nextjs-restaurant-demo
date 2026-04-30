@@ -1,11 +1,12 @@
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import { type JSX, useContext, useState } from 'react';
+import { type JSX, useContext, useEffect, useRef, useState } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import CloseXIcon from '@/components/icons/close-x';
+import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 const WAITING_TIME = ['Under 30 mins', 'Under 60 mins', 'doesn’t matter'];
 const PREFERENCES = [
@@ -32,11 +33,7 @@ const PRICE = ['from 5', 'Under 30'];
  * экранах md+.
  * @returns {JSX.Element} JSX панели фильтра.
  */
-const FilterBottom = ({
-  dict,
-}: {
-  dict?: IAttributeValues;
-}): JSX.Element => {
+const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const { open, component, setOpen, setComponent } =
     useContext(OpenDrawerContext);
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
@@ -58,6 +55,21 @@ const FilterBottom = ({
     setOpen(false);
     setComponent('');
   };
+
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  // Свайп вниз закрывает фильтр-панель напрямую через `close()`,
+  // как и у остальных bottom-меню попапов (Cart / Favorites / Profile).
+  useSwipeToClose(sheetRef, close);
+
+  // При повторном открытии чистим inline-стили, оставленные хуком после
+  // swipe-dismiss. Иначе панель останется за нижней кромкой, а
+  // Tailwind-класс `translate-y-0` будет перебит inline-`transform`.
+  useEffect(() => {
+    if (isVisible && sheetRef.current) {
+      sheetRef.current.style.transform = '';
+      sheetRef.current.style.transition = '';
+    }
+  }, [isVisible]);
 
   const togglePreference = (item: string): void => {
     setPreferences((prev) =>
@@ -92,9 +104,10 @@ const FilterBottom = ({
       />
       <div
         id="side-menu"
+        ref={sheetRef}
         className={
-          'fixed bottom-0 left-0 w-full bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
-          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-95 md:h-screen md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
+          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:h-screen md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'
             : 'translate-y-full md:translate-y-0 md:translate-x-full')

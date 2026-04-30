@@ -170,7 +170,7 @@ const ProfilePopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 max-h-screen min-h-[60vh] overflow-y-auto rounded-t-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
+        className="fixed bottom-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
         <div className="hidden w-full md:flex justify-end">
           <ClosePopupButton

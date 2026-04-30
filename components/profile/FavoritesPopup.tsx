@@ -66,7 +66,7 @@ const FavoritesPopup = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex max-h-[90vh] min-h-[60vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
             заголовок по центру, бургер справа. На md+ скрыт, там сверху —

@@ -6,6 +6,7 @@ import {
   getBlocksByPageUrl,
   getPageByUrl,
 } from '@/app/api';
+import { formatDate } from '@/app/utils/formatDate';
 import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
@@ -36,23 +37,6 @@ const HOME_BLOCK_IDENTIFIERS = new Set([
   'recommended',
   'home_categories',
 ]);
-
-/**
- * Форматирует ISO / ms-дату как `dd.MM.yy`, чтобы совпадало с пилюлей заказа в
- * `static-html/index_rewiews.html`. Зеркалит хелпер в
- * [components/profile/OrdersList.tsx](../components/profile/OrdersList.tsx).
- * @param   {string | number | Date | undefined} when - Входное значение даты.
- * @returns {string}                                    Отформатированная метка.
- */
-const formatDate = (when: string | number | Date | undefined): string => {
-  if (!when) return '';
-  const d = new Date(when);
-  if (Number.isNaN(d.getTime())) return '';
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(
-    d.getFullYear(),
-  ).slice(2)}`;
-};
 
 /**
  * Резолвит проекцию заказа для review-панели по `?review_order=<id|orderId>`.

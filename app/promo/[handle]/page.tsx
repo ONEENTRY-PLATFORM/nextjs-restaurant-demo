@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
@@ -74,8 +75,14 @@ const PromoDetailPage = async ({
     <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
       <div className="relative overflow-hidden rounded-[20px] bg-ink">
         {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt={title} className="h-auto w-full object-cover" />
+          <Image
+            src={image}
+            alt={title}
+            width={1292}
+            height={500}
+            sizes="(max-width: 768px) 100vw, 1292px"
+            className="h-auto w-full object-cover"
+          />
         ) : null}
         <div className="p-6 md:p-10">
           <h1 className="mb-5 font-bold text-[20px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
@@ -89,7 +96,7 @@ const PromoDetailPage = async ({
           ) : null}
           <button
             type="button"
-            className="mx-auto mt-8 block h-12.5 w-full max-w-153.75 rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover"
+            className="mx-auto mt-12.5 block h-12.5 w-full max-w-153.75 rounded-[10px] bg-custom-gradient text-base font-bold uppercase text-white hover:bg-gradient-to-r-hover"
           >
             {cta}
           </button>

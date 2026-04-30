@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import type { JSX } from 'react';
 
 import { getFormByMarker, getPageByUrl } from '@/app/api';
@@ -46,32 +47,55 @@ const SupportPage = async (): Promise<JSX.Element> => {
         />
       ) : null}
 
-      <div className="mb-8 flex flex-wrap gap-3">
-        {phone ? (
-          <a
-            href={'tel:' + phone}
-            className="inline-flex items-center gap-2 rounded-[10px] border border-muted px-4 py-2 text-paper hover:border-brand hover:text-brand"
-          >
-            📞 {phone}
-          </a>
+      <div className="mb-8 flex flex-col gap-6.25">
+        {phone || whatsapp ? (
+          <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
+            <p className="text-center text-xl font-normal leading-150 text-paper">
+              Would you like to call?
+            </p>
+            <div className="mt-4 flex justify-center gap-15">
+              {whatsapp ? (
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  <Image
+                    src="/images/icons/watsap.svg"
+                    alt="WhatsApp"
+                    width={45}
+                    height={45}
+                  />
+                </a>
+              ) : null}
+              {phone ? (
+                <a href={'tel:' + phone}>
+                  <Image
+                    src="/images/icons/call.svg"
+                    alt="Call"
+                    width={45}
+                    height={45}
+                  />
+                </a>
+              ) : null}
+            </div>
+          </div>
         ) : null}
-        {whatsapp ? (
-          <a
-            href={whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-[10px] border border-muted px-4 py-2 text-paper hover:border-brand hover:text-brand"
-          >
-            WhatsApp
-          </a>
-        ) : null}
-        {email ? (
-          <a
-            href={'mailto:' + email}
-            className="inline-flex items-center gap-2 rounded-[10px] border border-muted px-4 py-2 text-paper hover:border-brand hover:text-brand"
-          >
-            ✉ {email}
-          </a>
+        {email || whatsapp ? (
+          <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
+            <p className="text-center text-xl font-normal leading-150 text-paper">
+              Would you like to ask a question?
+            </p>
+            <a
+              href={whatsapp ?? 'mailto:' + email}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 flex justify-center"
+            >
+              <Image
+                src="/images/icons/watsap.svg"
+                alt="WhatsApp"
+                width={45}
+                height={45}
+              />
+            </a>
+          </div>
         ) : null}
       </div>
 

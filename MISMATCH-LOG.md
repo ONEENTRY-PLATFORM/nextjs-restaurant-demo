@@ -7,20 +7,19 @@
 
 | Раздел | Файлов | P0 | P1 | P2 | P3 |
 |---|---|---|---|---|---|
-| A. Автоматические находки | — | — | 1 | ~25 | ~190 |
-| B.1 Главная | 5 | — | 3 | 3 | 1 |
-| B.2 Карточка товара | 5 | — | 1 | 2 | 1 |
+| A. Автоматические находки | — | — | — | ~25 | ~190 |
+| B.1 Главная | 5 | — | — | — | — |
+| B.2 Карточка товара | 5 | — | — | — | — |
 | B.3 Каталог/категория | 6 | — | — | — | — |
-| B.4 Корзина и чекаут | 9 | — | 2 | 1 | 2 |
-| B.5 Профиль и попапы | 6 | — | — | 2 | 3 |
-| B.6 Резервация | 4 | — | 1 | 1 | — |
-| B.7 Поддержка/Service | 6 | — | 2 | 1 | 2 |
-| B.8 Промо | 3 | — | 1 | — | 1 |
+| B.4 Корзина и чекаут | 9 | — | — | — | — |
+| B.5 Профиль и попапы | 6 | — | — | — | 2 |
+| B.6 Резервация | 4 | — | — | 1 | — |
+| B.7 Поддержка/Service | 6 | — | — | — | 2 |
+| B.8 Промо | 3 | — | — | — | — |
 
 ### Топ-приоритет (P0/P1) — фиксить первыми
 
-1. **B.7.6 / B.7.7** — Support: эмодзи вместо SVG-иконок, DOM-структура страницы поддержки не совпадает со static (форма vs два контактных блока).
-2. **B.1.1** — `console.log(banners)` в проде ([HomePromo.tsx:23](components/home/HomePromo.tsx#L23)).
+_Активных P0/P1 пунктов нет._
 
 ---
 
@@ -72,19 +71,11 @@
 - 📄 Static: [static-html/index.html](static-html/index.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/index.html>
 - 📁 Файлы проекта: [app/page.tsx](app/page.tsx) · [components/home/HomePromo.tsx](components/home/HomePromo.tsx) · [components/home/CategoriesSection.tsx](components/home/CategoriesSection.tsx) · [components/home/HomeCategoriesSection.tsx](components/home/HomeCategoriesSection.tsx) · [components/layout/header/index.tsx](components/layout/header/index.tsx)
 
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-
-| B.1.7 | `lg:max-w-120` (= 480px) на h1 — в `static-html` `lg:max-w-[440px]`, должно быть `lg:max-w-110` | [components/layout/header/index.tsx:87](components/layout/header/index.tsx#L87) | P2 |
-
 ### B.2. Карточка товара (`pk_product_details.html` ↔ `app/shop/product/[handle]`)
 
 - 🌐 Live: <http://localhost:3000/shop/product/13> _(заменить `13` на любой реальный product id, например через `/shop`)_
 - 📄 Static: [static-html/pk_product_details.html](static-html/pk_product_details.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_product_details.html>
 - 📁 Файлы проекта: [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) · [components/layout/product/index.tsx](components/layout/product/index.tsx) · [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) · [components/layout/product/product-single/ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx) · [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx)
-
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
 
 ### B.3. Каталог / категория (`index_category.html` ↔ `app/shop/...`)
 
@@ -110,9 +101,6 @@ _Открытых пунктов нет._
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.4.1 | `attrs.sale?.value` читается в 2 местах для расчёта unit-цены, хотя `sale` подтверждён как ненужный (см. чат). Граceful fallback к `price` работает, но кода стало бы меньше без `sale` | [components/cart/steps/StepOrder.tsx:53,70-74](components/cart/steps/StepOrder.tsx#L53-L74) | P3 |
-| B.4.6 | Поле «Promo Code» — кнопка «Apply Code» сейчас no-op. Согласно `ONEENTRY-ADMIN-SETUP.md §6` это известный пробел (нужен бэкенд механизм промокодов). **Не баг — задокументировано** | [components/cart/steps/StepOrder.tsx:118-133](components/cart/steps/StepOrder.tsx#L118-L133) | — |
-| B.4.8 | StepPayment добавляет `alt_phone` через `addData`, но поле ещё не существует в `delivery_order` (см. ONEENTRY-ADMIN-SETUP §1.2). Сабмит не упадёт, но значение не сохранится — действие на стороне админа | [components/cart/steps/StepPayment.tsx:44-52](components/cart/steps/StepPayment.tsx#L44-L52) | P2 |
 | B.4.9 | `auth-попап` в `CartWizard` рендерит `signin`/`verification` шаги поверх корзины как центрированный popup. Проверить, что `pk_login.html` / `pk_verif.html` подтверждают этот паттерн (на десктопе — popup поверх cart, на мобиле — fullscreen popup, корзина скрыта) | [components/cart/CartWizard.tsx:36-43,80-104](components/cart/CartWizard.tsx#L80-L104) | — (требует визуала) |
 | B.4.10 | `<BurgerOrangeIcon />` в шапке корзины-мобильной — это иконка из набора в `components/icons/`. В `static-html/cart_cart.html` справа должен быть бургер-меню или иконка переключения между mobile/desktop макетами. Сверить, что иконка совпадает | [components/cart/CartWizard.tsx:166](components/cart/CartWizard.tsx#L166) | — (требует визуала) |
 
@@ -132,10 +120,8 @@ _Открытых пунктов нет._
 | B.5.1 | `text-[24px] md:text-[32px]` на h1 — `text-2xl md:text-3xl` (24px = `text-2xl`, 30px = `text-3xl`; 32px ближе к `text-3xl` но не совпадает точно). 24px один-в-один. **Сверить значение 32px со static** | [app/profile/layout.tsx:15](app/profile/layout.tsx#L15) | P3 |
 | B.5.3 | `bg-ink/60`, `text-paper/80`, `text-paper/90` — корректное использование токенов с alpha (Tailwind v4). **В плюс** | [app/profile/page.tsx:21,26](app/profile/page.tsx#L21) | — |
 | B.5.4 | В FavoritesPopup для карточки товара `md:w-[calc(50%-30px)]` — arbitrary calc. Если эта формула повторяется (для grid из 2 колонок с gap=60px), вынести в утилитарный класс или token. Проверить статикой `m_favorites.html` / `pk_favorites.html` | [components/profile/FavoritesPopup.tsx:122](components/profile/FavoritesPopup.tsx#L122) | P3 |
-| B.5.5 | `border-gray-300` в карточке избранного — нет такого токена в `@theme`. Если у проекта стандартный border — `border-paper/30` или ввести `--color-border-soft` | [components/profile/FavoritesPopup.tsx:122](components/profile/FavoritesPopup.tsx#L122) | P2 |
 | B.5.6 | Хардкод-вёрстка адресов в ProfilePopup: `initialAddresses` с `id: 'a1', street: 'OneEntry', house: '40', floor: '27'`. По CLAUDE.md правилу 2 это легитимный мок, но в `ONEENTRY-ADMIN-SETUP.md §5` уже есть открытый вопрос «где хранить адреса». **Не баг — задокументировано** | [components/profile/ProfilePopup.tsx:26-28](components/profile/ProfilePopup.tsx#L26-L28) | — |
 | B.5.7 | `HIDDEN_PROFILE_MARKERS` исключает `user_address`, `user_flat`, `user_floor` — но в `static-html/details_personal.html` блок Address НЕ показывает эти поля под секцией Personal (они в отдельной секции Address). Логика верна, но комментарий стоило бы расширить | [components/profile/ProfilePopup.tsx:32-39](components/profile/ProfilePopup.tsx#L32-L39) | — |
-| B.5.8 | OrdersList дублирует `formatDate` хелпер с `app/page.tsx:47` — оба файла имеют идентичный код (см. JSDoc-комментарий). Вынести в `app/utils/formatDate.ts` | [components/profile/OrdersList.tsx:31-39](components/profile/OrdersList.tsx#L31-L39), [app/page.tsx:47-55](app/page.tsx#L47-L55) | P2 |
 
 ### B.6. Резервация (`service_table.html`, `service_date.html`, `service_time.html` ↔ `app/reservation`)
 
@@ -177,8 +163,6 @@ _Открытых пунктов нет._
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | B.7.5 | `text-[24px] md:text-[32px]` на h1 — повтор паттерна (B.5.1, B.6.3) | [app/support/page.tsx:31](app/support/page.tsx#L31) | P3 |
-| B.7.6 | Эмодзи в ссылках: `📞 {phone}`, `✉ {email}`. В `static-html/service_support.html` используются SVG-иконки `watsap.svg` / `call.svg`. Заменить эмодзи на SVG-иконки из `components/icons/` | [app/support/page.tsx:47,65](app/support/page.tsx#L47) | P1 |
-| B.7.7 | `static-html/service_support.html` показывает блочный layout с двумя карточками («Would you like to call?» / «Would you like to ask a question?») и круглыми иконками WhatsApp+phone. Текущая реализация — одна горизонтальная полоса 3 кнопок (phone/WhatsApp/email). Структура DOM не совпадает с макетом | [app/support/page.tsx:41-68](app/support/page.tsx#L41-L68) | P1 |
 | B.7.9 | `static-html/service_support.html` НЕ содержит формы Contact-Us — только два контактных блока. В проекте форма всё ещё есть (см. удалённую секцию 1.1 ONEENTRY-ADMIN-SETUP). С клиентом форма подтверждена как нужна (`contact_us` создан в админке), но это значит макет support-страницы **отличается от static-html** — ✅ намеренно | [app/support/page.tsx:70-75](app/support/page.tsx#L70-L75) | — |
 
 ### B.8. Промо (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
@@ -191,7 +175,3 @@ _Открытых пунктов нет._
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.8.4 | `mt-8` (=32px) на CTA-кнопке. В static-html `mt-[50px]` (=50px). Должно быть `mt-12.5` или ввести токен | [app/promo/[handle]/page.tsx:79](app/promo/[handle]/page.tsx#L79) | P1 |
-| B.8.5 | `<img>` через `eslint-disable @next/next/no-img-element` — то же что B.6.1, потеря image optimization | [app/promo/[handle]/page.tsx:64-65](app/promo/[handle]/page.tsx#L64-L65) | P2 |
-| B.8.7 | `text-[16px]` на CTA-кнопке — `text-base` (16px стандартный) | [app/promo/[handle]/page.tsx:79](app/promo/[handle]/page.tsx#L79) | P3 |
-| B.8.8 | h1 размер `text-[20px]` соответствует static, цвет `text-brand` правильно использует токен (в static был `text-[#ec722b]` — проект уже исправил). **В плюс** | [app/promo/[handle]/page.tsx:68](app/promo/[handle]/page.tsx#L68) | — |

@@ -8,16 +8,6 @@
 
 ## 1. Недостающие формы
 
-### 1.2. `delivery_order` — добавить поле `alt_phone`
-
-В форму заказа доставки [StepPayment.tsx](components/cart/steps/StepPayment.tsx) добавлено поле «order taken by another person» → phone (per `cart_PAYMENT.html`). В `delivery_order` нужен соответствующий маркер:
-
-| marker      | type   | title                                     | required |
-|-------------|--------|-------------------------------------------|----------|
-| `alt_phone` | string | Phone of the alternate receiver           | no       |
-
-Сейчас `addData({ marker: 'alt_phone' })` отправит значение при сабмите заказа — без поля в OneEntry оно не сохранится. Маркер `comment` уже есть в `delivery_order`.
-
 ### 1.3. `delivery_review_form` — отзыв о доставке
 
 Используется в drawer-е [components/reviews/OrderReviewsPanel.tsx](components/reviews/OrderReviewsPanel.tsx) (вёрстка [static-html/index_rewiews.html](static-html/index_rewiews.html)) для последней «Delivery»-строки в списке отзывов по заказу. Сейчас заглушка [submitDeliveryReview](app/actions/review.ts) возвращает `{ ok: true }`, но в админке формы пока нет — отзыв о курьере никуда не сохраняется.

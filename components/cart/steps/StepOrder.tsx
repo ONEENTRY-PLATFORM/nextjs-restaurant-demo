@@ -53,10 +53,8 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   }>;
 
   const subtotal = items.reduce((sum, { entry, product }) => {
-    const sale = product.attributeValues?.sale?.value as number | undefined;
     const price = product.price ?? 0;
-    const unit = sale && sale > 0 ? sale : price;
-    return sum + unit * (entry.quantity ?? 1);
+    return sum + price * (entry.quantity ?? 1);
   }, 0);
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
@@ -85,11 +83,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
             | string
             | number
             | undefined;
-          const sale = product.attributeValues?.sale?.value as
-            | number
-            | undefined;
-          const price = product.price ?? 0;
-          const unit = sale && sale > 0 ? sale : price;
+          const unit = product.price ?? 0;
           const cover = product.attributeValues?.cover?.value as
             | { downloadLink?: string }
             | undefined;

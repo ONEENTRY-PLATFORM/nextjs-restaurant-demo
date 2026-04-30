@@ -12,6 +12,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { formatDate } from '@/app/utils/formatDate';
 import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set([
@@ -21,21 +22,6 @@ const HISTORY_STATUSES = new Set([
   'completed',
   'rejected',
 ]);
-
-/**
- * Форматирует ISO / ms дату как `dd.MM.yy` согласно `pk_active_orders.html`.
- * @param   {string | number | Date | undefined} when - Входное значение даты.
- * @returns {string}                                    Отформатированная метка или пустая строка.
- */
-const formatOrderDate = (when: string | number | Date | undefined): string => {
-  if (!when) return '';
-  const d = new Date(when);
-  if (Number.isNaN(d.getTime())) return '';
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(
-    d.getFullYear(),
-  ).slice(2)}`;
-};
 
 /**
  * Возвращает читаемый статус заказа, отдавая приоритет локализованной информации из CMS.
@@ -129,7 +115,7 @@ const OrderCard = ({
       >
         <p className="font-bold">№{formatOrderNumber(order)}</p>
         <p>{statusLabel(order)}</p>
-        <p>{formatOrderDate(created)}</p>
+        <p>{formatDate(created)}</p>
         <Image
           src="/images/icons/chevron-up.svg"
           alt=""

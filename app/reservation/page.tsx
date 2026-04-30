@@ -87,7 +87,7 @@ const ReservationPage = async (): Promise<JSX.Element> => {
         {formRes.isError || !formRes.form ? (
           <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/80">
             Reservation form is not available. Please configure form{' '}
-            <code className="text-brand">reservation</code> in OneEntry admin.
+            <code className="text-brand">booking_order</code> in OneEntry admin.
           </div>
         ) : (
           <ReservationForm

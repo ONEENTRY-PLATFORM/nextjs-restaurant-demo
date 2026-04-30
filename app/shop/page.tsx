@@ -6,6 +6,7 @@ import { memo, Suspense } from 'react';
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
+import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -36,9 +37,8 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Получаем текущую страницу по URL из API */
   const { page } = await getPageByUrl('services');
 
-  /** Устанавливаем количество товаров для отображения на странице */
-  // TODO: Вынести лимит товаров на странице в global settings
-  const pagesLimit = 10;
+  /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
+  const pagesLimit = SHOP_PAGE_LIMIT;
 
   /** Возвращаем 404, если страница магазина не найдена */
   if (!page) {

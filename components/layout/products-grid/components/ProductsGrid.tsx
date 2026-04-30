@@ -10,12 +10,10 @@ import ProductCard from './product-card/ProductCard';
 const ProductsGrid = ({
   dict,
   products,
-  pagesLimit,
+  productsLimit,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lang: any;
   dict: IAttributeValues;
-  pagesLimit: number;
+  productsLimit: number;
   products: IProductsEntity[];
 }): JSX.Element => {
   return (
@@ -28,7 +26,7 @@ const ProductsGrid = ({
               key={product.id}
               product={product}
               index={index}
-              pagesLimit={pagesLimit}
+              productsLimit={productsLimit}
               dict={dict}
             />
           );

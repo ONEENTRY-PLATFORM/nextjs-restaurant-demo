@@ -30,18 +30,18 @@ import ProductImage from './ProductImage';
  * @param   {IProductsEntity} props.product    - Сущность продукта OneEntry.
  * @param   {number}          props.index      - Индекс в гриде (для stagger-анимации).
  * @param   {IAttributeValues} props.dict       - Словарь (не используется — оставлен для парности API).
- * @param   {number}          props.pagesLimit - pagesLimit для анимации.
+ * @param   {number}          props.productsLimit - pagesLimit для анимации.
  * @returns {JSX.Element}                      JSX карточки.
  */
 const ProductCard = ({
   product,
   index,
-  pagesLimit,
+  productsLimit,
 }: {
   product: IProductsEntity;
   index: number;
   dict: IAttributeValues;
-  pagesLimit: number;
+  productsLimit: number;
 }): JSX.Element => {
   const { id, attributeValues, localizeInfos } = product;
   const attrs = attributeValues ?? {};
@@ -71,7 +71,7 @@ const ProductCard = ({
     <CardAnimations
       className="menu_item group"
       index={index}
-      pagesLimit={pagesLimit}
+      pagesLimit={productsLimit}
     >
       <ProductImage attributes={attrs} alt={title} />
 

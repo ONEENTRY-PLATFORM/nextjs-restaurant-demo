@@ -20,7 +20,7 @@ const FormSubmitButton = ({
       <button
         disabled={isLoading}
         type="submit"
-        className="rounded-[10px] w-full h-15 font-semibold text-[17px] text-center text-white bg-[#ec722b] hover:bg-[#EB4B0E] border border-[#ec722b] hover:border-[#EB4B0E] mt-6.25 cursor-pointer"
+        className="rounded-[10px] w-full h-15 font-semibold text-[17px] text-center text-white bg-brand hover:bg-brand-hover border border-brand hover:border-brand-hover mt-6.25 cursor-pointer"
       >
         {isLoading ? <Spinner /> : title}
       </button>

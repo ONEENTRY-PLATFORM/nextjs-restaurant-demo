@@ -19,17 +19,3 @@ const getCachedData = async (
 };
 
 export default getCachedData;
-
-// Оптимизируем получение словаря
-// export const getDictionary = async () => {
-//   return getCachedData('dictionary', async () => {
-//     // существующая логика
-//   });
-// };
-
-// Оптимизируем получение меню
-// export const getMenuByMarker = async (marker: string) => {
-//   return getCachedData(`menu_${marker}`, async () => {
-//     // существующая логика
-//   });
-// };

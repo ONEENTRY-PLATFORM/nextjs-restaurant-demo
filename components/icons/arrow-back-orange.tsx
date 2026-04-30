@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 const ArrowBackOrangeIcon = (): JSX.Element => {
   return (
     <svg
-      className="fill-[#EC722B] hover-target"
+      className="fill-brand hover-target"
       width="26"
       height="20"
       viewBox="0 0 26 20"

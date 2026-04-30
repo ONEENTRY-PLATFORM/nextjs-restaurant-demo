@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 
 import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
 
-type MenuSectionProps = {
+type CategoriesSectionProps = {
   title: string;
   categoryMarker: string;
   products: IProductsEntity[];
@@ -25,39 +25,33 @@ type MenuSectionProps = {
  * каждой дочерней странице `menu`, поэтому секция никогда не делает свой API-запрос и
  * layout главной остаётся предсказуемым при пустых категориях (родитель
  * отфильтровывает их до маппинга).
- * @param   {MenuSectionProps} props - Пропсы компонента.
+ * @param   {CategoriesSectionProps} props - Пропсы компонента.
  * @returns {JSX.Element}            JSX секции.
  */
-const MenuSection = ({
+const CategoriesSection = ({
   title,
   categoryMarker,
   products,
   total,
   dict = {} as IAttributeValues,
   limit = 8,
-  className = 'max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full',
-}: MenuSectionProps): JSX.Element => {
+}: CategoriesSectionProps): JSX.Element => {
   const viewAllHref = '/shop/category/' + categoryMarker;
   return (
-    <section className={className}>
+    <section className="max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto pt-3.75 w-full px-4">
       <div className="title">
         <h2 className="title_name">{title}</h2>
         <Link
-          className="subtitle border-b border-white pb-0.75 hover:text-[#ec722b] hover:border-[#ec722b]"
+          className="subtitle border-b border-white pb-0.75 hover:text-brand hover:border-brand"
           href={viewAllHref}
         >
           View all ({total})
         </Link>
       </div>
 
-      <ProductsGrid
-        lang="en_US"
-        dict={dict}
-        pagesLimit={limit}
-        products={products}
-      />
+      <ProductsGrid dict={dict} products={products} productsLimit={limit} />
     </section>
   );
 };
 
-export default MenuSection;
+export default CategoriesSection;

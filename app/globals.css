@@ -21,6 +21,7 @@
   --color-ink: #4c4d56;
   --color-paper: #dfe9f9;
   --color-muted: #b0bcce;
+  --color-muted-text: #969696;
 
   /* Legacy palette aliases (kept for compatibility with static-html mockup) */
   --color-custom_orange: #ec722b;

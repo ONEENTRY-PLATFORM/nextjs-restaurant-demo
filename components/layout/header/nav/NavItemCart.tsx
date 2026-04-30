@@ -30,7 +30,7 @@ const NavItemCart = (): JSX.Element => {
     >
       <CartIcon />
       {mounted && count > 0 && (
-        <div className="py-0.5 px-1.25 absolute -top-0.75 -right-1.75 rounded-full bg-[#ec722b]">
+        <div className="py-0.5 px-1.25 absolute -top-0.75 -right-1.75 rounded-full bg-brand">
           <p className="font-bold text-[8px] text-black">{count}</p>
         </div>
       )}

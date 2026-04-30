@@ -170,7 +170,7 @@ const CartWizard = ({
         {/* Хлебные крошки только для десктопа — `pk_cart.html` показывает "Cart",
             `pk_order.html` показывает "Cart / Order". Когда активен инлайн-шаг,
             "Cart" — это кнопка, возвращающая на шаг корзины. */}
-        <p className="hidden pt-3.75 text-base text-[#969696] md:block">
+        <p className="hidden pt-3.75 text-base text-muted-text md:block">
           {showStepInBreadcrumb ? (
             <>
               <button

@@ -6,8 +6,8 @@ import type { JSX } from 'react';
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
 
 import ProductAnimations from './animations/ProductAnimations';
+import ProductCover from './product-single/ProductCover';
 import ProductDetails from './product-single/ProductDetails';
-import ProductImage from './product-single/ProductImageGallery';
 import ProductsGroup from './ProductsGroup';
 import RelatedItems from './RelatedItems';
 
@@ -56,7 +56,7 @@ const ProductSingle = async ({
         {categoryLabel ? (
           <Link
             href={'/shop/category/' + categorySlug}
-            className="font-normal text-[16px] text-[#969696]"
+            className="font-normal text-[16px] text-muted-text"
           >
             Category / {categoryLabel}
           </Link>
@@ -73,7 +73,7 @@ const ProductSingle = async ({
           className="relative mx-auto block w-full max-w-112.5 md:max-w-175 lg:min-w-153.75 lg:max-w-153.75 lg:shrink-0"
           index={0}
         >
-          <ProductImage alt={localizeInfos.title} product={product} />
+          <ProductCover alt={localizeInfos.title} product={product} />
         </ProductAnimations>
 
         {/* Детали + отзывы — col-2 */}
@@ -83,7 +83,7 @@ const ProductSingle = async ({
             {categoryLabel ? (
               <Link
                 href={'/shop/category/' + categorySlug}
-                className="font-normal text-[16px] text-[#969696]"
+                className="font-normal text-[16px] text-muted-text"
               >
                 Category / {categoryLabel}
               </Link>

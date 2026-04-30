@@ -339,7 +339,7 @@ const OrdersList = ({
 
   return (
     <section>
-      <p className="text-base text-[#969696]">Cart</p>
+      <p className="text-base text-muted-text">Cart</p>
       <div className="flex flex-col gap-10 lg:flex-row lg:gap-15">
         <div className="lg:w-1/2">
           <p className="mt-2.5 text-xl text-paper">Active orders</p>

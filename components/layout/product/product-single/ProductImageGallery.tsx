@@ -57,7 +57,7 @@ const ProductImageGallery = ({
       {hasImages ? (
         isGallery ? (
           <div className="relative w-full">
-            <div className="relative aspect-4/3 w-full overflow-hidden">
+            <div className="relative w-full overflow-hidden">
               <Slider asNavFor={nav2 ?? undefined} ref={setNav1}>
                 {imagesData.map((image, i: Key) => {
                   return (
@@ -68,7 +68,7 @@ const ProductImageGallery = ({
                         sizes="(min-width: 1024px) 615px, 100vw"
                         src={image.original ?? ''}
                         alt={''}
-                        className="aspect-square size-full object-cover"
+                        className="h-auto w-full"
                       />
                     </div>
                   );
@@ -99,14 +99,14 @@ const ProductImageGallery = ({
             </Slider>
           </div>
         ) : (
-          <div className="relative aspect-4/3 w-full overflow-hidden">
+          <div className="relative w-full">
             <Image
               width={615}
               height={615}
               sizes="(min-width: 1024px) 615px, 100vw"
               src={imagesData[0]?.original ?? ''}
               alt={alt}
-              className="size-full object-cover"
+              className="h-auto w-full"
             />
           </div>
         )

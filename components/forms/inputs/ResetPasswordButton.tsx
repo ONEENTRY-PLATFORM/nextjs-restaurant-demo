@@ -18,7 +18,7 @@ const ResetPasswordButton = ({ title }: { title: string }): JSX.Element => {
         setComponent('ForgotPasswordForm');
       }}
       type="button"
-      className="w-auto font-semibold text-[20px] text-[#ec722b] underline cursor-pointer"
+      className="w-auto font-semibold text-[20px] text-brand underline cursor-pointer"
     >
       {title}
     </button>

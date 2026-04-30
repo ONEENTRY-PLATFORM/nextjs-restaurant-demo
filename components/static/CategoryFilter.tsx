@@ -84,7 +84,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       />
       <aside
         className={
-          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-[rgba(76,77,86,0.95)] backdrop-blur-[10px] overflow-y-auto rounded-tr-[20px] rounded-br-[20px] transform transition-transform duration-500 ease-in-out ' +
+          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tr-[20px] rounded-br-[20px] transform transition-transform duration-500 ease-in-out ' +
           (isVisible ? 'translate-x-0' : '-translate-x-full')
         }
       >
@@ -97,7 +97,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
           >
             <ArrowBackOrangeIcon />
           </button>
-          <p className="font-normal text-[20px] tracking-[0.02em] text-paper">
+          <p className="font-normal text-xl tracking-[0.02em] text-paper">
             Category
           </p>
           <button
@@ -128,7 +128,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
                   />
                 </div>
               </div>
-              <p className="font-bold uppercase text-[16px] text-paper mt-2.5 leading-4 text-center whitespace-pre-line">
+              <p className="font-bold uppercase text-base text-paper mt-2.5 leading-4 text-center whitespace-pre-line">
                 {cat.label}
               </p>
             </Link>

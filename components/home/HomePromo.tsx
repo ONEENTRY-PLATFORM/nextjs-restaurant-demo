@@ -9,7 +9,7 @@ import { getBlogBanners } from '@/app/api';
  * `navigation` в `static-html/index.html`. Управляется дочерними `blog`
  * из OneEntry:
  *   - Hero для десктопа — `bg_image` первого дочернего `blog` (например, "DEAL OF THE
- *     DAY"). Картинка уже содержит весь chrome заголовка / скидки,
+ *     DAY"). Картинка уже содержит весь контент заголовка / скидки,
  *     поэтому компонент просто рендерит её как кликабельный баннер.
  *   - Горизонтальный скролл для мобилы — атрибут `banner` каждого баннера.
  *
@@ -19,7 +19,6 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();
   const heroBanner = banners.find((b) => b.desktopImage) ?? null;
   const mobileBanners = banners.filter((b) => b.mobileImage);
-  console.log(banners);
 
   // Ничего не рендерит, если в CMS нет баннеров.
   if (!heroBanner && mobileBanners.length === 0) return null;

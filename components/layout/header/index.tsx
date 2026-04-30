@@ -6,6 +6,7 @@ import { type JSX, Suspense } from 'react';
 
 import {
   getChildPagesByParentUrl,
+  getPageByUrl,
   getProductsByPageUrl,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
@@ -29,6 +30,14 @@ import SearchFallback from './search/SearchFallback';
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
+
+  // Телефон поддержки для иконки-звонилки в мобильной шапке (`support_phone`
+  // на странице `support`). Если CMS-значение отсутствует — кнопка деградирует
+  // в visually-disabled (без ссылки), чтобы не вести в никуда.
+  const { page: supportPage } = await getPageByUrl('support');
+  const supportPhone = supportPage?.attributeValues?.support_phone?.value as
+    | string
+    | undefined;
 
   // Отсекаем категории без продуктов — пустые ссылки читаются как «битые» в
   // скроллере. Проверяем каждую дочернюю страницу вызовом `limit:1` и
@@ -105,9 +114,22 @@ const Header = async (): Promise<JSX.Element> => {
           {/* header_mobile */}
           <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
-              <a className="w-4.5 h-4.5" href="#">
-                <img src="/images/icons/phone.svg" alt="call" />
-              </a>
+              {supportPhone ? (
+                <a
+                  className="w-4.5 h-4.5"
+                  href={'tel:' + supportPhone.replace(/\s+/g, '')}
+                  aria-label={'Call ' + supportPhone}
+                >
+                  <img src="/images/icons/phone.svg" alt="call" />
+                </a>
+              ) : (
+                <span
+                  className="w-4.5 h-4.5 opacity-60"
+                  aria-hidden="true"
+                >
+                  <img src="/images/icons/phone.svg" alt="call" />
+                </span>
+              )}
               <a href="/">
                 <img src="/images/logo_mobile.svg" alt="logo" />
               </a>

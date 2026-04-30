@@ -6,6 +6,7 @@ import { getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
+import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -35,9 +36,8 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Загружаем данные страницы категории из CMS */
   const { page } = await getPageByUrl(handle);
 
-  /** Устанавливаем лимит товаров на странице */
-  // TODO: Вынести лимит товаров на странице в global settings
-  const pagesLimit = 10;
+  /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
+  const pagesLimit = SHOP_PAGE_LIMIT;
 
   /** Показываем 404, если страница категории не найдена */
   if (!page) {

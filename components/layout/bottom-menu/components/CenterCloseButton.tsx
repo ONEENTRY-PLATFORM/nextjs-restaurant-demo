@@ -24,7 +24,7 @@ const CenterCloseButton = (): JSX.Element | null => {
       type="button"
       aria-label="close"
       onClick={() => setTransition('close')}
-      className="bg-transparent border w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 hover:border-[#EC722B] group"
+      className="bg-transparent border w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 hover:border-brand group"
     >
       <CloseXMiniIcon />
     </button>

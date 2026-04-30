@@ -42,7 +42,7 @@ const CenterCartButton = (): JSX.Element | null => {
         setOpen(true);
       }}
       aria-label="Open cart"
-      className="bg-[#ec722b] hover:bg-[#EB4B0E] w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 relative"
+      className="bg-brand hover:bg-brand-hover w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 relative"
     >
       <img
         className="w-6.25 h-5.75"
@@ -50,7 +50,7 @@ const CenterCartButton = (): JSX.Element | null => {
         alt="cart"
       />
       {mounted && count > 0 && (
-        <div className="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-white border border-[#ec722b]">
+        <div className="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-white border border-brand">
           <p className="font-bold text-[10px] leading-none text-black">
             {count}
           </p>

@@ -28,7 +28,7 @@ input[type="radio"] {
 
 input[type="radio"]:checked + .radio-custom::before {
   border: none;
-  background-color: #EC722B;
+  background-color: var(--color-brand);
 }
 
 .custom-checkbox {
@@ -56,8 +56,8 @@ input[type="radio"]:checked + .radio-custom::before {
 }
 
 .custom-checkbox input[type="checkbox"]:checked + .checkbox-box {
-  background-color: #EC722B;
-  border-color: #EC722B;
+  background-color: var(--color-brand);
+  border-color: var(--color-brand);
 }
 
 .custom-checkbox svg {
@@ -119,18 +119,18 @@ html {
 }
 
 .group_stroke:hover .hover-target path {
-  fill: #ec722b;
-  stroke: #ec722b;
+  fill: var(--color-brand);
+  stroke: var(--color-brand);
 }
 
 .group:hover .hover-target path {
-  fill: #ec722b;
-  stroke: #ec722b;
+  fill: var(--color-brand);
+  stroke: var(--color-brand);
   stroke-width: 0.1; 
 }
 
 .group:hover .hover-target .st0 {
-  stroke: #ec722b;
+  stroke: var(--color-brand);
   stroke-width: 0.1; 
 }
 
@@ -144,7 +144,7 @@ html {
 }
 
 .hover_btn_white {
-  @apply hover:border-[#ec722b] hover:text-white;
+  @apply hover:border-brand hover:text-white;
 }
 
 .list_item {
@@ -173,7 +173,7 @@ html {
     transition-colors 
     duration-500 
     hover:bg-[rgba(106,108,122,0.5)] 
-    active:bg-[#ec722b] 
+    active:bg-brand 
     rounded-md;
 }
 
@@ -191,7 +191,7 @@ html {
     font-bold 
     md:text-[20px] 
     uppercase 
-    text-[#ec722b];
+    text-brand;
 }
 
 .subtitle {
@@ -245,13 +245,13 @@ html {
   @apply absolute top-3.75 md:top-5 right-2.5 md:right-3.75 cursor-pointer active:fill-white hover:fill-white focus:fill-white transition-all duration-1000;
 }
 .counter {
-  @apply font-normal text-base md:text-[22px] tracking-[0.02em] text-[#ec722b];
+  @apply font-normal text-base md:text-[22px] tracking-[0.02em] text-brand;
 }
 .category_item {
-  @apply flex flex-col justify-center items-center w-35.5 h-35.5 bg-[#B0BCCE] rounded-full text-center transition-all duration-500 cursor-pointer hover:bg-[#ec722b] active:bg-[#ec722b] mb-3.75;
+  @apply flex flex-col justify-center items-center w-35.5 h-35.5 bg-muted rounded-full text-center transition-all duration-500 cursor-pointer hover:bg-brand active:bg-brand mb-3.75;
 }
 .nav_bottom {
-  @apply hover:fill-[#ec722b] active:fill-[#ec722b];
+  @apply hover:fill-brand active:fill-brand;
 }
 
 @layer components {
@@ -261,10 +261,10 @@ html {
 }
 
 .filter_item {
-  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-[#ec722b] active:bg-[#ec722b] hover:border-none active:border-none;
+  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-brand active:bg-brand hover:border-none active:border-none;
 }
 .filter_title {
-  @apply w-full font-bold text-[16px] tracking-[0.02em] text-[#ec722b];
+  @apply w-full font-bold text-[16px] tracking-[0.02em] text-brand;
 }
 
 .favorites_title {
@@ -275,7 +275,7 @@ html {
   @apply font-normal text-[14px] tracking-[0.02em] text-paper;
 }
 .favorites_price {
-  @apply font-bold text-[20px] text-[#ec722b];
+  @apply font-bold text-[20px] text-brand;
 }
 
 .tr {
@@ -343,18 +343,18 @@ html {
     font-light 
     text-[16px] 
     text-paper 
-    hover:bg-[#ec722b] 
+    hover:bg-brand 
     hover:text-white 
-    active:bg-[#ec722b] 
+    active:bg-brand 
     active:text-white 
-    focus:bg-[#ec722b] 
+    focus:bg-brand 
     focus:text-white;
 }
 .calend_mon {
   @apply 
     font-medium 
     text-[16px] 
-    text-[#ec722b] 
+    text-brand 
     text-center;
 }
 .service_time {
@@ -367,13 +367,13 @@ html {
     font-light 
     text-[15px] 
     text-paper 
-    hover:border-[#ec722b] 
-    hover:text-[#ec722b] 
+    hover:border-brand 
+    hover:text-brand 
     hover:font-extrabold 
-    active:border-[#ec722b] 
-    active:text-[#ec722b] 
+    active:border-brand 
+    active:text-brand 
     active:font-extrabold 
-    focus:border-[#ec722b] focus:text-[#ec722b] focus:font-extrabold ;
+    focus:border-brand focus:text-brand focus:font-extrabold ;
 }
 .no-blur {
   backdrop-filter: none !important;

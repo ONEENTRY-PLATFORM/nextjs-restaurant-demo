@@ -159,7 +159,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <button
         type="button"
         onClick={() => dispatch(setStep('payment'))}
-        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom_btnorange py-2.5 text-center font-normal text-[16px] text-white hover_btn_transp"
+        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-[16px] text-white hover:bg-gradient-to-r-hover"
       >
         APPLY
       </button>

@@ -134,7 +134,7 @@ const ProductDetails = async ({
             <button
               key={p}
               type="button"
-              className="font-normal text-[16px] tracking-[0.02em] text-white border border-white rounded-[5px] py-0.75 px-3.75 hover:bg-[rgba(106,108,122,0.5)] hover:border-transparent duration-500 active:bg-brand"
+              className="font-normal text-[16px] tracking-[0.02em] text-white border border-white rounded-[5px] py-0.75 px-3.75 hover:bg-custom_transparent hover:border-transparent duration-500 active:bg-brand"
             >
               {p}
             </button>

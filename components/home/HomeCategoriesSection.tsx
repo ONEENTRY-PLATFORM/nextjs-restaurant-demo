@@ -4,13 +4,13 @@ import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 
-import MenuSection from './MenuSection';
+import CategoriesSection from './CategoriesSection';
 
 const SECTION_LIMIT = 8;
 
 /**
  * Асинхронная секция, которая материализует список категорий на главной —
- * один {@link MenuSection} на каждую видимую дочернюю страницу `menu`, отсортированы по
+ * один {@link CategoriesSection} на каждую видимую дочернюю страницу `menu`, отсортированы по
  * `page.position`, до {@link SECTION_LIMIT} продуктов в каждой.
  *
  * Живёт за блоком `home_categories`, чтобы редактор контролировал,
@@ -56,20 +56,17 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
     <>
       {populated.map(({ page, products, total }, idx) => {
         const node = (
-          <MenuSection
+          <CategoriesSection
             title={page.localizeInfos?.title || page.pageUrl}
             categoryMarker={page.pageUrl}
             products={products}
             total={total}
             limit={SECTION_LIMIT}
             dict={{} as IAttributeValues}
-            className={
-              'max-w-100 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto w-full pt-3.75 md:pt-6.25'
-            }
           />
         );
         return idx % 2 === 0 ? (
-          <div key={page.id} className="bg-[rgba(76,77,86,0.8)] w-full">
+          <div key={page.id} className="bg-ink/80 w-full">
             {node}
           </div>
         ) : (

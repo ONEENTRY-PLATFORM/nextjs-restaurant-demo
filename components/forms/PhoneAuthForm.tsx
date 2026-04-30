@@ -84,7 +84,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
       <button
         type="submit"
         disabled={loading}
-        className="cart_btn mt-42.5 bg-custom_btnorange hover:bg-[#EB4B0E] disabled:opacity-60"
+        className="cart_btn mt-42.5 bg-custom_btnorange hover:bg-brand-hover disabled:opacity-60"
       >
         {loading ? '...' : 'SIGN IN'}
       </button>

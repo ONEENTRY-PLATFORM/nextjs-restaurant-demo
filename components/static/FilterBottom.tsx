@@ -62,7 +62,7 @@ const FilterBottom = (): JSX.Element => {
   };
 
   const itemClass = (active: boolean): string =>
-    'filter_item' + (active ? ' bg-[#ec722b] text-white border-[#ec722b]' : '');
+    'filter_item' + (active ? ' bg-brand text-white border-brand' : '');
 
   return (
     <>
@@ -109,14 +109,14 @@ const FilterBottom = (): JSX.Element => {
           <button
             type="button"
             onClick={reset}
-            className="filter_btn text-[16px] border-b border-white pb-0.75 hover:text-[#ec722b] hover:border-[#ec722b]"
+            className="filter_btn text-[16px] border-b border-white pb-0.75 hover:text-brand hover:border-brand"
           >
             Clear all Filters
           </button>
           <button
             type="button"
             onClick={apply}
-            className="filter_btn text-[#ec722b] border border-[#ec722b] rounded-[5px] px-5 hover_btn_white"
+            className="filter_btn text-brand border border-brand rounded-[5px] px-5 hover_btn_white"
           >
             Apply
           </button>

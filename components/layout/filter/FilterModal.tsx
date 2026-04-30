@@ -33,7 +33,7 @@ const FilterModal = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed right-0 top-0 z-20 flex size-full max-h-[90vh] min-h-[90vh] flex-col overflow-auto bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] shadow-xl md:top-[5vh] md:overflow-hidden md:rounded-l-[20px] lg:h-auto lg:w-95"
+        className="fixed right-0 top-0 z-20 flex size-full max-h-[90vh] min-h-[90vh] flex-col overflow-auto bg-ink/80 backdrop-blur-[10px] shadow-xl md:top-[5vh] md:overflow-hidden md:rounded-l-[20px] lg:h-auto lg:w-95"
       >
         <FilterHeader dict={dict} />
         <Suspense fallback={<Loader />}>

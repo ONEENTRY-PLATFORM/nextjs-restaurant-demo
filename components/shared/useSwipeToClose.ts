@@ -90,14 +90,24 @@ export const useSwipeToClose = (
       const elapsed = Math.max(1, e.timeStamp - startTime);
       const velocity = dy / elapsed;
       if (dy > threshold || velocity > velocityThreshold) {
+        // Считаем оставшееся расстояние до низа экрана и подгоняем
+        // длительность под скорость пальца, чтобы слайд продолжил жест без
+        // визуального рывка.
         const distance = window.innerHeight - el.getBoundingClientRect().top;
-        el.style.transition = 'transform 0.2s ease-in';
+        const remaining = Math.max(0, distance - dy);
+        const projected = velocity > 0 ? remaining / velocity : 250;
+        const duration = Math.min(280, Math.max(140, projected));
+        el.style.transition = `transform ${duration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
         el.style.transform = `translateY(${distance}px)`;
-        window.setTimeout(() => {
-          el.style.transition = '';
-          el.style.transform = '';
+        const onEnd = () => {
+          el.removeEventListener('transitionend', onEnd);
+          // НЕ сбрасываем transform/transition: пусть sheet остаётся
+          // за пределами экрана, пока React не размонтирует элемент
+          // через onClose. Сброс здесь привёл бы к прыжку обратно в
+          // исходную позицию до того, как родитель скроет попап.
           onClose();
-        }, 180);
+        };
+        el.addEventListener('transitionend', onEnd);
       } else {
         reset();
       }

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
@@ -12,6 +12,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ProfileIcon from '@/components/icons/profile';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
+import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import ProfilePopupAnimations from './animations/ProfilePopupAnimations';
 
@@ -55,9 +56,14 @@ const resolveInputType = (attr: IFormAttribute): string => {
  * @returns {JSX.Element} JSX drawer-а профиля.
  */
 const ProfilePopup = (): JSX.Element => {
-  const { open, component, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } =
+    useContext(OpenDrawerContext);
   const { user, refreshUser } = useContext(AuthContext);
   const isOpen = open && component === 'ProfilePopup';
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы
+  // inline-transform от хука не перебивался `yPercent`-tween-ом.
+  useSwipeToClose(sheetRef, () => setOpen(false));
 
   const [profileOpen, setProfileOpen] = useState(true);
   const [addressOpen, setAddressOpen] = useState(true);
@@ -163,6 +169,7 @@ const ProfilePopup = (): JSX.Element => {
     <ProfilePopupAnimations>
       <div
         id="modalBody"
+        ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 z-20 max-h-screen min-h-[60vh] overflow-y-auto rounded-t-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
         <div className="hidden w-full md:flex justify-end">

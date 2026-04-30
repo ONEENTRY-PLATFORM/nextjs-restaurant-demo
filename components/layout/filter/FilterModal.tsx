@@ -24,9 +24,11 @@ const FilterModal = ({
   prices: any | undefined;
   dict: IAttributeValues;
 }): JSX.Element => {
-  const { setTransition } = useContext(OpenDrawerContext);
+  const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  useSwipeToClose(sheetRef, () => setTransition('close'));
+  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform
+  // от хука не конфликтовал с `yPercent`-tween-ом close-анимации.
+  useSwipeToClose(sheetRef, () => setOpen(false));
 
   return (
     <FilterModalAnimations>

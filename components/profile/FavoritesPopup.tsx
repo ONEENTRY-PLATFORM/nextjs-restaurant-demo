@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -24,6 +24,7 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
+import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
@@ -39,7 +40,8 @@ const FavoritesPopup = ({
 }: {
   dict?: IAttributeValues;
 }): JSX.Element => {
-  const { open, component, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } =
+    useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
 
   const favoriteIds = useAppSelector(selectFavoritesItems);
@@ -49,6 +51,10 @@ const FavoritesPopup = ({
   );
 
   const close = () => setTransition('close');
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы
+  // inline-transform хука не перебивался `yPercent`-tween-ом.
+  useSwipeToClose(sheetRef, () => setOpen(false));
   const products = (data ?? []) as IProductsEntity[];
   const addToCartLabel =
     (dict?.add_to_cart?.value as string | undefined) ?? 'Add to cart';
@@ -57,9 +63,10 @@ const FavoritesPopup = ({
     <FavoritesPopupAnimations>
       <div
         id="modalBody"
+        ref={sheetRef}
         className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex max-h-[90vh] min-h-[60vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        <div className="flex justify-end">
+        <div className="hidden justify-end md:flex">
           <ClosePopupButton
             onClose={close}
             ariaLabel="Close favorites"

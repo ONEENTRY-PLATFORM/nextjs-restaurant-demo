@@ -45,7 +45,9 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
 
       {mobileBanners.length > 0 ? (
         <section className="md:hidden pt-3">
-          <h2 className="title_name max-w-88 mx-auto md:hidden">Actions</h2>
+          <h2 className="title_name max-w-88 mx-auto md:hidden px-4">
+            Actions
+          </h2>
           <div className="flex overflow-x-auto overflow-y-hidden max-w-full gap-2.5 mt-3.75 no-scrollbar">
             {mobileBanners.map((b) => (
               <Link

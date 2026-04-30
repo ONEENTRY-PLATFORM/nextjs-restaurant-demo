@@ -52,7 +52,7 @@ const HomeBlockSection = ({
         <h2 className="title_name">{title}</h2>
       </div>
       <div
-        className={`menu_items w-full ${COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4'}`}
+        className={`menu_items grid w-full grid-cols-2 max-md:[&>.menu_item]:w-full ${COLS_CLASS[countElementsPerRow ?? 4] ?? 'md:grid-cols-4'}`}
       >
         {visible.map((product, i) => (
           <ProductCard

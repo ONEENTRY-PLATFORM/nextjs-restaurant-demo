@@ -8,8 +8,9 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Анимации открытия/закрытия попапа избранного — появление модалки по центру
- * (scale + blur + opacity), повторяет паттерн модалки `CalendarForm`.
+ * Анимации открытия/закрытия попапа избранного — slide-up снизу как в
+ * `CartPopupAnimations`, чтобы все drawer-ы из bottom-меню имели единую
+ * идиому появления.
  * @param   {object}      props          - Пропсы компонента.
  * @param   {ReactNode}   props.children - Содержимое попапа.
  * @returns {JSX.Element}                JSX обёртки анимации.
@@ -41,32 +42,34 @@ const FavoritesPopupAnimations = ({
     const modalBg = ref.current?.querySelector('#modalBg') ?? null;
     const modalBody = ref.current?.querySelector('#modalBody') ?? null;
 
-    gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
-    gsap.set(modalBody, {
-      autoAlpha: 0,
-      scale: 0.85,
-      filter: 'blur(8px)',
-    });
+    // На мобиле — slide-up снизу (паттерн bottom-меню как у `CartPopup`).
+    // На md+ попап центрирован через `translate-x/y-1/2`, и `yPercent`
+    // конфликтует с центрированием — там оставляем scale + fade.
+    const isMobile =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 767px)').matches;
+
+    gsap.set(modalBg, { autoAlpha: 0 });
+    if (isMobile) {
+      gsap.set(modalBody, { yPercent: 100 });
+    } else {
+      gsap.set(modalBody, { autoAlpha: 0, scale: 0.85 });
+    }
 
     tl.to(modalBg, {
       autoAlpha: 1,
       backdropFilter: 'blur(10px)',
-      duration: 0.45,
-      ease: 'power2.out',
+      duration: 0.5,
     }).to(
       modalBody,
-      {
-        autoAlpha: 1,
-        scale: 1,
-        filter: 'blur(0px)',
-        duration: 0.55,
-        ease: 'back.out(1.4)',
-      },
-      '-=0.3',
+      isMobile
+        ? { autoAlpha: 1, yPercent: 0, duration: 0.5 }
+        : { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'back.out(1.4)' },
+      '-=0.25',
     );
 
     if (transition === 'close') {
-      tl.reverse(1.4);
+      tl.reverse(2);
     } else {
       tl.play();
     }

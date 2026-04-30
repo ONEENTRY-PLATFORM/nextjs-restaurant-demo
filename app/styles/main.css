@@ -219,7 +219,19 @@ html {
 }
 
 .menu_item {
-  @apply flex flex-col justify-between w-41 md:w-85 md_wide:w-55 lg:w-69.5 overflow-hidden relative transition-transform hover:scale-105 duration-700 cursor-pointer;
+  @apply 
+    flex flex-col 
+    justify-between 
+    w-38 
+    md:w-85 
+    md_wide:w-55 
+    lg:w-69.5 
+    overflow-hidden 
+    relative 
+    transition-transform 
+    hover:scale-105 
+    duration-700 
+    cursor-pointer;
 }
 
 .descr {

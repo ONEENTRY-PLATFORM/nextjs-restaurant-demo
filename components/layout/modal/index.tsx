@@ -69,14 +69,16 @@ const Modal = ({
 }: {
   dict: IAttributeValues | undefined;
 }): JSX.Element => {
-  const { component, setTransition } = useContext(OpenDrawerContext);
+  const { component, setOpen } = useContext(OpenDrawerContext);
 
   // выбираем компонент формы по имени компонента
   const Form = forms[component as keyof typeof forms] || null;
 
   const title = useTitleData({ dict, component });
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  useSwipeToClose(sheetRef, () => setTransition('close'));
+  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform
+  // от хука не перебивался tween-ом open/close-анимации.
+  useSwipeToClose(sheetRef, () => setOpen(false));
 
   if (!Form) {
     return <></>;

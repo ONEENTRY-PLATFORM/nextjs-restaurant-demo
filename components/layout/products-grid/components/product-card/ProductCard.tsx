@@ -47,9 +47,6 @@ const ProductCard = ({
   const attrs = attributeValues ?? {};
   const title = localizeInfos?.title || '';
 
-  // Строка descr (время · вес · рейтинг) — markers из set атрибутов `dish`
-  // (проверено через inspect-api). Если атрибута нет в OneEntry —
-  // соответствующий блок (с подписью и иконкой) не рендерится вовсе.
   const timeRaw = attrs.cooking_time?.value as string | number | undefined;
   const time = timeRaw != null && timeRaw !== '' ? String(timeRaw) : null;
 

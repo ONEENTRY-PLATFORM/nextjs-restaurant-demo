@@ -67,7 +67,7 @@ const RelatedItems = async ({
       <ProductAnimations className={''} index={0}>
         <h3 className="title_name max-md:max-w-full">{title}</h3>
       </ProductAnimations>
-      <CardsGridAnimations className="menu_items w-full">
+      <CardsGridAnimations className="menu_items grid w-full grid-cols-2 max-md:[&>.menu_item]:w-full md:grid-cols-4">
         {items.map((product, i) => (
           <ProductCard
             key={product.id}

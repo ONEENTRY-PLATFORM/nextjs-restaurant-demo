@@ -32,7 +32,8 @@ import CartPopupAnimations from './animations/CartPopupAnimations';
 const CartPopup = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { open, component, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } =
+    useContext(OpenDrawerContext);
   const isOpen = open && component === 'CartPopup';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,7 +56,9 @@ const CartPopup = (): JSX.Element => {
   };
 
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  useSwipeToClose(sheetRef, close);
+  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы не было
+  // конфликта между inline-transform и `yPercent`-tween анимации.
+  useSwipeToClose(sheetRef, () => setOpen(false));
 
   const products = (data ?? []) as IProductsEntity[];
 

@@ -80,7 +80,11 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
       />
       <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch px-4">
         <div className="flex w-full flex-col items-center gap-5">
-          <Suspense fallback={<MemoizedProductsGridLoader />}>
+          <Suspense
+            fallback={
+              <MemoizedProductsGridLoader productsLimit={productsLimit} />
+            }
+          >
             <ProductsGridLayout
               searchParams={searchParams ?? {}}
               productsLimit={productsLimit}

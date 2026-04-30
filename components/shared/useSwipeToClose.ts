@@ -79,6 +79,11 @@ export const useSwipeToClose = (
         el.style.transform = '';
         return;
       }
+      // Глушим нативный скролл страницы/sheet-а на время drag-а вниз —
+      // иначе вместе со sheet-ом тянется фоновая страница.
+      if (e.cancelable) {
+        e.preventDefault();
+      }
       el.style.transform = `translateY(${dy}px)`;
     };
 
@@ -121,7 +126,10 @@ export const useSwipeToClose = (
     };
 
     el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchmove', onTouchMove, { passive: true });
+    // touchmove НЕ passive — нужно `preventDefault` гасить body-scroll во
+    // время swipe-down. Без этого страница за попапом прокручивается
+    // вместе с пальцем.
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
     el.addEventListener('touchend', onTouchEnd);
     el.addEventListener('touchcancel', onTouchCancel);
 

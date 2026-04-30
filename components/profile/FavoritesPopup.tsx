@@ -18,6 +18,8 @@ import {
   removeFavorites,
   selectFavoritesItems,
 } from '@/app/store/reducers/FavoritesSlice';
+import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
+import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -66,6 +68,29 @@ const FavoritesPopup = ({
         ref={sheetRef}
         className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex max-h-[90vh] min-h-[60vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
+        {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
+            заголовок по центру, бургер справа. На md+ скрыт, там сверху —
+            обычная X-кнопка. */}
+        <div className="flex items-center justify-between md:hidden">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close favorites"
+            className="group_white"
+          >
+            <ArrowBackOrangeIcon />
+          </button>
+          <p className="font-normal text-[24px] text-white">Favorites</p>
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Menu"
+            className="group_white"
+          >
+            <BurgerOrangeIcon />
+          </button>
+        </div>
+
         <div className="hidden justify-end md:flex">
           <ClosePopupButton
             onClose={close}

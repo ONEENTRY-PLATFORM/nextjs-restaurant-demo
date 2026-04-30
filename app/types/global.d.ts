@@ -50,7 +50,7 @@ declare type SimplePageProps = {
  */
 declare type LoaderProps = {
   data?: Record<string, unknown>;
-  limit?: number;
+  productsLimit?: number;
   offset?: number;
 };
 

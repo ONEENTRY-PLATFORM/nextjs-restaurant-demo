@@ -221,6 +221,72 @@ html {
       px-4
       py-10;
   }
+
+  /*
+   * Полностраничная shop/product секция — flex-колонка с тем же
+   * max-width-ladder, но без `py-10` и без mobile-капа `max-w-88`.
+   * Используется в shop / shop/[handle] / shop/category / product layout.
+   */
+  .shop_section {
+    @apply
+      relative
+      mx-auto
+      flex
+      w-full
+      md:max-w-175
+      lg:max-w-250
+      xl:max-w-323
+      shrink-0
+      grow
+      flex-col
+      self-stretch
+      px-4;
+  }
+
+  /*
+   * Внутренняя обёртка ProductsGrid (без `px-4`, с `min-h-25` под лоадер).
+   * Парная с `.shop_section`, но рендерится внутри уже padding-нутого
+   * родителя — потому горизонтального паддинга нет.
+   */
+  .products_grid_layout {
+    @apply
+      relative
+      mx-auto
+      flex
+      min-h-25
+      w-full
+      md:max-w-175
+      lg:max-w-250
+      xl:max-w-323
+      shrink-0
+      grow
+      flex-col
+      self-stretch;
+  }
+
+  /*
+   * Mobile-only slide-up sheet ревью (`OrderReviewsPanel`,
+   * `ReviewsSlideUpPanel`). Glass-фон + анимация выезда снизу.
+   * `animation` прописана напрямую — `animate-slide-up` это не
+   * Tailwind-утилита, а кастомный класс из этого же файла, и
+   * `@apply` его не принимает.
+   */
+  .review_sheet {
+    @apply
+      fixed
+      bottom-0
+      left-0
+      z-10
+      w-full
+      rounded-tl-[20px]
+      rounded-tr-[20px]
+      bg-ink/80
+      px-5
+      pt-5.5
+      backdrop-blur-[10px]
+      md:hidden;
+    animation: slide-up 1s ease-in-out forwards;
+  }
 }
 
 @layer components {

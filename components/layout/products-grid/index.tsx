@@ -62,7 +62,7 @@ const ProductsGridLayout = async ({
     <CardsGridAnimations
       className={'relative box-border flex w-full shrink-0 flex-col'}
     >
-      <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
+      <section className="products_grid_layout">
         <ProductsGrid
           dict={dict}
           productsLimit={productsLimit}

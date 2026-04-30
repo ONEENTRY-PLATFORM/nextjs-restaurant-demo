@@ -50,7 +50,7 @@ const ProductSingle = async ({
     : '';
 
   return (
-    <section className="relative mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch px-4">
+    <section className="shop_section">
       {/* Breadcrumb + заголовок — md+ над колонками */}
       <div className="hidden md:block">
         {categoryLabel ? (

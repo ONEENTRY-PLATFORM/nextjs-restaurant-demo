@@ -16,7 +16,7 @@ const ProductsGridLoader = ({
     <ProductsGridLoaderAnimations
       className={'relative box-border flex w-full shrink-0 flex-col'}
     >
-      <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
+      <section className="products_grid_layout">
         <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
           {Array.from(Array(productsLimit).keys()).map((item) => (
             <div

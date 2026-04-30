@@ -123,7 +123,7 @@ const OrderReviewsPanel = ({ order }: OrderReviewsPanelProps): JSX.Element => {
   };
 
   return (
-    <div className="animate-slide-up fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-5.5 backdrop-blur-[10px] md:hidden">
+    <div className="review_sheet">
       <div className="mx-auto max-w-88.75">
         <div className="flex items-center justify-center gap-1.25">
           <p className="text-center font-bold text-[20px] text-brand">

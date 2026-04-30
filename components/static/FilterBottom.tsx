@@ -106,7 +106,7 @@ const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         id="side-menu"
         ref={sheetRef}
         className={
-          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-ink/80 backdrop-blur-[10px] z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
           'md:left-auto md:right-0 md:bottom-0 md:top-0 md:h-screen md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'

@@ -67,7 +67,7 @@ const CartPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 h-dvh overflow-y-auto bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:min-h-[90vh] md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
+        className="fixed bottom-0 left-0 right-0 z-20 h-dvh overflow-y-auto bg-ink/80 backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:min-h-[90vh] md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
           <div className="flex justify-between items-center">

@@ -207,7 +207,7 @@ const CartWizard = ({
 
       {showPopup && (
         <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-[10px]">
-          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 md:overflow-y-auto md:rounded-[20px] md:bg-[rgba(76,77,86,0.8)] md:p-7.5 md:backdrop-blur-[10px]">
+          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-[10px]">
             {/* Хедер попапа — назад / заголовок / закрыть */}
             <div className="flex items-center justify-between md:mb-2">
               <button
@@ -230,7 +230,7 @@ const CartWizard = ({
 
             {/* Панель контента шага — glass-карточка на мобиле, plain внутри
                 попапа на десктопе (сам попап обеспечивает обрамление). */}
-            <div className="rounded-[20px] bg-[rgba(76,77,86,0.8)] px-5 py-6.25 backdrop-blur-[10px] md:rounded-none md:bg-transparent md:p-0 md:backdrop-blur-none">
+            <div className="rounded-[20px] bg-ink/80 px-5 py-6.25 backdrop-blur-[10px] md:rounded-none md:bg-transparent md:p-0 md:backdrop-blur-none">
               {stepBody}
             </div>
           </div>

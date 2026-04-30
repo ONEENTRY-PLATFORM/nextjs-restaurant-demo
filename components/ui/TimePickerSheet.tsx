@@ -42,7 +42,7 @@ const TimePickerSheet = ({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-[rgba(76,77,86,0.8)] px-5 pt-7.25 backdrop-blur-[10px]">
+    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-[10px]">
       <div className="mx-auto max-w-77.5 bg-transparent">
         <div className="grid grid-cols-4 gap-2.5">
           {slots.map((slot) => {

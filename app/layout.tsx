@@ -79,7 +79,7 @@ export default async function RootLayout({
               </TransitionProvider>
               <BottomMenu />
               <CartPopup />
-              <FavoritesPopup />
+              <FavoritesPopup dict={dict} />
               <ProfilePopup />
               <Modal dict={dict} />
             </OpenDrawerProvider>

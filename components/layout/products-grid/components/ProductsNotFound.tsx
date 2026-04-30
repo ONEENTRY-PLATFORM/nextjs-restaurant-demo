@@ -1,17 +1,10 @@
 import Image from 'next/image';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import { type JSX } from 'react';
-
-import FilterModal from '@/components/layout/filter/FilterModal';
 
 /**
  * ProductsNotFound
  */
-const ProductsNotFound = async ({
-  dict,
-}: {
-  dict: IAttributeValues;
-}): Promise<JSX.Element> => {
+const ProductsNotFound = async (): Promise<JSX.Element> => {
   return (
     <div className="text-center">
       <Image
@@ -22,7 +15,6 @@ const ProductsNotFound = async ({
         className="mx-auto mb-5 size-20"
       />
       <div className="text-center text-lg">Products not found</div>
-      <FilterModal prices={null} dict={dict} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 'use client';
 
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import { type JSX, useContext, useState } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -31,12 +32,25 @@ const PRICE = ['from 5', 'Under 30'];
  * экранах md+.
  * @returns {JSX.Element} JSX панели фильтра.
  */
-const FilterBottom = (): JSX.Element => {
+const FilterBottom = ({
+  dict,
+}: {
+  dict?: IAttributeValues;
+}): JSX.Element => {
   const { open, component, setOpen, setComponent } =
     useContext(OpenDrawerContext);
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<string[]>([]);
   const [price, setPrice] = useState<string | null>(null);
+
+  const waitingTitle =
+    (dict?.order_waiting_time?.value as string | undefined) ??
+    'Order waiting time';
+  const preferencesTitle =
+    (dict?.preferences_text?.value as string | undefined) ?? 'Preferences';
+  const clearAllLabel =
+    (dict?.clear_all_filters_text?.value as string | undefined) ??
+    'Clear all filters';
 
   const isVisible = open && component === 'FilterForm';
 
@@ -111,7 +125,7 @@ const FilterBottom = (): JSX.Element => {
             onClick={reset}
             className="filter_btn text-[16px] border-b border-white pb-0.75 hover:text-brand hover:border-brand"
           >
-            Clear all Filters
+            {clearAllLabel}
           </button>
           <button
             type="button"
@@ -122,7 +136,7 @@ const FilterBottom = (): JSX.Element => {
           </button>
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-9.25 gap-1.75">
-          <p className="filter_title">Order waiting time</p>
+          <p className="filter_title">{waitingTitle}</p>
           {WAITING_TIME.map((item) => (
             <button
               key={item}
@@ -137,7 +151,7 @@ const FilterBottom = (): JSX.Element => {
           ))}
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75">
-          <p className="filter_title">Preferences</p>
+          <p className="filter_title">{preferencesTitle}</p>
           {PREFERENCES.map((item) => (
             <button
               key={item}

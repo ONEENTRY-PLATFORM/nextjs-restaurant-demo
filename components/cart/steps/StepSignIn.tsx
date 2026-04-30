@@ -47,7 +47,7 @@ const StepSignIn = (): JSX.Element => {
   const onGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     if (!clientId) {
-      // Fallback — Google credentials ещё не настроены (см. ONEENTRY-ADMIN-SETUP.md).
+      // Fallback — Google credentials ещё не настроены (см. MISMATCH-LOG.md §C.8.1).
       onEmailLogin();
       return;
     }

@@ -87,7 +87,7 @@ const FavoriteCard = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-[calc(50%-30px)]">
+    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-half-gap">
       {imageSrc ? (
         <Image
           src={imageSrc}

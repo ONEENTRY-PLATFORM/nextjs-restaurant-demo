@@ -3,7 +3,6 @@ import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 import { type JSX } from 'react';
 
 import { getProducts, getProductsByPageUrl } from '@/app/api';
-import FilterModal from '@/components/layout/filter/FilterModal';
 import CardsGridAnimations from '@/components/layout/products-grid/animations/CardsGridAnimations';
 
 import LoadMore from './components/LoadMore';
@@ -54,32 +53,28 @@ const ProductsGridLayout = async ({
       });
 
   if (!products || total < 1 || isError) {
-    return <ProductsNotFound dict={dict} />;
+    return <ProductsNotFound />;
   }
 
   const totalPages = Math.ceil(total / productsLimit);
-  const fromToPrices = products[0]?.additional.prices;
 
   return (
-    <>
-      <CardsGridAnimations
-        className={'relative box-border flex w-full shrink-0 flex-col'}
-      >
-        <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
-          <ProductsGrid
-            dict={dict}
-            productsLimit={productsLimit}
-            products={products}
-          />
-          {totalPages > 1 && (
-            <div className="mt-5 flex w-full justify-center">
-              <LoadMore totalPages={totalPages} />
-            </div>
-          )}
-        </section>
-      </CardsGridAnimations>
-      <FilterModal prices={fromToPrices} dict={dict} />
-    </>
+    <CardsGridAnimations
+      className={'relative box-border flex w-full shrink-0 flex-col'}
+    >
+      <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
+        <ProductsGrid
+          dict={dict}
+          productsLimit={productsLimit}
+          products={products}
+        />
+        {totalPages > 1 && (
+          <div className="mt-5 flex w-full justify-center">
+            <LoadMore totalPages={totalPages} />
+          </div>
+        )}
+      </section>
+    </CardsGridAnimations>
   );
 };
 

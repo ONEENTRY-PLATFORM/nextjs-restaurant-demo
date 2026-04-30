@@ -1,5 +1,6 @@
 'use client';
 
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
@@ -42,7 +43,15 @@ const resolveAuthorName = (user: {
  * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
  * @returns {JSX.Element}                 JSX формы отзыва.
  */
-const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
+const ReviewForm = ({
+  productId,
+  dict,
+}: {
+  productId: number;
+  dict?: IAttributeValues;
+}): JSX.Element => {
+  const leaveReviewLabel =
+    (dict?.leave_review?.value as string | undefined) ?? 'Leave a review';
   const { isAuth, user } = useContext(AuthContext);
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
 
@@ -56,7 +65,7 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
     return (
       <div className="flex flex-col gap-3 rounded-xl bg-ink/60 p-5 text-paper">
         <h3 className="font-bold text-[18px] uppercase text-brand">
-          Leave a review
+          {leaveReviewLabel}
         </h3>
         <p className="text-sm text-paper/80">
           Please sign in to leave a review.
@@ -113,7 +122,7 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <h3 className="font-bold text-[18px] uppercase text-brand">
-        Leave a review
+        {leaveReviewLabel}
       </h3>
       <p className="text-sm text-paper/70">
         Posting as <span className="text-paper">{resolveAuthorName(user)}</span>

@@ -68,7 +68,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
           htmlFor="phone_auth_number"
           className="font-normal text-[18px] text-custom_white"
         >
-          Phone number
+          {(dict?.sign_in_phone_label?.value as string) ?? 'Phone number'}
         </label>
         <input
           id="phone_auth_number"

@@ -87,7 +87,7 @@ const readNumber = (value: unknown): number => {
  *
  * Падает на пустой массив при любой ошибке SDK или отсутствии данных, чтобы
  * компонент мог отрендерить `null` (согласно правилу graceful-fallback на
- * "Resource is closed" в `ONEENTRY-ADMIN-SETUP.md`).
+ * "Resource is closed" в `MISMATCH-LOG.md` §C).
  * @param   {number}                    productId - Id отзываемого продукта (становится `entityIdentifier`).
  * @returns {Promise<ProductReview[]>}            Отзывы верхнего уровня, сначала новые.
  */

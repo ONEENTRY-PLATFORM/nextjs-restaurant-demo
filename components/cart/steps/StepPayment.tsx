@@ -183,7 +183,8 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
             height={18}
           />
         </span>
-        The order will be taken by another person
+        {(dict?.another_person_text?.value as string | undefined) ??
+          'The order will be taken by another person'}
       </label>
 
       {/* Телефон альтернативного получателя (виден, когда чекбокс включён) */}

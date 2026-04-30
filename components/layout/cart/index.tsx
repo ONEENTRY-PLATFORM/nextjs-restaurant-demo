@@ -45,16 +45,22 @@ const CartPage = ({
       user?.formData.find((el) => el.marker === 'address_reg')?.value ?? '';
     const address = (cartDelivery.address as string | undefined) || addressReg;
 
-    if (date) {
+    // OneEntry требует для `timeInterval` value формы массив пар
+    // `[[startISO, endISO]]` (см. SDK skill `create-checkout`). TimePickerSheet
+    // отдаёт 1-часовой слот в формате `HH.00`/`HH:MM`, поэтому собираем интервал
+    // [hour, hour+1) на выбранном дне.
+    const hourMatch =
+      typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
+    const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
+    if (date && Number.isFinite(hour)) {
+      const start = new Date(date);
+      start.setUTCHours(hour, 0, 0, 0);
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
       dispatch(
         addData({
           marker: 'delivery_time',
           type: 'timeInterval',
-          value: {
-            fullDate: new Date(date).toISOString(),
-            formattedValue: `${new Date(date).toDateString()} ${time ?? ''}`,
-            formatString: 'YYYY-MM-DD HH:mm',
-          },
+          value: [[start.toISOString(), end.toISOString()]],
           valid: true,
         }),
       );

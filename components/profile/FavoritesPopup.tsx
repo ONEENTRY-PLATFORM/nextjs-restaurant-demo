@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext } from 'react';
@@ -33,7 +34,11 @@ import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
  * `component === 'FavoritesPopup'`).
  * @returns {JSX.Element} JSX попапа избранного.
  */
-const FavoritesPopup = (): JSX.Element => {
+const FavoritesPopup = ({
+  dict,
+}: {
+  dict?: IAttributeValues;
+}): JSX.Element => {
   const { open, component, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
 
@@ -45,6 +50,8 @@ const FavoritesPopup = (): JSX.Element => {
 
   const close = () => setTransition('close');
   const products = (data ?? []) as IProductsEntity[];
+  const addToCartLabel =
+    (dict?.add_to_cart?.value as string | undefined) ?? 'Add to cart';
 
   return (
     <FavoritesPopupAnimations>
@@ -80,7 +87,11 @@ const FavoritesPopup = (): JSX.Element => {
         ) : (
           <div className="mt-15 flex w-full flex-wrap justify-center gap-7.5">
             {products.map((product) => (
-              <FavoriteCard key={product.id} product={product} />
+              <FavoriteCard
+                key={product.id}
+                product={product}
+                addToCartLabel={addToCartLabel}
+              />
             ))}
           </div>
         )}
@@ -98,8 +109,10 @@ const FavoritesPopup = (): JSX.Element => {
  */
 const FavoriteCard = ({
   product,
+  addToCartLabel,
 }: {
   product: IProductsEntity;
+  addToCartLabel: string;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector((state) =>
@@ -119,7 +132,7 @@ const FavoriteCard = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-paper/30 p-2.5 md:w-[calc(50%-30px)]">
+    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-paper/30 p-2.5 md:w-half-gap">
       {imageSrc ? (
         <Image
           src={imageSrc}
@@ -157,7 +170,7 @@ const FavoriteCard = ({
               }),
             )
           }
-          aria-label={inCart ? 'In cart' : 'Add to cart'}
+          aria-label={inCart ? 'In cart' : addToCartLabel}
           className="group_white"
           disabled={inCart}
         >

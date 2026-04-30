@@ -59,7 +59,8 @@ const RelatedItems = async ({
     return <></>;
   }
 
-  const title = 'Featured objects';
+  const title =
+    (dict.featured_objects?.value as string | undefined) ?? 'Featured objects';
 
   return (
     <section className="flex flex-col max-md:max-w-full pt-4">

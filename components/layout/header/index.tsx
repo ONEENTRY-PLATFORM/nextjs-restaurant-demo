@@ -9,6 +9,7 @@ import {
   getProductsByPageUrl,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
+import { getDictionary } from '@/app/dictionaries';
 import BurgerIcon from '@/components/icons/burger';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import PhoneIcon from '@/components/icons/phone.svg';
@@ -31,6 +32,7 @@ import SearchFallback from './search/SearchFallback';
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
+  const dict = await getDictionary();
 
   // Телефон поддержки для иконки-звонилки в мобильной шапке (`support_phone`
   // на странице `support`). Если CMS-значение отсутствует — кнопка деградирует
@@ -75,7 +77,7 @@ const Header = async (): Promise<JSX.Element> => {
         }))
       : [];
   // В OneEntry сейчас есть дублирующиеся listTitles `Dinner` (см.
-  // ONEENTRY-ADMIN-SETUP.md §2.4), которые коллидили бы по React-ключам —
+  // MISMATCH-LOG.md §C.2.4), которые коллидили бы по React-ключам —
   // дедуплицируем по value, побеждает первое вхождение.
   const seenValues = new Set<string>();
   const preferenceOptions: PreferenceOption[] = rawPreferenceOptions.filter(
@@ -145,12 +147,10 @@ const Header = async (): Promise<JSX.Element> => {
           </header>
 
           {/* navigation */}
-          <section className="navigation max-w-auto md:py-4 xl:p-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
+          <section className="navigation max-w-auto md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             {/* Category Button */}
             <CategoryButton />
-            {/* Categories Scroller — обёрнут в Suspense, потому что использует
-                useSearchParams() и иначе форсил бы весь route в CSR bailout
-                во время prerender. */}
+            {/* Categories Scroller */}
             <Suspense fallback={null}>
               <CategoriesScroller preferences={preferenceOptions} />
             </Suspense>
@@ -158,7 +158,7 @@ const Header = async (): Promise<JSX.Element> => {
         </div>
       </div>
       {/* Filter Bottom */}
-      <FilterBottom />
+      <FilterBottom dict={dict} />
       {/* Category Filter */}
       <CategoryFilter pages={populatedPages} />
     </div>

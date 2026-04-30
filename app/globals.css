@@ -56,7 +56,10 @@
   --breakpoint-md_wide: 1020px;
 
   /* Custom width utilities */
-  --spacing-50\%-gap: calc(50% - 30px);
+  /* `half-gap` — половина строки за вычетом 30px (gap=60px между двумя колонками
+     карточек). JSX-safe имя без `%`, чтобы можно было использовать `w-half-gap`
+     прямо в className. CSS-вариант `w-30%-gap` оставлен для @apply в main.css. */
+  --spacing-half-gap: calc(50% - 30px);
   --spacing-30\%-gap: calc(32% - 5px);
 }
 

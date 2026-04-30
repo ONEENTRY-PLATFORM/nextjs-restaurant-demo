@@ -51,18 +51,25 @@ const DeliveryTable = ({
     const time = deliveryData.time;
     const address = deliveryData.address || addressReg || '';
 
-    dispatch(
-      addData({
-        marker: 'delivery_time',
-        type: 'timeInterval',
-        value: {
-          fullDate: new Date(date).toISOString(),
-          formattedValue: `${new Date(date).toDateString()} ${time ?? ''}`,
-          formatString: 'YYYY-MM-DD HH:mm',
-        },
-        valid: date ? true : false,
-      }),
-    );
+    // OneEntry для `timeInterval` ждёт массив пар `[[startISO, endISO]]`
+    // (см. SDK skill `create-checkout`). Если час ещё не выбран — пропускаем
+    // dispatch, чтобы не отправить невалидный value.
+    const hourMatch =
+      typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
+    const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
+    if (date && Number.isFinite(hour)) {
+      const start = new Date(date);
+      start.setUTCHours(hour, 0, 0, 0);
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
+      dispatch(
+        addData({
+          marker: 'delivery_time',
+          type: 'timeInterval',
+          value: [[start.toISOString(), end.toISOString()]],
+          valid: true,
+        }),
+      );
+    }
     dispatch(
       addData({
         marker: 'delivery_address',

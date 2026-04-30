@@ -55,7 +55,7 @@ const initialLineState = (): LineState => ({
  * Каждая строка заказа рендерится как: фото + 5-звёздный рейтинг + поле
  * отзыва + кнопки Apply/Edit. Строка курьера отправляется через
  * {@link submitDeliveryReview} (placeholder, пока `delivery_review_form`
- * не появится в OneEntry — см. `ONEENTRY-ADMIN-SETUP.md` §1.3); строки
+ * не появится в OneEntry — см. `MISMATCH-LOG.md` §C.1.3); строки
  * продуктов отправляются через {@link submitReview} с `productId` строки.
  *
  * Идентификация автора проходит через {@link AuthContext}; неавторизованный

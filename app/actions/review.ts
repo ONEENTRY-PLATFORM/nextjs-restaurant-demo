@@ -124,7 +124,7 @@ export async function submitReview(
 /**
  * Заглушка Server Action для строки отзыва о курьере/доставке в
  * {@link OrderReviewsPanel}. Когда форма `delivery_review_form` появится в
- * OneEntry (см. ONEENTRY-ADMIN-SETUP.md §1.3), это должно повторять
+ * OneEntry (см. MISMATCH-LOG.md §C.1.3), это должно повторять
  * {@link submitReview} и отправлять через `api.FormData.postFormsData` с
  * `moduleEntityIdentifier=String(orderId)`. До этого просто резолвит
  * `ok`, чтобы UI-флоу можно было пройти end-to-end.

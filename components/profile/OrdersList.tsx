@@ -12,7 +12,6 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import ChevronUpIcon from '@/components/icons/chevron-up.svg';
 import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set([
@@ -131,7 +130,11 @@ const OrderCard = ({
         <p className="font-bold">№{formatOrderNumber(order)}</p>
         <p>{statusLabel(order)}</p>
         <p>{formatOrderDate(created)}</p>
-        <ChevronUpIcon
+        <Image
+          src="/images/icons/chevron-up.svg"
+          alt=""
+          width={12}
+          height={7}
           className={
             'transition-transform duration-200 ' +
             (expanded ? '' : 'rotate-180')

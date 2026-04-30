@@ -38,7 +38,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('services');
 
   /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
-  const pagesLimit = SHOP_PAGE_LIMIT;
+  const productsLimit = SHOP_PAGE_LIMIT;
 
   /** Возвращаем 404, если страница магазина не найдена */
   if (!page) {
@@ -78,7 +78,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
         <div className="flex w-full flex-col items-center gap-5">
           <Suspense fallback={<MemoizedProductsGridLoader />}>
             <ProductsGridLayout
-              pagesLimit={pagesLimit}
+              productsLimit={productsLimit}
               dict={dict}
               params={params}
               searchParams={searchParams ?? {}}

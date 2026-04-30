@@ -8,7 +8,6 @@ import { submitDeliveryReview, submitReview } from '@/app/actions/review';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
-import ChevronUpIcon from '@/components/icons/chevron-up.svg';
 
 import { mockOrderReview, type OrderReviewMock } from './mockOrderReviewData';
 import StarRating from './StarRating';
@@ -139,7 +138,12 @@ const OrderReviewsPanel = ({ order }: OrderReviewsPanelProps): JSX.Element => {
           <p className="font-bold">№{data.orderNumber}</p>
           <p>{data.status}</p>
           <p>{data.date}</p>
-          <ChevronUpIcon />
+          <Image
+            src="/images/icons/chevron-up.svg"
+            alt=""
+            width={12}
+            height={7}
+          />
         </div>
 
         <div className="mt-3.25 flex flex-col gap-4">

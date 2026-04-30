@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
@@ -10,7 +11,6 @@ import {
   setStep,
   setStepError,
 } from '@/app/store/reducers/OrderSlice';
-import CardLineIcon from '@/components/icons/card-line.svg';
 
 type SavedCard = {
   id: string;
@@ -63,7 +63,12 @@ const StepAddCard = (): JSX.Element => {
   return (
     <div className="flex flex-col gap-1.25">
       <div className="flex items-center gap-2.5">
-        <CardLineIcon />
+        <Image
+          src="/images/icons/card-line.svg"
+          alt=""
+          width={23}
+          height={15}
+        />
         <p className="font-normal text-[20px] text-paper">Payment</p>
       </div>
 
@@ -71,7 +76,12 @@ const StepAddCard = (): JSX.Element => {
         {cards.map((card) => (
           <div key={card.id} className="flex items-center gap-5">
             <p className="font-normal text-[16px] text-paper">Card</p>
-            <CardLineIcon />
+            <Image
+              src="/images/icons/card-line.svg"
+              alt=""
+              width={23}
+              height={15}
+            />
             <div className="font-bold text-[16px] text-paper">
               ****{card.last4}
             </div>

@@ -9,10 +9,7 @@ import { useState } from 'react';
 import { useApplyCoupon } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
-import {
-  selectAppliedCoupon,
-  setStep,
-} from '@/app/store/reducers/OrderSlice';
+import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
 import Placeholder from '@/components/shared/Placeholder';
 import { UsePrice } from '@/components/utils';
 
@@ -119,9 +116,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
                 <p className="font-normal text-sm text-white">{title}</p>
                 <div className="flex items-center gap-2.5">
                   {weight ? (
-                    <p className="font-normal text-sm text-white">
-                      {weight} g
-                    </p>
+                    <p className="font-normal text-sm text-white">{weight} g</p>
                   ) : null}
                   <p className="font-bold text-xl text-brand">
                     {UsePrice({ amount: unit })}

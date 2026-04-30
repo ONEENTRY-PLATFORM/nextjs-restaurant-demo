@@ -18,11 +18,10 @@ type NavConfig = {
 
 const NAV_BY_URL: Record<string, NavConfig> = {
   home_web: { Component: NavItemHome, groupClass: 'group' },
-  bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
-  reservation: { Component: NavItemCalendar, groupClass: 'group_stroke' },
+  favorites: { Component: NavItemFavorites, groupClass: 'group_stroke' },
   menu: { Component: NavItemCatalog, groupClass: 'group' },
   profile: { Component: NavItemProfile, groupClass: 'group' },
-  favorites: { Component: NavItemFavorites, groupClass: 'group_stroke' },
+  bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
 };
 
 /**

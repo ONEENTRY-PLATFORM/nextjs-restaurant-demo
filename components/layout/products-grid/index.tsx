@@ -17,7 +17,7 @@ const ProductsGridLayout = async ({
   params,
   searchParams: sp,
   dict,
-  pagesLimit,
+  productsLimit,
   isCategory,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,15 +28,16 @@ const ProductsGridLayout = async ({
     filters?: IFilterParams[];
   };
   dict: IAttributeValues;
-  pagesLimit: number;
+  productsLimit: number;
   isCategory?: boolean;
 }): Promise<JSX.Element> => {
   const p = await params;
   const searchParams = await sp;
   const currentPage = Number(searchParams?.page) || 1;
-  const { lang } = await params;
   const limit =
-    currentPage * pagesLimit > 0 ? currentPage * pagesLimit : pagesLimit;
+    currentPage * productsLimit > 0
+      ? currentPage * productsLimit
+      : productsLimit;
   const combinedParams = { ...p, searchParams };
 
   // Получаем все продукты из api или продукты byPageUrl
@@ -56,7 +57,7 @@ const ProductsGridLayout = async ({
     return <ProductsNotFound dict={dict} />;
   }
 
-  const totalPages = Math.ceil(total / pagesLimit);
+  const totalPages = Math.ceil(total / productsLimit);
   const fromToPrices = products[0]?.additional.prices;
 
   return (
@@ -66,9 +67,8 @@ const ProductsGridLayout = async ({
       >
         <section className="relative mx-auto box-border flex min-h-25 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 shrink-0 grow flex-col self-stretch">
           <ProductsGrid
-            lang={lang}
             dict={dict}
-            pagesLimit={pagesLimit}
+            productsLimit={productsLimit}
             products={products}
           />
           {totalPages > 1 && (

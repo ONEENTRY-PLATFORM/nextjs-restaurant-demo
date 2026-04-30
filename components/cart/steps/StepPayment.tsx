@@ -13,9 +13,6 @@ import {
   setStep,
   setStepError,
 } from '@/app/store/reducers/OrderSlice';
-import CardLineIcon from '@/components/icons/card-line.svg';
-import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
-
 /**
  * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
  *
@@ -77,7 +74,12 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     <div className="flex flex-col gap-5">
       {/* Хедер */}
       <div className="flex items-center gap-2.5">
-        <CardLineIcon />
+        <Image
+          src="/images/icons/card-line.svg"
+          alt=""
+          width={23}
+          height={15}
+        />
         <p className="font-normal text-[20px] text-paper">
           {(dict?.select_payment_text?.value as string | undefined) ??
             'Payment'}
@@ -174,7 +176,12 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
           onChange={(e) => setAltReceiver(e.currentTarget.checked)}
         />
         <span className="checkbox-box mr-2.5">
-          <CheckboxMarkIcon />
+          <Image
+            src="/images/icons/checkbox-mark.svg"
+            alt=""
+            width={18}
+            height={18}
+          />
         </span>
         The order will be taken by another person
       </label>

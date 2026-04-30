@@ -40,7 +40,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   const { page, isError } = await getPageByUrl(handle);
 
   /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
-  const pagesLimit = SHOP_PAGE_LIMIT;
+  const productsLimit = SHOP_PAGE_LIMIT;
 
   if (!page || isError) {
     return notFound();
@@ -54,7 +54,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
           <ProductsGridLayout
             params={{ handle }}
             searchParams={searchParams ?? {}}
-            pagesLimit={pagesLimit}
+            productsLimit={productsLimit}
             dict={dict}
             isCategory={true}
           />

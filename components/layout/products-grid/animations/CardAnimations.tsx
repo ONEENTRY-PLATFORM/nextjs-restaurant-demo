@@ -24,18 +24,18 @@ const CardAnimations = ({
   children,
   className,
   index,
-  pagesLimit,
+  productsLimit,
 }: {
   children: ReactNode;
   className: string;
   index: number;
-  pagesLimit: number;
+  productsLimit: number;
 }): JSX.Element => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const delay = Math.max(0, (index - (currentPage - 1) * pagesLimit) / 10);
+  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 10);
 
   useGSAP(() => {
     const el = ref.current;

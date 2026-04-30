@@ -59,7 +59,7 @@ const HomeBlockSection = ({
             key={product.id}
             product={product}
             index={i}
-            pagesLimit={visible.length}
+            productsLimit={visible.length}
             dict={dict}
           />
         ))}

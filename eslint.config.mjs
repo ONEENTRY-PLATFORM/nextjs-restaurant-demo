@@ -31,6 +31,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Static HTML mockup folder (uploaded design reference, not app code)
     "static-html/**",
+    // Claude Code workspace (inspect scripts, temp files, agent configs)
+    ".claude/**",
   ]),
 
   // Main ruleset for JS/TS/JSX/TSX

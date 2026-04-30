@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { JSX } from 'react';
 import { useContext, useEffect } from 'react';
 
@@ -7,8 +8,6 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import LoginEmailIcon from '@/components/icons/login-email.svg';
-import LoginGoogleIcon from '@/components/icons/login-google.svg';
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -71,13 +70,23 @@ const StepSignIn = (): JSX.Element => {
     <div className="mx-auto flex w-full max-w-115 flex-col">
       <button type="button" onClick={onEmailLogin} className="cart_btn">
         <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-          <LoginEmailIcon />
+          <Image
+            src="/images/icons/login-email.svg"
+            alt=""
+            width={24}
+            height={22}
+          />
           Login With Email
         </div>
       </button>
       <button type="button" onClick={onGoogleLogin} className="cart_btn">
         <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-          <LoginGoogleIcon />
+          <Image
+            src="/images/icons/login-google.svg"
+            alt=""
+            width={24}
+            height={24}
+          />
           Login With Google
         </div>
       </button>

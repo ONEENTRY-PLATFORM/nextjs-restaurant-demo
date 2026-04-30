@@ -73,7 +73,7 @@ const RelatedItems = async ({
             product={product}
             dict={dict}
             index={i}
-            pagesLimit={0}
+            productsLimit={0}
           />
         ))}
       </CardsGridAnimations>

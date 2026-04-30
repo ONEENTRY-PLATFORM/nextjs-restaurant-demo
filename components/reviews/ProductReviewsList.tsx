@@ -1,12 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
 import type { ProductReview } from '@/app/api';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
-import ChevronPagerLeftIcon from '@/components/icons/chevron-pager-left.svg';
-import ChevronPagerRightIcon from '@/components/icons/chevron-pager-right.svg';
 import StarCardIcon from '@/components/icons/star-card';
 
 /**
@@ -44,7 +43,12 @@ const ProductReviewsList = ({
           aria-label="Previous review"
           className="hidden md:flex shrink-0 items-center absolute left-0 top-1/2 -translate-y-1/2 z-10"
         >
-          <ChevronPagerLeftIcon />
+          <Image
+            src="/images/icons/chevron-pager-left.svg"
+            alt=""
+            width={16}
+            height={27}
+          />
         </button>
 
         <div className="relative w-full min-w-0 overflow-hidden">
@@ -89,7 +93,12 @@ const ProductReviewsList = ({
           aria-label="Next review"
           className="hidden md:flex shrink-0 items-center absolute right-0 top-1/2 -translate-y-1/2 z-10"
         >
-          <ChevronPagerRightIcon />
+          <Image
+            src="/images/icons/chevron-pager-right.svg"
+            alt=""
+            width={16}
+            height={27}
+          />
         </button>
       </div>
     </div>

@@ -1,11 +1,10 @@
+import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
 import ClockCircleIcon from '@/components/icons/clock-circle';
-import FlameIcon from '@/components/icons/flame.svg';
 import StarPuffyIcon from '@/components/icons/star-puffy';
-import WeightIcon from '@/components/icons/weight.svg';
 
 import AddToCartButton from '../components/AddToCartButton';
 
@@ -78,7 +77,12 @@ const ProductDetails = async ({
           <div className="flex gap-1.25 md:gap-3.75 items-center">
             {weightVal != null ? (
               <>
-                <WeightIcon />
+                <Image
+                  src="/images/icons/weight.svg"
+                  alt=""
+                  width={27}
+                  height={20}
+                />
                 <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
                   {weightVal} g
                 </p>
@@ -86,7 +90,12 @@ const ProductDetails = async ({
             ) : null}
             {calorrageVal != null ? (
               <>
-                <FlameIcon />
+                <Image
+                  src="/images/icons/flame.svg"
+                  alt=""
+                  width={15}
+                  height={20}
+                />
                 <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
                   {calorrageVal} ccal
                 </p>

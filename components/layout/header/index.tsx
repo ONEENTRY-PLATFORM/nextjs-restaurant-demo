@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
 import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
@@ -11,6 +10,8 @@ import {
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
 import BurgerIcon from '@/components/icons/burger';
+import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
+import PhoneIcon from '@/components/icons/phone.svg';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
 
@@ -120,18 +121,15 @@ const Header = async (): Promise<JSX.Element> => {
                   href={'tel:' + supportPhone.replace(/\s+/g, '')}
                   aria-label={'Call ' + supportPhone}
                 >
-                  <img src="/images/icons/phone.svg" alt="call" />
+                  <PhoneIcon title="call" />
                 </a>
               ) : (
-                <span
-                  className="w-4.5 h-4.5 opacity-60"
-                  aria-hidden="true"
-                >
-                  <img src="/images/icons/phone.svg" alt="call" />
+                <span className="w-4.5 h-4.5 opacity-60" aria-hidden="true">
+                  <PhoneIcon />
                 </span>
               )}
-              <a href="/">
-                <img src="/images/logo_mobile.svg" alt="logo" />
+              <a href="/" aria-label="Home">
+                <LogoMobileIcon title="logo" />
               </a>
               <div className="cursor-pointer group_stroke">
                 <BurgerIcon />

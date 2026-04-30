@@ -159,16 +159,7 @@
 ### 7.1. Pages — реальные атрибуты
 
 - **`support`** — ✅ атрибуты добавлены и заполнены в `en_US`: `support_title` (string), `support_description` (text), `support_phone` (string), `support_whatsapp_url` (string), `support_email` (string). Код в [app/support/page.tsx](app/support/page.tsx) читает их напрямую без fallback'ов на dictionary. ⚠️ В `ru_RU` атрибуты пустые — нужно перевести (или подтвердить, что en-only).
-- **`services`** — атрибуты заведены, нужно проставить значения. Хардкоды/dict-фолбэки убраны из [app/service/page.tsx](app/service/page.tsx) — пока поля пусты, лого и кнопки на странице не рендерятся (graceful fallback). Заполнить в `en_US`:
-
-  | marker                   | type   | title                | value                                         |
-  |--------------------------|--------|----------------------|-----------------------------------------------|
-  | `service_logo`           | image  | Logo                 | upload `public/images/icons/logo.svg`         |
-  | `service_bg_image`       | image  | Background           | upload `public/images/picture/bg_service.png` |
-  | `service_primary_cta`    | string | Primary CTA label    | `FOOD DELIVERY`                               |
-  | `service_primary_href`   | string | Primary CTA href     | `/shop`                                       |
-  | `service_secondary_cta`  | string | Secondary CTA label  | `BOOK A TABLE`                                |
-  | `service_secondary_href` | string | Secondary CTA href   | `/reservation`                                |
+- **`services`** — ✅ кроме `service_secondary_href` (пусто). Хардкоды/dict-фолбэки убраны из [app/service/page.tsx](app/service/page.tsx) — все поля читаются напрямую. Заполнено в `en_US`: `service_logo` (SVG), `service_bg_image` (PNG), `service_primary_cta` = `FOOD DELIVERY`, `service_primary_href` = `/shop`, `service_secondary_cta` = `BOOK A TABLE`. Осталось: `service_secondary_href` = `/reservation` — без него вторая кнопка «BOOK A TABLE» не рендерится (graceful fallback).
 
 - **`bookings`** — только `menu_icon`. Код раньше читал `reservation_hero_image`, `reservation_title`, `reservation_description` — **исправлено**: hero теперь берётся из `restaurants.photos[0]`, `restaurants.description`, `localizeInfos.title`.
 - **`restaurants`** — `address`, `lat`, `long`, `description` (text), `photos` (groupOfImages), `comforts` (list), `schedule` (timeInterval), `menu_icon`, `phone`. Раньше читался `parent.attributeValues.title.value` — **исправлено** на `parent.localizeInfos.title`.

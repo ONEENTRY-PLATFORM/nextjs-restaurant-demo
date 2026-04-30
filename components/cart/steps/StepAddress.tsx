@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
@@ -13,7 +14,6 @@ import {
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
-import PinIcon from '@/components/icons/pin.svg';
 
 // Маркеры, которые мы ищем в профиле пользователя, в порядке приоритета. `address_reg` —
 // канонический, используется в других местах корзины (см. components/layout/cart/
@@ -70,7 +70,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
     <div className="flex flex-col gap-5">
       {/* Хедер Address */}
       <div className="flex items-center gap-2.5 text-paper">
-        <PinIcon />
+        <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
         <p className="font-normal text-[20px] text-paper">
           {(dict?.address_text?.value as string | undefined) ?? 'Address'}
         </p>

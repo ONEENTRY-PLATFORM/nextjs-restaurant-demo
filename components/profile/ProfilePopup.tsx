@@ -9,8 +9,6 @@ import { toast } from 'react-toastify';
 import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import ChevronUpIcon from '@/components/icons/chevron-up.svg';
-import PinIcon from '@/components/icons/pin.svg';
 import ProfileIcon from '@/components/icons/profile';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
@@ -185,7 +183,11 @@ const ProfilePopup = (): JSX.Element => {
             >
               <ProfileIcon />
               <p className="text-xl text-paper">My Profile</p>
-              <ChevronUpIcon
+              <Image
+                src="/images/icons/chevron-up.svg"
+                alt=""
+                width={12}
+                height={7}
                 className={`transition-transform ${
                   profileOpen ? '' : 'rotate-180'
                 }`}
@@ -251,9 +253,18 @@ const ProfilePopup = (): JSX.Element => {
               onClick={() => setAddressOpen((v) => !v)}
               className="mt-5 mx-auto flex w-full items-center justify-start gap-2.5"
             >
-              <PinIcon />
+              <Image
+                src="/images/icons/pin.svg"
+                alt=""
+                width={17}
+                height={19}
+              />
               <p className="text-xl text-paper">Address</p>
-              <ChevronUpIcon
+              <Image
+                src="/images/icons/chevron-up.svg"
+                alt=""
+                width={12}
+                height={7}
                 className={`transition-transform ${
                   addressOpen ? '' : 'rotate-180'
                 }`}

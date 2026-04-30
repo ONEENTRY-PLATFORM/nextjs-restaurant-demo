@@ -121,7 +121,7 @@
 
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
 
-- **Personal** — поля First Name / Second Name / Phone / E-mail / Password префилятся из `AuthContext.user.formData` (`name`, `second_name`/`lastname`, `phone`, `email`). Кнопка **Edit** не сохраняет — нужно подключить `api.Users.updateUser` по образцу [components/forms/UserForm.tsx](components/forms/UserForm.tsx) (form-marker `user`).
+- **Personal** ✅ — поля First Name / Second Name / Phone / E-mail / Password префилятся из `AuthContext.user.formData` (`name`, `second_name`/`lastname`, `phone`, `email`). Кнопка **Edit** (`type="submit"`) сохраняет через `api.Users.updateUser` по паттерну [components/forms/UserForm.tsx](components/forms/UserForm.tsx) (form-marker `user`): `formData` собирается из видимых атрибутов формы кроме password-полей; `authData` отправляется только если введён новый password; `notificationData.email`/`phoneSMS` берутся из соответствующих edits/`user.formData`. После успеха — `refreshUser()` + toast «Data saved!». См. [components/profile/ProfilePopup.tsx:109-141](components/profile/ProfilePopup.tsx#L109-L141).
 
 - **Address** — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. **Локально**, не персистится. Нужно:
 
@@ -131,7 +131,7 @@
 
 Когда ответы получены — таски на код:
 
-1. Edit → `api.Users.updateUser({ formIdentifier, formData, authData, notificationData, state })`.
+1. ✅ Edit → `api.Users.updateUser({ formIdentifier, formData, authData, notificationData, state })` — реализовано в [components/profile/ProfilePopup.tsx:109-141](components/profile/ProfilePopup.tsx#L109-L141).
 2. Cards: persist в выбранное хранилище + load в `useEffect` из `AuthContext.user`.
 3. Addresses: persist + загружать в чекаут как `<select>` сохранённых.
 
@@ -141,9 +141,14 @@
 
 `PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). PayPal/cash работают через `addPaymentMethod`; карточная оплата теперь активна в UI ([StepPayment](components/cart/steps/StepPayment.tsx) → [StepAddCard](components/cart/steps/StepAddCard.tsx) per `cart_add_card.html`), но завершает заказ синтетическим `card:<id>` — нужно создать `card`-payment-account и подключить реальный gateway, иначе платёж в OneEntry не пройдёт.
 
-Дополнительно: [StepOrder](components/cart/steps/StepOrder.tsx) (per `cart_Order.html`) показывает поле «Promo Code» с кнопкой «Apply Code» — обработчик пока no-op. Уточнить:
+Дополнительно: ✅ Промокоды в [StepOrder](components/cart/steps/StepOrder.tsx) (per `cart_Order.html`) подключены через OneEntry Discounts API. Кнопка «Apply Code» вызывает `api.Orders.previewOrder({ products, couponCode })` ([useApplyCoupon](app/api/hooks/useApplyCoupon.ts)) — сервер сам валидирует код и считает реальную скидку с учётом всех условий (`MIN_CART_AMOUNT`, `applicability: TO_PRODUCT | TO_ORDER`, `discountType: PERCENT | FIXED_AMOUNT`, `maxAmount`). Применённый код хранится в `OrderSlice.appliedCoupon`, отображается строкой «Discount: −X» и пробрасывается в `Orders.createOrder({ couponCode })` ([useCreateOrder.ts](app/api/hooks/useCreateOrder.ts)).
 
-> ❓ **Уточнить у клиента:** есть ли в OneEntry/бэкенде механизм промокодов (скидка % / фикс / free delivery)? Если да — какой API/marker и как привязывать к заказу. Пока кнопка не делает ничего и поле декоративное.
+Что нужно настроить в админке OneEntry для работающего промо:
+
+1. **Discounts → создать `DISCOUNT`** с `discountValue: { applicability, discountType, value, maxAmount? }`. Например, `applicability: TO_ORDER`, `discountType: PERCENT`, `value: 10` — 10% на заказ.
+2. **Conditions** (опционально): `MIN_CART_AMOUNT`, `PRODUCT_IN_CART`, `CATEGORY_IN_CART` и т.д. — определяют, когда купон применим. Если не выполнились — `previewOrder` вернёт `totalSumWithDiscount === totalSum`, UI покажет «Coupon does not apply to this cart».
+3. **Coupons → сгенерировать код** (`isReusable: true/false`) и привязать к нужному `DISCOUNT`. Юзер вводит этот код в поле «Promo Code».
+4. Бонусные баллы (`BONUS` / `PERSONAL_DISCOUNT`) и `additionalDiscountsMarkers` — отдельная задача, в UI пока не выведены.
 
 ---
 
@@ -153,9 +158,18 @@
 
 ### 7.1. Pages — реальные атрибуты
 
-- **`home_web`** — атрибутов нет (контент рендерится через blocks).
-- **`support`** — атрибутов нет вообще. Код читает `support_title`, `support_description`, `support_phone`, `support_whatsapp_url`, `support_email` — всё фолбэчится. См. 2.1.
-- **`services`** — `icon`, `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` существуют, но **значения пусты** → используются хардкоды [app/service/page.tsx](app/service/page.tsx).
+- **`support`** — ✅ атрибуты добавлены и заполнены в `en_US`: `support_title` (string), `support_description` (text), `support_phone` (string), `support_whatsapp_url` (string), `support_email` (string). Код в [app/support/page.tsx](app/support/page.tsx) читает их напрямую без fallback'ов на dictionary. ⚠️ В `ru_RU` атрибуты пустые — нужно перевести (или подтвердить, что en-only).
+- **`services`** — атрибуты заведены, нужно проставить значения. Хардкоды/dict-фолбэки убраны из [app/service/page.tsx](app/service/page.tsx) — пока поля пусты, лого и кнопки на странице не рендерятся (graceful fallback). Заполнить в `en_US`:
+
+  | marker                   | type   | title                | value                                         |
+  |--------------------------|--------|----------------------|-----------------------------------------------|
+  | `service_logo`           | image  | Logo                 | upload `public/images/icons/logo.svg`         |
+  | `service_bg_image`       | image  | Background           | upload `public/images/picture/bg_service.png` |
+  | `service_primary_cta`    | string | Primary CTA label    | `FOOD DELIVERY`                               |
+  | `service_primary_href`   | string | Primary CTA href     | `/shop`                                       |
+  | `service_secondary_cta`  | string | Secondary CTA label  | `BOOK A TABLE`                                |
+  | `service_secondary_href` | string | Secondary CTA href   | `/reservation`                                |
+
 - **`bookings`** — только `menu_icon`. Код раньше читал `reservation_hero_image`, `reservation_title`, `reservation_description` — **исправлено**: hero теперь берётся из `restaurants.photos[0]`, `restaurants.description`, `localizeInfos.title`.
 - **`restaurants`** — `address`, `lat`, `long`, `description` (text), `photos` (groupOfImages), `comforts` (list), `schedule` (timeInterval), `menu_icon`, `phone`. Раньше читался `parent.attributeValues.title.value` — **исправлено** на `parent.localizeInfos.title`.
 - **`restaurants/*`** (`restaurant_1/2/3`) — те же что у `restaurants`. Маркер `restaurant_address` — **нет**, исправлено: используется `address`.

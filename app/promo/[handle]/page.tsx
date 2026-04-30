@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getImageUrl, getPageByUrl, getProductsByPageUrl } from '@/app/api';
+import { getDictionary } from '@/app/dictionaries';
 import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
 
 type PromoPageProps = {
@@ -39,7 +40,10 @@ const PromoDetailPage = async ({
   params,
 }: PromoPageProps): Promise<JSX.Element> => {
   const { handle } = await params;
-  const { page, isError } = await getPageByUrl(handle);
+  const [{ page, isError }, dict] = await Promise.all([
+    getPageByUrl(handle),
+    getDictionary(),
+  ]);
 
   if (isError || !page) {
     return notFound();
@@ -63,7 +67,8 @@ const PromoDetailPage = async ({
   const actionType = attrs.action_type?.value as
     | Array<{ title?: string }>
     | undefined;
-  const cta = actionType?.[0]?.title ?? 'Order now';
+  const cta =
+    actionType?.[0]?.title ?? (dict.promo_default_cta?.value as string);
 
   return (
     <section className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
@@ -114,12 +119,16 @@ export async function generateMetadata({
   params,
 }: PromoPageProps): Promise<Metadata> {
   const { handle } = await params;
-  const { page } = await getPageByUrl(handle);
+  const [{ page }, dict] = await Promise.all([
+    getPageByUrl(handle),
+    getDictionary(),
+  ]);
+  const defaultTitle = dict.promo_default_title?.value as string;
   if (!page) {
-    return { title: 'Promo' };
+    return { title: defaultTitle };
   }
   const attrs = page.attributeValues ?? {};
-  const title = page.localizeInfos?.title ?? 'Promo';
+  const title = page.localizeInfos?.title ?? defaultTitle;
   const description = attrs.description?.value as DescriptionValue | undefined;
   const descriptionText = description?.[0]?.plainValue ?? '';
   return {

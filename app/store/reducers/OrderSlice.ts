@@ -19,6 +19,13 @@ export type CheckoutStep =
   | 'success'
   | 'error';
 
+export type AppliedCoupon = {
+  code: string;
+  totalSum: number;
+  totalSumWithDiscount: number;
+  currency?: string;
+};
+
 type InitialStateType = {
   order: IAppOrder;
   currency?: string;
@@ -30,6 +37,7 @@ type InitialStateType = {
   // Переживает `removeOrder()` (который сбрасывает `order` в initialState),
   // чтобы success-экран мог отрендерить реальный id, присвоенный CMS.
   lastOrderId?: number;
+  appliedCoupon?: AppliedCoupon;
 };
 
 const initialState: InitialStateType = {
@@ -52,6 +60,13 @@ const orderReducer = createSlice({
     },
     removeOrder(state) {
       state.order = initialState.order;
+      delete state.appliedCoupon;
+    },
+    setAppliedCoupon(state, action: PayloadAction<AppliedCoupon>) {
+      state.appliedCoupon = action.payload;
+    },
+    clearAppliedCoupon(state) {
+      delete state.appliedCoupon;
     },
     addData(
       state,
@@ -127,6 +142,8 @@ export const {
   setStep,
   setStepError,
   setLastOrderId,
+  setAppliedCoupon,
+  clearAppliedCoupon,
 } = orderReducer.actions;
 
 export const selectCheckoutStep = (state: {
@@ -140,5 +157,9 @@ export const selectCheckoutStepError = (state: {
 export const selectLastOrderId = (state: {
   orderReducer: InitialStateType;
 }): number | undefined => state.orderReducer.lastOrderId;
+
+export const selectAppliedCoupon = (state: {
+  orderReducer: InitialStateType;
+}): AppliedCoupon | undefined => state.orderReducer.appliedCoupon;
 
 export default orderReducer.reducer;

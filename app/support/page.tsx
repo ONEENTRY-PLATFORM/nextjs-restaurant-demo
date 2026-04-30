@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import type { JSX } from 'react';
 
-import { getPageByUrl } from '@/app/api';
+import { getFormByMarker, getPageByUrl } from '@/app/api';
+import { getDictionary } from '@/app/dictionaries';
 import ContactUsForm from '@/components/forms/ContactUsForm';
 
 export const dynamic = 'force-dynamic';
@@ -12,12 +13,19 @@ export const dynamic = 'force-dynamic';
  * @returns {Promise<JSX.Element>} JSX страницы поддержки.
  */
 const SupportPage = async (): Promise<JSX.Element> => {
-  const { page } = await getPageByUrl('support');
+  const [{ page }, formRes, dict] = await Promise.all([
+    getPageByUrl('support'),
+    getFormByMarker('contact_us'),
+    getDictionary(),
+  ]);
   const attrs = page?.attributeValues ?? {};
+  const formHeading: string =
+    (formRes.form?.localizeInfos?.title as string | undefined) ??
+    (dict.support_form_heading?.value as string);
   const title =
     (attrs.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??
-    'Support';
+    (dict.support_default_title?.value as string);
   const description = attrs.support_description?.value as
     | Array<{ htmlValue?: string; plainValue?: string }>
     | undefined;
@@ -69,7 +77,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
       <div className="rounded-xl bg-ink/40 p-5">
         <h2 className="mb-4 font-bold text-[18px] uppercase text-brand">
-          Write to us
+          {formHeading}
         </h2>
         <ContactUsForm className="" />
       </div>
@@ -84,10 +92,14 @@ export default SupportPage;
  * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('support');
+  const [{ page }, dict] = await Promise.all([
+    getPageByUrl('support'),
+    getDictionary(),
+  ]);
   const title =
     (page?.attributeValues?.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??
-    'Support';
-  return { title, description: 'Contact support' };
+    (dict.support_default_title?.value as string);
+  const description = dict.support_metadata_description?.value as string;
+  return { title, description };
 }

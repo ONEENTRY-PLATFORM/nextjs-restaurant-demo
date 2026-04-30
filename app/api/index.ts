@@ -25,6 +25,7 @@ export {
   useLazyGetMeQuery,
   useLazyGetPaymentSessionByIdQuery,
 } from './api/RTKApi';
+export { useApplyCoupon } from './hooks/useApplyCoupon';
 export { useCreateOrder } from './hooks/useCreateOrder';
 export { useSearchProducts } from './hooks/useSearchProducts';
 export { useSetForm } from './hooks/useSetForm';

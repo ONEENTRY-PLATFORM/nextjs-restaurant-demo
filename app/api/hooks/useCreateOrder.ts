@@ -10,7 +10,11 @@ import {
   removeAllProducts,
   selectCartData,
 } from '@/app/store/reducers/CartSlice';
-import { removeOrder, setLastOrderId } from '@/app/store/reducers/OrderSlice';
+import {
+  removeOrder,
+  selectAppliedCoupon,
+  setLastOrderId,
+} from '@/app/store/reducers/OrderSlice';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -55,6 +59,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
   // заказа собираются напрямую из cart slice на этапе подтверждения.
   // `selectCartData` возвращает записи `{ id, quantity, selected }`.
   const cartProducts = useAppSelector(selectCartData) as CartEntry[];
+  const appliedCoupon = useAppSelector(selectAppliedCoupon);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -110,6 +115,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         products: orderProducts,
         paymentAccountIdentifier,
         formIdentifier: order.formIdentifier,
+        ...(appliedCoupon?.code ? { couponCode: appliedCoupon.code } : {}),
       });
 
       if (isError(created)) {

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
@@ -132,6 +133,7 @@ const ProfilePopup = (): JSX.Element => {
       });
       setEdits((prev) => ({ ...prev, password: '' }));
       refreshUser();
+      toast('Data saved!');
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : 'Failed to save');
     } finally {

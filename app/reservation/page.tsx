@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
@@ -53,7 +54,9 @@ const ReservationPage = async (): Promise<JSX.Element> => {
   const title =
     parent?.localizeInfos?.title ??
     pageRes.page?.localizeInfos?.title ??
-    'Book a table';
+    (dict.reservation_default_title?.value as string);
+  const formUnavailableText = dict.reservation_form_unavailable
+    ?.value as string;
   const descriptionRaw = parent?.attributeValues?.description?.value as
     | Array<{ htmlValue?: string; plainValue?: string }>
     | undefined;
@@ -64,15 +67,18 @@ const ReservationPage = async (): Promise<JSX.Element> => {
       <div className="mx-auto w-full max-w-88 md:max-w-175 lg:max-w-250 xl:max-w-323 px-4 py-10">
         <div className="mb-8 overflow-hidden rounded-[20px] bg-ink/60">
           {heroImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={heroImage}
               alt={title}
+              width={1292}
+              height={400}
+              sizes="(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, (min-width: 768px) 700px, 100vw"
               className="h-auto w-full object-cover"
+              priority
             />
           ) : null}
           <div className="p-6 md:p-10">
-            <h1 className="mb-5 font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
+            <h1 className="mb-5 font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
               {title}
             </h1>
             {descriptionHtml ? (
@@ -86,8 +92,7 @@ const ReservationPage = async (): Promise<JSX.Element> => {
 
         {formRes.isError || !formRes.form ? (
           <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/80">
-            Reservation form is not available. Please configure form{' '}
-            <code className="text-brand">booking_order</code> in OneEntry admin.
+            {formUnavailableText}
           </div>
         ) : (
           <ReservationForm
@@ -108,10 +113,16 @@ export default ReservationPage;
  * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('bookings');
-  const title = page?.localizeInfos?.title ?? 'Book a table';
+  const [{ page }, dict] = await Promise.all([
+    getPageByUrl('bookings'),
+    getDictionary(),
+  ]);
+  const title =
+    page?.localizeInfos?.title ??
+    (dict.reservation_default_title?.value as string);
+  const description = dict.reservation_metadata_description?.value as string;
   return {
     title,
-    description: 'Book a table at our restaurant',
+    description,
   };
 }

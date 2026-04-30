@@ -12,10 +12,10 @@
 | B.2 Карточка товара | 5 | — | 1 | 2 | 1 |
 | B.3 Каталог/категория | 6 | — | — | — | — |
 | B.4 Корзина и чекаут | 9 | — | 2 | 1 | 2 |
-| B.5 Профиль и попапы | 6 | — | — | 3 | 3 |
-| B.6 Резервация | 4 | — | 1 | 3 | 1 |
-| B.7 Поддержка/Service | 6 | — | 2 | 3 | 2 |
-| B.8 Промо | 3 | — | 1 | 2 | 1 |
+| B.5 Профиль и попапы | 6 | — | — | 2 | 3 |
+| B.6 Резервация | 4 | — | 1 | 1 | — |
+| B.7 Поддержка/Service | 6 | — | 2 | 1 | 2 |
+| B.8 Промо | 3 | — | 1 | — | 1 |
 
 ### Топ-приоритет (P0/P1) — фиксить первыми
 
@@ -130,7 +130,6 @@ _Открытых пунктов нет._
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | B.5.1 | `text-[24px] md:text-[32px]` на h1 — `text-2xl md:text-3xl` (24px = `text-2xl`, 30px = `text-3xl`; 32px ближе к `text-3xl` но не совпадает точно). 24px один-в-один. **Сверить значение 32px со static** | [app/profile/layout.tsx:15](app/profile/layout.tsx#L15) | P3 |
-| B.5.2 | Хардкод-английские строки: `Loading...`, `Please sign in to view your profile.` — должны идти через `static_content` словарь для локализации | [app/profile/page.tsx:21,27](app/profile/page.tsx#L21) | P2 |
 | B.5.3 | `bg-ink/60`, `text-paper/80`, `text-paper/90` — корректное использование токенов с alpha (Tailwind v4). **В плюс** | [app/profile/page.tsx:21,26](app/profile/page.tsx#L21) | — |
 | B.5.4 | В FavoritesPopup для карточки товара `md:w-[calc(50%-30px)]` — arbitrary calc. Если эта формула повторяется (для grid из 2 колонок с gap=60px), вынести в утилитарный класс или token. Проверить статикой `m_favorites.html` / `pk_favorites.html` | [components/profile/FavoritesPopup.tsx:122](components/profile/FavoritesPopup.tsx#L122) | P3 |
 | B.5.5 | `border-gray-300` в карточке избранного — нет такого токена в `@theme`. Если у проекта стандартный border — `border-paper/30` или ввести `--color-border-soft` | [components/profile/FavoritesPopup.tsx:122](components/profile/FavoritesPopup.tsx#L122) | P2 |
@@ -151,9 +150,6 @@ _Открытых пунктов нет._
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.6.1 | Hero-картинка ресторана рендерится через `<img>` с `eslint-disable-next-line @next/next/no-img-element`. URL приходит из OneEntry `photos` — может быть `next/image` с `width/height/sizes`, чтобы получить оптимизацию + lazy-load. Текущий `<img>` блокирует image optimization | [app/reservation/page.tsx:67-72](app/reservation/page.tsx#L67-L72) | P2 |
-| B.6.3 | `text-[24px] md:text-[32px]` на h1 — повтор паттерна (B.5.1). Заменить на `text-2xl md:text-3xl` или ввести токен `--text-page-heading` | [app/reservation/page.tsx:75](app/reservation/page.tsx#L75) | P3 |
-| B.6.4 | Английский хардкод сообщений: `Book a table` (fallback title), `Reservation form is not available...`, `Please configure...`. Все должны идти через `static_content` словарь для локализации | [app/reservation/page.tsx:56,89-90,112,115](app/reservation/page.tsx#L56) | P2 |
 | B.6.5 | `bg-[url('/images/picture/bg_cart.png')] ... md:bg-none` — на md+ фон убирается. Сверить со static-html — там градиентная подложка может быть на всех брейкпоинтах. Заглянуть в `service_table.html` | [app/reservation/page.tsx:63](app/reservation/page.tsx#L63) | — (требует визуала) |
 | B.6.6 | `RestaurantSelect.label` берётся из `address` или `localizeInfos.title`. В `static-html/service_table.html` дропдаун ресторана показывает скорее всего читаемое название («Restaurant 1» / название локации), а не адрес. Сейчас приоритет адреса — может выглядеть избыточно длинной строкой | [app/reservation/page.tsx:34-42](app/reservation/page.tsx#L34) | P2 |
 | B.6.7 | Дата/время — bottom-sheet пикеры ([DatePickerSheet](components/ui/DatePickerSheet.tsx), [TimePickerSheet](components/ui/TimePickerSheet.tsx)) вместо нативного `<input type="date">`. Это намеренно (соответствует `service_date.html` / `service_time.html`). **В плюс — задокументировано в JSDoc** | [components/reservation/ReservationForm.tsx:64-67](components/reservation/ReservationForm.tsx#L64-L67) | — |
@@ -171,7 +167,6 @@ _Открытых пунктов нет._
 | B.7.1 | Соответствие со static — высокое: `max-w-98.25 px-5` ↔ `max-w-[393px] px-[20px]` ✓; кнопки `h-15 w-full mt-42.5` ↔ `h-[60px] w-full mt-[170px]` ✓; brand-текст `text-brand` правильно использует токен (в static был `text-[#ec722b]` — проект уже исправил). **В плюс** | [app/service/page.tsx](app/service/page.tsx) | — |
 | B.7.2 | `text-[17px]` — нестандартный размер, не на дефолтной шкале (16/18/20). 17/4=4.25 — `text-[17px]` остаётся как есть, либо ввести токен `--text-cta-button: 17px` если повторяется | [app/service/page.tsx:72,78](app/service/page.tsx#L72) | P3 |
 | B.7.3 | CMS-атрибуты `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` — **существуют в OneEntry, но значения пусты** (см. `ONEENTRY-ADMIN-SETUP.md §7.1`). Используются хардкоды `'FOOD DELIVERY'`, `'BOOK A TABLE'`, `/shop`, `/reservation` — fallback работает. Действие на стороне админа | [app/service/page.tsx:40-48](app/service/page.tsx#L40-L48) | — |
-| B.7.4 | `Restaurant — Delivery & Reservation` — английский хардкод title в metadata. Маркер из словаря был бы предпочтителен | [app/service/page.tsx:96,99](app/service/page.tsx#L96) | P2 |
 
 #### B.7b. SupportPage (`service_support.html`)
 
@@ -184,7 +179,6 @@ _Открытых пунктов нет._
 | B.7.5 | `text-[24px] md:text-[32px]` на h1 — повтор паттерна (B.5.1, B.6.3) | [app/support/page.tsx:31](app/support/page.tsx#L31) | P3 |
 | B.7.6 | Эмодзи в ссылках: `📞 {phone}`, `✉ {email}`. В `static-html/service_support.html` используются SVG-иконки `watsap.svg` / `call.svg`. Заменить эмодзи на SVG-иконки из `components/icons/` | [app/support/page.tsx:47,65](app/support/page.tsx#L47) | P1 |
 | B.7.7 | `static-html/service_support.html` показывает блочный layout с двумя карточками («Would you like to call?» / «Would you like to ask a question?») и круглыми иконками WhatsApp+phone. Текущая реализация — одна горизонтальная полоса 3 кнопок (phone/WhatsApp/email). Структура DOM не совпадает с макетом | [app/support/page.tsx:41-68](app/support/page.tsx#L41-L68) | P1 |
-| B.7.8 | Хардкод `Write to us`, `Contact support`, `Support` (fallback). Должны идти через `static_content` | [app/support/page.tsx:20,73,92](app/support/page.tsx#L20) | P2 |
 | B.7.9 | `static-html/service_support.html` НЕ содержит формы Contact-Us — только два контактных блока. В проекте форма всё ещё есть (см. удалённую секцию 1.1 ONEENTRY-ADMIN-SETUP). С клиентом форма подтверждена как нужна (`contact_us` создан в админке), но это значит макет support-страницы **отличается от static-html** — ✅ намеренно | [app/support/page.tsx:70-75](app/support/page.tsx#L70-L75) | — |
 
 ### B.8. Промо (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
@@ -197,9 +191,7 @@ _Открытых пунктов нет._
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.8.2 | h1 вместо h2 — в `static-html/pk_promo_BIRTHDAY.html:103` использован `<h2>`. h1 семантически правильнее (это главный заголовок страницы), но не 1:1 со static. Уточнить у дизайнера | [app/promo/[handle]/page.tsx:68](app/promo/[handle]/page.tsx#L68) | P2 |
 | B.8.4 | `mt-8` (=32px) на CTA-кнопке. В static-html `mt-[50px]` (=50px). Должно быть `mt-12.5` или ввести токен | [app/promo/[handle]/page.tsx:79](app/promo/[handle]/page.tsx#L79) | P1 |
 | B.8.5 | `<img>` через `eslint-disable @next/next/no-img-element` — то же что B.6.1, потеря image optimization | [app/promo/[handle]/page.tsx:64-65](app/promo/[handle]/page.tsx#L64-L65) | P2 |
-| B.8.6 | Хардкод `'Promo'` (fallback в metadata), `'Order now'` (fallback CTA). Должны идти через `static_content` | [app/promo/[handle]/page.tsx:58,102,105](app/promo/[handle]/page.tsx#L58) | P2 |
 | B.8.7 | `text-[16px]` на CTA-кнопке — `text-base` (16px стандартный) | [app/promo/[handle]/page.tsx:79](app/promo/[handle]/page.tsx#L79) | P3 |
 | B.8.8 | h1 размер `text-[20px]` соответствует static, цвет `text-brand` правильно использует токен (в static был `text-[#ec722b]` — проект уже исправил). **В плюс** | [app/promo/[handle]/page.tsx:68](app/promo/[handle]/page.tsx#L68) | — |

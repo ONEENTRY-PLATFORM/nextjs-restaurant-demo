@@ -15,6 +15,7 @@ export {
   useGetBlocksByPageUrlQuery,
   useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
+  useGetMenuByMarkerQuery,
   useGetOrderStorageByMarkerQuery,
   useGetPageByIdQuery,
   useGetPaymentSessionByIdQuery,

@@ -428,3 +428,28 @@ _Активных P0/P1 пунктов нет._
   Используется в [StepSignIn.tsx](components/cart/steps/StepSignIn.tsx) (редирект на Google) и [oauthLogIn.ts](app/api/server/users/oauthLogIn.ts) (server-only обмен code → token через `api.AuthProvider.oauth('google', ...)`). Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму).
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
+
+### C.9. Меню `user_menu` — пункты профильного дропдауна
+
+[components/layout/header/nav/NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx) теперь рендерит выпадающее меню под иконкой профиля для авторизованных юзеров — пункты тянутся из CMS-меню с маркером `user_menu`. На десктопе это меню заменило табы `Personal / Orders / Favorites` (последние удалены из [app/profile/layout.tsx](app/profile/layout.tsx) — табов в дизайне нет).
+
+Сейчас в админке `user_menu` уже создан, но содержит **не те** пункты:
+
+| pageUrl | проблема |
+| --- | --- |
+| `cart` | Корзина — отдельная иконка в шапке, в проф. дропдауне быть не должна |
+| `profile` | OK (= ссылка на `/profile`, страница Personal) |
+
+Нужно перенастроить пункты до:
+
+| pageUrl | menuTitle | href в UI | соответствует |
+| --- | --- | --- | --- |
+| `profile` | Personal | `/profile` | [app/profile/page.tsx](app/profile/page.tsx) |
+| `profile/orders` (или `orders`) | Orders | `/profile/orders` | [app/profile/orders/page.tsx](app/profile/orders/page.tsx) |
+| `profile/favorites` (или `favorites`) | Favorites | `/profile/favorites` | [app/profile/favorites/page.tsx](app/profile/favorites/page.tsx) |
+
+> ⚠️ В коде сейчас линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Это значит, что для совпадения с реальными Next.js-маршрутами `pageUrl` в CMS должен быть **полным** путём без ведущего `/` — например, `profile/orders`, а не просто `orders`. Если такой формат не подходит OneEntry — альтернатива: переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` будут совпадать. Решение за командой админки.
+
+После того как пункты заведены — `useGetMenuByMarkerQuery({ marker: 'user_menu' })` подтянет их автоматически, фоллбеков на хардкод в коде нет.
+
+`<LogoutMenuItem />` пишется в дропдауне последним пунктом — это UI-only кнопка (она не управляется через CMS-меню, потому что вызывает client-side `logOutUser` + redirect, а не навигацию по странице).

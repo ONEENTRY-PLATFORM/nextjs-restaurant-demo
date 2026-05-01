@@ -62,7 +62,7 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-w-[80vw] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
             заголовок по центру, бургер справа. На md+ скрыт, там сверху —
@@ -88,12 +88,14 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
           </button>
         </div>
 
-        <div className="hidden justify-end md:flex">
-          <ClosePopupButton
-            onClose={close}
-            ariaLabel="Close favorites"
-            className="-mt-2.5"
-          />
+        {/* Десктоп-хедер — раньше был только X-кнопкой и заголовок не
+            рисовался. Добавлен `<p>Favorites</p>` по центру по образцу
+            других попапов (ReservationPopup / Modal — `font-semibold
+            text-[24px] text-brand`). */}
+        <div className="hidden items-center justify-between md:flex">
+          <span aria-hidden="true" className="h-11.5 w-11.5" />
+          <p className="font-semibold text-[24px] text-brand">Favorites</p>
+          <ClosePopupButton onClose={close} ariaLabel="Close favorites" />
         </div>
 
         {isLoading ? (

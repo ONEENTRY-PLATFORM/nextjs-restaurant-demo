@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 import { useMemo, useState } from 'react';
 
+import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
@@ -80,7 +81,15 @@ type DatePickerSheetProps = {
   value?: string;
   onApply: (iso: string) => void;
   onClose?: () => void;
+  /** Back-кнопка слева. По смыслу обычно === `onClose` для пикера даты,
+   * но оставляем как отдельный prop, чтобы вызывающий мог передать,
+   * например, переход к предыдущему шагу. Если не задан — back-кнопка
+   * не рендерится. */
+  onBack?: () => void;
   minDate?: string;
+  /** Лейбл главной кнопки. Прокидывается из словаря OneEntry
+   * (`static_content.apply_text`) — fallback на "Apply". */
+  applyText?: string | undefined;
 };
 
 /**
@@ -95,7 +104,9 @@ const DatePickerSheet = ({
   value,
   onApply,
   onClose,
+  onBack,
   minDate,
+  applyText = 'Apply',
 }: DatePickerSheetProps): JSX.Element => {
   const today = useMemo(() => new Date(), []);
   const initial = value ? new Date(value) : today;
@@ -125,13 +136,28 @@ const DatePickerSheet = ({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-[10px]">
-      <div className="mx-auto max-w-87.5 bg-transparent">
-        {onClose ? (
-          <div className="mb-3 flex justify-end">
-            <ClosePopupButton onClose={onClose} ariaLabel="Close date picker" />
-          </div>
-        ) : null}
+    // Размеры подгоняем под ReservationPopup: на мобиле — bottom-sheet
+    // во всю ширину (`min-h-162.5`), на md+ — центрированная карточка
+    // `max-w-150` так же, как у попапа Book a Table. Контент пикера
+    // (сетка дней + Apply) центрирован; X-кнопка абсолютно в правом
+    // верхнем углу, чтобы не сдвигать контент сверху.
+    <div className="fixed bottom-0 left-0 right-0 z-30 flex min-h-162.5 max-h-[90vh] w-full items-center justify-center rounded-t-[20px] bg-ink/80 px-5 pt-7.25 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
+      {onBack ? (
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Back"
+          className="group absolute left-5 top-5 flex items-center justify-center md:left-10 md:top-10"
+        >
+          <ArrowBackIcon className="hover-target text-paper" />
+        </button>
+      ) : null}
+      {onClose ? (
+        <div className="absolute right-5 top-5 md:right-10 md:top-10">
+          <ClosePopupButton onClose={onClose} ariaLabel="Close date picker" />
+        </div>
+      ) : null}
+      <div className="w-full max-w-87.5 bg-transparent">
         <div className="grid grid-cols-7">
           {WEEK.map((w) => (
             <div key={w} className="calend_mon">
@@ -189,11 +215,10 @@ const DatePickerSheet = ({
             onClick={() => onApply(selected)}
             className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_transp"
           >
-            Apply
+            {applyText}
           </button>
         </div>
       </div>
-      <div className="h-25 border-none bg-transparent" />
     </div>
   );
 };

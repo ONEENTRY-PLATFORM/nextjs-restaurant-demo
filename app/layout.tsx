@@ -23,6 +23,9 @@ const FavoritesPopup = dynamic(
   () => import('@/components/profile/FavoritesPopup'),
 );
 const ProfilePopup = dynamic(() => import('@/components/profile/ProfilePopup'));
+const BookingsPopup = dynamic(
+  () => import('@/components/profile/BookingsPopup'),
+);
 const ReservationPopup = dynamic(
   () => import('@/components/reservation/ReservationPopup'),
 );
@@ -84,6 +87,7 @@ export default async function RootLayout({
               <CartPopup />
               <FavoritesPopup dict={dict} />
               <ProfilePopup />
+              <BookingsPopup />
               <ReservationPopup dict={dict} />
               <Modal dict={dict} />
             </OpenDrawerProvider>

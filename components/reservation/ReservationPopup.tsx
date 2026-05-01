@@ -10,6 +10,7 @@ import {
   useGetFormByMarkerQuery,
 } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
@@ -119,10 +120,22 @@ const ReservationPopup = ({
         ref={sheetRef}
         className="fixed bottom-0 left-0 min-h-162.5 overflow-hidden right-0 z-20 flex max-h-[90vh] w-full flex-col sm:overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        <div className="flex items-center justify-between">
+        {/* Шапка по Figma-макету «Reservation»: стрелка-назад слева,
+            заголовок (orange, semibold) по центру, X-кнопка справа.
+            Back делает то же, что и X (закрывает попап) — отдельной
+            истории шагов внутри ReservationPopup нет. */}
+        <div className="flex items-center justify-between gap-5">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Back"
+            className="group flex items-center justify-center"
+          >
+            <ArrowBackIcon className="hover-target text-paper" />
+          </button>
           <p className="font-semibold text-[24px] text-brand">
             {(dict?.reservation_default_title?.value as string | undefined) ??
-              'Book a table'}
+              'Reservation'}
           </p>
           <ClosePopupButton onClose={close} ariaLabel="Close reservation" />
         </div>

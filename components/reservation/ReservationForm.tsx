@@ -347,6 +347,9 @@ const ReservationForm = ({
             setPicker('time');
           }}
           onClose={() => setPicker(null)}
+          // Для date-пикера back == close: предыдущего шага нет.
+          onBack={() => setPicker(null)}
+          applyText={dict?.apply_text?.value as string | undefined}
         />
       ) : null}
       {picker === 'time' ? (
@@ -364,6 +367,11 @@ const ReservationForm = ({
             setPicker(null);
           }}
           onClose={() => setPicker(null)}
+          // Back возвращает к date-пикеру, как в reservation-flow:
+          // user сначала выбирает дату, потом время.
+          onBack={() => setPicker('date')}
+          applyText={dict?.apply_text?.value as string | undefined}
+          noTimeText={dict?.no_time_text?.value as string | undefined}
         />
       ) : null}
     </form>

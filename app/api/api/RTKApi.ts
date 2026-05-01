@@ -4,6 +4,7 @@ import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvi
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
+import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import type {
   IBaseOrdersEntity,
   IOrderByMarkerEntity,
@@ -223,6 +224,21 @@ export const RTKApi = createApi({
       keepUnusedDataFor: 600, // 10 минут для форм
     }),
     /**
+     * Получает меню по маркеру — клиентский аналог server-функции
+     * `getMenuByMarker`. Используется в выпадающих UI-меню (например,
+     * dropdown профиля по маркеру `user_menu`).
+     */
+    getMenuByMarker: build.query<IMenusEntity, { marker: string }>({
+      queryFn: async ({ marker }) => {
+        const result = await api.Menus.getMenusByMarker(marker);
+        if (typeError(result)) {
+          return { error: result };
+        }
+        return { data: result as IMenusEntity };
+      },
+      keepUnusedDataFor: 600,
+    }),
+    /**
      * Получает дочерние страницы по url родителя — клиентский аналог
      * server-функции `getChildPagesByParentUrl`. Используется в попапах,
      * которые подгружают список страниц лениво (например, выпадающий
@@ -374,6 +390,7 @@ export const {
   useGetBlocksByPageUrlQuery,
   useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
+  useGetMenuByMarkerQuery,
   useGetAuthProvidersQuery,
   useLazyGetMeQuery,
   useGetAccountsQuery,

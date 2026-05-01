@@ -13,6 +13,7 @@ export {
   useGetAuthProvidersQuery,
   useGetBlockByMarkerQuery,
   useGetBlocksByPageUrlQuery,
+  useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
   useGetOrderStorageByMarkerQuery,
   useGetPageByIdQuery,

@@ -7,16 +7,17 @@ import { useState } from 'react';
 type Photo = { downloadLink?: string };
 
 /**
- * Слайдер фото ресторана — клиентский компонент с dot-индикаторами и
- * клавиатурным переключением. Повторяет паттерн из `static-html/mob_about.html`
- * (горизонтальная лента + точки), но переключение делает по клику на точку,
- * а не через scroll-snap, чтобы стабильно работало на десктопе. Если фото
- * только одно — точки скрываем (нечего переключать). Если фото нет — рендерим
- * скелетон с dark background, чтобы не ломать layout страницы.
+ * Слайдер фото ресторана — клиентский компонент с dot-индикаторами.
+ * Повторяет паттерн `static-html/mob_about.html` (горизонтальная лента
+ * + точки), но переключение делает по клику на точку, а не через
+ * scroll-snap, чтобы стабильно работало на десктопе.
  *
- * Отдельным клиентским файлом — потому что состояние "активный индекс"
- * требует interactivity, а вся остальная страница ресторана (
- * `app/restaurants/[handle]/page.tsx`) — серверная.
+ * `onImageClick` — опциональный обработчик клика по самому изображению.
+ * Когда он задан, image-frame оборачивается в `<button>`. Точки-индикаторы
+ * выводятся **рядом** (sibling), а не внутри этой кнопки, чтобы не
+ * получалось `<button>` внутри `<button>` — иначе React падает на
+ * hydration-mismatch (HTML не разрешает вложенные интерактивные
+ * элементы).
  */
 const RestaurantPhotoSlider = ({
   photos,
@@ -24,36 +25,51 @@ const RestaurantPhotoSlider = ({
   frameClassName = 'aspect-[16/9] md:aspect-[2.4/1]',
   sizes = '(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, (min-width: 768px) 700px, 100vw',
   priority = true,
+  onImageClick,
 }: {
   photos: Photo[];
   alt: string;
   frameClassName?: string;
   sizes?: string;
   priority?: boolean;
+  onImageClick?: () => void;
 }): JSX.Element => {
   const [active, setActive] = useState(0);
   const total = photos.length;
   const current = photos[active]?.downloadLink;
 
+  const frameClasses =
+    'relative w-full overflow-hidden rounded-[10px] bg-ink/40 ' +
+    frameClassName;
+
+  const frameContent = current ? (
+    <Image
+      src={current}
+      alt={alt}
+      fill
+      sizes={sizes}
+      className="object-cover"
+      priority={priority}
+    />
+  ) : null;
+
   return (
     <div>
-      <div
-        className={
-          'relative w-full overflow-hidden rounded-[10px] bg-ink/40 ' +
-          frameClassName
-        }
-      >
-        {current ? (
-          <Image
-            src={current}
-            alt={alt}
-            fill
-            sizes={sizes}
-            className="object-cover"
-            priority={priority}
-          />
-        ) : null}
-      </div>
+      {onImageClick ? (
+        <button
+          type="button"
+          onClick={onImageClick}
+          aria-label={`Open ${alt} photo fullscreen`}
+          className={
+            frameClasses + ' transition-opacity hover:opacity-95 disabled:cursor-default'
+          }
+          disabled={total === 0}
+        >
+          {frameContent}
+        </button>
+      ) : (
+        <div className={frameClasses}>{frameContent}</div>
+      )}
       {total > 1 ? (
         <div
           className="mt-3.75 flex items-center justify-center gap-7"

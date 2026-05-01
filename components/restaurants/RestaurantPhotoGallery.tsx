@@ -59,22 +59,19 @@ const RestaurantPhotoGallery = ({
 
   return (
     <>
-      {/* Mobile / tablet — слайдер с точками. Сам по себе он не
-          триггерит lightbox; обёртка-кнопка делает фото clickable
-          под открытие lightbox. */}
-      <button
-        type="button"
-        onClick={openLightbox}
-        aria-label={`Open ${alt} photos fullscreen`}
-        className="block w-full md:hidden"
-      >
+      {/* Mobile / tablet — слайдер с точками. Передаём `onImageClick`
+          самому слайдеру, чтобы кнопкой стало только image-frame, а
+          точки-индикаторы остались sibling'ами — иначе получится
+          `<button>` внутри `<button>` (hydration-mismatch в React 19). */}
+      <div className="md:hidden">
         <RestaurantPhotoSlider
           photos={photos}
           alt={alt}
           frameClassName="aspect-956/678"
-          sizes="100vw"
+          sizes="(max-width: 767px) 100vw, 700px"
+          onImageClick={openLightbox}
         />
-      </button>
+      </div>
 
       {/* Desktop — grid 1 main + 3 thumbnails */}
       <div className="hidden md:grid md:grid-cols-[956fr_278fr] md:gap-15">

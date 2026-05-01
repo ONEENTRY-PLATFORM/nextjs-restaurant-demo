@@ -223,6 +223,24 @@ export const RTKApi = createApi({
       keepUnusedDataFor: 600, // 10 минут для форм
     }),
     /**
+     * Получает дочерние страницы по url родителя — клиентский аналог
+     * server-функции `getChildPagesByParentUrl`. Используется в попапах,
+     * которые подгружают список страниц лениво (например, выпадающий
+     * список ресторанов в ReservationPopup).
+     * @property {string} url - pageUrl родительской страницы.
+     */
+    getChildPagesByParentUrl: build.query<IPagesEntity[], { url: string }>({
+      queryFn: async ({ url }) => {
+        const result = await api.Pages.getChildPagesByParentUrl(url);
+        if (typeError(result)) {
+          return { error: result };
+        }
+        return { data: result as IPagesEntity[] };
+      },
+      providesTags: ['Pages'],
+      keepUnusedDataFor: 600,
+    }),
+    /**
      * Получение данных авторизованного пользователя.
      */
     getMe: build.query<IUserEntity, string>({
@@ -354,6 +372,7 @@ export const RTKApi = createApi({
 export const {
   useGetBlockByMarkerQuery,
   useGetBlocksByPageUrlQuery,
+  useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
   useGetAuthProvidersQuery,
   useLazyGetMeQuery,

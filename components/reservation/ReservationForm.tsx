@@ -54,6 +54,11 @@ type ReservationFormProps = {
   form: IFormsEntity;
   dict?: IAttributeValues;
   restaurants?: RestaurantOption[];
+  // Предзаполнение полей по маркеру. Используется в попап-режиме —
+  // при открытии BOOK A TABLE со страницы конкретного ресторана
+  // сюда приходит `{ restaurant: '<handle>' }`, чтобы дропдаун уже
+  // показывал выбранный ресторан.
+  initialValues?: Record<string, FieldValue>;
 };
 
 /**
@@ -72,8 +77,11 @@ const ReservationForm = ({
   form,
   dict,
   restaurants = [],
+  initialValues,
 }: ReservationFormProps): JSX.Element => {
-  const [values, setValues] = useState<Record<string, FieldValue>>({});
+  const [values, setValues] = useState<Record<string, FieldValue>>(
+    initialValues ?? {},
+  );
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

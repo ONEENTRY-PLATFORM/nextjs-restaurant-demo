@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
+import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
 
 export const dynamic = 'force-dynamic';
@@ -21,8 +22,7 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// Атрибут `comforts` в OneEntry — тип `list` (массив объектов с
-// `title`/`value`). Нормализуем к массиву строк.
+// Атрибут `comforts` в OneEntry — тип `list` (массив объектов с `title`/`value`). Нормализуем к массиву строк.
 const normalizeComforts = (raw: unknown): string[] => {
   if (!raw) return [];
   if (Array.isArray(raw)) {
@@ -35,12 +35,12 @@ const normalizeComforts = (raw: unknown): string[] => {
   return [];
 };
 
-const buildOsmEmbed = (lat: number, lng: number): string => {
-  const dLat = 0.005;
-  const dLng = 0.01;
-  const bbox = [lng - dLng, lat - dLat, lng + dLng, lat + dLat].join(',');
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
-};
+// Используем Google Maps embed без API-ключа: `&hl=en` принудительно
+// выдаёт английские названия независимо от Accept-Language браузера.
+// OSM-embed не имеет официального параметра локализации и подтягивал
+// то, что попало в multilingual-теги (для Ближнего Востока — арабский).
+const buildMapEmbed = (lat: number, lng: number): string =>
+  `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
 /**
  * Single-restaurant страница.
@@ -94,8 +94,6 @@ const RestaurantPage = async ({
   const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
 
-  const bookHref = `/reservation?restaurant=${encodeURIComponent(handle)}`;
-
   return (
     <section className="section_layout">
       <div className="mb-5 flex items-center justify-between gap-4 text-sm text-paper/70">
@@ -146,12 +144,12 @@ const RestaurantPage = async ({
           <div />
         )}
 
-        <Link
-          href={bookHref}
+        <BookATableButton
+          restaurantHandle={handle}
           className="cart_btn hidden md:flex bg-custom_btnorange hover:bg-brand-hover md:max-w-114.5"
         >
           BOOK A TABLE
-        </Link>
+        </BookATableButton>
       </div>
 
       {/* Контакты:
@@ -182,7 +180,7 @@ const RestaurantPage = async ({
         {hasCoords ? (
           <iframe
             title={`Map for ${title}`}
-            src={buildOsmEmbed(lat, lng)}
+            src={buildMapEmbed(lat, lng)}
             className="h-45 w-full rounded-[5px] border-0 md:h-78"
             loading="lazy"
           />
@@ -195,12 +193,12 @@ const RestaurantPage = async ({
 
       {/* Мобильный CTA — на десктопе кнопка уже в ряду с comforts */}
       <div className="mt-10 md:hidden">
-        <Link
-          href={bookHref}
+        <BookATableButton
+          restaurantHandle={handle}
           className="cart_btn bg-custom_btnorange hover:bg-brand-hover"
         >
           BOOK A TABLE
-        </Link>
+        </BookATableButton>
       </div>
     </section>
   );

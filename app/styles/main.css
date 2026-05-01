@@ -1,14 +1,9 @@
-@layer utilities {
-  @keyframes slide-up {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translateY(0);
-    }
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
   }
-  .animate-slide-up {
-    animation: slide-up 1s ease-in-out forwards;
+  100% {
+    transform: translateY(0);
   }
 }
 
@@ -267,9 +262,8 @@ html {
   /*
    * Mobile-only slide-up sheet ревью (`OrderReviewsPanel`,
    * `ReviewsSlideUpPanel`). Glass-фон + анимация выезда снизу.
-   * `animation` прописана напрямую — `animate-slide-up` это не
-   * Tailwind-утилита, а кастомный класс из этого же файла, и
-   * `@apply` его не принимает.
+   * `animation` прописана напрямую через `@keyframes slide-up`
+   * (определён выше в этом же файле), а не через Tailwind-утилиту.
    */
   .review_sheet {
     @apply

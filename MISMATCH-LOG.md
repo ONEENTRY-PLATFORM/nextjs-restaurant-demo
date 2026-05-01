@@ -231,11 +231,10 @@ _Открытых пунктов нет._
 | pageUrl                 | bg_image | banner | description | action_type |
 |-------------------------|----------|--------|-------------|-------------|
 | `birthday_offer`        | ✅       | ✅     | ✅          | ❌ пусто    |
-| `birthday_offer_copy4`  | ❌ пусто | ✅     | ✅          | ❌ пусто    |
-| `business_lunch`        | ❌ пусто | ✅     | ✅          | ❌ пусто    |
+| `business_lunch`        | ✅       | ✅     | ✅          | ❌ пусто    |
 | `deal_of_the_day`       | ✅       | ✅     | ✅          | ❌ пусто    |
 
-> ❓ **Уточнить у клиента:** заполнить `bg_image` у `birthday_offer_copy4` и `business_lunch` (иначе они не попадут в десктоп-сайдбары `/cart` / `/profile/orders`). Также — наполнить `action_type` (list-options) для CTA-кнопок в карточках и на детальной странице.
+наполнить `action_type` (list-options) для CTA-кнопок в карточках и на детальной странице.
 
 Десктоп-баннер берётся через [getBlogBanners](app/api/server/pages/getBlogBanners.ts) (`bg_image`), мобильный — через тот же fetcher (`banner`). Пока у дочерних страниц `blog` нет `bg_image` — десктопный hero на `/` не покажется (graceful fallback), а сайдбар `/cart` / `/profile/orders` будет пустым.
 
@@ -337,6 +336,7 @@ _Открытых пунктов нет._
 
 - **`time`, `delivery_time`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
 - **`stars`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
+- **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код раньше трактовал `statusIdentifier !== 'in_stock'` как «out of stock» → CTA «Add to cart» подменялся подписью «Out of stock» на каждом товаре. **Исправлено**: [AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65) и [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59) теперь блокируют покупку только при явном `statusIdentifier === 'out_of_stock'`. ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
 
 #### C.7.3. Blocks (home_web)
 

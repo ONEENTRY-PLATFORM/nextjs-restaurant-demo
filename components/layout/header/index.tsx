@@ -91,7 +91,7 @@ const Header = async (): Promise<JSX.Element> => {
   return (
     <div id="header">
       <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
-        <div className="container md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
+        <div className="container px-4 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
           <NavGroup />
           <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
             <div className="flex items-center justify-start md:gap-7.5 gap-15">
@@ -147,7 +147,7 @@ const Header = async (): Promise<JSX.Element> => {
           </header>
 
           {/* navigation */}
-          <section className="navigation max-w-auto md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
+          <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             {/* Category Button */}
             <CategoryButton />
             {/* Categories Scroller */}

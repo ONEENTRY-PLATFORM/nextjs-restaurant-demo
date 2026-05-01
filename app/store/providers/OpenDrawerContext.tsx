@@ -1,7 +1,7 @@
 'use client';
 
 import type { Dispatch, JSX, ReactNode } from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 /**
  * Контекст open drawer
@@ -53,6 +53,39 @@ export const OpenDrawerProvider = ({
   const [action, setAction] = useState<string>('');
   /** Отслеживаем тип перехода для drawer */
   const [transition, setTransition] = useState<string>('');
+
+  // Блокируем скролл фона, пока открыт любой попап. Запираем и `<html>`,
+  // и `<body>`, потому что в зависимости от страницы скролл-контейнером
+  // может оказаться любой из них (особенно на мобильных browsers'ах). На
+  // iOS дополнительно фиксируем `body` через `position: fixed`, чтобы
+  // body-rubber-band не пробивал лок. Сохраняем предыдущие inline-стили
+  // и возвращаем их при закрытии.
+  useEffect(() => {
+    if (!open) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyWidth: body.style.width,
+    };
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+      body.style.position = prev.bodyPosition;
+      body.style.top = prev.bodyTop;
+      body.style.width = prev.bodyWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, [open]);
 
   /** Прокидываем значения контекста дочерним компонентам */
   return (

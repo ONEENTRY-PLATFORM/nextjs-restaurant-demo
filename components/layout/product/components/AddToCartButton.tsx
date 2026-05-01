@@ -59,8 +59,11 @@ const AddToCartButton = ({
   // Markers словаря из `static_content`: `add_to_cart` и
   // `out_of_stock_button` (проверено через inspect-api).
   const { add_to_cart, out_of_stock_button } = dict;
+  // OneEntry product status опционален: `null` означает «статус не назначен»
+  // и должен трактоваться как доступный к продаже. Блокируем покупку только
+  // когда стоит явный «непродажный» идентификатор.
   const notInStock = useMemo(
-    () => statusIdentifier !== 'in_stock',
+    () => statusIdentifier === 'out_of_stock',
     [statusIdentifier],
   );
 

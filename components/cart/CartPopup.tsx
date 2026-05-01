@@ -70,7 +70,11 @@ const CartPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 right-0 z-20 h-dvh overflow-y-auto bg-ink/80 backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:min-h-[90vh] md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
-          <div className="flex justify-between items-center">
+          {/* Шапка sticky к верху скролл-контейнера попапа — тот же паттерн,
+              что и в FavoritesPopup: -mx/-mt компенсируют родительский p-5,
+              -top-5 компенсирует собственный pt-5 при «прилипании», bg+blur
+              перекрывает уходящий вверх контент. */}
+          <div className="z-10 flex items-center justify-between">
             <button
               type="button"
               onClick={close}

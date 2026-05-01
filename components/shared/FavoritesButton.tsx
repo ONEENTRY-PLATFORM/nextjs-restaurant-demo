@@ -3,7 +3,7 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX } from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -27,10 +27,19 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
-  const isFav = useAppSelector((state) =>
+  const isFavStored = useAppSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, id),
   );
+  // Favorites хранятся в redux-persist (localStorage). До mount-а используем
+  // SSR-safe значение `false`, чтобы серверный HTML совпадал с первым рендером
+  // клиента, иначе React ругается на hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+  const isFav = mounted ? isFavStored : false;
 
   /**
    * Обновить избранное

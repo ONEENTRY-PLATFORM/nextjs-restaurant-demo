@@ -17,7 +17,8 @@ import StarRating from './StarRating';
  * Идентификация автора берётся из {@link AuthContext}; когда посетитель не
  * авторизован, панель рендерит sign-in CTA вместо формы.
  *
- * Использует Tailwind `.animate-slide-up`, определённый в `app/styles/main.css`.
+ * Использует класс `.review_sheet` из `app/styles/main.css` (slide-up анимация
+ * через `@keyframes slide-up`).
  * @param   {object} props                - Пропсы компонента.
  * @param   {number} props.productId      - Product ID для привязки отзыва.
  * @param   {string} [props.title]        - Переопределение заголовка панели.

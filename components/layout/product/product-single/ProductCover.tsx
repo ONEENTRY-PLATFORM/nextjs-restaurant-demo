@@ -24,10 +24,7 @@ const ProductCover = ({
   const src = cover?.downloadLink;
 
   return (
-    <div className="relative w-full">
-      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-[10px]">
-        <FavoritesButton {...product} />
-      </div>
+    <div className="relative w-full md:h-[120%] md:max-h-[120%]">
       {src ? (
         <Image
           width={615}
@@ -35,13 +32,16 @@ const ProductCover = ({
           sizes="(min-width: 1024px) 615px, 100vw"
           src={src}
           alt={alt}
-          className="h-auto w-full"
+          className="block h-auto w-full md:h-full md:w-full md:object-cover"
         />
       ) : (
         <div className="relative aspect-4/3 w-full overflow-hidden">
           <Placeholder />
         </div>
       )}
+      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-[10px]">
+        <FavoritesButton {...product} />
+      </div>
     </div>
   );
 };

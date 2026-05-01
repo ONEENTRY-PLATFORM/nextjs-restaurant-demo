@@ -66,18 +66,20 @@ const ProductSingle = async ({
         </p>
       </div>
 
-      {/* 2-колоночный layout (md+): картинка | детали + отзывы */}
-      <div className="lg:flex lg:justify-between md:gap-15 md:mt-5">
+      {/* 2-колоночный layout (md+): картинка | детали + отзывы.
+          Grid trick: правая колонка задаёт высоту строки, картинка слева
+          позиционируется абсолютно поверх ячейки, поэтому её max-h-[120%]
+          считается от высоты правой колонки (а не от собственного контента). */}
+      <div className="flex flex-col gap-15 md:mt-5 md:grid md:grid-cols-[minmax(0,1fr)_22rem] md:items-stretch md:gap-15 lg:grid-cols-[minmax(0,1fr)_27.5rem]">
         {/* Картинка — col-1 */}
-        <ProductAnimations
-          className="relative mx-auto block w-full max-w-112.5 md:max-w-175 lg:min-w-153.75 lg:max-w-153.75 lg:shrink-0"
-          index={0}
-        >
-          <ProductCover alt={localizeInfos.title} product={product} />
+        <ProductAnimations className="relative w-full md:min-h-full" index={0}>
+          <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center md:overflow-hidden">
+            <ProductCover alt={localizeInfos.title} product={product} />
+          </div>
         </ProductAnimations>
 
         {/* Детали + отзывы — col-2 */}
-        <ProductAnimations className="flex min-w-0 flex-1 flex-col" index={1}>
+        <ProductAnimations className="flex flex-col" index={1}>
           {/* Только для мобильной версии — категория + заголовок (над деталями на маленьких экранах) */}
           <div className="mt-5 flex flex-col gap-2.5 md:hidden">
             {categoryLabel ? (

@@ -37,11 +37,7 @@ import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
  * `component === 'FavoritesPopup'`).
  * @returns {JSX.Element} JSX попапа избранного.
  */
-const FavoritesPopup = ({
-  dict,
-}: {
-  dict?: IAttributeValues;
-}): JSX.Element => {
+const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const { open, component, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
@@ -66,12 +62,13 @@ const FavoritesPopup = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-5 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
             заголовок по центру, бургер справа. На md+ скрыт, там сверху —
-            обычная X-кнопка. */}
-        <div className="flex items-center justify-between md:hidden">
+            обычная X-кнопка. На мобиле sticky к верху скролл-контейнера, чтобы
+            не уезжал вместе со списком избранного. */}
+        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between bg-ink/80 px-5 pt-5 pb-2.5 backdrop-blur-[10px] md:hidden">
           <button
             type="button"
             onClick={close}
@@ -123,6 +120,7 @@ const FavoritesPopup = ({
                 key={product.id}
                 product={product}
                 addToCartLabel={addToCartLabel}
+                onNavigate={close}
               />
             ))}
           </div>
@@ -142,9 +140,11 @@ const FavoritesPopup = ({
 const FavoriteCard = ({
   product,
   addToCartLabel,
+  onNavigate,
 }: {
   product: IProductsEntity;
   addToCartLabel: string;
+  onNavigate: () => void;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector((state) =>
@@ -163,24 +163,37 @@ const FavoriteCard = ({
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
+  const productHref = `/shop/product/${product.id}`;
+
   return (
     <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-paper/30 p-2.5 md:w-half-gap">
-      {imageSrc ? (
-        <Image
-          src={imageSrc}
-          alt={title}
-          width={122}
-          height={129}
-          sizes="122px"
-          className="mr-2.5 shrink-0 object-cover"
-        />
-      ) : (
-        <div className="mr-2.5 flex h-32.25 w-30.5 shrink-0 items-center justify-center">
-          <Placeholder />
-        </div>
-      )}
+      <Link
+        href={productHref}
+        onClick={onNavigate}
+        aria-label={title}
+        className="mr-2.5 shrink-0"
+      >
+        {imageSrc ? (
+          <Image
+            src={imageSrc}
+            alt={title}
+            width={122}
+            height={129}
+            sizes="122px"
+            className="h-auto w-auto object-cover"
+          />
+        ) : (
+          <div className="flex h-32.25 w-30.5 items-center justify-center">
+            <Placeholder />
+          </div>
+        )}
+      </Link>
 
-      <div className="flex w-1/2 flex-col">
+      <Link
+        href={productHref}
+        onClick={onNavigate}
+        className="flex w-1/2 flex-col"
+      >
         <p className="favorites_title">{title}</p>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}
@@ -188,7 +201,7 @@ const FavoriteCard = ({
             <p className="favorites_price">$ {priceRaw}</p>
           ) : null}
         </div>
-      </div>
+      </Link>
 
       <div className="flex h-30.5 shrink-0 flex-col justify-between">
         <button

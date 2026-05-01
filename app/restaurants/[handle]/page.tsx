@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
@@ -11,7 +12,15 @@ export const dynamic = 'force-dynamic';
 
 type Photo = { downloadLink?: string };
 type ScheduleInterval = { from?: string; to?: string };
-type ListItem = { value?: string; title?: string };
+type ComfortItem = {
+  title?: string;
+  value?: string;
+  extended?: {
+    type?: string;
+    value?: { downloadLink?: string };
+  };
+};
+type Comfort = { title: string; iconUrl?: string };
 
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
@@ -22,17 +31,26 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// Атрибут `comforts` в OneEntry — тип `list` (массив объектов с `title`/`value`). Нормализуем к массиву строк.
-const normalizeComforts = (raw: unknown): string[] => {
-  if (!raw) return [];
-  if (Array.isArray(raw)) {
-    return (raw as Array<string | ListItem>)
-      .map((item) =>
-        typeof item === 'string' ? item : (item.title ?? item.value ?? ''),
-      )
-      .filter(Boolean);
-  }
-  return [];
+// Атрибут `comforts` в OneEntry — тип `list`. Каждый item имеет `title`,
+// `value` (маркер) и `extended` с дополнительным значением; в нашей
+// админке задано `extended.type === 'image'` с иконкой comfort'а
+// (см. скрин — «150 seats» / «Large terrace» / «Live music» с иконками
+// стула, террасы, гитары соответственно). Нормализуем к
+// `{ title, iconUrl? }[]`.
+const normalizeComforts = (raw: unknown): Comfort[] => {
+  if (!Array.isArray(raw)) return [];
+  return (raw as ComfortItem[])
+    .map((item) => {
+      if (typeof item === 'string') return { title: item };
+      const title = item.title ?? item.value ?? '';
+      if (!title) return null;
+      const iconUrl =
+        item.extended?.type === 'image'
+          ? item.extended?.value?.downloadLink
+          : undefined;
+      return { title, iconUrl };
+    })
+    .filter((c): c is Comfort => c !== null);
 };
 
 // Используем Google Maps embed без API-ключа: `&hl=en` принудительно
@@ -131,12 +149,22 @@ const RestaurantPage = async ({
       <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-15">
         {comforts.length > 0 ? (
           <div className="flex flex-wrap items-center justify-between gap-5 md:justify-start md:gap-7.5">
-            {comforts.map((label, i) => (
+            {comforts.map((c, i) => (
               <div
-                key={`${label}-${i}`}
-                className="flex h-25 w-25 shrink-0 flex-col items-center justify-center rounded-full border border-brand p-3 text-center text-xs leading-3 text-brand"
+                key={`${c.title}-${i}`}
+                className="flex h-25 w-25 shrink-0 flex-col items-center justify-center gap-1.5 rounded-full border border-brand p-3 text-center text-xs leading-3 text-brand"
               >
-                {label}
+                {c.iconUrl ? (
+                  <Image
+                    src={c.iconUrl}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 object-contain"
+                    unoptimized
+                  />
+                ) : null}
+                <span>{c.title}</span>
               </div>
             ))}
           </div>

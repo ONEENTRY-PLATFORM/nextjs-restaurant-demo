@@ -3,7 +3,7 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
-import { useContext, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 
 import {
   useGetChildPagesByParentUrlQuery,
@@ -16,7 +16,10 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import ReservationForm from './ReservationForm';
-import type { RestaurantOption } from './RestaurantSelect';
+import type {
+  RestaurantOption,
+  ScheduleSlotEntry,
+} from './RestaurantSelect';
 
 /**
  * Попап бронирования столика — открывается по кнопке `BOOK A TABLE`
@@ -42,39 +45,61 @@ const ReservationPopup = ({
 }: {
   dict?: IAttributeValues;
 }): JSX.Element => {
-  const { open, component, action, setOpen, setTransition } =
+  const { open, component, action, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const isOpen = open && component === 'ReservationPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Свайп вниз закрывает напрямую, минуя GSAP-reverse — паттерн
-  // FavoritesPopup/ProfilePopup: иначе inline-transform хука сваливался
-  // бы в tween закрытия.
+  // Свайп вниз закрывает напрямую — без GSAP-tween'а.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  const close = () => setTransition('close');
+  // У ReservationPopup нет своего GSAP-Animations wrapper'а
+  // (FavoritesPopup/ProfilePopup имеют), некому реагировать на
+  // `setTransition('close')`. ModalBackdrop по клику зовёт именно
+  // `setTransition('close')`, поэтому слушаем это значение здесь и
+  // закрываем синхронно.
+  useEffect(() => {
+    if (isOpen && transition === 'close') {
+      setOpen(false);
+      setTransition('');
+    }
+  }, [isOpen, transition, setOpen, setTransition]);
+
+  const close = () => setOpen(false);
 
   const { data: form, isLoading: isFormLoading } = useGetFormByMarkerQuery(
     { marker: 'booking_order' },
     { skip: !isOpen },
   );
   const { data: pages, isLoading: isPagesLoading } =
-    useGetChildPagesByParentUrlQuery(
-      { url: 'restaurants' },
-      { skip: !isOpen },
-    );
+    useGetChildPagesByParentUrlQuery({ url: 'restaurants' }, { skip: !isOpen });
 
   // Маппинг как в `app/reservation/page.tsx` — value берётся из
   // `pageUrl` (стабильный маркер), label — из `address` или `title`.
+  // Дополнительно прокидываем `schedule` (атрибут `timeInterval` на
+  // странице ресторана), чтобы TimePicker мог показать только реально
+  // доступные слоты для выбранной даты.
   const restaurants: RestaurantOption[] = useMemo(
     () =>
-      (pages ?? []).map((p: IPagesEntity) => ({
-        value: p.pageUrl ?? String(p.id),
-        label:
-          ((p.attributeValues?.address?.value as string | undefined) ||
-            p.localizeInfos?.title) ??
-          'Restaurant',
-      })),
+      (pages ?? []).map((p: IPagesEntity) => {
+        const scheduleRaw = p.attributeValues?.schedule?.value;
+        // OneEntry возвращает schedule как
+        // `[{ values: ScheduleSlotEntry[] }, ...]`. Сплющиваем все
+        // `values` в один плоский массив записей.
+        const scheduleEntries: ScheduleSlotEntry[] = Array.isArray(scheduleRaw)
+          ? (scheduleRaw as Array<{ values?: ScheduleSlotEntry[] }>).flatMap(
+              (group) => group?.values ?? [],
+            )
+          : [];
+        return {
+          value: p.pageUrl ?? String(p.id),
+          label:
+            ((p.attributeValues?.address?.value as string | undefined) ||
+              p.localizeInfos?.title) ??
+            'Restaurant',
+          schedule: scheduleEntries,
+        };
+      }),
     [pages],
   );
 
@@ -92,7 +117,7 @@ const ReservationPopup = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-h-162.5 overflow-hidden right-0 z-20 flex max-h-[90vh] w-full flex-col sm:overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between">
           <p className="font-semibold text-[24px] text-brand">

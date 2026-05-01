@@ -15,7 +15,10 @@ import TimePickerSheet from '@/components/ui/TimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import FormCaptcha from '../forms/inputs/FormCaptcha';
-import type { RestaurantOption } from './RestaurantSelect';
+import type {
+  RestaurantOption,
+  ScheduleSlotEntry,
+} from './RestaurantSelect';
 import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
@@ -36,6 +39,52 @@ const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
 
 /**
+ * Возвращает массив доступных стартов слотов в формате `HH.MM` для
+ * указанной даты (`yyyy-MM-dd`) на основе расписания ресторана из
+ * OneEntry (`attribute schedule`, тип `timeInterval`).
+ *
+ * Алгоритм:
+ *  1) Перебираем записи расписания.
+ *  2) Запись применима, если `inEveryWeek === true` (каждую неделю), либо
+ *     если выбранная дата попадает в диапазон `[dates[0], dates[1]]`.
+ *  3) Из `times` берём `[from]` каждого слота — это и есть стартовое
+ *     время, форматируем как `HH.MM` (точка — соответствует
+ *     static-html стилю `service_time` "10.00").
+ *  4) Дедуплицируем и сортируем.
+ *
+ * Если расписание пустое или ничего не подходит — вернём `[]`, тогда
+ * TimePicker покажет «No available slots».
+ * @param   {ScheduleSlotEntry[]} schedule - Сырые записи из `schedule.value`.
+ * @param   {string}              dateIso  - Выбранная дата `yyyy-MM-dd`.
+ * @returns {string[]}                     Список меток слотов.
+ */
+const getAvailableSlotsForDate = (
+  schedule: ScheduleSlotEntry[] | undefined,
+  dateIso: string,
+): string[] => {
+  if (!schedule || schedule.length === 0 || !dateIso) return [];
+  const target = new Date(`${dateIso}T00:00:00.000Z`).getTime();
+  const result = new Set<string>();
+  for (const entry of schedule) {
+    let applies = false;
+    if (entry.inEveryWeek || entry.inEveryMonth) {
+      applies = true;
+    } else if (entry.dates && entry.dates.length === 2) {
+      const start = new Date(entry.dates[0]).getTime();
+      const end = new Date(entry.dates[1]).getTime();
+      applies = target >= start && target <= end;
+    }
+    if (!applies || !entry.times) continue;
+    for (const [from] of entry.times) {
+      const hh = String(from.hours).padStart(2, '0');
+      const mm = String(from.minutes).padStart(2, '0');
+      result.add(`${hh}.${mm}`);
+    }
+  }
+  return [...result].sort();
+};
+
+/**
  * Маппит тип атрибута OneEntry формы + маркер в нативный HTML input `type`.
  * @param   {string} type   - `type` атрибута OneEntry.
  * @param   {string} marker - Маркер атрибута, используется для эвристики.
@@ -52,13 +101,13 @@ const resolveInputType = (type: string, marker: string): string => {
 
 type ReservationFormProps = {
   form: IFormsEntity;
-  dict?: IAttributeValues;
-  restaurants?: RestaurantOption[];
+  dict?: IAttributeValues | undefined;
+  restaurants?: RestaurantOption[] | undefined;
   // Предзаполнение полей по маркеру. Используется в попап-режиме —
   // при открытии BOOK A TABLE со страницы конкретного ресторана
   // сюда приходит `{ restaurant: '<handle>' }`, чтобы дропдаун уже
   // показывал выбранный ресторан.
-  initialValues?: Record<string, FieldValue>;
+  initialValues?: Record<string, FieldValue> | undefined;
 };
 
 /**
@@ -180,7 +229,7 @@ const ReservationForm = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="mx-auto flex w-full max-w-98.25 flex-col gap-5 px-5 md:max-w-107.5 md:px-0"
+      className="flex w-full flex-col gap-5 px-5 md:px-0"
     >
       {hasRestaurant ? (
         <RestaurantSelect
@@ -303,6 +352,12 @@ const ReservationForm = ({
       {picker === 'time' ? (
         <TimePickerSheet
           value={values[TIME_SLOT_MARKER]?.split(' ')?.[1] ?? ''}
+          slots={getAvailableSlotsForDate(
+            restaurants.find(
+              (r) => r.value === (values[RESTAURANT_MARKER] ?? ''),
+            )?.schedule,
+            values[TIME_SLOT_MARKER]?.split(' ')?.[0] ?? todayIso,
+          )}
           onApply={(t) => {
             const d = values[TIME_SLOT_MARKER]?.split(' ')?.[0] ?? todayIso;
             onChange(TIME_SLOT_MARKER, `${d} ${t}`);

@@ -5,9 +5,30 @@ import { useEffect, useRef, useState } from 'react';
 
 import ChevronDownIcon from '@/components/icons/chevron-down';
 
+/**
+ * Один интервал расписания ресторана из OneEntry (атрибут
+ * `schedule` типа `timeInterval`). Совпадает с подмножеством формата
+ * SDK, нужного для генерации слотов в TimePicker.
+ */
+export type ScheduleSlotEntry = {
+  dates?: [string, string];
+  times?: Array<
+    [
+      { hours: number; minutes: number },
+      { hours: number; minutes: number },
+    ]
+  >;
+  inEveryWeek?: boolean;
+  inEveryMonth?: boolean;
+};
+
 export type RestaurantOption = {
   value: string;
   label: string;
+  // Расписание ресторана — пробрасывается в TimePicker, чтобы показать
+  // только реально доступные слоты на выбранную дату (см.
+  // `getAvailableSlotsForDate` в `ReservationForm`).
+  schedule?: ScheduleSlotEntry[];
 };
 
 /**

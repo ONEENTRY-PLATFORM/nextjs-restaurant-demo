@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
+import ClosePopupButton from '@/components/shared/ClosePopupButton';
 
 const MONTH_NAMES = [
   'January',
@@ -126,6 +127,11 @@ const DatePickerSheet = ({
   return (
     <div className="fixed bottom-0 left-0 z-10 w-full rounded-tl-[20px] rounded-tr-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-[10px]">
       <div className="mx-auto max-w-87.5 bg-transparent">
+        {onClose ? (
+          <div className="mb-3 flex justify-end">
+            <ClosePopupButton onClose={onClose} ariaLabel="Close date picker" />
+          </div>
+        ) : null}
         <div className="grid grid-cols-7">
           {WEEK.map((w) => (
             <div key={w} className="calend_mon">
@@ -177,23 +183,14 @@ const DatePickerSheet = ({
             <ChevronMiniRightIcon />
           </button>
         </div>
-        <div className="mb-4 flex items-center justify-center gap-3">
+        <div className="mb-4 flex items-center justify-center">
           <button
             type="button"
             onClick={() => onApply(selected)}
-            className="mx-auto block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_transp"
+            className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_transp"
           >
             Apply
           </button>
-          {onClose ? (
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-[5px] border border-paper px-3.75 py-1.25 font-bold text-[20px] text-paper hover_btn_white"
-            >
-              Cancel
-            </button>
-          ) : null}
         </div>
       </div>
       <div className="h-25 border-none bg-transparent" />

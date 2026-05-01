@@ -61,7 +61,8 @@ const RestaurantPhotoSlider = ({
           onClick={onImageClick}
           aria-label={`Open ${alt} photo fullscreen`}
           className={
-            frameClasses + ' transition-opacity hover:opacity-95 disabled:cursor-default'
+            frameClasses +
+            ' transition-opacity hover:opacity-95 disabled:cursor-default'
           }
           disabled={total === 0}
         >

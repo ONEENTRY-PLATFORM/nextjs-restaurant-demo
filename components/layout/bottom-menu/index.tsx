@@ -65,8 +65,14 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
         </div>
 
         <div className="relative w-1/3 flex justify-center items-start -mt-5 p-5 z-50">
-          <CenterCartButton />
-          <CenterCloseButton />
+          {/* Стек из двух кнопок (cart / close) одного размера, по очереди
+              анимируется через opacity+rotate+scale в зависимости от
+              `OpenDrawerContext.open`. Обе всегда в DOM, чтобы переход
+              был плавным crossfade'ом, а не сменой компонента. */}
+          <div className="relative w-11.5 h-11.5 -mt-2.5">
+            <CenterCartButton />
+            <CenterCloseButton />
+          </div>
         </div>
 
         <div className="relative flex justify-end gap-11.25 md:gap-20 mobile_wide:gap-7.5 items-center mx-auto w-1/3 z-50">

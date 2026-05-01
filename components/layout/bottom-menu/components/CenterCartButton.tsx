@@ -10,11 +10,13 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * Центральная выступающая кнопка корзины — 1:1 порт оранжевого шарика из
  * `static-html/.../MenuBottom`. Открывает drawer корзины через `OpenDrawerContext`
  * (`component === 'CartPopup'`) — тот же паттерн drawer, что и у фильтра.
- * Скрывается, пока открыт любой drawer, чтобы не перекрывать открытую панель.
+ * Кросс-фейд + поворот при переключении с {@link CenterCloseButton}: обе кнопки
+ * лежат друг под другом (absolute inset-0 внутри родительского стека) и
+ * анимируются opacity / rotate / scale, чтобы переход не был резким.
  * Бейдж замаунтен через mount-gate, чтобы избежать рассинхрона hydration при
  * клиентской регидратации persisted-корзины.
  */
-const CenterCartButton = (): JSX.Element | null => {
+const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(
     (state) => state.cartReducer.productsData?.length ?? 0,
@@ -30,9 +32,7 @@ const CenterCartButton = (): JSX.Element | null => {
     () => false,
   );
 
-  if (open) {
-    return null;
-  }
+  const hidden = open;
 
   return (
     <button
@@ -42,7 +42,14 @@ const CenterCartButton = (): JSX.Element | null => {
         setOpen(true);
       }}
       aria-label="Open cart"
-      className="bg-brand hover:bg-brand-hover w-11.5 h-11.5 flex justify-center items-center rounded-full -mt-2.5 relative"
+      aria-hidden={hidden}
+      tabIndex={hidden ? -1 : 0}
+      className={
+        'absolute inset-0 flex items-center justify-center rounded-full bg-brand hover:bg-brand-hover transition-all duration-300 ease-out ' +
+        (hidden
+          ? 'pointer-events-none scale-50 rotate-90 opacity-0'
+          : 'scale-100 rotate-0 opacity-100')
+      }
     >
       <img
         className="w-6.25 h-5.75"

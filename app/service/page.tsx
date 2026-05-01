@@ -65,7 +65,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         {secondaryHref && secondaryCta ? (
           <Link
             href={secondaryHref}
-            className="mt-5 flex h-15 w-full items-center justify-center rounded-[5px] bg-custom_btnorange backdrop-blur-[10px] font-bold text-[17px] uppercase text-custom_white hover_btn_transp"
+            className="mt-5 flex h-15 w-full items-center justify-center rounded-[5px] bg-custom_btnorange backdrop-blur-[10px] font-bold text-[18px] uppercase text-custom_white hover_btn_transp"
           >
             {secondaryCta}
           </Link>

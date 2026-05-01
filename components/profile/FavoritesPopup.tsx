@@ -62,13 +62,13 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-w-[40vw] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
             заголовок по центру, бургер справа. На md+ скрыт, там сверху —
             обычная X-кнопка. На мобиле sticky к верху скролл-контейнера, чтобы
             не уезжал вместе со списком избранного. */}
-        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between bg-ink/80 px-5 pt-5 pb-2.5 backdrop-blur-[10px] md:hidden">
+        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between px-5 pt-5 pb-2.5 md:hidden">
           <button
             type="button"
             onClick={close}

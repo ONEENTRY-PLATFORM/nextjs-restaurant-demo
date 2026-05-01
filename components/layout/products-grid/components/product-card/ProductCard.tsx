@@ -71,11 +71,12 @@ const ProductCard = ({
       index={index}
       productsLimit={productsLimit}
     >
+      <HeartCardButton product={product} />
       <ProductImage attributes={attrs} alt={title} />
 
       {time || weight || rating ? (
         <div className="descr">
-          {time ? <p> {time}</p> : null}
+          {time && time !== '0' ? <p> {time} min</p> : null}
           {weight ? <p>{weight}</p> : null}
           {rating ? (
             <div className="rating">
@@ -102,8 +103,6 @@ const ProductCard = ({
           <p className="text-base md:text-[22px]">{formattedPrice}</p>
         ) : null}
       </CartButton>
-
-      <HeartCardButton product={product} />
 
       <Link
         prefetch={true}

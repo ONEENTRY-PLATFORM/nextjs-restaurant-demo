@@ -75,21 +75,34 @@ _Активных P0/P1 пунктов нет._
 
 - 🌐 Live: <http://localhost:3000/>
 - 📄 Static: [static-html/index.html](static-html/index.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/index.html>
-- 📁 Файлы проекта: [app/page.tsx](app/page.tsx) · [components/home/HomePromo.tsx](components/home/HomePromo.tsx) · [components/home/CategoriesSection.tsx](components/home/CategoriesSection.tsx) · [components/home/HomeCategoriesSection.tsx](components/home/HomeCategoriesSection.tsx) · [components/layout/header/index.tsx](components/layout/header/index.tsx)
+- 📁 Файлы проекта:
+[app/page.tsx](app/page.tsx)
+[components/home/HomePromo.tsx](components/home/HomePromo.tsx)
+[components/home/CategoriesSection.tsx](components/home/CategoriesSection.tsx)
+[components/home/HomeCategoriesSection.tsx](components/home/HomeCategoriesSection.tsx)
+[components/layout/header/index.tsx](components/layout/header/index.tsx)
 
 ### B.2. Карточка товара (`pk_product_details.html` ↔ `app/shop/product/[handle]`)
 
 - 🌐 Live: <http://localhost:3000/shop/product/13> _(заменить `13` на любой реальный product id, например через `/shop`)_
 - 📄 Static: [static-html/pk_product_details.html](static-html/pk_product_details.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_product_details.html>
-- 📁 Файлы проекта: [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) · [components/layout/product/index.tsx](components/layout/product/index.tsx) · [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) · [components/layout/product/product-single/ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx) · [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx)
+- 📁 Файлы проекта:
+[app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx)
+[components/layout/product/index.tsx](components/layout/product/index.tsx)
+[components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx)
+[components/layout/product/product-single/ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx)
+[components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx)
 
 ### B.3. Каталог / категория (`index_category.html` ↔ `app/shop/...`)
 
 - 🌐 Live: <http://localhost:3000/shop> · <http://localhost:3000/shop/category/dinner> _(подставить реальный category handle)_
 - 📄 Static: [static-html/index_category.html](static-html/index_category.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/index_category.html>
-- 📁 Файлы проекта: [app/shop/page.tsx](app/shop/page.tsx) · [app/shop/category/[handle]/page.tsx](app/shop/category/[handle]/page.tsx) · [components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx) · [components/layout/filter/FilterModal.tsx](components/layout/filter/FilterModal.tsx) · [components/layout/products-grid/components/product-card/ProductCard.tsx](components/layout/products-grid/components/product-card/ProductCard.tsx)
-
-_Открытых пунктов нет._
+- 📁 Файлы проекта:
+[app/shop/page.tsx](app/shop/page.tsx)
+[app/shop/category/[handle]/page.tsx](app/shop/category/[handle]/page.tsx)
+[components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx)
+[components/layout/filter/FilterModal.tsx](components/layout/filter/FilterModal.tsx)
+[components/layout/products-grid/components/product-card/ProductCard.tsx](components/layout/products-grid/components/product-card/ProductCard.tsx)
 
 ### B.4. Корзина и чекаут (`cart_*.html` / `pk_cart.html` ↔ `components/cart/CartWizard.tsx` + steps)
 
@@ -103,7 +116,17 @@ _Открытых пунктов нет._
   - payment: [cart_PAYMENT.html](static-html/cart_PAYMENT.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_PAYMENT.html>
   - add_card: [cart_add_card.html](static-html/cart_add_card.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_add_card.html>
   - error: [cart_error_masseges.html](static-html/cart_error_masseges.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_error_masseges.html>
-- 📁 Файлы проекта: [app/cart/page.tsx](app/cart/page.tsx) · [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) · [components/cart/steps/StepTime.tsx](components/cart/steps/StepTime.tsx) · [components/cart/steps/StepSignIn.tsx](components/cart/steps/StepSignIn.tsx) · [components/cart/steps/StepVerification.tsx](components/cart/steps/StepVerification.tsx) · [components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx) · [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx) · [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx) · [components/cart/steps/StepAddCard.tsx](components/cart/steps/StepAddCard.tsx) · [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx)
+- 📁 Файлы проекта:
+[app/cart/page.tsx](app/cart/page.tsx)
+[components/cart/CartWizard.tsx](components/cart/CartWizard.tsx)
+[components/cart/steps/StepTime.tsx](components/cart/steps/StepTime.tsx)
+[components/cart/steps/StepSignIn.tsx](components/cart/steps/StepSignIn.tsx)
+[components/cart/steps/StepVerification.tsx](components/cart/steps/StepVerification.tsx)
+[components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx)
+[components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx)
+[components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx)
+[components/cart/steps/StepAddCard.tsx](components/cart/steps/StepAddCard.tsx)
+[components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
@@ -121,50 +144,85 @@ _Открытых пунктов нет._
   - favorites: [m_favorites.html](static-html/m_favorites.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/m_favorites.html> · [pk_favorites.html](static-html/pk_favorites.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_favorites.html>
   - reviews drawer: [m_rewiews.html](static-html/m_rewiews.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/m_rewiews.html>
   - profile details popup: [mob_about.html](static-html/mob_about.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/mob_about.html>
-- 📁 Файлы проекта: [app/profile/layout.tsx](app/profile/layout.tsx) · [app/profile/page.tsx](app/profile/page.tsx) · [app/profile/orders/page.tsx](app/profile/orders/page.tsx) · [app/profile/favorites/page.tsx](app/profile/favorites/page.tsx) · [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx) · [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) · [components/profile/FavoritesPopup.tsx](components/profile/FavoritesPopup.tsx) · [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx) · [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx)
+- 📁 Файлы проекта:
+[app/profile/layout.tsx](app/profile/layout.tsx)
+[app/profile/page.tsx](app/profile/page.tsx)
+[app/profile/orders/page.tsx](app/profile/orders/page.tsx)
+[app/profile/favorites/page.tsx](app/profile/favorites/page.tsx)
+[components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx)
+[components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx)
+[components/profile/FavoritesPopup.tsx](components/profile/FavoritesPopup.tsx)
+[components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx)
+[components/profile/OrdersList.tsx](components/profile/OrdersList.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.5.1 | `text-[24px] md:text-[32px]` на h1 — `text-2xl md:text-3xl` (24px = `text-2xl`, 30px = `text-3xl`; 32px ближе к `text-3xl` но не совпадает точно). 24px один-в-один. **Сверить значение 32px со static** | [app/profile/layout.tsx:15](app/profile/layout.tsx#L15) | P3 |
-| B.5.6 | Хардкод-вёрстка адресов в ProfilePopup: `initialAddresses` с `id: 'a1', street: 'OneEntry', house: '40', floor: '27'`. По CLAUDE.md правилу 2 это легитимный мок, но в §C.5 уже есть открытый вопрос «где хранить адреса». **Не баг — задокументировано** | [components/profile/ProfilePopup.tsx:26-28](components/profile/ProfilePopup.tsx#L26-L28) | — |
-| B.5.7 | `HIDDEN_PROFILE_MARKERS` исключает `user_address`, `user_flat`, `user_floor` — но в `static-html/details_personal.html` блок Address НЕ показывает эти поля под секцией Personal (они в отдельной секции Address). Логика верна, но комментарий стоило бы расширить | [components/profile/ProfilePopup.tsx:32-39](components/profile/ProfilePopup.tsx#L32-L39) | — |
+| B.5.7 | ~~`HIDDEN_PROFILE_MARKERS` исключает `user_address`, `user_flat`, `user_floor` — но в `static-html/details_personal.html` блок Address НЕ показывает эти поля под секцией Personal (они в отдельной секции Address). Логика верна, но комментарий стоило бы расширить~~ ✅ Комментарий расширен — теперь явно описано, почему скрыта каждая группа маркеров (repeat_password / нотификации / адресные поля) | [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) | — |
 
 ### B.6. Резервация (`service_table.html`, `service_date.html`, `service_time.html` ↔ `app/reservation`)
 
 - 🌐 Live: <http://localhost:3000/reservation>
 - 📄 Static:
-  - main form: [service_table.html](static-html/service_table.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service_table.html>
-  - date picker: [service_date.html](static-html/service_date.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service_date.html>
-  - time picker: [service_time.html](static-html/service_time.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service_time.html>
-  - sign-up: [service_Sign_up.html](static-html/service_Sign_up.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service_Sign_up.html>
-  - reservation about: [mob_about_reservation.html](static-html/mob_about_reservation.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/mob_about_reservation.html>
-- 📁 Файлы проекта: [app/reservation/page.tsx](app/reservation/page.tsx) · [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) · [components/reservation/RestaurantSelect.tsx](components/reservation/RestaurantSelect.tsx) · [components/ui/DatePickerSheet.tsx](components/ui/DatePickerSheet.tsx) · [components/ui/TimePickerSheet.tsx](components/ui/TimePickerSheet.tsx)
+  - main form:
+  [service_table.html](static-html/service_table.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_table.html>
+
+  - date picker:
+  [service_date.html](static-html/service_date.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_date.html>
+
+  - time picker:
+  [service_time.html](static-html/service_time.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_time.html>
+
+  - sign-up:
+  [service_Sign_up.html](static-html/service_Sign_up.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_Sign_up.html>
+
+  - reservation about:
+  [mob_about_reservation.html](static-html/mob_about_reservation.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/mob_about_reservation.html>
+
+- 📁 Файлы проекта:
+[app/reservation/page.tsx](app/reservation/page.tsx)
+[components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx)
+[components/reservation/RestaurantSelect.tsx](components/reservation/RestaurantSelect.tsx)
+[components/ui/DatePickerSheet.tsx](components/ui/DatePickerSheet.tsx)
+[components/ui/TimePickerSheet.tsx](components/ui/TimePickerSheet.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | B.6.5 | `bg-[url('/images/picture/bg_cart.png')] ... md:bg-none` — на md+ фон убирается. Сверить со static-html — там градиентная подложка может быть на всех брейкпоинтах. Заглянуть в `service_table.html` | [app/reservation/page.tsx:63](app/reservation/page.tsx#L63) | — (требует визуала) |
 | B.6.6 | `RestaurantSelect.label` берётся из `address` или `localizeInfos.title`. В `static-html/service_table.html` дропдаун ресторана показывает скорее всего читаемое название («Restaurant 1» / название локации), а не адрес. Сейчас приоритет адреса — может выглядеть избыточно длинной строкой | [app/reservation/page.tsx:34-42](app/reservation/page.tsx#L34) | P2 |
-| B.6.7 | Дата/время — bottom-sheet пикеры ([DatePickerSheet](components/ui/DatePickerSheet.tsx), [TimePickerSheet](components/ui/TimePickerSheet.tsx)) вместо нативного `<input type="date">`. Это намеренно (соответствует `service_date.html` / `service_time.html`). **В плюс — задокументировано в JSDoc** | [components/reservation/ReservationForm.tsx:64-67](components/reservation/ReservationForm.tsx#L64-L67) | — |
 
 ### B.7. Поддержка / Service (`service_support.html`, `service.html` ↔ `app/support`, `app/service`)
 
 #### B.7a. ServicePage (`service.html`)
 
 - 🌐 Live: <http://localhost:3000/service>
-- 📄 Static: [service.html](static-html/service.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service.html>
+
+- 📄 Static:
+  [service.html](static-html/service.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service.html>
+
 - 📁 Файлы проекта: [app/service/page.tsx](app/service/page.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.7.1 | Соответствие со static — высокое: `max-w-98.25 px-5` ↔ `max-w-[393px] px-[20px]` ✓; кнопки `h-15 w-full mt-42.5` ↔ `h-[60px] w-full mt-[170px]` ✓; brand-текст `text-brand` правильно использует токен (в static был `text-[#ec722b]` — проект уже исправил). **В плюс** | [app/service/page.tsx](app/service/page.tsx) | — |
-| B.7.2 | `text-[17px]` — нестандартный размер, не на дефолтной шкале (16/18/20). 17/4=4.25 — `text-[17px]` остаётся как есть, либо ввести токен `--text-cta-button: 17px` если повторяется | [app/service/page.tsx:72,78](app/service/page.tsx#L72) | P3 |
 | B.7.3 | CMS-атрибуты `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` — **существуют в OneEntry, но значения пусты** (см. §C.7.1). Используются хардкоды `'FOOD DELIVERY'`, `'BOOK A TABLE'`, `/shop`, `/reservation` — fallback работает. Действие на стороне админа | [app/service/page.tsx:40-48](app/service/page.tsx#L40-L48) | — |
 
 #### B.7b. SupportPage (`service_support.html`)
 
 - 🌐 Live: <http://localhost:3000/support>
-- 📄 Static: [service_support.html](static-html/service_support.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/service_support.html> · [m_support.html](static-html/m_support.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/m_support.html>
-- 📁 Файлы проекта: [app/support/page.tsx](app/support/page.tsx) · [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx)
+- 📄 Static:
+  [service_support.html](static-html/service_support.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_support.html>
+  [m_support.html](static-html/m_support.html)
+  <file:///d:/OneEntry/nextjs-restaurant/static-html/m_support.html>
+
+- 📁 Файлы проекта:
+  [app/support/page.tsx](app/support/page.tsx)
+  [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
@@ -210,7 +268,7 @@ _Открытых пунктов нет._
 
 #### C.2.3. Дочерние страницы под `blog` (акции)
 
-В админке: `birthday_offer`, `birthday_offer_copy4`, `business_lunch`, `deal_of_the_day`. В вёрстке также упоминаются `kids_menu`, `happy_monday`, `dinner_fix_price` — создать недостающие child-pages под `blog`. Реальный attribute set `blog_page` (по результату [inspect-api](.claude/temp/inspect-blog.mjs)):
+В админке: `birthday_offer`, `business_lunch`, `deal_of_the_day`. В вёрстке также упоминаются `kids_menu`, `happy_monday`, `dinner_fix_price` — создать недостающие child-pages под `blog`. Реальный attribute set `blog_page` (по результату [inspect-api](.claude/temp/inspect-blog.mjs)):
 
 | marker          | type  | title          |
 |-----------------|-------|----------------|

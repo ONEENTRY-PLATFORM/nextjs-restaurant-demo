@@ -23,7 +23,8 @@
     "react-range": "^1.10.0",
     "react-simply-carousel": "^10.0.0",
     "react-slick": "^0.31.0",
-    "react-toastify": "^11.1.0"
+    "react-toastify": "^11.1.0",
+    "yet-another-react-lightbox": "^3.31.0"
   },
   "devDependencies": {
     "@gsap/react": "^2.1.2",

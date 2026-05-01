@@ -73,7 +73,7 @@ export default async function RootLayout({
             <OpenDrawerProvider>
               <Header />
               <TransitionProvider>
-                <main className="flex flex-col grow overflow-hidden w-full">
+                <main className="flex flex-col grow overflow-hidden w-full pb-10">
                   {children}
                 </main>
               </TransitionProvider>

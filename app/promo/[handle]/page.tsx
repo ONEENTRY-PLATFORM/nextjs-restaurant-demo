@@ -73,6 +73,7 @@ const PromoDetailPage = async ({
 
   return (
     <section className="section_layout">
+      {/* main promo info */}
       <div className="relative overflow-hidden rounded-[20px] bg-ink">
         {image ? (
           <Image
@@ -102,6 +103,7 @@ const PromoDetailPage = async ({
           </button>
         </div>
       </div>
+      {/* Promo Products Grid */}
       {products.length > 0 ? (
         <div className="mt-10">
           <ProductsGrid

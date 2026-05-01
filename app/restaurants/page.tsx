@@ -1,0 +1,179 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { JSX } from 'react';
+
+import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
+import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
+
+export const dynamic = 'force-dynamic';
+
+type RestaurantPhoto = { downloadLink?: string };
+type ScheduleInterval = { from?: string; to?: string };
+
+type RestaurantCard = {
+  id: number;
+  href: string;
+  title: string;
+  address: string;
+  schedule: string;
+  photos: RestaurantPhoto[];
+  index: number;
+};
+
+const formatSchedule = (raw: unknown): string => {
+  if (!raw) return '';
+  if (typeof raw === 'string') return raw;
+  // SDK для атрибута `timeInterval` отдаёт либо одиночный объект `{from, to}`,
+  // либо массив таких объектов (на случай нескольких интервалов в день).
+  // Берём первый интервал — совпадает с тем, что показано в `mob_about.html`
+  // ("11:00 - 00:00" одной строкой).
+  const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
+  const first = arr ? arr[0] : (raw as ScheduleInterval);
+  if (!first || (!first.from && !first.to)) return '';
+  return `${first.from ?? ''} - ${first.to ?? ''}`;
+};
+
+const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
+  const attrs = page.attributeValues ?? {};
+  const photos = (attrs.photos?.value as RestaurantPhoto[] | undefined) ?? [];
+  const address = (attrs.address?.value as string | undefined) ?? '';
+  const schedule = formatSchedule(attrs.schedule?.value);
+  const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
+  return {
+    id: page.id,
+    // Single-restaurant layout живёт в `app/restaurants/[handle]/page.tsx`
+    // (порт `mob_about.html` со слайдером, comforts, картой). pageUrl
+    // дочерней страницы — её маркер в OneEntry (`restaurant_1` и т.п.).
+    href: `/restaurants/${page.pageUrl}`,
+    title,
+    address,
+    schedule,
+    photos,
+    index,
+  };
+};
+
+/**
+ * Index-страница сети ресторанов — порт desktop-макета chain (см.
+ * скриншот в задаче от 2026-05-01: 2×2 grid карточек, каждая с фото,
+ * номером, адресом, расписанием, кнопкой "MORE ABOUT RESTORANT").
+ *
+ * В static-html нет готовой chain-страницы (есть только single-restaurant
+ * `mob_about.html`), поэтому верстка собрана по дизайну: карточка
+ * повторяет блок `.flex flex-col gap-[25px]` из `mob_about.html` (адрес +
+ * расписание в orange-border-pill) + большое фото сверху + круглый номер
+ * сбоку + кнопка `cart_btn` снизу.
+ *
+ * Данные берутся из OneEntry: `restaurants` (родительская страница, hero
+ * заголовок + описание) и её child-pages со своим attribute set
+ * `restaurant` (`address`, `photos`, `schedule`).
+ */
+const RestaurantsPage = async (): Promise<JSX.Element> => {
+  const [parentRes, childrenRes] = await Promise.all([
+    getPageByUrl('restaurants'),
+    getChildPagesByParentUrl('restaurants'),
+  ]);
+
+  if (parentRes.isError || !parentRes.page) {
+    return notFound();
+  }
+
+  const parent = parentRes.page;
+  const title =
+    parent.localizeInfos?.title ?? 'Welcome to our restaurant chain';
+  const descriptionRaw = parent.attributeValues?.description?.value as
+    | Array<{ htmlValue?: string; plainValue?: string }>
+    | undefined;
+  const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
+  const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
+
+  const visiblePages = (childrenRes.pages ?? [])
+    .filter((p) => p.isVisible !== false)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+  const cards: RestaurantCard[] = visiblePages.map((p, idx) =>
+    buildCard(p, idx + 1),
+  );
+
+  return (
+    <section className="section_layout">
+      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
+        {title}
+      </h1>
+      {descriptionHtml ? (
+        <div
+          className="mt-3.75 text-base text-paper/90"
+          dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+        />
+      ) : descriptionPlain ? (
+        <p className="mt-3.75 text-base text-paper/90">{descriptionPlain}</p>
+      ) : null}
+
+      {cards.length === 0 ? (
+        <p className="mt-10 text-paper/70">
+          No restaurants configured yet. Add child pages under{' '}
+          <code className="text-brand">restaurants</code> in the OneEntry admin.
+        </p>
+      ) : (
+        <div className="mt-10 grid grid-cols-1 gap-7.5 md:grid-cols-2">
+          {cards.map((card) => (
+            <RestaurantCardView key={card.id} card={card} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
+
+const RestaurantCardView = ({
+  card,
+}: {
+  card: RestaurantCard;
+}): JSX.Element => {
+  return (
+    <div className="flex flex-col items-stretch gap-5">
+      <RestaurantPhotoSlider
+        photos={card.photos}
+        alt={card.title}
+        frameClassName="aspect-[620/440]"
+        sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
+        priority={false}
+      />
+      <div className="flex items-center justify-center gap-5">
+        <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full border border-brand text-base text-brand">
+          {card.index}
+        </div>
+        <div className="flex flex-col text-center">
+          {card.address ? (
+            <p className="text-base text-brand">{card.address}</p>
+          ) : (
+            <p className="text-base text-brand">{card.title}</p>
+          )}
+          {card.schedule ? (
+            <p className="text-base text-brand">{card.schedule}</p>
+          ) : null}
+        </div>
+      </div>
+      <Link
+        href={card.href}
+        className="cart_btn bg-custom_btnorange hover:bg-brand-hover"
+      >
+        MORE ABOUT RESTORANT
+      </Link>
+    </div>
+  );
+};
+
+export default RestaurantsPage;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { page } = await getPageByUrl('restaurants');
+  const title = page?.localizeInfos?.title ?? 'Restaurants';
+  return {
+    title,
+    description: title,
+    openGraph: { type: 'website' },
+  };
+}

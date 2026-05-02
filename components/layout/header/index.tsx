@@ -68,7 +68,7 @@ const Header = async (): Promise<JSX.Element> => {
     setMarker: 'dish',
     attributeMarker: 'preferences',
   });
-  const rawPreferenceOptions: PreferenceOption[] =
+  const preferenceOptions: PreferenceOption[] =
     !preferencesAttr.isError &&
     preferencesAttr.attribute &&
     'listTitles' in preferencesAttr.attribute
@@ -77,17 +77,6 @@ const Header = async (): Promise<JSX.Element> => {
           value: String(o.value),
         }))
       : [];
-  // В OneEntry сейчас есть дублирующиеся listTitles `Dinner` (см.
-  // MISMATCH-LOG.md §C.2.4), которые коллидили бы по React-ключам —
-  // дедуплицируем по value, побеждает первое вхождение.
-  const seenValues = new Set<string>();
-  const preferenceOptions: PreferenceOption[] = rawPreferenceOptions.filter(
-    (o) => {
-      if (seenValues.has(o.value)) return false;
-      seenValues.add(o.value);
-      return true;
-    },
-  );
 
   // Минимальная и максимальная цена реальных товаров каталога — нужна
   // FilterBottom-у, чтобы чипы Price не были захардкожены.

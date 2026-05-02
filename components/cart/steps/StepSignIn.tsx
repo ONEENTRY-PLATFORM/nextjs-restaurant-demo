@@ -88,6 +88,14 @@ const StepSignIn = (): JSX.Element => {
 
   return (
     <div className="mx-auto flex w-full max-w-115 flex-col">
+      <Image
+        src="/images/logo.svg"
+        alt="OneEntry Restaurant"
+        width={171}
+        height={143}
+        className="mx-auto h-auto w-42.5"
+        priority
+      />
       {active.map((p) => {
         const meta = getProviderMeta(p);
         return (

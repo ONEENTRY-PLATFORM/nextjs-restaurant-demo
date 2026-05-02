@@ -19,8 +19,7 @@ type PickerMode = 'date' | 'time' | null;
 /**
  * Calendar form — модальный попап для выбора delivery date + time. Открывается
  * из строк превью корзины ({@link DeliveryTableRow}) через
- * `setComponent('CalendarForm')` и рендерится через общий
- * слой {@link Modal}.
+ * `setComponent('CalendarForm')` и рендерится через общий слой {@link Modal}.
  *
  * Сохраняет выбор в `cartReducer.deliveryData` и закрывает
  * модалку — существующий шаг wizard `time` зарезервирован под полный

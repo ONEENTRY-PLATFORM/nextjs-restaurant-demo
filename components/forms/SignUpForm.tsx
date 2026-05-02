@@ -24,6 +24,8 @@ import SubmitButton from './inputs/FormSubmitButton';
 
 /**
  * Форма SignUp
+ * @param dict - объект с локализованными текстами
+ * @param className - классы для стилизации
  */
 const SignUpForm = ({ dict }: FormProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -73,16 +75,12 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
   // Обработчик sign up
   const onSignUpHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      // Предотвращаем дефолтное поведение сабмита формы
       e.preventDefault();
 
-      // Если форму нельзя засабмитить, выходим
       if (!canSubmit) return;
 
       // Готовим объект data для запроса sign-up.
       // `formIdentifier` должен совпадать с `formIdentifier` auth-провайдера
-      // (проверено через inspect-api: email-provider → "user"). Раньше был
-      // захардкожен `'reg'`, что вызывало 400 Bad Request.
       const data: ISignUpData = {
         formIdentifier: 'user',
         authData: [
@@ -103,7 +101,6 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
         },
       };
 
-      // Включаем loading-состояние на время обработки запроса
       setLoading(true);
 
       try {
@@ -137,10 +134,8 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
           setError('');
         }
       } catch (e: any) {
-        // Ловим любые ошибки и устанавливаем сообщение об ошибке
         setError(e.message);
       } finally {
-        // Сбрасываем loading-состояние после обработки запроса
         setLoading(false);
       }
     },

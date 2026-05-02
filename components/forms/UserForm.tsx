@@ -28,6 +28,7 @@ export type InputValue = {
 
 /**
  * Форма User
+ * @param dict - объект с текстами для локализации
  */
 const UserForm = ({ dict }: FormProps): JSX.Element => {
   const { isAuth, refreshUser, user } = useContext(AuthContext);
@@ -95,7 +96,6 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
     },
     [fields, formData, refreshUser, user?.formIdentifier],
   );
-  /* eslint-enable react-hooks/preserve-manual-memoization */
 
   if (isLoading) {
     return <SpinnerLoader />;

@@ -21,6 +21,8 @@ type SpamCaptchaSettings = {
 
 /**
  * Форма ContactUs
+ * @param {string} className - Класс-обёртка.
+ * @returns {JSX.Element}      JSX формы.
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,8 +42,8 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         a.position - b.position,
     );
 
-  // Поле капчи (type: 'spam') и его настройки. captchaKey/action приходят
-  // из OneEntry в `settings.captcha.{key,action}`.
+  // Поле капчи (type: 'spam') и его настройки. captchaKey/action приходят из OneEntry
+  // в `settings.captcha.{key,action}`.
   const spamField = useMemo(
     () => formFields?.find((f) => f.type === 'spam'),
     [formFields],

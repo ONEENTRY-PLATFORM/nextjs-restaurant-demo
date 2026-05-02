@@ -19,13 +19,6 @@ type Photo = { downloadLink?: string };
 
 /**
  * Галерея single-restaurant (Figma «Подробнее 2», node 2413:1173).
- *
- * Десктоп: большое фото слева — область показа; столбец миниатюр
- * справа. Клик по миниатюре переключает основное фото; клик по
- * основному — открывает fullscreen-lightbox (`yet-another-react-lightbox`)
- * со встроенной клавиатурной навигацией, swipe, zoom, fullscreen API
- * и thumbnail-strip'ом снизу.
- *
  * Мобила: единый горизонтальный слайдер через {@link RestaurantPhotoSlider}
  * (как в `mob_about.html`); тап по фото открывает тот же lightbox.
  */
@@ -42,13 +35,7 @@ const RestaurantPhotoGallery = ({
   const total = photos.length;
   const main = photos[active];
 
-  // Вертикальная карусель миниатюр: все фото остаются на своих местах
-  // (не «прыгают» при переключении), активный — подсвечивается рамкой,
-  // полоса прокручивается так, чтобы активный thumb был виден целиком,
-  // а так же поддерживает drag-to-scroll (mouse + touch через
-  // PointerEvents). Если за время drag'а пользователь увёл указатель
-  // больше DRAG_THRESHOLD_PX — `click` на миниатюре подавляется (иначе
-  // любой drag заканчивался бы случайным переключением активного фото).
+  // Вертикальная карусель миниатюр.
   const thumbsContainerRef = useRef<HTMLDivElement | null>(null);
   const thumbRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const dragState = useRef<{
@@ -74,10 +61,6 @@ const RestaurantPhotoGallery = ({
     if (!container || !node) return;
 
     // Скролл считаем вручную и применяем ТОЛЬКО к thumbs-контейнеру.
-    // `Element.scrollIntoView` зовёт ancestor-bubbling — у предков с
-    // overflow он тоже подкручивает scrollTop, поэтому страница ехала
-    // вместе с каруселью. `container.scrollTo()` ограничивается этим
-    // элементом.
     const cRect = container.getBoundingClientRect();
     const nRect = node.getBoundingClientRect();
 
@@ -135,11 +118,6 @@ const RestaurantPhotoGallery = ({
     const el = thumbsContainerRef.current;
     if (!el) return;
     if (e.button !== undefined && e.button !== 0) return;
-    // Захват pointer'а делаем НЕ сразу: иначе click на дочернюю
-    // кнопку-thumb уйдёт в контейнер (capture target становится
-    // event.target для последующих pointer-событий и click). Захватываем
-    // только когда движение превысит DRAG_THRESHOLD_PX — это значит
-    // юзер реально тащит, а не кликает.
     dragState.current = {
       active: true,
       captured: false,
@@ -173,27 +151,19 @@ const RestaurantPhotoGallery = ({
     }
     s.active = false;
     s.captured = false;
-    // `moved` нужен внутри `onClickCapture` (стреляет после pointerup),
-    // обнуляем на следующий tick.
     setTimeout(() => {
       dragState.current.moved = 0;
     }, 0);
   };
 
   const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Если пользователь только что протащил мышью больше threshold'а —
-    // глотаем click, чтобы не срабатывало переключение thumbs.
     if (dragState.current.moved > DRAG_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();
     }
   };
 
-  // Drag-swipe для main-фото (левая колонка). Тащишь вниз —
-  // предыдущее фото, тащишь вверх — следующее. Симметрично направлению
-  // карусели миниатюр справа. Если за время drag'а пользователь увёл
-  // указатель меньше MAIN_DRAG_THRESHOLD_PX, считаем это кликом и
-  // открываем lightbox; иначе — переключаем активное фото.
+  // Drag-swipe для main-фото (левая колонка).
   const MAIN_DRAG_THRESHOLD_PX = 40;
   const mainDragState = useRef<{
     active: boolean;
@@ -253,10 +223,7 @@ const RestaurantPhotoGallery = ({
 
   return (
     <>
-      {/* Mobile / tablet — слайдер с точками. Передаём `onImageClick`
-          самому слайдеру, чтобы кнопкой стало только image-frame, а
-          точки-индикаторы остались sibling'ами — иначе получится
-          `<button>` внутри `<button>` (hydration-mismatch в React 19). */}
+      {/* Mobile / tablet — слайдер с точками. */}
       <div className="md:hidden">
         <RestaurantPhotoSlider
           photos={photos}
@@ -267,14 +234,7 @@ const RestaurantPhotoGallery = ({
         />
       </div>
 
-      {/* Desktop — grid 1 main + max-3 thumbnails carousel.
-          Grid задаёт aspect-ratio всего ряда (1294×678 из Figma:
-          956 main + 60 gap + 278 thumbs = 1294 wide, 678 высота,
-          совпадает с aspect main'а). Оба child'а получают `h-full`,
-          поэтому правая колонка по высоте равна левой; в неё ровно
-          вмещается 3 миниатюры (278×197 × 3 + gap-11 × 2 = 679 ≈
-          678), остальные прокручиваются — это и есть «вертикальная
-          карусель максимум на 3 видимых фото». */}
+      {/* Desktop grid */}
       <div className="hidden md:grid md:aspect-1294/678 md:grid-cols-[956fr_278fr] md:gap-15">
         <button
           type="button"
@@ -285,9 +245,6 @@ const RestaurantPhotoGallery = ({
           onPointerUp={onMainPointerEnd}
           onPointerCancel={onMainPointerEnd}
           onPointerLeave={onMainPointerEnd}
-          // Гасим нативный браузерный drag-and-drop на картинке —
-          // иначе при mousedown браузер запускает image-drag, и наши
-          // pointermove события перестают приходить.
           onDragStart={(e) => e.preventDefault()}
           aria-label={`Open ${alt} photos fullscreen`}
           className="relative h-full w-full overflow-hidden rounded-[10px] bg-ink/40 transition-opacity hover:opacity-95 disabled:cursor-default cursor-grab active:cursor-grabbing select-none touch-pan-y"
@@ -307,14 +264,6 @@ const RestaurantPhotoGallery = ({
         </button>
         <div
           ref={thumbsContainerRef}
-          // Высота столбца тянется по высоте main-картинки в той же
-          // grid-row (oба блока share одну grid-row, main задаёт высоту
-          // через aspect-956/678). `min-h-0` обязателен, чтобы flex-child
-          // в grid-row не растягивал ряд бесконечно. Сами миниатюры —
-          // `shrink-0`, превышающие высоту прокручиваются `overflow-y-auto`.
-          // Drag-to-scroll: pointerdown/move/end + onClickCapture гасят
-          // случайный «выбор» миниатюры после dragа. `touch-pan-y`
-          // нужен, чтобы тач-устройства не блокировали наш pointer-flow.
           className="flex h-full min-h-0 flex-col gap-11 overflow-y-auto pr-1 no-scrollbar touch-pan-y select-none cursor-grab active:cursor-grabbing"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -366,11 +315,6 @@ const RestaurantPhotoGallery = ({
         slides={slides}
         plugins={[Counter, Fullscreen, Thumbnails, Zoom]}
         controller={{ closeOnBackdropClick: true }}
-        // Бэкдроп подгоняем под общий стиль попапов проекта
-        // (`bg-ink/80 backdrop-blur-[10px]` в ProfilePopup,
-        // FavoritesPopup, Modal и т.п.). `--color-ink` = #4c4d56,
-        // 80% непрозрачность + blur(10px) — переопределяем CSS-vars
-        // самой либы, чтобы не плодить override-CSS.
         styles={{
           container: {
             backgroundColor: 'rgba(76, 77, 86, 0.8)',

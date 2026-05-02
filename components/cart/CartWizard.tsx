@@ -118,20 +118,14 @@ const CartWizard = ({
 
   const isCartStep = step === 'cart';
   const isAuthPopup = AUTH_POPUP_STEPS.has(step);
-  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп, не-auth), либо в
-  // попапе. Эти варианты взаимоисключающие, учитывая логику auth + вьюпорта.
+  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп, не-auth), либо в попапе.
   const showInline = !isCartStep && !isAuthPopup && isMdUp;
   const showPopup = !isCartStep && (isAuthPopup || !isMdUp);
 
   // Товары корзины в левой колонке остаются примонтированными между шагами;
-  // на десктопе они скрываются через CSS, когда инлайн-шаг занимает их слот. На
-  // мобиле вся корзина уже скрыта через `cartWrapperClass`.
   const hideCartProductsOnDesktop = !isCartStep && !isAuthPopup;
 
-  // Видимость обёртки корзины:
-  // - шаг cart:         `contents` — виден везде, без лишней коробки
-  // - любой другой шаг: `hidden md:contents` — скрыт на мобиле (попап там
-  //                     фуллскрин), виден за попапом на md+
+  // Видимость обёртки корзины
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
   // Десктопные хлебные крошки — остаются "Cart", пока находимся на экране корзины или
@@ -156,8 +150,7 @@ const CartWizard = ({
   return (
     <>
       <div className={cartWrapperClass}>
-        {/* Хедер только для мобилы — стрелка назад + "Cart" + бургер по
-            cart_cart.html */}
+        {/* Хедер только для мобилы — стрелка назад + "Cart" + бургер по cart_cart.html */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
           <Link href="/" className="group_white" aria-label="Back">
             <ArrowBackOrangeIcon />
@@ -228,8 +221,7 @@ const CartWizard = ({
               <span className="md:hidden w-9" aria-hidden="true" />
             </div>
 
-            {/* Панель контента шага — glass-карточка на мобиле, plain внутри
-                попапа на десктопе (сам попап обеспечивает обрамление). */}
+            {/* Панель контента шага. */}
             <div className="rounded-[20px] bg-ink/80 px-5 py-6.25 backdrop-blur-[10px] md:rounded-none md:bg-transparent md:p-0 md:backdrop-blur-none">
               {stepBody}
             </div>

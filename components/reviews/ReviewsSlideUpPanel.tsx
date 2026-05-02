@@ -13,12 +13,6 @@ import StarRating from './StarRating';
  * Фиксированная slide-up панель отзыва — повторяет нижний sheet из
  * `about_reviews.html`. По умолчанию видна только на мобиле (`md:hidden`).
  * Отправляет отзыв через {@link submitReview} Server Action.
- *
- * Идентификация автора берётся из {@link AuthContext}; когда посетитель не
- * авторизован, панель рендерит sign-in CTA вместо формы.
- *
- * Использует класс `.review_sheet` из `app/styles/main.css` (slide-up анимация
- * через `@keyframes slide-up`).
  * @param   {object} props                - Пропсы компонента.
  * @param   {number} props.productId      - Product ID для привязки отзыва.
  * @param   {string} [props.title]        - Переопределение заголовка панели.

@@ -10,8 +10,7 @@ import StarCardIcon from '@/components/icons/star-card';
 
 /**
  * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
- * `static-html/details.html`. Данные ожидаются в нормализованной форме
- * `ProductReview[]` (см. `getProductReviews`); рендер скрыт, если пусто.
+ * `static-html/details.html`.
  * @param   {object}            props         - Пропсы компонента.
  * @param   {ProductReview[]}   props.reviews - Отзывы верхнего уровня.
  * @returns {JSX.Element|null}                JSX карусели или `null`, если пусто.
@@ -37,6 +36,7 @@ const ProductReviewsList = ({
       </div>
 
       <div className="relative flex items-stretch gap-3.75 mt-2.5 md:px-8">
+        {/* Previous button */}
         <button
           type="button"
           onClick={goPrev}
@@ -51,6 +51,7 @@ const ProductReviewsList = ({
           />
         </button>
 
+        {/* reviews */}
         <div className="relative w-full min-w-0 overflow-hidden">
           <div
             className="flex transition-transform duration-300 ease-out"
@@ -87,6 +88,7 @@ const ProductReviewsList = ({
           </div>
         </div>
 
+        {/* Next button */}
         <button
           type="button"
           onClick={goNext}

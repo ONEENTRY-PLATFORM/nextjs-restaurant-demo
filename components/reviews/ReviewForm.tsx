@@ -12,9 +12,7 @@ import ErrorMessage from '../forms/inputs/ErrorMessage';
 import StarRating from './StarRating';
 
 /**
- * Резолвит отображаемое имя для залогиненного пользователя — fallback по
- * цепочке `name_reg` → `email_reg` → SDK identifier, чтобы строка "Posting as …"
- * никогда не оказывалась пустой.
+ * Резолвит отображаемое имя для залогиненного пользователя.
  * @param   {{ identifier?: string; formData?: unknown }} user - Сущность залогиненного пользователя.
  * @returns {string}                                            Отображаемое имя.
  */
@@ -33,12 +31,7 @@ const resolveAuthorName = (user: {
 };
 
 /**
- * Форма отзыва на продукт — звёздный рейтинг + текст, отправляется через
- * {@link submitReview} Server Action в форму `review_form` в OneEntry. Форма
- * заблокирована sign-in CTA, когда посетитель не авторизован; идентификация
- * автора берётся из {@link AuthContext} только для подписи "Posting as …" —
- * автор и связь с продуктом резолвятся на сервере через SDK auth-сессию и
- * `moduleEntityIdentifier=productId` соответственно.
+ * Форма отзыва на продукт — звёздный рейтинг + текст.
  * @param   {object}      props           - Пропсы компонента.
  * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
  * @returns {JSX.Element}                 JSX формы отзыва.

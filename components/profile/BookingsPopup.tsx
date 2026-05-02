@@ -181,7 +181,7 @@ const ActiveBookingCard = ({
 }: {
   order: IOrderByMarkerEntity;
 }): JSX.Element => {
-  // SDK тип `IOrderByMarkerEntity` не объявляет `formattedCreated`,
+  // !!! SDK тип `IOrderByMarkerEntity` не объявляет `formattedCreated`,
   // но поле приходит в реальных ответах — берём через локальный cast,
   // если нет `createdDate`.
   const dateRaw = (order.createdDate ??

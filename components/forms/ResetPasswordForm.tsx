@@ -68,8 +68,8 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
     try {
       // Пытаемся сменить пароль пользователя через предоставленный API
       const result = await api.AuthProvider.changePassword(
-        'email', // Метод аутентификации, в данном случае через email
-        email?.value || '', // Email пользователя
+        'email', // Метод аутентификации (на , 'email', 'google' и т.д.)
+        email?.value as string, // Email, введённый пользователем
         'otp', // Тип используемой верификации, здесь OTP (One-Time Password)
         1, // Индикатор версии или типа процесса OTP
         otp_code?.value.toString() || '', // OTP-код, введённый пользователем, конвертированный в строку
@@ -77,16 +77,14 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
         password_confirm?.value || '', // Подтверждение нового пароля
       );
 
+      // Если смена пароля успешна, переключаемся на форму sign-in
       if (result) {
-        // Если смена пароля успешна, переключаемся на форму sign-in
         setComponent('SignInForm');
-        setAction(''); // Очищаем любые предыдущие actions
+        setAction('');
       }
     } catch (error: any) {
-      // Ловим любые ошибки и устанавливаем сообщение об ошибке
       setError(error.message);
     } finally {
-      // Сбрасываем loading-состояние после обработки запроса сброса пароля
       setLoading(false);
     }
   };

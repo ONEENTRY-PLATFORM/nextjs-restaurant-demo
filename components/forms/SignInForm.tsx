@@ -21,6 +21,9 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
 
 /**
  * Форма SignIn
+ * @param {object} props - объект со свойствами компонента.
+ * @param {string} props.className - строка с именами классов для стилизации.
+ * @param {boolean} props.isActive - флаг, указывающий на активность формы.
  */
 const SignInForm = ({
   dict,

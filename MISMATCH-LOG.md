@@ -154,10 +154,6 @@ _Активных P0/P1 пунктов нет._
 [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx)
 [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx)
 
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-| B.5.7 | ~~`HIDDEN_PROFILE_MARKERS` исключает `user_address`, `user_flat`, `user_floor` — но в `static-html/details_personal.html` блок Address НЕ показывает эти поля под секцией Personal (они в отдельной секции Address). Логика верна, но комментарий стоило бы расширить~~ ✅ Комментарий расширен — теперь явно описано, почему скрыта каждая группа маркеров (repeat_password / нотификации / адресные поля) | [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) | — |
-
 ### B.6. Резервация (`service_table.html`, `service_date.html`, `service_time.html` ↔ `app/reservation`)
 
 - 🌐 Live: <http://localhost:3000/reservation>
@@ -295,20 +291,6 @@ _Активных P0/P1 пунктов нет._
 
 Десктоп-баннер берётся через [getBlogBanners](app/api/server/pages/getBlogBanners.ts) (`bg_image`), мобильный — через тот же fetcher (`banner`). Пока у дочерних страниц `blog` нет `bg_image` — десктопный hero на `/` не покажется (graceful fallback), а сайдбар `/cart` / `/profile/orders` будет пустым.
 
-#### C.2.4. Атрибут `preferences` (list) на attribute set `dish`
-
-[components/layout/header/CategoriesScroller.tsx](components/layout/header/CategoriesScroller.tsx) теперь рендерит горизонтальный фильтр-скроллер по значениям атрибута `preferences` (list-type) у блюд. Каждый чип — Link на `/shop?preferences=<value>`, фильтр прокидывается в `Products.getProducts` через [app/api/utils/getSearchParams.ts](app/api/utils/getSearchParams.ts) (`attributeMarker: 'preferences', conditionMarker: 'in'`).
-
-| marker        | type | title       |
-|---------------|------|-------------|
-| `preferences` | list | Preferences |
-
-- listTitles задаются в админке (например: `Meat`, `Fish`, `Vegetable`, `Sugar Free`, `Gluten free`, `Vegetarian`, `Spicy dish`, `Diabetic`, …) — те же значения, что в [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx).
-- Атрибут уже используется на product detail ([ProductDetails.tsx:45](components/layout/product/product-single/ProductDetails.tsx#L45)) — если listTitles пустые, scroller рендерится пустым (graceful fallback).
-- Каждое блюдо должно иметь выбранные значения `preferences`, иначе фильтр `preferences in <value>` вернёт пусто.
-
-> ❓ **Уточнить у клиента:** сейчас в `listTitles` атрибута `preferences` есть две записи с одинаковым `value = "Dinner"` — React ругается на дубликат ключа в [CategoriesScroller.tsx:52](components/layout/header/CategoriesScroller.tsx#L52). Временно дедуплицируем по `value` в [components/layout/header/index.tsx](components/layout/header/index.tsx) (первое вхождение побеждает). Убрать один из дубликатов в админке (или поменять `value` второму, если это разные смыслы) — после этого можно убрать дедуп.
-
 ### C.3. Похожие товары (related products)
 
 Страница [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) рендерит секцию «Featured objects» через [components/layout/product/RelatedItems.tsx](components/layout/product/RelatedItems.tsx) → SDK `Products.getRelatedProductsById`. Чтобы секция реально что-то показывала:
@@ -322,18 +304,165 @@ _Активных P0/P1 пунктов нет._
 
 ### C.4. Словарь `static_content` — что осталось
 
-Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже есть 59 маркеров. Все обращения в коде переведены на существующие маркеры — несуществующие маркеры удалены из кода (использованы ближайшие по смыслу из 59):
+Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже **77 маркеров**. Все обращения в коде переведены на существующие маркеры — несуществующие удалены/перепривязаны:
 
 - [ReservationForm.tsx](components/reservation/ReservationForm.tsx) — `reservation_submit_text` → `submit_text`, `reservation_success_title` → `info_text`, `reservation_success_text` → `reservation_confirmed`.
 - [UserForm.tsx](components/forms/UserForm.tsx) — `save_button_text` → `submit_text`.
 
-Хардкод-фразы:
+Хардкод-фразы (старые находки):
 
 - [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx): ✅ wired — `order_waiting_time`, `preferences_text`, `clear_all_filters_text` (через проп `dict` из [Header](components/layout/header/index.tsx)).
 - [components/reviews/ReviewForm.tsx](components/reviews/ReviewForm.tsx): ✅ wired — `leave_review` (через проп `dict`). «Your review» / «Your rating» / «Share experience» / «Camera» / «Gallery» — этих фраз в текущем UI нет (упрощённая форма: rating + textarea), маркеры зарезервированы на случай расширения.
 - [components/profile/FavoritesPopup.tsx](components/profile/FavoritesPopup.tsx): ✅ wired — aria-label `add_to_cart` (через проп `dict` из [layout.tsx](app/layout.tsx)).
 - [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): wired — `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text`. Хардкод (нет маркера): «Pay with» (PayPal label), «Credit & Debit Cards», placeholder «phone number» под чекбоксом.
 - [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) — STEP_TITLES уже подцеплены к `sign_in_text`/`verification_text`/`address_text`/`select_payment_text`. «Cart», «Select time», «Success», «Error» — нет соответствующих маркеров, оставлены хардкодом.
+
+#### C.4.1. Сначала переиспользовать существующие маркеры (новый маркер не нужен)
+
+В этих местах в коде стоит хардкод/fallback-литерал, но в `static_content` уже есть подходящий маркер — нужно просто прокинуть `dict` и снять литерал. Маркеры в админке создавать **не нужно**, это задача на сторону кода:
+
+- [components/profile/ProfilePopup.tsx:285](components/profile/ProfilePopup.tsx#L285) — «Address» (заголовок) → `address_text`
+- [components/profile/ProfilePopup.tsx:380](components/profile/ProfilePopup.tsx#L380) — «Apply» (кнопка) → `apply_text`
+- [components/profile/OrdersList.tsx:152](components/profile/OrdersList.tsx#L152) — «Subtotal:» → `subtotal_text`
+- [components/profile/OrdersList.tsx:156](components/profile/OrdersList.tsx#L156) — «Delivery:» → `delivery_text`
+- [components/profile/OrdersList.tsx:161](components/profile/OrdersList.tsx#L161) — «Total Amount:» → `total_amount_text`
+- [components/profile/OrdersList.tsx:324](components/profile/OrdersList.tsx#L324) — «sign in» (link) → `sign_in_text`
+- [components/reservation/ReservationForm.tsx:294](components/reservation/ReservationForm.tsx#L294) — «Preferences» (label) → `preferences_text`
+- [components/layout/header/FilterButton.tsx:27](components/layout/header/FilterButton.tsx#L27) — «Open filters» (aria-label) → `open_filters_button`
+- [components/forms/PhoneAuthForm.tsx:89](components/forms/PhoneAuthForm.tsx#L89) — «SIGN IN» (кнопка) → `sign_in_text` (uppercase через CSS `text-transform`)
+
+#### C.4.2. Завести новые маркеры в админке (атрибут-сет `static_content`)
+
+Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
+
+##### Профиль / аккаунт
+
+Используется в: [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx), [components/forms/UserForm.tsx](components/forms/UserForm.tsx), [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx), [components/layout/header/nav/user-menu/LogoutMenuItem.tsx](components/layout/header/nav/user-menu/LogoutMenuItem.tsx).
+
+| marker                  | type   | title         |
+|-------------------------|--------|---------------|
+| `my_profile_title`      | string | My Profile    |
+| `profile_tab_personal`  | string | Personal      |
+| `profile_tab_orders`    | string | Orders        |
+| `profile_tab_favorites` | string | Favorites     |
+| `logout_text`           | string | Logout        |
+| `edit_button`           | string | Edit          |
+| `delete_button`         | string | Delete        |
+| `add_address_button`    | string | + Add Address |
+| `street_label`          | string | Street        |
+| `house_label`           | string | House         |
+| `floor_label`           | string | Floor         |
+| `data_saved_toast`      | string | Data saved!   |
+
+##### Заказы (страница `/profile/orders`)
+
+Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx).
+
+| marker                     | type   | title                                |
+|----------------------------|--------|--------------------------------------|
+| `contact_courier_button`   | string | Contact with the courier             |
+| `repeat_order_button`      | string | Repeat order                         |
+| `loading_orders_text`      | string | Loading orders...                    |
+| `no_orders_text`           | string | You have no orders yet.              |
+| `go_shopping_button`       | string | Go to shopping                       |
+| `active_orders_title`      | string | Active orders                        |
+| `no_active_orders_text`    | string | You have no active orders.           |
+| `orders_history_title`     | string | Orders History                       |
+| `no_history_orders_text`   | string | You have no past orders yet.         |
+| `orders_load_error_prefix` | string | Unable to load orders:               |
+| `orders_signin_prompt`     | string | Please sign in to view your orders.  |
+
+##### Избранное (страница `/profile/favorites`)
+
+Используется в: [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx).
+
+| marker              | type   | title                      |
+|---------------------|--------|----------------------------|
+| `no_favorites_text` | string | You have no favorites yet. |
+
+##### Корзина — пустое состояние
+
+Используется в: [components/layout/cart/components/EmptyCart.tsx](components/layout/cart/components/EmptyCart.tsx). Существующий `empty_cart_text` («Your cart is empty») — тёплое предложение, остаётся для inline-состояний; `empty_cart_title` — короткий heading.
+
+| marker              | type   | title      |
+|---------------------|--------|------------|
+| `empty_cart_title`  | string | Empty cart |
+| `go_to_shop_button` | string | Go to shop |
+
+##### Cart wizard / шаги
+
+Используется в: [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) (STEP_TITLES).
+
+| marker             | type   | title       |
+|--------------------|--------|-------------|
+| `cart_step_text`   | string | Cart        |
+| `select_time_text` | string | Select time |
+| `success_text`     | string | Success     |
+| `error_text`       | string | Error       |
+
+##### Toasts: cart / favorites (с плейсхолдером `{title}`)
+
+Используется в: [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx), [components/layout/product/components/DecreaseButton.tsx](components/layout/product/components/DecreaseButton.tsx), [components/layout/product/product-single/FavoritesButton.tsx](components/layout/product/product-single/FavoritesButton.tsx), [components/layout/products-grid/components/product-card/CartButton.tsx](components/layout/products-grid/components/product-card/CartButton.tsx), [components/layout/products-grid/components/product-card/HeartCardButton.tsx](components/layout/products-grid/components/product-card/HeartCardButton.tsx). Шаблон `{title}` подменяется в коде на название блюда (`String.replace` / template-literal).
+
+| marker                            | type   | title                                       |
+|-----------------------------------|--------|---------------------------------------------|
+| `product_added_cart_toast`        | string | Product {title} added to cart!              |
+| `product_removed_cart_toast`      | string | Product {title} removed from cart!          |
+| `product_added_favorites_toast`   | string | Product {title} added to Favorites!         |
+| `product_removed_favorites_toast` | string | Product {title} removed from Favorites!     |
+| `auth_error_prefix`               | string | Auth error!                                 |
+
+##### Auth / формы
+
+Используется в: [components/forms/PhoneAuthForm.tsx](components/forms/PhoneAuthForm.tsx), [components/forms/ResetPasswordForm.tsx](components/forms/ResetPasswordForm.tsx).
+
+| marker                   | type   | title                                       |
+|--------------------------|--------|---------------------------------------------|
+| `phone_required_error`   | string | Please enter your phone number.             |
+| `code_send_error`        | string | Could not send the code. Please try again.  |
+| `new_password_label`     | string | New password                                |
+| `change_password_button` | string | Change password                             |
+
+##### Календарь / выбор даты-времени
+
+Используется в: [components/forms/CalendarForm.tsx](components/forms/CalendarForm.tsx), [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx).
+
+| marker                        | type   | title              |
+|-------------------------------|--------|--------------------|
+| `date_label`                  | string | Date               |
+| `select_date_placeholder`     | string | Select date        |
+| `select_time_placeholder`     | string | Select time        |
+| `select_datetime_placeholder` | string | Select date & time |
+
+##### Резервация (страница `/reservation`)
+
+Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx). `book_button` отделён от `submit_text` (default «Submit»), потому что в этой форме CTA — именно «Book».
+
+| marker                   | type   | title               |
+|--------------------------|--------|---------------------|
+| `restaurant_placeholder` | string | Restaurant choosing |
+| `book_button`            | string | Book                |
+
+##### Поддержка (страница `/support`)
+
+Используется в: [app/support/page.tsx](app/support/page.tsx).
+
+| marker                    | type   | title                                |
+|---------------------------|--------|--------------------------------------|
+| `support_call_prompt`     | string | Would you like to call?              |
+| `support_question_prompt` | string | Would you like to ask a question?    |
+
+##### Главная
+
+Используется в: [components/home/HomePromo.tsx](components/home/HomePromo.tsx).
+
+| marker             | type   | title      |
+|--------------------|--------|------------|
+| `promotions_title` | string | Promotions |
+
+> ❓ **Уточнить у клиента:** для toast-фраз с `{title}` (5 маркеров в подразделе «Toasts») — устраивает ли формат с плейсхолдером `{title}` (код подменяет на название блюда), либо проще держать раздельные префикс/суффикс маркеры (e.g. `added_to_cart_suffix = " added to cart!"`)? Шаблон с `{title}` гибче для переводов («Блюдо X добавлено» vs «X added»), но требует подмены в рантайме.
+>
+> ❓ **Уточнить у клиента:** placeholder поля Street в попапе «My Profile» сейчас захардкожен как «OneEntry» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) — похоже на тестовый стаб. Оставить пустым (`""`), заменить на пример (`«ул. Тверская»` / `«Main St»`) или завести под маркер? То же с примерами «40»/«27» для House/Floor.
 
 ### C.5. Профиль — попап «My Profile» (детальный personal/payment/address)
 

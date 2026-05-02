@@ -22,11 +22,7 @@ import Loader from '@/components/shared/Spinner';
 
 /**
  * Сетка избранного в дашборде — порт сетки карточек модалки
- * `static-html/pk_favorites.html`. На странице `/profile/favorites` живёт в
- * левой половине 2-колоночного layout-а (см. `app/profile/favorites/page.tsx`,
- * паттерн корзины), поэтому сами карточки идут в одну колонку — на ширину
- * левой половины. На мобиле родительский layout стакает колонки, карточки
- * также остаются в одну колонку.
+ * `static-html/pk_favorites.html`. На странице `/profile/favorites`
  * @returns {JSX.Element} JSX сетки избранного.
  */
 const FavoritesGrid = (): JSX.Element => {

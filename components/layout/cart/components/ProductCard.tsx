@@ -31,29 +31,37 @@ const ProductCard = ({
   const imgSrc = imageAttr?.downloadLink;
   const title = localizeInfos?.title ?? '';
   const weightValue = weight?.value as string | number | undefined;
+  const outOfStock = product.statusIdentifier === 'out_of_stock';
+  const checkboxChecked = selected && !outOfStock;
 
   return (
     <ProductAnimations
-      className="product-in-cart flex items-center justify-between gap-2.5 p-2.5 rounded-[5px] border border-transparent hover:border-brand"
+      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-[5px] border border-transparent hover:border-brand"
       product={product}
       index={index}
     >
-      <div className="flex items-center gap-2.5">
+      <Link
+        prefetch={true}
+        href={'/shop/product/' + id}
+        aria-label={title}
+        className="absolute inset-0 z-0 rounded-[5px]"
+      />
+
+      <div className="pointer-events-none relative z-10 flex items-center gap-2.5">
         <input
           onChange={() => dispatch(deselectProduct(id))}
           type="checkbox"
           name={'deselectProduct-' + id}
           id={'deselectProduct-' + id}
-          checked={selected}
-          className="size-5 shrink-0 accent-brand"
+          checked={checkboxChecked}
+          disabled={outOfStock}
+          aria-label={
+            outOfStock ? `${title} — out of stock` : `Select ${title}`
+          }
+          className="pointer-events-auto size-5 shrink-0 accent-brand disabled:cursor-not-allowed disabled:opacity-50"
         />
 
-        <Link
-          prefetch={true}
-          href={'/shop/product/' + id}
-          className="relative size-17.25 shrink-0 overflow-hidden rounded"
-          aria-label={title}
-        >
+        <div className="pointer-events-none relative size-17.25 shrink-0 overflow-hidden rounded">
           {imgSrc ? (
             <Image
               width={69}
@@ -66,9 +74,9 @@ const ProductCard = ({
           ) : (
             <Placeholder />
           )}
-        </Link>
+        </div>
 
-        <div className="flex grow flex-col justify-between gap-2 self-center text-white/90">
+        <div className="pointer-events-none flex grow flex-col justify-between gap-2 self-center text-white/90">
           <h2 className="max-w-35 font-normal text-[14px] opacity-90">
             {title}
           </h2>
@@ -86,13 +94,17 @@ const ProductCard = ({
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-3.75">
-        <DeleteButton productId={id} />
-        <CartQuantityControl
-          id={id}
-          units={(units_product?.value as number) ?? 0}
-          title={title}
-        />
+      <div className="pointer-events-none relative z-10 flex shrink-0 items-center gap-3.75">
+        <div className="pointer-events-auto">
+          <DeleteButton productId={id} title={title} />
+        </div>
+        <div className="pointer-events-auto">
+          <CartQuantityControl
+            id={id}
+            units={(units_product?.value as number) ?? 0}
+            title={title}
+          />
+        </div>
       </div>
     </ProductAnimations>
   );

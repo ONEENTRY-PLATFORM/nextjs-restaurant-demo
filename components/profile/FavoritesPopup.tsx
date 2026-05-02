@@ -50,8 +50,7 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
 
   const close = () => setTransition('close');
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы
-  // inline-transform хука не перебивался `yPercent`-tween-ом.
+  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не перебивался `yPercent`-tween-ом.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const products = (data ?? []) as IProductsEntity[];
   const addToCartLabel =
@@ -62,7 +61,7 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[80vw] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
             заголовок по центру, бургер справа. На md+ скрыт, там сверху —

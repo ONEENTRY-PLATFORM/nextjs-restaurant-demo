@@ -21,6 +21,7 @@ export const getProductsByPageUrl = async (props: {
       preferences?: string;
       minPrice?: string;
       maxPrice?: string;
+      cooking_time_max?: string;
     };
   };
 }): Promise<{
@@ -30,13 +31,61 @@ export const getProductsByPageUrl = async (props: {
   total: number;
 }> => {
   const { limit, offset, langCode, params } = props;
+  const lang = langCode || getLang();
+  const prefList = (params.searchParams?.preferences ?? '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
+
+  // OR-семантика для multi-select preferences (см. комментарий в getProducts.ts):
+  // SDK принимает только скалярный `conditionValue`, поэтому для каждого
+  // выбранного значения делаем отдельный запрос и мерджим уникальные товары.
+  if (prefList.length > 1) {
+    const fetchLimit = Math.max(offset + limit, limit) || limit;
+    try {
+      const results = await Promise.all(
+        prefList.map(async (value) => {
+          const filters = getSearchParams({
+            ...(params.searchParams ?? {}),
+            preferences: value,
+          });
+          const data = await api.Products.getProductsByPageUrl(
+            params.handle,
+            filters,
+            lang,
+            { offset: 0, limit: fetchLimit },
+          );
+          if (typeError(data)) return [] as IProductsEntity[];
+          return data.items;
+        }),
+      );
+      const seen = new Set<number>();
+      const merged: IProductsEntity[] = [];
+      for (const items of results) {
+        for (const item of items) {
+          if (seen.has(item.id)) continue;
+          seen.add(item.id);
+          merged.push(item);
+        }
+      }
+      return {
+        isError: false,
+        products: merged.slice(offset, offset + limit),
+        total: merged.length,
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      return { isError: true, error: e, total: 0 };
+    }
+  }
+
   const expandedFilters = getSearchParams(params.searchParams);
 
   try {
     const data = await api.Products.getProductsByPageUrl(
       params.handle,
       expandedFilters,
-      langCode || getLang(),
+      lang,
       // Sort key/order настраивается per-page в OneEntry admin —
       // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
       // что выбрал редактор (ручная позиция, цена, дата, …), и учесть

@@ -7,6 +7,7 @@ import {
   getChildPagesByParentUrl,
   getPageByUrl,
   getProductsByPageUrl,
+  getProductsPriceRange,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
@@ -88,6 +89,10 @@ const Header = async (): Promise<JSX.Element> => {
     },
   );
 
+  // Минимальная и максимальная цена реальных товаров каталога — нужна
+  // FilterBottom-у, чтобы чипы Price не были захардкожены.
+  const priceRange = await getProductsPriceRange();
+
   return (
     <div id="header">
       <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
@@ -158,7 +163,11 @@ const Header = async (): Promise<JSX.Element> => {
         </div>
       </div>
       {/* Filter Bottom */}
-      <FilterBottom dict={dict} />
+      <FilterBottom
+        dict={dict}
+        preferences={preferenceOptions}
+        priceRange={priceRange}
+      />
       {/* Category Filter */}
       <CategoryFilter pages={populatedPages} />
     </div>

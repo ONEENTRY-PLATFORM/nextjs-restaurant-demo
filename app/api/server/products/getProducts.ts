@@ -21,6 +21,7 @@ export const getProducts = async (props: {
       preferences?: string;
       minPrice?: string;
       maxPrice?: string;
+      cooking_time_max?: string;
     };
   };
 }): Promise<{
@@ -30,12 +31,59 @@ export const getProducts = async (props: {
   total: number;
 }> => {
   const { limit, offset, langCode, params } = props;
+  const lang = langCode || getLang();
+  const prefList = (params?.searchParams?.preferences ?? '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
+
+  // OR-семантика для multi-select preferences: SDK поддерживает только
+  // скалярный `conditionValue`, поэтому каждое значение фетчим отдельным
+  // запросом и мерджим уникальные результаты. AND-вариант (по одному фильтру
+  // на значение в одном запросе) возвращал бы блюда, у которых ВСЕ выбранные
+  // preferences присутствуют сразу — это почти всегда пусто.
+  if (prefList.length > 1) {
+    const fetchLimit = Math.max(offset + limit, limit) || limit;
+    try {
+      const results = await Promise.all(
+        prefList.map(async (value) => {
+          const filters = getSearchParams(
+            { ...(params?.searchParams ?? {}), preferences: value },
+            params?.handle,
+          );
+          const data = await api.Products.getProducts(filters, lang, {
+            offset: 0,
+            limit: fetchLimit,
+          });
+          if (typeError(data)) return [] as IProductsEntity[];
+          return data.items;
+        }),
+      );
+      const seen = new Set<number>();
+      const merged: IProductsEntity[] = [];
+      for (const items of results) {
+        for (const item of items) {
+          if (seen.has(item.id)) continue;
+          seen.add(item.id);
+          merged.push(item);
+        }
+      }
+      return {
+        isError: false,
+        products: merged.slice(offset, offset + limit),
+        total: merged.length,
+      };
+    } catch (error) {
+      return { isError: true, error: error as IError, total: 0 };
+    }
+  }
+
   const expandedFilters = getSearchParams(params?.searchParams, params?.handle);
 
   try {
     const data = await api.Products.getProducts(
       expandedFilters,
-      langCode || getLang(),
+      lang,
       // Sort key/order настраивается в OneEntry admin —
       // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
       // что выбрал редактор, и учесть per-product position-локи.

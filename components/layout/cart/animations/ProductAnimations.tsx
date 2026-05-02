@@ -5,7 +5,6 @@ import { gsap } from 'gsap';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
-import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
@@ -73,7 +72,6 @@ const ProductAnimations = ({
           }),
         );
         dispatch(removeProduct(product.id));
-        toast('Product ' + product.localizeInfos.title + ' removed from cart!');
       },
     }).to(ref.current, {
       autoAlpha: 1,

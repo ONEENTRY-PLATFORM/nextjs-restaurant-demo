@@ -1,13 +1,17 @@
 'use client';
 
-import type { JSX } from 'react';
+import type { ChangeEvent, JSX, KeyboardEvent } from 'react';
+import { useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   decreaseProductQty,
   increaseProductQty,
   selectCartItemWithIdLength,
+  setProductQty,
 } from '@/app/store/reducers/CartSlice';
+
+import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
 
 type CartQuantityControlProps = {
   id: number;
@@ -17,46 +21,94 @@ type CartQuantityControlProps = {
 
 /**
  * Компактный контрол количества только для корзины — вертикальный стек
- * `+ / qty / -` в тонком бордерном боксе, по `cart_cart.html`. Всегда рендерится
- * для позиций, присутствующих в `productsData` (по умолчанию qty = 1, если
- * выше его забыли проставить).
+ * `+ / qty / -` в тонком бордерном боксе, по `cart_cart.html`.
  *
- * `-` декрементит, но НЕ удаляет строку — clamp до 1 в редьюсере. Удаление
- * продукта — отдельный action, доступный через иконку корзины (`DeleteButton`)
- * рядом с контролом.
+ * Шаг `-` при qty === 1 (или ввод 0 в инпут) удаляет позицию из корзины
+ * через {@link useCartRemoveWithUndo} — пользователь видит toast с кнопкой
+ * Undo и таймером, в течение которого удаление можно откатить.
  */
 const CartQuantityControl = ({
   id,
   units,
+  title,
 }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const data = useAppSelector((state) => selectCartItemWithIdLength(state, id));
   const qty = (data?.quantity as number | undefined) ?? 1;
+  const [draft, setDraft] = useState<string | null>(null);
+  const value = draft ?? String(qty);
+  const removeWithUndo = useCartRemoveWithUndo(id, title);
 
+  /** Увеличивает количество товара в корзине */
   const onIncrease = () => {
     dispatch(increaseProductQty({ id, quantity: 1, units }));
   };
 
+  /**
+   * Уменьшает количество товара в корзине
+   * Если количество меньше или равно 1, удаляет элемент полностью с возможностью отмены
+   * В противном случае уменьшает количество товара на 1
+   */
   const onDecrease = () => {
+    if (qty <= 1) {
+      removeWithUndo();
+      return;
+    }
     dispatch(decreaseProductQty({ id, quantity: 1 }));
   };
 
+  /**
+   * Commits the quantity change to the cart state after validation.
+   * Parses the input value, validates it, and updates the product quantity in the store.
+   * If the input is invalid or zero/negative, removes the item from the cart with undo option.
+   */
+  const commit = () => {
+    const parsed = parseInt(value, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setDraft(null);
+      removeWithUndo();
+      return;
+    }
+    dispatch(setProductQty({ id, quantity: parsed, units }));
+    setDraft(null);
+  };
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDraft(e.target.value.replace(/[^\d]/g, ''));
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.currentTarget.blur();
+    }
+  };
+
   return (
-    <div className="flex h-17.5 w-8.75 flex-col items-center justify-between rounded-[5px] border border-white p-2.5 font-normal text-[20px] text-paper opacity-90">
+    <div className="flex h-17.5 w-8.75 flex-col items-stretch rounded-[5px] border border-white font-normal text-[20px] text-paper opacity-90">
       <button
         type="button"
         onClick={onIncrease}
         aria-label="Increase quantity"
-        className="flex h-3.75 cursor-pointer items-center justify-center -mt-0.5 hover:text-brand"
+        className="flex flex-1 cursor-pointer items-center justify-center leading-none hover:text-brand"
       >
         +
       </button>
-      <div>{qty}</div>
+      <input
+        type="text"
+        inputMode="numeric"
+        value={value}
+        onChange={onChange}
+        onBlur={commit}
+        onKeyDown={onKeyDown}
+        onFocus={(e) => e.currentTarget.select()}
+        aria-label="Quantity"
+        className="w-full shrink-0 bg-transparent text-center leading-none outline-none focus:text-brand"
+      />
       <button
         type="button"
         onClick={onDecrease}
         aria-label="Decrease quantity"
-        className="flex h-2.5 cursor-pointer items-end justify-center mt-1.75 hover:text-brand"
+        className="flex flex-1 cursor-pointer items-center justify-center leading-none hover:text-brand"
       >
         -
       </button>

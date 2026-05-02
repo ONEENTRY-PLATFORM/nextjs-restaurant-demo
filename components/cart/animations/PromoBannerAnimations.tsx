@@ -42,7 +42,7 @@ const PromoBannerAnimations = ({
   }, []);
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} data-promo-banner="">
       {children}
     </div>
   );

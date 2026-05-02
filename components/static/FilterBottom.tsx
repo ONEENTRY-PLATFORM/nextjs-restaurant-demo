@@ -1,28 +1,52 @@
 'use client';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import { type JSX, useContext, useEffect, useRef, useState } from 'react';
 
+import type { PriceRange } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import CloseXIcon from '@/components/icons/close-x';
+import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-const WAITING_TIME = ['Under 30 mins', 'Under 60 mins', 'doesn’t matter'];
-const PREFERENCES = [
-  'Meat',
-  'Fish',
-  'Vegetable',
-  'Sugar Free',
-  'Gluten free',
-  'Bland',
-  'Law Salt',
-  'Law Fat',
-  'Vegetarian',
-  'Spicy dish',
-  'Diabetic',
+// Cooking-time лейбл → значение URL-параметра `cooking_time_max`
+// (читается в `getSearchParams.ts`, превращается в фильтр `cooking_time lth N`).
+// `null` — фильтр не применяется (пункт «doesn't matter»).
+const WAITING_TIME: Array<{ label: string; max: number | null }> = [
+  { label: 'Under 30 mins', max: 30 },
+  { label: 'Under 60 mins', max: 60 },
+  { label: 'doesn’t matter', max: null },
 ];
-const PRICE = ['from 5', 'Under 30'];
+type PriceChip = {
+  label: string;
+  key: 'minPrice' | 'maxPrice';
+  value: number;
+};
+
+// Чипы Price собираются из реальных min/max цен каталога
+// (`getProductsPriceRange()` в Header). Возвращает пустой массив, если
+// каталог пуст или цены не получены — секция Price тогда не рендерится.
+const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
+  if (!priceRange || priceRange.max <= 0) return [];
+  const chips: PriceChip[] = [];
+  if (priceRange.min > 0) {
+    chips.push({
+      label: `from ${priceRange.min}`,
+      key: 'minPrice',
+      value: priceRange.min,
+    });
+  }
+  if (priceRange.max > priceRange.min) {
+    chips.push({
+      label: `Under ${priceRange.max}`,
+      key: 'maxPrice',
+      value: priceRange.max,
+    });
+  }
+  return chips;
+};
 
 /**
  * Нижний sheet фильтра — порт 1:1 `#side-menu` из `static-html/index_filter.html`.
@@ -33,12 +57,24 @@ const PRICE = ['from 5', 'Under 30'];
  * экранах md+.
  * @returns {JSX.Element} JSX панели фильтра.
  */
-const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
+const FilterBottom = ({
+  dict,
+  preferences: preferenceOptions = [],
+  priceRange,
+}: {
+  dict?: IAttributeValues;
+  preferences?: PreferenceOption[];
+  priceRange?: PriceRange;
+}): JSX.Element => {
   const { open, component, setOpen, setComponent } =
     useContext(OpenDrawerContext);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<string[]>([]);
-  const [price, setPrice] = useState<string | null>(null);
+  const [price, setPrice] = useState<string[]>([]);
+  const priceChips = buildPriceChips(priceRange);
 
   const waitingTitle =
     (dict?.order_waiting_time?.value as string | undefined) ??
@@ -50,6 +86,41 @@ const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     'Clear all filters';
 
   const isVisible = open && component === 'FilterForm';
+
+  // Гидратация локального стейта из URL при открытии. Открываем — берём текущие
+  // активные фильтры, чтобы пользователь видел уже выбранные чипы. Делаем это
+  // только в момент перехода в visible, чтобы не затирать пользовательские правки
+  // при быстрых ре-рендерах роутера.
+  useEffect(() => {
+    if (!isVisible) return;
+    const cookingMax = searchParams.get('cooking_time_max');
+    const matchedTime = WAITING_TIME.find(
+      (t) => t.max !== null && String(t.max) === cookingMax,
+    );
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setWaitingTime(matchedTime?.label ?? null);
+
+    const prefsParam = searchParams.get('preferences') ?? '';
+    setPreferences(
+      prefsParam
+        ? prefsParam
+            .split(',')
+            .map((v) => v.trim())
+            .filter(Boolean)
+        : [],
+    );
+
+    const min = searchParams.get('minPrice');
+    const max = searchParams.get('maxPrice');
+    setPrice(
+      priceChips
+        .filter(({ key, value }) =>
+          key === 'minPrice' ? min === String(value) : max === String(value),
+        )
+        .map((p) => p.label),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
 
   const close = (): void => {
     setOpen(false);
@@ -77,13 +148,67 @@ const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     );
   };
 
+  const togglePrice = (label: string): void => {
+    setPrice((prev) =>
+      prev.includes(label) ? prev.filter((x) => x !== label) : [...prev, label],
+    );
+  };
+
   const reset = (): void => {
     setWaitingTime(null);
     setPreferences([]);
-    setPrice(null);
+    setPrice([]);
   };
 
+  // Сериализуем выбранные чипы в URL и обновляем текущий маршрут.
+  // Page-компоненты (`/shop`, `/shop/[handle]`, …) уже `force-dynamic` и
+  // подхватят новые `searchParams` без перезагрузки.
   const apply = (): void => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    const time = WAITING_TIME.find((t) => t.label === waitingTime);
+    if (time?.max != null) {
+      params.set('cooking_time_max', String(time.max));
+    } else {
+      params.delete('cooking_time_max');
+    }
+
+    if (preferences.length > 0) {
+      params.set('preferences', preferences.join(','));
+    } else {
+      params.delete('preferences');
+    }
+
+    const minChip = priceChips.find(
+      (p) => p.key === 'minPrice' && price.includes(p.label),
+    );
+    if (minChip) {
+      params.set('minPrice', String(minChip.value));
+    } else {
+      params.delete('minPrice');
+    }
+    const maxChip = priceChips.find(
+      (p) => p.key === 'maxPrice' && price.includes(p.label),
+    );
+    if (maxChip) {
+      params.set('maxPrice', String(maxChip.value));
+    } else {
+      params.delete('maxPrice');
+    }
+
+    const qs = params.toString();
+    // Фильтр-панель доступна с любой страницы (живёт в шапке), но реально
+    // фильтрует только списки товаров под `/shop`. Если пользователь применил
+    // фильтр с домашней / продуктовой страницы — отправляем его на `/shop` с теми
+    // же query-параметрами, иначе остаёмся на текущем маршруте через replace.
+    const isShopRoute = pathname.startsWith('/shop');
+    const targetPath = isShopRoute ? pathname : '/shop';
+    const url = qs ? `${targetPath}?${qs}` : targetPath;
+    if (isShopRoute) {
+      router.replace(url);
+    } else {
+      router.push(url);
+    }
     close();
   };
 
@@ -150,42 +275,42 @@ const FilterBottom = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-9.25 gap-1.75">
           <p className="filter_title">{waitingTitle}</p>
-          {WAITING_TIME.map((item) => (
+          {WAITING_TIME.map(({ label }) => (
             <button
-              key={item}
+              key={label}
               type="button"
               onClick={() =>
-                setWaitingTime((prev) => (prev === item ? null : item))
+                setWaitingTime((prev) => (prev === label ? null : label))
               }
-              className={itemClass(waitingTime === item)}
+              className={itemClass(waitingTime === label)}
             >
-              {item}
+              {label}
             </button>
           ))}
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75">
           <p className="filter_title">{preferencesTitle}</p>
-          {PREFERENCES.map((item) => (
+          {preferenceOptions.map((option) => (
             <button
-              key={item}
+              key={option.value}
               type="button"
-              onClick={() => togglePreference(item)}
-              className={itemClass(preferences.includes(item))}
+              onClick={() => togglePreference(option.value)}
+              className={itemClass(preferences.includes(option.value))}
             >
-              {item}
+              {option.title}
             </button>
           ))}
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
           <p className="filter_title">Price $</p>
-          {PRICE.map((item) => (
+          {priceChips.map(({ label }) => (
             <button
-              key={item}
+              key={label}
               type="button"
-              onClick={() => setPrice((prev) => (prev === item ? null : item))}
-              className={itemClass(price === item)}
+              onClick={() => togglePrice(label)}
+              className={itemClass(price.includes(label))}
             >
-              {item}
+              {label}
             </button>
           ))}
         </div>

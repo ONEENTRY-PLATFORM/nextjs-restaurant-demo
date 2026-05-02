@@ -29,7 +29,7 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
         <Link
           href={heroBanner.pageUrl ? `/promo/${heroBanner.pageUrl}` : '#'}
           title={heroBanner.title}
-          className="hidden md:block w-full mb-10 mx-auto md:max-w-175 lg:max-w-250 xl:max-w-323 overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.01]"
+          className="hidden md:block w-full mb-10 px-4 mx-auto md:max-w-175 lg:max-w-250 xl:max-w-323 overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.01]"
         >
           <Image
             src={heroBanner.desktopImage as string}

@@ -11,6 +11,7 @@ const getSearchParams = (
     preferences?: string;
     minPrice?: string;
     maxPrice?: string;
+    cooking_time_max?: string;
   },
   handle?: string,
 ) => {
@@ -61,14 +62,61 @@ const getSearchParams = (
   }
 
   if (searchParams?.preferences) {
-    const preferencesFilter: IFilterParams = {
-      attributeMarker: 'preferences',
-      conditionMarker: 'in',
-      conditionValue: searchParams.preferences,
-      title: searchParams.search || '',
-      isNested: false,
-    };
-    expandedFilters.push(preferencesFilter);
+    // Multi-select preferences пробрасываются как `?preferences=Meat,Fish`.
+    // `IFilterParams.conditionValue` принимает только скаляр, поэтому каждое
+    // значение рендерится отдельным фильтром (AND-семантика на стороне OneEntry).
+    const values = searchParams.preferences
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+    for (const value of values) {
+      expandedFilters.push({
+        attributeMarker: 'preferences',
+        conditionMarker: 'in',
+        conditionValue: value,
+        title: searchParams.search || '',
+        isNested: false,
+      });
+    }
+  }
+
+  if (searchParams?.minPrice) {
+    const min = Number(searchParams.minPrice);
+    if (Number.isFinite(min)) {
+      expandedFilters.push({
+        attributeMarker: 'price',
+        conditionMarker: 'mth',
+        conditionValue: min,
+        title: searchParams.search || '',
+        isNested: false,
+      });
+    }
+  }
+
+  if (searchParams?.maxPrice) {
+    const max = Number(searchParams.maxPrice);
+    if (Number.isFinite(max)) {
+      expandedFilters.push({
+        attributeMarker: 'price',
+        conditionMarker: 'lth',
+        conditionValue: max,
+        title: searchParams.search || '',
+        isNested: false,
+      });
+    }
+  }
+
+  if (searchParams?.cooking_time_max) {
+    const max = Number(searchParams.cooking_time_max);
+    if (Number.isFinite(max)) {
+      expandedFilters.push({
+        attributeMarker: 'cooking_time',
+        conditionMarker: 'lth',
+        conditionValue: max,
+        title: searchParams.search || '',
+        isNested: false,
+      });
+    }
   }
 
   return expandedFilters;

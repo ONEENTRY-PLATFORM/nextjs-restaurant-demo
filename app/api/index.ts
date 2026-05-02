@@ -56,6 +56,8 @@ export { getPagesByIds } from './server/pages/getPagesByIds';
 export { getProductById } from './server/products/getProductById';
 export { getProducts } from './server/products/getProducts';
 export { getProductsByPageUrl } from './server/products/getProductsByPageUrl';
+export type { PriceRange } from './server/products/getProductsPriceRange';
+export { getProductsPriceRange } from './server/products/getProductsPriceRange';
 export { getRelatedProductsById } from './server/products/getRelatedProductsById';
 export { logInUser } from './server/users/logInUser';
 export { logOutUser } from './server/users/logOutUser';

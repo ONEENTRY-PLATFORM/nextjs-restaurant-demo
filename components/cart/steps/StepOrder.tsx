@@ -47,7 +47,12 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       entry,
       product: products.find((p) => p.id === entry.id),
     }))
-    .filter((row) => row.product) as Array<{
+    .filter(
+      (row) =>
+        row.product &&
+        row.entry.selected &&
+        row.product.statusIdentifier !== 'out_of_stock',
+    ) as Array<{
     entry: CartEntry;
     product: IProductsEntity;
   }>;

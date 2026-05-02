@@ -1,33 +1,28 @@
 import type { JSX } from 'react';
-import { useContext } from 'react';
 
-import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
-import { useAppDispatch } from '@/app/store/hooks';
-import { AuthContext } from '@/app/store/providers/AuthContext';
-import {
-  // removeProduct,
-  setCartTransition,
-} from '@/app/store/reducers/CartSlice';
 import DeleteIcon from '@/components/icons/delete';
 
+import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
+
 /**
- * Кнопка удаления продукта из корзины
+ * Кнопка удаления продукта из корзины. Запускает удаление с undo-toast
+ * (см. {@link useCartRemoveWithUndo}).
  */
-const DeleteButton = ({ productId }: { productId: number }): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const { user } = useContext(AuthContext);
+const DeleteButton = ({
+  productId,
+  title,
+}: {
+  productId: number;
+  title: string;
+}): JSX.Element => {
+  const removeWithUndo = useCartRemoveWithUndo(productId, title);
 
   return (
     <button
+      type="button"
       className="group relative box-border flex size-5 shrink-0 flex-col items-center justify-center"
       aria-label="Delete item"
-      onClick={async () => {
-        dispatch(setCartTransition({ productId: productId }));
-        // dispatch(removeProduct(productId));
-        if (user) {
-          await onUnsubscribeEvents(productId);
-        }
-      }}
+      onClick={() => removeWithUndo()}
     >
       <DeleteIcon />
     </button>

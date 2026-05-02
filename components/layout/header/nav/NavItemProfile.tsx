@@ -57,7 +57,7 @@ const NavItemProfile = (): JSX.Element => {
   }, [menu]);
 
   const handleGuestClick = () => {
-    setComponent('SignInForm');
+    setComponent('AuthProviderSelect');
     setOpen(!open);
   };
 

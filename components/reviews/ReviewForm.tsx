@@ -73,7 +73,7 @@ const ReviewForm = ({
         <button
           type="button"
           onClick={() => {
-            setComponent('SignInForm');
+            setComponent('AuthProviderSelect');
             setOpen(!open);
           }}
           className="h-12.5 w-full rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover"

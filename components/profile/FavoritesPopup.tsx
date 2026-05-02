@@ -6,6 +6,7 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -207,15 +208,16 @@ const FavoriteCard = ({
       <div className="flex h-30.5 shrink-0 flex-col justify-between">
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
             dispatch(
               addProductToCart({
                 id: product.id,
                 selected: true,
                 quantity: 1,
               }),
-            )
-          }
+            );
+            toast('Product ' + title + ' added to cart!');
+          }}
           aria-label={inCart ? 'In cart' : addToCartLabel}
           className="group_white"
           disabled={inCart}

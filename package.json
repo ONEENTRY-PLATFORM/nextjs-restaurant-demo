@@ -72,5 +72,10 @@
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3",
     "use-debounce": "^10.1.1"
+  },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "$@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser": "$@typescript-eslint/parser",
+    "typescript-eslint": "8.59.1"
   }
 }

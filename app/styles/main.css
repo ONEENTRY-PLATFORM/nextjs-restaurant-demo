@@ -129,7 +129,8 @@ html {
   stroke-width: 0.1; 
 }
 
-.group_white:hover .hover-target path {
+.group_white:hover .hover-target path,
+.group_white.is-active .hover-target path {
   fill: #ffffff;
   stroke: #ffffff;
 }
@@ -350,7 +351,7 @@ html {
 }
 
 .filter_item {
-  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-brand active:bg-brand hover:border-none active:border-none;
+  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-brand transition-colors active:bg-brand hover:border-transparent active:border-none;
 }
 .filter_title {
   @apply w-full font-bold text-[16px] tracking-[0.02em] text-brand;

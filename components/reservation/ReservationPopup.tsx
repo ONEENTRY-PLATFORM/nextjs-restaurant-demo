@@ -17,10 +17,7 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import ReservationForm from './ReservationForm';
-import type {
-  RestaurantOption,
-  ScheduleSlotEntry,
-} from './RestaurantSelect';
+import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 /**
  * Попап бронирования столика — открывается по кнопке `BOOK A TABLE`

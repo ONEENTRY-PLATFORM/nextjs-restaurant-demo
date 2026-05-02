@@ -15,10 +15,7 @@ import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
-import type {
-  RestaurantOption,
-  ScheduleSlotEntry,
-} from './RestaurantSelect';
+import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;

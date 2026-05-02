@@ -31,9 +31,6 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectIsFavorites(state as any, id),
   );
-  // Favorites хранятся в redux-persist (localStorage). До mount-а используем
-  // SSR-safe значение `false`, чтобы серверный HTML совпадал с первым рендером
-  // клиента, иначе React ругается на hydration mismatch.
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

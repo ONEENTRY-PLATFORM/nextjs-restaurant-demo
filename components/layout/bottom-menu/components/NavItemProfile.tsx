@@ -21,7 +21,7 @@ const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
     <button
       onClick={() => {
         setOpen(!open);
-        setComponent('SignInForm');
+        setComponent('AuthProviderSelect');
       }}
       title={title}
       className="group relative box-border flex size-6 shrink-0"

@@ -45,7 +45,7 @@ const ReviewsSlideUpPanel = ({
 
   const onApply = async () => {
     if (!isAuth) {
-      setComponent('SignInForm');
+      setComponent('AuthProviderSelect');
       setOpen(!open);
       return;
     }

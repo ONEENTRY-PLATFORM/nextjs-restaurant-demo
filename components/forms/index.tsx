@@ -1,3 +1,4 @@
+import AuthProviderSelect from './AuthProviderSelect';
 import CalendarForm from './CalendarForm';
 import ContactUsForm from './ContactUsForm';
 import ForgotPasswordForm from './ForgotPasswordForm';
@@ -9,6 +10,7 @@ import UserForm from './UserForm';
 import VerificationForm from './VerificationForm';
 
 export {
+  AuthProviderSelect,
   CalendarForm,
   ContactUsForm,
   ForgotPasswordForm,

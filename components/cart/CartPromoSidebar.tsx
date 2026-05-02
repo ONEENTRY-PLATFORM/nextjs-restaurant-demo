@@ -102,10 +102,7 @@ const CartPromoSidebar = ({
   if (items.length === 0) return null;
 
   return (
-    <aside
-      ref={asideRef}
-      className="hidden w-1/2 flex-col gap-10 md:flex"
-    >
+    <aside ref={asideRef} className="hidden w-1/2 flex-col gap-10 md:flex">
       {items.map((b, i) => (
         <PromoBannerAnimations key={b.id} index={i}>
           <Link

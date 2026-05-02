@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import FavoritesButton from '@/components/shared/FavoritesButton';
+import FavoritesButton from '@/components/layout/product/product-single/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**

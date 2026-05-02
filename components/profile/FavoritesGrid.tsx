@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
+import { toast } from 'react-toastify';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -21,9 +22,11 @@ import Loader from '@/components/shared/Spinner';
 
 /**
  * Сетка избранного в дашборде — порт сетки карточек модалки
- * `static-html/pk_favorites.html` в полноширинную страницу профиля. Рендерит
- * избранные пользователем продукты как 2-колоночные карточки на десктопе и
- * одной колонкой на мобиле.
+ * `static-html/pk_favorites.html`. На странице `/profile/favorites` живёт в
+ * левой половине 2-колоночного layout-а (см. `app/profile/favorites/page.tsx`,
+ * паттерн корзины), поэтому сами карточки идут в одну колонку — на ширину
+ * левой половины. На мобиле родительский layout стакает колонки, карточки
+ * также остаются в одну колонку.
  * @returns {JSX.Element} JSX сетки избранного.
  */
 const FavoritesGrid = (): JSX.Element => {
@@ -48,7 +51,7 @@ const FavoritesGrid = (): JSX.Element => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-7.5">
+    <div className="flex flex-col gap-4">
       {products.map((product) => (
         <FavoriteCard key={product.id} product={product} />
       ))}
@@ -87,7 +90,7 @@ const FavoriteCard = ({
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-gray-300 p-2.5 md:w-half-gap">
+    <div className="flex w-full items-center justify-between rounded-[5px] border border-gray-300 p-2.5">
       {imageSrc ? (
         <Image
           src={imageSrc}
@@ -95,7 +98,7 @@ const FavoriteCard = ({
           width={122}
           height={129}
           sizes="122px"
-          className="mr-2.5 shrink-0 object-cover"
+          className="mr-2.5 h-auto w-auto shrink-0 object-cover"
         />
       ) : (
         <div className="mr-2.5 flex h-32.25 w-30.5 shrink-0 items-center justify-center">
@@ -116,17 +119,26 @@ const FavoriteCard = ({
       <div className="flex h-30.5 shrink-0 flex-col justify-between">
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
             dispatch(
               addProductToCart({
                 id: product.id,
                 selected: true,
                 quantity: 1,
               }),
-            )
-          }
+            );
+            toast('Product ' + title + ' added to cart!');
+          }}
           aria-label={inCart ? 'In cart' : 'Add to cart'}
-          className="group_white"
+          aria-pressed={inCart}
+          // Когда товар уже в корзине — кнопка показывается как
+          // «нажатая»: brand-circle + белая иконка (зеркалит hover-state
+          // через `.group_white.is-active` в `app/styles/main.css`).
+          className={
+            inCart
+              ? 'group_white is-active flex h-10 w-10 items-center justify-center rounded-full bg-brand'
+              : 'group_white'
+          }
           disabled={inCart}
         >
           <CartOrangeIcon />

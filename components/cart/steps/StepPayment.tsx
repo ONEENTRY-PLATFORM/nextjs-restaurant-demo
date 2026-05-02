@@ -59,6 +59,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   // данных, чтобы initial render не рендерил пустое состояние.
   useEffect(() => {
     if (!identifier && accounts.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIdentifier(accounts[0]!.identifier);
     }
   }, [accounts, identifier]);
@@ -71,7 +72,11 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     }
     if (altReceiver && altPhone.trim()) {
       dispatch(
-        addData({ marker: 'alt_phone', type: 'string', value: altPhone.trim() }),
+        addData({
+          marker: 'alt_phone',
+          type: 'string',
+          value: altPhone.trim(),
+        }),
       );
     }
   };
@@ -80,7 +85,9 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
     if (!identifier) return;
     persistOrderFields();
     dispatch(addPaymentMethod(identifier));
-    const result = await onConfirmOrder({ paymentAccountIdentifier: identifier });
+    const result = await onConfirmOrder({
+      paymentAccountIdentifier: identifier,
+    });
     if (!result.ok) {
       dispatch(setStepError(result.error));
       return;
@@ -171,11 +178,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
       <button
         type="button"
         onClick={onNext}
-        disabled={
-          isLoading ||
-          !identifier ||
-          (altReceiver && !altPhone.trim())
-        }
+        disabled={isLoading || !identifier || (altReceiver && !altPhone.trim())}
         className="cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
         {isLoading ? 'Processing...' : 'APPLY'}

@@ -5,7 +5,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import CartAddIcon from '@/components/icons/cart-add';
-import HeartCardButton from '@/components/shared/HeartCardButton';
+import HeartCardButton from '@/components/layout/products-grid/components/product-card/HeartCardButton';
 import { UsePrice } from '@/components/utils';
 
 import CardAnimations from '../../animations/CardAnimations';

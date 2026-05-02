@@ -91,6 +91,7 @@ const RestaurantPhotoGallery = ({
       container.scrollTo({ top: relTop, behavior: 'smooth' });
       return;
     }
+
     // 2) Скрыт снизу — опускаем на нижнюю границу.
     if (relBottom > viewBottom) {
       container.scrollTo({
@@ -107,7 +108,10 @@ const RestaurantPhotoGallery = ({
     if (next) {
       const nextRect = next.getBoundingClientRect();
       const nextRelBottom =
-        nextRect.bottom - cRect.bottom + container.scrollTop + container.clientHeight;
+        nextRect.bottom -
+        cRect.bottom +
+        container.scrollTop +
+        container.clientHeight;
       if (nextRect.bottom > cRect.bottom) {
         container.scrollTo({
           top: nextRelBottom - container.clientHeight,
@@ -121,8 +125,7 @@ const RestaurantPhotoGallery = ({
     if (prev) {
       const prevRect = prev.getBoundingClientRect();
       if (prevRect.top < cRect.top) {
-        const prevRelTop =
-          prevRect.top - cRect.top + container.scrollTop;
+        const prevRelTop = prevRect.top - cRect.top + container.scrollTop;
         container.scrollTo({ top: prevRelTop, behavior: 'smooth' });
       }
     }

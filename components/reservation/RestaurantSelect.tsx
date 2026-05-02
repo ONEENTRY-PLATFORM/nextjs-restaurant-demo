@@ -13,10 +13,7 @@ import ChevronDownIcon from '@/components/icons/chevron-down';
 export type ScheduleSlotEntry = {
   dates?: [string, string];
   times?: Array<
-    [
-      { hours: number; minutes: number },
-      { hours: number; minutes: number },
-    ]
+    [{ hours: number; minutes: number }, { hours: number; minutes: number }]
   >;
   inEveryWeek?: boolean;
   inEveryMonth?: boolean;

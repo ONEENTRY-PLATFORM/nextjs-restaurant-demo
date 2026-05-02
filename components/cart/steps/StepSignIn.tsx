@@ -1,33 +1,50 @@
 'use client';
 
 import Image from 'next/image';
+import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect } from 'react';
 
+import { useGetAuthProvidersQuery } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { setStep } from '@/app/store/reducers/OrderSlice';
+import {
+  getProviderMeta,
+  sortActiveAuthProviders,
+  startGoogleOAuth,
+} from '@/components/forms/authProviders';
 
-const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+const redirectToOAuth = (url: string) => {
+  window.location.href = url;
+};
 
 /**
  * Шаг checkout — auth-гейт.
  *
  * Если пользователь уже авторизован, авто-переходит на `address`.
- * Иначе рендерит выбор провайдера из `static-html/pk_login.html`
- * — ограничен двумя кнопками (Email, Google) по текущему дизайну.
+ * Иначе рендерит выбор провайдера из OneEntry
+ * (`AuthProvider.getAuthProviders`, фильтр по `isActive`) — тот же набор,
+ * что и в попапе авторизации (см. AuthProviderSelect).
  *
- * - Email открывает существующий drawer {@link SignInForm}.
+ * - Email открывает drawer SignInForm.
+ * - Phone открывает drawer PhoneAuthForm.
  * - Google делает top-window редирект на OAuth-эндпоинт Google;
  *   колбэк в `app/auth/callback/google/page.tsx` обменивает
- *   код через {@link oauthLogIn} → `api.AuthProvider.oauth('google', …)`.
+ *   код через `oauthLogIn` → `api.AuthProvider.oauth('google', …)`.
+ * - Прочие OAuth-провайдеры → `config.oauthAuthUrl`.
+ *
+ * Дизайн — `static-html/cart_login.html`.
+ *
  * @returns {JSX.Element} JSX шага.
  */
 const StepSignIn = (): JSX.Element => {
-  const { isAuth, isLoading } = useContext(AuthContext);
+  const { isAuth, isLoading: isAuthLoading } = useContext(AuthContext);
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
+  const { data: providers, isLoading: isProvidersLoading } =
+    useGetAuthProvidersQuery('');
 
   useEffect(() => {
     if (isAuth) {
@@ -35,61 +52,63 @@ const StepSignIn = (): JSX.Element => {
     }
   }, [isAuth, dispatch]);
 
-  if (isLoading) {
+  if (isAuthLoading || isProvidersLoading) {
     return <div className="text-center text-paper/80">Loading...</div>;
   }
 
-  const onEmailLogin = () => {
+  const onProviderClick = (p: IAuthProvidersEntity) => {
+    if (p.identifier === 'email') {
+      setComponent('SignInForm');
+      setOpen(true);
+      return;
+    }
+    if (p.identifier === 'phone') {
+      setComponent('PhoneAuthForm');
+      setOpen(true);
+      return;
+    }
+    if (p.identifier === 'google') {
+      if (!startGoogleOAuth()) {
+        // Google OAuth ещё не сконфигурирован (см. MISMATCH-LOG.md §C.8.1).
+        // Падаем в email, чтобы у пользователя был рабочий путь логина.
+        setComponent('SignInForm');
+        setOpen(true);
+      }
+      return;
+    }
+    if (p.type === 'oauth' && p.config?.oauthAuthUrl) {
+      redirectToOAuth(p.config.oauthAuthUrl);
+      return;
+    }
     setComponent('SignInForm');
     setOpen(true);
   };
 
-  const onGoogleLogin = () => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      // Fallback — Google credentials ещё не настроены (см. MISMATCH-LOG.md §C.8.1).
-      onEmailLogin();
-      return;
-    }
-    const state = crypto.randomUUID();
-    sessionStorage.setItem('google-oauth-state', state);
-    const redirectUri = `${window.location.origin}/auth/callback/google`;
-    const search = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: 'code',
-      scope: 'openid email profile',
-      access_type: 'offline',
-      prompt: 'consent',
-      state,
-    });
-    window.location.href = `${GOOGLE_AUTH_URL}?${search.toString()}`;
-  };
+  const active = sortActiveAuthProviders(providers ?? []);
 
   return (
     <div className="mx-auto flex w-full max-w-115 flex-col">
-      <button type="button" onClick={onEmailLogin} className="cart_btn">
-        <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-          <Image
-            src="/images/icons/login-email.svg"
-            alt=""
-            width={24}
-            height={22}
-          />
-          Login With Email
-        </div>
-      </button>
-      <button type="button" onClick={onGoogleLogin} className="cart_btn">
-        <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-          <Image
-            src="/images/icons/login-google.svg"
-            alt=""
-            width={24}
-            height={24}
-          />
-          Login With Google
-        </div>
-      </button>
+      {active.map((p) => {
+        const meta = getProviderMeta(p);
+        return (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => onProviderClick(p)}
+            className="cart_btn"
+          >
+            <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+              <Image
+                src={meta.icon}
+                alt=""
+                width={meta.iconWidth}
+                height={meta.iconHeight}
+              />
+              {meta.label}
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 };

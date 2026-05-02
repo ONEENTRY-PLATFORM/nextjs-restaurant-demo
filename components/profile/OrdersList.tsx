@@ -12,6 +12,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
 import { UsePrice } from '@/components/utils';
 
@@ -242,6 +243,7 @@ const OrdersList = ({
   promoBanners?: BlogBanner[];
 } = {}): JSX.Element => {
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -310,7 +312,18 @@ const OrdersList = ({
   } else if (!isAuth) {
     leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        Please sign in to view your orders.
+        Please{' '}
+        <button
+          type="button"
+          onClick={() => {
+            setComponent('AuthProviderSelect');
+            setOpen(true);
+          }}
+          className="cursor-pointer text-brand underline underline-offset-2 hover:no-underline"
+        >
+          sign in
+        </button>{' '}
+        to view your orders.
       </div>
     );
   } else if (error) {

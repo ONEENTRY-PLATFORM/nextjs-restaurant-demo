@@ -84,7 +84,7 @@ const OrderReviewsPanel = ({ order }: OrderReviewsPanelProps): JSX.Element => {
 
   const onApply = async (lineId: string) => {
     if (!isAuth) {
-      setComponent('SignInForm');
+      setComponent('AuthProviderSelect');
       setOpen(!open);
       return;
     }

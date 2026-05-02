@@ -301,70 +301,80 @@ const OrdersList = ({
     });
   };
 
+  // Левая колонка — содержит контент, зависящий от состояния (loading /
+  // not-auth / error / empty / orders-list). Правая колонка (промо) рендерится
+  // на md+ во ВСЕХ состояниях, чтобы 2-колоночный layout соответствовал корзине.
+  let leftColumn: JSX.Element;
   if (authLoading || loading) {
-    return <div className="text-paper/80">Loading orders...</div>;
-  }
-  if (!isAuth) {
-    return (
+    leftColumn = <div className="text-paper/80">Loading orders...</div>;
+  } else if (!isAuth) {
+    leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
         Please sign in to view your orders.
       </div>
     );
-  }
-  if (error) {
-    return (
+  } else if (error) {
+    leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-paper/90">
         Unable to load orders: {error}
       </div>
     );
-  }
-  if (orders.length === 0) {
-    return (
-      <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        You have no orders yet.
+  } else if (orders.length === 0) {
+    leftColumn = (
+      <div className="flex flex-col items-center gap-5 rounded-xl bg-ink/60 p-6 text-center text-paper/90">
+        <p>You have no orders yet.</p>
+        <Link
+          href="/shop"
+          className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+        >
+          Go to shopping
+        </Link>
       </div>
+    );
+  } else {
+    leftColumn = (
+      <>
+        <p className="mt-2.5 text-xl text-paper">Active orders</p>
+        {active.length === 0 ? (
+          <p className="mt-2.75 text-sm text-paper/70">
+            You have no active orders.
+          </p>
+        ) : (
+          active.map((o) => (
+            <OrderCard
+              key={o.id}
+              order={o}
+              expanded={expandedIds.has(o.id)}
+              onToggle={() => toggle(o.id)}
+              isHistory={false}
+            />
+          ))
+        )}
+        <p className="mt-5 text-xl text-paper">Orders History</p>
+        {history.length === 0 ? (
+          <p className="mt-2.75 text-sm text-paper/70">
+            You have no past orders yet.
+          </p>
+        ) : (
+          history.map((o) => (
+            <OrderCard
+              key={o.id}
+              order={o}
+              expanded={expandedIds.has(o.id)}
+              onToggle={() => toggle(o.id)}
+              isHistory
+            />
+          ))
+        )}
+      </>
     );
   }
 
   return (
     <section>
-      <p className="text-base text-muted-text">Cart</p>
-      <div className="flex flex-col gap-10 lg:flex-row lg:gap-15">
-        <div className="lg:w-1/2">
-          <p className="mt-2.5 text-xl text-paper">Active orders</p>
-          {active.length === 0 ? (
-            <p className="mt-2.75 text-sm text-paper/70">
-              You have no active orders.
-            </p>
-          ) : (
-            active.map((o) => (
-              <OrderCard
-                key={o.id}
-                order={o}
-                expanded={expandedIds.has(o.id)}
-                onToggle={() => toggle(o.id)}
-                isHistory={false}
-              />
-            ))
-          )}
-          <p className="mt-5 text-xl text-paper">Orders History</p>
-          {history.length === 0 ? (
-            <p className="mt-2.75 text-sm text-paper/70">
-              You have no past orders yet.
-            </p>
-          ) : (
-            history.map((o) => (
-              <OrderCard
-                key={o.id}
-                order={o}
-                expanded={expandedIds.has(o.id)}
-                onToggle={() => toggle(o.id)}
-                isHistory
-              />
-            ))
-          )}
-        </div>
-        <aside className="hidden lg:flex lg:w-1/2 lg:flex-col lg:gap-10">
+      <div className="flex flex-col gap-10 md:flex-row md:gap-15">
+        <div className="md:w-1/2">{leftColumn}</div>
+        <aside className="hidden md:flex md:w-1/2 md:flex-col md:gap-10">
           {promoBanners
             .filter((b) => b.mobileImage)
             .map((b) => (

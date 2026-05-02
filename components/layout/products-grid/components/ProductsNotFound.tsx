@@ -5,9 +5,6 @@ import { type JSX } from 'react';
 /**
  * Empty state для сетки товаров — показывается, когда `getProducts` вернул
  * пусто (поиск/фильтр без результатов или отсутствуют товары в категории).
- *
- * Иконка лежит в `public/images/icons/search.svg` — раньше путь был
- * `/icons/cart.svg`, такого ассета нет, и `next/image` ломалось.
  */
 const ProductsNotFound = (): JSX.Element => {
   return (

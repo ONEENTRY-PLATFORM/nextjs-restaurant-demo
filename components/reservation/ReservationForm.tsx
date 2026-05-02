@@ -10,11 +10,11 @@ import { useMemo, useState } from 'react';
 
 import type { ReservationPayload } from '@/app/actions/reservation';
 import { submitReservation } from '@/app/actions/reservation';
+import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
-import FormCaptcha from '../forms/inputs/FormCaptcha';
 import type {
   RestaurantOption,
   ScheduleSlotEntry,
@@ -131,7 +131,6 @@ const ReservationForm = ({
   const [values, setValues] = useState<Record<string, FieldValue>>(
     initialValues ?? {},
   );
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -151,8 +150,14 @@ const ReservationForm = ({
     return map;
   }, [attrs]);
 
-  const hasSpam = useMemo(() => attrs.some((a) => a.type === 'spam'), [attrs]);
   const spamAttr = useMemo(() => attrs.find((a) => a.type === 'spam'), [attrs]);
+  const spamSettings = spamAttr?.settings as
+    | { captcha?: { key?: string; action?: string } }
+    | undefined;
+  const captcha = useEnterpriseCaptcha(
+    spamSettings?.captcha?.key,
+    spamSettings?.captcha?.action,
+  );
 
   const onChange = (marker: string, value: FieldValue) => {
     setValues((prev) => ({ ...prev, [marker]: value }));
@@ -160,16 +165,26 @@ const ReservationForm = ({
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (hasSpam && !captchaToken) {
-      setError('Please complete the captcha.');
+    if (spamAttr && !captcha) {
+      setError('Please wait while captcha is loading.');
       return;
     }
     setLoading(true);
     setError('');
 
     const payloadFormData: ReservationPayload['formData'] = attrs
-      .filter((attr) => attr.type !== 'spam' && attr.type !== 'button')
+      .filter((attr) => attr.type !== 'button')
       .map((attr) => {
+        if (attr.type === 'spam') {
+          return {
+            marker: attr.marker,
+            type: 'spam',
+            // OneEntry ожидает объект `{ event: { token, siteKey } }` —
+            // см. useEnterpriseCaptcha. Тип FormDataType не покрывает spam,
+            // отсюда `as unknown` для narrowing'а.
+            value: captcha,
+          } as unknown as ReservationPayload['formData'][number];
+        }
         const raw = values[attr.marker] ?? '';
         if (attr.type === 'text') {
           return {
@@ -312,17 +327,8 @@ const ReservationForm = ({
           />
         ))}
 
-      {/* Капча */}
-      {spamAttr ? (
-        <FormCaptcha
-          setToken={setCaptchaToken}
-          setIsCaptcha={() => {}}
-          captchaKey={
-            (spamAttr.settings as { captchaKey?: string } | undefined)
-              ?.captchaKey || ''
-          }
-        />
-      ) : null}
+      {/* Капча — invisible reCAPTCHA Enterprise, грузится через
+          useEnterpriseCaptcha; в DOM ничего не рендерим. */}
 
       {/* Основная кнопка отправки */}
       <div className="mt-7.5 flex flex-col items-center justify-center gap-5">

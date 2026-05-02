@@ -4,22 +4,25 @@
 import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
+import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 
 import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
-import FormCaptcha from './inputs/FormCaptcha';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
+
+type SpamCaptchaSettings = {
+  captcha?: { key?: string; action?: string };
+};
 
 /**
  * Форма ContactUs
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
-  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -37,21 +40,38 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         a.position - b.position,
     );
 
+  // Поле капчи (type: 'spam') и его настройки. captchaKey/action приходят
+  // из OneEntry в `settings.captcha.{key,action}`.
+  const spamField = useMemo(
+    () => formFields?.find((f) => f.type === 'spam'),
+    [formFields],
+  );
+  const spamSettings = spamField?.settings as SpamCaptchaSettings | undefined;
+  const captcha = useEnterpriseCaptcha(
+    spamSettings?.captcha?.key,
+    spamSettings?.captcha?.action,
+  );
+
   // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formFields || !token) return;
+    if (!formFields) return;
+    if (spamField && !captcha) {
+      setError('Please wait while captcha is loading.');
+      return;
+    }
 
     const transformedFormData = formFields.map(
       (field: { marker: any; type: any }) => {
-        const { marker } = field;
+        const { marker, type } = field;
         const value = fieldsData[marker as keyof typeof fieldsData]?.value;
 
+        if (type === 'spam') {
+          return { marker, type: 'spam', value: captcha };
+        }
+
         switch (marker) {
-          case 'spam':
-          case 'send':
-            return { marker, type: 'string', value: 'test' };
           case 'list':
             return { marker, type: 'list', value: [{ title: value, value }] };
           case 'text':
@@ -105,18 +125,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
                 />
               );
             case 'spam':
-              return (
-                <div key={index}>
-                  <FormCaptcha
-                    setToken={setToken}
-                    setIsCaptcha={() => {}}
-                    captchaKey={
-                      (field.settings as { captchaKey?: string } | undefined)
-                        ?.captchaKey || ''
-                    }
-                  />
-                </div>
-              );
+              return null;
             default:
               return (
                 <FormInput

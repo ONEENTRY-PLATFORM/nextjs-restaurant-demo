@@ -1,15 +1,27 @@
 'use client';
 
+import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { submitReview } from '@/app/actions/review';
+import { api, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import StarRating from './StarRating';
+
+const FORM_MARKER = 'review_form';
+const FORM_STATUS = 'approved';
+// `moduleFormConfigs[0].id` формы `review_form` в OneEntry-админке = 2
+// (проверено через SDK Forms.getFormByMarker; раньше тут хардкодом
+// стоял 5 — отсюда сабмит молча валился с серверной стороны). Форма
+// привязана к module `catalog`, entityIdentifier `menu` (nested = true)
+// — т.е. отзыв хранится по id продукта, лежащего под страницей `menu`.
+const FORM_MODULE_CONFIG_ID = 2;
+const RATING_MARKER = 'review_rating';
+const TEXT_MARKER = 'review_text';
 
 /**
  * Резолвит отображаемое имя для залогиненного пользователя.
@@ -83,18 +95,44 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
     }
     setLoading(true);
     setError('');
-    const res = await submitReview({
-      rating,
-      text: text.trim(),
-      productId,
-    });
-    setLoading(false);
-    if (res.ok) {
+    // Зовём SDK напрямую с клиента, чтобы user-token из auth-сессии
+    // подхватился. Серверный action этот контекст не несёт — отсюда
+    // раньше был "You must authorize to send data".
+    try {
+      const formData: FormDataType[] = [
+        {
+          marker: RATING_MARKER,
+          type: 'integer',
+          value: rating,
+        } as unknown as FormDataType,
+        {
+          marker: TEXT_MARKER,
+          type: 'text',
+          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
+          value: [{ plainValue: text.trim() }],
+        } as unknown as FormDataType,
+      ];
+      const res = await api.FormData.postFormsData({
+        formIdentifier: FORM_MARKER,
+        formData,
+        formModuleConfigId: FORM_MODULE_CONFIG_ID,
+        moduleEntityIdentifier: String(productId),
+        replayTo: null,
+        status: FORM_STATUS,
+      });
+      setLoading(false);
+      if (isError(res)) {
+        setError(
+          (res as { message?: string }).message || 'Failed to submit review',
+        );
+        return;
+      }
       setSuccess(true);
       setRating(0);
       setText('');
-    } else {
-      setError(res.message);
+    } catch (err) {
+      setLoading(false);
+      setError((err as Error).message || 'Failed to submit review');
     }
   };
 

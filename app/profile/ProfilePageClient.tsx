@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
-import UserForm from '@/components/forms/UserForm';
+import ProfileSections from '@/components/profile/ProfileSections';
 
 const ProfilePageClient = (): JSX.Element => {
   const t = useT();
@@ -23,7 +23,7 @@ const ProfilePageClient = (): JSX.Element => {
     );
   }
 
-  return <UserForm />;
+  return <ProfileSections />;
 };
 
 export default ProfilePageClient;

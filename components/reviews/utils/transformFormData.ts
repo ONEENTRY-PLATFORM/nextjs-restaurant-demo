@@ -48,10 +48,11 @@ export const transformFormField = ({
   }
   if (type === 'text') {
     const plain = String(value ?? '');
+    // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
     return {
       marker,
       type: 'text',
-      value: [{ plainValue: plain, htmlValue: plain }],
+      value: [{ plainValue: plain }],
     } as unknown as FormDataType;
   }
   if (type === 'groupOfImages') {

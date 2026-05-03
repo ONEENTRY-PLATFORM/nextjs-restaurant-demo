@@ -24,9 +24,7 @@ const RegisterGSAP = () => {
       // units: {left: "%", top: "%", rotation: "rad"}
     });
 
-    /**
-     * cardAnimations с scrub
-     */
+    // cardAnimations с scrub
     gsap.registerEffect({
       name: 'cardAnimations',
       effect: (

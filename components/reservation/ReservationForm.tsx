@@ -4,11 +4,11 @@ import type {
   IFormAttribute,
   IFormsEntity,
 } from 'oneentry/dist/forms/formsInterfaces';
+import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
 
-import type { ReservationPayload } from '@/app/actions/reservation';
-import { submitReservation } from '@/app/actions/reservation';
+import { api, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useT } from '@/app/store/providers/DictProvider';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
@@ -168,7 +168,7 @@ const ReservationForm = ({
     setLoading(true);
     setError('');
 
-    const payloadFormData: ReservationPayload['formData'] = attrs
+    const payloadFormData: IOrdersFormData[] = attrs
       .filter((attr) => attr.type !== 'button')
       .map((attr) => {
         if (attr.type === 'spam') {
@@ -176,17 +176,17 @@ const ReservationForm = ({
             marker: attr.marker,
             type: 'spam',
             // OneEntry ожидает объект `{ event: { token, siteKey } }` —
-            // см. useEnterpriseCaptcha. Тип FormDataType не покрывает spam,
-            // отсюда `as unknown` для narrowing'а.
+            // см. useEnterpriseCaptcha.
             value: captcha,
-          } as unknown as ReservationPayload['formData'][number];
+          } as unknown as IOrdersFormData;
         }
         const raw = values[attr.marker] ?? '';
         if (attr.type === 'text') {
+          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
           return {
             marker: attr.marker,
             type: 'text',
-            value: [{ htmlValue: raw, plainValue: raw }],
+            value: [{ plainValue: raw }],
           };
         }
         if (attr.type === 'date') {
@@ -208,13 +208,30 @@ const ReservationForm = ({
         };
       });
 
-    const res = await submitReservation({ formData: payloadFormData });
-    setLoading(false);
-    if (res.ok) {
+    // `booking_order` — форма типа `order`, поэтому идёт через
+    // `Orders.createOrder`. Вызываем напрямую с клиента, чтобы SDK
+    // подхватил user-token из auth-сессии (server action этот контекст
+    // не несёт — отсюда раньше был "You must authorize to send data").
+    try {
+      const res = await api.Orders.createOrder('booking_order', {
+        formIdentifier: 'booking_order',
+        paymentAccountIdentifier: 'cash',
+        formData: payloadFormData,
+        products: [],
+      });
+      setLoading(false);
+      if (isError(res)) {
+        setError(
+          (res as { message?: string }).message ??
+            'Failed to submit reservation',
+        );
+        return;
+      }
       setSuccess(true);
       setValues({});
-    } else {
-      setError(res.message);
+    } catch (err) {
+      setLoading(false);
+      setError((err as Error).message || 'Failed to submit reservation');
     }
   };
 

@@ -5,9 +5,7 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * Универсальный рендерер CMS-страницы — catch-all для произвольных страниц OneEntry,
- * у которых нет специализированного роута (`/shop`, `/cart`, `/profile`, и т.п.).
- *
+ * Универсальный рендерер CMS-страниц у которых нет специализированного роута.
  * @param   {object}                          props        - Свойства страницы.
  * @param   {Promise<{ handle: string }>}     props.params - Параметры маршрута.
  * @returns {Promise<JSX.Element>}                         JSX универсальной страницы.

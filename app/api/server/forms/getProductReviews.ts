@@ -3,7 +3,10 @@ import { unstable_noStore } from 'next/cache';
 import { getApi, getLang, isError } from '@/app/api';
 
 const FORM_MARKER = 'review_form';
-const DEFAULT_MODULE_CONFIG_ID = 5;
+// `moduleFormConfigs[0].id` формы `review_form` в OneEntry = 2 (проверено
+// через SDK Forms.getFormByMarker). Если админ пересоздаст конфиг —
+// первый id из `getFormByMarker` всегда побеждает над этим дефолтом.
+const DEFAULT_MODULE_CONFIG_ID = 2;
 const REVIEWS_LIMIT = 500;
 
 /**

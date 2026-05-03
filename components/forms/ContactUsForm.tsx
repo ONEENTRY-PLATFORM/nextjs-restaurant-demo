@@ -77,10 +77,11 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
           case 'list':
             return { marker, type: 'list', value: [{ title: value, value }] };
           case 'text':
+            // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
             return {
               marker,
               type: 'text',
-              value: [{ htmlValue: value, plainValue: value }],
+              value: [{ plainValue: value }],
             };
           default:
             return { marker, type: 'string', value };

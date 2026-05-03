@@ -10,8 +10,6 @@ const DEFAULT_LANG = 'en_US';
 
 /**
  * Сохраняет refreshToken в localStorage при каждой ротации SDK.
- *
- * Вызывается автоматически слоем авторизации SDK — ручное жонглирование токенами не требуется.
  * @param   {string}        refreshToken - Свежий refreshToken, выданный SDK.
  * @returns {Promise<void>}
  */

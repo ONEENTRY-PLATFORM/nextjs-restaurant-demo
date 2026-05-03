@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-import { api, getLang } from '@/app/api';
+import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
@@ -51,7 +51,7 @@ export const getProducts = async (props: {
             { ...(params?.searchParams ?? {}), preferences: value },
             params?.handle,
           );
-          const data = await api.Products.getProducts(filters, lang, {
+          const data = await getApi().Products.getProducts(filters, lang, {
             offset: 0,
             limit: fetchLimit,
           });
@@ -81,7 +81,7 @@ export const getProducts = async (props: {
   const expandedFilters = getSearchParams(params?.searchParams, params?.handle);
 
   try {
-    const data = await api.Products.getProducts(
+    const data = await getApi().Products.getProducts(
       expandedFilters,
       lang,
       // Sort key/order настраивается в OneEntry admin —

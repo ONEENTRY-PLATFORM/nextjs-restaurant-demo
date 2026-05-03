@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 import { useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { setStep, setStepError } from '@/app/store/reducers/OrderSlice';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
@@ -36,7 +36,12 @@ const StepVerification = (): JSX.Element => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.AuthProvider.checkCode('phone', phone, 'otp', otp);
+      const res = await getApi().AuthProvider.checkCode(
+        'phone',
+        phone,
+        'otp',
+        otp,
+      );
       if (isError(res)) {
         setError(
           (res as { message?: string }).message ?? 'Invalid code. Try again.',
@@ -62,7 +67,7 @@ const StepVerification = (): JSX.Element => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.AuthProvider.generateCode(
+      const res = await getApi().AuthProvider.generateCode(
         'phone',
         phone,
         'generate_otp',

@@ -6,7 +6,7 @@ import type { JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { api, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import ProfileIcon from '@/components/icons/profile';
@@ -109,7 +109,7 @@ const ProfileSections = (): JSX.Element => {
           value: fieldValue(attr.marker),
         }));
       const password = edits['password'] ?? '';
-      await api.Users.updateUser({
+      await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
         formData,
         authData: password ? [{ marker: 'password', value: password }] : [],
@@ -258,9 +258,7 @@ const ProfileSections = (): JSX.Element => {
                 <button
                   type="button"
                   onClick={() =>
-                    setAddresses((prev) =>
-                      prev.filter((a) => a.id !== addr.id),
-                    )
+                    setAddresses((prev) => prev.filter((a) => a.id !== addr.id))
                   }
                   className="hover_btn_transp flex items-center justify-center rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
                 >

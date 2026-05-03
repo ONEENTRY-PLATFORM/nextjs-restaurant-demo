@@ -7,7 +7,7 @@ import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import { api, logInUser } from '@/app/api';
+import { getApi, logInUser } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -45,7 +45,7 @@ const VerificationForm = (): JSX.Element => {
     try {
       if (action !== 'activateUser') {
         // Если action — не активация пользователя, проверяем OTP-код
-        const result = await api.AuthProvider.checkCode(
+        const result = await getApi().AuthProvider.checkCode(
           'email', // Метод верификации через email
           fields.email?.value || '', // Email пользователя из полей формы
           'otp', // Тип кода верификации (One-Time Password)
@@ -54,7 +54,7 @@ const VerificationForm = (): JSX.Element => {
         if (result) setComponent('ResetPasswordForm'); // Переключаемся на Reset Password Form при успехе
       } else {
         // Если action — активация пользователя
-        const result = await api.AuthProvider.activateUser(
+        const result = await getApi().AuthProvider.activateUser(
           'email', // Метод активации через email
           fields.email?.value || '', // Email пользователя из полей формы
           otp, // OTP, введённый пользователем
@@ -110,7 +110,7 @@ const VerificationForm = (): JSX.Element => {
       setLoading(true);
       // Очищаем любые предыдущие сообщения об ошибках
       setError('');
-      await api.AuthProvider.generateCode(
+      await getApi().AuthProvider.generateCode(
         'email', // Метод генерации кода через email
         fields.email?.value || '', // Email пользователя из полей формы
         'generate_code', // Тип action для генерации нового кода

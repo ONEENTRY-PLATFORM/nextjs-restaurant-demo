@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -15,7 +15,7 @@ export const getChildPagesByParentUrl = async (
   pages?: IPagesEntity[];
 }> => {
   try {
-    const data = await api.Pages.getChildPagesByParentUrl(url);
+    const data = await getApi().Pages.getChildPagesByParentUrl(url);
 
     if (typeError(data)) {
       return { isError: true, error: data };

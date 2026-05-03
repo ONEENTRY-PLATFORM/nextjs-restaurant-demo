@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { Key } from 'react';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 
 /**
@@ -68,7 +68,7 @@ export const updateUserState = async ({
     [],
   );
 
-  const res = await api.Users.updateUser({
+  const res = await getApi().Users.updateUser({
     formIdentifier: 'reg',
     formData: [...formData],
     state: {

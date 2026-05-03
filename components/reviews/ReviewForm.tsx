@@ -4,7 +4,7 @@ import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces'
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -112,7 +112,7 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
           value: [{ plainValue: text.trim() }],
         } as unknown as FormDataType,
       ];
-      const res = await api.FormData.postFormsData({
+      const res = await getApi().FormData.postFormsData({
         formIdentifier: FORM_MARKER,
         formData,
         formModuleConfigId: FORM_MODULE_CONFIG_ID,

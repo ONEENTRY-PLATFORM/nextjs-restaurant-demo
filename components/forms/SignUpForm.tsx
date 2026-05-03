@@ -10,7 +10,7 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import { api, logInUser, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, logInUser, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -102,7 +102,7 @@ const SignUpForm = (): JSX.Element => {
 
       try {
         // Пытаемся зарегистрировать пользователя через предоставленный API
-        const res = await api.AuthProvider.signUp('email', data);
+        const res = await getApi().AuthProvider.signUp('email', data);
 
         if (typeError(res)) {
           // Открываем форму Verification для активации пользователя

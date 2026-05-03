@@ -4,7 +4,7 @@
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -65,7 +65,7 @@ const ResetPasswordForm = (): JSX.Element => {
 
     try {
       // Пытаемся сменить пароль пользователя через предоставленный API
-      const result = await api.AuthProvider.changePassword(
+      const result = await getApi().AuthProvider.changePassword(
         'email', // Метод аутентификации (на , 'email', 'google' и т.д.)
         email?.value as string, // Email, введённый пользователем
         'otp', // Тип используемой верификации, здесь OTP (One-Time Password)

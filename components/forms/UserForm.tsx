@@ -9,7 +9,7 @@ import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { api, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -67,7 +67,7 @@ const UserForm = (): JSX.Element => {
         setLoading(true);
 
         if (user?.formIdentifier) {
-          await api.Users.updateUser({
+          await getApi().Users.updateUser({
             formIdentifier: user.formIdentifier,
             formData,
             authData: [

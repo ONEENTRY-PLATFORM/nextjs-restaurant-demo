@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { oauthLogIn } from '@/app/api';
+import { oauthLogIn, syncTokens } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
 /**
@@ -56,6 +56,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
         return;
       }
       localStorage.setItem('refresh-token', res.data.refreshToken);
+      syncTokens(res.data.accessToken, res.data.refreshToken);
       authenticate();
       toast('You signed in!');
       finish(true);

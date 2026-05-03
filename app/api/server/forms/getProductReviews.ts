@@ -100,17 +100,16 @@ export const getProductReviews = async (
   unstable_noStore();
 
   try {
-    const api = getApi();
     const lang = getLang();
 
-    const form = await api.Forms.getFormByMarker(FORM_MARKER);
+    const form = await getApi().Forms.getFormByMarker(FORM_MARKER);
     const formMeta = form as unknown as {
       moduleFormConfigs?: Array<{ id?: number }>;
     };
     const formModuleConfigId =
       formMeta?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
-    const data = await api.FormData.getFormsDataByMarker(
+    const data = await getApi().FormData.getFormsDataByMarker(
       FORM_MARKER,
       formModuleConfigId,
       {

@@ -1,7 +1,7 @@
 import type { IAttributeSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -18,7 +18,7 @@ export const getAttributesByMarker = async ({
 }> => {
   try {
     const data =
-      await api.AttributesSets.getAttributesByMarker(attributeMarker);
+      await getApi().AttributesSets.getAttributesByMarker(attributeMarker);
 
     if (typeError(data)) {
       return { isError: true, error: data as IError };

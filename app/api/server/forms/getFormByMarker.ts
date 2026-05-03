@@ -1,6 +1,6 @@
 import type { IError } from 'oneentry/dist/base/utils';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -15,7 +15,7 @@ export const getFormByMarker = async (
   form?: any;
 }> => {
   try {
-    const data = await api.Forms.getFormByMarker(marker);
+    const data = await getApi().Forms.getFormByMarker(marker);
 
     if (typeError(data)) {
       return { isError: true, error: data };

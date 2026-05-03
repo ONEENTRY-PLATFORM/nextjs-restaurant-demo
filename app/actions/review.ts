@@ -56,8 +56,7 @@ export async function submitReview(
   payload: ReviewPayload,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
-    const api = getApi();
-    const form = await api.Forms.getFormByMarker(FORM_MARKER);
+    const form = await getApi().Forms.getFormByMarker(FORM_MARKER);
     if (isError(form)) {
       return {
         ok: false,
@@ -99,7 +98,7 @@ export async function submitReview(
     const formModuleConfigId =
       formMeta.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
-    const res = await api.FormData.postFormsData({
+    const res = await getApi().FormData.postFormsData({
       formIdentifier: formMeta.identifier ?? FORM_MARKER,
       formData,
       formModuleConfigId,
@@ -125,7 +124,7 @@ export async function submitReview(
  * Заглушка Server Action для строки отзыва о курьере/доставке в
  * {@link OrderReviewsPanel}. Когда форма `delivery_review_form` появится в
  * OneEntry (см. MISMATCH-LOG.md §C.1.3), это должно повторять
- * {@link submitReview} и отправлять через `api.FormData.postFormsData` с
+ * {@link submitReview} и отправлять через `getApi().FormData.postFormsData` с
  * `moduleEntityIdentifier=String(orderId)`. До этого просто резолвит
  * `ok`, чтобы UI-флоу можно было пройти end-to-end.
  * @param   {{ rating: number; text: string; orderId: string | number }} payload - Payload отзыва.

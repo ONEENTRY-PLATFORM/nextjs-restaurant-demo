@@ -5,7 +5,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
 
-import { api, useGetProductsByIdsQuery } from '@/app/api';
+import { getApi, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
@@ -118,7 +118,7 @@ const CartPage = ({
 
       // Если пользователь авторизован, устанавливаем WebSocket-соединение
       if (isAuth) {
-        const ws = api.WS.connect(); // Подключаемся к WebSocket
+        const ws = getApi().WS.connect(); // Подключаемся к WebSocket
         if (ws) {
           // Слушаем события 'notification' из WebSocket
           ws.on('notification', async (res) => {

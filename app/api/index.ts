@@ -6,6 +6,7 @@ export {
   hasActiveSession,
   isError,
   reDefine,
+  syncTokens,
 } from './api/api';
 export {
   RTKApi,

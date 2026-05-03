@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -15,7 +15,7 @@ export const getMenuByMarker = async (
   menu?: IMenusEntity;
 }> => {
   try {
-    const data = await api.Menus.getMenusByMarker(marker);
+    const data = await getApi().Menus.getMenusByMarker(marker);
 
     if (typeError(data)) {
       return { isError: true, error: data };

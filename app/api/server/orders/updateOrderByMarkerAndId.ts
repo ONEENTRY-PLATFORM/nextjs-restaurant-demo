@@ -4,7 +4,7 @@ import type {
   IOrderData,
 } from 'oneentry/dist/orders/ordersInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
@@ -26,7 +26,7 @@ export const updateOrderByMarkerAndId = async ({
   order?: IBaseOrdersEntity;
 }> => {
   try {
-    const orderData = await api.Orders.updateOrderByMarkerAndId(
+    const orderData = await getApi().Orders.updateOrderByMarkerAndId(
       marker,
       id,
       data,

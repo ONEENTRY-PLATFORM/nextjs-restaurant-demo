@@ -71,14 +71,40 @@ export async function reDefine(
 /**
  * Содержит ли текущий экземпляр SDK активный accessToken.
  *
- * Должен проверяться перед {@link reDefine}, чтобы не перезаписать живую сессию.
+ * SDK хранит токены в state-модуле, который доступен через любой sub-API
+ * (например, `api.AuthProvider.state.accessToken`). На верхнем уровне
+ * объекта `api` поля `state`/`config` НЕТ — раньше тут было
+ * `api.config.auth.accessToken`, и проверка молча всегда возвращала false,
+ * из-за чего `reDefine` пере-создавал SDK на каждом маунте и сбрасывал
+ * только что выданный access-token.
  * @returns {boolean}
  */
 export const hasActiveSession = (): boolean => {
-  const cfg = (
-    api as unknown as { config?: { auth?: { accessToken?: string } } }
-  ).config;
-  return Boolean(cfg?.auth?.accessToken);
+  const provider = api.AuthProvider as unknown as {
+    state?: { accessToken?: string };
+  };
+  return Boolean(provider?.state?.accessToken);
+};
+
+/**
+ * Кладёт оба токена напрямую в state текущего SDK-инстанса. Канонический
+ * паттерн `login()` по правилам MCP `tokens`: ответ `AuthProvider.auth()`
+ * содержит `accessToken`+`refreshToken`, и без `syncTokens` после этого
+ * первый же auth-protected запрос пойдёт без `Authorization`, получит 400
+ * (`postFormsData`, `createOrder`) и упадёт — SDK ретраит только 401.
+ *
+ * Использовать вместо `reDefine` в момент логина / OAuth-callback. `reDefine`
+ * оставляем только для восстановления сессии из localStorage на mount.
+ * @param {string} accessToken  - JWT доступа из `auth()`.
+ * @param {string} refreshToken - Refresh-токен из `auth()`.
+ */
+export const syncTokens = (accessToken: string, refreshToken: string): void => {
+  const provider = api.AuthProvider as unknown as {
+    setAccessToken: (t: string) => void;
+    setRefreshToken: (t: string) => void;
+  };
+  provider.setAccessToken(accessToken);
+  provider.setRefreshToken(refreshToken);
 };
 
 /**

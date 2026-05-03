@@ -31,8 +31,7 @@ export async function submitReservation(
   payload: ReservationPayload,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
-    const api = getApi();
-    const created = await api.Orders.createOrder(ORDER_STORAGE_MARKER, {
+    const created = await getApi().Orders.createOrder(ORDER_STORAGE_MARKER, {
       formIdentifier: ORDER_STORAGE_MARKER,
       paymentAccountIdentifier: 'cash',
       // FormDataType из FormsData SDK структурно совместим с IOrdersFormData

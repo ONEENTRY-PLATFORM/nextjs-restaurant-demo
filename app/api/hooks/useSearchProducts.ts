@@ -3,7 +3,7 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { useEffect, useState } from 'react';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 
 /**
  * Поиск продуктов через Products API.
@@ -27,7 +27,7 @@ export const useSearchProducts = ({ name }: { name: string }) => {
     setProducts([]);
     let cancelled = false;
     (async () => {
-      const result = await api.Products.searchProduct(name);
+      const result = await getApi().Products.searchProduct(name);
       if (cancelled) {
         return;
       }

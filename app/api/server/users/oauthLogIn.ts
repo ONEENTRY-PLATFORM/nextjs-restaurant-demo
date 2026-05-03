@@ -5,7 +5,7 @@ import type {
   IOauthData,
 } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 
 type OauthLoginProps = {
   marker: string;
@@ -43,7 +43,7 @@ export const oauthLogIn = async ({
       redirect_uri: redirectUri,
     };
 
-    const result = await api.AuthProvider.oauth(marker, body);
+    const result = await getApi().AuthProvider.oauth(marker, body);
     if (!isError(result)) {
       const auth = result as IAuthEntity;
       if (auth.accessToken && auth.refreshToken) {

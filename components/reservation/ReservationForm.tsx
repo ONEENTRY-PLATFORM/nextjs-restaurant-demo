@@ -8,7 +8,7 @@ import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useT } from '@/app/store/providers/DictProvider';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
@@ -213,7 +213,7 @@ const ReservationForm = ({
     // подхватил user-token из auth-сессии (server action этот контекст
     // не несёт — отсюда раньше был "You must authorize to send data").
     try {
-      const res = await api.Orders.createOrder('booking_order', {
+      const res = await getApi().Orders.createOrder('booking_order', {
         formIdentifier: 'booking_order',
         paymentAccountIdentifier: 'cash',
         formData: payloadFormData,

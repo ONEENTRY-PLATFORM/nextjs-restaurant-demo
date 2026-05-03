@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { LanguageEnum } from '@/app/types/enum';
 import { handleApiError } from '@/app/utils/errorHandler';
 
@@ -16,7 +16,7 @@ export async function GET(): Promise<NextResponse> {
     /** Тестируем простым API-вызовом — замени 'home_web' на известный URL страницы в твоей системе */
     const langCode = LanguageEnum.en;
     /** Получаем данные главной страницы, чтобы проверить связь с API */
-    const data = await api.Pages.getPageByUrl('home_web', langCode);
+    const data = await getApi().Pages.getPageByUrl('home_web', langCode);
 
     /** Записываем финальное время для расчёта времени ответа */
     const endTime = Date.now();

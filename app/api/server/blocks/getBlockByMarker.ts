@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -15,7 +15,7 @@ export const getBlockByMarker = async (
   block?: IBlockEntity;
 }> => {
   try {
-    const data = await api.Blocks.getBlockByMarker(marker);
+    const data = await getApi().Blocks.getBlockByMarker(marker);
 
     if (typeError(data)) {
       return { isError: true, error: data };

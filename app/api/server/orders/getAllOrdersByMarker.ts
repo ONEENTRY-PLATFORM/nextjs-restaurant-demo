@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
 
-import { api, getLang } from '@/app/api';
+import { getApi, getLang } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
@@ -25,7 +25,7 @@ export const getAllOrdersByMarker = async ({
   total: number;
 }> => {
   try {
-    const data = await api.Orders.getAllOrdersByMarker(
+    const data = await getApi().Orders.getAllOrdersByMarker(
       marker,
       langCode || getLang(),
       offset,

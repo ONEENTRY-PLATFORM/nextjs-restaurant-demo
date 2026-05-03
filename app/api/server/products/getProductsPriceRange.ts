@@ -1,4 +1,4 @@
-import { api, getLang } from '@/app/api';
+import { getApi, getLang } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 export type PriceRange = {
@@ -21,7 +21,7 @@ export const getProductsPriceRange = async (
   langCode?: string,
 ): Promise<PriceRange> => {
   try {
-    const data = await api.Products.getProductsPriceByPageUrl(
+    const data = await getApi().Products.getProductsPriceByPageUrl(
       pageUrl,
       langCode || getLang(),
     );

@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -15,7 +15,7 @@ export const getProductById = async (
   product?: IProductsEntity;
 }> => {
   try {
-    const data = await api.Products.getProductById(id);
+    const data = await getApi().Products.getProductById(id);
 
     if (typeError(data)) {
       return { isError: true, error: data };

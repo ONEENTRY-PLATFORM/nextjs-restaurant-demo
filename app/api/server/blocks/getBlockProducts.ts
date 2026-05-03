@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -45,7 +45,7 @@ export const getBlockProducts = async (
   marker: string,
 ): Promise<BlockProducts> => {
   try {
-    const data = await api.Blocks.getBlockByMarker(marker);
+    const data = await getApi().Blocks.getBlockByMarker(marker);
     if (typeError(data)) {
       return { isError: true, error: data, title: '', products: [] };
     }

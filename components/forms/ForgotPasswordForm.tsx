@@ -6,7 +6,7 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { api, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -34,7 +34,7 @@ export const ForgotPasswordForm = (): JSX.Element => {
     e.preventDefault();
     try {
       // Генерируем код верификации через API
-      await api.AuthProvider.generateCode(
+      await getApi().AuthProvider.generateCode(
         'email',
         fields.email?.value || '',
         'generate_otp',

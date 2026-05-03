@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-import { api, getLang } from '@/app/api';
+import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
@@ -49,7 +49,7 @@ export const getProductsByPageUrl = async (props: {
             ...(params.searchParams ?? {}),
             preferences: value,
           });
-          const data = await api.Products.getProductsByPageUrl(
+          const data = await getApi().Products.getProductsByPageUrl(
             params.handle,
             filters,
             lang,
@@ -82,7 +82,7 @@ export const getProductsByPageUrl = async (props: {
   const expandedFilters = getSearchParams(params.searchParams);
 
   try {
-    const data = await api.Products.getProductsByPageUrl(
+    const data = await getApi().Products.getProductsByPageUrl(
       params.handle,
       expandedFilters,
       lang,

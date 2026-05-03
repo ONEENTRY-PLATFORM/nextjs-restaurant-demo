@@ -3,7 +3,7 @@
 import type { IOrderPreviewResponse } from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import {
@@ -71,7 +71,7 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
     setError('');
 
     try {
-      const preview = await api.Orders.previewOrder({
+      const preview = await getApi().Orders.previewOrder({
         products,
         couponCode: trimmed,
       });

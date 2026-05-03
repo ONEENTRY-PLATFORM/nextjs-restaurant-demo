@@ -2,7 +2,7 @@
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 
-import { api, getLang } from '@/app/api';
+import { getApi, getLang } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
@@ -26,7 +26,7 @@ export const getAdminsInfo = async ({
   admins?: IAdminEntity[];
 }> => {
   try {
-    const data = await api.Admins.getAdminsInfo(
+    const data = await getApi().Admins.getAdminsInfo(
       body,
       langCode || getLang(),
       offset,

@@ -3,7 +3,7 @@
 import type { IBodyPostFormData } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import { useState } from 'react';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 
 /**
  * Отправка данных формы через FormData API.
@@ -14,7 +14,7 @@ export const useSetForm = () => {
     setLoading(true);
     const result = async () => {
       try {
-        const res = await api.FormData.postFormsData(data);
+        const res = await getApi().FormData.postFormsData(data);
         return res;
       } catch (e: unknown) {
         return e;

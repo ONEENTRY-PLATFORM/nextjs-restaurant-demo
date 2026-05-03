@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IPositionBlock } from 'oneentry/dist/pages/pagesInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
@@ -19,7 +19,7 @@ export const getBlocksByPageUrl = async ({
   blocks?: IPositionBlock[];
 }> => {
   try {
-    const data = await api.Pages.getBlocksByPageUrl(pageUrl);
+    const data = await getApi().Pages.getBlocksByPageUrl(pageUrl);
 
     if (typeError(data)) {
       return { isError: true, error: data };

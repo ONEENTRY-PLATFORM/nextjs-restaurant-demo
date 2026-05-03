@@ -4,7 +4,7 @@
 import type { IOrderProductData } from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
-import { api, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   removeAllProducts,
@@ -110,7 +110,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         return { ok: false, error: message };
       }
 
-      const created = await api.Orders.createOrder('delivery_order', {
+      const created = await getApi().Orders.createOrder('delivery_order', {
         formData: orderFormData,
         products: orderProducts,
         paymentAccountIdentifier,
@@ -139,7 +139,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
       let paymentUrl: string | undefined;
       if (createdPayment !== 'cash') {
         try {
-          const session = await api.Payments.createSession(id, 'session');
+          const session = await getApi().Payments.createSession(id, 'session');
           if (!isError(session)) {
             paymentUrl = (session as { paymentUrl?: string }).paymentUrl;
           }

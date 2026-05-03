@@ -4,7 +4,7 @@ import type {
   IBlocksResponse,
 } from 'oneentry/dist/blocks/blocksInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
@@ -22,7 +22,7 @@ export const getBlocks = async ({
   blocks?: IBlocksResponse;
 }> => {
   try {
-    const data = await api.Blocks.getBlocks(type);
+    const data = await getApi().Blocks.getBlocks(type);
 
     if (typeError(data)) {
       return { isError: true, error: data };

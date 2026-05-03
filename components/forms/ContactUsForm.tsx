@@ -6,7 +6,7 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
 
-import { api, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 
@@ -91,7 +91,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
 
     try {
       setLoading(true);
-      await api.FormData.postFormsData({
+      await getApi().FormData.postFormsData({
         formIdentifier: 'contact_us',
         formData: transformedFormData,
         formModuleConfigId: 0,

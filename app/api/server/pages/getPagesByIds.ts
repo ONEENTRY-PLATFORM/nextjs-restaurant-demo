@@ -1,7 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 
-import { api } from '@/app/api';
+import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
@@ -17,7 +17,7 @@ export const getPagesByIds = async (
   try {
     const data = await Promise.all(
       ids.map(async (id: number) => {
-        const page = await api.Pages.getPageById(id);
+        const page = await getApi().Pages.getPageById(id);
         return page;
       }),
     ).then((results) => results);

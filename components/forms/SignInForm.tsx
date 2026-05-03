@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +8,7 @@ import { toast } from 'react-toastify';
 import { logInUser, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
@@ -26,27 +26,19 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
  * @param {boolean} props.isActive - флаг, указывающий на активность формы.
  */
 const SignInForm = ({
-  dict,
   className,
   isActive,
 }: {
-  dict: IAttributeValues;
   className: string;
   isActive: boolean;
 }): JSX.Element => {
+  const t = useT();
   const { authenticate } = useContext(AuthContext);
   const { setOpen } = useContext(OpenDrawerContext);
 
   const [tab, setTab] = useState('email');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const {
-    reset_password_text,
-    forgot_password_text,
-    create_account_text,
-    sign_in_text,
-  } = dict;
 
   // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
@@ -142,7 +134,7 @@ const SignInForm = ({
 
         <FormSubmitButton
           index={5}
-          title={(sign_in_text?.value as string) ?? ''}
+          title={t('sign_in_text', '')}
           isLoading={loading}
         />
 
@@ -151,16 +143,16 @@ const SignInForm = ({
           className="mx-auto mb-10 flex justify-between gap-5"
         >
           <div className="w-auto basis-auto text-lg text-paper/60 transition-colors duration-300">
-            {(forgot_password_text?.value as string) || 'Forgot Password?'}
+            {t('forgot_password_text', 'Forgot Password?')}
           </div>
           <ResetPasswordButton
-            title={(reset_password_text?.value as string) || 'Reset Password'}
+            title={t('reset_password_text', 'Reset Password')}
           />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
           <CreateAccountButton
-            title={(create_account_text?.value as string) || 'Create account'}
+            title={t('create_account_text', 'Create account')}
           />
         </FormFieldAnimations>
 

@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -9,7 +8,6 @@ type HomeBlockSectionProps = {
   products: IProductsEntity[];
   countElementsPerRow?: number | undefined;
   className?: string | undefined;
-  dict?: IAttributeValues | undefined;
 };
 
 /**
@@ -26,7 +24,6 @@ const HomeBlockSection = ({
   title,
   products,
   className,
-  dict = {} as IAttributeValues,
 }: HomeBlockSectionProps): JSX.Element | null => {
   const visible = products.filter((p) => p.isVisible !== false);
   if (visible.length === 0) return null;
@@ -44,7 +41,6 @@ const HomeBlockSection = ({
             product={product}
             index={i}
             productsLimit={visible.length}
-            dict={dict}
           />
         ))}
       </div>

@@ -1,6 +1,5 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type {
   IFormAttribute,
   IFormsEntity,
@@ -11,9 +10,9 @@ import { useMemo, useState } from 'react';
 import type { ReservationPayload } from '@/app/actions/reservation';
 import { submitReservation } from '@/app/actions/reservation';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
+import { useT } from '@/app/store/providers/DictProvider';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
-import { dictText } from '@/components/utils';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
@@ -99,7 +98,6 @@ const resolveInputType = (type: string, marker: string): string => {
 
 type ReservationFormProps = {
   form: IFormsEntity;
-  dict?: IAttributeValues | undefined;
   restaurants?: RestaurantOption[] | undefined;
   // Предзаполнение полей по маркеру. Используется в попап-режиме —
   // при открытии BOOK A TABLE со страницы конкретного ресторана
@@ -122,10 +120,10 @@ type ReservationFormProps = {
  */
 const ReservationForm = ({
   form,
-  dict,
   restaurants = [],
   initialValues,
 }: ReservationFormProps): JSX.Element => {
+  const t = useT();
   const [values, setValues] = useState<Record<string, FieldValue>>(
     initialValues ?? {},
   );
@@ -224,11 +222,10 @@ const ReservationForm = ({
     return (
       <div className="mx-auto max-w-107.5 rounded-xl bg-ink/60 p-6 text-center">
         <h3 className="mb-2 font-bold text-[20px] uppercase text-brand">
-          {dictText(dict, 'info_text', 'Table reserved!')}
+          {t('info_text', 'Table reserved!')}
         </h3>
         <p className="text-paper/90">
-          {dictText(
-            dict,
+          {t(
             'reservation_confirmed',
             'We will contact you shortly to confirm.',
           )}
@@ -295,7 +292,7 @@ const ReservationForm = ({
             className="font-normal text-[16px] text-paper"
           >
             {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
-              dictText(dict, 'preferences_text', 'Preferences')}
+              t('preferences_text', 'Preferences')}
           </label>
           <textarea
             id={TEXT_MARKER}
@@ -338,7 +335,7 @@ const ReservationForm = ({
           disabled={loading}
           className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
         >
-          {loading ? '...' : dictText(dict, 'submit_text', 'Book')}
+          {loading ? '...' : t('submit_text', 'Book')}
         </button>
       </div>
 
@@ -356,7 +353,7 @@ const ReservationForm = ({
           onClose={() => setPicker(null)}
           // Для date-пикера back == close: предыдущего шага нет.
           onBack={() => setPicker(null)}
-          applyText={dict?.apply_text?.value as string | undefined}
+          applyText={t('apply_text', '') || undefined}
         />
       ) : null}
       {picker === 'time' ? (
@@ -377,8 +374,8 @@ const ReservationForm = ({
           // Back возвращает к date-пикеру, как в reservation-flow:
           // user сначала выбирает дату, потом время.
           onBack={() => setPicker('date')}
-          applyText={dict?.apply_text?.value as string | undefined}
-          noTimeText={dict?.no_time_text?.value as string | undefined}
+          applyText={t('apply_text', '') || undefined}
+          noTimeText={t('no_time_text', '') || undefined}
         />
       ) : null}
     </form>

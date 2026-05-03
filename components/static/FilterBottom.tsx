@@ -1,16 +1,15 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import { type JSX, useContext, useEffect, useRef, useState } from 'react';
 
 import type { PriceRange } from '@/app/api';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import CloseXIcon from '@/components/icons/close-x';
 import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-import { dictText } from '@/components/utils';
 
 // Cooking-time лейбл → значение URL-параметра `cooking_time_max`
 // (читается в `getSearchParams.ts`, превращается в фильтр `cooking_time lth N`).
@@ -59,14 +58,13 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
  * @returns {JSX.Element} JSX панели фильтра.
  */
 const FilterBottom = ({
-  dict,
   preferences: preferenceOptions = [],
   priceRange,
 }: {
-  dict?: IAttributeValues;
   preferences?: PreferenceOption[];
   priceRange?: PriceRange;
 }): JSX.Element => {
+  const t = useT();
   const { open, component, setOpen, setComponent } =
     useContext(OpenDrawerContext);
   const router = useRouter();
@@ -77,17 +75,9 @@ const FilterBottom = ({
   const [price, setPrice] = useState<string[]>([]);
   const priceChips = buildPriceChips(priceRange);
 
-  const waitingTitle = dictText(
-    dict,
-    'order_waiting_time',
-    'Order waiting time',
-  );
-  const preferencesTitle = dictText(dict, 'preferences_text', 'Preferences');
-  const clearAllLabel = dictText(
-    dict,
-    'clear_all_filters_text',
-    'Clear all filters',
-  );
+  const waitingTitle = t('order_waiting_time', 'Order waiting time');
+  const preferencesTitle = t('preferences_text', 'Preferences');
+  const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
 
   const isVisible = open && component === 'FilterForm';
 

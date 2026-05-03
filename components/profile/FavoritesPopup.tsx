@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useRef } from 'react';
@@ -10,6 +9,7 @@ import { toast } from 'react-toastify';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
   addProductToCart,
@@ -28,7 +28,6 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-import { dictText } from '@/components/utils';
 
 import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
@@ -39,7 +38,8 @@ import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
  * `component === 'FavoritesPopup'`).
  * @returns {JSX.Element} JSX попапа избранного.
  */
-const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
+const FavoritesPopup = (): JSX.Element => {
+  const t = useT();
   const { open, component, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
@@ -55,7 +55,7 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не перебивался `yPercent`-tween-ом.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const products = (data ?? []) as IProductsEntity[];
-  const addToCartLabel = dictText(dict, 'add_to_cart', 'Add to cart');
+  const addToCartLabel = t('add_to_cart', 'Add to cart');
 
   return (
     <FavoritesPopupAnimations>

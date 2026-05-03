@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 
 import { getBlockProducts } from '@/app/api';
@@ -36,7 +35,6 @@ const HomeBlockServer = async ({
       products={data.products}
       countElementsPerRow={data.countElementsPerRow}
       className={className ?? 'section_layout'}
-      dict={{} as IAttributeValues}
     />
   );
 };

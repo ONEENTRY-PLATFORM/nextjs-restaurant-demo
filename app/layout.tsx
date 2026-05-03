@@ -4,6 +4,7 @@ import { Lato } from 'next/font/google';
 
 import { getDictionary } from '@/app/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
+import { DictProvider } from '@/app/store/providers/DictProvider';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StoreProvider from '@/app/store/providers/StoreProvider';
@@ -75,23 +76,25 @@ export default async function RootLayout({
       >
         <RegisterGSAP />
         <StoreProvider>
-          <AuthProvider>
-            <OpenDrawerProvider>
-              <Header />
-              <TransitionProvider>
-                <main className="flex flex-col grow overflow-hidden w-full pb-10">
-                  {children}
-                </main>
-              </TransitionProvider>
-              <BottomMenu />
-              <CartPopup />
-              <FavoritesPopup dict={dict} />
-              <ProfilePopup dict={dict} />
-              <BookingsPopup />
-              <ReservationPopup dict={dict} />
-              <Modal dict={dict} />
-            </OpenDrawerProvider>
-          </AuthProvider>
+          <DictProvider value={dict}>
+            <AuthProvider>
+              <OpenDrawerProvider>
+                <Header />
+                <TransitionProvider>
+                  <main className="flex flex-col grow overflow-hidden w-full pb-10">
+                    {children}
+                  </main>
+                </TransitionProvider>
+                <BottomMenu />
+                <CartPopup />
+                <FavoritesPopup />
+                <ProfilePopup />
+                <BookingsPopup />
+                <ReservationPopup />
+                <Modal />
+              </OpenDrawerProvider>
+            </AuthProvider>
+          </DictProvider>
         </StoreProvider>
         <ToastContainer position="bottom-right" autoClose={2000} />
       </body>

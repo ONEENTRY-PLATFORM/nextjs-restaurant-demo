@@ -30,8 +30,8 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   ]);
   /** Деструктурируем handle из параметров */
   const { handle } = params;
-  /** Получаем словарь из API и проставляем server provider. */
-  const [dict] = ServerProvider('dict', await getDictionary());
+  /** Прогреваем кеш словаря в server provider. */
+  ServerProvider('dict', await getDictionary());
 
   /** Загружаем данные страницы категории из CMS */
   const { page } = await getPageByUrl(handle);
@@ -89,7 +89,6 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
               searchParams={searchParams ?? {}}
               productsLimit={productsLimit}
               params={params}
-              dict={dict}
               isCategory={true}
             />
           </Suspense>

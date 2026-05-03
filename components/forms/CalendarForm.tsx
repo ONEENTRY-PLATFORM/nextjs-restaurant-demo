@@ -1,10 +1,10 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
   selectDeliveryData,
@@ -13,7 +13,6 @@ import {
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
-import { dictText } from '@/components/utils';
 
 type PickerMode = 'date' | 'time' | null;
 
@@ -25,21 +24,19 @@ type PickerMode = 'date' | 'time' | null;
  * Сохраняет выбор в `cartReducer.deliveryData` и закрывает
  * модалку — существующий шаг wizard `time` зарезервирован под полный
  * флоу checkout; это инлайн-пикер для экрана корзины.
- * @param   {object}           props          - Пропсы формы.
- * @param   {IAttributeValues} props.dict     - Словарь статического контента.
- * @param   {string}           props.className - Класс-обёртка.
- * @param   {boolean}          props.isActive - Открыта ли модалка.
- * @returns {JSX.Element}                     JSX формы.
+ * @param   {object}  props           - Пропсы формы.
+ * @param   {string}  props.className - Класс-обёртка.
+ * @param   {boolean} props.isActive  - Открыта ли модалка.
+ * @returns {JSX.Element}             JSX формы.
  */
 const CalendarForm = ({
-  dict,
   className,
   isActive,
 }: {
-  dict: IAttributeValues;
   className: string;
   isActive: boolean;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { setTransition } = useContext(OpenDrawerContext);
   const delivery = useAppSelector(selectDeliveryData);
@@ -82,9 +79,7 @@ const CalendarForm = ({
           onClick={() => setPicker('time')}
           className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
         >
-          <span className="cart_label">
-            {dictText(dict, 'time_text', 'Time')}
-          </span>
+          <span className="cart_label">{t('time_text', 'Time')}</span>
           <span className="text-lg text-paper">{time || 'Select time'}</span>
         </button>
 
@@ -94,7 +89,7 @@ const CalendarForm = ({
           disabled={!time || !date}
           className="cart_btn disabled:opacity-60"
         >
-          {dictText(dict, 'apply_text', 'Apply')}
+          {t('apply_text', 'Apply')}
         </button>
 
         {picker === 'date' ? (

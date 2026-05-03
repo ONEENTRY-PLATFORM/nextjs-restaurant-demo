@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -11,13 +10,7 @@ import ProductImage from './ProductImage';
 /**
  * Компонент карточки группы продуктов
  */
-const GroupCard = ({
-  product,
-  dict,
-}: {
-  product: IProductsEntity;
-  dict: IAttributeValues;
-}): JSX.Element => {
+const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const attributeValues = product.attributeValues;
   const title = product.localizeInfos?.title;
   const images = attributeValues.more_pic?.value as
@@ -35,7 +28,7 @@ const GroupCard = ({
             currentPrice={(attributeValues?.sale?.value as number) ?? 0}
             originalPrice={product.price as number}
           />
-          <ApplyButton product={product} dict={dict} />
+          <ApplyButton product={product} />
         </div>
 
         <div className="flex w-[63%] flex-row justify-between">

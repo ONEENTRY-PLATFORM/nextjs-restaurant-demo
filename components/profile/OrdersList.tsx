@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type {
   IOrderByMarkerEntity,
   IOrderProducts,
@@ -14,10 +13,11 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
 import ReviewForm from '@/components/reviews/ReviewForm';
-import { dictText, UsePrice } from '@/components/utils';
+import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set([
   'delivered',
@@ -102,15 +102,14 @@ const OrderCard = ({
   onToggle,
   isHistory,
   productsById,
-  dict,
 }: {
   order: IOrderByMarkerEntity;
   expanded: boolean;
   onToggle: () => void;
   isHistory: boolean;
   productsById: Map<number, IProductsEntity>;
-  dict?: IAttributeValues | undefined;
 }): JSX.Element => {
+  const t = useT();
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
   return (
@@ -142,11 +141,7 @@ const OrderCard = ({
               type="button"
               className="mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
-              {dictText(
-                dict,
-                'contact_courier_button',
-                'Contact with the courier',
-              )}
+              {t('contact_courier_button', 'Contact with the courier')}
             </button>
           )}
           <div className="mt-5 flex flex-col">
@@ -156,22 +151,21 @@ const OrderCard = ({
                 product={p}
                 first={idx === 0}
                 fullProduct={productsById.get(p.id)}
-                dict={dict}
               />
             ))}
             <div className="mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
-                  <p>{dictText(dict, 'subtotal_text', 'Subtotal:')}</p>
+                  <p>{t('subtotal_text', 'Subtotal:')}</p>
                   <p>{UsePrice({ amount: subtotal })}</p>
                 </div>
                 <div className="flex gap-1.25 text-brand">
-                  <p>{dictText(dict, 'delivery_text', 'Delivery:')}</p>
+                  <p>{t('delivery_text', 'Delivery:')}</p>
                   <p>{UsePrice({ amount: delivery })}</p>
                 </div>
               </div>
               <div className="flex gap-3.75 text-xl font-bold text-white">
-                <p>{dictText(dict, 'total_amount_text', 'Total Amount:')}</p>
+                <p>{t('total_amount_text', 'Total Amount:')}</p>
                 <p>{UsePrice({ amount: total })}</p>
               </div>
             </div>
@@ -180,7 +174,7 @@ const OrderCard = ({
                 type="button"
                 className="mt-5 block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
               >
-                {dictText(dict, 'repeat_order_button', 'Repeat order')}
+                {t('repeat_order_button', 'Repeat order')}
               </button>
             )}
           </div>
@@ -202,13 +196,12 @@ const OrderLineItem = ({
   product,
   first,
   fullProduct,
-  dict,
 }: {
   product: IOrderProducts;
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
-  dict?: IAttributeValues | undefined;
 }): JSX.Element => {
+  const t = useT();
   const [reviewOpen, setReviewOpen] = useState(false);
   // `previewImage` в snapshot заказа часто null (зависит от настроек CMS на момент
   // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
@@ -259,8 +252,8 @@ const OrderLineItem = ({
             className="mt-1.25 self-start text-sm text-brand underline underline-offset-2 hover:no-underline"
           >
             {reviewOpen
-              ? dictText(dict, 'cancel_review_button', 'Cancel review')
-              : dictText(dict, 'leave_review_button', 'Leave a review')}
+              ? t('cancel_review_button', 'Cancel review')
+              : t('leave_review_button', 'Leave a review')}
           </button>
         </div>
         <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-white">
@@ -287,11 +280,10 @@ const OrderLineItem = ({
  */
 const OrdersList = ({
   promoBanners = [],
-  dict,
 }: {
   promoBanners?: BlogBanner[];
-  dict?: IAttributeValues;
 } = {}): JSX.Element => {
+  const t = useT();
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
@@ -381,19 +373,18 @@ const OrdersList = ({
   if (authLoading || loading) {
     leftColumn = (
       <div className="text-paper/80">
-        {dictText(dict, 'loading_orders_text', 'Loading orders...')}
+        {t('loading_orders_text', 'Loading orders...')}
       </div>
     );
   } else if (!isAuth) {
     // `orders_signin_prompt` хранит фразу целиком; чтобы оставить inline-кнопку
     // «sign in» внутри предложения, ищем её в шаблоне (case-insensitive). Если
     // шаблон не содержит подстроки — показываем cta-кнопку отдельно после текста.
-    const prompt = dictText(
-      dict,
+    const prompt = t(
       'orders_signin_prompt',
       'Please sign in to view your orders.',
     );
-    const signInLabel = dictText(dict, 'sign_in_text', 'sign in');
+    const signInLabel = t('sign_in_text', 'sign in');
     const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
     const before = idx >= 0 ? prompt.slice(0, idx) : prompt + ' ';
     const after = idx >= 0 ? prompt.slice(idx + signInLabel.length) : '';
@@ -416,19 +407,18 @@ const OrdersList = ({
   } else if (error) {
     leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-paper/90">
-        {dictText(dict, 'orders_load_error_prefix', 'Unable to load orders:')}{' '}
-        {error}
+        {t('orders_load_error_prefix', 'Unable to load orders:')} {error}
       </div>
     );
   } else if (orders.length === 0) {
     leftColumn = (
       <div className="flex flex-col items-center gap-5 rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        <p>{dictText(dict, 'no_orders_text', 'You have no orders yet.')}</p>
+        <p>{t('no_orders_text', 'You have no orders yet.')}</p>
         <Link
           href="/shop"
           className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
         >
-          {dictText(dict, 'go_shopping_button', 'Go to shopping')}
+          {t('go_shopping_button', 'Go to shopping')}
         </Link>
       </div>
     );
@@ -436,15 +426,11 @@ const OrdersList = ({
     leftColumn = (
       <>
         <p className="mt-2.5 text-xl text-paper">
-          {dictText(dict, 'active_orders_title', 'Active orders')}
+          {t('active_orders_title', 'Active orders')}
         </p>
         {active.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
-            {dictText(
-              dict,
-              'no_active_orders_text',
-              'You have no active orders.',
-            )}
+            {t('no_active_orders_text', 'You have no active orders.')}
           </p>
         ) : (
           active.map((o) => (
@@ -455,20 +441,15 @@ const OrdersList = ({
               onToggle={() => toggle(o.id)}
               isHistory={false}
               productsById={productsById}
-              dict={dict}
             />
           ))
         )}
         <p className="mt-5 text-xl text-paper">
-          {dictText(dict, 'orders_history_title', 'Orders History')}
+          {t('orders_history_title', 'Orders History')}
         </p>
         {history.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
-            {dictText(
-              dict,
-              'no_history_orders_text',
-              'You have no past orders yet.',
-            )}
+            {t('no_history_orders_text', 'You have no past orders yet.')}
           </p>
         ) : (
           history.map((o) => (
@@ -479,7 +460,6 @@ const OrdersList = ({
               onToggle={() => toggle(o.id)}
               isHistory
               productsById={productsById}
-              dict={dict}
             />
           ))
         )}

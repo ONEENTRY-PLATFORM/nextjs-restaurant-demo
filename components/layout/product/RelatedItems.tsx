@@ -1,8 +1,8 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
 import { getBlockProducts, getRelatedProductsById } from '@/app/api';
+import { t } from '@/app/dictionaries';
 
 import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations';
 import ProductCard from '../products-grid/components/product-card/ProductCard';
@@ -25,17 +25,14 @@ const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['multiply_items_offer']);
  * @param   {object}                 props           - пропсы
  * @param   {number}                 props.productId - id текущего товара
  * @param   {string[]}               [props.blocks]  - markers блоков, прикреплённых к продукту (`product.blocks`)
- * @param   {IAttributeValues}       props.dict      - словарь
  * @returns {Promise<JSX.Element>}                   секция или пустой фрагмент
  */
 const RelatedItems = async ({
   productId,
   blocks,
-  dict,
 }: {
   productId: number;
   blocks?: string[];
-  dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   let items: IProductsEntity[] = [];
 
@@ -59,8 +56,7 @@ const RelatedItems = async ({
     return <></>;
   }
 
-  const title =
-    (dict.featured_objects?.value as string | undefined) ?? 'Featured objects';
+  const title = await t('featured_objects', 'Featured objects');
 
   return (
     <section className="flex flex-col max-md:max-w-full pt-4">
@@ -72,7 +68,6 @@ const RelatedItems = async ({
           <ProductCard
             key={product.id}
             product={product}
-            dict={dict}
             index={i}
             productsLimit={0}
           />

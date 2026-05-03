@@ -1,10 +1,10 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   selectDeliveryData,
   setDeliveryData,
@@ -12,7 +12,6 @@ import {
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
-import { dictText } from '@/components/utils';
 
 type PickerMode = 'date' | 'time' | null;
 
@@ -21,11 +20,10 @@ type PickerMode = 'date' | 'time' | null;
  * ({@link DatePickerSheet}, {@link TimePickerSheet}), которые повторяют
  * `service_date.html` / `service_time.html`. Тап по полю открывает
  * соответствующий sheet; `Apply` сохраняет значение и закрывает.
- * @param   {object}           props      - Пропсы шага.
- * @param   {IAttributeValues} props.dict - Словарь статического контента (для Time/Date лейблов).
- * @returns {JSX.Element}                 JSX шага.
+ * @returns {JSX.Element} JSX шага.
  */
-const StepTime = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
+const StepTime = (): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
 
@@ -70,9 +68,7 @@ const StepTime = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         onClick={() => setPicker('time')}
         className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
-        <span className="cart_label">
-          {dictText(dict, 'time_text', 'Time')}
-        </span>
+        <span className="cart_label">{t('time_text', 'Time')}</span>
         <span className="text-lg text-paper">{time || 'Select time'}</span>
       </button>
 

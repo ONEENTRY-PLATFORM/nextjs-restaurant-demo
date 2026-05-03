@@ -10,9 +10,9 @@ import OtpInput from 'react-otp-input';
 import { api, logInUser } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { addField } from '@/app/store/reducers/FormFieldsSlice';
-import type { FormProps } from '@/app/types/global';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
 import ErrorMessage from './inputs/ErrorMessage';
@@ -21,7 +21,8 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 /**
  * Компонент VerificationForm
  */
-const VerificationForm = ({ dict }: FormProps): JSX.Element => {
+const VerificationForm = (): JSX.Element => {
+  const t = useT();
   const router = useTransitionRouter();
   const dispatch = useAppDispatch();
   const { authenticate } = useContext(AuthContext);
@@ -31,8 +32,6 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  const { receive_otp_text, verify_now_text, resend_text, enter_otp_code } =
-    dict;
   const fields = useAppSelector((state) => state.formFieldsReducer.fields);
 
   useEffect(() => {
@@ -134,8 +133,7 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
       >
         <div className="relative mb-5 box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-paper/60 max-md:max-w-full">
-            {(enter_otp_code?.value as string | undefined) ??
-              'Enter your OTP code here'}
+            {t('enter_otp_code', 'Enter your OTP code here')}
           </p>
         </div>
 
@@ -149,19 +147,19 @@ const VerificationForm = ({ dict }: FormProps): JSX.Element => {
             inputStyle="relative box-border flex h-[70px] min-w-[14%] flex-col rounded border border-solid border-paper/30 bg-transparent p-2.5 text-center text-2xl font-medium text-white"
           />
           <div className="self-end text-xs text-brand max-md:mr-2.5">
-            <span className="text-paper/60">{receive_otp_text?.value} </span>
+            <span className="text-paper/60">{t('receive_otp_text', '')} </span>
             <button
               className="font-bold text-brand"
               type="button"
               onClick={onResendHandle}
             >
-              {(resend_text?.value as string | undefined) ?? 'Resend'}
+              {t('resend_text', 'Resend')}
             </button>
           </div>
         </div>
 
         <FormSubmitButton
-          title={verify_now_text?.value}
+          title={t('verify_now_text', '')}
           isLoading={isLoading}
           index={0}
         />

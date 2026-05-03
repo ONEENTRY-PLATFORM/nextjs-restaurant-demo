@@ -1,6 +1,5 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useContext, useMemo, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +8,7 @@ import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
 import { updateUserState } from '@/app/api/server/users/updateUserState';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addProductToCart,
   selectIsInCart,
@@ -28,7 +28,6 @@ const AddToCartButton = ({
   statusIdentifier,
   className,
   height,
-  dict,
 }: {
   id: number;
   units: number;
@@ -36,8 +35,8 @@ const AddToCartButton = ({
   statusIdentifier: string;
   className: string;
   height: number;
-  dict: IAttributeValues;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   // Состояние корзины гидратируется из localStorage на клиенте → рендерим
   // server-safe вариант (Add-to-cart button) до гидрации, иначе hydration
@@ -56,9 +55,6 @@ const AddToCartButton = ({
       selectFavoritesItems(state),
   );
   const { user } = useContext(AuthContext);
-  // Markers словаря из `static_content`: `add_to_cart` и
-  // `out_of_stock_button` (проверено через inspect-api).
-  const { add_to_cart, out_of_stock_button } = dict;
   // OneEntry product status опционален: `null` означает «статус не назначен»
   // и должен трактоваться как доступный к продаже. Блокируем покупку только
   // когда стоит явный «непродажный» идентификатор.
@@ -75,7 +71,7 @@ const AddToCartButton = ({
           'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className
         }
       >
-        {(out_of_stock_button?.value as string | undefined) ?? 'Out of stock'}
+        {t('out_of_stock_button', 'Out of stock')}
       </div>
     );
   }
@@ -108,8 +104,7 @@ const AddToCartButton = ({
     }
   };
 
-  const addToCartLabel =
-    (add_to_cart?.value as string | undefined) || 'ADD TO CART';
+  const addToCartLabel = t('add_to_cart', 'ADD TO CART');
 
   return !inCart ? (
     <button

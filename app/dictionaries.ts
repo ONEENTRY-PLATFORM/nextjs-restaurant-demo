@@ -2,6 +2,8 @@ import 'server-only';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 
+import { dictText } from '@/components/utils';
+
 import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
 import getCachedData from './api/utils/getCachedData';
 
@@ -56,3 +58,18 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
  */
 export const getDictionary = async (): Promise<IAttributeValues> =>
   getCachedData('dictionary', fetchDictionary);
+
+/**
+ * Server-side аналог `useT()` — берёт строку из словаря `static_content` по
+ * маркеру с fallback'ом, без пробрасывания `dict` через пропсы. Внутри
+ * вызывает кешированный `getDictionary`, поэтому повторные вызовы
+ * дешёвые. Использовать в server-компонентах вместо
+ * `dictText(dict, marker, fallback)` с предварительным `await getDictionary()`.
+ *
+ * @example
+ *   const title = await t('featured_objects', 'Featured objects');
+ */
+export const t = async (marker: string, fallback: string): Promise<string> => {
+  const dict = await getDictionary();
+  return dictText(dict, marker, fallback);
+};

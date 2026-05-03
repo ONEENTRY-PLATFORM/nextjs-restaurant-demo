@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -29,15 +28,12 @@ type DishProduct = IProductsEntity & {
  * trailing-секция «Featured objects» через `RelatedItems` блок.
  * @param   {object}                                       props         - пропсы
  * @param   {DishProduct}                                  props.product - продукт
- * @param   {IAttributeValues}                             props.dict    - словарь
  * @returns {Promise<JSX.Element>}                                       JSX страницы продукта
  */
 const ProductSingle = async ({
   product,
-  dict,
 }: {
   product: DishProduct;
-  dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages } = product;
 
@@ -97,7 +93,7 @@ const ProductSingle = async ({
             </p>
           </div>
 
-          <ProductDetails product={product} dict={dict} />
+          <ProductDetails product={product} />
 
           {/* Reviews — внутри правой колонки, как в static-html/details.html */}
           <ProductReviewsListServer productId={product.id} />
@@ -107,7 +103,7 @@ const ProductSingle = async ({
               запросу клиента. На мобиле используется fixed slide-up sheet
               (`mob_about_reviews.html`), на десктопе — inline-форма. */}
           <div className="hidden md:block mt-5">
-            <ReviewForm productId={product.id} dict={dict} />
+            <ReviewForm productId={product.id} />
           </div>
         </ProductAnimations>
       </div>
@@ -122,18 +118,14 @@ const ProductSingle = async ({
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {
-            return <ProductsGroup key={block} marker={block} dict={dict} />;
+            return <ProductsGroup key={block} marker={block} />;
           }
           return null;
         })}
 
       {/* Похожие товары: канонический getRelatedProductsById или
           fallback на блок типа similar_products_block из product.blocks */}
-      <RelatedItems
-        productId={id}
-        {...(blocks ? { blocks } : {})}
-        dict={dict}
-      />
+      <RelatedItems productId={id} {...(blocks ? { blocks } : {})} />
     </section>
   );
 };

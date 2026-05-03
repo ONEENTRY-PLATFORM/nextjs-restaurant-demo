@@ -1,9 +1,9 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { JSX } from 'react';
+import type { ComponentType, JSX } from 'react';
 import { useContext, useRef } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import * as forms from '@/components/forms';
 import ArrowBackIcon from '@/components/icons/arrow-back';
@@ -16,54 +16,18 @@ import ModalBackdrop from './components/ModalBackdrop';
 /**
  * Компонент модалки
  */
-const useTitleData = ({
-  dict,
-  component,
-}: {
-  dict: IAttributeValues | undefined;
-  component: string;
-}) => {
-  const {
-    sign_in_text,
-    sign_up_text,
-    reset_password_text,
-    forgot_password_text,
-    verification,
-  } = dict ?? ({} as IAttributeValues);
-
-  const titlesData = [
-    {
-      component: 'AuthProviderSelect',
-      value: '',
-    },
-    {
-      component: 'CalendarForm',
-      value: 'Calendar',
-    },
-    {
-      component: 'ForgotPasswordForm',
-      value: forgot_password_text?.value,
-    },
-    {
-      component: 'ResetPasswordForm',
-      value: reset_password_text?.value,
-    },
-    {
-      component: 'SignInForm',
-      value: sign_in_text?.value,
-    },
-    {
-      component: 'SignUpForm',
-      value: sign_up_text?.value,
-    },
-    {
-      component: 'VerificationForm',
-      value: verification?.value,
-    },
-  ];
-  const title = titlesData.find((t) => t.component === component);
-
-  return title?.value;
+const useTitleData = (component: string): string => {
+  const t = useT();
+  const titlesData: Record<string, string> = {
+    AuthProviderSelect: '',
+    CalendarForm: 'Calendar',
+    ForgotPasswordForm: t('forgot_password_text', ''),
+    ResetPasswordForm: t('reset_password_text', ''),
+    SignInForm: t('sign_in_text', ''),
+    SignUpForm: t('sign_up_text', ''),
+    VerificationForm: t('verification', ''),
+  };
+  return titlesData[component] ?? '';
 };
 
 // Подшаги auth-флоу, у которых первый шаг — AuthProviderSelect. Из них
@@ -80,18 +44,20 @@ const AUTH_FLOW_SUB_STEPS = new Set([
 /**
  * Компонент модалки форм
  */
-const Modal = ({
-  dict,
-}: {
-  dict: IAttributeValues | undefined;
-}): JSX.Element => {
+const Modal = (): JSX.Element => {
   const { component, setComponent, setTransition, setOpen } =
     useContext(OpenDrawerContext);
 
-  // выбираем компонент формы по имени компонента
-  const Form = forms[component as keyof typeof forms] || null;
+  // выбираем компонент формы по имени компонента. Каст к общему типу,
+  // потому что forms[component] — union с разнородными props (часть форм
+  // не принимает className/isActive); они их просто игнорируют.
+  const Form = (forms[component as keyof typeof forms] ||
+    null) as ComponentType<{
+    className?: string;
+    isActive?: boolean;
+  }> | null;
 
-  const title = useTitleData({ dict, component });
+  const title = useTitleData(component);
   const sheetRef = useRef<HTMLDivElement | null>(null);
   useSwipeToClose(sheetRef, () => setOpen(false));
 
@@ -132,12 +98,10 @@ const Modal = ({
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-semibold text-[24px] text-brand">
-            {title as string | undefined}
-          </p>
+          <p className="font-semibold text-[24px] text-brand">{title}</p>
           <CloseModal />
         </header>
-        <Form className={''} dict={dict ?? {}} isActive={true} />
+        <Form className={''} isActive={true} />
       </div>
       <ModalBackdrop />
     </ModalAnimations>

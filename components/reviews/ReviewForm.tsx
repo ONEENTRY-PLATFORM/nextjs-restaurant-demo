@@ -1,13 +1,12 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { submitReview } from '@/app/actions/review';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { dictText } from '@/components/utils';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import StarRating from './StarRating';
@@ -37,14 +36,9 @@ const resolveAuthorName = (user: {
  * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
  * @returns {JSX.Element}                 JSX формы отзыва.
  */
-const ReviewForm = ({
-  productId,
-  dict,
-}: {
-  productId: number;
-  dict?: IAttributeValues;
-}): JSX.Element => {
-  const leaveReviewLabel = dictText(dict, 'leave_review', 'Leave a review');
+const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
+  const t = useT();
+  const leaveReviewLabel = t('leave_review', 'Leave a review');
   const { isAuth, user } = useContext(AuthContext);
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
 

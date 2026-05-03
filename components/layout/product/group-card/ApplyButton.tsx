@@ -1,10 +1,10 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addProductToCart,
   removeProduct,
@@ -16,15 +16,13 @@ import {
  */
 const ApplyButton = ({
   product,
-  dict,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   product: any;
-  dict: IAttributeValues;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const [productInCart, setInCart] = useState(false);
-  const { apply_text, cancel_text } = dict;
   const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
 
   useEffect(() => {
@@ -45,14 +43,14 @@ const ApplyButton = ({
       onClick={() => addToCartHandle()}
       className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
-      {(apply_text?.value as string | undefined) ?? 'Apply'}
+      {t('apply_text', 'Apply')}
     </button>
   ) : (
     <button
       onClick={() => removeFromCartHandle()}
       className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
-      {cancel_text?.value as string | undefined}
+      {t('cancel_text', '')}
     </button>
   );
 };

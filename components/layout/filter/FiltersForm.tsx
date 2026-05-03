@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
@@ -21,10 +20,8 @@ import PricePickerFilter from './components/price/PricePickerFilter';
  */
 const FiltersForm = async ({
   prices,
-  dict,
 }: {
   prices: any;
-  dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({
@@ -63,7 +60,7 @@ const FiltersForm = async ({
         if (attr === 'price_filter' && prices) {
           return (
             <FilterAnimations key={index} className="w-full" index={0}>
-              <PricePickerFilter prices={prices} dict={dict} />
+              <PricePickerFilter prices={prices} />
             </FilterAnimations>
           );
         }
@@ -92,10 +89,10 @@ const FiltersForm = async ({
       })}
       <div className="relative mt-auto box-border flex shrink-0 flex-col gap-4">
         <FilterAnimations className="w-full" index={3}>
-          <ResetButton dict={dict} />
+          <ResetButton />
         </FilterAnimations>
         <FilterAnimations className="w-full" index={4}>
-          <ApplyButton dict={dict} />
+          <ApplyButton />
         </FilterAnimations>
       </div>
     </div>

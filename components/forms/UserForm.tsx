@@ -12,8 +12,7 @@ import { toast } from 'react-toastify';
 import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import type { FormProps } from '@/app/types/global';
-import { dictText } from '@/components/utils';
+import { useT } from '@/app/store/providers/DictProvider';
 
 // import AuthError from '../pages/AuthError';
 import SpinnerLoader from '../shared/SpinnerLoader';
@@ -29,9 +28,9 @@ export type InputValue = {
 
 /**
  * Форма User
- * @param dict - объект с текстами для локализации
  */
-const UserForm = ({ dict }: FormProps): JSX.Element => {
+const UserForm = (): JSX.Element => {
+  const t = useT();
   const { isAuth, refreshUser, user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isError, setError] = useState('');
@@ -103,7 +102,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
   }
 
   if (!isAuth || error || !user?.formData) {
-    // return <AuthError dict={dict} />;
+    // return <AuthError />;
   }
 
   return (
@@ -134,7 +133,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
           })}
       </div>
       <SubmitButton
-        title={dictText(dict, 'submit_text', '')}
+        title={t('submit_text', '')}
         isLoading={loading}
         index={10}
       />

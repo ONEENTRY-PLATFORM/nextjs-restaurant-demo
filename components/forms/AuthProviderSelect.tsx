@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
@@ -32,7 +31,6 @@ const AuthProviderSelect = ({
   className,
   isActive,
 }: {
-  dict: IAttributeValues;
   className: string;
   isActive: boolean;
 }): JSX.Element => {

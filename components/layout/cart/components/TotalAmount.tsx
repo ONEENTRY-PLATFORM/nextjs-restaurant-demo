@@ -1,13 +1,13 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useMemo } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
-import { dictText, UsePrice } from '@/components/utils';
+import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
@@ -27,13 +27,8 @@ type CartEntry = {
  * клиентское суммирование. `attributeValues.sale.value` имеет приоритет над
  * `price`, если он присутствует (промо-цены перекрывают list-цены).
  */
-const TotalAmount = ({
-  dict,
-  className,
-}: {
-  dict: IAttributeValues;
-  className: string;
-}): JSX.Element => {
+const TotalAmount = ({ className }: { className: string }): JSX.Element => {
+  const t = useT();
   const productsData = useAppSelector(selectCartData) as CartEntry[];
   const products = useAppSelector(
     (state) => state.cartReducer.products as IProductsEntity[],
@@ -69,8 +64,7 @@ const TotalAmount = ({
 
   return (
     <TableRowAnimations className={className} index={12}>
-      {dictText(dict, 'total_amount_text', 'Total')}:{' '}
-      {UsePrice({ amount: cartTotal })}
+      {t('total_amount_text', 'Total')}: {UsePrice({ amount: cartTotal })}
     </TableRowAnimations>
   );
 };

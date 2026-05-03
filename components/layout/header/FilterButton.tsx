@@ -2,23 +2,19 @@
 
 import { type JSX, useContext } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FilterIcon from '@/components/icons/filter';
 
 /**
  * FilterButton — триггер модалки фильтра. Монтируется и в десктопном, и в
  * мобильном header. Открывает {@link FilterModal} через OpenDrawerContext.
- * @param   {object} props          - Пропсы кнопки.
- * @param   {string} [props.label]  - Подпись для скринридера; по умолчанию
- *                                    «Open filters». Передаётся из шапки
- *                                    через `dict.open_filters_button.value`.
- * @returns {JSX.Element}           JSX кнопки фильтра.
+ * `aria-label` тянется из словаря (`open_filters_button`) через `useT`.
+ * @returns {JSX.Element} JSX кнопки фильтра.
  */
-const FilterButton = ({
-  label = 'Open filters',
-}: {
-  label?: string;
-} = {}): JSX.Element => {
+const FilterButton = (): JSX.Element => {
+  const t = useT();
+  const label = t('open_filters_button', 'Open filters');
   const { setOpen, setComponent, setTransition } =
     useContext(OpenDrawerContext);
 

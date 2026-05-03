@@ -1,19 +1,19 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
+
+import { useT } from '@/app/store/providers/DictProvider';
 
 /**
  * Компонент кнопки сброса фильтра
  */
-const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
+const ResetButton = (): JSX.Element => {
+  const t = useT();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const params = new URLSearchParams(searchParams);
-
-  const { clear_all_filters_text } = dict;
 
   const onResetHandle = () => {
     params.delete('search');
@@ -29,8 +29,7 @@ const ResetButton = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       onClick={onResetHandle}
       className="rounded-[10px] border border-brand text-brand font-bold text-[16px] uppercase h-12.5 hover_btn_white w-full"
     >
-      {(clear_all_filters_text?.value as string | undefined) ??
-        'Clear all filters'}
+      {t('clear_all_filters_text', 'Clear all filters')}
     </button>
   );
 };

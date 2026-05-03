@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   selectDeliveryData,
   setDeliveryData,
@@ -15,7 +15,6 @@ import {
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
-import { dictText } from '@/components/utils';
 
 // Маркеры, которые мы ищем в профиле пользователя, в порядке приоритета. `address_reg` —
 // канонический, используется в других местах корзины (см. components/layout/cart/
@@ -46,11 +45,10 @@ type DeliveryMode = 'asap' | 'scheduled';
  * Адрес: text input с иконкой-карандашом редактирования справа.
  * Время: два радио — "40-45 min" (ASAP) или "by the time" (по расписанию,
  * text input типа `18.06.24 10.00`).
- * @param   {object}           props      - Пропсы шага.
- * @param   {IAttributeValues} props.dict - Словарь статического контента.
- * @returns {JSX.Element}                 JSX шага.
+ * @returns {JSX.Element} JSX шага.
  */
-const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
+const StepAddress = (): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(selectDeliveryData);
   const { user } = useContext(AuthContext);
@@ -98,7 +96,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <div className="flex items-center gap-2.5 text-paper">
         <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
         <p className="font-normal text-[20px] text-paper">
-          {dictText(dict, 'address_text', 'Address')}
+          {t('address_text', 'Address')}
         </p>
       </div>
 
@@ -118,7 +116,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <div className="mt-5 flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
         <p className="font-normal text-[20px] text-paper">
-          {dictText(dict, 'time_text', 'Time')}
+          {t('time_text', 'Time')}
         </p>
       </div>
 
@@ -155,7 +153,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
           className="radio-custom flex cursor-pointer select-none items-center"
         >
           <span className="ml-2 text-paper">
-            {dictText(dict, 'by_the_time', 'by the time')}
+            {t('by_the_time', 'by the time')}
           </span>
         </label>
         <input

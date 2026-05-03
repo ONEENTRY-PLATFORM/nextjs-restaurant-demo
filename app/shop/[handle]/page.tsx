@@ -33,8 +33,8 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   /** Извлекаем параметры маршрута из запроса */
   const { handle } = params;
 
-  /** Получаем словарь из API и проставляем server provider. */
-  const [dict] = ServerProvider('dict', await getDictionary());
+  /** Прогреваем кеш словаря в server provider. */
+  ServerProvider('dict', await getDictionary());
 
   // получаем страницу по url из API
   const { page, isError } = await getPageByUrl(handle);
@@ -59,7 +59,6 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
             params={{ handle }}
             searchParams={searchParams ?? {}}
             productsLimit={productsLimit}
-            dict={dict}
             isCategory={true}
           />
         </Suspense>

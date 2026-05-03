@@ -1,20 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addData,
   addPaymentMethod,
   setStep,
   setStepError,
 } from '@/app/store/reducers/OrderSlice';
-import { dictText } from '@/components/utils';
 
 /**
  * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
@@ -40,7 +39,8 @@ import { dictText } from '@/components/utils';
  * Stripe Checkout собирает данные карты на своей hosted-странице,
  * отдельный UI не нужен.
  */
-const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
+const StepPayment = (): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { onConfirmOrder, isLoading } = useCreateOrder();
 
@@ -54,8 +54,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const [altReceiver, setAltReceiver] = useState(false);
   const [altPhone, setAltPhone] = useState('');
 
-  // Дефолтный выбор — первый видимый аккаунт. Делаем после прихода
-  // данных, чтобы initial render не рендерил пустое состояние.
+  // Дефолтный выбор — первый видимый аккаунт.
   useEffect(() => {
     if (!identifier && accounts.length > 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -109,7 +108,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
           height={15}
         />
         <p className="font-normal text-[20px] text-paper">
-          {dictText(dict, 'select_payment_text', 'Payment')}
+          {t('select_payment_text', 'Payment')}
         </p>
       </div>
 
@@ -135,7 +134,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         type="text"
         value={comment}
         onChange={(e) => setComment(e.currentTarget.value)}
-        placeholder={dictText(dict, 'comment_order', 'Comments to the order')}
+        placeholder={t('comment_order', 'Comments to the order')}
         className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
 
@@ -154,11 +153,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
             height={18}
           />
         </span>
-        {dictText(
-          dict,
-          'another_person_text',
-          'The order will be taken by another person',
-        )}
+        {t('another_person_text', 'The order will be taken by another person')}
       </label>
 
       {/* Телефон альтернативного получателя (виден, когда чекбокс включён) */}

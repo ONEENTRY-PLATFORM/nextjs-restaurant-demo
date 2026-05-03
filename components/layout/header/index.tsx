@@ -10,13 +10,11 @@ import {
   getProductsPriceRange,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
-import { getDictionary } from '@/app/dictionaries';
 import BurgerIcon from '@/components/icons/burger';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import PhoneIcon from '@/components/icons/phone.svg';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
-import { dictText } from '@/components/utils';
 
 import CategoriesScroller, {
   type PreferenceOption,
@@ -34,7 +32,6 @@ import SearchFallback from './search/SearchFallback';
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
-  const dict = await getDictionary();
 
   // Телефон поддержки для иконки-звонилки в мобильной шапке (`support_phone`
   // на странице `support`). Если CMS-значение отсутствует — кнопка деградирует
@@ -101,9 +98,7 @@ const Header = async (): Promise<JSX.Element> => {
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
-              <FilterButton
-                label={dictText(dict, 'open_filters_button', 'Open filters')}
-              />
+              <FilterButton />
             </div>
           </div>
         </div>
@@ -139,9 +134,7 @@ const Header = async (): Promise<JSX.Element> => {
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
-              <FilterButton
-                label={dictText(dict, 'open_filters_button', 'Open filters')}
-              />
+              <FilterButton />
             </div>
           </header>
 
@@ -157,11 +150,7 @@ const Header = async (): Promise<JSX.Element> => {
         </div>
       </div>
       {/* Filter Bottom */}
-      <FilterBottom
-        dict={dict}
-        preferences={preferenceOptions}
-        priceRange={priceRange}
-      />
+      <FilterBottom preferences={preferenceOptions} priceRange={priceRange} />
       {/* Category Filter */}
       <CategoryFilter pages={populatedPages} />
     </div>

@@ -106,11 +106,7 @@ const PromoDetailPage = async ({
       {/* Promo Products Grid */}
       {products.length > 0 ? (
         <div className="mt-10">
-          <ProductsGrid
-            dict={attrs}
-            products={products}
-            productsLimit={products.length}
-          />
+          <ProductsGrid products={products} productsLimit={products.length} />
         </div>
       ) : null}
     </section>

@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 import { type JSX } from 'react';
 
@@ -15,7 +14,6 @@ import ProductsNotFound from './components/ProductsNotFound';
 const ProductsGridLayout = async ({
   params,
   searchParams: sp,
-  dict,
   productsLimit,
   isCategory,
 }: {
@@ -26,7 +24,6 @@ const ProductsGridLayout = async ({
     page?: string;
     filters?: IFilterParams[];
   };
-  dict: IAttributeValues;
   productsLimit: number;
   isCategory?: boolean;
 }): Promise<JSX.Element> => {
@@ -63,11 +60,7 @@ const ProductsGridLayout = async ({
       className={'relative box-border flex w-full shrink-0 flex-col'}
     >
       <section className="products_grid_layout">
-        <ProductsGrid
-          dict={dict}
-          productsLimit={productsLimit}
-          products={products}
-        />
+        <ProductsGrid productsLimit={productsLimit} products={products} />
         {totalPages > 1 && (
           <div className="mt-5 flex w-full justify-center">
             <LoadMore totalPages={totalPages} />

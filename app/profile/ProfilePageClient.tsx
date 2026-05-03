@@ -1,36 +1,29 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import UserForm from '@/components/forms/UserForm';
 
-const ProfilePageClient = ({
-  dict,
-}: {
-  dict: IAttributeValues;
-}): JSX.Element => {
+const ProfilePageClient = (): JSX.Element => {
+  const t = useT();
   const { isAuth, isLoading } = useContext(AuthContext);
 
   if (isLoading) {
-    return (
-      <div className="text-paper/80">
-        {dict.profile_loading_text?.value as string}
-      </div>
-    );
+    return <div className="text-paper/80">{t('profile_loading_text', '')}</div>;
   }
 
   if (!isAuth) {
     return (
       <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        {dict.profile_signin_prompt?.value as string}
+        {t('profile_signin_prompt', '')}
       </div>
     );
   }
 
-  return <UserForm dict={dict} className="" />;
+  return <UserForm />;
 };
 
 export default ProfilePageClient;

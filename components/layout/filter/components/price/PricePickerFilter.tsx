@@ -2,10 +2,11 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { getTrackBackground, Range } from 'react-range';
+
+import { useT } from '@/app/store/providers/DictProvider';
 
 import PriceFromInput from './PriceFromInput';
 import PriceToInput from './PriceToInput';
@@ -15,12 +16,11 @@ import PriceToInput from './PriceToInput';
  */
 const PriceFilter = ({
   prices,
-  dict,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prices: any;
-  dict: IAttributeValues;
 }): JSX.Element => {
+  const t = useT();
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
@@ -28,7 +28,6 @@ const PriceFilter = ({
 
   // `filter_price_title` ✅ добавлен; `price_from`/`price_to` отсутствуют в
   // наборе `static_content` — используем существующие `from` / `to_text`.
-  const { filter_price_title, from, to_text } = dict;
 
   const STEP = 10;
   const MIN = prices?.min || 0;
@@ -80,13 +79,13 @@ const PriceFilter = ({
   return (
     <div className="relative box-border flex shrink-0 flex-col">
       <div className="filter_title mb-5 self-start">
-        {(filter_price_title?.value as string | undefined) ?? 'Price'}
+        {t('filter_price_title', 'Price')}
       </div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="text-base leading-8 text-paper/60">
-            {(from?.value as string | undefined) ?? 'From'}
+            {t('from', 'From')}
           </span>
           <span className="text-lg leading-8 text-white/90">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
@@ -94,7 +93,7 @@ const PriceFilter = ({
         </div>
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="self-start text-base leading-8 text-paper/60">
-            {(to_text?.value as string | undefined) ?? 'To'}
+            {t('to_text', 'To')}
           </span>
           <span className="text-lg leading-8 text-white/90">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />

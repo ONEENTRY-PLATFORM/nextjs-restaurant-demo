@@ -95,11 +95,7 @@ const ReservationPage = async (): Promise<JSX.Element> => {
             {formUnavailableText}
           </div>
         ) : (
-          <ReservationForm
-            form={formRes.form}
-            dict={dict}
-            restaurants={restaurants}
-          />
+          <ReservationForm form={formRes.form} restaurants={restaurants} />
         )}
       </div>
     </section>

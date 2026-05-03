@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -12,10 +11,8 @@ import GroupCard from './group-card/GroupCard';
  */
 const ProductsGroup = async ({
   marker,
-  dict,
 }: {
   marker: string;
-  dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);
 
@@ -37,7 +34,7 @@ const ProductsGroup = async ({
             key={product.id}
             className="relative box-border flex w-full shrink-0 flex-col md:w-[45%] xl:w-[32.5%]"
           >
-            <GroupCard product={product} dict={dict} />
+            <GroupCard product={product} />
           </div>
         ))}
       </div>

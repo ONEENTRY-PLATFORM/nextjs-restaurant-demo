@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { JSX } from 'react';
 import { Suspense, useContext, useRef } from 'react';
 
@@ -17,13 +16,7 @@ import FiltersForm from './FiltersForm';
 /**
  * Компонент FilterModal
  */
-const FilterModal = ({
-  prices,
-  dict,
-}: {
-  prices: any | undefined;
-  dict: IAttributeValues;
-}): JSX.Element => {
+const FilterModal = ({ prices }: { prices: any | undefined }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
   // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform
@@ -37,9 +30,9 @@ const FilterModal = ({
         ref={sheetRef}
         className="fixed right-0 top-0 z-20 flex size-full max-h-[90vh] min-h-[90vh] flex-col overflow-auto bg-ink/80 backdrop-blur-[10px] shadow-xl md:top-[5vh] md:overflow-hidden md:rounded-l-[20px] lg:h-auto lg:w-95"
       >
-        <FilterHeader dict={dict} />
+        <FilterHeader />
         <Suspense fallback={<Loader />}>
-          <FiltersForm prices={prices} dict={dict} />
+          <FiltersForm prices={prices} />
         </Suspense>
       </div>
       <ModalBackdrop />

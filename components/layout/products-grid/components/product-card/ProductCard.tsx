@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -29,7 +28,6 @@ import ProductImage from './ProductImage';
  * @param   {object}          props            - Пропсы компонента.
  * @param   {IProductsEntity} props.product    - Сущность продукта OneEntry.
  * @param   {number}          props.index      - Индекс в гриде (для stagger-анимации).
- * @param   {IAttributeValues} props.dict       - Словарь (не используется — оставлен для парности API).
  * @param   {number}          props.productsLimit - productsLimit для анимации.
  * @returns {JSX.Element}                      JSX карточки.
  */
@@ -40,7 +38,6 @@ const ProductCard = ({
 }: {
   product: IProductsEntity;
   index: number;
-  dict: IAttributeValues;
   productsLimit: number;
 }): JSX.Element => {
   const { id, attributeValues, localizeInfos } = product;

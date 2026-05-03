@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   type CheckoutStep,
   goBackStep,
@@ -18,7 +18,6 @@ import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartPage from '@/components/layout/cart';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
-import { dictText } from '@/components/utils';
 
 import StepAddress from './steps/StepAddress';
 import StepOrder from './steps/StepOrder';
@@ -29,7 +28,6 @@ import StepTime from './steps/StepTime';
 import StepVerification from './steps/StepVerification';
 
 type CartWizardProps = {
-  dict: IAttributeValues;
   deliveryData: IProductsEntity;
   promoSidebar?: ReactNode;
 };
@@ -44,15 +42,15 @@ const AUTH_POPUP_STEPS: ReadonlySet<CheckoutStep> = new Set([
 ]);
 
 const buildStepTitles = (
-  dict: IAttributeValues,
+  t: (marker: string, fallback: string) => string,
 ): Record<CheckoutStep, string> => ({
   cart: 'Cart',
   time: 'Select time',
-  signin: dictText(dict, 'sign_in_text', 'Sign in'),
-  verification: dictText(dict, 'verification_text', 'Verification'),
-  address: dictText(dict, 'address_text', 'Delivery address'),
+  signin: t('sign_in_text', 'Sign in'),
+  verification: t('verification_text', 'Verification'),
+  address: t('address_text', 'Delivery address'),
   order: 'Order',
-  payment: dictText(dict, 'select_payment_text', 'Payment'),
+  payment: t('select_payment_text', 'Payment'),
   success: 'Success',
   error: 'Error',
 });
@@ -94,13 +92,13 @@ const useIsMdUp = (): boolean =>
  * @returns {JSX.Element}           JSX wizard для текущего шага.
  */
 const CartWizard = ({
-  dict,
   deliveryData,
   promoSidebar,
 }: CartWizardProps): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const step = useAppSelector(selectCheckoutStep);
-  const STEP_TITLES = buildStepTitles(dict);
+  const STEP_TITLES = buildStepTitles(t);
   const isMdUp = useIsMdUp();
 
   const isCartStep = step === 'cart';
@@ -120,12 +118,12 @@ const CartWizard = ({
 
   const stepBody = (
     <>
-      {step === 'time' && <StepTime dict={dict} />}
+      {step === 'time' && <StepTime />}
       {step === 'signin' && <StepSignIn />}
       {step === 'verification' && <StepVerification />}
-      {step === 'address' && <StepAddress dict={dict} />}
-      {step === 'order' && <StepOrder dict={dict} />}
-      {step === 'payment' && <StepPayment dict={dict} />}
+      {step === 'address' && <StepAddress />}
+      {step === 'order' && <StepOrder />}
+      {step === 'payment' && <StepPayment />}
       {step === 'success' && <StepResult variant="success" />}
       {step === 'error' && <StepResult variant="error" />}
     </>

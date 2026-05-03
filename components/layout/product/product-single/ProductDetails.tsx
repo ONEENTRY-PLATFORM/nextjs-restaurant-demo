@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -22,15 +21,13 @@ import AddToCartButton from '../components/AddToCartButton';
  *   - `preferences` (list) — теги
  *   - `ingredients` (string)
  *   - `price` + `currency`
- * @param   {{product: IProductsEntity; dict: IAttributeValues}} props - пропсы компонента
+ * @param   {{product: IProductsEntity}} props - пропсы компонента
  * @returns {JSX.Element} JSX панели деталей продукта
  */
 const ProductDetails = async ({
   product,
-  dict,
 }: {
   product: IProductsEntity;
-  dict: IAttributeValues;
 }): Promise<JSX.Element> => {
   const {
     id,
@@ -166,7 +163,6 @@ const ProductDetails = async ({
         units={0}
         statusIdentifier={statusIdentifier || ''}
         productTitle={title || ''}
-        dict={dict}
         height={50}
         className="mt-2.5 w-full flex justify-center items-center gap-2.5 font-bold text-[20px] text-white uppercase py-4.5 bg-custom-gradient rounded-[10px] hover:bg-gradient-to-r-hover"
       />

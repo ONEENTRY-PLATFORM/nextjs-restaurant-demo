@@ -6,8 +6,8 @@ import { useContext, useState } from 'react';
 
 import { api } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import type { FormProps } from '@/app/types/global';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
 import ErrorMessage from './inputs/ErrorMessage';
@@ -36,7 +36,8 @@ export const resetPasswordFormFields = [
 /**
  * Форма сброса пароля
  */
-const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
+const ResetPasswordForm = (): JSX.Element => {
+  const t = useT();
   // Деструктурируем значения полей формы из Redux store через селектор
   const { email, password, password_confirm, otp_code } = useAppSelector(
     (state) => state.formFieldsReducer.fields,
@@ -50,9 +51,6 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
 
   // State для управления сообщениями об ошибках для отображения пользователю
   const [isError, setError] = useState('');
-
-  // Деструктурируем строки из объекта словаря для локализации/статического текста
-  const { new_password_desc, change_password_text } = dict;
 
   /**
    * Меняет пароль через API AuthProvider
@@ -98,7 +96,7 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="max-w-full text-xs text-paper/60">
-            {new_password_desc?.value || 'New password'}
+            {t('new_password_desc', 'New password')}
           </p>
         </div>
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
@@ -115,7 +113,7 @@ const ResetPasswordForm = ({ dict }: FormProps): JSX.Element => {
           ))}
         </div>
         <FormSubmitButton
-          title={change_password_text?.value || 'Change password'}
+          title={t('change_password_text', 'Change password')}
           isLoading={isLoading}
           index={10}
         />

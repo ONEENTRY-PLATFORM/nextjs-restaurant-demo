@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -62,7 +61,6 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
             products={products}
             total={total}
             limit={SECTION_LIMIT}
-            dict={{} as IAttributeValues}
           />
         );
         return idx % 2 === 0 ? (

@@ -1,17 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
 import { useApplyCoupon } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
 import Placeholder from '@/components/shared/Placeholder';
-import { dictText, UsePrice } from '@/components/utils';
+import { UsePrice } from '@/components/utils';
 
 type CartEntry = {
   id: number;
@@ -24,11 +24,10 @@ type CartEntry = {
  *
  * Список товаров (картинка + название + вес/цена + плашка количества) + поле промо-кода +
  * сводка subtotal/delivery/total + кнопка APPLY → `payment`.
- * @param   {object}           props      - Пропсы шага.
- * @param   {IAttributeValues} props.dict - Словарь статического контента.
- * @returns {JSX.Element}                 JSX шага.
+ * @returns {JSX.Element} JSX шага.
  */
-const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
+const StepOrder = (): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const cartData = useAppSelector(selectCartData) as CartEntry[];
   const products = useAppSelector(
@@ -171,7 +170,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       {/* Итоги */}
       <div className="mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
-          <p>{dictText(dict, 'subtotal_text', 'Subtotal')}:</p>
+          <p>{t('subtotal_text', 'Subtotal')}:</p>
           <p>{UsePrice({ amount: subtotal })}</p>
         </div>
         {discount > 0 ? (
@@ -181,11 +180,11 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
           </div>
         ) : null}
         <div className="flex gap-1.25 text-brand">
-          <p>{dictText(dict, 'delivery_text', 'Delivery')}:</p>
+          <p>{t('delivery_text', 'Delivery')}:</p>
           <p>{UsePrice({ amount: deliveryPrice })}</p>
         </div>
         <div className="flex gap-1.25 text-white">
-          <p>{dictText(dict, 'total_amount_text', 'Total Amount')}:</p>
+          <p>{t('total_amount_text', 'Total Amount')}:</p>
           <p>{UsePrice({ amount: total })}</p>
         </div>
       </div>

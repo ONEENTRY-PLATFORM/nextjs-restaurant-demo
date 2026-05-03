@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -10,7 +9,6 @@ type CategoriesSectionProps = {
   categoryMarker: string;
   products: IProductsEntity[];
   total: number;
-  dict?: IAttributeValues;
   limit?: number;
   className?: string;
 };
@@ -33,7 +31,6 @@ const CategoriesSection = ({
   categoryMarker,
   products,
   total,
-  dict = {} as IAttributeValues,
   limit = 8,
 }: CategoriesSectionProps): JSX.Element => {
   const viewAllHref = '/shop/category/' + categoryMarker;
@@ -49,7 +46,7 @@ const CategoriesSection = ({
         </Link>
       </div>
 
-      <ProductsGrid dict={dict} products={products} productsLimit={limit} />
+      <ProductsGrid products={products} productsLimit={limit} />
     </section>
   );
 };

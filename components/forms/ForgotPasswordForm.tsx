@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IAttributes, IAttributeValues } from 'oneentry/dist/base/utils';
+import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
@@ -16,20 +17,13 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
-interface ForgotPasswordFormProps {
-  dict: IAttributeValues;
-}
-
 /**
  * Форма ForgotPassword
  */
-export const ForgotPasswordForm = ({
-  dict,
-}: ForgotPasswordFormProps): JSX.Element => {
+export const ForgotPasswordForm = (): JSX.Element => {
+  const t = useT();
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [isError, setError] = useState<string>('');
-
-  const { reset_descr, send_text } = dict;
 
   // Получаем данные формы из API через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
@@ -70,7 +64,7 @@ export const ForgotPasswordForm = ({
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-paper/60 max-md:max-w-full">
-            {reset_descr?.value as string | undefined}
+            {t('reset_descr', '')}
           </p>
         </div>
 
@@ -87,7 +81,7 @@ export const ForgotPasswordForm = ({
         </div>
 
         <FormSubmitButton
-          title={(send_text?.value as string) ?? ''}
+          title={t('send_text', '')}
           isLoading={isLoading}
           index={10}
         />

@@ -1,6 +1,5 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef } from 'react';
@@ -9,13 +8,13 @@ import {
   useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
 } from '@/app/api';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-import { dictText } from '@/components/utils';
 
 import ReservationForm from './ReservationForm';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
@@ -39,11 +38,8 @@ import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
  * При закрытом попапе оба запроса skip'аются (`{ skip: !isOpen }`),
  * чтобы не дёргать сеть на любой странице сайта.
  */
-const ReservationPopup = ({
-  dict,
-}: {
-  dict?: IAttributeValues;
-}): JSX.Element => {
+const ReservationPopup = (): JSX.Element => {
+  const t = useT();
   const { open, component, action, transition, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const isOpen = open && component === 'ReservationPopup';
@@ -132,7 +128,7 @@ const ReservationPopup = ({
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
           <p className="font-semibold text-[24px] text-brand">
-            {dictText(dict, 'reservation_default_title', 'Reservation')}
+            {t('reservation_default_title', 'Reservation')}
           </p>
           <ClosePopupButton onClose={close} ariaLabel="Close reservation" />
         </div>
@@ -143,15 +139,15 @@ const ReservationPopup = ({
           </div>
         ) : !form ? (
           <div className="mt-10 rounded-xl bg-ink/60 p-6 text-center text-paper/80">
-            {(dict?.reservation_form_unavailable?.value as
-              | string
-              | undefined) ?? 'Reservation form is unavailable.'}
+            {t(
+              'reservation_form_unavailable',
+              'Reservation form is unavailable.',
+            )}
           </div>
         ) : (
           <div className="mt-7.5">
             <ReservationForm
               form={form}
-              dict={dict}
               restaurants={restaurants}
               initialValues={initialValues}
             />

@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getProductById } from '@/app/api';
-import { getDictionary } from '@/app/dictionaries';
 import ProductSingle from '@/components/layout/product';
 
 /**
@@ -20,8 +19,6 @@ const ProductPageLayout = async ({
   params: Promise<{ handle: string; lang: string }>;
 }): Promise<JSX.Element> => {
   const { handle } = await params;
-  /** Получаем словарь из API и проставляем server provider. */
-  const dict = await getDictionary();
 
   /** Получаем товар по текущему Id */
   const { isError, product } = await getProductById(Number(handle));
@@ -71,7 +68,7 @@ const ProductPageLayout = async ({
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      <ProductSingle product={product as any} dict={dict} />
+      <ProductSingle product={product as any} />
     </>
   );
 };

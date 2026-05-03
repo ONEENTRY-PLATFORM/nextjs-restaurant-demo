@@ -1,4 +1,3 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, Key } from 'react';
@@ -7,6 +6,7 @@ import { useContext, useEffect } from 'react';
 import { useGetFormByMarkerQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
 import CalendarIcon from '@/components/icons/calendar';
@@ -21,11 +21,10 @@ import DeliveryTableRow from './DeliveryTableRow';
  */
 const DeliveryTable = ({
   delivery,
-  dict,
 }: {
   delivery: IProductsEntity;
-  dict: IAttributeValues;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);
@@ -37,7 +36,8 @@ const DeliveryTable = ({
 
   // `order_info_*_placeholder` отсутствуют в `static_content` — используем
   // существующие `time_text` / `address_text` (проверено через inspect-api).
-  const { time_text, address_text } = dict;
+  const timeText = t('time_text', 'Time');
+  const addressText = t('address_text', 'Address');
 
   const attrs = data?.attributes.filter(
     (attr: IFormAttribute) => attr.marker !== 'time2',
@@ -103,18 +103,13 @@ const DeliveryTable = ({
                     <CalendarIcon />
                   </span>
                 }
-                label={(time_text?.value as string) ?? 'Time'}
-                placeholder={(time_text?.value as string) ?? 'Time'}
+                label={timeText}
+                placeholder={timeText}
               />
             );
           }
           if (marker === 'delivery_address') {
-            return (
-              <AddressRow
-                key={i}
-                placeholder={(address_text?.value as string) ?? 'Address'}
-              />
-            );
+            return <AddressRow key={i} placeholder={addressText} />;
           }
           return;
         })}

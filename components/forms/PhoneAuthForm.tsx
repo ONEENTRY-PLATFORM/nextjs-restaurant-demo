@@ -1,18 +1,13 @@
 'use client';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { dictText } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
-
-type PhoneAuthFormProps = {
-  dict?: IAttributeValues;
-};
 
 /**
  * Форма sign-in по номеру телефона (по `cart_Sign_in_tel.html`).
@@ -20,10 +15,10 @@ type PhoneAuthFormProps = {
  * Поле телефона + кнопка SIGN IN + строка "Forgot Password?" + вторичная
  * кнопка CREATE AN ACCOUNT. На сабмит триггерит генерацию OTP в OneEntry через
  * `AuthProvider.generateCode('phone', ...)` и открывает форму Verification.
- * @param   {PhoneAuthFormProps} props - Пропсы компонента.
- * @returns {JSX.Element}              JSX формы.
+ * @returns {JSX.Element} JSX формы.
  */
-const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
+const PhoneAuthForm = (): JSX.Element => {
+  const t = useT();
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -69,7 +64,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
           htmlFor="phone_auth_number"
           className="font-normal text-[18px] text-custom_white"
         >
-          {dictText(dict, 'sign_in_phone_label', 'Phone number')}
+          {t('sign_in_phone_label', 'Phone number')}
         </label>
         <input
           id="phone_auth_number"
@@ -87,19 +82,19 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
         disabled={loading}
         className="cart_btn mt-42.5 bg-custom_btnorange uppercase hover:bg-brand-hover disabled:opacity-60"
       >
-        {loading ? '...' : dictText(dict, 'sign_in_text', 'Sign in')}
+        {loading ? '...' : t('sign_in_text', 'Sign in')}
       </button>
 
       <div className="mt-6.25 flex items-center justify-between">
         <p className="font-normal text-[18px] text-white">
-          {dictText(dict, 'forgot_password_text', 'Forgot Password?')}
+          {t('forgot_password_text', 'Forgot Password?')}
         </p>
         <button
           type="button"
           onClick={() => setComponent('ResetPasswordForm')}
           className="border-b border-b-brand pb-0.5 font-semibold text-[18px] text-brand"
         >
-          {dictText(dict, 'reset_password_text', 'Reset Password')}
+          {t('reset_password_text', 'Reset Password')}
         </button>
       </div>
 
@@ -108,7 +103,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
         onClick={() => setComponent('SignUpForm')}
         className="mt-12.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border border-brand bg-transparent text-center font-semibold text-[17px] text-brand hover_btn_white"
       >
-        {dictText(dict, 'create_account_text', 'CREATE AN ACCOUNT')}
+        {t('create_account_text', 'CREATE AN ACCOUNT')}
       </button>
 
       {error ? <ErrorMessage error={error} /> : null}

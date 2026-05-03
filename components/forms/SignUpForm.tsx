@@ -13,8 +13,8 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import { api, logInUser, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import type { FormProps } from '@/app/types/global';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import { typeError } from '@/components/utils';
 
@@ -24,17 +24,14 @@ import SubmitButton from './inputs/FormSubmitButton';
 
 /**
  * Форма SignUp
- * @param dict - объект с локализованными текстами
- * @param className - классы для стилизации
  */
-const SignUpForm = ({ dict }: FormProps): JSX.Element => {
+const SignUpForm = (): JSX.Element => {
+  const t = useT();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const { authenticate } = useContext(AuthContext);
   const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
-
-  const { sign_up_text, sign_in_text, create_account_text } = dict;
 
   // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
@@ -155,9 +152,9 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
               onClick={() => setComponent('SignInForm')}
               className="underline"
             >
-              {(sign_in_text?.value as string) || 'Sign in'}
+              {t('sign_in_text', 'Sign in')}
             </button>{' '}
-            {(create_account_text?.value as string) || 'Create account'}
+            {t('create_account_text', 'Create account')}
           </p>
         </div>
 
@@ -174,7 +171,7 @@ const SignUpForm = ({ dict }: FormProps): JSX.Element => {
           )}
         </div>
         <SubmitButton
-          title={(sign_up_text?.value as string) ?? ''}
+          title={t('sign_up_text', '')}
           isLoading={loading || isLoading}
           index={10}
         />

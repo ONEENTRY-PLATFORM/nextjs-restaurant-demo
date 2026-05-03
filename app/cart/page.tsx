@@ -2,11 +2,8 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import { getBlogBanners, getProductById } from '@/app/api';
-import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';
-
-import { getDictionary } from '../dictionaries';
 
 // Отключаем статический prerender — общая цепочка layout-ов включает
 // `useSearchParams()` (поисковая строка / bottom sheet фильтра), который Next.js
@@ -33,9 +30,6 @@ type ProductResponse = {
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
-  /** Получаем словарь и кладём в server provider */
-  const [dict] = ServerProvider('dict', await getDictionary());
-
   /** Получаем данные доставки (продукта) по id продукта */
   const response = await getProductById(83);
 
@@ -55,7 +49,6 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
     <section className="min-h-screen bg-black bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">
       <div className="mx-auto w-full max-w-97.5 px-4 md:max-w-175 lg:max-w-250 xl:max-w-323">
         <CartWizard
-          dict={dict}
           deliveryData={deliveryData as IProductsEntity}
           promoSidebar={<CartPromoSidebar banners={banners} />}
         />

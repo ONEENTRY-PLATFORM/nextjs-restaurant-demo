@@ -31,8 +31,8 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
     props.searchParams,
     props.params,
   ]);
-  /** Получаем словарь из API и проставляем server provider. */
-  const [dict] = ServerProvider('dict', await getDictionary());
+  /** Прогреваем кеш словаря в server provider. */
+  ServerProvider('dict', await getDictionary());
 
   /** Получаем текущую страницу по URL из API */
   const { page } = await getPageByUrl('services');
@@ -83,7 +83,6 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
           >
             <ProductsGridLayout
               productsLimit={productsLimit}
-              dict={dict}
               params={params}
               searchParams={searchParams ?? {}}
             />

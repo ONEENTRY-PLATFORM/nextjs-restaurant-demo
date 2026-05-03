@@ -11,6 +11,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
   addDeliveryToCart,
   addProductsToCart,
+  removeProduct,
   selectCartData,
   selectDeliveryData,
 } from '@/app/store/reducers/CartSlice';
@@ -92,6 +93,21 @@ const CartPage = ({
       dispatch(addDeliveryToCart(deliveryData));
     }
   }, [deliveryData]);
+
+  // Чистим stale id из persist-корзины: если в OneEntry продукта больше нет
+  // (404 в `getProductsByIds`), он не попадает в `data` — соответствующий
+  // entry в `productsData` навсегда останется в localStorage и при каждом
+  // маунте будет шуметь в network 404'ом. Удаляем такие записи разово после
+  // загрузки.
+  useEffect(() => {
+    if (!data) return;
+    const returnedIds = new Set(data.map((p: IProductsEntity) => p.id));
+    for (const entry of productsCartData) {
+      if (!returnedIds.has(entry.id)) {
+        dispatch(removeProduct(entry.id));
+      }
+    }
+  }, [data]);
 
   // добавляем продукты в slice корзины
   useEffect(() => {

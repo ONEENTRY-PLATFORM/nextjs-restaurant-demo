@@ -62,12 +62,7 @@ const buildStepTitles = (
   error: 'Error',
 });
 
-// Отслеживает брейкпоинт md+ (768px) на клиенте, чтобы рендерить
-// тело шага ровно в одном месте — инлайн на десктопе или попап на мобиле —
-// без двойного маунта компонентов StepXXX (у каждого свой state /
-// effects). useSyncExternalStore читает `matchMedia` синхронно на
-// первом клиентском рендере, поэтому desktop-юзер сразу попадает в инлайн-режим без
-// мгновенного попап-флеша. SSR возвращает `false` (mobile-first).
+// Отслеживает брейкпоинт md+ (768px) на клиенте, чтобы рендерить тело шага ровно в одном месте
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -100,9 +95,6 @@ const useIsMdUp = (): boolean =>
  *     становятся "Cart / <Step>" с кликабельным "Cart" для возврата.
  *   - Мобила: фуллскрин-попап (`cart_*.html`).
  *
- * Поддерево корзины остаётся примонтированным между всеми переходами (видимость
- * переключается через CSS), чтобы GSAP-анимации монтирования на ProductAnimations /
- * TableRowAnimations не проигрывались заново при шагах вперёд и назад.
  * @param   {CartWizardProps} props - Пропсы wizard.
  * @returns {JSX.Element}           JSX wizard для текущего шага.
  */
@@ -128,9 +120,7 @@ const CartWizard = ({
   // Видимость обёртки корзины
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
-  // Десктопные хлебные крошки — остаются "Cart", пока находимся на экране корзины или
-  // под auth-попапом; переключаются на "Cart / <Step>", когда активен инлайн-шаг,
-  // чтобы пользователь мог кликнуть по "Cart" для возврата.
+  // Десктопные хлебные крошки
   const showStepInBreadcrumb = !isCartStep && !isAuthPopup;
 
   const stepBody = (
@@ -200,7 +190,7 @@ const CartWizard = ({
 
       {showPopup && (
         <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-[10px]">
-          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-[10px]">
+          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 min-h-140 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-[10px]">
             {/* Хедер попапа — назад / заголовок / закрыть */}
             <div className="flex items-center justify-between md:mb-2">
               <button
@@ -222,9 +212,7 @@ const CartWizard = ({
             </div>
 
             {/* Панель контента шага. */}
-            <div className="rounded-[20px] bg-ink/80 px-5 py-6.25 backdrop-blur-[10px] md:rounded-none md:bg-transparent md:p-0 md:backdrop-blur-none">
-              {stepBody}
-            </div>
+            <div className="px-5 py-6.25 pb-25">{stepBody}</div>
           </div>
         </div>
       )}

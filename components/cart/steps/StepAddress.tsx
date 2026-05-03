@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
+import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
 
@@ -11,7 +12,7 @@ import {
   selectDeliveryData,
   setDeliveryData,
 } from '@/app/store/reducers/CartSlice';
-import { setStep } from '@/app/store/reducers/OrderSlice';
+import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
 
@@ -19,6 +20,21 @@ import PencilIcon from '@/components/icons/pencil';
 // канонический, используется в других местах корзины (см. components/layout/cart/
 // index.tsx); остальные — fallback, если админ переименовал поле.
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
+const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
+
+const findUserField = (
+  formData: ReadonlyArray<FormDataType> | undefined,
+  markers: readonly string[],
+): string => {
+  if (!formData) return '';
+  for (const marker of markers) {
+    const entry = formData.find(
+      (el) => (el as { marker?: string }).marker === marker,
+    ) as { value?: unknown } | undefined;
+    if (typeof entry?.value === 'string' && entry.value) return entry.value;
+  }
+  return '';
+};
 
 type DeliveryMode = 'asap' | 'scheduled';
 
@@ -40,12 +56,8 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
   // Пре-заполняем адрес из профиля авторизованного пользователя, если
   // пользователь ещё не ввёл его в этом checkout. `formData` хранит
   // значения атрибутов OneEntry; маркеры проверяются в порядке приоритета.
-  const userAddress = user?.formData
-    ? (ADDRESS_MARKERS.map((marker) => {
-        const entry = user.formData.find((el) => el.marker === marker);
-        return typeof entry?.value === 'string' ? entry.value : '';
-      }).find(Boolean) ?? '')
-    : '';
+  const userAddress = findUserField(user?.formData, ADDRESS_MARKERS);
+  const userPhone = findUserField(user?.formData, PHONE_MARKERS);
   const [address, setAddress] = useState(
     (delivery?.address as string | undefined) || userAddress,
   );
@@ -63,6 +75,19 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
             : scheduleAt || (delivery?.time as string | undefined) || '',
       }),
     );
+    // Пушим обязательные поля формы `delivery_order` в order.formData —
+    // без них createOrder возвращает 400 (`required values are missing or
+    // incorrect: contact_phone` / `delivery_address`). Телефон берём из
+    // профиля пользователя (он на этом шаге уже авторизован — иначе
+    // визард не добрался бы до address).
+    dispatch(
+      addData({ marker: 'delivery_address', type: 'string', value: address }),
+    );
+    if (userPhone) {
+      dispatch(
+        addData({ marker: 'contact_phone', type: 'string', value: userPhone }),
+      );
+    }
     dispatch(setStep('order'));
   };
 

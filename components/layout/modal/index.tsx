@@ -93,8 +93,6 @@ const Modal = ({
 
   const title = useTitleData({ dict, component });
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform
-  // от хука не перебивался tween-ом open/close-анимации.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
   const isAuthSubStep = AUTH_FLOW_SUB_STEPS.has(component);
@@ -115,7 +113,7 @@ const Modal = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] min-h-[60vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 backdrop-blur-[10px] p-6 px-16 pt-24 pb-19 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-w-full md:-translate-x-1/2 md:-translate-y-1/2 md:overflow-hidden md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:w-137.5 lg:p-10 lg:px-24 lg:pt-24 xl:px-24"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] min-h-140 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 backdrop-blur-[10px] p-6 px-16 pt-24 pb-19 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-w-full md:-translate-x-1/2 md:-translate-y-1/2 md:overflow-hidden md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:w-137.5 lg:p-10 lg:px-24 lg:pt-24 xl:px-24"
       >
         {/* Шапка попапа — back / title / close. Повторяет паттерн
             `static-html/pk_sing_in.html` (десктоп) и `cart_Sign_in_tel.html`

@@ -6,11 +6,12 @@ import type {
   IOrderByMarkerEntity,
   IOrderProducts,
 } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 import type { BlogBanner } from '@/app/api';
-import { getAllOrdersByMarker } from '@/app/api';
+import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
@@ -98,11 +99,13 @@ const OrderCard = ({
   expanded,
   onToggle,
   isHistory,
+  productsById,
 }: {
   order: IOrderByMarkerEntity;
   expanded: boolean;
   onToggle: () => void;
   isHistory: boolean;
+  productsById: Map<number, IProductsEntity>;
 }): JSX.Element => {
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
@@ -133,7 +136,7 @@ const OrderCard = ({
           {!isHistory && (
             <button
               type="button"
-              className="mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+              className="mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
               Contact with the courier
             </button>
@@ -144,6 +147,7 @@ const OrderCard = ({
                 key={`${p.id}-${idx}`}
                 product={p}
                 first={idx === 0}
+                fullProduct={productsById.get(p.id)}
               />
             ))}
             <div className="mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
@@ -188,33 +192,52 @@ const OrderCard = ({
 const OrderLineItem = ({
   product,
   first,
+  fullProduct,
 }: {
   product: IOrderProducts;
   first: boolean;
+  fullProduct?: IProductsEntity | undefined;
 }): JSX.Element => {
-  const previewSrc = product.previewImage?.previewLink ?? null;
+  // `previewImage` в snapshot заказа часто null (зависит от настроек CMS на момент
+  // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
+  // подгружаемого по id через RTK на уровне `OrdersList`.
+  const coverFromEntity = (
+    fullProduct?.attributeValues?.cover?.value as
+      | { downloadLink?: string }
+      | undefined
+  )?.downloadLink;
+  const previewSrc =
+    product.previewImage?.previewLink ?? coverFromEntity ?? null;
+  const href = '/shop/product/' + product.id;
   return (
     <div
       className={
         'flex items-center justify-between gap-3.75 ' + (first ? '' : 'mt-5')
       }
     >
-      {previewSrc ? (
-        <Image
-          src={previewSrc}
-          alt={product.title}
-          width={69}
-          height={69}
-          className="h-17.25 w-17.25 object-cover"
-        />
-      ) : (
-        <div
-          aria-hidden="true"
-          className="h-17.25 w-17.25 shrink-0 rounded bg-custom_gray_pk"
-        />
-      )}
-      <div className="flex w-55 flex-col justify-between lg:w-97.5 xl:w-122.5">
-        <p className="text-sm font-normal text-white">{product.title}</p>
+      <Link href={href} aria-label={product.title} className="shrink-0">
+        {previewSrc ? (
+          <Image
+            src={previewSrc}
+            alt={product.title}
+            width={69}
+            height={69}
+            className="h-17.25 w-17.25 object-cover"
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="h-17.25 w-17.25 shrink-0 rounded bg-custom_gray_pk"
+          />
+        )}
+      </Link>
+      <div className="flex min-w-0 flex-1 flex-col justify-between">
+        <Link
+          href={href}
+          className="text-sm font-normal text-white hover:text-brand"
+        >
+          {product.title}
+        </Link>
         <div className="flex items-center gap-2.5">
           <p className="text-xl font-bold text-brand">
             {UsePrice({ amount: product.price })}
@@ -281,6 +304,24 @@ const OrdersList = ({
     orders.forEach((o) => (isHistoryOrder(o) ? h.push(o) : a.push(o)));
     return { active: a, history: h };
   }, [orders]);
+
+  // Подгружаем актуальные сущности продуктов для всех позиций во всех заказах,
+  // чтобы взять `cover.value.downloadLink` как фолбэк, когда snapshot заказа
+  // вернул `previewImage: null`. RTK дедуплицирует с другими местами (cart).
+  const productIds = useMemo(() => {
+    const set = new Set<number>();
+    orders.forEach((o) => o.products.forEach((p) => set.add(p.id)));
+    return Array.from(set);
+  }, [orders]);
+  const { data: fetchedProducts } = useGetProductsByIdsQuery(
+    { items: productIds },
+    { skip: productIds.length === 0 },
+  );
+  const productsById = useMemo(() => {
+    const map = new Map<number, IProductsEntity>();
+    (fetchedProducts ?? []).forEach((p) => map.set(p.id, p));
+    return map;
+  }, [fetchedProducts]);
 
   useEffect(() => {
     if (active.length === 0 && history.length === 0) return;
@@ -360,6 +401,7 @@ const OrdersList = ({
               expanded={expandedIds.has(o.id)}
               onToggle={() => toggle(o.id)}
               isHistory={false}
+              productsById={productsById}
             />
           ))
         )}
@@ -376,6 +418,7 @@ const OrdersList = ({
               expanded={expandedIds.has(o.id)}
               onToggle={() => toggle(o.id)}
               isHistory
+              productsById={productsById}
             />
           ))
         )}
@@ -386,8 +429,10 @@ const OrdersList = ({
   return (
     <section>
       <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-        <div className="md:w-1/2">{leftColumn}</div>
-        <aside className="hidden md:flex md:w-1/2 md:flex-col md:gap-10">
+        {/* `min-w-0` + `shrink-0` фиксируют 50/50: без них flex-дети раскрытой
+            позиции заказа могут раздуть левую колонку и забрать ширину у правой. */}
+        <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
+        <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
           {promoBanners
             .filter((b) => b.mobileImage)
             .map((b) => (

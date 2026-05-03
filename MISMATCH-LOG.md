@@ -30,6 +30,7 @@ _Активных P0/P1 пунктов нет._
 ---
 
 ## Severity
+
 - **P0** — структура DOM/функциональность сломана (нет блока, не работает кнопка).
 - **P1** — заметный визуальный мискшоп (отступы/цвета на брендовых элементах, неправильные классы).
 - **P2** — мелочи (px-токены вместо именованных, шрифты в hero, hover-эффекты).
@@ -468,8 +469,6 @@ _Активных P0/P1 пунктов нет._
 
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
 
-- **Personal** ✅ — поля First Name / Second Name / Phone / E-mail / Password префилятся из `AuthContext.user.formData` (`name`, `second_name`/`lastname`, `phone`, `email`). Кнопка **Edit** (`type="submit"`) сохраняет через `api.Users.updateUser` по паттерну [components/forms/UserForm.tsx](components/forms/UserForm.tsx) (form-marker `user`): `formData` собирается из видимых атрибутов формы кроме password-полей; `authData` отправляется только если введён новый password; `notificationData.email`/`phoneSMS` берутся из соответствующих edits/`user.formData`. После успеха — `refreshUser()` + toast «Data saved!». См. [components/profile/ProfilePopup.tsx:109-141](components/profile/ProfilePopup.tsx#L109-L141).
-
 - **Address** — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. **Локально**, не персистится. Нужно завести в `user`-форме атрибут:
 
   | marker      | type | title                    | notes                                                        |
@@ -490,7 +489,40 @@ _Активных P0/P1 пунктов нет._
 
 `PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). PayPal/cash работают через `addPaymentMethod`; карточная оплата теперь активна в UI ([StepPayment](components/cart/steps/StepPayment.tsx) → [StepAddCard](components/cart/steps/StepAddCard.tsx) per `cart_add_card.html`), но завершает заказ синтетическим `card:<id>` — нужно создать `card`-payment-account и подключить реальный gateway, иначе платёж в OneEntry не пройдёт.
 
-Дополнительно: ✅ Промокоды в [StepOrder](components/cart/steps/StepOrder.tsx) (per `cart_Order.html`) подключены через OneEntry Discounts API. Кнопка «Apply Code» вызывает `api.Orders.previewOrder({ products, couponCode })` ([useApplyCoupon](app/api/hooks/useApplyCoupon.ts)) — сервер сам валидирует код и считает реальную скидку с учётом всех условий (`MIN_CART_AMOUNT`, `applicability: TO_PRODUCT | TO_ORDER`, `discountType: PERCENT | FIXED_AMOUNT`, `maxAmount`). Применённый код хранится в `OrderSlice.appliedCoupon`, отображается строкой «Discount: −X» и пробрасывается в `Orders.createOrder({ couponCode })` ([useCreateOrder.ts](app/api/hooks/useCreateOrder.ts)).
+> ❓ **Уточнить у клиента (срочно):** аккаунт `cash` (id=2) в `Payments → Accounts` имеет `isUsed: false` — он **не привязан к orders-storage `delivery_order`**, поэтому при выборе «cash» в чекауте API возвращает 400 `Payment account identifier is wrong or payment accounts are not defined`. Нужно открыть в админке OneEntry orders-storage `delivery_order` и в списке Payment Accounts добавить `cash` (по аналогии с `stripe`, у которого `isUsed: true`). После этого `useGetAccountsQuery` всё равно отдаст обе записи (это глобальный список), но `createOrder` пройдёт. Если планируется только Stripe — убрать `cash` из visible accounts (`isVisible: false`) либо скрывать его в [StepPayment.tsx](components/cart/steps/StepPayment.tsx) фильтром по `isUsed`.
+
+#### C.6.1. Форма `delivery_order` — обязательные поля
+
+Через MCP подтверждено, что форма `delivery_order` имеет следующие атрибуты:
+
+| marker             | type         | validator             | status |
+|--------------------|--------------|-----------------------|--------|
+| `delivery_address` | string       | required (strict)     | ✅     |
+| `contact_phone`    | string       | required (strict)     | ✅     |
+| `floor`            | string       | required (без strict) | ❌     |
+| `delivery_time`    | timeInterval | —                     | ❌     |
+| `comment`          | string       | —                     | ✅     |
+| `apartment_number` | string       | —                     | ❌     |
+| `alt_phone`        | string       | —                     | ✅     |
+| `addresses`        | json         | —                     | ❌     |
+
+Как заполняется в коде:
+
+- `delivery_address` — [StepAddress.tsx:80](components/cart/steps/StepAddress.tsx#L80), `addData` по нажатию Continue.
+- `contact_phone` — [StepAddress.tsx:84](components/cart/steps/StepAddress.tsx#L84), берём `phone` / `phone_reg` / `contact_phone` из `user.formData`.
+- `comment`, `alt_phone` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) (`alt_phone` — только если включён чекбокс «another person»).
+- `delivery_time` — кодом отправляется маркер `time` (cart slice), а не `delivery_time` — поле игнорируется. [useCreateOrder.ts:87](app/api/hooks/useCreateOrder.ts#L87) фильтрует `time` из formData.
+- `floor`, `apartment_number`, `addresses` — UI пока не собирает (см. C.5 про адресную книгу юзера).
+
+**Открытые задачи:**
+
+- `floor` — добавить поле в [StepAddress.tsx](components/cart/steps/StepAddress.tsx) рядом со street (или брать из адресной книги юзера, см. C.5). Иначе при `requiredValidator: { strict: true }` (если клиент его выставит) — будет 400 после `contact_phone`.
+- `delivery_time` — пробрасывать выбранный slot/datetime в `addData({ marker: 'delivery_time', type: 'timeInterval', value: <ISO range> })`. Сейчас «40-45 min» / scheduled-input нигде не сохраняются в OneEntry, только в локальном Redux.
+- `apartment_number` — опциональное поле, можно добавить рядом с floor.
+
+> ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` / `delivery_time` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
+
+Дополнительно:
 
 Что нужно настроить в админке OneEntry для работающего промо:
 
@@ -505,12 +537,6 @@ _Активных P0/P1 пунктов нет._
 
 #### C.7.1. Pages — реальные атрибуты
 
-- **`support`** — ✅ атрибуты добавлены и заполнены в `en_US`: `support_title` (string), `support_description` (text), `support_phone` (string), `support_whatsapp_url` (string), `support_email` (string). Код в [app/support/page.tsx](app/support/page.tsx) читает их напрямую без fallback'ов на dictionary. ⚠️ В `ru_RU` атрибуты пустые — нужно перевести (или подтвердить, что en-only).
-- **`services`** — ✅ кроме `service_secondary_href` (пусто). Хардкоды/dict-фолбэки убраны из [app/service/page.tsx](app/service/page.tsx) — все поля читаются напрямую. Заполнено в `en_US`: `service_logo` (SVG), `service_bg_image` (PNG), `service_primary_cta` = `FOOD DELIVERY`, `service_primary_href` = `/shop`, `service_secondary_cta` = `BOOK A TABLE`. Осталось: `service_secondary_href` = `/reservation` — без него вторая кнопка «BOOK A TABLE» не рендерится (graceful fallback).
-
-- **`bookings`** — только `menu_icon`. Код раньше читал `reservation_hero_image`, `reservation_title`, `reservation_description` — **исправлено**: hero теперь берётся из `restaurants.photos[0]`, `restaurants.description`, `localizeInfos.title`.
-- **`restaurants`** — `address`, `lat`, `long`, `description` (text), `photos` (groupOfImages), `comforts` (list), `schedule` (timeInterval), `menu_icon`, `phone`. Раньше читался `parent.attributeValues.title.value` — **исправлено** на `parent.localizeInfos.title`.
-- **`restaurants/*`** (`restaurant_1/2/3`) — те же что у `restaurants`. Маркер `restaurant_address` — **нет**, исправлено: используется `address`.
 - **`menu/*`** (`appetizers`, `dinner`, `soup`, `fresh_juice`, …) — `icon` (заполнен), `service_*` (пустые, унаследовано из шаблона).
 - **`filters`** — `cooking_time_filters` (json), `preferences_filters` (json), `price_filters` (string).
 - **`blog/*`** — `bg_image`, `banner`, `description`, `action_type`. См. C.2.3. `title`, `promo_image`, `promo_title`, `promo_subtitle`, `promo_cta` — **исправлено** в предыдущем раунде.
@@ -563,21 +589,4 @@ _Активных P0/P1 пунктов нет._
 
 Сейчас в админке `user_menu` уже создан, но содержит **не те** пункты:
 
-| pageUrl | проблема |
-| --- | --- |
-| `cart` | Корзина — отдельная иконка в шапке, в проф. дропдауне быть не должна |
-| `profile` | OK (= ссылка на `/profile`, страница Personal) |
-
-Нужно перенастроить пункты до:
-
-| pageUrl | menuTitle | href в UI | соответствует |
-| --- | --- | --- | --- |
-| `profile` | Personal | `/profile` | [app/profile/page.tsx](app/profile/page.tsx) |
-| `profile/orders` (или `orders`) | Orders | `/profile/orders` | [app/profile/orders/page.tsx](app/profile/orders/page.tsx) |
-| `profile/favorites` (или `favorites`) | Favorites | `/profile/favorites` | [app/profile/favorites/page.tsx](app/profile/favorites/page.tsx) |
-
 > ⚠️ В коде сейчас линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Это значит, что для совпадения с реальными Next.js-маршрутами `pageUrl` в CMS должен быть **полным** путём без ведущего `/` — например, `profile/orders`, а не просто `orders`. Если такой формат не подходит OneEntry — альтернатива: переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` будут совпадать. Решение за командой админки.
-
-После того как пункты заведены — `useGetMenuByMarkerQuery({ marker: 'user_menu' })` подтянет их автоматически, фоллбеков на хардкод в коде нет.
-
-`<LogoutMenuItem />` пишется в дропдауне последним пунктом — это UI-only кнопка (она не управляется через CMS-меню, потому что вызывает client-side `logOutUser` + redirect, а не навигацию по странице).

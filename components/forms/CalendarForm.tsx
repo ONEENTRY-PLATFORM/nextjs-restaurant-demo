@@ -13,6 +13,7 @@ import {
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
+import { dictText } from '@/components/utils';
 
 type PickerMode = 'date' | 'time' | null;
 
@@ -82,7 +83,7 @@ const CalendarForm = ({
           className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
         >
           <span className="cart_label">
-            {(dict?.time_text?.value as string | undefined) ?? 'Time'}
+            {dictText(dict, 'time_text', 'Time')}
           </span>
           <span className="text-lg text-paper">{time || 'Select time'}</span>
         </button>
@@ -93,7 +94,7 @@ const CalendarForm = ({
           disabled={!time || !date}
           className="cart_btn disabled:opacity-60"
         >
-          {(dict?.apply_text?.value as string | undefined) ?? 'Apply'}
+          {dictText(dict, 'apply_text', 'Apply')}
         </button>
 
         {picker === 'date' ? (

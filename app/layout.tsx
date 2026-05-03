@@ -86,7 +86,7 @@ export default async function RootLayout({
               <BottomMenu />
               <CartPopup />
               <FavoritesPopup dict={dict} />
-              <ProfilePopup />
+              <ProfilePopup dict={dict} />
               <BookingsPopup />
               <ReservationPopup dict={dict} />
               <Modal dict={dict} />

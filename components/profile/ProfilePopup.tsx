@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
 import { useCallback, useContext, useMemo, useRef, useState } from 'react';
@@ -13,6 +14,7 @@ import ProfileIcon from '@/components/icons/profile';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { dictText } from '@/components/utils';
 
 import ProfilePopupAnimations from './animations/ProfilePopupAnimations';
 
@@ -71,7 +73,11 @@ const resolveInputType = (attr: IFormAttribute): string => {
  * сохранена — попап является дополнительной точкой входа.
  * @returns {JSX.Element} JSX drawer-а профиля.
  */
-const ProfilePopup = (): JSX.Element => {
+const ProfilePopup = ({
+  dict,
+}: {
+  dict?: IAttributeValues | undefined;
+} = {}): JSX.Element => {
   const { open, component, setOpen, setTransition } =
     useContext(OpenDrawerContext);
   const { user, refreshUser } = useContext(AuthContext);
@@ -282,7 +288,9 @@ const ProfilePopup = (): JSX.Element => {
                 width={17}
                 height={19}
               />
-              <p className="text-xl text-paper">Address</p>
+              <p className="text-xl text-paper">
+                {dictText(dict, 'address_text', 'Address')}
+              </p>
               <Image
                 src="/images/icons/chevron-up.svg"
                 alt=""
@@ -377,7 +385,7 @@ const ProfilePopup = (): JSX.Element => {
                     type="submit"
                     className="hover_btn_transp mt-5 flex h-6.75 items-center justify-center rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
                   >
-                    Apply
+                    {dictText(dict, 'apply_text', 'Apply')}
                   </button>
                 </form>
               </div>

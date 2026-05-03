@@ -13,6 +13,7 @@ import { submitReservation } from '@/app/actions/reservation';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
+import { dictText } from '@/components/utils';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
@@ -223,11 +224,14 @@ const ReservationForm = ({
     return (
       <div className="mx-auto max-w-107.5 rounded-xl bg-ink/60 p-6 text-center">
         <h3 className="mb-2 font-bold text-[20px] uppercase text-brand">
-          {(dict?.info_text?.value as string) ?? 'Table reserved!'}
+          {dictText(dict, 'info_text', 'Table reserved!')}
         </h3>
         <p className="text-paper/90">
-          {(dict?.reservation_confirmed?.value as string) ??
-            'We will contact you shortly to confirm.'}
+          {dictText(
+            dict,
+            'reservation_confirmed',
+            'We will contact you shortly to confirm.',
+          )}
         </p>
       </div>
     );
@@ -291,7 +295,7 @@ const ReservationForm = ({
             className="font-normal text-[16px] text-paper"
           >
             {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
-              'Preferences'}
+              dictText(dict, 'preferences_text', 'Preferences')}
           </label>
           <textarea
             id={TEXT_MARKER}
@@ -334,7 +338,7 @@ const ReservationForm = ({
           disabled={loading}
           className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
         >
-          {loading ? '...' : ((dict?.submit_text?.value as string) ?? 'Book')}
+          {loading ? '...' : dictText(dict, 'submit_text', 'Book')}
         </button>
       </div>
 

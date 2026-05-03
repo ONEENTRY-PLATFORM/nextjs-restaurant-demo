@@ -28,6 +28,7 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { dictText } from '@/components/utils';
 
 import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
@@ -54,8 +55,7 @@ const FavoritesPopup = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не перебивался `yPercent`-tween-ом.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const products = (data ?? []) as IProductsEntity[];
-  const addToCartLabel =
-    (dict?.add_to_cart?.value as string | undefined) ?? 'Add to cart';
+  const addToCartLabel = dictText(dict, 'add_to_cart', 'Add to cart');
 
   return (
     <FavoritesPopupAnimations>

@@ -7,6 +7,7 @@ import { useContext, useState } from 'react';
 import { submitReview } from '@/app/actions/review';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { dictText } from '@/components/utils';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import StarRating from './StarRating';
@@ -43,8 +44,7 @@ const ReviewForm = ({
   productId: number;
   dict?: IAttributeValues;
 }): JSX.Element => {
-  const leaveReviewLabel =
-    (dict?.leave_review?.value as string | undefined) ?? 'Leave a review';
+  const leaveReviewLabel = dictText(dict, 'leave_review', 'Leave a review');
   const { isAuth, user } = useContext(AuthContext);
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
 

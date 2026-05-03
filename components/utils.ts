@@ -1,7 +1,31 @@
-import type { IError } from 'oneentry/dist/base/utils';
+import type { IAttributeValues, IError } from 'oneentry/dist/base/utils';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
+
+/**
+ * Достаёт строковое значение из словаря `static_content` по маркеру с
+ * fallback'ом. Канонический способ читать `dict?.<marker>?.value` из
+ * компонентов — даёт `string` (а не `string | undefined`) и единообразно
+ * сужает тип атрибута. Используется везде, где компонент принимает проп
+ * `dict?: IAttributeValues` (см. [app/dictionaries.ts](app/dictionaries.ts)).
+ *
+ * @example
+ *   const title = dictText(dict, 'leave_review_button', 'Leave a review');
+ *
+ * @param   {IAttributeValues|undefined} dict     - Словарь (атрибут-сет `static_content`).
+ * @param   {string}                     marker   - Маркер атрибута.
+ * @param   {string}                     fallback - Значение, если маркера/строкового value нет.
+ * @returns {string}                              Локализованная строка либо `fallback`.
+ */
+export const dictText = (
+  dict: IAttributeValues | undefined,
+  marker: string,
+  fallback: string,
+): string => {
+  const raw = (dict?.[marker] as { value?: unknown } | undefined)?.value;
+  return typeof raw === 'string' ? raw : fallback;
+};
 
 // UsePrice — форматирование цены
 export const UsePrice = ({ amount }: { amount: number | string }): string => {

@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { dictText } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 
@@ -68,7 +69,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
           htmlFor="phone_auth_number"
           className="font-normal text-[18px] text-custom_white"
         >
-          {(dict?.sign_in_phone_label?.value as string) ?? 'Phone number'}
+          {dictText(dict, 'sign_in_phone_label', 'Phone number')}
         </label>
         <input
           id="phone_auth_number"
@@ -84,21 +85,21 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
       <button
         type="submit"
         disabled={loading}
-        className="cart_btn mt-42.5 bg-custom_btnorange hover:bg-brand-hover disabled:opacity-60"
+        className="cart_btn mt-42.5 bg-custom_btnorange uppercase hover:bg-brand-hover disabled:opacity-60"
       >
-        {loading ? '...' : 'SIGN IN'}
+        {loading ? '...' : dictText(dict, 'sign_in_text', 'Sign in')}
       </button>
 
       <div className="mt-6.25 flex items-center justify-between">
         <p className="font-normal text-[18px] text-white">
-          {(dict?.forgot_password_text?.value as string) ?? 'Forgot Password?'}
+          {dictText(dict, 'forgot_password_text', 'Forgot Password?')}
         </p>
         <button
           type="button"
           onClick={() => setComponent('ResetPasswordForm')}
           className="border-b border-b-brand pb-0.5 font-semibold text-[18px] text-brand"
         >
-          {(dict?.reset_password_text?.value as string) ?? 'Reset Password'}
+          {dictText(dict, 'reset_password_text', 'Reset Password')}
         </button>
       </div>
 
@@ -107,7 +108,7 @@ const PhoneAuthForm = ({ dict }: PhoneAuthFormProps): JSX.Element => {
         onClick={() => setComponent('SignUpForm')}
         className="mt-12.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border border-brand bg-transparent text-center font-semibold text-[17px] text-brand hover_btn_white"
       >
-        {(dict?.create_account_text?.value as string) ?? 'CREATE AN ACCOUNT'}
+        {dictText(dict, 'create_account_text', 'CREATE AN ACCOUNT')}
       </button>
 
       {error ? <ErrorMessage error={error} /> : null}

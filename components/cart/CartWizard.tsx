@@ -18,8 +18,8 @@ import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartPage from '@/components/layout/cart';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
+import { dictText } from '@/components/utils';
 
-import StepAddCard from './steps/StepAddCard';
 import StepAddress from './steps/StepAddress';
 import StepOrder from './steps/StepOrder';
 import StepPayment from './steps/StepPayment';
@@ -48,16 +48,11 @@ const buildStepTitles = (
 ): Record<CheckoutStep, string> => ({
   cart: 'Cart',
   time: 'Select time',
-  signin: (dict?.sign_in_text?.value as string | undefined) ?? 'Sign in',
-  verification:
-    (dict?.verification_text?.value as string | undefined) ?? 'Verification',
-  address:
-    (dict?.address_text?.value as string | undefined) ?? 'Delivery address',
+  signin: dictText(dict, 'sign_in_text', 'Sign in'),
+  verification: dictText(dict, 'verification_text', 'Verification'),
+  address: dictText(dict, 'address_text', 'Delivery address'),
   order: 'Order',
-  payment:
-    (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
-  add_card:
-    (dict?.select_payment_text?.value as string | undefined) ?? 'Payment',
+  payment: dictText(dict, 'select_payment_text', 'Payment'),
   success: 'Success',
   error: 'Error',
 });
@@ -81,7 +76,7 @@ const useIsMdUp = (): boolean =>
  * `cart` → `time` (пропускается, если уже выбрано через попап календаря)
  *   → `signin` (авто-скип, если авторизован; ветка phone → `verification`)
  *   → `address` → `order` (review + promo) → `payment`
- *   → `add_card` (только если выбран метод card) → `success` | `error`
+ *   → `success` | `error`
  *
  * Правила рендера (по десктоп-вариантам `pk_*.html` из static-html):
  * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа
@@ -131,7 +126,6 @@ const CartWizard = ({
       {step === 'address' && <StepAddress dict={dict} />}
       {step === 'order' && <StepOrder dict={dict} />}
       {step === 'payment' && <StepPayment dict={dict} />}
-      {step === 'add_card' && <StepAddCard />}
       {step === 'success' && <StepResult variant="success" />}
       {step === 'error' && <StepResult variant="error" />}
     </>

@@ -15,7 +15,6 @@ export type CheckoutStep =
   | 'address'
   | 'order'
   | 'payment'
-  | 'add_card'
   | 'success'
   | 'error';
 

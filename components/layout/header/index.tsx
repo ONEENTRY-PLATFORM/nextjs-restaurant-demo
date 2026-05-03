@@ -16,6 +16,7 @@ import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import PhoneIcon from '@/components/icons/phone.svg';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
+import { dictText } from '@/components/utils';
 
 import CategoriesScroller, {
   type PreferenceOption,
@@ -100,7 +101,9 @@ const Header = async (): Promise<JSX.Element> => {
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
-              <FilterButton />
+              <FilterButton
+                label={dictText(dict, 'open_filters_button', 'Open filters')}
+              />
             </div>
           </div>
         </div>
@@ -136,7 +139,9 @@ const Header = async (): Promise<JSX.Element> => {
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
-              <FilterButton />
+              <FilterButton
+                label={dictText(dict, 'open_filters_button', 'Open filters')}
+              />
             </div>
           </header>
 

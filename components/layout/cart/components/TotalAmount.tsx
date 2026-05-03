@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
-import { UsePrice } from '@/components/utils';
+import { dictText, UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
@@ -69,7 +69,7 @@ const TotalAmount = ({
 
   return (
     <TableRowAnimations className={className} index={12}>
-      {(dict?.total_amount_text?.value as string | undefined) ?? 'Total'}:{' '}
+      {dictText(dict, 'total_amount_text', 'Total')}:{' '}
       {UsePrice({ amount: cartTotal })}
     </TableRowAnimations>
   );

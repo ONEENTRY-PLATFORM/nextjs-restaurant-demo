@@ -8,9 +8,17 @@ import FilterIcon from '@/components/icons/filter';
 /**
  * FilterButton — триггер модалки фильтра. Монтируется и в десктопном, и в
  * мобильном header. Открывает {@link FilterModal} через OpenDrawerContext.
- * @returns {JSX.Element} JSX кнопки фильтра.
+ * @param   {object} props          - Пропсы кнопки.
+ * @param   {string} [props.label]  - Подпись для скринридера; по умолчанию
+ *                                    «Open filters». Передаётся из шапки
+ *                                    через `dict.open_filters_button.value`.
+ * @returns {JSX.Element}           JSX кнопки фильтра.
  */
-const FilterButton = (): JSX.Element => {
+const FilterButton = ({
+  label = 'Open filters',
+}: {
+  label?: string;
+} = {}): JSX.Element => {
   const { setOpen, setComponent, setTransition } =
     useContext(OpenDrawerContext);
 
@@ -24,7 +32,7 @@ const FilterButton = (): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
-      aria-label="Open filters"
+      aria-label={label}
       className="cursor-pointer group bg-transparent border-0 p-0"
     >
       <FilterIcon />

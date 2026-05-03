@@ -2,30 +2,10 @@
 
 Единый журнал, объединяющий:
 
-- **Раздел A** — автоматические находки (закомментированный код, arbitrary px-значения).
 - **Раздел B** — ручная сверка вёрстки `static-html/` ↔ Next.js (что чинится правкой кода в этом репо).
 - **Раздел C** — пробелы в данных OneEntry (что нужно завести в админке `https://oe-restaurants.oneentry.cloud/`).
 
 Заполняется по мере ручной сверки. Правила работы — см. [CLAUDE.md §3, §7](CLAUDE.md).
-
-## Сводка (на 2026-04-30)
-
-| Раздел | Файлов | P0 | P1 | P2 | P3 |
-|---|---|---|---|---|---|
-| A. Автоматические находки | — | — | — | ~25 | ~190 |
-| B.1 Главная | 5 | — | — | — | — |
-| B.2 Карточка товара | 5 | — | — | — | — |
-| B.3 Каталог/категория | 6 | — | — | — | — |
-| B.4 Корзина и чекаут | 9 | — | — | — | 2 |
-| B.5 Профиль и попапы | 6 | — | — | — | 2 |
-| B.6 Резервация | 4 | — | — | 1 | — |
-| B.7 Поддержка/Service | 6 | — | — | — | 2 |
-| B.8 Промо | 3 | — | — | — | — |
-| C. OneEntry Admin Setup | — | — | — | — | — |
-
-### Топ-приоритет (P0/P1) — фиксить первыми
-
-_Активных P0/P1 пунктов нет._
 
 ---
 
@@ -58,7 +38,6 @@ _Активных P0/P1 пунктов нет._
 | [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx) | 9 |
 | [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx) | 8 |
 | [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) | 8 |
-| [components/cart/steps/StepAddCard.tsx](components/cart/steps/StepAddCard.tsx) | 7 |
 | [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx) | 6 |
 | [components/reviews/ReviewsSlideUpPanel.tsx](components/reviews/ReviewsSlideUpPanel.tsx) | 6 |
 | [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx) | 6 |
@@ -114,7 +93,6 @@ _Активных P0/P1 пунктов нет._
   - verification: [pk_verif.html](static-html/pk_verif.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_verif.html> · [cart_Verification.html](static-html/cart_Verification.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_Verification.html>
   - order: [pk_order.html](static-html/pk_order.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_order.html> · [cart_Order.html](static-html/cart_Order.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_Order.html>
   - payment: [cart_PAYMENT.html](static-html/cart_PAYMENT.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_PAYMENT.html>
-  - add_card: [cart_add_card.html](static-html/cart_add_card.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_add_card.html>
   - error: [cart_error_masseges.html](static-html/cart_error_masseges.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/cart_error_masseges.html>
 - 📁 Файлы проекта:
 [app/cart/page.tsx](app/cart/page.tsx)
@@ -125,7 +103,6 @@ _Активных P0/P1 пунктов нет._
 [components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx)
 [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx)
 [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx)
-[components/cart/steps/StepAddCard.tsx](components/cart/steps/StepAddCard.tsx)
 [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx)
 
 | # | Что не так | Файл | Severity |
@@ -312,27 +289,10 @@ _Активных P0/P1 пунктов нет._
 
 Хардкод-фразы (старые находки):
 
-- [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx): ✅ wired — `order_waiting_time`, `preferences_text`, `clear_all_filters_text` (через проп `dict` из [Header](components/layout/header/index.tsx)).
-- [components/reviews/ReviewForm.tsx](components/reviews/ReviewForm.tsx): ✅ wired — `leave_review` (через проп `dict`). «Your review» / «Your rating» / «Share experience» / «Camera» / «Gallery» — этих фраз в текущем UI нет (упрощённая форма: rating + textarea), маркеры зарезервированы на случай расширения.
-- [components/profile/FavoritesPopup.tsx](components/profile/FavoritesPopup.tsx): ✅ wired — aria-label `add_to_cart` (через проп `dict` из [layout.tsx](app/layout.tsx)).
 - [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): wired — `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text`. Хардкод (нет маркера): «Pay with» (PayPal label), «Credit & Debit Cards», placeholder «phone number» под чекбоксом.
 - [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) — STEP_TITLES уже подцеплены к `sign_in_text`/`verification_text`/`address_text`/`select_payment_text`. «Cart», «Select time», «Success», «Error» — нет соответствующих маркеров, оставлены хардкодом.
 
-#### C.4.1. Сначала переиспользовать существующие маркеры (новый маркер не нужен)
-
-В этих местах в коде стоит хардкод/fallback-литерал, но в `static_content` уже есть подходящий маркер — нужно просто прокинуть `dict` и снять литерал. Маркеры в админке создавать **не нужно**, это задача на сторону кода:
-
-- [components/profile/ProfilePopup.tsx:285](components/profile/ProfilePopup.tsx#L285) — «Address» (заголовок) → `address_text`
-- [components/profile/ProfilePopup.tsx:380](components/profile/ProfilePopup.tsx#L380) — «Apply» (кнопка) → `apply_text`
-- [components/profile/OrdersList.tsx:152](components/profile/OrdersList.tsx#L152) — «Subtotal:» → `subtotal_text`
-- [components/profile/OrdersList.tsx:156](components/profile/OrdersList.tsx#L156) — «Delivery:» → `delivery_text`
-- [components/profile/OrdersList.tsx:161](components/profile/OrdersList.tsx#L161) — «Total Amount:» → `total_amount_text`
-- [components/profile/OrdersList.tsx:324](components/profile/OrdersList.tsx#L324) — «sign in» (link) → `sign_in_text`
-- [components/reservation/ReservationForm.tsx:294](components/reservation/ReservationForm.tsx#L294) — «Preferences» (label) → `preferences_text`
-- [components/layout/header/FilterButton.tsx:27](components/layout/header/FilterButton.tsx#L27) — «Open filters» (aria-label) → `open_filters_button`
-- [components/forms/PhoneAuthForm.tsx:89](components/forms/PhoneAuthForm.tsx#L89) — «SIGN IN» (кнопка) → `sign_in_text` (uppercase через CSS `text-transform`)
-
-#### C.4.2. Завести новые маркеры в админке (атрибут-сет `static_content`)
+#### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
 
@@ -357,7 +317,7 @@ _Активных P0/P1 пунктов нет._
 
 ##### Заказы (страница `/profile/orders`)
 
-Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx).
+Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx). Все ключи из таблицы прокинуты через проп `dict` (см. [app/profile/orders/page.tsx](app/profile/orders/page.tsx)) — до создания маркеров в админке UI отрендерит fallback-литералы.
 
 | marker                     | type   | title                                |
 |----------------------------|--------|--------------------------------------|
@@ -372,6 +332,8 @@ _Активных P0/P1 пунктов нет._
 | `no_history_orders_text`   | string | You have no past orders yet.         |
 | `orders_load_error_prefix` | string | Unable to load orders:               |
 | `orders_signin_prompt`     | string | Please sign in to view your orders.  |
+| `leave_review_button`      | string | Leave a review                       |
+| `cancel_review_button`     | string | Cancel review                        |
 
 ##### Избранное (страница `/profile/favorites`)
 
@@ -461,6 +423,57 @@ _Активных P0/P1 пунктов нет._
 |--------------------|--------|------------|
 | `promotions_title` | string | Promotions |
 
+##### Хедер / навигация / общие (aria-label, кнопки)
+
+Прошлись по проекту, нашли хардкод user-facing-фраз, не покрытых выше. Часть — `aria-label` для иконочных кнопок (важно для скринридеров), часть — короткие лейблы и тосты, видимые в UI.
+
+Используется в: [components/layout/header/](components/layout/header/), [components/layout/bottom-menu/](components/layout/bottom-menu/), [components/layout/filter/](components/layout/filter/), [components/layout/mobile-menu/](components/layout/mobile-menu/), [components/layout/modal/](components/layout/modal/), [components/cart/CartPopup.tsx](components/cart/CartPopup.tsx), [components/shared/ClosePopupButton.tsx](components/shared/ClosePopupButton.tsx).
+
+| marker                        | type   | title                                 |
+|-------------------------------|--------|---------------------------------------|
+| `open_menu_label`             | string | Open menu                             |
+| `close_menu_label`            | string | Close menu                            |
+| `open_cart_label`             | string | Open cart                             |
+| `close_cart_label`            | string | Close cart                            |
+| `open_categories_label`       | string | Open categories                       |
+| `close_search_results_label`  | string | Close search results                  |
+| `close_label`                 | string | Close                                 |
+| `go_back_label`               | string | Go back                               |
+| `decrease_quantity_label`     | string | Decrease quantity                     |
+| `increase_quantity_label`     | string | Increase quantity                     |
+| `delete_item_label`           | string | Delete item                           |
+| `add_to_favorites_label`      | string | Add to favorites                      |
+| `remove_from_favorites_label` | string | Remove from favorites                 |
+| `cart_label`                  | string | Cart                                  |
+| `favorites_label`             | string | Favorites                             |
+| `profile_label`               | string | Profile                               |
+| `home_label`                  | string | Home                                  |
+| `menu_label`                  | string | Menu                                  |
+| `search_placeholder_text`     | string | Search                                |
+| `view_all_text`               | string | View all ({count})                    |
+| `return_home_button`          | string | Return home                           |
+| `captcha_loading_text`        | string | Please wait while captcha is loading. |
+| `rating_prefix`               | string | Rating:                               |
+
+Места, где эти маркеры встретились:
+
+- [FilterButton.tsx:27](components/layout/filter/FilterButton.tsx#L27) — `Open filters` (уже учтён выше как `open_filters_button`).
+- [MenuButton.tsx](components/layout/header/nav/MenuButton.tsx) — `Open menu` → `open_menu_label`.
+- [CategoryButton.tsx](components/layout/header/CategoryButton.tsx) — `Open categories` → `open_categories_label`.
+- [CloseSearch.tsx](components/layout/header/search/CloseSearch.tsx) — `Close search results` → `close_search_results_label`.
+- [layout/mobile-menu/components/CloseModal.tsx](components/layout/mobile-menu/components/CloseModal.tsx), [layout/modal/components/CloseModal.tsx](components/layout/modal/components/CloseModal.tsx), [shared/ClosePopupButton.tsx](components/shared/ClosePopupButton.tsx), [bottom-menu/components/CenterCloseButton.tsx](components/layout/bottom-menu/components/CenterCloseButton.tsx) — `Close` / `close menu` → `close_label` / `close_menu_label`.
+- [bottom-menu/components/CenterCartButton.tsx](components/layout/bottom-menu/components/CenterCartButton.tsx), [cart/CartPopup.tsx](components/cart/CartPopup.tsx) — `Open cart` / `Close cart` → `open_cart_label` / `close_cart_label`.
+- [filter/components/header/HistoryBack.tsx](components/layout/filter/components/header/HistoryBack.tsx) — `Go back` → `go_back_label`.
+- [layout/product/components/DecreaseButton.tsx](components/layout/product/components/DecreaseButton.tsx), [IncreaseButton.tsx](components/layout/product/components/IncreaseButton.tsx) — `Decrease quantity` / `Increase quantity`.
+- [layout/cart/components/DeleteButton.tsx](components/layout/cart/components/DeleteButton.tsx) — `Delete item`.
+- [layout/product/product-single/FavoritesButton.tsx](components/layout/product/product-single/FavoritesButton.tsx), [layout/products-grid/components/product-card/HeartCardButton.tsx](components/layout/products-grid/components/product-card/HeartCardButton.tsx) — `Add to favorites` / `Remove from favorites`.
+- [header/nav/NavItemCart.tsx](components/layout/header/nav/NavItemCart.tsx), [NavItemFavorites.tsx](components/layout/header/nav/NavItemFavorites.tsx), [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx), [bottom-menu/components/NavItemFavorites.tsx](components/layout/bottom-menu/components/NavItemFavorites.tsx) — `Cart` / `Favorites` / `Profile` / `Sign In`.
+- [header/index.tsx](components/layout/header/index.tsx) — `Search` (placeholder), `Home` (link).
+- [home/CategoriesSection.tsx](components/home/CategoriesSection.tsx) — `View all (N)` → `view_all_text` с плейсхолдером `{count}`.
+- [app/not-found.tsx](app/not-found.tsx) — `Return home` → `return_home_button`.
+- [forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) — `Please wait while captcha is loading.` → `captcha_loading_text`.
+- [reviews/StarRating.tsx](components/reviews/StarRating.tsx) — `Rating:` → `rating_prefix`. `aria-label` `N stars` (динамический множественный) пока оставить хардкодом — без полноценной i18n с pluralization подмена через словарь даст некрасивые формы.
+
 > ❓ **Уточнить у клиента:** для toast-фраз с `{title}` (5 маркеров в подразделе «Toasts») — устраивает ли формат с плейсхолдером `{title}` (код подменяет на название блюда), либо проще держать раздельные префикс/суффикс маркеры (e.g. `added_to_cart_suffix = " added to cart!"`)? Шаблон с `{title}` гибче для переводов («Блюдо X добавлено» vs «X added»), но требует подмены в рантайме.
 >
 > ❓ **Уточнить у клиента:** placeholder поля Street в попапе «My Profile» сейчас захардкожен как «OneEntry» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) — похоже на тестовый стаб. Оставить пустым (`""`), заменить на пример (`«ул. Тверская»` / `«Main St»`) или завести под маркер? То же с примерами «40»/«27» для House/Floor.
@@ -481,15 +494,14 @@ _Активных P0/P1 пунктов нет._
 
 Когда ответы получены — таски на код:
 
-1. ✅ Edit → `api.Users.updateUser({ formIdentifier, formData, authData, notificationData, state })` — реализовано в [components/profile/ProfilePopup.tsx:109-141](components/profile/ProfilePopup.tsx#L109-L141).
-2. Cards: persist в выбранное хранилище + load в `useEffect` из `AuthContext.user`.
-3. Addresses: persist + загружать в чекаут как `<select>` сохранённых.
+1. Cards: persist в выбранное хранилище + load в `useEffect` из `AuthContext.user`.
+2. Addresses: persist + загружать в чекаут как `<select>` сохранённых.
 
 ### C.6. Платежи
 
-`PROJECT_URL/payments/accounts` — аккаунт `cash` (оплата при доставке). PayPal/cash работают через `addPaymentMethod`; карточная оплата теперь активна в UI ([StepPayment](components/cart/steps/StepPayment.tsx) → [StepAddCard](components/cart/steps/StepAddCard.tsx) per `cart_add_card.html`), но завершает заказ синтетическим `card:<id>` — нужно создать `card`-payment-account и подключить реальный gateway, иначе платёж в OneEntry не пройдёт.
+`PROJECT_URL/payments/accounts` — `cash` (оплата при доставке) и `stripe` (карты через hosted Stripe Checkout). Оба передаются в [StepPayment](components/cart/steps/StepPayment.tsx) через `addPaymentMethod`. Отдельная форма ввода карты в приложении не нужна — Stripe собирает реквизиты на своей странице. ✅ Локальный `card:<id>` поток (бывший `StepAddCard` / `cart_add_card.html`) удалён.
 
-> ❓ **Уточнить у клиента (срочно):** аккаунт `cash` (id=2) в `Payments → Accounts` имеет `isUsed: false` — он **не привязан к orders-storage `delivery_order`**, поэтому при выборе «cash» в чекауте API возвращает 400 `Payment account identifier is wrong or payment accounts are not defined`. Нужно открыть в админке OneEntry orders-storage `delivery_order` и в списке Payment Accounts добавить `cash` (по аналогии с `stripe`, у которого `isUsed: true`). После этого `useGetAccountsQuery` всё равно отдаст обе записи (это глобальный список), но `createOrder` пройдёт. Если планируется только Stripe — убрать `cash` из visible accounts (`isVisible: false`) либо скрывать его в [StepPayment.tsx](components/cart/steps/StepPayment.tsx) фильтром по `isUsed`.
+> ✅ **Подтверждено через `/api/content/payments/accounts` 2026-05-03:** `cash` (id=2) теперь имеет `isUsed: true` — клиент привязал аккаунт к orders-storage `delivery_order` в админке. `createOrder` с `paymentAccountIdentifier: 'cash'` проходит без 400.
 
 #### C.6.1. Форма `delivery_order` — обязательные поля
 

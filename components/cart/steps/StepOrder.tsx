@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
 import Placeholder from '@/components/shared/Placeholder';
-import { UsePrice } from '@/components/utils';
+import { dictText, UsePrice } from '@/components/utils';
 
 type CartEntry = {
   id: number;
@@ -171,9 +171,7 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       {/* Итоги */}
       <div className="mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
-          <p>
-            {(dict?.subtotal_text?.value as string | undefined) ?? 'Subtotal'}:
-          </p>
+          <p>{dictText(dict, 'subtotal_text', 'Subtotal')}:</p>
           <p>{UsePrice({ amount: subtotal })}</p>
         </div>
         {discount > 0 ? (
@@ -183,17 +181,11 @@ const StepOrder = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
           </div>
         ) : null}
         <div className="flex gap-1.25 text-brand">
-          <p>
-            {(dict?.delivery_text?.value as string | undefined) ?? 'Delivery'}:
-          </p>
+          <p>{dictText(dict, 'delivery_text', 'Delivery')}:</p>
           <p>{UsePrice({ amount: deliveryPrice })}</p>
         </div>
         <div className="flex gap-1.25 text-white">
-          <p>
-            {(dict?.total_amount_text?.value as string | undefined) ??
-              'Total Amount'}
-            :
-          </p>
+          <p>{dictText(dict, 'total_amount_text', 'Total Amount')}:</p>
           <p>{UsePrice({ amount: total })}</p>
         </div>
       </div>

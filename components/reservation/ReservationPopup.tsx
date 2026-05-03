@@ -15,6 +15,7 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { dictText } from '@/components/utils';
 
 import ReservationForm from './ReservationForm';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
@@ -131,8 +132,7 @@ const ReservationPopup = ({
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
           <p className="font-semibold text-[24px] text-brand">
-            {(dict?.reservation_default_title?.value as string | undefined) ??
-              'Reservation'}
+            {dictText(dict, 'reservation_default_title', 'Reservation')}
           </p>
           <ClosePopupButton onClose={close} ariaLabel="Close reservation" />
         </div>

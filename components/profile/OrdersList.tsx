@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type {
   IOrderByMarkerEntity,
   IOrderProducts,
@@ -15,7 +16,8 @@ import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
-import { UsePrice } from '@/components/utils';
+import ReviewForm from '@/components/reviews/ReviewForm';
+import { dictText, UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set([
   'delivered',
@@ -100,12 +102,14 @@ const OrderCard = ({
   onToggle,
   isHistory,
   productsById,
+  dict,
 }: {
   order: IOrderByMarkerEntity;
   expanded: boolean;
   onToggle: () => void;
   isHistory: boolean;
   productsById: Map<number, IProductsEntity>;
+  dict?: IAttributeValues | undefined;
 }): JSX.Element => {
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
@@ -138,7 +142,11 @@ const OrderCard = ({
               type="button"
               className="mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
-              Contact with the courier
+              {dictText(
+                dict,
+                'contact_courier_button',
+                'Contact with the courier',
+              )}
             </button>
           )}
           <div className="mt-5 flex flex-col">
@@ -148,21 +156,22 @@ const OrderCard = ({
                 product={p}
                 first={idx === 0}
                 fullProduct={productsById.get(p.id)}
+                dict={dict}
               />
             ))}
             <div className="mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
-                  <p>Subtotal:</p>
+                  <p>{dictText(dict, 'subtotal_text', 'Subtotal:')}</p>
                   <p>{UsePrice({ amount: subtotal })}</p>
                 </div>
                 <div className="flex gap-1.25 text-brand">
-                  <p>Delivery:</p>
+                  <p>{dictText(dict, 'delivery_text', 'Delivery:')}</p>
                   <p>{UsePrice({ amount: delivery })}</p>
                 </div>
               </div>
               <div className="flex gap-3.75 text-xl font-bold text-white">
-                <p>Total Amount:</p>
+                <p>{dictText(dict, 'total_amount_text', 'Total Amount:')}</p>
                 <p>{UsePrice({ amount: total })}</p>
               </div>
             </div>
@@ -171,7 +180,7 @@ const OrderCard = ({
                 type="button"
                 className="mt-5 block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
               >
-                Repeat order
+                {dictText(dict, 'repeat_order_button', 'Repeat order')}
               </button>
             )}
           </div>
@@ -193,11 +202,14 @@ const OrderLineItem = ({
   product,
   first,
   fullProduct,
+  dict,
 }: {
   product: IOrderProducts;
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
+  dict?: IAttributeValues | undefined;
 }): JSX.Element => {
+  const [reviewOpen, setReviewOpen] = useState(false);
   // `previewImage` в snapshot заказа часто null (зависит от настроек CMS на момент
   // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
   // подгружаемого по id через RTK на уровне `OrdersList`.
@@ -210,43 +222,56 @@ const OrderLineItem = ({
     product.previewImage?.previewLink ?? coverFromEntity ?? null;
   const href = '/shop/product/' + product.id;
   return (
-    <div
-      className={
-        'flex items-center justify-between gap-3.75 ' + (first ? '' : 'mt-5')
-      }
-    >
-      <Link href={href} aria-label={product.title} className="shrink-0">
-        {previewSrc ? (
-          <Image
-            src={previewSrc}
-            alt={product.title}
-            width={69}
-            height={69}
-            className="h-17.25 w-17.25 object-cover"
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            className="h-17.25 w-17.25 shrink-0 rounded bg-custom_gray_pk"
-          />
-        )}
-      </Link>
-      <div className="flex min-w-0 flex-1 flex-col justify-between">
-        <Link
-          href={href}
-          className="text-sm font-normal text-white hover:text-brand"
-        >
-          {product.title}
+    <div className={first ? '' : 'mt-5'}>
+      <div className="flex items-center justify-between gap-3.75">
+        <Link href={href} aria-label={product.title} className="shrink-0">
+          {previewSrc ? (
+            <Image
+              src={previewSrc}
+              alt={product.title}
+              width={69}
+              height={69}
+              className="h-17.25 w-17.25 object-cover"
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              className="h-17.25 w-17.25 shrink-0 rounded bg-custom_gray_pk"
+            />
+          )}
         </Link>
-        <div className="flex items-center gap-2.5">
-          <p className="text-xl font-bold text-brand">
-            {UsePrice({ amount: product.price })}
-          </p>
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
+          <Link
+            href={href}
+            className="text-sm font-normal text-white hover:text-brand"
+          >
+            {product.title}
+          </Link>
+          <div className="flex items-center gap-2.5">
+            <p className="text-xl font-bold text-brand">
+              {UsePrice({ amount: product.price })}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setReviewOpen((v) => !v)}
+            aria-expanded={reviewOpen}
+            className="mt-1.25 self-start text-sm text-brand underline underline-offset-2 hover:no-underline"
+          >
+            {reviewOpen
+              ? dictText(dict, 'cancel_review_button', 'Cancel review')
+              : dictText(dict, 'leave_review_button', 'Leave a review')}
+          </button>
+        </div>
+        <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-white">
+          x{product.quantity}
         </div>
       </div>
-      <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-white">
-        x{product.quantity}
-      </div>
+      {reviewOpen && (
+        <div className="mt-3.75 rounded-xl bg-ink/60 p-5">
+          <ReviewForm productId={product.id} />
+        </div>
+      )}
     </div>
   );
 };
@@ -262,8 +287,10 @@ const OrderLineItem = ({
  */
 const OrdersList = ({
   promoBanners = [],
+  dict,
 }: {
   promoBanners?: BlogBanner[];
+  dict?: IAttributeValues;
 } = {}): JSX.Element => {
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
@@ -287,6 +314,9 @@ const OrdersList = ({
       });
       if (cancelled) return;
       if (res.isError) {
+        // Fallback на случай когда `error.message` пустой; обычно SDK возвращает
+        // локализованное сообщение, поэтому через словарь не гоняем (иначе пришлось
+        // бы добавлять `dict` в deps эффекта и ре-фетчить заказы при ре-рендере).
         setError(res.error?.message ?? 'Failed to load orders');
       } else {
         setOrders(res.orders ?? []);
@@ -349,11 +379,27 @@ const OrdersList = ({
   // на md+ во ВСЕХ состояниях, чтобы 2-колоночный layout соответствовал корзине.
   let leftColumn: JSX.Element;
   if (authLoading || loading) {
-    leftColumn = <div className="text-paper/80">Loading orders...</div>;
+    leftColumn = (
+      <div className="text-paper/80">
+        {dictText(dict, 'loading_orders_text', 'Loading orders...')}
+      </div>
+    );
   } else if (!isAuth) {
+    // `orders_signin_prompt` хранит фразу целиком; чтобы оставить inline-кнопку
+    // «sign in» внутри предложения, ищем её в шаблоне (case-insensitive). Если
+    // шаблон не содержит подстроки — показываем cta-кнопку отдельно после текста.
+    const prompt = dictText(
+      dict,
+      'orders_signin_prompt',
+      'Please sign in to view your orders.',
+    );
+    const signInLabel = dictText(dict, 'sign_in_text', 'sign in');
+    const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
+    const before = idx >= 0 ? prompt.slice(0, idx) : prompt + ' ';
+    const after = idx >= 0 ? prompt.slice(idx + signInLabel.length) : '';
     leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        Please{' '}
+        {before}
         <button
           type="button"
           onClick={() => {
@@ -362,36 +408,43 @@ const OrdersList = ({
           }}
           className="cursor-pointer text-brand underline underline-offset-2 hover:no-underline"
         >
-          sign in
-        </button>{' '}
-        to view your orders.
+          {signInLabel}
+        </button>
+        {after}
       </div>
     );
   } else if (error) {
     leftColumn = (
       <div className="rounded-xl bg-ink/60 p-6 text-paper/90">
-        Unable to load orders: {error}
+        {dictText(dict, 'orders_load_error_prefix', 'Unable to load orders:')}{' '}
+        {error}
       </div>
     );
   } else if (orders.length === 0) {
     leftColumn = (
       <div className="flex flex-col items-center gap-5 rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        <p>You have no orders yet.</p>
+        <p>{dictText(dict, 'no_orders_text', 'You have no orders yet.')}</p>
         <Link
           href="/shop"
           className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
         >
-          Go to shopping
+          {dictText(dict, 'go_shopping_button', 'Go to shopping')}
         </Link>
       </div>
     );
   } else {
     leftColumn = (
       <>
-        <p className="mt-2.5 text-xl text-paper">Active orders</p>
+        <p className="mt-2.5 text-xl text-paper">
+          {dictText(dict, 'active_orders_title', 'Active orders')}
+        </p>
         {active.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
-            You have no active orders.
+            {dictText(
+              dict,
+              'no_active_orders_text',
+              'You have no active orders.',
+            )}
           </p>
         ) : (
           active.map((o) => (
@@ -402,13 +455,20 @@ const OrdersList = ({
               onToggle={() => toggle(o.id)}
               isHistory={false}
               productsById={productsById}
+              dict={dict}
             />
           ))
         )}
-        <p className="mt-5 text-xl text-paper">Orders History</p>
+        <p className="mt-5 text-xl text-paper">
+          {dictText(dict, 'orders_history_title', 'Orders History')}
+        </p>
         {history.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
-            You have no past orders yet.
+            {dictText(
+              dict,
+              'no_history_orders_text',
+              'You have no past orders yet.',
+            )}
           </p>
         ) : (
           history.map((o) => (
@@ -419,6 +479,7 @@ const OrdersList = ({
               onToggle={() => toggle(o.id)}
               isHistory
               productsById={productsById}
+              dict={dict}
             />
           ))
         )}

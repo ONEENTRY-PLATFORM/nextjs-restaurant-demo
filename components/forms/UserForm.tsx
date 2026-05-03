@@ -13,6 +13,7 @@ import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import type { FormProps } from '@/app/types/global';
+import { dictText } from '@/components/utils';
 
 // import AuthError from '../pages/AuthError';
 import SpinnerLoader from '../shared/SpinnerLoader';
@@ -133,7 +134,7 @@ const UserForm = ({ dict }: FormProps): JSX.Element => {
           })}
       </div>
       <SubmitButton
-        title={(dict?.submit_text?.value as string) ?? ''}
+        title={dictText(dict, 'submit_text', '')}
         isLoading={loading}
         index={10}
       />

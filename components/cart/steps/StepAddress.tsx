@@ -15,6 +15,7 @@ import {
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
+import { dictText } from '@/components/utils';
 
 // Маркеры, которые мы ищем в профиле пользователя, в порядке приоритета. `address_reg` —
 // канонический, используется в других местах корзины (см. components/layout/cart/
@@ -97,7 +98,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <div className="flex items-center gap-2.5 text-paper">
         <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
         <p className="font-normal text-[20px] text-paper">
-          {(dict?.address_text?.value as string | undefined) ?? 'Address'}
+          {dictText(dict, 'address_text', 'Address')}
         </p>
       </div>
 
@@ -117,7 +118,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
       <div className="mt-5 flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
         <p className="font-normal text-[20px] text-paper">
-          {(dict?.time_text?.value as string | undefined) ?? 'Time'}
+          {dictText(dict, 'time_text', 'Time')}
         </p>
       </div>
 
@@ -154,7 +155,7 @@ const StepAddress = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
           className="radio-custom flex cursor-pointer select-none items-center"
         >
           <span className="ml-2 text-paper">
-            {(dict?.by_the_time?.value as string | undefined) ?? 'by the time'}
+            {dictText(dict, 'by_the_time', 'by the time')}
           </span>
         </label>
         <input

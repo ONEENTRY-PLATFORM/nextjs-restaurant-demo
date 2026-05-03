@@ -14,6 +14,7 @@ import {
   setStep,
   setStepError,
 } from '@/app/store/reducers/OrderSlice';
+import { dictText } from '@/components/utils';
 
 /**
  * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
@@ -36,10 +37,8 @@ import {
  *     OneEntry вернёт `paymentUrl` (Stripe / другой redirect-payment) —
  *     редиректим, иначе сразу переходим на `success`.
  *
- * Старый под-шаг `add_card` (ручной ввод реквизитов) удалён: Stripe
- * Checkout собирает данные карты на своей hosted-странице, отдельный
- * UI не нужен. Если в будущем появится payment-account, требующий
- * локальной формы карты — вернуть ветку обратно.
+ * Stripe Checkout собирает данные карты на своей hosted-странице,
+ * отдельный UI не нужен.
  */
 const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -110,8 +109,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
           height={15}
         />
         <p className="font-normal text-[20px] text-paper">
-          {(dict?.select_payment_text?.value as string | undefined) ??
-            'Payment'}
+          {dictText(dict, 'select_payment_text', 'Payment')}
         </p>
       </div>
 
@@ -137,10 +135,7 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
         type="text"
         value={comment}
         onChange={(e) => setComment(e.currentTarget.value)}
-        placeholder={
-          (dict?.comment_order?.value as string | undefined) ??
-          'Comments to the order'
-        }
+        placeholder={dictText(dict, 'comment_order', 'Comments to the order')}
         className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
 
@@ -159,8 +154,11 @@ const StepPayment = ({ dict }: { dict?: IAttributeValues }): JSX.Element => {
             height={18}
           />
         </span>
-        {(dict?.another_person_text?.value as string | undefined) ??
-          'The order will be taken by another person'}
+        {dictText(
+          dict,
+          'another_person_text',
+          'The order will be taken by another person',
+        )}
       </label>
 
       {/* Телефон альтернативного получателя (виден, когда чекбокс включён) */}

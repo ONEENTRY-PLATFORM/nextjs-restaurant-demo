@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
+import { getDictionary } from '@/app/dictionaries';
 import OrdersList from '@/components/profile/OrdersList';
 
 export const dynamic = 'force-dynamic';
@@ -10,8 +11,11 @@ export const dynamic = 'force-dynamic';
  * @returns {Promise<JSX.Element>} JSX страницы заказов.
  */
 const ProfileOrdersPage = async (): Promise<JSX.Element> => {
-  const promoBanners = await getBlogBanners();
-  return <OrdersList promoBanners={promoBanners} />;
+  const [promoBanners, dict] = await Promise.all([
+    getBlogBanners(),
+    getDictionary(),
+  ]);
+  return <OrdersList promoBanners={promoBanners} dict={dict} />;
 };
 
 export default ProfileOrdersPage;

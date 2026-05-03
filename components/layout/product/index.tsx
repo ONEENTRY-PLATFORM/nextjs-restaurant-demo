@@ -4,6 +4,8 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
+import ReviewForm from '@/components/reviews/ReviewForm';
+import ReviewsSlideUpPanel from '@/components/reviews/ReviewsSlideUpPanel';
 
 import ProductAnimations from './animations/ProductAnimations';
 import ProductCover from './product-single/ProductCover';
@@ -99,7 +101,21 @@ const ProductSingle = async ({
 
           {/* Reviews — внутри правой колонки, как в static-html/details.html */}
           <ProductReviewsListServer productId={product.id} />
+
+          {/* CTA «оставить отзыв». В исходном макете
+              `pk_product_details.html` десктопного CTA нет — добавлено по
+              запросу клиента. На мобиле используется fixed slide-up sheet
+              (`mob_about_reviews.html`), на десктопе — inline-форма. */}
+          <div className="hidden md:block mt-5">
+            <ReviewForm productId={product.id} dict={dict} />
+          </div>
         </ProductAnimations>
+      </div>
+
+      {/* Мобильный slide-up sheet — fixed, виден только < md (`review_sheet`
+          + `md:hidden` ниже). Открывается всегда, по верстке `mob_about_reviews.html`. */}
+      <div className="md:hidden">
+        <ReviewsSlideUpPanel productId={product.id} />
       </div>
 
       {/* blocks → оффер оптовой покупки ("multiply_items_offer") */}

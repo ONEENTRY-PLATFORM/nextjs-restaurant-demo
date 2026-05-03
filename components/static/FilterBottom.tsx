@@ -10,6 +10,7 @@ import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import CloseXIcon from '@/components/icons/close-x';
 import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { dictText } from '@/components/utils';
 
 // Cooking-time лейбл → значение URL-параметра `cooking_time_max`
 // (читается в `getSearchParams.ts`, превращается в фильтр `cooking_time lth N`).
@@ -76,14 +77,17 @@ const FilterBottom = ({
   const [price, setPrice] = useState<string[]>([]);
   const priceChips = buildPriceChips(priceRange);
 
-  const waitingTitle =
-    (dict?.order_waiting_time?.value as string | undefined) ??
-    'Order waiting time';
-  const preferencesTitle =
-    (dict?.preferences_text?.value as string | undefined) ?? 'Preferences';
-  const clearAllLabel =
-    (dict?.clear_all_filters_text?.value as string | undefined) ??
-    'Clear all filters';
+  const waitingTitle = dictText(
+    dict,
+    'order_waiting_time',
+    'Order waiting time',
+  );
+  const preferencesTitle = dictText(dict, 'preferences_text', 'Preferences');
+  const clearAllLabel = dictText(
+    dict,
+    'clear_all_filters_text',
+    'Clear all filters',
+  );
 
   const isVisible = open && component === 'FilterForm';
 

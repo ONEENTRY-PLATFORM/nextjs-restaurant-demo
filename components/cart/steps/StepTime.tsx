@@ -12,6 +12,7 @@ import {
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import DatePickerSheet from '@/components/ui/DatePickerSheet';
 import TimePickerSheet from '@/components/ui/TimePickerSheet';
+import { dictText } from '@/components/utils';
 
 type PickerMode = 'date' | 'time' | null;
 
@@ -70,7 +71,7 @@ const StepTime = ({ dict }: { dict: IAttributeValues }): JSX.Element => {
         className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
         <span className="cart_label">
-          {(dict?.time_text?.value as string | undefined) ?? 'Time'}
+          {dictText(dict, 'time_text', 'Time')}
         </span>
         <span className="text-lg text-paper">{time || 'Select time'}</span>
       </button>

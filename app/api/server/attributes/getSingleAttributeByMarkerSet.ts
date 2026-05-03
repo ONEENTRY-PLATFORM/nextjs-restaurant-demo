@@ -31,8 +31,7 @@ export const getSingleAttributeByMarkerSet = async ({
     } else {
       return { isError: false, attribute: attribute };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError };
   }
 };

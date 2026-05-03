@@ -38,12 +38,10 @@ const AuthProviderSelect = ({
   const { data: providers, isLoading } = useGetAuthProvidersQuery('');
 
   const onProviderClick = (p: IAuthProvidersEntity) => {
-    if (p.identifier === 'email') {
+    if (p.identifier === 'email' || p.identifier === 'phone') {
+      // Phone-провайдер пускаем тем же email/login flow в SignInForm
+      // (отдельная PhoneAuthForm не используется — см. MISMATCH-LOG.md §C.8.2).
       setComponent('SignInForm');
-      return;
-    }
-    if (p.identifier === 'phone') {
-      setComponent('PhoneAuthForm');
       return;
     }
     if (p.identifier === 'google') {

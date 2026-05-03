@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type {
   ISignUpData,
   ISignUpEntity,
 } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
@@ -130,8 +128,8 @@ const SignUpForm = (): JSX.Element => {
           }
           setError('');
         }
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        setError((e as { message?: string })?.message ?? 'Sign-up failed');
       } finally {
         setLoading(false);
       }
@@ -162,11 +160,7 @@ const SignUpForm = (): JSX.Element => {
           {data?.attributes.map(
             (field: IFormAttribute, index: number) =>
               field.marker !== 'email_notification_reg' && (
-                <FormInput
-                  key={index}
-                  index={index}
-                  {...(field as unknown as IAttributes)}
-                />
+                <FormInput key={index} index={index} {...field} />
               ),
           )}
         </div>

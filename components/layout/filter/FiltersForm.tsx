@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
+import type { IAttributeValue } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
@@ -13,6 +13,7 @@ import AvailabilityFilter from './components/AvailabilityFilter';
 import ApplyButton from './components/buttons/ApplyButton';
 import ResetButton from './components/buttons/ResetButton';
 import ColorFilter from './components/color/ColorFilter';
+import type { PriceBounds } from './components/price/PricePickerFilter';
 import PricePickerFilter from './components/price/PricePickerFilter';
 
 /**
@@ -21,7 +22,7 @@ import PricePickerFilter from './components/price/PricePickerFilter';
 const FiltersForm = async ({
   prices,
 }: {
-  prices: any;
+  prices: PriceBounds;
 }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({
@@ -43,9 +44,10 @@ const FiltersForm = async ({
     return <></>;
   }
 
-  const sortedAttributes: Record<any, any> = sortObjectFieldsByPosition(
-    (pageInfo.page as IPagesEntity)?.attributeValues,
-  );
+  const sortedAttributes: Record<string, IAttributeValue> =
+    sortObjectFieldsByPosition(
+      (pageInfo.page as IPagesEntity)?.attributeValues,
+    );
 
   if (!sortedAttributes || Object.keys(sortedAttributes).length === 0) {
     return <Loader />;
@@ -69,7 +71,7 @@ const FiltersForm = async ({
             <FilterAnimations key={index} className="w-full" index={1}>
               <ColorFilter
                 key={index}
-                title={sortedAttributes[attr]?.value}
+                title={sortedAttributes[attr]?.value as string}
                 attributes={attribute as IAttributesSetsEntity}
               />
             </FilterAnimations>
@@ -80,7 +82,7 @@ const FiltersForm = async ({
             <FilterAnimations key={index} className="w-full" index={2}>
               <AvailabilityFilter
                 key={index}
-                title={sortedAttributes[attr]?.value}
+                title={sortedAttributes[attr]?.value as string}
               />
             </FilterAnimations>
           );

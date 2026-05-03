@@ -4,6 +4,10 @@ import { UsePrice } from '../../../utils';
 
 /**
  * Компонент отображения цены
+ * @param {object} props - Параметры компонента
+ * @param {number} props.currentPrice - Текущая цена
+ * @param {number} props.originalPrice - Оригинальная цена
+ * @returns {JSX.Element} Компонент отображения цены
  */
 const PriceDisplay = ({
   currentPrice,

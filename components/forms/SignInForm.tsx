@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -87,9 +87,9 @@ const SignInForm = ({
       authenticate(); // Аутентифицируем сессию пользователя
       setError(''); // Очищаем любые предыдущие ошибки
       toast('You signed in!'); // Показываем сообщение об успехе пользователю
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Ловим любые ошибки и устанавливаем сообщение об ошибке
-      setError(err.message);
+      setError((err as { message?: string })?.message ?? 'Sign-in failed');
     } finally {
       // Сбрасываем loading-состояние после обработки запроса sign-in
       setLoading(false);
@@ -124,7 +124,7 @@ const SignInForm = ({
         </div>
 
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
-          {formFields?.map((field: any, index: number) => {
+          {formFields?.map((field: IFormAttribute, index: number) => {
             if (field.marker === `${tab}` || field.marker === 'password') {
               return <FormInput key={index} index={index + 2} {...field} />;
             }

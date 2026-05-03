@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
@@ -8,6 +7,7 @@ import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import type {
   IBaseOrdersEntity,
   IOrderByMarkerEntity,
+  IOrderData,
   IOrdersEntity,
 } from 'oneentry/dist/orders/ordersInterfaces';
 import type {
@@ -24,6 +24,7 @@ import type {
 } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
+import type { IProducts } from '@/app/types/global';
 import { typeError } from '@/components/utils';
 
 import { updateUserState } from '../server/users/updateUserState';
@@ -40,7 +41,7 @@ interface BlocksByPageUrlProps {
 interface SingleOrderProps {
   marker: string;
   id: number;
-  body: any;
+  body: IOrderData;
 }
 
 export const RTKApi = createApi({
@@ -354,8 +355,10 @@ export const RTKApi = createApi({
     /**
      * Обновляет состояние пользователя.
      */
-    // eslint-disable-next-line prettier/prettier
-    updateUserState: build.mutation<boolean, { favorites: number[], cart: any; user: any }>({
+    updateUserState: build.mutation<
+      boolean,
+      { favorites: number[]; cart: IProducts[]; user: IUserEntity | undefined }
+    >({
       queryFn: async ({ favorites, cart, user }) => {
         const result = await updateUserState({ favorites, cart, user });
         if (result === undefined) {

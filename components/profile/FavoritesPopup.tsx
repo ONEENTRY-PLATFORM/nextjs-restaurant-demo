@@ -149,10 +149,7 @@ const FavoriteCard = ({
   onNavigate: () => void;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const inCart = useAppSelector((state) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selectIsInCart(state as any, product.id),
-  );
+  const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
   const attrs = product.attributeValues ?? {};
   const imageSrc = getImageUrl(
     attrs.cover?.value as

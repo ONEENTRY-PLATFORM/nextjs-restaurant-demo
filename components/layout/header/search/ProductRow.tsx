@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { JSX } from 'react';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { Dispatch, JSX, SetStateAction } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
@@ -14,20 +14,15 @@ import {
 /**
  * Рендерер строки результатов поиска — ссылка на страницу продукта; записывает
  * продукт как активную запись reservation (используется селекторами cart/price).
- * @param   {object}        props          - Пропсы компонента.
- * @param   {any}           props.pageData - Данные родительской страницы (категории).
- * @param   {any}           props.product  - Сущность продукта из поиска.
- * @param   {any}           props.setState - Внешний setter state для закрытия модалки поиска.
- * @returns {JSX.Element}                  JSX строки.
  */
 const ProductRow = ({
   pageData,
   product,
   setState,
 }: {
-  pageData: any;
-  product: any;
-  setState: any;
+  pageData: IPagesEntity | undefined;
+  product: IProductsEntity;
+  setState: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const reservationId = useAppSelector(selectReservationId);

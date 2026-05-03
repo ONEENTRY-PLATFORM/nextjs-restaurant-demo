@@ -35,7 +35,6 @@ const useTitleData = (component: string): string => {
 const AUTH_FLOW_SUB_STEPS = new Set([
   'SignInForm',
   'SignUpForm',
-  'PhoneAuthForm',
   'ForgotPasswordForm',
   'ResetPasswordForm',
   'VerificationForm',
@@ -85,7 +84,7 @@ const Modal = (): JSX.Element => {
             `static-html/pk_sing_in.html` (десктоп) и `cart_Sign_in_tel.html`
             (мобила): стрелка назад слева, заголовок по центру (brand-цвет,
             semibold, 24px), круглая X-кнопка справа. На подшагах auth-флоу
-            (SignInForm / SignUpForm / PhoneAuthForm / Forgot / Reset /
+            (SignInForm / SignUpForm / Forgot / Reset /
             Verification) Back возвращает на первый шаг — выбор провайдера
             (AuthProviderSelect). На самом первом шаге и в не-auth формах
             (CalendarForm и т.п.) Back закрывает модалку. */}

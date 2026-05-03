@@ -28,8 +28,8 @@ const redirectToOAuth = (url: string) => {
  * (`AuthProvider.getAuthProviders`, фильтр по `isActive`) — тот же набор,
  * что и в попапе авторизации (см. AuthProviderSelect).
  *
- * - Email открывает drawer SignInForm.
- * - Phone открывает drawer PhoneAuthForm.
+ * - Email/Phone открывает drawer SignInForm (phone — тот же email/login flow,
+ *   отдельной PhoneAuthForm нет; см. MISMATCH-LOG.md §C.8.2).
  * - Google делает top-window редирект на OAuth-эндпоинт Google;
  *   колбэк в `app/auth/callback/google/page.tsx` обменивает
  *   код через `oauthLogIn` → `api.AuthProvider.oauth('google', …)`.
@@ -57,13 +57,8 @@ const StepSignIn = (): JSX.Element => {
   }
 
   const onProviderClick = (p: IAuthProvidersEntity) => {
-    if (p.identifier === 'email') {
+    if (p.identifier === 'email' || p.identifier === 'phone') {
       setComponent('SignInForm');
-      setOpen(true);
-      return;
-    }
-    if (p.identifier === 'phone') {
-      setComponent('PhoneAuthForm');
       setOpen(true);
       return;
     }

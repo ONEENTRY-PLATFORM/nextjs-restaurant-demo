@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
@@ -64,43 +62,42 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
       return;
     }
 
-    const transformedFormData = formFields.map(
-      (field: { marker: any; type: any }) => {
-        const { marker, type } = field;
-        const value = fieldsData[marker as keyof typeof fieldsData]?.value;
+    const transformedFormData = formFields.map((field: IFormAttribute) => {
+      const { marker, type } = field;
+      const value = fieldsData[marker as keyof typeof fieldsData]?.value;
 
-        if (type === 'spam') {
-          return { marker, type: 'spam', value: captcha };
-        }
+      if (type === 'spam') {
+        return { marker, type: 'spam', value: captcha };
+      }
 
-        switch (marker) {
-          case 'list':
-            return { marker, type: 'list', value: [{ title: value, value }] };
-          case 'text':
-            // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
-            return {
-              marker,
-              type: 'text',
-              value: [{ plainValue: value }],
-            };
-          default:
-            return { marker, type: 'string', value };
-        }
-      },
-    );
+      switch (marker) {
+        case 'list':
+          return { marker, type: 'list', value: [{ title: value, value }] };
+        case 'text':
+          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
+          return {
+            marker,
+            type: 'text',
+            value: [{ plainValue: value }],
+          };
+        default:
+          return { marker, type: 'string', value };
+      }
+    });
 
     try {
       setLoading(true);
       await getApi().FormData.postFormsData({
         formIdentifier: 'contact_us',
         formData: transformedFormData,
-        formModuleConfigId: 0,
-        moduleEntityIdentifier: '',
+        formModuleConfigId: data?.moduleFormConfigs?.[0]?.id ?? 0,
+        moduleEntityIdentifier:
+          data?.moduleFormConfigs?.[0]?.entityIdentifiers?.[0]?.id ?? '',
         replayTo: null,
         status: '',
       });
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError((error as { message?: string })?.message ?? 'Submit failed');
     } finally {
       setLoading(false);
     }
@@ -130,13 +127,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
             case 'spam':
               return null;
             default:
-              return (
-                <FormInput
-                  key={index}
-                  index={index}
-                  {...(field as unknown as IAttributes)}
-                />
-              );
+              return <FormInput key={index} index={index} {...field} />;
           }
         })}
       </div>

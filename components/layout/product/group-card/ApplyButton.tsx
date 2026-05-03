@@ -1,5 +1,6 @@
 'use client';
 
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -17,8 +18,7 @@ import {
 const ApplyButton = ({
   product,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  product: any;
+  product: IProductsEntity;
 }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

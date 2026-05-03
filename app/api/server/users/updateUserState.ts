@@ -1,11 +1,17 @@
+import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
-import type { Key } from 'react';
+import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import { getApi } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 
 /**
  * Обновляет состояние пользователя через API Users.
+ *
+ * MCP-правило `user.state`: перед `updateUser` всегда перезапрашивать свежего
+ * пользователя (`getUser`) и спредить его `state`, иначе параллельные изменения
+ * в другой вкладке/устройстве будут перезатёрты. `formIdentifier` тоже берётся
+ * из свежего ответа, а не хардкодится.
  */
 export const updateUserState = async ({
   favorites,
@@ -14,71 +20,39 @@ export const updateUserState = async ({
 }: {
   favorites: number[];
   cart: IProducts[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any;
+  user: IUserEntity | undefined;
 }) => {
   if (!user) {
     return;
   }
-  const formData = user.formData.map(
-    (
-      item: {
-        marker: string;
-        type: string;
-        value: string;
-      },
-      i: Key,
-    ) => {
-      const candidate = {
-        marker: item.marker,
-        type: 'string',
-        value: user.formData[i as keyof typeof user.formData].value,
-      };
-      if (item.marker === 'otp_code') {
-        return;
-      }
-      return candidate;
-    },
-    [],
-  );
-  const email = user.formData.find(
-    (
-      item: {
-        marker: string;
-      },
-      i: Key,
-    ) => {
-      if (item.marker === 'email') {
-        return user.formData[i as keyof typeof user.formData].value;
-      }
-    },
-    [],
-  );
-  const phone = user.formData.find(
-    (
-      item: {
-        marker: string;
-      },
-      i: Key,
-    ) => {
-      if (item.marker === 'phone') {
-        return user.formData[i as keyof typeof user.formData].value;
-      }
-    },
-    [],
-  );
+  const formData: IAuthFormData[] = user.formData
+    .filter((item) => item.marker !== 'otp_code')
+    .map((item) => ({
+      marker: item.marker as string,
+      type: 'string',
+      value: item.value as string,
+    }));
+  const email = user.formData.find((item) => item.marker === 'email');
+  const phone = user.formData.find((item) => item.marker === 'phone');
+
+  const fresh = (await getApi().Users.getUser()) as IUserEntity | IError;
+  if (!fresh || (fresh as IError)?.statusCode) {
+    return false;
+  }
+  const freshUser = fresh as IUserEntity;
 
   const res = await getApi().Users.updateUser({
-    formIdentifier: 'reg',
+    formIdentifier: freshUser.formIdentifier,
     formData: [...formData],
     state: {
-      favorites: favorites.length > 0 ? favorites : user.state.favorites,
-      cart: cart.length > 0 ? cart : user.state.cart,
+      ...freshUser.state,
+      favorites,
+      cart,
     },
     notificationData: {
-      email: email?.value,
+      email: email?.value as string,
       phonePush: [],
-      phoneSMS: phone?.value,
+      phoneSMS: phone?.value as string,
     },
   });
 
@@ -93,7 +67,6 @@ export const updateUserState = async ({
   return false;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const clearUserState = async (user: any) => {
+export const clearUserState = async (user: IUserEntity) => {
   updateUserState({ favorites: [], cart: [], user: user });
 };

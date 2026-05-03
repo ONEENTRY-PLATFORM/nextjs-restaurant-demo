@@ -1,10 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { JSX } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
 
 /**
  * Компонент закрытия поиска
  */
-const CloseSearch = ({ setState }: { setState: any }): JSX.Element => {
+const CloseSearch = ({
+  setState,
+}: {
+  setState: Dispatch<SetStateAction<boolean>>;
+}): JSX.Element => {
   return (
     <button
       className="absolute right-3 top-3 size-4"

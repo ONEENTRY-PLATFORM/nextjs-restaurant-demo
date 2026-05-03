@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IOrderProductData } from 'oneentry/dist/orders/ordersInterfaces';
+import type {
+  IOrderProductData,
+  IOrdersFormData,
+} from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
@@ -15,6 +17,7 @@ import {
   selectAppliedCoupon,
   setLastOrderId,
 } from '@/app/store/reducers/OrderSlice';
+import type { IAppOrder } from '@/app/types/global';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -53,7 +56,7 @@ type UseCreateOrderApi = {
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
   const order = useAppSelector(
-    (state: { orderReducer: { order: any } }) => state.orderReducer.order,
+    (state: { orderReducer: { order: IAppOrder } }) => state.orderReducer.order,
   );
   // Визард никогда не диспатчит `addProducts` в order slice, поэтому позиции
   // заказа собираются напрямую из cart slice на этапе подтверждения.
@@ -84,8 +87,8 @@ export const useCreateOrder = (): UseCreateOrderApi => {
     try {
       const orderFormData = (order.formData ?? [])
         .slice()
-        .filter((element: { marker: string }) => element.marker !== 'time')
-        .map((data: { marker: string; type: string; value: any }) => ({
+        .filter((element: IOrdersFormData) => element.marker !== 'time')
+        .map((data: IOrdersFormData) => ({
           marker: data.marker,
           type: data.type,
           value: data.value,

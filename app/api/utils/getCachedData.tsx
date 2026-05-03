@@ -1,17 +1,16 @@
 import 'server-only';
 
-const cache = new Map();
+const cache = new Map<string, unknown>();
 
 /**
  * Получает закэшированные данные.
  */
-const getCachedData = async (
+const getCachedData = async <T,>(
   key: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fetchFn: () => Promise<any>,
-) => {
+  fetchFn: () => Promise<T>,
+): Promise<T> => {
   if (cache.has(key)) {
-    return cache.get(key);
+    return cache.get(key) as T;
   }
   const data = await fetchFn();
   cache.set(key, data);

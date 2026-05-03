@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type { JSX } from 'react';
@@ -11,12 +10,13 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import ModalBackdrop from '../modal/components/ModalBackdrop';
 import FilterModalAnimations from './animations/FilterModalAnimations';
 import FilterHeader from './components/header/FilterHeader';
+import type { PriceBounds } from './components/price/PricePickerFilter';
 import FiltersForm from './FiltersForm';
 
 /**
  * Компонент FilterModal
  */
-const FilterModal = ({ prices }: { prices: any | undefined }): JSX.Element => {
+const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
   // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform

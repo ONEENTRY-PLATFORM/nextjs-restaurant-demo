@@ -1,6 +1,9 @@
 import 'server-only';
 
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
+import type {
+  IAttributeValue,
+  IAttributeValues,
+} from 'oneentry/dist/base/utils';
 
 import { dictText } from '@/components/utils';
 
@@ -37,11 +40,10 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
         raw.value == null ||
         (typeof raw.value === 'object' &&
           Object.keys(raw.value as object).length === 0);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (dict as any)[raw.marker] = {
+      dict[raw.marker] = {
         ...raw,
         value: isEmpty ? (raw.initialValue ?? '') : raw.value,
-      };
+      } as unknown as IAttributeValue;
     }
     return dict;
   } catch (e) {
@@ -53,7 +55,6 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
 
 /**
  * Кешированный словарь `static_content` для использования в server-компонентах.
- * Обращение в шаблонах: `dict?.add_to_cart?.value as string`.
  * @returns {Promise<IAttributeValues>} Кешированный нормализованный словарь.
  */
 export const getDictionary = async (): Promise<IAttributeValues> =>

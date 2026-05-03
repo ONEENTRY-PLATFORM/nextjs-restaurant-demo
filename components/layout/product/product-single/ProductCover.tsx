@@ -7,14 +7,16 @@ import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * Cover-only рендер картинки продукта. Использует только атрибут `cover`
- * (атрибут `more_pic` исключён по решению клиента).
+ * @prop {IProductsEntity} product - товар
+ * @prop {string} alt - alt-атрибут картинки
+ * @returns {JSX.Element} JSX-компонент для отображения картинки продукта
  */
 const ProductCover = ({
   product,
   alt,
 }: {
-  alt: string;
   product: IProductsEntity;
+  alt: string;
 }): JSX.Element => {
   const coverRaw = product.attributeValues.cover?.value as
     | { downloadLink?: string }

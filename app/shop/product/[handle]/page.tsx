@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
 import { getProductById } from '@/app/api';
@@ -68,7 +68,7 @@ const ProductPageLayout = async ({
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      <ProductSingle product={product as any} />
+      <ProductSingle product={product as IProductsEntity} />
     </>
   );
 };

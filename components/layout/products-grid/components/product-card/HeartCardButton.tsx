@@ -37,8 +37,7 @@ const HeartCardButton = ({
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const isFavStored = useAppSelector((state) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selectIsFavorites(state as any, product.id),
+    selectIsFavorites(state, product.id),
   );
   // Избранное восстанавливается из localStorage на клиенте после гидратации,
   // так что SSR видит `false`, в то время как клиент может увидеть `true` —
@@ -77,9 +76,9 @@ const HeartCardButton = ({
         await onUnsubscribeEvents(product.id);
         toast('Product ' + title + ' removed from Favorites!');
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      toast('Auth error! ' + e?.message);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      toast('Auth error! ' + message);
     }
   };
 

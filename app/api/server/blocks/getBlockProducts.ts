@@ -76,8 +76,7 @@ export const getBlockProducts = async (
         countElementsPerRow: block.countElementsPerRow,
       }),
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e, title: '', products: [] };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError, title: '', products: [] };
   }
 };

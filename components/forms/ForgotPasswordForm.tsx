@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
@@ -42,9 +40,10 @@ export const ForgotPasswordForm = (): JSX.Element => {
       // Открываем форму Verification
       setComponent('VerificationForm');
       setAction('checkCode');
-    } catch (error: any) {
-      setError(error.message);
-      if (error.statusCode === 400) {
+    } catch (error: unknown) {
+      const err = error as { message?: string; statusCode?: number };
+      setError(err?.message ?? '');
+      if (err?.statusCode === 400) {
         setTimeout(() => {
           setComponent('VerificationForm');
         }, 800);
@@ -72,11 +71,7 @@ export const ForgotPasswordForm = (): JSX.Element => {
           {data.attributes
             .filter((field: IFormAttribute) => field.marker === 'email')
             .map((field: IFormAttribute, index: number) => (
-              <FormInput
-                key={index}
-                index={index}
-                {...(field as unknown as IAttributes)}
-              />
+              <FormInput key={index} index={index} {...field} />
             ))}
         </div>
 

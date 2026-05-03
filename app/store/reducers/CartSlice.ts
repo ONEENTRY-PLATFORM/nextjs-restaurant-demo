@@ -1,10 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+
+type ProductCartEntry = {
+  id: number;
+  quantity: number;
+  selected: boolean;
+};
 
 /**
  * Запись бронирования в cart-slice — представляет слот бронирования столика
@@ -21,7 +26,7 @@ type ReservationEntry = {
 
 type InitialStateType = {
   products: IProductsEntity[];
-  productsData: any[];
+  productsData: ProductCartEntry[];
   delivery: IProductsEntity | null;
   deliveryData: {
     date: number;
@@ -101,7 +106,9 @@ export const cartSlice = createSlice({
       const index = state.productsData.findIndex(
         (product: { id: number }) => product.id === action.payload.id,
       );
-      const qty = state.productsData[index].quantity + action.payload.quantity;
+      const entry = state.productsData[index];
+      if (!entry) return;
+      const qty = entry.quantity + action.payload.quantity;
 
       // Атрибут `units_product` отсутствует в живом наборе `dish` →
       // вызывающий код передаёт `0`/`undefined`. Считаем falsy `units` за «лимита
@@ -109,8 +116,8 @@ export const cartSlice = createSlice({
       // `units > 0` — всё равно уважаем его как реальный верхний предел.
       const cap = action.payload.units;
       state.productsData[index] = {
-        ...state.productsData[index],
-        selected: state.productsData[index].selected,
+        ...entry,
+        selected: entry.selected,
         quantity: cap && qty > cap ? Number(cap) : qty,
       };
     },
@@ -121,10 +128,12 @@ export const cartSlice = createSlice({
       const index = state.productsData.findIndex(
         (product: { id: number }) => product.id === action.payload.id,
       );
-      const qty = state.productsData[index].quantity - action.payload.quantity;
+      const entry = state.productsData[index];
+      if (!entry) return;
+      const qty = entry.quantity - action.payload.quantity;
       state.productsData[index] = {
-        ...state.productsData[index],
-        selected: state.productsData[index].selected,
+        ...entry,
+        selected: entry.selected,
         quantity: qty <= 0 ? 1 : qty,
       };
     },
@@ -135,12 +144,14 @@ export const cartSlice = createSlice({
       const index = state.productsData.findIndex(
         (product: { id: number }) => product.id === action.payload.id,
       );
+      const entry = state.productsData[index];
+      if (!entry) return;
       const qty = action.payload.quantity;
       const cap = action.payload.units;
 
       state.productsData[index] = {
-        ...state.productsData[index],
-        selected: state.productsData[index].selected,
+        ...entry,
+        selected: entry.selected,
         // Тот же falsy-cap guard, что и в `increaseProductQty` — считаем `units = 0`
         // за «нет верхнего предела», т.к. атрибут не заполнен в CMS.
         quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
@@ -148,7 +159,7 @@ export const cartSlice = createSlice({
     },
     removeProduct(state, action: PayloadAction<number>) {
       state.productsData = state.productsData.filter(
-        (item: any) => item.id !== action.payload,
+        (item: { id: number }) => item.id !== action.payload,
       );
     },
     removeAllProducts(state) {
@@ -226,15 +237,15 @@ export const selectIsInCart = (
  * Форма каждой записи: `{ id, selected, quantity }`.
  */
 export const selectCartData = (state: {
-  cartReducer: { productsData: any[] };
-}): any => state.cartReducer.productsData;
+  cartReducer: { productsData: ProductCartEntry[] };
+}): ProductCartEntry[] => state.cartReducer.productsData;
 
 /**
  * Селектор списка бронирований (table bookings — отдельно от корзины товаров).
  */
 export const selectReservations = (state: {
-  cartReducer: { reservations: any[] };
-}): any => state.cartReducer.reservations;
+  cartReducer: { reservations: ReservationEntry[] };
+}): ReservationEntry[] => state.cartReducer.reservations;
 
 /**
  * Селектор данных доставки
@@ -254,8 +265,8 @@ export const selectDeliveryData = (state: {
  */
 export const selectCartTotal = (state: {
   cartReducer: {
-    reservationId: any;
-    reservations: any;
+    reservationId: number;
+    reservations: ReservationEntry[];
   };
 }) => {
   const rId = state.cartReducer.reservationId;
@@ -275,28 +286,12 @@ export const selectReservationId = (state: {
 }) => state.cartReducer.reservationId;
 
 /**
- * Селектор TabsState
- */
-export const selectTabsState = (
-  key: string,
-  state: { cartReducer: { tabsState: any } },
-) => state.cartReducer.tabsState[key];
-
-/**
- * Селектор TabsState
- */
-export const selectTabsData = (
-  key: string,
-  state: { cartReducer: { tabsState: any } },
-) => state.cartReducer.tabsState[key].data;
-
-/**
  * Селектор элемента корзины по product id
  */
 export const selectCartItemWithIdLength = (
   state: {
     cartReducer: {
-      productsData: any[];
+      productsData: ProductCartEntry[];
     };
   },
   id: number,
@@ -304,19 +299,28 @@ export const selectCartItemWithIdLength = (
   state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
 /**
- * Получает product id для анимаций перехода
+ * Получает product id для анимаций перехода.
+ * Возвращает объект `{ transitionId }`, чтобы caller мог
+ * `const { transitionId } = useAppSelector(getTransition)`.
  */
 export const getTransition = (state: {
   cartReducer: {
     transitionId: number;
   };
-}) => state.cartReducer;
+}): { transitionId: number } => ({
+  transitionId: state.cartReducer.transitionId,
+});
 
 /**
- * Селектор версии корзины
+ * Селектор версии корзины.
+ *
+ * Раньше читал `state.favoritesReducer.version`, что не соответствовало
+ * `setCartVersion`, который пишет в `cartReducer.version` — потребители
+ * (`AuthContext`) получали устаревшее значение и cart-side версионирование
+ * фактически было сломано. Исправлено.
  */
 export const selectCartVersion = (state: {
-  favoritesReducer: { version: number };
-}) => state.favoritesReducer.version;
+  cartReducer: { version: number };
+}) => state.cartReducer.version;
 
 export default cartSlice.reducer;

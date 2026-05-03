@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
+import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
 import { getApi, getLang } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
-  body: any[];
+  body: IFilterParams[];
   offset: number;
   limit: number;
   langCode?: string;
@@ -37,7 +37,7 @@ export const getAdminsInfo = async ({
     } else {
       return { isError: false, admins: data };
     }
-  } catch (e: any) {
-    return { isError: true, error: e };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError };
   }
 };

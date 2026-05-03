@@ -14,12 +14,9 @@ import PriceToInput from './PriceToInput';
 /**
  * Компонент фильтра по цене
  */
-const PriceFilter = ({
-  prices,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  prices: any;
-}): JSX.Element => {
+export type PriceBounds = { min?: number; max?: number } | undefined;
+
+const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const t = useT();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -114,8 +111,8 @@ const PriceFilter = ({
           max={MAX}
           values={[priceFrom, priceTo]}
           onChange={(values) => {
-            setPriceFrom(values[0]);
-            setPriceTo(values[1]);
+            if (values[0] !== undefined) setPriceFrom(values[0]);
+            if (values[1] !== undefined) setPriceTo(values[1]);
           }}
           renderMark={({ props, index }) => (
             <div

@@ -37,8 +37,7 @@ export const getAllOrdersByMarker = async ({
     } else {
       return { isError: false, orders: data.items, total: data.total };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e, total: 0 };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError, total: 0 };
   }
 };

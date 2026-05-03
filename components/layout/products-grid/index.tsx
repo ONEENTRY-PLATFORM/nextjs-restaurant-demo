@@ -1,4 +1,3 @@
-import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 import { type JSX } from 'react';
 
 import { getProducts, getProductsByPageUrl } from '@/app/api';
@@ -7,6 +6,17 @@ import CardsGridAnimations from '@/components/layout/products-grid/animations/Ca
 import LoadMore from './components/LoadMore';
 import ProductsGrid from './components/ProductsGrid';
 import ProductsNotFound from './components/ProductsNotFound';
+
+type GridSearchParams = {
+  search?: string;
+  page?: string;
+  in_stock?: string;
+  color?: string;
+  preferences?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  cooking_time_max?: string;
+};
 
 /**
  * Layout сетки продуктов
@@ -17,24 +27,26 @@ const ProductsGridLayout = async ({
   productsLimit,
   isCategory,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  params: any;
-  searchParams?: {
-    search?: string;
-    page?: string;
-    filters?: IFilterParams[];
-  };
+  params:
+    | Promise<{ handle?: string; locale?: string }>
+    | { handle?: string; locale?: string };
+  searchParams?: GridSearchParams;
   productsLimit: number;
   isCategory?: boolean;
 }): Promise<JSX.Element> => {
   const p = await params;
   const searchParams = await sp;
+
+  if (isCategory && !p.handle) {
+    return <ProductsNotFound />;
+  }
+
   const currentPage = Number(searchParams?.page) || 1;
   const limit =
     currentPage * productsLimit > 0
       ? currentPage * productsLimit
       : productsLimit;
-  const combinedParams = { ...p, searchParams };
+  const combinedParams = searchParams ? { ...p, searchParams } : { ...p };
 
   // Получаем все продукты из api или продукты byPageUrl
   const { isError, products, total } = !isCategory
@@ -46,7 +58,7 @@ const ProductsGridLayout = async ({
     : await getProductsByPageUrl({
         offset: 0,
         limit: limit,
-        params: combinedParams,
+        params: { ...combinedParams, handle: p.handle as string },
       });
 
   if (!products || total < 1 || isError) {

@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { FormEvent, JSX } from 'react';
@@ -88,8 +86,10 @@ const UserForm = (): JSX.Element => {
         refreshUser();
         setError('');
         toast('Data saved!');
-      } catch (error: any) {
-        setError(error.message || 'An error occurred');
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : 'An error occurred';
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -123,12 +123,7 @@ const UserForm = (): JSX.Element => {
                 (item) => item.marker === field.marker,
               ) as unknown as FormDataType[]);
             return (
-              <FormInput
-                key={index}
-                index={index}
-                {...(field as unknown as IAttributes)}
-                {...fieldData}
-              />
+              <FormInput key={index} index={index} {...field} {...fieldData} />
             );
           })}
       </div>

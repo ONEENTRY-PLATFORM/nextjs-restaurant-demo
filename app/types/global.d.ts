@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
@@ -20,7 +19,7 @@ declare type LocalizeInfo = {
  * @property {object} searchParams - Search-параметры.
  */
 declare type PageProps = {
-  params: Promise<{ page?: any; handle: string; lang: string }>;
+  params: Promise<{ page?: string; handle: string; lang: string }>;
   searchParams: Promise<{
     search?: string;
     page?: string;
@@ -39,7 +38,7 @@ declare type SimplePageProps = {
   page?: IPagesEntity;
   lang?: string;
   dict?: IAttributeValues;
-  [key as string]: any;
+  [key: string]: unknown;
 };
 
 /**
@@ -187,9 +186,9 @@ export type ImageProps = {
   style?: React.CSSProperties;
   objectFit?: string;
   priority?: 'auto' | 'low' | 'high' | undefined;
-  onLoad?: any;
-  ref: React.Ref<any>;
-  onClick?: any;
+  onLoad?: React.ReactEventHandler<HTMLImageElement>;
+  ref: React.Ref<HTMLImageElement>;
+  onClick?: React.MouseEventHandler<HTMLImageElement>;
   // decoding?: 'async' | 'sync' | 'auto';
 };
 
@@ -198,12 +197,14 @@ export type FormProps = { dict: IAttributeValues; className: string };
 declare type TabLayoutProps = {
   dict: IAttributeValues;
   tabsState: {
-    [tabKey]: {
+    [tabKey: string]: {
       isActive: boolean;
       disabled: boolean;
     };
   };
-  setTabsState: any;
+  setTabsState: React.Dispatch<
+    React.SetStateAction<TabLayoutProps['tabsState']>
+  >;
 };
 
 declare type IAppOrder = {

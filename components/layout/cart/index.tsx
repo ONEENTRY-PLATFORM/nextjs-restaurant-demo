@@ -16,6 +16,7 @@ import {
   selectDeliveryData,
 } from '@/app/store/reducers/CartSlice';
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
+import type { IProducts } from '@/app/types/global';
 import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
 import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
@@ -79,8 +80,7 @@ const CartPage = ({
   }, [cartDelivery, user, dispatch]);
 
   // продукты в redux carSlice
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const productsCartData = useAppSelector(selectCartData) as any[];
+  const productsCartData = useAppSelector(selectCartData) as IProducts[];
 
   // Получаем продукты по Ids из api
   const { data, isLoading } = useGetProductsByIdsQuery({

@@ -2,7 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import type { JSX, ReactNode } from 'react';
+import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
 import { useRef } from 'react';
 
 /**
@@ -16,10 +16,8 @@ const ProfileMenuAnimations = ({
 }: {
   children: ReactNode;
   className: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setState: any;
+  state: boolean;
+  setState: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
   const ref = useRef(null);
 

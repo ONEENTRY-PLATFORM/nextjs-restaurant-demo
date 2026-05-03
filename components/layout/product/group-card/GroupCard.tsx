@@ -9,6 +9,9 @@ import ProductImage from './ProductImage';
 
 /**
  * Компонент карточки группы продуктов
+ * @param {object} props - Параметры компонента
+ * @param {object} props.product - Продукт
+ * @returns {JSX.Element} JSX-элемент
  */
 const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const attributeValues = product.attributeValues;

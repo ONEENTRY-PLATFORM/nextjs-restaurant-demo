@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
@@ -34,7 +34,13 @@ export const resetPasswordFormFields = [
 ];
 
 /**
- * Форма сброса пароля
+ * Форма сброса пароля.
+ *
+ * ⚠️ Это намеренно фронтовая форма (статические `<input>`-поля), а НЕ
+ * `getFormByMarker`-форма из админки OneEntry. В CMS такой формы нет — данные
+ * напрямую отправляются в SDK `AuthProvider.changePassword(...)`. MCP-правило
+ * «Forms ALWAYS dynamic» относится к контентным формам (Contact Us, Sign Up),
+ * а не к auth-flow методам с фиксированной сигнатурой SDK. См. MISMATCH-LOG §C.8.2.
  */
 const ResetPasswordForm = (): JSX.Element => {
   const t = useT();
@@ -80,8 +86,8 @@ const ResetPasswordForm = (): JSX.Element => {
         setComponent('SignInForm');
         setAction('');
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError((error as { message?: string })?.message ?? '');
     } finally {
       setLoading(false);
     }
@@ -104,10 +110,10 @@ const ResetPasswordForm = (): JSX.Element => {
             <FormInput
               key={index}
               index={index}
-              {...field}
+              {...(field as unknown as IFormAttribute)}
               listTitles={[]}
               position={0}
-              type={''}
+              type={'string'}
               validators={{}}
             />
           ))}

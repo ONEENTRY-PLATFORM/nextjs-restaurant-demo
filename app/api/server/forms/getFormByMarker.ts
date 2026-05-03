@@ -1,4 +1,5 @@
 import type { IError } from 'oneentry/dist/base/utils';
+import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
@@ -11,8 +12,7 @@ export const getFormByMarker = async (
 ): Promise<{
   isError: boolean;
   error?: IError;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form?: any;
+  form?: IFormsEntity;
 }> => {
   try {
     const data = await getApi().Forms.getFormByMarker(marker);
@@ -22,8 +22,7 @@ export const getFormByMarker = async (
     } else {
       return { isError: false, form: data };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError };
   }
 };

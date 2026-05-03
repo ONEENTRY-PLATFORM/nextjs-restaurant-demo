@@ -12,6 +12,7 @@ import {
   addProductsToCart,
   selectCartData,
 } from '@/app/store/reducers/CartSlice';
+import type { IProducts } from '@/app/types/global';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
@@ -36,8 +37,7 @@ const CartPopup = (): JSX.Element => {
     useContext(OpenDrawerContext);
   const isOpen = open && component === 'CartPopup';
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const productsCartData = useAppSelector(selectCartData) as any[];
+  const productsCartData = useAppSelector(selectCartData) as IProducts[];
   const { data, isLoading } = useGetProductsByIdsQuery(
     { items: productsCartData.map((p) => p.id) },
     { skip: !isOpen || productsCartData.length === 0 },
@@ -106,7 +106,7 @@ const CartPopup = (): JSX.Element => {
                     key={product.id}
                     index={i}
                     product={product}
-                    selected={productsCartData[i]?.selected}
+                    selected={productsCartData[i]?.selected as boolean}
                   />
                 ))}
                 <button

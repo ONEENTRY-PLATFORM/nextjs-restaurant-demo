@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useTransitionRouter } from 'next-transition-router';
@@ -19,7 +18,13 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
- * Компонент VerificationForm
+ * Компонент VerificationForm — ввод 6-значного OTP-кода.
+ *
+ * ⚠️ Намеренно фронтовая форма (OTP-input, не из CMS). В админке OneEntry
+ * соответствующей формы нет — код отправляется в SDK `AuthProvider.checkCode(...)`
+ * (или `activateUser(...)` если идёт активация после регистрации). MCP-правило
+ * «Forms ALWAYS dynamic» сюда не применимо — это auth-flow метод с фиксированной
+ * сигнатурой SDK. См. MISMATCH-LOG §C.8.2.
  */
 const VerificationForm = (): JSX.Element => {
   const t = useT();
@@ -73,9 +78,9 @@ const VerificationForm = (): JSX.Element => {
           throw new Error('Activation failed'); // Бросаем ошибку при провале активации
         }
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Ловим и устанавливаем любые ошибки, возникшие в процессе
-      setError(e.message || 'An error occurred');
+      setError((e as { message?: string })?.message ?? 'An error occurred');
     } finally {
       // Гарантируем сброс loading-состояния после обработки
       setLoading(false);
@@ -115,9 +120,9 @@ const VerificationForm = (): JSX.Element => {
         fields.email?.value || '', // Email пользователя из полей формы
         'generate_code', // Тип action для генерации нового кода
       );
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Ловим и устанавливаем любые ошибки, возникшие в процессе
-      setError(e.message || 'An error occurred');
+      setError((e as { message?: string })?.message ?? 'An error occurred');
     } finally {
       // Гарантируем сброс loading-состояния после обработки
       setLoading(false);

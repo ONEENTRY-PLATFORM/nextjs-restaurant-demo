@@ -119,8 +119,7 @@ export function typeError(res: IError | unknown): res is IError {
   return false;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const shuffleArray = (array: any[]) => {
+export const shuffleArray = <T>(array: T[]): T[] => {
   return array
     .map((a) => ({ sort: Math.random(), value: a }))
     .sort((a, b) => a.sort - b.sort)

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
@@ -44,9 +43,10 @@ const SearchResults = ({
         };
       } = {};
       await Promise.all(
-        products.map(async (product: any) => {
-          if (product.productPages.length > 0) {
-            const pageData = await getPageById(product.productPages[0].pageId);
+        products.map(async (product: IProductsEntity) => {
+          const firstPage = product.productPages?.[0];
+          if (firstPage) {
+            const pageData = await getPageById(firstPage.pageId);
             pagesData[product.id] = pageData;
           }
         }),

@@ -3,6 +3,9 @@ import type { JSX } from 'react';
 
 /**
  * Компонент картинки продукта в группе
+ * @param {object} props - Параметры компонента
+ * @param {string} props.imageSrc - URL картинки продукта
+ * @returns {JSX.Element} Компонент картинки продукта
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (

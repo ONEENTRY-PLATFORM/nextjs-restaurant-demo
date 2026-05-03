@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import parse from 'html-react-parser';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
+
+type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
  * Использует тип String.
@@ -9,15 +11,16 @@ import parse from 'html-react-parser';
  */
 export const getString = (
   name: string,
-  attributeValues: Record<string, any>,
+  attributeValues: AttributeValuesInput,
 ): string => {
+  const attr = attributeValues?.[name];
   if (
-    attributeValues?.[name] &&
-    typeof attributeValues[name] === 'object' &&
-    'value' in attributeValues[name] &&
-    typeof attributeValues[name].value === 'string'
+    attr &&
+    typeof attr === 'object' &&
+    'value' in attr &&
+    typeof attr.value === 'string'
   ) {
-    return attributeValues[name].value;
+    return attr.value;
   }
   return '';
 };
@@ -31,9 +34,9 @@ export const getString = (
  */
 export const getText = (
   name: string,
-  attributeValues: any,
+  attributeValues: AttributeValuesInput,
   type: 'html' | 'plain' = 'plain',
-): string | [] | any => {
+): string | ReturnType<typeof parse> => {
   const data = attributeValues?.[name];
   if (
     data &&
@@ -42,7 +45,7 @@ export const getText = (
     Array.isArray(data.value) &&
     data.value.length > 0
   ) {
-    const text = data.value[0];
+    const text = data.value[0] as { htmlValue?: string; plainValue?: string };
 
     if (
       text &&
@@ -50,8 +53,7 @@ export const getText = (
       ('htmlValue' in text || 'plainValue' in text)
     ) {
       if (type === 'html' && typeof text.htmlValue === 'string') {
-        const val = parse(text.htmlValue);
-        return val;
+        return parse(text.htmlValue);
       }
       return typeof text.plainValue === 'string' ? text.plainValue : '';
     }
@@ -172,12 +174,15 @@ export const getText = (
  */
 export const getImageUrl = (
   name: string,
-  attributeValues: any,
+  attributeValues: AttributeValuesInput,
   type: 'image' | 'preview' = 'image',
 ): string => {
   const data = attributeValues?.[name];
   if (data && typeof data === 'object' && 'value' in data) {
-    const firstImage = data.value[0] || data.value;
+    const value = data.value as
+      | { downloadLink?: string; previewLink?: string }
+      | Array<{ downloadLink?: string; previewLink?: string }>;
+    const firstImage = Array.isArray(value) ? value[0] : value;
 
     if (
       firstImage &&
@@ -186,7 +191,7 @@ export const getImageUrl = (
       typeof firstImage.downloadLink === 'string'
     ) {
       if (type === 'preview') {
-        return firstImage.previewLink;
+        return firstImage.previewLink ?? '';
       } else {
         return firstImage.downloadLink;
       }

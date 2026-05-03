@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { IAttributes } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX, Key } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +13,7 @@ import EyeOpenIcon from '@/components/icons/eye-o';
  * FormInput
  */
 const FormInput = (
-  field: IAttributes & { value?: string; index: number },
+  field: IFormAttribute & { value?: string; index: number },
 ): JSX.Element => {
   const { localizeInfos } = field;
   const [value, setValue] = useState<string>(field.value || '');
@@ -22,15 +21,15 @@ const FormInput = (
   const dispatch = useAppDispatch();
   const valid = true;
 
-  const fieldType = (FormFieldsEnum as unknown as FormFieldsEnum)[
+  const fieldKey: keyof typeof FormFieldsEnum =
     field.marker.indexOf('password') !== -1
       ? 'password'
       : field.marker.indexOf('email') !== -1
         ? 'email'
-        : (field.type as any)
-  ];
+        : (field.type as keyof typeof FormFieldsEnum);
+  const fieldType = FormFieldsEnum[fieldKey];
 
-  const validators = field.validators as Record<string, any> | undefined;
+  const validators = field.validators as Record<string, unknown> | undefined;
   const required =
     (validators?.['requiredValidator'] as { strict?: boolean } | undefined)
       ?.strict || false;

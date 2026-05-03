@@ -37,7 +37,7 @@ export const getProductsByPageUrl = async (props: {
     .map((v) => v.trim())
     .filter(Boolean);
 
-  // OR-семантика для multi-select preferences (см. комментарий в getProducts.ts):
+  // !!! OR-семантика для multi-select preferences (см. комментарий в getProducts.ts):
   // SDK принимает только скалярный `conditionValue`, поэтому для каждого
   // выбранного значения делаем отдельный запрос и мерджим уникальные товары.
   if (prefList.length > 1) {
@@ -73,9 +73,8 @@ export const getProductsByPageUrl = async (props: {
         products: merged.slice(offset, offset + limit),
         total: merged.length,
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      return { isError: true, error: e, total: 0 };
+    } catch (e: unknown) {
+      return { isError: true, error: e as IError, total: 0 };
     }
   }
 
@@ -86,10 +85,6 @@ export const getProductsByPageUrl = async (props: {
       params.handle,
       expandedFilters,
       lang,
-      // Sort key/order настраивается per-page в OneEntry admin —
-      // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
-      // что выбрал редактор (ручная позиция, цена, дата, …), и учесть
-      // per-product position-локи, заданные в админке.
       { offset, limit },
     );
 
@@ -98,8 +93,7 @@ export const getProductsByPageUrl = async (props: {
     } else {
       return { isError: false, products: data.items, total: data.total };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e, total: 0 };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError, total: 0 };
   }
 };

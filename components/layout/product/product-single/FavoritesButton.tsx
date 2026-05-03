@@ -27,10 +27,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
-  const isFavStored = useAppSelector((state) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selectIsFavorites(state as any, id),
-  );
+  const isFavStored = useAppSelector((state) => selectIsFavorites(state, id));
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -72,9 +69,9 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
           'Product ' + product.localizeInfos.title + ' removed from Favorites!',
         );
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      toast('Auth error! ' + e?.message);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      toast('Auth error! ' + message);
     }
   };
 

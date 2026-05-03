@@ -2,7 +2,6 @@ import AuthProviderSelect from './AuthProviderSelect';
 import CalendarForm from './CalendarForm';
 import ContactUsForm from './ContactUsForm';
 import ForgotPasswordForm from './ForgotPasswordForm';
-import PhoneAuthForm from './PhoneAuthForm';
 import ResetPasswordForm from './ResetPasswordForm';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
@@ -14,7 +13,6 @@ export {
   CalendarForm,
   ContactUsForm,
   ForgotPasswordForm,
-  PhoneAuthForm,
   ResetPasswordForm,
   SignInForm,
   SignUpForm,

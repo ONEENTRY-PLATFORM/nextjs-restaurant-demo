@@ -22,8 +22,7 @@ export const getPageByUrl = async (
     } else {
       return { isError: false, page: data };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError };
   }
 };

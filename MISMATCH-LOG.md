@@ -595,6 +595,19 @@
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 
+### C.8.2. Auth-формы вне CMS (PhoneAuthForm удалён, Reset/Verification — фронт-only)
+
+Подтверждено клиентом 2026-05-04: auth-flow формы НЕ должны быть `getFormByMarker`-формами из админки. Они напрямую дёргают SDK с фиксированной сигнатурой:
+
+| Форма / экран | SDK метод | Статус |
+|---|---|---|
+| `PhoneAuthForm` | — | ❌ удалён, не нужен. Phone-провайдер из `getAuthProviders()` теперь падает в `SignInForm` (тот же email/login flow). |
+| `ResetPasswordForm` | `AuthProvider.changePassword('email', login, 'otp', 1, code, newPwd, repeatPwd)` | ✅ статическая фронт-форма (нет в админке) — корректно |
+| `VerificationForm` | `AuthProvider.checkCode('email', login, 'otp', code)` или `activateUser(...)` после регистрации | ✅ статический OTP-input — корректно |
+| `ForgotPasswordForm` | `AuthProvider.generateCode('email', login, 'reset_password')` | ✅ корректно |
+
+MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер по `attribute.type`) применяется только к контентным формам (Contact Us, Sign Up, Reservation, заказ — те, что собираются админом в CMS). Auth-flow методы с зафиксированной SDK-сигнатурой остаются обычными React-формами; динамика тут не нужна и привела бы к избыточному API-вызову `getFormByMarker` без новых данных.
+
 ### C.9. Меню `user_menu` — пункты профильного дропдауна
 
 [components/layout/header/nav/NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx) теперь рендерит выпадающее меню под иконкой профиля для авторизованных юзеров — пункты тянутся из CMS-меню с маркером `user_menu`. На десктопе это меню заменило табы `Personal / Orders / Favorites` (последние удалены из [app/profile/layout.tsx](app/profile/layout.tsx) — табов в дизайне нет).

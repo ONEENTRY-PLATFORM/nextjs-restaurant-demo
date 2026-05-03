@@ -27,8 +27,7 @@ export const getRelatedProductsById = async (
         total: data.total,
       };
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    return { isError: true, error: e, total: 0 };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError, total: 0 };
   }
 };

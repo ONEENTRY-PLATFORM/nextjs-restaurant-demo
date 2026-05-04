@@ -11,15 +11,13 @@ import { useMemo, useState } from 'react';
 import { getApi, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useT } from '@/app/store/providers/DictProvider';
-import DatePickerSheet from '@/components/ui/DatePickerSheet';
-import TimePickerSheet from '@/components/ui/TimePickerSheet';
+import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
-type PickerMode = 'date' | 'time' | null;
 
 /**
  * Поля, рендерящиеся в 2-колоночных строках (согласно вёрстке `service_table.html`).
@@ -111,10 +109,10 @@ type ReservationFormProps = {
  * дропдаун ресторана, двухколоночная сетка для name/surname/phone/guests/date/time,
  * textarea для предпочтений, основная кнопка отправки.
  *
- * Поля даты и времени открывают полноэкранные bottom-sheet пикеры
- * ({@link DatePickerSheet} и {@link TimePickerSheet}) вместо нативного
- * `<input type="date">` — это соответствует мокапам `service_date.html` и
- * `service_time.html`.
+ * Поля даты и времени открывают объединённый полноэкранный bottom-sheet
+ * пикер {@link DateTimePickerSheet} вместо нативного `<input type="date">` —
+ * это соответствует мокапам `service_date.html` и `service_time.html`,
+ * слитым в одну форму.
  * @param   {ReservationFormProps} props - Пропсы компонента.
  * @returns {JSX.Element}                JSX формы бронирования.
  */
@@ -130,7 +128,7 @@ const ReservationForm = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [picker, setPicker] = useState<PickerMode>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
     () =>
@@ -282,7 +280,7 @@ const ReservationForm = ({
                 attr={leftAttr}
                 values={values}
                 onChange={onChange}
-                onOpenPicker={setPicker}
+                onOpenPicker={() => setPickerOpen(true)}
               />
             ) : (
               <div />
@@ -292,7 +290,7 @@ const ReservationForm = ({
                 attr={rightAttr}
                 values={values}
                 onChange={onChange}
-                onOpenPicker={setPicker}
+                onOpenPicker={() => setPickerOpen(true)}
               />
             ) : (
               <div />
@@ -338,7 +336,7 @@ const ReservationForm = ({
             attr={a}
             values={values}
             onChange={onChange}
-            onOpenPicker={setPicker}
+            onOpenPicker={() => setPickerOpen(true)}
           />
         ))}
 
@@ -358,39 +356,30 @@ const ReservationForm = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Slide-up пикеры — сначала дата, потом время, оба пишут в TIME_SLOT_MARKER */}
-      {picker === 'date' ? (
-        <DatePickerSheet
-          value={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || todayIso}
+      {/* Объединённый попап выбора даты и времени. Слоты времени берутся из
+          `restaurant.schedule` (атрибут OneEntry типа `timeInterval`) — после
+          выбора даты ниже календаря показываются доступные слоты. */}
+      {pickerOpen ? (
+        <DateTimePickerSheet
+          date={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || ''}
+          time={values[TIME_SLOT_MARKER]?.split(' ')?.[1] || ''}
           minDate={todayIso}
-          onApply={(iso) => {
-            onChange(TIME_SLOT_MARKER, iso);
-            setPicker('time');
+          getSlots={(dateIso) =>
+            getAvailableSlotsForDate(
+              restaurants.find(
+                (r) => r.value === (values[RESTAURANT_MARKER] ?? ''),
+              )?.schedule,
+              dateIso,
+            )
+          }
+          onApply={(d, tm) => {
+            onChange(TIME_SLOT_MARKER, `${d} ${tm}`);
+            setPickerOpen(false);
           }}
-          onClose={() => setPicker(null)}
-          // Для date-пикера back == close: предыдущего шага нет.
-          onBack={() => setPicker(null)}
-          applyText={t('apply_text', '') || undefined}
-        />
-      ) : null}
-      {picker === 'time' ? (
-        <TimePickerSheet
-          value={values[TIME_SLOT_MARKER]?.split(' ')?.[1] ?? ''}
-          slots={getAvailableSlotsForDate(
-            restaurants.find(
-              (r) => r.value === (values[RESTAURANT_MARKER] ?? ''),
-            )?.schedule,
-            values[TIME_SLOT_MARKER]?.split(' ')?.[0] ?? todayIso,
-          )}
-          onApply={(t) => {
-            const d = values[TIME_SLOT_MARKER]?.split(' ')?.[0] ?? todayIso;
-            onChange(TIME_SLOT_MARKER, `${d} ${t}`);
-            setPicker(null);
-          }}
-          onClose={() => setPicker(null)}
-          // Back возвращает к date-пикеру, как в reservation-flow:
-          // user сначала выбирает дату, потом время.
-          onBack={() => setPicker('date')}
+          onClose={() => setPickerOpen(false)}
+          title={t('select_datetime_text', 'Select date and time')}
+          dateTitle={t('date_text', 'Date')}
+          timeTitle={t('time_text', 'Time')}
           applyText={t('apply_text', '') || undefined}
           noTimeText={t('no_time_text', '') || undefined}
         />
@@ -403,7 +392,7 @@ type FieldProps = {
   attr: IFormAttribute;
   values: Record<string, FieldValue>;
   onChange: (marker: string, value: FieldValue) => void;
-  onOpenPicker: (mode: PickerMode) => void;
+  onOpenPicker: () => void;
 };
 
 /**
@@ -429,7 +418,7 @@ const Field = ({
     return (
       <button
         type="button"
-        onClick={() => onOpenPicker('date')}
+        onClick={() => onOpenPicker()}
         className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
         <span className="font-normal text-[16px] text-paper">{label}</span>

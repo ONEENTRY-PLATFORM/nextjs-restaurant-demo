@@ -11,19 +11,16 @@ import {
   setDeliveryData,
 } from '@/app/store/reducers/CartSlice';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
-import DatePickerSheet from '@/components/ui/DatePickerSheet';
-import TimePickerSheet from '@/components/ui/TimePickerSheet';
-
-type PickerMode = 'date' | 'time' | null;
+import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 /**
  * Calendar form — модальный попап для выбора delivery date + time. Открывается
  * из строк превью корзины ({@link DeliveryTableRow}) через
  * `setComponent('CalendarForm')` и рендерится через общий слой {@link Modal}.
  *
- * Сохраняет выбор в `cartReducer.deliveryData` и закрывает
- * модалку — существующий шаг wizard `time` зарезервирован под полный
- * флоу checkout; это инлайн-пикер для экрана корзины.
+ * Сохраняет выбор в `cartReducer.deliveryData` и закрывает модалку. Внутри
+ * использует объединённый {@link DateTimePickerSheet}: сначала календарь,
+ * после выбора дня — временные слоты, единый `Apply`.
  * @param   {object}  props           - Пропсы формы.
  * @param   {string}  props.className - Класс-обёртка.
  * @param   {boolean} props.isActive  - Открыта ли модалка.
@@ -49,7 +46,7 @@ const CalendarForm = ({
   const [time, setTime] = useState<string>(
     (delivery?.time as string | undefined) ?? '',
   );
-  const [picker, setPicker] = useState<PickerMode>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const onSave = () => {
     dispatch(
@@ -67,16 +64,16 @@ const CalendarForm = ({
       <div className="flex flex-col gap-6">
         <button
           type="button"
-          onClick={() => setPicker('date')}
+          onClick={() => setPickerOpen(true)}
           className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
         >
-          <span className="cart_label">Date</span>
+          <span className="cart_label">{t('date_text', 'Date')}</span>
           <span className="text-lg text-paper">{date || 'Select date'}</span>
         </button>
 
         <button
           type="button"
-          onClick={() => setPicker('time')}
+          onClick={() => setPickerOpen(true)}
           className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
         >
           <span className="cart_label">{t('time_text', 'Time')}</span>
@@ -92,25 +89,22 @@ const CalendarForm = ({
           {t('apply_text', 'Apply')}
         </button>
 
-        {picker === 'date' ? (
-          <DatePickerSheet
-            value={date}
+        {pickerOpen ? (
+          <DateTimePickerSheet
+            date={date}
+            time={time}
             minDate={new Date().toISOString().slice(0, 10)}
-            onApply={(iso) => {
-              setDate(iso);
-              setPicker(null);
+            onApply={(d, tm) => {
+              setDate(d);
+              setTime(tm);
+              setPickerOpen(false);
             }}
-            onClose={() => setPicker(null)}
-          />
-        ) : null}
-        {picker === 'time' ? (
-          <TimePickerSheet
-            value={time}
-            onApply={(t) => {
-              setTime(t);
-              setPicker(null);
-            }}
-            onClose={() => setPicker(null)}
+            onClose={() => setPickerOpen(false)}
+            title={t('select_datetime_text', 'Select date and time')}
+            dateTitle={t('date_text', 'Date')}
+            timeTitle={t('time_text', 'Time')}
+            applyText={t('apply_text', '') || undefined}
+            noTimeText={t('no_time_text', '') || undefined}
           />
         ) : null}
       </div>

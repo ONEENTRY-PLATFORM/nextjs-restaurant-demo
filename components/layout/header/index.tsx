@@ -88,7 +88,7 @@ const Header = async (): Promise<JSX.Element> => {
           <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
             <div className="flex items-center justify-start md:gap-7.5 gap-15">
               <Logo />
-              <h1 className="font-lato italic font-bold md:text-hero-md lg:text-hero-lg xl:text-hero-xl leading-hero tracking-[0.02em] text-white md:max-w-100 lg:max-w-120">
+              <h1 className="font-lato italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-[0.02em] text-white md:max-w-100 lg:max-w-120">
                 Excellence taste
                 <br /> in <span className="text-brand">every bite</span>
               </h1>

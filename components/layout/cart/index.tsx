@@ -48,7 +48,7 @@ const CartPage = ({
     const address = (cartDelivery.address as string | undefined) || addressReg;
 
     // OneEntry требует для `timeInterval` value формы массив пар
-    // `[[startISO, endISO]]` (см. SDK skill `create-checkout`). TimePickerSheet
+    // `[[startISO, endISO]]` (см. SDK skill `create-checkout`). DateTimePickerSheet
     // отдаёт 1-часовой слот в формате `HH.00`/`HH:MM`, поэтому собираем интервал
     // [hour, hour+1) на выбранном дне.
     const hourMatch =

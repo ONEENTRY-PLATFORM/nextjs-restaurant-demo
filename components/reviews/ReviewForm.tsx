@@ -14,11 +14,6 @@ import StarRating from './StarRating';
 
 const FORM_MARKER = 'review_form';
 const FORM_STATUS = 'approved';
-// `moduleFormConfigs[0].id` формы `review_form` в OneEntry-админке = 2
-// (проверено через SDK Forms.getFormByMarker; раньше тут хардкодом
-// стоял 5 — отсюда сабмит молча валился с серверной стороны). Форма
-// привязана к module `catalog`, entityIdentifier `menu` (nested = true)
-// — т.е. отзыв хранится по id продукта, лежащего под страницей `menu`.
 const FORM_MODULE_CONFIG_ID = 2;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
@@ -46,8 +41,7 @@ const resolveAuthorName = (user: {
  * Форма отзыва на продукт — звёздный рейтинг + текст.
  * @param   {object}      props           - Пропсы компонента.
  * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
- * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок (`Leave a review`),
- *                                            если он уже есть в шапке родителя (попап).
+ * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок (`Leave a review`), если он уже есть в шапке родителя (попап).
  * @returns {JSX.Element}                 JSX формы отзыва.
  */
 const ReviewForm = ({
@@ -105,22 +99,19 @@ const ReviewForm = ({
     }
     setLoading(true);
     setError('');
-    // Зовём SDK напрямую с клиента, чтобы user-token из auth-сессии
-    // подхватился. Серверный action этот контекст не несёт — отсюда
-    // раньше был "You must authorize to send data".
     try {
       const formData: FormDataType[] = [
         {
           marker: RATING_MARKER,
           type: 'integer',
           value: rating,
-        } as unknown as FormDataType,
+        },
         {
           marker: TEXT_MARKER,
           type: 'text',
           // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
           value: [{ plainValue: text.trim() }],
-        } as unknown as FormDataType,
+        },
       ];
       const res = await getApi().FormData.postFormsData({
         formIdentifier: FORM_MARKER,

@@ -36,7 +36,6 @@ const SignInForm = ({
   const { authenticate } = useContext(AuthContext);
   const { setOpen } = useContext(OpenDrawerContext);
 
-  const [tab, setTab] = useState('email');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -106,26 +105,9 @@ const SignInForm = ({
         className="relative mx-auto mb-6 mt-2 box-border flex shrink-0 flex-col gap-3"
         onSubmit={onSignIn}
       >
-        <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <FormFieldAnimations
-            index={1}
-            className="max-w-full text-xs text-paper/60"
-          >
-            {['email', 'phone'].map((type) => (
-              <button
-                key={type}
-                onClick={() => setTab(type)}
-                className={tab === type ? 'font-bold' : ''}
-              >
-                {type}
-              </button>
-            ))}
-          </FormFieldAnimations>
-        </div>
-
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
           {formFields?.map((field: IFormAttribute, index: number) => {
-            if (field.marker === `${tab}` || field.marker === 'password') {
+            if (field.marker === 'email' || field.marker === 'password') {
               return <FormInput key={index} index={index + 2} {...field} />;
             }
             return null;

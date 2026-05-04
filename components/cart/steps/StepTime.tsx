@@ -10,16 +10,13 @@ import {
   setDeliveryData,
 } from '@/app/store/reducers/CartSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import DatePickerSheet from '@/components/ui/DatePickerSheet';
-import TimePickerSheet from '@/components/ui/TimePickerSheet';
-
-type PickerMode = 'date' | 'time' | null;
+import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 /**
- * Шаг checkout — выбор date + time. Использует фуллскрин slide-up sheets
- * ({@link DatePickerSheet}, {@link TimePickerSheet}), которые повторяют
- * `service_date.html` / `service_time.html`. Тап по полю открывает
- * соответствующий sheet; `Apply` сохраняет значение и закрывает.
+ * Шаг checkout — выбор date + time. Открывает объединённый попап
+ * {@link DateTimePickerSheet}: внутри сначала календарь, после выбора дня
+ * появляются временные слоты. Один `Apply` сохраняет оба значения и
+ * закрывает попап.
  * @returns {JSX.Element} JSX шага.
  */
 const StepTime = (): JSX.Element => {
@@ -35,7 +32,7 @@ const StepTime = (): JSX.Element => {
   const [time, setTime] = useState<string>(
     (delivery?.time as string | undefined) ?? '',
   );
-  const [picker, setPicker] = useState<PickerMode>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const onNext = () => {
     dispatch(
@@ -56,16 +53,16 @@ const StepTime = (): JSX.Element => {
 
       <button
         type="button"
-        onClick={() => setPicker('date')}
+        onClick={() => setPickerOpen(true)}
         className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
-        <span className="cart_label">Date</span>
+        <span className="cart_label">{t('date_text', 'Date')}</span>
         <span className="text-lg text-paper">{date || 'Select date'}</span>
       </button>
 
       <button
         type="button"
-        onClick={() => setPicker('time')}
+        onClick={() => setPickerOpen(true)}
         className="flex flex-col items-start gap-1 border-b border-b-muted py-2 text-left"
       >
         <span className="cart_label">{t('time_text', 'Time')}</span>
@@ -81,25 +78,22 @@ const StepTime = (): JSX.Element => {
         Continue
       </button>
 
-      {picker === 'date' ? (
-        <DatePickerSheet
-          value={date}
+      {pickerOpen ? (
+        <DateTimePickerSheet
+          date={date}
+          time={time}
           minDate={new Date().toISOString().slice(0, 10)}
-          onApply={(iso) => {
-            setDate(iso);
-            setPicker(null);
+          onApply={(d, tm) => {
+            setDate(d);
+            setTime(tm);
+            setPickerOpen(false);
           }}
-          onClose={() => setPicker(null)}
-        />
-      ) : null}
-      {picker === 'time' ? (
-        <TimePickerSheet
-          value={time}
-          onApply={(t) => {
-            setTime(t);
-            setPicker(null);
-          }}
-          onClose={() => setPicker(null)}
+          onClose={() => setPickerOpen(false)}
+          title={t('select_datetime_text', 'Select date and time')}
+          dateTitle={t('date_text', 'Date')}
+          timeTitle={t('time_text', 'Time')}
+          applyText={t('apply_text', '') || undefined}
+          noTimeText={t('no_time_text', '') || undefined}
         />
       ) : null}
     </div>

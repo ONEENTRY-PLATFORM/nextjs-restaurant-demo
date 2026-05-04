@@ -28,6 +28,11 @@ export type BlogBanner = {
  * Страницы без какого-либо из изображений всё равно включаются — вызывающая
  * сторона решает, какой вариант рендерить, и аккуратно фолбэчится, если нужный
  * URL отсутствует.
+ *
+ * Сортировка: по возрастанию `position` страницы (как настроено в админке
+ * OneEntry). SDK возвращает дочерние страницы в порядке `id` (порядке создания),
+ * а не по `position`, поэтому сортируем здесь — иначе на главной hero и
+ * соседние карточки промо рендерились бы в случайном порядке.
  * @returns {Promise<BlogBanner[]>} Список баннеров (пустой при ошибке CMS).
  */
 export const getBlogBanners = async (): Promise<BlogBanner[]> => {
@@ -40,7 +45,11 @@ export const getBlogBanners = async (): Promise<BlogBanner[]> => {
     | null
     | undefined;
 
-  return pages.map((p) => {
+  const sorted = [...pages].sort(
+    (a, b) => (a.position ?? 0) - (b.position ?? 0),
+  );
+
+  return sorted.map((p) => {
     const attrs = p.attributeValues ?? {};
     const desktopImage =
       getImageUrl(attrs.bg_image?.value as ImageValue) || null;

@@ -1,15 +1,20 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
+import { memo, Suspense } from 'react';
 
-import { getImageUrl, getPageByUrl, getProductsByPageUrl } from '@/app/api';
+import { getBlogBanners, getImageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
-import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
+import { ServerProvider } from '@/app/store/providers/ServerProvider';
+import type { MetadataParams, PageProps } from '@/app/types/global';
+import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import ProductsGridLayout from '@/components/layout/products-grid';
+import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import RelatedPromosCarousel from '@/components/promo/RelatedPromosCarousel';
 
-type PromoPageProps = {
-  params: Promise<{ handle: string }>;
-};
+const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 type ImageValue =
   | { downloadLink?: string }
@@ -24,38 +29,53 @@ type DescriptionValue = Array<{
 }>;
 
 /**
- * Страница деталей промо-акции — рендерит одну промо-кампанию по маркеру `pageUrl`
- * (например, `/promo/birthday_offer`, `/promo/business_lunch`).
+ * Страница деталей промо-акции (`/promo/<pageUrl>`).
  *
- * Управляется атрибутами дочерних страниц `blog` в OneEntry (набор `blog_page`).
- * Реальные атрибуты:
+ * По сути это страница-категория товаров: товары тянутся через
+ * `getProductsByPageUrl(handle)` внутри `ProductsGridLayout` с `isCategory=true`,
+ * что даёт ровно тот же UX, что и `/shop/[handle]` — фильтры по
+ * `searchParams`, пагинация через `LoadMore`, fallback `ProductsNotFound` и
+ * Suspense-скелетон.
+ *
+ * Управляется атрибутами дочерних страниц `blog` в OneEntry (набор `blog_page`):
  *   - `bg_image`    (image) — hero для десктопа;
  *   - `banner`      (image) — мобильный fallback, если `bg_image` пуст;
- *   - `description` (text)  — тело в markdown/html;
- *   - `action_type` (list)  — `[{ title }]` для подписи CTA.
- * @param   {PromoPageProps}       props - Пропсы динамического маршрута Next.js.
+ *   - `description` (text)  — тело в markdown/html.
+ *
+ * Структура страницы (Figma АКЦИЯ_DEAL OF THA DAY + static-html/pk_promo_day.html):
+ *   1) hero-картинка (bg_image / banner);
+ *   2) `h1` с названием + тело описания;
+ *   3) сетка товаров промо как у обычной категории;
+ *   4) два соседних промо-баннера (другие дочерние `blog`) внизу.
+ * @param   {PageProps}            props - Пропсы динамического маршрута Next.js.
  * @returns {Promise<JSX.Element>}       JSX страницы деталей промо.
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  */
-const PromoDetailPage = async ({
-  params,
-}: PromoPageProps): Promise<JSX.Element> => {
-  const { handle } = await params;
-  const [{ page, isError }, dict] = await Promise.all([
+const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
+  const { handle } = params;
+
+  ServerProvider('dict', await getDictionary());
+
+  const [{ page, isError }, banners, parentResp] = await Promise.all([
     getPageByUrl(handle),
-    getDictionary(),
+    getBlogBanners(),
+    getPageByUrl('blog'),
   ]);
 
   if (isError || !page) {
     return notFound();
   }
 
-  const promoProducts = await getProductsByPageUrl({
-    offset: 0,
-    limit: 50,
-    params: { handle },
-  });
-  const products = promoProducts.isError ? [] : (promoProducts.products ?? []);
+  const parentTitle = parentResp.page?.localizeInfos?.title ?? 'Promotions';
+  const parentUrl = parentResp.page?.pageUrl ?? 'blog';
+
+  const productsLimit = SHOP_PAGE_LIMIT;
+  const relatedPromos = banners.filter(
+    (b) => b.pageUrl !== handle && b.mobileImage,
+  );
 
   const attrs = page.attributeValues ?? {};
   const image =
@@ -65,48 +85,96 @@ const PromoDetailPage = async ({
   const description = attrs.description?.value as DescriptionValue | undefined;
   const subtitleHtml =
     description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
-  const actionType = attrs.action_type?.value as
-    | Array<{ title?: string }>
-    | undefined;
-  const cta =
-    actionType?.[0]?.title ?? (dict.promo_default_cta?.value as string);
 
   return (
     <section className="section_layout">
-      {/* main promo info */}
-      <div className="relative overflow-hidden rounded-[20px] bg-ink">
-        {image ? (
+      <nav aria-label="Breadcrumbs" className="mb-5 text-base">
+        <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-text">
+          <li>
+            <Link href="/" className="transition-colors hover:text-brand">
+              Home
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <Link
+              href={`/${parentUrl}`}
+              className="transition-colors hover:text-brand"
+            >
+              {parentTitle}
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li className="text-paper" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
+
+      {image ? (
+        <div className="overflow-hidden rounded-[10px]">
           <Image
             src={image}
             alt={title}
             width={1292}
-            height={500}
+            height={192}
             sizes="(max-width: 768px) 100vw, 1292px"
+            priority
             className="h-auto w-full object-cover"
           />
-        ) : null}
-        <div className="p-6 md:p-10">
-          <h1 className="mb-5 font-bold text-[20px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
-            {title}
-          </h1>
-          {subtitleHtml ? (
-            <div
-              className="text-base text-paper/90"
-              dangerouslySetInnerHTML={{ __html: subtitleHtml }}
-            />
-          ) : null}
-          <button
-            type="button"
-            className="mx-auto mt-12.5 block h-12.5 w-full max-w-153.75 rounded-[10px] bg-custom-gradient text-base font-bold uppercase text-white hover:bg-gradient-to-r-hover"
-          >
-            {cta}
-          </button>
         </div>
+      ) : null}
+
+      <div className="mt-11.25">
+        <h1 className="font-bold text-xl uppercase text-brand">{title}</h1>
+        {subtitleHtml ? (
+          <div
+            className="mt-3.75 font-normal text-base text-white"
+            dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+          />
+        ) : null}
       </div>
-      {/* Promo Products Grid */}
-      {products.length > 0 ? (
-        <div className="mt-10">
-          <ProductsGrid products={products} productsLimit={products.length} />
+
+      <div className="mt-12.5">
+        <Suspense
+          fallback={
+            <MemoizedProductsGridLoader productsLimit={productsLimit} />
+          }
+        >
+          <ProductsGridLayout
+            params={{ handle }}
+            searchParams={searchParams ?? {}}
+            productsLimit={productsLimit}
+            isCategory={true}
+          />
+        </Suspense>
+      </div>
+
+      {relatedPromos.length > 0 ? (
+        <div className="mt-20">
+          {relatedPromos.length >= 3 ? (
+            <RelatedPromosCarousel promos={relatedPromos} />
+          ) : (
+            <div className="flex flex-col lg:flex-row justify-between gap-15">
+              {relatedPromos.map((b) => (
+                <Link
+                  key={b.id}
+                  href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                  title={b.title}
+                  className="block flex-1 min-w-0 overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
+                >
+                  <Image
+                    src={b.mobileImage as string}
+                    alt={b.title}
+                    width={615}
+                    height={278}
+                    sizes="(min-width: 1024px) 615px, 100vw"
+                    className="h-auto w-full"
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       ) : null}
     </section>
@@ -117,12 +185,12 @@ export default PromoDetailPage;
 
 /**
  * Генерирует метаданные страницы для маршрута деталей промо.
- * @param   {PromoPageProps}    props - Пропсы Next.js.
+ * @param   {MetadataParams}    props - Пропсы Next.js.
  * @returns {Promise<Metadata>}       Объект метаданных.
  */
 export async function generateMetadata({
   params,
-}: PromoPageProps): Promise<Metadata> {
+}: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const [{ page }, dict] = await Promise.all([
     getPageByUrl(handle),

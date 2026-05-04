@@ -159,8 +159,7 @@
 [app/reservation/page.tsx](app/reservation/page.tsx)
 [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx)
 [components/reservation/RestaurantSelect.tsx](components/reservation/RestaurantSelect.tsx)
-[components/ui/DatePickerSheet.tsx](components/ui/DatePickerSheet.tsx)
-[components/ui/TimePickerSheet.tsx](components/ui/TimePickerSheet.tsx)
+[components/ui/DateTimePickerSheet.tsx](components/ui/DateTimePickerSheet.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
@@ -263,10 +262,10 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `description`   | text  | Description    |
 | `action_type`   | list  | Action type    |
 
-- `bg_image` — десктоп-баннер на `/`, `/cart`, `/profile/orders` ([getBlogBanners](app/api/server/pages/getBlogBanners.ts)). И как hero на `/promo/[handle]`.
-- `banner` — мобильный баннер в горизонтальном скролле на `/` и fallback для hero на детальной странице, если `bg_image` пуст.
+- `bg_image` — десктоп-баннер на `/` ([getBlogBanners](app/api/server/pages/getBlogBanners.ts)) и hero на `/promo/[handle]`.
+- `banner` — мобильный/портретный баннер: горизонтальный скролл на `/`, сайдбар на `/cart` и `/profile/orders`, нижний блок «соседних промо» на `/promo/[handle]` (другие дочерние `blog`, исключая текущий handle, первые два с непустым `banner`), а также fallback для hero на детальной странице, если `bg_image` пуст.
 - `description` — markdown/HTML текст под заголовком (используется в `[handle]/page.tsx` через `htmlValue`).
-- `action_type` — list-атрибут; `[0].title` идёт в CTA-кнопку. Сейчас у всех страниц пустой → используется fallback (`Order now` / `Learn more`).
+- `action_type` — list-атрибут; на `/promo/[handle]` больше не используется (CTA-кнопка удалена в соответствии с Figma `АКЦИЯ_DEAL OF THA DAY` / `static-html/pk_promo_day.html`). Если останется нужным для карточек — пересмотреть применение.
 
 Заголовок (title) идёт из `localizeInfos.title` страницы — отдельного `title`/`promo_title` атрибута в `blog_page` нет.
 

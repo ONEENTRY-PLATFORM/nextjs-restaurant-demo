@@ -119,24 +119,3 @@ export async function submitReview(
     return { ok: false, message: (e as Error).message };
   }
 }
-
-/**
- * Заглушка Server Action для строки отзыва о курьере/доставке в
- * {@link OrderReviewsPanel}. Когда форма `delivery_review_form` появится в
- * OneEntry (см. MISMATCH-LOG.md §C.1.3), это должно повторять
- * {@link submitReview} и отправлять через `getApi().FormData.postFormsData` с
- * `moduleEntityIdentifier=String(orderId)`. До этого просто резолвит
- * `ok`, чтобы UI-флоу можно было пройти end-to-end.
- * @param   {{ rating: number; text: string; orderId: string | number }} payload - Payload отзыва.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}              Результат отправки.
- */
-export async function submitDeliveryReview(payload: {
-  rating: number;
-  text: string;
-  orderId: string | number;
-}): Promise<{ ok: true } | { ok: false; message: string }> {
-  if (!payload.text.trim()) {
-    return { ok: false, message: 'Please write a review.' };
-  }
-  return { ok: true };
-}

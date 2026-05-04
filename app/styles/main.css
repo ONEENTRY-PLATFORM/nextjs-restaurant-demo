@@ -261,10 +261,10 @@ html {
   }
 
   /*
-   * Mobile-only slide-up sheet ревью (`OrderReviewsPanel`,
-   * `ReviewsSlideUpPanel`). Glass-фон + анимация выезда снизу.
-   * `animation` прописана напрямую через `@keyframes slide-up`
-   * (определён выше в этом же файле), а не через Tailwind-утилиту.
+   * Mobile-only slide-up sheet ревью (`ReviewsSlideUpPanel`).
+   * Glass-фон + анимация выезда снизу. `animation` прописана напрямую
+   * через `@keyframes slide-up` (определён выше в этом же файле), а не
+   * через Tailwind-утилиту.
    */
   .review_sheet {
     @apply

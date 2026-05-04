@@ -42,7 +42,6 @@
 | [components/reviews/ReviewsSlideUpPanel.tsx](components/reviews/ReviewsSlideUpPanel.tsx) | 6 |
 | [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx) | 6 |
 | [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) | 6 |
-| [components/reviews/OrderReviewsPanel.tsx](components/reviews/OrderReviewsPanel.tsx) | 6 |
 
 > Действие: проходом по компоненту смотреть `value_px / 4 = N` → `*-N` или `*-N.MM`. Если значение часто повторяется (в 3+ местах) — добавлять токен в `@theme inline`.
 
@@ -250,20 +249,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 > 3. Альтернатива: `entityIdentifiers[0].id` сейчас строка `"menu"` (pageUrl-маркер). В части OneEntry-проектов сюда ждут numeric page id (для menu это `1`). Если script сверяется по `id`-числу — строка `"menu"` его не пройдёт. Попробовать заменить на `{ id: 1, isNested: true }` либо явно перечислить sub-pages (`{ id: 8, isNested: false }` — main_courses, и т.п.).
 >
 > На стороне кода фикса не требуется — `ReviewForm.tsx` шлёт корректное тело и валидный Bearer (см. логи fetch в `.claude/temp/test-review-with-user.mjs`). Как только админская конфигурация позволит сабмит — пометить ✅ и удалить пункт.
-
-#### C.1.3. `delivery_review_form` — отзыв о доставке
-
-Используется в drawer-е [components/reviews/OrderReviewsPanel.tsx](components/reviews/OrderReviewsPanel.tsx) (вёрстка [static-html/index_rewiews.html](static-html/index_rewiews.html)) для последней «Delivery»-строки в списке отзывов по заказу. Сейчас заглушка [submitDeliveryReview](app/actions/review.ts) возвращает `{ ok: true }`, но в админке формы пока нет — отзыв о курьере никуда не сохраняется.
-
-| marker            | type   | title              | required |
-|-------------------|--------|--------------------|----------|
-| `review_rating`   | int    | Rating             | yes      |
-| `review_text`     | text   | Review body        | yes      |
-| `delivery_status` | string | Delivery condition | no       |
-
-После создания формы нужно поправить `submitDeliveryReview` так же, как `submitReview`: читать схему через `Forms.getFormByMarker('delivery_review_form')`, постить через `FormData.postFormsData` с `moduleEntityIdentifier=String(orderId)`.
-
-> ❓ **Уточнить у клиента:** должна ли «Delivery»-строка отзыва быть гейтом пока заказ не помечен как доставленный? В вёрстке drawer виден при статусе «In delivery», но обычно отзыв собирается уже после `delivered`.
 
 ### C.2. Недостающие страницы
 

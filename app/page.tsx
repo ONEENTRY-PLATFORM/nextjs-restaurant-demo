@@ -1,20 +1,10 @@
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
-import {
-  getAllOrdersByMarker,
-  getBlocksByPageUrl,
-  getPageByUrl,
-} from '@/app/api';
-import { formatDate } from '@/app/utils/formatDate';
+import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
-import type {
-  OrderReviewLineMock,
-  OrderReviewMock,
-} from '@/components/reviews/mockOrderReviewData';
-import OrderReviewsPanel from '@/components/reviews/OrderReviewsPanel';
 
 // Отключаем static prerender — общая цепочка layout-ов включает клиентские
 // компоненты, читающие `useSearchParams()` (search bar, filter bottom sheet),
@@ -39,64 +29,6 @@ const HOME_BLOCK_IDENTIFIERS = new Set([
 ]);
 
 /**
- * Резолвит проекцию заказа для review-панели по `?review_order=<id|orderId>`.
- * Возвращает `null`, когда параметр отсутствует (панель не рендерится); откатывается
- * на встроенный мок в {@link OrderReviewsPanel}, когда заказ не получается
- * загрузить (нет авторизации, ошибка fetch, нет совпадения), чтобы drawer всё равно
- * показывал дизайн из static-html — см. CLAUDE.md правило 2 (моки должны держать
- * layout непустым, пока пайплайн CMS не готов).
- * @param   {string} reviewOrderParam - Сырое значение `?review_order`.
- * @returns {Promise<OrderReviewMock | null | undefined>} Проекция заказа, mock-fallback (`undefined`) или `null`.
- */
-const resolveReviewOrder = async (
-  reviewOrderParam: string,
-): Promise<OrderReviewMock | null | undefined> => {
-  // Специальные токены / unauth flow → используем встроенный мок панели.
-  if (!reviewOrderParam || reviewOrderParam === 'demo') return undefined;
-
-  const res = await getAllOrdersByMarker({
-    marker: 'delivery_order',
-    offset: 0,
-    limit: 50,
-  });
-  if (res.isError || !res.orders) return undefined;
-
-  const match = res.orders.find(
-    (o) =>
-      String(o.id) === reviewOrderParam ||
-      (o as unknown as { orderId?: string }).orderId === reviewOrderParam,
-  );
-  if (!match) return undefined;
-
-  const lines: OrderReviewLineMock[] = match.products.map((p, idx) => ({
-    id: `${match.id}-${p.id}-${idx}`,
-    productId: typeof p.id === 'number' ? p.id : Number(p.id) || null,
-    title: p.title,
-    imageSrc: p.previewImage?.previewLink ?? '/images/picture/favorites1.png',
-  }));
-  lines.push({
-    id: `${match.id}-delivery`,
-    productId: null,
-    title: 'Delivery',
-    imageSrc: '/images/icons/delivery.svg',
-    isDelivery: true,
-  });
-
-  const orderId = (match as unknown as { orderId?: string }).orderId;
-  const created = (match as unknown as { createdDate?: string }).createdDate;
-  const localized = (
-    match.statusLocalizeInfos as { title?: string } | undefined
-  )?.title;
-
-  return {
-    orderNumber: orderId ?? String(match.id),
-    status: localized ?? match.statusIdentifier ?? '',
-    date: formatDate(created),
-    lines,
-  };
-};
-
-/**
  * Главная страница — полностью управляется OneEntry CMS:
  *   1. Загружает сущность страницы `home_web`, чтобы убедиться, что она существует
  *      (и оставить хук под будущие метаданные / hero-атрибуты уровня страницы).
@@ -115,21 +47,11 @@ const resolveReviewOrder = async (
  *      секций на странице без изменений в коде.
  * @returns {Promise<JSX.Element>} JSX главной страницы.
  */
-const HomePage = async ({
-  searchParams,
-}: {
-  searchParams?: Promise<{ review_order?: string }>;
-}): Promise<JSX.Element> => {
+const HomePage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('home_web');
   if (!page) {
     notFound();
   }
-
-  const sp = (await searchParams) ?? {};
-  const reviewOrderRaw = sp.review_order;
-  const reviewOrder = reviewOrderRaw
-    ? await resolveReviewOrder(reviewOrderRaw)
-    : null;
 
   const { blocks = [] } = await getBlocksByPageUrl({ pageUrl: 'home_web' });
   const sortedBlocks = [...blocks]
@@ -149,9 +71,6 @@ const HomePage = async ({
           <HomeBlockServer key={block.id} marker={block.identifier as string} />
         );
       })}
-      {reviewOrderRaw ? (
-        <OrderReviewsPanel order={reviewOrder ?? null} />
-      ) : null}
     </>
   );
 };

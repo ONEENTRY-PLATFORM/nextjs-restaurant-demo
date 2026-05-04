@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import { type JSX, useContext, useMemo } from 'react';
+import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { getImageUrl } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -39,8 +39,32 @@ const BOOKING_TILE: Category = {
  * @returns {JSX.Element}                 JSX панели категорий.
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
-  const { open, component, setOpen, setComponent } =
+  const { open, component, transition, setOpen, setComponent, setTransition } =
     useContext(OpenDrawerContext);
+
+  const isVisible = open && component === 'CategoryFilter';
+
+  const close = useCallback((): void => {
+    setOpen(false);
+    setComponent('');
+  }, [setOpen, setComponent]);
+
+  useEffect(() => {
+    if (isVisible && transition === 'close') {
+      close();
+      setTransition('');
+    }
+  }, [isVisible, transition, close, setTransition]);
+
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0]?.clientY ?? 0;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if ((e.changedTouches[0]?.clientY ?? 0) - touchStartY.current > 80) close();
+  };
 
   const categories = useMemo<Category[]>(() => {
     const fromCms = pages
@@ -63,13 +87,6 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
     return [...fromCms, BOOKING_TILE];
   }, [pages]);
 
-  const isVisible = open && component === 'CategoryFilter';
-
-  const close = (): void => {
-    setOpen(false);
-    setComponent('');
-  };
-
   return (
     <>
       <div
@@ -84,9 +101,11 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       />
       <aside
         className={
-          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tr-[20px] rounded-br-[20px] px-4 transform transition-transform duration-500 ease-in-out ' +
-          (isVisible ? 'translate-x-0' : '-translate-x-full')
+          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
+          (isVisible ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:-translate-x-full md:translate-y-0')
         }
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="flex justify-between items-center pt-6">
           <button
@@ -109,7 +128,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
             <CloseXIcon />
           </button>
         </div>
-        <div className="max-w-80 mx-auto pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
+        <div className="max-w-80 mx-auto pb-25 md:pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
           {categories.map((cat) => (
             <Link
               key={cat.label}

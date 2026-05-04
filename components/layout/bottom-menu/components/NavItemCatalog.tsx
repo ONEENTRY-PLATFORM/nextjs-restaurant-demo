@@ -1,28 +1,28 @@
 'use client';
 
-import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
+import { useContext } from 'react';
 
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import LinesBulletsIcon from '@/components/icons/lines-bullets';
 
-/**
- * Элемент навигационного меню каталога
- */
 const NavItemCatalog = ({
-  item: { pageUrl, localizeInfos },
+  item: { localizeInfos },
 }: {
   item: IMenusPages;
 }): JSX.Element => {
+  const { setOpen, setComponent } = useContext(OpenDrawerContext);
+
   return (
-    <Link
-      prefetch={false}
-      href={'/' + pageUrl}
+    <button
+      type="button"
       title={localizeInfos.menuTitle ?? undefined}
+      onClick={() => { setOpen(true); setComponent('CategoryFilter'); }}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >
       <LinesBulletsIcon />
-    </Link>
+    </button>
   );
 };
 

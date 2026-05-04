@@ -6,7 +6,6 @@ import type { JSX } from 'react';
 import { getMenuByMarker } from '@/app/api';
 import HouseIcon from '@/components/icons/house';
 
-import MenuButton from './MenuButton';
 import NavItemCart from './NavItemCart';
 import NavItemFavorites from './NavItemFavorites';
 import NavItemProfile from './NavItemProfile';
@@ -52,7 +51,6 @@ const NavGroup = async (): Promise<JSX.Element> => {
           topLevel.map((page) => renderItem(page))
         )}
       </div>
-      <MenuButton />
     </div>
   );
 };

@@ -179,7 +179,7 @@ const FavoriteCard = ({
             width={122}
             height={129}
             sizes="122px"
-            className="h-auto w-auto object-cover"
+            className="h-32.25 w-30.5 object-cover"
           />
         ) : (
           <div className="flex h-32.25 w-30.5 items-center justify-center">

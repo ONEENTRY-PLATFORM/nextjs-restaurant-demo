@@ -91,7 +91,7 @@ const FavoriteCard = ({
           width={122}
           height={129}
           sizes="122px"
-          className="mr-2.5 h-auto w-auto shrink-0 object-cover"
+          className="mr-2.5 h-32.25 w-30.5 shrink-0 object-cover"
         />
       ) : (
         <div className="mr-2.5 flex h-32.25 w-30.5 shrink-0 items-center justify-center">

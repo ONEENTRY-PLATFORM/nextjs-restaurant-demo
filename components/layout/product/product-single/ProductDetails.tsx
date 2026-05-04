@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
@@ -9,10 +10,6 @@ import AddToCartButton from '../components/AddToCartButton';
 
 /**
  * Панель деталей продукта — порт правой колонки `static-html/details.html`.
- *
- * Не рендерит category/title — их выводит `ProductSingle` сверху над колонками
- * (мобильный заголовок) и в shared header-блоке (md+).
- *
  * Поля (OneEntry, set атрибутов `dish`):
  *   - `weight` (integer) — граммы
  *   - `calorrage` (integer) — ккал
@@ -51,9 +48,9 @@ const ProductDetails = async ({
   const cookingVal = cooking_time?.value as number | undefined;
 
   const prefs =
-    (preferences?.value as Array<{ title: string; value: string }>)
-      ?.filter((o) => o?.title)
-      ?.map((o) => o.title) ?? [];
+    (preferences?.value as Array<{ title: string; value: string }>)?.filter(
+      (o) => o?.title && o?.value,
+    ) ?? [];
 
   const ingredientsText = ingredients?.value as string | undefined;
   const priceVal = price?.value as number | undefined;
@@ -76,7 +73,7 @@ const ProductDetails = async ({
               <>
                 <Image
                   src="/images/icons/weight.svg"
-                  alt=""
+                  alt="weight"
                   width={27}
                   height={20}
                 />
@@ -89,7 +86,7 @@ const ProductDetails = async ({
               <>
                 <Image
                   src="/images/icons/flame.svg"
-                  alt=""
+                  alt="flame"
                   width={15}
                   height={20}
                 />
@@ -142,17 +139,22 @@ const ProductDetails = async ({
         </h3>
       ) : null}
 
-      {/* Preferences / теги */}
+      {/* Preferences / теги — кликабельные пилюли, ведут на
+          `/shop?preferences=<value>`. Тот же контракт, что и
+          `CategoriesScroller` в шапке: повторный клик по активному чипу
+          сбрасывает фильтр (логика — на стороне CategoriesScroller, тут
+          ссылка простая). Стили `list_item`/`list_link` совпадают с
+          верхним скроллером тегов. */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
           {prefs.map((p) => (
-            <button
-              key={p}
-              type="button"
-              className="font-normal text-[16px] tracking-[0.02em] text-white border border-white rounded-[5px] py-0.75 px-3.75 hover:bg-custom_transparent hover:border-transparent duration-500 active:bg-brand"
+            <Link
+              key={p.value}
+              href={'/shop?preferences=' + encodeURIComponent(p.value)}
+              className="list_item list_link"
             >
-              {p}
-            </button>
+              {p.title}
+            </Link>
           ))}
         </div>
       ) : null}

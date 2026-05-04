@@ -46,9 +46,17 @@ const resolveAuthorName = (user: {
  * Форма отзыва на продукт — звёздный рейтинг + текст.
  * @param   {object}      props           - Пропсы компонента.
  * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
+ * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок (`Leave a review`),
+ *                                            если он уже есть в шапке родителя (попап).
  * @returns {JSX.Element}                 JSX формы отзыва.
  */
-const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
+const ReviewForm = ({
+  productId,
+  hideTitle = false,
+}: {
+  productId: number;
+  hideTitle?: boolean;
+}): JSX.Element => {
   const t = useT();
   const leaveReviewLabel = t('leave_review', 'Leave a review');
   const { isAuth, user } = useContext(AuthContext);
@@ -63,9 +71,11 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
   if (!isAuth || !user) {
     return (
       <div className="flex flex-col gap-3 rounded-xl bg-ink/60 p-5 text-paper">
-        <h3 className="font-bold text-[18px] uppercase text-brand">
-          {leaveReviewLabel}
-        </h3>
+        {hideTitle ? null : (
+          <h3 className="font-bold text-[18px] uppercase text-brand">
+            {leaveReviewLabel}
+          </h3>
+        )}
         <p className="text-sm text-paper/80">
           Please sign in to leave a review.
         </p>
@@ -146,9 +156,11 @@ const ReviewForm = ({ productId }: { productId: number }): JSX.Element => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <h3 className="font-bold text-[18px] uppercase text-brand">
-        {leaveReviewLabel}
-      </h3>
+      {hideTitle ? null : (
+        <h3 className="font-bold text-[18px] uppercase text-brand">
+          {leaveReviewLabel}
+        </h3>
+      )}
       <p className="text-sm text-paper/70">
         Posting as <span className="text-paper">{resolveAuthorName(user)}</span>
       </p>

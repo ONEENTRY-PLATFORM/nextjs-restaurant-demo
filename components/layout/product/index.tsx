@@ -3,8 +3,6 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
-import ReviewForm from '@/components/reviews/ReviewForm';
-import ReviewsSlideUpPanel from '@/components/reviews/ReviewsSlideUpPanel';
 
 import ProductAnimations from './animations/ProductAnimations';
 import ProductCover from './product-single/ProductCover';
@@ -64,14 +62,11 @@ const ProductSingle = async ({
         </p>
       </div>
 
-      {/* 2-колоночный layout (md+): картинка | детали + отзывы.
-          Grid trick: правая колонка задаёт высоту строки, картинка слева
-          позиционируется абсолютно поверх ячейки, поэтому её max-h-[120%]
-          считается от высоты правой колонки (а не от собственного контента). */}
+      {/* 2-колоночный layout (md+): картинка | детали + отзывы. */}
       <div className="flex flex-col gap-15 md:mt-5 md:grid md:grid-cols-[minmax(0,1fr)_22rem] md:items-stretch md:gap-15 lg:grid-cols-[minmax(0,1fr)_27.5rem]">
         {/* Картинка — col-1 */}
         <ProductAnimations className="relative w-full md:min-h-full" index={0}>
-          <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center md:overflow-hidden">
+          <div className="absolute max-h-120 inset-0 flex items-center justify-center overflow-hidden">
             <ProductCover alt={localizeInfos.title} product={product} />
           </div>
         </ProductAnimations>
@@ -95,23 +90,11 @@ const ProductSingle = async ({
 
           <ProductDetails product={product} />
 
-          {/* Reviews — внутри правой колонки, как в static-html/details.html */}
+          {/* Reviews — внутри правой колонки, как в static-html/details.html.
+              Кнопка «Leave a review» в шапке блока открывает попап
+              {@link ReviewFormPopup} (зарегистрирован в `app/layout.tsx`). */}
           <ProductReviewsListServer productId={product.id} />
-
-          {/* CTA «оставить отзыв». В исходном макете
-              `pk_product_details.html` десктопного CTA нет — добавлено по
-              запросу клиента. На мобиле используется fixed slide-up sheet
-              (`mob_about_reviews.html`), на десктопе — inline-форма. */}
-          <div className="hidden md:block mt-5">
-            <ReviewForm productId={product.id} />
-          </div>
         </ProductAnimations>
-      </div>
-
-      {/* Мобильный slide-up sheet — fixed, виден только < md (`review_sheet`
-          + `md:hidden` ниже). Открывается всегда, по верстке `mob_about_reviews.html`. */}
-      <div className="md:hidden">
-        <ReviewsSlideUpPanel productId={product.id} />
       </div>
 
       {/* blocks → оффер оптовой покупки ("multiply_items_offer") */}

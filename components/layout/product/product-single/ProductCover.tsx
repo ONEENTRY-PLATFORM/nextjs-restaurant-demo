@@ -26,7 +26,7 @@ const ProductCover = ({
   const src = cover?.downloadLink;
 
   return (
-    <div className="relative w-full md:h-[120%] md:max-h-[120%]">
+    <div className="relative w-full">
       {src ? (
         <Image
           width={615}

@@ -30,6 +30,9 @@ const BookingsPopup = dynamic(
 const ReservationPopup = dynamic(
   () => import('@/components/reservation/ReservationPopup'),
 );
+const ReviewFormPopup = dynamic(
+  () => import('@/components/reviews/ReviewFormPopup'),
+);
 
 import './globals.css';
 
@@ -91,6 +94,7 @@ export default async function RootLayout({
                 <ProfilePopup />
                 <BookingsPopup />
                 <ReservationPopup />
+                <ReviewFormPopup />
                 <Modal />
               </OpenDrawerProvider>
             </AuthProvider>

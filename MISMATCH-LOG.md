@@ -223,6 +223,34 @@
 
 ### C.1. Недостающие формы
 
+#### C.1.4. `review_form` — сабмит отвергает авторизованного юзера
+
+Сабмит отзыва из [components/reviews/ReviewForm.tsx](components/reviews/ReviewForm.tsx) → `getApi().FormData.postFormsData({ formIdentifier: 'review_form', formModuleConfigId: 2, moduleEntityIdentifier: String(productId), formData: [...] })` стабильно возвращает `400 "You must authorize to send data"` **даже с валидным user-`accessToken`** в заголовке `Authorization: Bearer ...`.
+
+Воспроизведено в [.claude/temp/test-review-with-user.mjs](.claude/temp/test-review-with-user.mjs) (логин `kvasssukr.net@gmail.com`, JWT свежий, fetch перехвачен — header уходит):
+
+```text
+postFormsData → 400 "You must authorize to send data"
+```
+
+Сервер реально проверяет токен — на любом сломанном теле он возвращает осмысленные field-ошибки (`empty form data section`, `wrong form's attribute type`, `Incorrect formIdentifier for provided config`). Generic `"You must authorize to send data"` приходит **только** когда тело прошло field-валидацию — значит, после валидации полей выполняется ещё одна permission-проверка, и она режет нашего юзера.
+
+Текущее состояние формы (через `Forms.getFormByMarker('review_form')`):
+
+- `id: 5`, `type: 'rating'`, `processingType: 'script'`
+- `moduleFormConfigs[0]`: `id: 2`, `moduleIdentifier: 'catalog'`, `isAnonymous: false`, `commentOnlyUserData: false`, `viewOnlyUserData: false`, `isClosed: false`
+- `entityIdentifiers: [{ id: "menu", isNested: true }, { id: 37, isNested: false }]`
+
+User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо, не хватает.
+
+> ❓ **Уточнить у клиента / поправить в админке:**
+>
+> 1. Открыть `Forms → review_form → Script tab`. `processingType: 'script'` означает, что после field-валидации запускается серверный скрипт — он, вероятно, и возвращает `"You must authorize to send data"`. Проверить, что в скрипте нет проверки роли/группы, которой нет у обычного зарегистрированного user-а.
+> 2. Permissions группы `7` (или дефолтной user-группы) для модуля `catalog` / форм типа `rating` — должно быть «can submit».
+> 3. Альтернатива: `entityIdentifiers[0].id` сейчас строка `"menu"` (pageUrl-маркер). В части OneEntry-проектов сюда ждут numeric page id (для menu это `1`). Если script сверяется по `id`-числу — строка `"menu"` его не пройдёт. Попробовать заменить на `{ id: 1, isNested: true }` либо явно перечислить sub-pages (`{ id: 8, isNested: false }` — main_courses, и т.п.).
+>
+> На стороне кода фикса не требуется — `ReviewForm.tsx` шлёт корректное тело и валидный Bearer (см. логи fetch в `.claude/temp/test-review-with-user.mjs`). Как только админская конфигурация позволит сабмит — пометить ✅ и удалить пункт.
+
 #### C.1.3. `delivery_review_form` — отзыв о доставке
 
 Используется в drawer-е [components/reviews/OrderReviewsPanel.tsx](components/reviews/OrderReviewsPanel.tsx) (вёрстка [static-html/index_rewiews.html](static-html/index_rewiews.html)) для последней «Delivery»-строки в списке отзывов по заказу. Сейчас заглушка [submitDeliveryReview](app/actions/review.ts) возвращает `{ ok: true }`, но в админке формы пока нет — отзыв о курьере никуда не сохраняется.

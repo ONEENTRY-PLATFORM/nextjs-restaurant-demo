@@ -53,7 +53,7 @@ const HomePage = async (): Promise<JSX.Element> => {
     notFound();
   }
 
-  const { blocks = [] } = await getBlocksByPageUrl({ pageUrl: 'home_web' });
+  const { blocks = [] } = await getBlocksByPageUrl('home_web');
   const sortedBlocks = [...blocks]
     .filter((b) => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));

@@ -6,7 +6,6 @@ import { type JSX, Suspense } from 'react';
 import {
   getChildPagesByParentUrl,
   getPageByUrl,
-  getProductsByPageUrl,
   getProductsPriceRange,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
@@ -41,24 +40,9 @@ const Header = async (): Promise<JSX.Element> => {
     | string
     | undefined;
 
-  // Отсекаем категории без продуктов — пустые ссылки читаются как «битые» в
-  // скроллере. Проверяем каждую дочернюю страницу вызовом `limit:1` и
-  // оставляем те, где `total > 0`.
-  const childPages = (pages ?? []) as IPagesEntity[];
-  const counts = await Promise.all(
-    childPages.map(async (p) =>
-      p.pageUrl
-        ? (
-            await getProductsByPageUrl({
-              limit: 1,
-              offset: 0,
-              params: { handle: p.pageUrl },
-            })
-          ).total
-        : 0,
-    ),
-  );
-  const populatedPages = childPages.filter((_, i) => (counts[i] ?? 0) > 0);
+  const populatedPages = ((pages ?? []) as IPagesEntity[])
+    .filter((p) => p.isVisible !== false)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   // Preferences-скроллер — list-type атрибут на set `dish`; каждый
   // listTitle становится чипом со ссылкой на `/shop?preferences=<value>`.

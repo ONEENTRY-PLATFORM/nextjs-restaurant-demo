@@ -18,7 +18,10 @@ const NavItemCatalog = ({
     <button
       type="button"
       title={localizeInfos.menuTitle ?? undefined}
-      onClick={() => { setOpen(true); setComponent('CategoryFilter'); }}
+      onClick={() => {
+        setOpen(true);
+        setComponent('CategoryFilter');
+      }}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >
       <LinesBulletsIcon />

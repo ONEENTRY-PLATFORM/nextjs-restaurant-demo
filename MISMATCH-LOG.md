@@ -223,10 +223,6 @@
 
 #### C.1.4. `review_form` — сабмит отвергает авторизованного юзера
 
-Сабмит отзыва из [components/reviews/ReviewForm.tsx](components/reviews/ReviewForm.tsx) → `getApi().FormData.postFormsData({ formIdentifier: 'review_form', formModuleConfigId: 2, moduleEntityIdentifier: String(productId), formData: [...] })` стабильно возвращает `400 "You must authorize to send data"` **даже с валидным user-`accessToken`** в заголовке `Authorization: Bearer ...`.
-
-Воспроизведено в [.claude/temp/test-review-with-user.mjs](.claude/temp/test-review-with-user.mjs) (логин `kvasssukr.net@gmail.com`, JWT свежий, fetch перехвачен — header уходит):
-
 ```text
 postFormsData → 400 "You must authorize to send data"
 ```
@@ -470,7 +466,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 Места, где эти маркеры встретились:
 
 - [FilterButton.tsx:27](components/layout/filter/FilterButton.tsx#L27) — `Open filters` (уже учтён выше как `open_filters_button`).
-- [MenuButton.tsx](components/layout/header/nav/MenuButton.tsx) — `Open menu` → `open_menu_label`.
 - [CategoryButton.tsx](components/layout/header/CategoryButton.tsx) — `Open categories` → `open_categories_label`.
 - [CloseSearch.tsx](components/layout/header/search/CloseSearch.tsx) — `Close search results` → `close_search_results_label`.
 - [layout/mobile-menu/components/CloseModal.tsx](components/layout/mobile-menu/components/CloseModal.tsx), [layout/modal/components/CloseModal.tsx](components/layout/modal/components/CloseModal.tsx), [shared/ClosePopupButton.tsx](components/shared/ClosePopupButton.tsx), [bottom-menu/components/CenterCloseButton.tsx](components/layout/bottom-menu/components/CenterCloseButton.tsx) — `Close` / `close menu` → `close_label` / `close_menu_label`.
@@ -607,13 +602,12 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 
-### C.8.2. Auth-формы вне CMS (PhoneAuthForm удалён, Reset/Verification — фронт-only)
+### C.8.2. Auth-формы вне CMS (Reset/Verification — фронт-only)
 
 Подтверждено клиентом 2026-05-04: auth-flow формы НЕ должны быть `getFormByMarker`-формами из админки. Они напрямую дёргают SDK с фиксированной сигнатурой:
 
 | Форма / экран | SDK метод | Статус |
 |---|---|---|
-| `PhoneAuthForm` | — | ❌ удалён, не нужен. Phone-провайдер из `getAuthProviders()` теперь падает в `SignInForm` (тот же email/login flow). |
 | `ResetPasswordForm` | `AuthProvider.changePassword('email', login, 'otp', 1, code, newPwd, repeatPwd)` | ✅ статическая фронт-форма (нет в админке) — корректно |
 | `VerificationForm` | `AuthProvider.checkCode('email', login, 'otp', code)` или `activateUser(...)` после регистрации | ✅ статический OTP-input — корректно |
 | `ForgotPasswordForm` | `AuthProvider.generateCode('email', login, 'reset_password')` | ✅ корректно |

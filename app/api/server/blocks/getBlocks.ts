@@ -3,33 +3,34 @@ import type {
   BlockType,
   IBlocksResponse,
 } from 'oneentry/dist/blocks/blocksInterfaces';
+import { cache } from 'react';
 
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-interface HandleProps {
-  type: BlockType;
-}
-
 /**
  * Получает блоки по параметрам.
  */
-export const getBlocks = async ({
-  type,
-}: HandleProps): Promise<{
-  isError: boolean;
-  error?: IError;
-  blocks?: IBlocksResponse;
-}> => {
-  try {
-    const data = await getApi().Blocks.getBlocks(type);
+export const getBlocks = cache(
+  async ({
+    type,
+  }: {
+    type: BlockType;
+  }): Promise<{
+    isError: boolean;
+    error?: IError;
+    blocks?: IBlocksResponse;
+  }> => {
+    try {
+      const data = await getApi().Blocks.getBlocks(type);
 
-    if (typeError(data)) {
-      return { isError: true, error: data };
-    } else {
-      return { isError: false, blocks: data };
+      if (typeError(data)) {
+        return { isError: true, error: data };
+      } else {
+        return { isError: false, blocks: data };
+      }
+    } catch (e: unknown) {
+      return { isError: true, error: e as IError };
     }
-  } catch (e: unknown) {
-    return { isError: true, error: e as IError };
-  }
-};
+  },
+);

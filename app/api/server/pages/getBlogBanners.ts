@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { getImageUrl } from '@/app/api/api/api';
 
 import { getChildPagesByParentUrl } from './getChildPagesByParentUrl';
@@ -35,7 +37,7 @@ export type BlogBanner = {
  * соседние карточки промо рендерились бы в случайном порядке.
  * @returns {Promise<BlogBanner[]>} Список баннеров (пустой при ошибке CMS).
  */
-export const getBlogBanners = async (): Promise<BlogBanner[]> => {
+export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
   const { isError, pages } = await getChildPagesByParentUrl('blog');
   if (isError || !pages) return [];
 
@@ -62,4 +64,4 @@ export const getBlogBanners = async (): Promise<BlogBanner[]> => {
       mobileImage,
     };
   });
-};
+});

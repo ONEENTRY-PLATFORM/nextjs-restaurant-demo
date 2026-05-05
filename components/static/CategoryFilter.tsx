@@ -3,7 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import {
+  type JSX,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { getImageUrl } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -102,7 +109,9 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       <aside
         className={
           'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
-          (isVisible ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:-translate-x-full md:translate-y-0')
+          (isVisible
+            ? 'translate-y-0 md:translate-x-0'
+            : 'translate-y-full md:-translate-x-full md:translate-y-0')
         }
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}

@@ -29,7 +29,7 @@ const QuantitySelector = ({
   const [qty, setQty] = useState(0);
 
   // извлекаем данные из cartSlice
-  const data = useAppSelector((state) => selectCartItemWithIdLength(state, id));
+  const data = useAppSelector(state => selectCartItemWithIdLength(state, id));
   const quantity = data?.quantity || 0;
 
   // устанавливаем стейт qty при изменении quantity

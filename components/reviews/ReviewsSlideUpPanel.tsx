@@ -68,9 +68,7 @@ const ReviewsSlideUpPanel = ({
     <div className="review_sheet">
       <div className="mx-auto max-w-88.75">
         <div className="flex items-center justify-center gap-1.25">
-          <p className="text-center font-bold text-[20px] text-brand">
-            {title}
-          </p>
+          <p className="text-center font-bold text-[20px] text-brand">{title}</p>
         </div>
         <p className="mt-5 font-normal text-[16px] text-paper">
           {isAuth ? description : 'Sign in to leave a review.'}
@@ -82,7 +80,7 @@ const ReviewsSlideUpPanel = ({
 
         <textarea
           value={text}
-          onChange={(e) => setText(e.currentTarget.value)}
+          onChange={e => setText(e.currentTarget.value)}
           disabled={!isAuth}
           className="mt-5 w-full resize-none rounded-[5px] border border-brand bg-transparent p-2 text-paper disabled:opacity-60"
           rows={4}
@@ -111,9 +109,7 @@ const ReviewsSlideUpPanel = ({
           </button>
         </div>
 
-        {error ? (
-          <p className="mt-2 text-center text-sm text-red-400">{error}</p>
-        ) : null}
+        {error ? <p className="mt-2 text-center text-sm text-red-400">{error}</p> : null}
       </div>
       <div className="h-25 border-none bg-transparent"></div>
     </div>

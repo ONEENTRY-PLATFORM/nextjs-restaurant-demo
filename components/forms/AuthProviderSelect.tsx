@@ -62,11 +62,7 @@ const AuthProviderSelect = ({
   const active = sortActiveAuthProviders(providers ?? []);
 
   return (
-    <FormAnimations
-      isLoading={isLoading}
-      className={className}
-      isActive={isActive}
-    >
+    <FormAnimations isLoading={isLoading} className={className} isActive={isActive}>
       <div className="mx-auto flex w-full flex-col">
         <Image
           src="/images/logo.svg"
@@ -92,12 +88,7 @@ const AuthProviderSelect = ({
                 }
               >
                 <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-                  <Image
-                    src={meta.icon}
-                    alt=""
-                    width={meta.iconWidth}
-                    height={meta.iconHeight}
-                  />
+                  <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
                   <span>{meta.label}</span>
                 </div>
               </button>

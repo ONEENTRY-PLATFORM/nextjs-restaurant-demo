@@ -55,9 +55,7 @@ const ProductCard = ({
           id={'deselectProduct-' + id}
           checked={checkboxChecked}
           disabled={outOfStock}
-          aria-label={
-            outOfStock ? `${title} — out of stock` : `Select ${title}`
-          }
+          aria-label={outOfStock ? `${title} — out of stock` : `Select ${title}`}
           className="pointer-events-auto size-5 shrink-0 accent-brand disabled:cursor-not-allowed disabled:opacity-50"
         />
 
@@ -77,14 +75,10 @@ const ProductCard = ({
         </div>
 
         <div className="pointer-events-none flex grow flex-col justify-between gap-2 self-center text-white/90">
-          <h2 className="max-w-35 font-normal text-[14px] opacity-90">
-            {title}
-          </h2>
+          <h2 className="max-w-35 font-normal text-[14px] opacity-90">{title}</h2>
           <div className="flex items-center gap-2.5">
             {weightValue ? (
-              <p className="font-normal text-[14px] text-brand">
-                {weightValue} g
-              </p>
+              <p className="font-normal text-[14px] text-brand">{weightValue} g</p>
             ) : null}
             <PriceDisplay
               currentPrice={(sale?.value as number) ?? 0}

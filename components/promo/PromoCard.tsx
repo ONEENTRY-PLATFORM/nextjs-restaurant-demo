@@ -23,11 +23,7 @@ import { getImageUrl } from '@/app/api';
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};
-  type ImageValue =
-    | { downloadLink?: string }
-    | Array<{ downloadLink?: string }>
-    | null
-    | undefined;
+  type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
   const image =
     getImageUrl(attrs.banner?.value as ImageValue) ||
@@ -40,9 +36,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
     | undefined;
   const subtitleText = descriptionValue?.[0]?.plainValue ?? '';
 
-  const actionType = attrs.action_type?.value as
-    | Array<{ title?: string }>
-    | undefined;
+  const actionType = attrs.action_type?.value as Array<{ title?: string }> | undefined;
   const cta = actionType?.[0]?.title ?? 'Learn more';
 
   return (
@@ -61,12 +55,8 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
       }
     >
       <div className="flex min-h-48 flex-col justify-end gap-2 bg-linear-to-t from-black/70 via-black/20 to-transparent p-5">
-        <h3 className="font-bold text-[20px] uppercase tracking-[0.02em] text-brand">
-          {title}
-        </h3>
-        {subtitleText ? (
-          <p className="text-sm text-paper/90 line-clamp-2">{subtitleText}</p>
-        ) : null}
+        <h3 className="font-bold text-[20px] uppercase tracking-[0.02em] text-brand">{title}</h3>
+        {subtitleText ? <p className="text-sm text-paper/90 line-clamp-2">{subtitleText}</p> : null}
         <span className="mt-2 inline-flex w-fit rounded-[10px] bg-custom-gradient px-4 py-1.5 text-xs font-bold uppercase text-white">
           {cta}
         </span>

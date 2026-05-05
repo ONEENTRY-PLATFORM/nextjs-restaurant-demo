@@ -157,18 +157,18 @@ const DateTimePickerSheet = ({
 
   const goPrev = () => {
     if (month === 0) {
-      setYear((y) => y - 1);
+      setYear(y => y - 1);
       setMonth(11);
     } else {
-      setMonth((m) => m - 1);
+      setMonth(m => m - 1);
     }
   };
   const goNext = () => {
     if (month === 11) {
-      setYear((y) => y + 1);
+      setYear(y => y + 1);
       setMonth(0);
     } else {
-      setMonth((m) => m + 1);
+      setMonth(m => m + 1);
     }
   };
 
@@ -178,33 +178,24 @@ const DateTimePickerSheet = ({
     <div className="fixed bottom-0 left-0 right-0 z-30 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-7.25 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
       {onClose ? (
         <div className="absolute right-5 top-5 md:right-10 md:top-10">
-          <ClosePopupButton
-            onClose={onClose}
-            ariaLabel="Close date and time picker"
-          />
+          <ClosePopupButton onClose={onClose} ariaLabel="Close date and time picker" />
         </div>
       ) : null}
 
-      <h2 className="mb-5 text-center font-bold text-[20px] uppercase text-brand">
-        {title}
-      </h2>
+      <h2 className="mb-5 text-center font-bold text-[20px] uppercase text-brand">{title}</h2>
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-87.5">
-          <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">
-            {dateTitle}
-          </h3>
+          <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">{dateTitle}</h3>
           <div className="grid grid-cols-7">
-            {WEEK.map((w) => (
+            {WEEK.map(w => (
               <div key={w} className="calend_mon">
                 {w}
               </div>
             ))}
-            {grid.map((cell) => {
-              const active =
-                cell.iso === selectedDate && cell.monthOffset === 0;
-              const disabled =
-                (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
+            {grid.map(cell => {
+              const active = cell.iso === selectedDate && cell.monthOffset === 0;
+              const disabled = (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
               return (
                 <button
                   key={cell.iso + cell.monthOffset}
@@ -223,26 +214,14 @@ const DateTimePickerSheet = ({
             })}
           </div>
           <div className="mb-5 mt-4 flex items-center justify-around">
-            <button
-              type="button"
-              onClick={goPrev}
-              aria-label="Previous month"
-              className="group"
-            >
+            <button type="button" onClick={goPrev} aria-label="Previous month" className="group">
               <ChevronMiniLeftIcon />
             </button>
             <div className="flex gap-3.75">
-              <h2 className="font-semibold text-[20px] text-brand">
-                {MONTH_NAMES[month]}
-              </h2>
+              <h2 className="font-semibold text-[20px] text-brand">{MONTH_NAMES[month]}</h2>
               <h3 className="font-light text-[20px] text-brand">{year}</h3>
             </div>
-            <button
-              type="button"
-              onClick={goNext}
-              aria-label="Next month"
-              className="group"
-            >
+            <button type="button" onClick={goNext} aria-label="Next month" className="group">
               <ChevronMiniRightIcon />
             </button>
           </div>
@@ -250,16 +229,12 @@ const DateTimePickerSheet = ({
 
         {selectedDate ? (
           <div className="mx-auto w-full max-w-87.5">
-            <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">
-              {timeTitle}
-            </h3>
+            <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">{timeTitle}</h3>
             {slots.length === 0 ? (
-              <p className="py-5 text-center text-base text-paper/80">
-                {noTimeText}
-              </p>
+              <p className="py-5 text-center text-base text-paper/80">{noTimeText}</p>
             ) : (
               <div className="grid grid-cols-4 gap-2.5">
-                {slots.map((slot) => {
+                {slots.map(slot => {
                   const active = slot === selectedTime;
                   return (
                     <button
@@ -267,10 +242,7 @@ const DateTimePickerSheet = ({
                       type="button"
                       onClick={() => setSelectedTime(slot)}
                       className={
-                        'service_time ' +
-                        (active
-                          ? 'border-brand text-brand font-extrabold '
-                          : '')
+                        'service_time ' + (active ? 'border-brand text-brand font-extrabold ' : '')
                       }
                     >
                       {slot}

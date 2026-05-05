@@ -3,10 +3,7 @@ import { useContext, useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import {
-  selectDeliveryData,
-  setDeliveryData,
-} from '@/app/store/reducers/CartSlice';
+import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
@@ -20,8 +17,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const deliveryData = useAppSelector(selectDeliveryData);
 
   // получаем адрес из formData пользователя
-  const addressReg =
-    user?.formData.find((el) => el.marker === 'address_reg')?.value || '';
+  const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value || '';
 
   // устанавливаем адрес при изменении deliveryData
   useEffect(() => {
@@ -32,7 +28,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
         type: 'string',
         value: address,
         valid: address ? true : false,
-      }),
+      })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deliveryData]);
@@ -54,12 +50,12 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
           name="address"
           placeholder={placeholder}
           className="w-full bg-transparent text-paper focus:outline-none"
-          onChange={(e) => {
+          onChange={e => {
             dispatch(
               setDeliveryData({
                 ...deliveryData,
                 address: e.target.value,
-              }),
+              })
             );
           }}
           required

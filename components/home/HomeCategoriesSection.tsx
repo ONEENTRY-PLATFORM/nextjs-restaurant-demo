@@ -26,7 +26,7 @@ const SECTION_LIMIT = 8;
 const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
   const { pages = [] } = await getChildPagesByParentUrl('menu');
   const visiblePages = pages
-    .filter((p) => p.isVisible !== false)
+    .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   type CategoryEntry = {
@@ -48,7 +48,7 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
     });
   }
 
-  const populated = sections.filter((s) => s.products.length > 0);
+  const populated = sections.filter(s => s.products.length > 0);
   if (populated.length === 0) return null;
 
   return (

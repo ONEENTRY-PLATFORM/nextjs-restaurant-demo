@@ -30,9 +30,7 @@ type CategoriesScrollerProps = {
  * @param   {CategoriesScrollerProps} props - Пропсы компонента.
  * @returns {JSX.Element}                   JSX скроллера.
  */
-const CategoriesScroller = ({
-  preferences,
-}: CategoriesScrollerProps): JSX.Element => {
+const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Element => {
   const ref = useDragScroll<HTMLUListElement>();
   const searchParams = useSearchParams();
   const active = searchParams.get('preferences') ?? '';
@@ -43,11 +41,9 @@ const CategoriesScroller = ({
       id="menuItems"
       className="flex gap-2.75 sm:px-3 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory select-none"
     >
-      {preferences.map((option) => {
+      {preferences.map(option => {
         const isActive = active === option.value;
-        const href = isActive
-          ? '/shop'
-          : '/shop?preferences=' + encodeURIComponent(option.value);
+        const href = isActive ? '/shop' : '/shop?preferences=' + encodeURIComponent(option.value);
         return (
           <li key={option.value} className="list_item">
             <Link

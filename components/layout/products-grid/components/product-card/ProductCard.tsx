@@ -48,26 +48,17 @@ const ProductCard = ({
   const time = timeRaw != null && timeRaw !== '' ? String(timeRaw) : null;
 
   const weightRaw = attrs.weight?.value as string | number | undefined;
-  const weight =
-    weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
+  const weight = weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
 
   const ratingRaw = attrs.rating?.value as string | number | undefined;
-  const rating =
-    ratingRaw != null && ratingRaw !== '' ? String(ratingRaw) : null;
+  const rating = ratingRaw != null && ratingRaw !== '' ? String(ratingRaw) : null;
 
   // Цена
-  const priceValue = (attrs.price?.value ?? product.price) as
-    | number
-    | undefined;
-  const formattedPrice =
-    priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
+  const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
+  const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
 
   return (
-    <CardAnimations
-      className="menu_item group"
-      index={index}
-      productsLimit={productsLimit}
-    >
+    <CardAnimations className="menu_item group" index={index} productsLimit={productsLimit}>
       <HeartCardButton product={product} />
       <ProductImage attributes={attrs} alt={title} />
 
@@ -96,9 +87,7 @@ const ProductCard = ({
       <CartButton id={id} title={title}>
         <p className="counter">x1</p>
         <CartAddIcon className="w-5 h-4.75 md:w-7.25 md:h-6.75" />
-        {formattedPrice ? (
-          <p className="text-base md:text-[22px]">{formattedPrice}</p>
-        ) : null}
+        {formattedPrice ? <p className="text-base md:text-[22px]">{formattedPrice}</p> : null}
       </CartButton>
 
       <Link

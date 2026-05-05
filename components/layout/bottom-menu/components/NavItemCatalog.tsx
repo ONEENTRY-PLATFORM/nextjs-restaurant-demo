@@ -7,11 +7,7 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import LinesBulletsIcon from '@/components/icons/lines-bullets';
 
-const NavItemCatalog = ({
-  item: { localizeInfos },
-}: {
-  item: IMenusPages;
-}): JSX.Element => {
+const NavItemCatalog = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (

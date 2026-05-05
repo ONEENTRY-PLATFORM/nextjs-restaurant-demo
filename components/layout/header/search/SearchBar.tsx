@@ -45,7 +45,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
       <form className="relative" onSubmit={handleSubmit}>
         <input
           defaultValue={debouncedValue}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={e => handleSearch(e.target.value)}
           type="search"
           id="searchInput"
           name="quick-search"

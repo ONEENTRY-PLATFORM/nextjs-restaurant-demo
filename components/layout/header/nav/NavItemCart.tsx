@@ -13,12 +13,12 @@ const NavItemCart = (): JSX.Element => {
   // Redux store гидратируется из localStorage только на клиенте — пропускаем
   // бейдж на первом рендере, чтобы серверная и клиентская разметка совпадали.
   const mounted = useSyncExternalStore(
-    (cb) => {
+    cb => {
       cb();
       return () => {};
     },
     () => true,
-    () => false,
+    () => false
   );
 
   return (

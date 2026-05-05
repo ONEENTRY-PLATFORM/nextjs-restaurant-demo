@@ -22,10 +22,7 @@ const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();
   const { open, setOpen, component } = useContext(OpenDrawerContext);
 
-  const mainMenu = flatMenuToNested(
-    Array.isArray(menu.pages) ? menu.pages : [],
-    null,
-  );
+  const mainMenu = flatMenuToNested(Array.isArray(menu.pages) ? menu.pages : [], null);
 
   useEffect(() => {
     const handleResize = () => {

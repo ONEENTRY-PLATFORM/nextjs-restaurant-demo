@@ -21,12 +21,12 @@ const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
 
       return params.toString();
     },
-    [searchParams],
+    [searchParams]
   );
 
   return (
     <div className="flex gap-1">
-      {Array.from(Array(Math.ceil(totalPages)).keys()).map((item) => (
+      {Array.from(Array(Math.ceil(totalPages)).keys()).map(item => (
         <button
           key={item}
           className={
@@ -34,9 +34,7 @@ const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
             (currentPage === Number(item) ? 'border-brand text-brand' : '')
           }
           onClick={() => {
-            router.push(
-              pathname + '?' + createQueryString('page', item.toString()),
-            );
+            router.push(pathname + '?' + createQueryString('page', item.toString()));
           }}
         >
           {item}

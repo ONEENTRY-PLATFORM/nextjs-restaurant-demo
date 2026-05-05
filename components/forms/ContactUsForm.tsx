@@ -30,27 +30,18 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'contact_us' });
 
   // Получаем поля из formFieldsReducer
-  const fieldsData = useAppSelector((state) => state.formFieldsReducer.fields);
+  const fieldsData = useAppSelector(state => state.formFieldsReducer.fields);
 
   // Сортируем поля по position
   const formFields = data?.attributes
     .slice()
-    .sort(
-      (a: { position: number }, b: { position: number }) =>
-        a.position - b.position,
-    );
+    .sort((a: { position: number }, b: { position: number }) => a.position - b.position);
 
   // Поле капчи (type: 'spam') и его настройки. captchaKey/action приходят из OneEntry
   // в `settings.captcha.{key,action}`.
-  const spamField = useMemo(
-    () => formFields?.find((f) => f.type === 'spam'),
-    [formFields],
-  );
+  const spamField = useMemo(() => formFields?.find(f => f.type === 'spam'), [formFields]);
   const spamSettings = spamField?.settings as SpamCaptchaSettings | undefined;
-  const captcha = useEnterpriseCaptcha(
-    spamSettings?.captcha?.key,
-    spamSettings?.captcha?.action,
-  );
+  const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
 
   // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -91,8 +82,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         formIdentifier: 'contact_us',
         formData: transformedFormData,
         formModuleConfigId: data?.moduleFormConfigs?.[0]?.id ?? 0,
-        moduleEntityIdentifier:
-          data?.moduleFormConfigs?.[0]?.entityIdentifiers?.[0]?.id ?? '',
+        moduleEntityIdentifier: data?.moduleFormConfigs?.[0]?.entityIdentifiers?.[0]?.id ?? '',
         replayTo: null,
         status: '',
       });

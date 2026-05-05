@@ -37,7 +37,7 @@ const VerificationForm = (): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  const fields = useAppSelector((state) => state.formFieldsReducer.fields);
+  const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   useEffect(() => {
     if (otp) {
@@ -54,7 +54,7 @@ const VerificationForm = (): JSX.Element => {
           'email', // Метод верификации через email
           fields.email?.value || '', // Email пользователя из полей формы
           'otp', // Тип кода верификации (One-Time Password)
-          otp, // OTP, введённый пользователем
+          otp // OTP, введённый пользователем
         );
         if (result) setComponent('ResetPasswordForm'); // Переключаемся на Reset Password Form при успехе
       } else {
@@ -62,7 +62,7 @@ const VerificationForm = (): JSX.Element => {
         const result = await getApi().AuthProvider.activateUser(
           'email', // Метод активации через email
           fields.email?.value || '', // Email пользователя из полей формы
-          otp, // OTP, введённый пользователем
+          otp // OTP, введённый пользователем
         );
         if (result) {
           // При успешной активации логиним пользователя
@@ -104,7 +104,7 @@ const VerificationForm = (): JSX.Element => {
       }
     },
     // Зависимости useCallback
-    [otp, handleVerification],
+    [otp, handleVerification]
   );
 
   // Функция для обработки переотправки OTP-кода
@@ -118,7 +118,7 @@ const VerificationForm = (): JSX.Element => {
       await getApi().AuthProvider.generateCode(
         'email', // Метод генерации кода через email
         fields.email?.value || '', // Email пользователя из полей формы
-        'generate_code', // Тип action для генерации нового кода
+        'generate_code' // Тип action для генерации нового кода
       );
     } catch (e: unknown) {
       // Ловим и устанавливаем любые ошибки, возникшие в процессе
@@ -147,27 +147,19 @@ const VerificationForm = (): JSX.Element => {
             value={otp}
             onChange={setOtp}
             numInputs={6}
-            renderInput={(props) => <input {...props} />}
+            renderInput={props => <input {...props} />}
             containerStyle="grid max-w-full grid-cols-6 justify-between gap-2 max-md:gap-2"
             inputStyle="relative box-border flex h-[70px] min-w-[14%] flex-col rounded border border-solid border-paper/30 bg-transparent p-2.5 text-center text-2xl font-medium text-white"
           />
           <div className="self-end text-xs text-brand max-md:mr-2.5">
             <span className="text-paper/60">{t('receive_otp_text', '')} </span>
-            <button
-              className="font-bold text-brand"
-              type="button"
-              onClick={onResendHandle}
-            >
+            <button className="font-bold text-brand" type="button" onClick={onResendHandle}>
               {t('resend_text', 'Resend')}
             </button>
           </div>
         </div>
 
-        <FormSubmitButton
-          title={t('verify_now_text', '')}
-          isLoading={isLoading}
-          index={0}
-        />
+        <FormSubmitButton title={t('verify_now_text', '')} isLoading={isLoading} index={0} />
         {error && <ErrorMessage error={error} />}
       </form>
     </FormAnimations>

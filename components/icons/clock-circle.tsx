@@ -1,10 +1,6 @@
 import type { JSX } from 'react';
 
-const ClockCircleIcon = ({
-  variant = 'paper',
-}: {
-  variant?: 'paper' | 'orange';
-}): JSX.Element => {
+const ClockCircleIcon = ({ variant = 'paper' }: { variant?: 'paper' | 'orange' }): JSX.Element => {
   const color = variant === 'paper' ? '#DFE9F9' : '#EC722B';
   return (
     <svg

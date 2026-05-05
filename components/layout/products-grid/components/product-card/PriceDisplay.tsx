@@ -28,20 +28,14 @@ const PriceDisplay = ({
   return (
     <div className="flex gap-2.5 self-center font-bold">
       {currentPrice > 0 && (
-        <div
-          className="text-lg leading-6 text-brand"
-          aria-label={`New price: ${newPrice}`}
-        >
+        <div className="text-lg leading-6 text-brand" aria-label={`New price: ${newPrice}`}>
           {newPrice}
         </div>
       )}
       {originalPrice > 0 && (
         <div
           className={
-            'leading-6 ' +
-            (currentPrice
-              ? 'text-paper text-sm line-through'
-              : 'text-brand text-lg')
+            'leading-6 ' + (currentPrice ? 'text-paper text-sm line-through' : 'text-brand text-lg')
           }
           aria-label={`Original price: ${oldPrice}`}
         >

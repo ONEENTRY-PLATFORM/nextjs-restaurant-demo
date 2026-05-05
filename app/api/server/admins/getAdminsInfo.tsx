@@ -28,12 +28,7 @@ export const getAdminsInfo = cache(
     admins?: IAdminEntity[];
   }> => {
     try {
-      const data = await getApi().Admins.getAdminsInfo(
-        body,
-        langCode || getLang(),
-        offset,
-        limit,
-      );
+      const data = await getApi().Admins.getAdminsInfo(body, langCode || getLang(), offset, limit);
       if (typeError(data)) {
         return { isError: true, error: data as IError };
       } else {
@@ -42,5 +37,5 @@ export const getAdminsInfo = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

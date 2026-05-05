@@ -20,8 +20,7 @@ import ProfileSections from './ProfileSections';
  * @returns {JSX.Element} JSX drawer-а профиля.
  */
 const ProfilePopup = (): JSX.Element => {
-  const { open, component, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
   // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы

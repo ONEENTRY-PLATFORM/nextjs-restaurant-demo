@@ -12,9 +12,7 @@ import EyeOpenIcon from '@/components/icons/eye-o';
 /**
  * FormInput
  */
-const FormInput = (
-  field: IFormAttribute & { value?: string; index: number },
-): JSX.Element => {
+const FormInput = (field: IFormAttribute & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;
   const [value, setValue] = useState<string>(field.value || '');
   const [type, setType] = useState<string>('');
@@ -31,17 +29,12 @@ const FormInput = (
 
   const validators = field.validators as Record<string, unknown> | undefined;
   const required =
-    (validators?.['requiredValidator'] as { strict?: boolean } | undefined)
-      ?.strict || false;
+    (validators?.['requiredValidator'] as { strict?: boolean } | undefined)?.strict || false;
   const minLength = (
-    validators?.['stringInspectionValidator'] as
-      | { stringMin?: number }
-      | undefined
+    validators?.['stringInspectionValidator'] as { stringMin?: number } | undefined
   )?.stringMin;
   const maxLength = (
-    validators?.['stringInspectionValidator'] as
-      | { stringMax?: number }
-      | undefined
+    validators?.['stringInspectionValidator'] as { stringMax?: number } | undefined
   )?.stringMax;
 
   useEffect(() => {
@@ -51,7 +44,7 @@ const FormInput = (
           valid: valid,
           value: value,
         },
-      }),
+      })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, valid]);
@@ -66,13 +59,9 @@ const FormInput = (
   }
 
   return (
-    <FormFieldAnimations
-      index={field.index}
-      className="relative box-border flex shrink-0 flex-col"
-    >
+    <FormFieldAnimations index={field.index} className="relative box-border flex shrink-0 flex-col">
       <label htmlFor={field.marker} className="text-xl text-white">
-        {localizeInfos?.title}{' '}
-        {required && <span className="text-red-500">*</span>}
+        {localizeInfos?.title} {required && <span className="text-red-500">*</span>}
       </label>
       {/* inputType select */}
       {type === 'list' && (
@@ -81,7 +70,7 @@ const FormInput = (
           className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full focus:outline-muted"
           required={required}
           value={value}
-          onChange={(val) => setValue(val.currentTarget.value)}
+          onChange={val => setValue(val.currentTarget.value)}
         >
           {field.listTitles.map((option, i: Key) => {
             return (
@@ -99,7 +88,7 @@ const FormInput = (
           placeholder={localizeInfos?.title}
           className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
           required={required}
-          onChange={(val) => setValue(val.currentTarget.value)}
+          onChange={val => setValue(val.currentTarget.value)}
           value={value}
         />
       )}
@@ -111,7 +100,7 @@ const FormInput = (
           placeholder={localizeInfos?.title}
           className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
           required={required}
-          onChange={(val) => setValue(val.currentTarget.value)}
+          onChange={val => setValue(val.currentTarget.value)}
           autoComplete={fieldType === 'password' ? 'password' : ''}
           minLength={minLength}
           maxLength={maxLength}
@@ -121,7 +110,7 @@ const FormInput = (
       {/* кнопка пароля */}
       {fieldType === 'password' && (
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             if (type === 'password') {
               setType('text');

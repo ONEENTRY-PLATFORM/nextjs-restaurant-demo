@@ -21,8 +21,7 @@ const ModalAnimations = ({
   children: ReactNode;
   component: string;
 }): JSX.Element => {
-  const { open, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
@@ -38,8 +37,7 @@ const ModalAnimations = ({
     // задать через xPercent/yPercent внутри самой timeline. На мобиле этих
     // translate-классов нет — анимация остаётся обычным slide-up bottom-sheet.
     const isDesktop =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(min-width: 768px)').matches;
+      typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
 
     const tl = gsap.timeline({
       paused: true,
@@ -78,7 +76,7 @@ const ModalAnimations = ({
           ease: 'back.out(1.4)',
           ...(isDesktop ? { xPercent: -50, yPercent: -50 } : {}),
         },
-        '-=0.3',
+        '-=0.3'
       );
     } else if (isDesktop) {
       // Desktop: попап появляется по центру с fade + лёгким scale,
@@ -105,7 +103,7 @@ const ModalAnimations = ({
           duration: 0.45,
           ease: 'power2.out',
         },
-        '-=0.3',
+        '-=0.3'
       );
     } else {
       // Mobile: bottom-sheet slide-up.
@@ -123,7 +121,7 @@ const ModalAnimations = ({
           yPercent: 0,
           duration: 0.5,
         },
-        '-=0.25',
+        '-=0.25'
       );
     }
 

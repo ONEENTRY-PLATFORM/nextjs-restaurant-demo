@@ -29,8 +29,7 @@ const ProductPageLayout = async ({
   }
 
   /** Извлекаем данные из товара для генерации structured data */
-  const { attributeValues, localizeInfos, additional, statusIdentifier } =
-    product;
+  const { attributeValues, localizeInfos, additional, statusIdentifier } = product;
 
   /**
    * Structured data товара в формате JSON-LD для SEO

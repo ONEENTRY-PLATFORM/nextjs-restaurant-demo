@@ -27,7 +27,7 @@ type Options = {
 export const useSwipeToClose = (
   ref: RefObject<HTMLElement | null>,
   onClose: () => void,
-  options: Options = {},
+  options: Options = {}
 ): void => {
   const { threshold = 100, velocityThreshold = 0.6 } = options;
 

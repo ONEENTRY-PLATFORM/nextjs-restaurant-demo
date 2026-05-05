@@ -47,7 +47,7 @@ const FormFieldAnimations = ({
         width: '100%',
         opacity: 1,
         delay: index / 10 + 0.35,
-      },
+      }
     );
 
     if (transition === 'close') {

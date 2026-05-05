@@ -16,11 +16,7 @@ import RelatedPromosCarousel from '@/components/promo/RelatedPromosCarousel';
 
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
-type ImageValue =
-  | { downloadLink?: string }
-  | Array<{ downloadLink?: string }>
-  | null
-  | undefined;
+type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 type DescriptionValue = Array<{
   plainValue?: string;
@@ -51,10 +47,7 @@ type DescriptionValue = Array<{
  * @returns {Promise<JSX.Element>}       JSX страницы деталей промо.
  */
 const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
+  const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
   const { handle } = params;
 
   ServerProvider('dict', await getDictionary());
@@ -73,9 +66,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const parentUrl = parentResp.page?.pageUrl ?? 'blog';
 
   const productsLimit = SHOP_PAGE_LIMIT;
-  const relatedPromos = banners.filter(
-    (b) => b.pageUrl !== handle && b.mobileImage,
-  );
+  const relatedPromos = banners.filter(b => b.pageUrl !== handle && b.mobileImage);
 
   const attrs = page.attributeValues ?? {};
   const image =
@@ -83,8 +74,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
     getImageUrl(attrs.banner?.value as ImageValue);
   const title = page.localizeInfos?.title ?? '';
   const description = attrs.description?.value as DescriptionValue | undefined;
-  const subtitleHtml =
-    description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
 
   return (
     <section className="section_layout">
@@ -97,10 +87,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link
-              href={`/${parentUrl}`}
-              className="transition-colors hover:text-brand"
-            >
+            <Link href={`/${parentUrl}`} className="transition-colors hover:text-brand">
               {parentTitle}
             </Link>
           </li>
@@ -136,11 +123,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
       </div>
 
       <div className="mt-12.5">
-        <Suspense
-          fallback={
-            <MemoizedProductsGridLoader productsLimit={productsLimit} />
-          }
-        >
+        <Suspense fallback={<MemoizedProductsGridLoader productsLimit={productsLimit} />}>
           <ProductsGridLayout
             params={{ handle }}
             searchParams={searchParams ?? {}}
@@ -156,7 +139,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
             <RelatedPromosCarousel promos={relatedPromos} />
           ) : (
             <div className="flex flex-col lg:flex-row justify-between gap-15">
-              {relatedPromos.map((b) => (
+              {relatedPromos.map(b => (
                 <Link
                   key={b.id}
                   href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
@@ -188,14 +171,9 @@ export default PromoDetailPage;
  * @param   {MetadataParams}    props - Пропсы Next.js.
  * @returns {Promise<Metadata>}       Объект метаданных.
  */
-export async function generateMetadata({
-  params,
-}: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
-  const [{ page }, dict] = await Promise.all([
-    getPageByUrl(handle),
-    getDictionary(),
-  ]);
+  const [{ page }, dict] = await Promise.all([getPageByUrl(handle), getDictionary()]);
   const defaultTitle = dict.promo_default_title?.value as string;
   if (!page) {
     return { title: defaultTitle };

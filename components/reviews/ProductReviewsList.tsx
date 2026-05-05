@@ -36,9 +36,8 @@ const ProductReviewsList = ({
     setOpen(true);
   };
 
-  const goPrev = () =>
-    setIndex((i) => (i - 1 + reviews.length) % reviews.length);
-  const goNext = () => setIndex((i) => (i + 1) % reviews.length);
+  const goPrev = () => setIndex(i => (i - 1 + reviews.length) % reviews.length);
+  const goNext = () => setIndex(i => (i + 1) % reviews.length);
 
   return (
     <div className="mt-4.5 w-full">
@@ -68,12 +67,7 @@ const ProductReviewsList = ({
             aria-label="Previous review"
             className="hidden md:flex shrink-0 items-center absolute left-0 top-1/2 -translate-y-1/2 z-10"
           >
-            <Image
-              src="/images/icons/chevron-pager-left.svg"
-              alt=""
-              width={16}
-              height={27}
-            />
+            <Image src="/images/icons/chevron-pager-left.svg" alt="" width={16} height={27} />
           </button>
 
           <div className="relative w-full min-w-0 overflow-hidden">
@@ -96,17 +90,11 @@ const ProductReviewsList = ({
                         <StarCardIcon size={11} filled={review.rating >= 4} />
                         <StarCardIcon size={11} filled={review.rating >= 5} />
                       </div>
-                      <p className="font-normal text-[14px] text-paper">
-                        {review.author}
-                      </p>
+                      <p className="font-normal text-[14px] text-paper">{review.author}</p>
                     </div>
-                    <p className="font-normal text-[12px] text-paper">
-                      {review.date}
-                    </p>
+                    <p className="font-normal text-[12px] text-paper">{review.date}</p>
                   </div>
-                  <p className="mt-2.5 font-normal text-[14px] text-paper">
-                    {review.text}
-                  </p>
+                  <p className="mt-2.5 font-normal text-[14px] text-paper">{review.text}</p>
                 </div>
               ))}
             </div>
@@ -118,12 +106,7 @@ const ProductReviewsList = ({
             aria-label="Next review"
             className="hidden md:flex shrink-0 items-center absolute right-0 top-1/2 -translate-y-1/2 z-10"
           >
-            <Image
-              src="/images/icons/chevron-pager-right.svg"
-              alt=""
-              width={16}
-              height={27}
-            />
+            <Image src="/images/icons/chevron-pager-right.svg" alt="" width={16} height={27} />
           </button>
         </div>
       )}

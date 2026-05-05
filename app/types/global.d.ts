@@ -202,9 +202,7 @@ declare type TabLayoutProps = {
       disabled: boolean;
     };
   };
-  setTabsState: React.Dispatch<
-    React.SetStateAction<TabLayoutProps['tabsState']>
-  >;
+  setTabsState: React.Dispatch<React.SetStateAction<TabLayoutProps['tabsState']>>;
 };
 
 declare type IAppOrder = {
@@ -219,10 +217,7 @@ declare global {
     grecaptcha?: {
       enterprise: {
         ready: (callback: () => void) => void;
-        execute: (
-          siteKey: string,
-          options: { action: string },
-        ) => Promise<string>;
+        execute: (siteKey: string, options: { action: string }) => Promise<string>;
       };
     };
   }

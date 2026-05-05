@@ -4,10 +4,7 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 
-import {
-  useGetChildPagesByParentUrlQuery,
-  useGetFormByMarkerQuery,
-} from '@/app/api';
+import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
@@ -64,10 +61,12 @@ const ReservationPopup = (): JSX.Element => {
 
   const { data: form, isLoading: isFormLoading } = useGetFormByMarkerQuery(
     { marker: 'booking_order' },
-    { skip: !isOpen },
+    { skip: !isOpen }
   );
-  const { data: pages, isLoading: isPagesLoading } =
-    useGetChildPagesByParentUrlQuery({ url: 'restaurants' }, { skip: !isOpen });
+  const { data: pages, isLoading: isPagesLoading } = useGetChildPagesByParentUrlQuery(
+    { url: 'restaurants' },
+    { skip: !isOpen }
+  );
 
   // Маппинг как в `app/reservation/page.tsx` — value берётся из
   // `pageUrl` (стабильный маркер), label — из `address` или `title`.
@@ -83,25 +82,21 @@ const ReservationPopup = (): JSX.Element => {
         // `values` в один плоский массив записей.
         const scheduleEntries: ScheduleSlotEntry[] = Array.isArray(scheduleRaw)
           ? (scheduleRaw as Array<{ values?: ScheduleSlotEntry[] }>).flatMap(
-              (group) => group?.values ?? [],
+              group => group?.values ?? []
             )
           : [];
         return {
           value: p.pageUrl ?? String(p.id),
           label:
-            ((p.attributeValues?.address?.value as string | undefined) ||
-              p.localizeInfos?.title) ??
+            ((p.attributeValues?.address?.value as string | undefined) || p.localizeInfos?.title) ??
             'Restaurant',
           schedule: scheduleEntries,
         };
       }),
-    [pages],
+    [pages]
   );
 
-  const initialValues = useMemo(
-    () => (action ? { restaurant: action } : undefined),
-    [action],
-  );
+  const initialValues = useMemo(() => (action ? { restaurant: action } : undefined), [action]);
 
   if (!isOpen) return <></>;
 
@@ -139,18 +134,11 @@ const ReservationPopup = (): JSX.Element => {
           </div>
         ) : !form ? (
           <div className="mt-10 rounded-xl bg-ink/60 p-6 text-center text-paper/80">
-            {t(
-              'reservation_form_unavailable',
-              'Reservation form is unavailable.',
-            )}
+            {t('reservation_form_unavailable', 'Reservation form is unavailable.')}
           </div>
         ) : (
           <div className="mt-7.5">
-            <ReservationForm
-              form={form}
-              restaurants={restaurants}
-              initialValues={initialValues}
-            />
+            <ReservationForm form={form} restaurants={restaurants} initialValues={initialValues} />
           </div>
         )}
       </div>

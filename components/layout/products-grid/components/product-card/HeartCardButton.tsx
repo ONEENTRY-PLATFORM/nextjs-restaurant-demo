@@ -5,10 +5,7 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  onSubscribeEvents,
-  onUnsubscribeEvents,
-} from '@/app/api/hooks/useEvents';
+import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
@@ -29,27 +26,21 @@ import HeartCardIcon from '@/components/icons/heart-card';
  * @param   {IProductsEntity} props.product - Продукт для переключения.
  * @returns {JSX.Element}                   JSX кнопки-сердца.
  */
-const HeartCardButton = ({
-  product,
-}: {
-  product: IProductsEntity;
-}): JSX.Element => {
+const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
-  const isFavStored = useAppSelector((state) =>
-    selectIsFavorites(state, product.id),
-  );
+  const isFavStored = useAppSelector(state => selectIsFavorites(state, product.id));
   // Избранное восстанавливается из localStorage на клиенте после гидратации,
   // так что SSR видит `false`, в то время как клиент может увидеть `true` —
   // обойти через useSyncExternalStore, чтобы серверный снапшот был `false`,
   // а клиент после маунта переключился на `true`, соответствуя persisted slice.
   const hydrated = useSyncExternalStore(
-    (cb) => {
+    cb => {
       cb();
       return () => {};
     },
     () => true,
-    () => false,
+    () => false
   );
   const isFav = hydrated && isFavStored;
 

@@ -29,7 +29,7 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
 
       return params.toString();
     },
-    [searchParams],
+    [searchParams]
   );
 
   useLayoutEffect(() => {
@@ -40,11 +40,8 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
     router.push(
       pathname +
         '?' +
-        createQueryString(
-          'page',
-          (nextPage <= totalPages ? nextPage : currentPage).toString(),
-        ),
-      { scroll: false },
+        createQueryString('page', (nextPage <= totalPages ? nextPage : currentPage).toString()),
+      { scroll: false }
     );
   };
 

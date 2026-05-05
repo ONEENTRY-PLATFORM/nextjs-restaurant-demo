@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  */
 export const getRelatedProductsById = cache(
   async (
-    id: number,
+    id: number
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -32,5 +32,5 @@ export const getRelatedProductsById = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError, total: 0 };
     }
-  },
+  }
 );

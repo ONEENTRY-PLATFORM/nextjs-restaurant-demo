@@ -27,9 +27,7 @@ const CardsGridAnimations = ({
     });
 
     if (stage === 'leaving' && prevStage === 'none') {
-      const cards =
-        ref.current &&
-        (ref.current as HTMLDivElement).querySelectorAll('.in-view');
+      const cards = ref.current && (ref.current as HTMLDivElement).querySelectorAll('.in-view');
 
       tl.to(cards, {
         autoAlpha: 0,

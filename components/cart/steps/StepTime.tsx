@@ -5,10 +5,7 @@ import { useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
-import {
-  selectDeliveryData,
-  setDeliveryData,
-} from '@/app/store/reducers/CartSlice';
+import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -29,9 +26,7 @@ const StepTime = (): JSX.Element => {
     const d = ts ? new Date(ts) : new Date();
     return d.toISOString().slice(0, 10);
   });
-  const [time, setTime] = useState<string>(
-    (delivery?.time as string | undefined) ?? '',
-  );
+  const [time, setTime] = useState<string>((delivery?.time as string | undefined) ?? '');
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const onNext = () => {
@@ -40,16 +35,14 @@ const StepTime = (): JSX.Element => {
         ...delivery,
         date: new Date(date).getTime(),
         time,
-      }),
+      })
     );
     dispatch(setStep('signin'));
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-center font-bold text-[20px] uppercase text-brand">
-        Select time
-      </h2>
+      <h2 className="text-center font-bold text-[20px] uppercase text-brand">Select time</h2>
 
       <button
         type="button"

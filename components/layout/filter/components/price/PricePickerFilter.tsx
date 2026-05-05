@@ -31,10 +31,10 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const MAX = prices?.max || 100;
 
   const [priceFrom, setPriceFrom] = useState(
-    params.get('minPrice') ? Number(params.get('minPrice')) : MIN,
+    params.get('minPrice') ? Number(params.get('minPrice')) : MIN
   );
   const [priceTo, setPriceTo] = useState(
-    params.get('maxPrice') ? Number(params.get('maxPrice')) : MAX,
+    params.get('maxPrice') ? Number(params.get('maxPrice')) : MAX
   );
 
   // параметры minPrice
@@ -75,23 +75,17 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
 
   return (
     <div className="relative box-border flex shrink-0 flex-col">
-      <div className="filter_title mb-5 self-start">
-        {t('filter_price_title', 'Price')}
-      </div>
+      <div className="filter_title mb-5 self-start">{t('filter_price_title', 'Price')}</div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
-          <span className="text-base leading-8 text-paper/60">
-            {t('from', 'From')}
-          </span>
+          <span className="text-base leading-8 text-paper/60">{t('from', 'From')}</span>
           <span className="text-lg leading-8 text-white/90">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
           </span>
         </div>
         <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
-          <span className="self-start text-base leading-8 text-paper/60">
-            {t('to_text', 'To')}
-          </span>
+          <span className="self-start text-base leading-8 text-paper/60">{t('to_text', 'To')}</span>
           <span className="text-lg leading-8 text-white/90">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />
           </span>
@@ -110,7 +104,7 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
           min={MIN}
           max={MAX}
           values={[priceFrom, priceTo]}
-          onChange={(values) => {
+          onChange={values => {
             if (values[0] !== undefined) setPriceFrom(values[0]);
             if (values[1] !== undefined) setPriceTo(values[1]);
           }}
@@ -123,11 +117,7 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
                 height: '16px',
                 width: '1px',
                 backgroundColor:
-                  index * STEP < priceFrom
-                    ? '#ccc'
-                    : index * STEP > priceTo
-                      ? '#ccc'
-                      : '#ffa03d',
+                  index * STEP < priceFrom ? '#ccc' : index * STEP > priceTo ? '#ccc' : '#ffa03d',
               }}
             />
           )}

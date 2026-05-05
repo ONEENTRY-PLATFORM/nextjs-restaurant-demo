@@ -27,9 +27,7 @@ const ProductsGridLayout = async ({
   productsLimit,
   isCategory,
 }: {
-  params:
-    | Promise<{ handle?: string; locale?: string }>
-    | { handle?: string; locale?: string };
+  params: Promise<{ handle?: string; locale?: string }> | { handle?: string; locale?: string };
   searchParams?: GridSearchParams;
   productsLimit: number;
   isCategory?: boolean;
@@ -42,10 +40,7 @@ const ProductsGridLayout = async ({
   }
 
   const currentPage = Number(searchParams?.page) || 1;
-  const limit =
-    currentPage * productsLimit > 0
-      ? currentPage * productsLimit
-      : productsLimit;
+  const limit = currentPage * productsLimit > 0 ? currentPage * productsLimit : productsLimit;
   const combinedParams = searchParams ? { ...p, searchParams } : { ...p };
 
   // Получаем все продукты из api или продукты byPageUrl
@@ -68,9 +63,7 @@ const ProductsGridLayout = async ({
   const totalPages = Math.ceil(total / productsLimit);
 
   return (
-    <CardsGridAnimations
-      className={'relative box-border flex w-full shrink-0 flex-col'}
-    >
+    <CardsGridAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
       <section className="products_grid_layout">
         <ProductsGrid productsLimit={productsLimit} products={products} />
         {totalPages > 1 && (

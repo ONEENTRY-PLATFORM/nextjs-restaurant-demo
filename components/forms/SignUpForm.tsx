@@ -35,36 +35,29 @@ const SignUpForm = (): JSX.Element => {
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
   // Получаем поля из formFieldsReducer
-  const fields = useAppSelector((state) => state.formFieldsReducer.fields);
+  const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   // Мемоизированные поля формы для лучшей производительности
   const formFields = useMemo(
-    () => [
-      'username',
-      'surname',
-      'email',
-      'phone',
-      'password',
-      'repeat_password',
-    ],
-    [],
+    () => ['username', 'surname', 'email', 'phone', 'password', 'repeat_password'],
+    []
   );
 
   // Проверяем, может ли пользователь засабмитить форму
   const canSubmit = useMemo(
-    () => formFields.every((field) => fields[field]?.valid),
-    [fields, formFields],
+    () => formFields.every(field => fields[field]?.valid),
+    [fields, formFields]
   );
 
   // Готовим formData
   const formData = useMemo(
     () =>
-      formFields.map((field) => ({
+      formFields.map(field => ({
         marker: field,
         type: 'string',
         value: fields[field]?.value || '',
       })),
-    [fields, formFields],
+    [fields, formFields]
   );
 
   // Обработчик sign up
@@ -107,9 +100,7 @@ const SignUpForm = (): JSX.Element => {
           setOpen(true);
           setComponent('VerificationForm');
           setAction('activateUser');
-          setError(
-            `Error ${(res as { statusCode?: number }).statusCode ?? ''}`,
-          );
+          setError(`Error ${(res as { statusCode?: number }).statusCode ?? ''}`);
         } else {
           const entity = res as ISignUpEntity;
           // Если ответ говорит, что аккаунт активен, логиним пользователя
@@ -135,7 +126,7 @@ const SignUpForm = (): JSX.Element => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fields, formData, canSubmit],
+    [fields, formData, canSubmit]
   );
 
   return (
@@ -146,10 +137,7 @@ const SignUpForm = (): JSX.Element => {
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
           <p className="text-xs text-paper/60 max-md:max-w-full">
-            <button
-              onClick={() => setComponent('SignInForm')}
-              className="underline"
-            >
+            <button onClick={() => setComponent('SignInForm')} className="underline">
               {t('sign_in_text', 'Sign in')}
             </button>{' '}
             {t('create_account_text', 'Create account')}
@@ -161,14 +149,10 @@ const SignUpForm = (): JSX.Element => {
             (field: IFormAttribute, index: number) =>
               field.marker !== 'email_notification_reg' && (
                 <FormInput key={index} index={index} {...field} />
-              ),
+              )
           )}
         </div>
-        <SubmitButton
-          title={t('sign_up_text', '')}
-          isLoading={loading || isLoading}
-          index={10}
-        />
+        <SubmitButton title={t('sign_up_text', '')} isLoading={loading || isLoading} index={10} />
         {error && <ErrorMessage error={error} />}
       </form>
     </FormAnimations>

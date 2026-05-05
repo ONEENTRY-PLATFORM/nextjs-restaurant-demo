@@ -21,8 +21,7 @@ import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 const StepVerification = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const phone = useAppSelector(
-    (state) =>
-      (state.formFieldsReducer.fields.phone?.value as string | undefined) ?? '',
+    state => (state.formFieldsReducer.fields.phone?.value as string | undefined) ?? ''
   );
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,22 +35,14 @@ const StepVerification = (): JSX.Element => {
     setLoading(true);
     setError('');
     try {
-      const res = await getApi().AuthProvider.checkCode(
-        'phone',
-        phone,
-        'otp',
-        otp,
-      );
+      const res = await getApi().AuthProvider.checkCode('phone', phone, 'otp', otp);
       if (isError(res)) {
-        setError(
-          (res as { message?: string }).message ?? 'Invalid code. Try again.',
-        );
+        setError((res as { message?: string }).message ?? 'Invalid code. Try again.');
         return;
       }
       dispatch(setStep('address'));
     } catch (e: unknown) {
-      const message =
-        (e as { message?: string }).message ?? 'Verification failed.';
+      const message = (e as { message?: string }).message ?? 'Verification failed.';
       setError(message);
       dispatch(setStepError(message));
     } finally {
@@ -67,20 +58,12 @@ const StepVerification = (): JSX.Element => {
     setLoading(true);
     setError('');
     try {
-      const res = await getApi().AuthProvider.generateCode(
-        'phone',
-        phone,
-        'generate_otp',
-      );
+      const res = await getApi().AuthProvider.generateCode('phone', phone, 'generate_otp');
       if (isError(res)) {
-        setError(
-          (res as { message?: string }).message ?? 'Could not resend the code.',
-        );
+        setError((res as { message?: string }).message ?? 'Could not resend the code.');
       }
     } catch (e: unknown) {
-      setError(
-        (e as { message?: string }).message ?? 'Could not resend the code.',
-      );
+      setError((e as { message?: string }).message ?? 'Could not resend the code.');
     } finally {
       setLoading(false);
     }
@@ -88,14 +71,12 @@ const StepVerification = (): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="font-normal text-[20px] text-white">
-        Enter your OTP code here
-      </p>
+      <p className="font-normal text-[20px] text-white">Enter your OTP code here</p>
       <OtpInput
         value={otp}
         onChange={setOtp}
         numInputs={6}
-        renderInput={(props) => <input {...props} />}
+        renderInput={props => <input {...props} />}
         containerStyle="flex justify-between mx-auto h-[60px] mt-5"
         inputStyle="!w-10 h-15 border border-white rounded-[5px] bg-transparent text-center text-[24px] text-paper opacity-90 focus:outline-none"
       />

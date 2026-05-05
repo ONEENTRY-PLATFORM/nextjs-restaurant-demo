@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  */
 export const getPageById = cache(
   async (
-    id: number,
+    id: number
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -27,5 +27,5 @@ export const getPageById = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

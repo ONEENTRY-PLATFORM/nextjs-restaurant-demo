@@ -4,18 +4,9 @@ import type { JSX } from 'react';
 /**
  * Кнопка Social SignIn
  */
-const SocialSignInButton = ({
-  imageSrc,
-  alt,
-}: {
-  imageSrc: string;
-  alt: string;
-}): JSX.Element => {
+const SocialSignInButton = ({ imageSrc, alt }: { imageSrc: string; alt: string }): JSX.Element => {
   return (
-    <button
-      type="button"
-      className="relative box-border flex shrink-0 flex-col"
-    >
+    <button type="button" className="relative box-border flex shrink-0 flex-col">
       <Image
         width={30}
         height={30}

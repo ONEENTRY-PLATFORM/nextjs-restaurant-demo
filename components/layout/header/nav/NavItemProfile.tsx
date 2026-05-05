@@ -42,17 +42,17 @@ const NavItemProfile = (): JSX.Element => {
 
   const { data: menu } = useGetMenuByMarkerQuery(
     { marker: PROFILE_MENU_MARKER },
-    { skip: !isAuth },
+    { skip: !isAuth }
   );
 
   // Children пункта `profile` в `user_menu` — то, что должно быть
   // в подменю. Сортируем по `position`.
   const profileChildren = useMemo<IMenusPages[]>(() => {
     const pages = menu?.pages ?? [];
-    const profileEntry = pages.find((p) => p.pageUrl === PROFILE_PAGE_URL);
+    const profileEntry = pages.find(p => p.pageUrl === PROFILE_PAGE_URL);
     if (!profileEntry) return [];
     return pages
-      .filter((p) => p.parentId === profileEntry.id)
+      .filter(p => p.parentId === profileEntry.id)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
   }, [menu]);
 
@@ -96,11 +96,9 @@ const NavItemProfile = (): JSX.Element => {
           className="absolute right-0 top-6 z-30 w-48 pt-2"
         >
           <div className="rounded-[10px] bg-ink/80 px-4 py-2 text-paper shadow-lg backdrop-blur-[10px]">
-            {profileChildren.map((page) => {
+            {profileChildren.map(page => {
               const label =
-                page.localizeInfos?.menuTitle ||
-                page.localizeInfos?.title ||
-                page.pageUrl;
+                page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
               // Спец-кейс: `bookings` открывается как попап
               // (`BookingsPopup` через OpenDrawerContext) — у нас нет
               // выделенной страницы /profile/bookings, бронирования

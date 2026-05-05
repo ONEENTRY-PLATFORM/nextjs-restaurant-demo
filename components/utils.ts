@@ -21,7 +21,7 @@ import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
 export const dictText = (
   dict: IAttributeValues | undefined,
   marker: string,
-  fallback: string,
+  fallback: string
 ): string => {
   const raw = (dict?.[marker] as { value?: unknown } | undefined)?.value;
   return typeof raw === 'string' ? raw : fallback;
@@ -65,15 +65,12 @@ export const UseDate = ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sortArrayByPosition = (array: Record<any, any>) => {
-  return array.sort(
-    (a: { position: number }, b: { position: number }) =>
-      a.position - b.position,
-  );
+  return array.sort((a: { position: number }, b: { position: number }) => a.position - b.position);
 };
 
 export const sortObjectFieldsByPosition = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  obj: Record<any, any> | null | undefined,
+  obj: Record<any, any> | null | undefined
 ) => {
   if (!obj || typeof obj !== 'object') {
     return {};
@@ -90,10 +87,7 @@ export const sortObjectFieldsByPosition = (
 };
 
 // flatMenuToNested — преобразование плоского меню в дерево
-export const flatMenuToNested = (
-  data: [] | Array<IMenusPages>,
-  pid: number | null,
-) => {
+export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | null) => {
   return data.reduce((r: IMenusPages[], element: IMenusPages) => {
     if (pid == element.parentId) {
       const object = { ...element };
@@ -121,7 +115,7 @@ export function typeError(res: IError | unknown): res is IError {
 
 export const shuffleArray = <T>(array: T[]): T[] => {
   return array
-    .map((a) => ({ sort: Math.random(), value: a }))
+    .map(a => ({ sort: Math.random(), value: a }))
     .sort((a, b) => a.sort - b.sort)
-    .map((a) => a.value);
+    .map(a => a.value);
 };

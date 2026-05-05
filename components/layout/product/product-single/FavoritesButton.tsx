@@ -6,10 +6,7 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  onSubscribeEvents,
-  onUnsubscribeEvents,
-} from '@/app/api/hooks/useEvents';
+import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
@@ -27,7 +24,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
-  const isFavStored = useAppSelector((state) => selectIsFavorites(state, id));
+  const isFavStored = useAppSelector(state => selectIsFavorites(state, id));
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -41,9 +38,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const onUpdateFavoritesHandle = () => {
     if (isFav) {
       dispatch(removeFavorites(product.id));
-      toast(
-        'Product ' + product.localizeInfos.title + ' removed from Favorites!',
-      );
+      toast('Product ' + product.localizeInfos.title + ' removed from Favorites!');
     } else {
       dispatch(addFavorites(product.id));
       toast('Product ' + product.localizeInfos.title + ' added to Favorites!');
@@ -65,9 +60,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
         dispatch(removeFavorites(product.id));
         await onUnsubscribeEvents(product.id);
 
-        toast(
-          'Product ' + product.localizeInfos.title + ' removed from Favorites!',
-        );
+        toast('Product ' + product.localizeInfos.title + ' removed from Favorites!');
       }
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);

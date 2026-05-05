@@ -29,7 +29,7 @@ const RegisterGSAP = () => {
       name: 'cardAnimations',
       effect: (
         target: gsap.TweenTarget | HTMLDivElement,
-        config: { duration: number; delay: number; scrub: number | boolean },
+        config: { duration: number; delay: number; scrub: number | boolean }
       ) => {
         const tl = gsap.timeline({
           paused: true,
@@ -56,7 +56,7 @@ const RegisterGSAP = () => {
             yPercent: 0,
             delay: config.delay,
             duration: config.duration,
-          },
+          }
         );
       },
       defaults: { duration: 2, delay: 0, scrub: 4 },
@@ -74,7 +74,7 @@ const RegisterGSAP = () => {
       name: 'slideUp',
       effect: (
         target: gsap.TweenTarget | HTMLDivElement,
-        config: { duration: number; delay: number },
+        config: { duration: number; delay: number }
       ) => {
         const tl = gsap.timeline({
           paused: true,
@@ -91,7 +91,7 @@ const RegisterGSAP = () => {
             yPercent: 0,
             duration: config.duration,
             delay: config.delay,
-          },
+          }
         );
       },
       defaults: { duration: 0.5, delay: 0 },
@@ -105,7 +105,7 @@ const RegisterGSAP = () => {
       name: 'fadeIn',
       effect: (
         target: gsap.TweenTarget | HTMLDivElement,
-        config: { duration: number; delay: number },
+        config: { duration: number; delay: number }
       ) => {
         const tl = gsap.timeline();
 

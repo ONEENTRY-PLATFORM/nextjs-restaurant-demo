@@ -15,8 +15,7 @@ import FilterIcon from '@/components/icons/filter';
 const FilterButton = (): JSX.Element => {
   const t = useT();
   const label = t('open_filters_button', 'Open filters');
-  const { setOpen, setComponent, setTransition } =
-    useContext(OpenDrawerContext);
+  const { setOpen, setComponent, setTransition } = useContext(OpenDrawerContext);
 
   const handleClick = (): void => {
     setComponent('FilterForm');

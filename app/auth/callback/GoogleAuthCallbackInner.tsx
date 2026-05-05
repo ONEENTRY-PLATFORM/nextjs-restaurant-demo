@@ -27,9 +27,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const code = params.get('code');
     const state = params.get('state');
     const expectedState =
-      typeof window !== 'undefined'
-        ? sessionStorage.getItem('google-oauth-state')
-        : null;
+      typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-state') : null;
     const returnTo = params.get('return') || '/';
 
     const finish = (ok: boolean, message?: string) => {
@@ -50,7 +48,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     }
 
     const redirectUri = `${window.location.origin}/auth/callback`;
-    oauthLogIn({ marker: 'google', code, redirectUri }).then((res) => {
+    oauthLogIn({ marker: 'google', code, redirectUri }).then(res => {
       if (res?.error || !res?.data) {
         finish(false, res?.error ?? 'Google sign-in failed.');
         return;

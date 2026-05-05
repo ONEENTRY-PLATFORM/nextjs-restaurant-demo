@@ -15,13 +15,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {ReactNode}   props.children - Содержимое попапа.
  * @returns {JSX.Element}                JSX обёртки анимации.
  */
-const FavoritesPopupAnimations = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+const FavoritesPopupAnimations = ({ children }: { children: ReactNode }): JSX.Element => {
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
@@ -46,8 +41,7 @@ const FavoritesPopupAnimations = ({
     // На md+ попап центрирован через `translate-x/y-1/2`, и `yPercent`
     // конфликтует с центрированием — там оставляем scale + fade.
     const isMobile =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(max-width: 767px)').matches;
+      typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
     gsap.set(modalBg, { autoAlpha: 0 });
     if (isMobile) {
@@ -65,7 +59,7 @@ const FavoritesPopupAnimations = ({
       isMobile
         ? { autoAlpha: 1, yPercent: 0, duration: 0.5 }
         : { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'back.out(1.4)' },
-      '-=0.25',
+      '-=0.25'
     );
 
     if (transition === 'close') {

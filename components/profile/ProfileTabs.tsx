@@ -19,17 +19,11 @@ const ProfileTabs = (): JSX.Element => {
   const pathname = usePathname();
   return (
     <ul className="mb-6 flex gap-2 overflow-x-auto no-scrollbar p-0">
-      {tabs.map((t) => {
+      {tabs.map(t => {
         const active = pathname === t.href;
         return (
-          <li
-            key={t.href}
-            className={'list_item ' + (active ? 'border-brand' : '')}
-          >
-            <Link
-              href={t.href}
-              className={'list_link ' + (active ? 'bg-brand text-white' : '')}
-            >
+          <li key={t.href} className={'list_item ' + (active ? 'border-brand' : '')}>
+            <Link href={t.href} className={'list_link ' + (active ? 'bg-brand text-white' : '')}>
               {t.label}
             </Link>
           </li>

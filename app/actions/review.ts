@@ -4,10 +4,7 @@ import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces'
 
 import { getApi, isError } from '@/app/api';
 import type { FormAttribute } from '@/components/reviews/utils/transformFormData';
-import {
-  transformFormField,
-  validateFormData,
-} from '@/components/reviews/utils/transformFormData';
+import { transformFormField, validateFormData } from '@/components/reviews/utils/transformFormData';
 
 const FORM_MARKER = 'review_form';
 const FORM_STATUS = 'approved';
@@ -53,7 +50,7 @@ export type ReviewPayload = {
  * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Результат отправки.
  */
 export async function submitReview(
-  payload: ReviewPayload,
+  payload: ReviewPayload
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
     const form = await getApi().Forms.getFormByMarker(FORM_MARKER);
@@ -73,7 +70,7 @@ export async function submitReview(
     };
 
     const sortedFields = [...(formMeta.attributes ?? [])].sort(
-      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+      (a, b) => (a.position ?? 0) - (b.position ?? 0)
     );
 
     const valuesByMarker: Record<string, unknown> = {
@@ -81,13 +78,13 @@ export async function submitReview(
       [TEXT_MARKER]: payload.text,
     };
 
-    const formData: FormDataType[] = sortedFields.map((field) =>
+    const formData: FormDataType[] = sortedFields.map(field =>
       transformFormField({
         marker: field.marker,
         type: field.type,
         value: valuesByMarker[field.marker],
         productId: payload.productId,
-      }),
+      })
     );
 
     const validation = validateFormData(formData);
@@ -95,8 +92,7 @@ export async function submitReview(
       return { ok: false, message: validation.error || 'Invalid form data' };
     }
 
-    const formModuleConfigId =
-      formMeta.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
+    const formModuleConfigId = formMeta.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
     const res = await getApi().FormData.postFormsData({
       formIdentifier: formMeta.identifier ?? FORM_MARKER,
@@ -110,8 +106,7 @@ export async function submitReview(
     if (isError(res)) {
       return {
         ok: false,
-        message:
-          (res as { message?: string }).message || 'Failed to submit review',
+        message: (res as { message?: string }).message || 'Failed to submit review',
       };
     }
     return { ok: true };

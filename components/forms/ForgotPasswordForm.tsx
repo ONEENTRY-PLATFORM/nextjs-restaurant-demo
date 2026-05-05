@@ -25,18 +25,14 @@ export const ForgotPasswordForm = (): JSX.Element => {
 
   // Получаем данные формы из API через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
-  const fields = useAppSelector((state) => state.formFieldsReducer.fields);
+  const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       // Генерируем код верификации через API
-      await getApi().AuthProvider.generateCode(
-        'email',
-        fields.email?.value || '',
-        'generate_otp',
-      );
+      await getApi().AuthProvider.generateCode('email', fields.email?.value || '', 'generate_otp');
       // Открываем форму Verification
       setComponent('VerificationForm');
       setAction('checkCode');
@@ -62,9 +58,7 @@ export const ForgotPasswordForm = (): JSX.Element => {
         onSubmit={handleSubmit}
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-paper/60 max-md:max-w-full">
-            {t('reset_descr', '')}
-          </p>
+          <p className="text-xs text-paper/60 max-md:max-w-full">{t('reset_descr', '')}</p>
         </div>
 
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
@@ -75,11 +69,7 @@ export const ForgotPasswordForm = (): JSX.Element => {
             ))}
         </div>
 
-        <FormSubmitButton
-          title={t('send_text', '')}
-          isLoading={isLoading}
-          index={10}
-        />
+        <FormSubmitButton title={t('send_text', '')} isLoading={isLoading} index={10} />
         {isError && <ErrorMessage error={isError} />}
       </form>
     </FormAnimations>

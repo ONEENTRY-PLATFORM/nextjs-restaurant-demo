@@ -13,9 +13,7 @@ const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const [available, setAvailability] = useState(
-    params.get('in_stock') ? true : false,
-  );
+  const [available, setAvailability] = useState(params.get('in_stock') ? true : false);
 
   useEffect(() => {
     if (available) {
@@ -29,10 +27,7 @@ const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
 
   return (
     <div className="mb-9 flex gap-5">
-      <label
-        htmlFor="availability"
-        className="flex-auto text-lg leading-8 text-white/90"
-      >
+      <label htmlFor="availability" className="flex-auto text-lg leading-8 text-white/90">
         {title}
       </label>
       <div className="relative inline-block w-10 select-none align-middle transition duration-200 ease-in">

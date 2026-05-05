@@ -16,11 +16,7 @@ import type { AnimationsProps } from '../types/global';
  * @returns {JSX.Element}                 JSX.Element с анимированным ref
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
-const FadeTransition = ({
-  children,
-  className,
-  index,
-}: AnimationsProps): JSX.Element => {
+const FadeTransition = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
   // анимации при входе на стадию
   useGSAP(() => {

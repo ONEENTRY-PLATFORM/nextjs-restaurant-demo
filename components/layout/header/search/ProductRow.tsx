@@ -6,10 +6,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  addReservationToCart,
-  selectReservationId,
-} from '@/app/store/reducers/CartSlice';
+import { addReservationToCart, selectReservationId } from '@/app/store/reducers/CartSlice';
 
 /**
  * Рендерер строки результатов поиска — ссылка на страницу продукта; записывает
@@ -34,7 +31,7 @@ const ProductRow = ({
         id: reservationId,
         product,
         restaurant: (pageData ?? {}) as IPagesEntity,
-      }),
+      })
     );
   };
 

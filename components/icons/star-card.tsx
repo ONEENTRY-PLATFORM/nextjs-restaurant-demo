@@ -1,12 +1,6 @@
 import type { JSX } from 'react';
 
-const StarCardIcon = ({
-  size,
-  filled,
-}: {
-  size: number;
-  filled: boolean;
-}): JSX.Element => {
+const StarCardIcon = ({ size, filled }: { size: number; filled: boolean }): JSX.Element => {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
       <path

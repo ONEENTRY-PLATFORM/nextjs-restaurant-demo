@@ -1,9 +1,6 @@
 'use server';
 
-import type {
-  IAuthEntity,
-  IOauthData,
-} from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type { IAuthEntity, IOauthData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
 import { getApi, isError } from '@/app/api';
 
@@ -20,16 +17,10 @@ type OauthLoginProps = {
  * Повторяет {@link logInUser}, но вызывает `AuthProvider.oauth(...)` вместо
  * `auth(...)` (OAuth-провайдеры в OneEntry не привязаны к форме).
  */
-export const oauthLogIn = async ({
-  marker,
-  code,
-  redirectUri,
-}: OauthLoginProps) => {
+export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {
-    const clientId =
-      marker === 'google' ? process.env.GOOGLE_CLIENT_ID : undefined;
-    const clientSecret =
-      marker === 'google' ? process.env.GOOGLE_CLIENT_SECRET : undefined;
+    const clientId = marker === 'google' ? process.env.GOOGLE_CLIENT_ID : undefined;
+    const clientSecret = marker === 'google' ? process.env.GOOGLE_CLIENT_SECRET : undefined;
 
     if (!clientId || !clientSecret) {
       return { error: `OAuth credentials are not configured for "${marker}".` };

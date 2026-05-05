@@ -44,14 +44,12 @@ const AUTH_FLOW_SUB_STEPS = new Set([
  * Компонент модалки форм
  */
 const Modal = (): JSX.Element => {
-  const { component, setComponent, setTransition, setOpen } =
-    useContext(OpenDrawerContext);
+  const { component, setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);
 
   // выбираем компонент формы по имени компонента. Каст к общему типу,
   // потому что forms[component] — union с разнородными props (часть форм
   // не принимает className/isActive); они их просто игнорируют.
-  const Form = (forms[component as keyof typeof forms] ||
-    null) as ComponentType<{
+  const Form = (forms[component as keyof typeof forms] || null) as ComponentType<{
     className?: string;
     isActive?: boolean;
   }> | null;

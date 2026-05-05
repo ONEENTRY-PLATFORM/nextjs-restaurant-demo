@@ -19,8 +19,7 @@ const MobileMenuAnimations = ({
   className: string;
   id: string;
 }): JSX.Element => {
-  const { open, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
   // анимации открытия/закрытия

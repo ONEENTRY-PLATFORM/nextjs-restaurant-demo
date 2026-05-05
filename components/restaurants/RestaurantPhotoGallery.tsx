@@ -22,13 +22,7 @@ type Photo = { downloadLink?: string };
  * Мобила: единый горизонтальный слайдер через {@link RestaurantPhotoSlider}
  * (как в `mob_about.html`); тап по фото открывает тот же lightbox.
  */
-const RestaurantPhotoGallery = ({
-  photos,
-  alt,
-}: {
-  photos: Photo[];
-  alt: string;
-}): JSX.Element => {
+const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -91,10 +85,7 @@ const RestaurantPhotoGallery = ({
     if (next) {
       const nextRect = next.getBoundingClientRect();
       const nextRelBottom =
-        nextRect.bottom -
-        cRect.bottom +
-        container.scrollTop +
-        container.clientHeight;
+        nextRect.bottom - cRect.bottom + container.scrollTop + container.clientHeight;
       if (nextRect.bottom > cRect.bottom) {
         container.scrollTo({
           top: nextRelBottom - container.clientHeight,
@@ -200,7 +191,7 @@ const RestaurantPhotoGallery = ({
     if (s.moved > MAIN_DRAG_THRESHOLD_PX && total > 0) {
       // Тянем вверх → следующее фото; вниз → предыдущее. Циклически.
       const delta = s.direction === -1 ? 1 : -1;
-      setActive((i) => (i + delta + total) % total);
+      setActive(i => (i + delta + total) % total);
     }
     s.active = false;
   };
@@ -215,7 +206,7 @@ const RestaurantPhotoGallery = ({
 
   const slides = photos
     .filter((p): p is Required<Photo> => Boolean(p?.downloadLink))
-    .map((p) => ({ src: p.downloadLink, alt }));
+    .map(p => ({ src: p.downloadLink, alt }));
 
   const openLightbox = () => {
     if (slides.length > 0) setLightboxOpen(true);
@@ -245,7 +236,7 @@ const RestaurantPhotoGallery = ({
           onPointerUp={onMainPointerEnd}
           onPointerCancel={onMainPointerEnd}
           onPointerLeave={onMainPointerEnd}
-          onDragStart={(e) => e.preventDefault()}
+          onDragStart={e => e.preventDefault()}
           aria-label={`Open ${alt} photos fullscreen`}
           className="relative h-full w-full overflow-hidden rounded-[10px] bg-ink/40 transition-opacity hover:opacity-95 disabled:cursor-default cursor-grab active:cursor-grabbing select-none touch-pan-y"
           disabled={total === 0}
@@ -277,7 +268,7 @@ const RestaurantPhotoGallery = ({
             return (
               <button
                 key={index}
-                ref={(el) => {
+                ref={el => {
                   thumbRefs.current[index] = el;
                 }}
                 type="button"
@@ -286,9 +277,7 @@ const RestaurantPhotoGallery = ({
                 aria-pressed={isActive}
                 className={
                   'relative aspect-278/197 w-full shrink-0 overflow-hidden rounded-[10px] bg-ink/40 transition-all ' +
-                  (isActive
-                    ? 'ring-2 ring-brand opacity-100'
-                    : 'opacity-70 hover:opacity-100')
+                  (isActive ? 'ring-2 ring-brand opacity-100' : 'opacity-70 hover:opacity-100')
                 }
               >
                 {photo?.downloadLink ? (

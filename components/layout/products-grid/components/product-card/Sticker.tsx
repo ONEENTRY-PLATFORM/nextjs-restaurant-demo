@@ -27,8 +27,7 @@ const Sticker = ({
   const title = sticker.value?.title;
   const imgSrc =
     sticker.value.extended?.value.downloadLink ||
-    (Array.isArray(sticker.value) &&
-      sticker.value[0]?.extended?.value.downloadLink);
+    (Array.isArray(sticker.value) && sticker.value[0]?.extended?.value.downloadLink);
 
   return (
     <div className="relative box-border flex size-6.5 shrink-0 flex-col items-center justify-center">

@@ -9,11 +9,7 @@ import GroupCard from './group-card/GroupCard';
 /**
  * Компонент ProductsGroup
  */
-const ProductsGroup = async ({
-  marker,
-}: {
-  marker: string;
-}): Promise<JSX.Element> => {
+const ProductsGroup = async ({ marker }: { marker: string }): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);
 
   if (isError || !block) {
@@ -21,10 +17,7 @@ const ProductsGroup = async ({
   }
 
   return (
-    <ProductAnimations
-      className="mb-8 flex flex-col max-md:max-w-full"
-      index={4}
-    >
+    <ProductAnimations className="mb-8 flex flex-col max-md:max-w-full" index={4}>
       <h2 className="title_name max-md:max-w-full">
         {block.attributeValues?.together_title?.value as string | undefined}
       </h2>

@@ -7,11 +7,7 @@ import { getImageUrl, getPageByUrl } from '@/app/api';
 
 export const dynamic = 'force-dynamic';
 
-type ImageValue =
-  | { downloadLink?: string }
-  | Array<{ downloadLink?: string }>
-  | null
-  | undefined;
+type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
  * Точка входа сервиса — лендинг с логотипом и двумя основными CTA:
@@ -32,9 +28,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
   const primaryCta = attrs.service_primary_cta?.value as string | undefined;
   const primaryHref = attrs.service_primary_href?.value as string | undefined;
   const secondaryCta = attrs.service_secondary_cta?.value as string | undefined;
-  const secondaryHref = attrs.service_secondary_href?.value as
-    | string
-    | undefined;
+  const secondaryHref = attrs.service_secondary_href?.value as string | undefined;
 
   return (
     <div

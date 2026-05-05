@@ -32,7 +32,7 @@ const StarRating = ({
       role={isInteractive ? 'radiogroup' : 'img'}
       aria-label={`Rating: ${value} out of 5`}
     >
-      {stars.map((n) => {
+      {stars.map(n => {
         const filled = n <= Math.round(value);
         const Tag = isInteractive ? 'button' : 'span';
         return (
@@ -40,9 +40,7 @@ const StarRating = ({
             key={n}
             type={isInteractive ? 'button' : undefined}
             onClick={isInteractive ? () => onChange?.(n) : undefined}
-            aria-label={
-              isInteractive ? `${n} star${n > 1 ? 's' : ''}` : undefined
-            }
+            aria-label={isInteractive ? `${n} star${n > 1 ? 's' : ''}` : undefined}
             className="inline-flex"
             style={{ width: size, height: size }}
           >

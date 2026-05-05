@@ -3,11 +3,7 @@ import Image from 'next/image';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
-import {
-  getChildPagesByParentUrl,
-  getFormByMarker,
-  getPageByUrl,
-} from '@/app/api';
+import { getChildPagesByParentUrl, getFormByMarker, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import ReservationForm from '@/components/reservation/ReservationForm';
 import type { RestaurantOption } from '@/components/reservation/RestaurantSelect';
@@ -20,43 +16,36 @@ export const dynamic = 'force-dynamic';
  * @returns {Promise<JSX.Element>} JSX страницы бронирования.
  */
 const ReservationPage = async (): Promise<JSX.Element> => {
-  const [pageRes, formRes, restaurantsParentRes, restaurantsRes, dict] =
-    await Promise.all([
-      getPageByUrl('bookings'),
-      getFormByMarker('booking_order'),
-      getPageByUrl('restaurants'),
-      getChildPagesByParentUrl('restaurants'),
-      getDictionary(),
-    ]);
+  const [pageRes, formRes, restaurantsParentRes, restaurantsRes, dict] = await Promise.all([
+    getPageByUrl('bookings'),
+    getFormByMarker('booking_order'),
+    getPageByUrl('restaurants'),
+    getChildPagesByParentUrl('restaurants'),
+    getDictionary(),
+  ]);
 
   // Дочерние страницы ресторанов внутри `restaurants`: у каждой есть `address` (string) +
   // `localizeInfos.title`. Проверено через inspect-api — атрибута `restaurant_address`
   // нет, поэтому подпись опции откатывается на `address`, затем на `title`.
-  const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map(
-    (p: IPagesEntity) => ({
-      value: p.pageUrl ?? String(p.id),
-      label:
-        ((p.attributeValues?.address?.value as string | undefined) ||
-          p.localizeInfos?.title) ??
-        'Restaurant',
-    }),
-  );
+  const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map((p: IPagesEntity) => ({
+    value: p.pageUrl ?? String(p.id),
+    label:
+      ((p.attributeValues?.address?.value as string | undefined) || p.localizeInfos?.title) ??
+      'Restaurant',
+  }));
 
   // Hero берётся с родительской страницы `restaurants` (`photos` groupOfImages,
   // `description` text). У страницы `bookings` есть только `menu_icon`, выделенных
   // атрибутов reservation_* нет — проверено через inspect-api.
   const parent = restaurantsParentRes.page;
   const photos =
-    (parent?.attributeValues?.photos?.value as
-      | Array<{ downloadLink?: string }>
-      | undefined) ?? [];
+    (parent?.attributeValues?.photos?.value as Array<{ downloadLink?: string }> | undefined) ?? [];
   const heroImage = photos[0]?.downloadLink;
   const title =
     parent?.localizeInfos?.title ??
     pageRes.page?.localizeInfos?.title ??
     (dict.reservation_default_title?.value as string);
-  const formUnavailableText = dict.reservation_form_unavailable
-    ?.value as string;
+  const formUnavailableText = dict.reservation_form_unavailable?.value as string;
   const descriptionRaw = parent?.attributeValues?.description?.value as
     | Array<{ htmlValue?: string; plainValue?: string }>
     | undefined;
@@ -109,13 +98,8 @@ export default ReservationPage;
  * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const [{ page }, dict] = await Promise.all([
-    getPageByUrl('bookings'),
-    getDictionary(),
-  ]);
-  const title =
-    page?.localizeInfos?.title ??
-    (dict.reservation_default_title?.value as string);
+  const [{ page }, dict] = await Promise.all([getPageByUrl('bookings'), getDictionary()]);
+  const title = page?.localizeInfos?.title ?? (dict.reservation_default_title?.value as string);
   const description = dict.reservation_metadata_description?.value as string;
   return {
     title,

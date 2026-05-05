@@ -8,17 +8,13 @@ import { useRef } from 'react';
 /**
  * Transition provider — основной провайдер переходов 'stage'
  */
-export default function TransitionProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   return (
     <TransitionRouter
       auto={true}
-      leave={(next) => {
+      leave={next => {
         if (!ref.current) {
           return;
         }
@@ -38,7 +34,7 @@ export default function TransitionProvider({
           tl.kill();
         };
       }}
-      enter={(next) => {
+      enter={next => {
         if (!ref.current) {
           return;
         }

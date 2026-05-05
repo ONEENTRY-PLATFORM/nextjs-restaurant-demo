@@ -39,9 +39,7 @@ const getLqipPreview = async (imageUrl: string): Promise<string> => {
     const image = await fetch(imageUrl);
     /** Валидируем ответ */
     if (!image.ok) {
-      throw new Error(
-        `Failed to fetch image: ${image.status} ${image.statusText}`,
-      );
+      throw new Error(`Failed to fetch image: ${image.status} ${image.statusText}`);
     }
 
     /** Конвертируем ответ изображения в буфер */

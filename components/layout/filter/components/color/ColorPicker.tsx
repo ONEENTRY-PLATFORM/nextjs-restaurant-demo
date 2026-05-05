@@ -18,9 +18,7 @@ const ColorPicker = ({
     <button
       className={
         'flex gap-1.5 rounded-full pl-1 pr-2 transition-colors w-24 ' +
-        (code === activeColor
-          ? 'bg-brand text-white'
-          : 'hover:bg-white/10 text-paper/80')
+        (code === activeColor ? 'bg-brand text-white' : 'hover:bg-white/10 text-paper/80')
       }
       onClick={() => {
         if (code !== activeColor) {

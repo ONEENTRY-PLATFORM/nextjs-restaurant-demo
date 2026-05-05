@@ -10,13 +10,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * Анимации модалки фильтра
  */
-const FilterModalAnimations = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+const FilterModalAnimations = ({ children }: { children: ReactNode }): JSX.Element => {
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
   useGSAP(() => {
@@ -34,11 +29,8 @@ const FilterModalAnimations = ({
       },
     });
 
-    const modalBg =
-      ref.current && (ref.current as HTMLDivElement).querySelector('#modalBg');
-    const modalBody =
-      ref.current &&
-      (ref.current as HTMLDivElement).querySelector('#modalBody');
+    const modalBg = ref.current && (ref.current as HTMLDivElement).querySelector('#modalBg');
+    const modalBody = ref.current && (ref.current as HTMLDivElement).querySelector('#modalBody');
 
     gsap.set(modalBg, {
       autoAlpha: 0,
@@ -61,7 +53,7 @@ const FilterModalAnimations = ({
         xPercent: 0,
         duration: 0.5,
       },
-      '-0.25',
+      '-0.25'
     );
 
     if (transition === 'close') {

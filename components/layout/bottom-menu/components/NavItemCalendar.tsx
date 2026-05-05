@@ -12,7 +12,7 @@ import HeartScriptIcon from '@/components/icons/heart-script';
  */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
   // получаем количество активных броней из редьюсера корзины
-  const cartCount = useAppSelector((state) => {
+  const cartCount = useAppSelector(state => {
     return state.cartReducer.reservations?.length;
   });
 

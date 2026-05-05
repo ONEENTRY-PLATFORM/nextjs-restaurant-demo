@@ -36,7 +36,7 @@ export const getProductsByPageUrl = cache(
     const lang = langCode || getLang();
     const prefList = (params.searchParams?.preferences ?? '')
       .split(',')
-      .map((v) => v.trim())
+      .map(v => v.trim())
       .filter(Boolean);
 
     // !!! OR-семантика для multi-select preferences (см. комментарий в getProducts.ts):
@@ -46,7 +46,7 @@ export const getProductsByPageUrl = cache(
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
         const results = await Promise.all(
-          prefList.map(async (value) => {
+          prefList.map(async value => {
             const filters = getSearchParams({
               ...(params.searchParams ?? {}),
               preferences: value,
@@ -55,11 +55,11 @@ export const getProductsByPageUrl = cache(
               params.handle,
               filters,
               lang,
-              { offset: 0, limit: fetchLimit },
+              { offset: 0, limit: fetchLimit }
             );
             if (typeError(data)) return [] as IProductsEntity[];
             return data.items;
-          }),
+          })
         );
         const seen = new Set<number>();
         const merged: IProductsEntity[] = [];
@@ -87,7 +87,7 @@ export const getProductsByPageUrl = cache(
         params.handle,
         expandedFilters,
         lang,
-        { offset, limit },
+        { offset, limit }
       );
 
       if (typeError(data)) {
@@ -98,5 +98,5 @@ export const getProductsByPageUrl = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError, total: 0 };
     }
-  },
+  }
 );

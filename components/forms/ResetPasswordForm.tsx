@@ -46,7 +46,7 @@ const ResetPasswordForm = (): JSX.Element => {
   const t = useT();
   // Деструктурируем значения полей формы из Redux store через селектор
   const { email, password, password_confirm, otp_code } = useAppSelector(
-    (state) => state.formFieldsReducer.fields,
+    state => state.formFieldsReducer.fields
   );
 
   // Получаем функции смены текущего компонента и action из контекста
@@ -78,7 +78,7 @@ const ResetPasswordForm = (): JSX.Element => {
         1, // Индикатор версии или типа процесса OTP
         otp_code?.value.toString() || '', // OTP-код, введённый пользователем, конвертированный в строку
         password?.value || '', // Новый пароль, введённый пользователем
-        password_confirm?.value || '', // Подтверждение нового пароля
+        password_confirm?.value || '' // Подтверждение нового пароля
       );
 
       // Если смена пароля успешна, переключаемся на форму sign-in

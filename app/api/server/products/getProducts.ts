@@ -36,7 +36,7 @@ export const getProducts = cache(
     const lang = langCode || getLang();
     const prefList = (params?.searchParams?.preferences ?? '')
       .split(',')
-      .map((v) => v.trim())
+      .map(v => v.trim())
       .filter(Boolean);
 
     // OR-семантика для multi-select preferences: SDK поддерживает только
@@ -48,10 +48,10 @@ export const getProducts = cache(
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
         const results = await Promise.all(
-          prefList.map(async (value) => {
+          prefList.map(async value => {
             const filters = getSearchParams(
               { ...(params?.searchParams ?? {}), preferences: value },
-              params?.handle,
+              params?.handle
             );
             const data = await getApi().Products.getProducts(filters, lang, {
               offset: 0,
@@ -59,7 +59,7 @@ export const getProducts = cache(
             });
             if (typeError(data)) return [] as IProductsEntity[];
             return data.items;
-          }),
+          })
         );
         const seen = new Set<number>();
         const merged: IProductsEntity[] = [];
@@ -80,10 +80,7 @@ export const getProducts = cache(
       }
     }
 
-    const expandedFilters = getSearchParams(
-      params?.searchParams,
-      params?.handle,
-    );
+    const expandedFilters = getSearchParams(params?.searchParams, params?.handle);
 
     try {
       const data = await getApi().Products.getProducts(
@@ -92,7 +89,7 @@ export const getProducts = cache(
         // Sort key/order настраивается в OneEntry admin —
         // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
         // что выбрал редактор, и учесть per-product position-локи.
-        { offset, limit },
+        { offset, limit }
       );
       if (typeError(data)) {
         return { isError: true, error: data, total: 0 };
@@ -110,5 +107,5 @@ export const getProducts = cache(
         total: 0,
       };
     }
-  },
+  }
 );

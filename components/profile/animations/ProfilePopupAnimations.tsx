@@ -15,13 +15,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {ReactNode}   props.children - Содержимое drawer-а.
  * @returns {JSX.Element}                JSX обёртки анимации.
  */
-const ProfilePopupAnimations = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+const ProfilePopupAnimations = ({ children }: { children: ReactNode }): JSX.Element => {
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
@@ -56,7 +51,7 @@ const ProfilePopupAnimations = ({
         yPercent: 0,
         duration: 0.5,
       },
-      '-=0.25',
+      '-=0.25'
     );
 
     if (transition === 'close') {

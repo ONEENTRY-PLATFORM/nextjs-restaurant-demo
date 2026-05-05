@@ -11,8 +11,7 @@ import CategoryBarsIcon from '@/components/icons/category-bars';
  * @returns {JSX.Element} JSX триггера категорий.
  */
 const CategoryButton = (): JSX.Element => {
-  const { setOpen, setComponent, setTransition } =
-    useContext(OpenDrawerContext);
+  const { setOpen, setComponent, setTransition } = useContext(OpenDrawerContext);
 
   const handleClick = (): void => {
     setComponent('CategoryFilter');

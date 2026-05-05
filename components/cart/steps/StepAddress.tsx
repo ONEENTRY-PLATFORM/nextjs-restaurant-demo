@@ -8,10 +8,7 @@ import { useContext, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
-import {
-  selectDeliveryData,
-  setDeliveryData,
-} from '@/app/store/reducers/CartSlice';
+import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
@@ -24,13 +21,13 @@ const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
 
 const findUserField = (
   formData: ReadonlyArray<FormDataType> | undefined,
-  markers: readonly string[],
+  markers: readonly string[]
 ): string => {
   if (!formData) return '';
   for (const marker of markers) {
-    const entry = formData.find(
-      (el) => (el as { marker?: string }).marker === marker,
-    ) as { value?: unknown } | undefined;
+    const entry = formData.find(el => (el as { marker?: string }).marker === marker) as
+      | { value?: unknown }
+      | undefined;
     if (typeof entry?.value === 'string' && entry.value) return entry.value;
   }
   return '';
@@ -57,9 +54,7 @@ const StepAddress = (): JSX.Element => {
   // значения атрибутов OneEntry; маркеры проверяются в порядке приоритета.
   const userAddress = findUserField(user?.formData, ADDRESS_MARKERS);
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
-  const [address, setAddress] = useState(
-    (delivery?.address as string | undefined) || userAddress,
-  );
+  const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
   const [mode, setMode] = useState<DeliveryMode>('asap');
   const [scheduleAt, setScheduleAt] = useState<string>('');
 
@@ -72,20 +67,16 @@ const StepAddress = (): JSX.Element => {
           mode === 'asap'
             ? '40-45 min'
             : scheduleAt || (delivery?.time as string | undefined) || '',
-      }),
+      })
     );
     // Пушим обязательные поля формы `delivery_order` в order.formData —
     // без них createOrder возвращает 400 (`required values are missing or
     // incorrect: contact_phone` / `delivery_address`). Телефон берём из
     // профиля пользователя (он на этом шаге уже авторизован — иначе
     // визард не добрался бы до address).
-    dispatch(
-      addData({ marker: 'delivery_address', type: 'string', value: address }),
-    );
+    dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
     if (userPhone) {
-      dispatch(
-        addData({ marker: 'contact_phone', type: 'string', value: userPhone }),
-      );
+      dispatch(addData({ marker: 'contact_phone', type: 'string', value: userPhone }));
     }
     dispatch(setStep('order'));
   };
@@ -95,9 +86,7 @@ const StepAddress = (): JSX.Element => {
       {/* Хедер Address */}
       <div className="flex items-center gap-2.5 text-paper">
         <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
-        <p className="font-normal text-[20px] text-paper">
-          {t('address_text', 'Address')}
-        </p>
+        <p className="font-normal text-[20px] text-paper">{t('address_text', 'Address')}</p>
       </div>
 
       {/* Инпут адреса с карандашом */}
@@ -105,7 +94,7 @@ const StepAddress = (): JSX.Element => {
         <input
           type="text"
           value={address}
-          onChange={(e) => setAddress(e.currentTarget.value)}
+          onChange={e => setAddress(e.currentTarget.value)}
           placeholder="OneEntry str."
           className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-[#a8a9b5] focus:outline-none"
         />
@@ -115,9 +104,7 @@ const StepAddress = (): JSX.Element => {
       {/* Хедер Time */}
       <div className="mt-5 flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
-        <p className="font-normal text-[20px] text-paper">
-          {t('time_text', 'Time')}
-        </p>
+        <p className="font-normal text-[20px] text-paper">{t('time_text', 'Time')}</p>
       </div>
 
       {/* Радио ASAP */}
@@ -152,14 +139,12 @@ const StepAddress = (): JSX.Element => {
           htmlFor="time-scheduled"
           className="radio-custom flex cursor-pointer select-none items-center"
         >
-          <span className="ml-2 text-paper">
-            {t('by_the_time', 'by the time')}
-          </span>
+          <span className="ml-2 text-paper">{t('by_the_time', 'by the time')}</span>
         </label>
         <input
           type="text"
           value={scheduleAt}
-          onChange={(e) => {
+          onChange={e => {
             setScheduleAt(e.currentTarget.value);
             setMode('scheduled');
           }}

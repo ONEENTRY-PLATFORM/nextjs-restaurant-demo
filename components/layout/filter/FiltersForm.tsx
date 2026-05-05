@@ -19,11 +19,7 @@ import PricePickerFilter from './components/price/PricePickerFilter';
 /**
  * Форма фильтров продуктов
  */
-const FiltersForm = async ({
-  prices,
-}: {
-  prices: PriceBounds;
-}): Promise<JSX.Element> => {
+const FiltersForm = async ({ prices }: { prices: PriceBounds }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({
     setMarker: 'product',
@@ -37,17 +33,13 @@ const FiltersForm = async ({
 
   if (pageInfo.isError || !pageInfo.page) {
     // eslint-disable-next-line no-console
-    console.warn(
-      '[FiltersForm] Page "filters" unavailable — skipping filters.',
-      pageInfo.error,
-    );
+    console.warn('[FiltersForm] Page "filters" unavailable — skipping filters.', pageInfo.error);
     return <></>;
   }
 
-  const sortedAttributes: Record<string, IAttributeValue> =
-    sortObjectFieldsByPosition(
-      (pageInfo.page as IPagesEntity)?.attributeValues,
-    );
+  const sortedAttributes: Record<string, IAttributeValue> = sortObjectFieldsByPosition(
+    (pageInfo.page as IPagesEntity)?.attributeValues
+  );
 
   if (!sortedAttributes || Object.keys(sortedAttributes).length === 0) {
     return <Loader />;
@@ -80,10 +72,7 @@ const FiltersForm = async ({
         if (attr === 'availability_filter') {
           return (
             <FilterAnimations key={index} className="w-full" index={2}>
-              <AvailabilityFilter
-                key={index}
-                title={sortedAttributes[attr]?.value as string}
-              />
+              <AvailabilityFilter key={index} title={sortedAttributes[attr]?.value as string} />
             </FilterAnimations>
           );
         }

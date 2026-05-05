@@ -13,11 +13,9 @@ const getSearchParams = (
     maxPrice?: string;
     cooking_time_max?: string;
   },
-  handle?: string,
+  handle?: string
 ) => {
-  const expandedFilters:
-    | Array<IFilterParams & { statusMarker?: string }>
-    | undefined = [];
+  const expandedFilters: Array<IFilterParams & { statusMarker?: string }> | undefined = [];
 
   // проверяем, есть ли у продукта SKU или это сервисный продукт
   const servicesFilter: IFilterParams = {
@@ -67,7 +65,7 @@ const getSearchParams = (
     // значение рендерится отдельным фильтром (AND-семантика на стороне OneEntry).
     const values = searchParams.preferences
       .split(',')
-      .map((v) => v.trim())
+      .map(v => v.trim())
       .filter(Boolean);
     for (const value of values) {
       expandedFilters.push({

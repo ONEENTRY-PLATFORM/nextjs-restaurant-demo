@@ -9,16 +9,12 @@ import ProductsGridLoaderAnimations from '../animations/ProductsGridLoaderAnimat
 /**
  * ProductsGridLoader
  */
-const ProductsGridLoader = ({
-  productsLimit = 10,
-}: LoaderProps): JSX.Element => {
+const ProductsGridLoader = ({ productsLimit = 10 }: LoaderProps): JSX.Element => {
   return (
-    <ProductsGridLoaderAnimations
-      className={'relative box-border flex w-full shrink-0 flex-col'}
-    >
+    <ProductsGridLoaderAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
       <section className="products_grid_layout">
         <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
-          {Array.from(Array(productsLimit).keys()).map((item) => (
+          {Array.from(Array(productsLimit).keys()).map(item => (
             <div
               key={item}
               className={

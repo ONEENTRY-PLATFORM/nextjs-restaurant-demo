@@ -28,7 +28,7 @@ export default function ApiTestClient(): JSX.Element {
         }
       }
       setLoadingTimes(times);
-      const validTimes = times.filter((t) => t > 0);
+      const validTimes = times.filter(t => t > 0);
       if (validTimes.length > 0) {
         const avg = validTimes.reduce((a, b) => a + b, 0) / validTimes.length;
         setAverageTime(avg);

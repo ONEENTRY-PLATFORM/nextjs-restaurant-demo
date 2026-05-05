@@ -1,10 +1,6 @@
 import type { JSX } from 'react';
 
-const ChevronDownIcon = ({
-  className,
-}: {
-  className?: string;
-}): JSX.Element => {
+const ChevronDownIcon = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg
       width="15"

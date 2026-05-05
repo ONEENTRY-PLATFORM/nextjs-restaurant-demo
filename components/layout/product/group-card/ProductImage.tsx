@@ -9,11 +9,7 @@ import type { JSX } from 'react';
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (
-    <div
-      className="relative h-32.5 w-27.5 shrink-0"
-      role="img"
-      aria-label="Product image"
-    >
+    <div className="relative h-32.5 w-27.5 shrink-0" role="img" aria-label="Product image">
       <Image
         fill
         sizes="(min-width: 600px) 66vw, 100vw"

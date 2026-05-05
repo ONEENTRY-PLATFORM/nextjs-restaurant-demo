@@ -11,7 +11,7 @@ import { typeError } from '@/components/utils';
  */
 export const getBlocksByPageUrl = cache(
   async (
-    pageUrl: string,
+    pageUrl: string
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -28,5 +28,5 @@ export const getBlocksByPageUrl = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

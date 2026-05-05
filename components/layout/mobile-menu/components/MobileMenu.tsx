@@ -21,11 +21,7 @@ function MobileMenu({
   return (
     <ul className={`flex flex-col ${className}`}>
       {menu.map((item: IMenusPages) => (
-        <MobileMenuItem
-          key={item.id}
-          item={item}
-          {...(parentUrl ? { parentUrl } : {})}
-        />
+        <MobileMenuItem key={item.id} item={item} {...(parentUrl ? { parentUrl } : {})} />
       ))}
     </ul>
   );

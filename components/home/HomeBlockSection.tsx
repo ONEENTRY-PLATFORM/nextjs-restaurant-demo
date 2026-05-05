@@ -25,7 +25,7 @@ const HomeBlockSection = ({
   products,
   className,
 }: HomeBlockSectionProps): JSX.Element | null => {
-  const visible = products.filter((p) => p.isVisible !== false);
+  const visible = products.filter(p => p.isVisible !== false);
   if (visible.length === 0) return null;
   return (
     <section className={className}>

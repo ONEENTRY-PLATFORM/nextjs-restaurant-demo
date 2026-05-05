@@ -4,10 +4,7 @@ import { toast } from 'react-toastify';
 import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import {
-  decreaseProductQty,
-  removeProduct,
-} from '@/app/store/reducers/CartSlice';
+import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlice';
 
 /**
  * Кнопка уменьшения количества

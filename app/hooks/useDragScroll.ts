@@ -15,9 +15,7 @@ import { useEffect, useRef } from 'react';
  * ```
  * @returns {RefObject<T | null>} Ref для подключения к скроллируемому элементу.
  */
-export const useDragScroll = <
-  T extends HTMLElement = HTMLElement,
->(): RefObject<T | null> => {
+export const useDragScroll = <T extends HTMLElement = HTMLElement>(): RefObject<T | null> => {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {

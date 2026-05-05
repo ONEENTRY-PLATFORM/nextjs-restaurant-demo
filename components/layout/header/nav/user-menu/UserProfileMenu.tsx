@@ -1,10 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type {
-  IMenusEntity,
-  IMenusPages,
-} from 'oneentry/dist/menus/menusInterfaces';
+import type { IMenusEntity, IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
@@ -17,11 +14,7 @@ import UserMenuItem from './UserMenuItem';
 /**
  * Компонент меню User Profile.
  */
-const UserProfileMenu = ({
-  userMenu,
-}: {
-  userMenu: IMenusEntity;
-}): JSX.Element => {
+const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Убеждаемся, что pages определены и корректного типа

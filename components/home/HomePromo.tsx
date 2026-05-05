@@ -17,8 +17,8 @@ import { getBlogBanners } from '@/app/api';
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();
-  const heroBanner = banners.find((b) => b.desktopImage) ?? null;
-  const mobileBanners = banners.filter((b) => b.mobileImage);
+  const heroBanner = banners.find(b => b.desktopImage) ?? null;
+  const mobileBanners = banners.filter(b => b.mobileImage);
 
   // Ничего не рендерит, если в CMS нет баннеров.
   if (!heroBanner && mobileBanners.length === 0) return null;
@@ -45,11 +45,9 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
 
       {mobileBanners.length > 0 ? (
         <section className="md:hidden pt-3">
-          <h2 className="title_name max-w-88 mx-auto md:hidden px-4">
-            Promotions
-          </h2>
+          <h2 className="title_name max-w-88 mx-auto md:hidden px-4">Promotions</h2>
           <div className="flex overflow-x-auto overflow-y-hidden max-w-full gap-2.5 mt-3.75 no-scrollbar">
-            {mobileBanners.map((b) => (
+            {mobileBanners.map(b => (
               <Link
                 key={b.id}
                 href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}

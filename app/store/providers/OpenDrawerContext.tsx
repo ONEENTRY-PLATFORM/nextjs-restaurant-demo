@@ -40,11 +40,7 @@ export const OpenDrawerContext = createContext<{
  * @param   {ReactNode}   props.children - Дочерний ReactNode
  * @returns {JSX.Element}                Провайдер контекста drawer
  */
-export const OpenDrawerProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
+export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   /** Отслеживаем состояние открытости drawer */
   const [open, setOpen] = useState<boolean>(false);
   /** Отслеживаем компонент для рендера в drawer */

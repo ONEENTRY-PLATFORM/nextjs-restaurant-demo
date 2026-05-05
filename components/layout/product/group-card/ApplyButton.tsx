@@ -6,24 +6,16 @@ import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
-import {
-  addProductToCart,
-  removeProduct,
-  selectIsInCart,
-} from '@/app/store/reducers/CartSlice';
+import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
 
 /**
  * Компонент кнопки Apply
  */
-const ApplyButton = ({
-  product,
-}: {
-  product: IProductsEntity;
-}): JSX.Element => {
+const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const [productInCart, setInCart] = useState(false);
-  const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
+  const inCart = useAppSelector(state => selectIsInCart(state, product.id));
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  */
 export const getBlockByMarker = cache(
   async (
-    marker: string,
+    marker: string
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -27,5 +27,5 @@ export const getBlockByMarker = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

@@ -1,9 +1,6 @@
 'use client';
 
-import type {
-  IFormAttribute,
-  IFormsEntity,
-} from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute, IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
@@ -55,7 +52,7 @@ const TIME_SLOT_MARKER = 'time_slot';
  */
 const getAvailableSlotsForDate = (
   schedule: ScheduleSlotEntry[] | undefined,
-  dateIso: string,
+  dateIso: string
 ): string[] => {
   if (!schedule || schedule.length === 0 || !dateIso) return [];
   const target = new Date(`${dateIso}T00:00:00.000Z`).getTime();
@@ -86,8 +83,7 @@ const getAvailableSlotsForDate = (
  * @returns {string}        HTML input type.
  */
 const resolveInputType = (type: string, marker: string): string => {
-  if (type === 'integer' || type === 'real' || type === 'float')
-    return 'number';
+  if (type === 'integer' || type === 'real' || type === 'float') return 'number';
   if (marker.includes('email')) return 'email';
   if (marker.includes('phone') || marker.includes('tel')) return 'tel';
   if (marker.includes('password')) return 'password';
@@ -122,20 +118,15 @@ const ReservationForm = ({
   initialValues,
 }: ReservationFormProps): JSX.Element => {
   const t = useT();
-  const [values, setValues] = useState<Record<string, FieldValue>>(
-    initialValues ?? {},
-  );
+  const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
-    () =>
-      form?.attributes
-        ? [...form.attributes].sort((a, b) => a.position - b.position)
-        : [],
-    [form],
+    () => (form?.attributes ? [...form.attributes].sort((a, b) => a.position - b.position) : []),
+    [form]
   );
 
   const attrByMarker = useMemo(() => {
@@ -144,17 +135,14 @@ const ReservationForm = ({
     return map;
   }, [attrs]);
 
-  const spamAttr = useMemo(() => attrs.find((a) => a.type === 'spam'), [attrs]);
+  const spamAttr = useMemo(() => attrs.find(a => a.type === 'spam'), [attrs]);
   const spamSettings = spamAttr?.settings as
     | { captcha?: { key?: string; action?: string } }
     | undefined;
-  const captcha = useEnterpriseCaptcha(
-    spamSettings?.captcha?.key,
-    spamSettings?.captcha?.action,
-  );
+  const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
 
   const onChange = (marker: string, value: FieldValue) => {
-    setValues((prev) => ({ ...prev, [marker]: value }));
+    setValues(prev => ({ ...prev, [marker]: value }));
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -167,8 +155,8 @@ const ReservationForm = ({
     setError('');
 
     const payloadFormData: IOrdersFormData[] = attrs
-      .filter((attr) => attr.type !== 'button')
-      .map((attr) => {
+      .filter(attr => attr.type !== 'button')
+      .map(attr => {
         if (attr.type === 'spam') {
           return {
             marker: attr.marker,
@@ -219,10 +207,7 @@ const ReservationForm = ({
       });
       setLoading(false);
       if (isError(res)) {
-        setError(
-          (res as { message?: string }).message ??
-            'Failed to submit reservation',
-        );
+        setError((res as { message?: string }).message ?? 'Failed to submit reservation');
         return;
       }
       setSuccess(true);
@@ -240,30 +225,23 @@ const ReservationForm = ({
           {t('info_text', 'Table reserved!')}
         </h3>
         <p className="text-paper/90">
-          {t(
-            'reservation_confirmed',
-            'We will contact you shortly to confirm.',
-          )}
+          {t('reservation_confirmed', 'We will contact you shortly to confirm.')}
         </p>
       </div>
     );
   }
 
   const hasNotes = attrByMarker.has(TEXT_MARKER);
-  const hasRestaurant =
-    attrByMarker.has(RESTAURANT_MARKER) && restaurants.length > 0;
+  const hasRestaurant = attrByMarker.has(RESTAURANT_MARKER) && restaurants.length > 0;
   const todayIso = new Date().toISOString().slice(0, 10);
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex w-full flex-col gap-5 px-5 md:px-0"
-    >
+    <form onSubmit={onSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0">
       {hasRestaurant ? (
         <RestaurantSelect
           options={restaurants}
           value={values[RESTAURANT_MARKER] ?? ''}
-          onChange={(v) => onChange(RESTAURANT_MARKER, v)}
+          onChange={v => onChange(RESTAURANT_MARKER, v)}
           placeholder="Restaurant choosing"
         />
       ) : null}
@@ -302,10 +280,7 @@ const ReservationForm = ({
       {/* Textarea предпочтений (полная ширина) */}
       {hasNotes ? (
         <div className="flex flex-col border-b border-b-muted">
-          <label
-            htmlFor={TEXT_MARKER}
-            className="font-normal text-[16px] text-paper"
-          >
+          <label htmlFor={TEXT_MARKER} className="font-normal text-[16px] text-paper">
             {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
               t('preferences_text', 'Preferences')}
           </label>
@@ -313,7 +288,7 @@ const ReservationForm = ({
             id={TEXT_MARKER}
             name={TEXT_MARKER}
             value={values[TEXT_MARKER] ?? ''}
-            onChange={(ev) => onChange(TEXT_MARKER, ev.currentTarget.value)}
+            onChange={ev => onChange(TEXT_MARKER, ev.currentTarget.value)}
             className="cart_input resize-none w-full"
             rows={4}
           />
@@ -323,14 +298,14 @@ const ReservationForm = ({
       {/* Все оставшиеся поля, не размещённые в сетке выше (fallback) */}
       {attrs
         .filter(
-          (a) =>
+          a =>
             a.type !== 'spam' &&
             a.type !== 'button' &&
             a.marker !== TEXT_MARKER &&
             a.marker !== RESTAURANT_MARKER &&
-            !ROW_PAIRS.flat().includes(a.marker),
+            !ROW_PAIRS.flat().includes(a.marker)
         )
-        .map((a) => (
+        .map(a => (
           <Field
             key={a.marker}
             attr={a}
@@ -364,12 +339,10 @@ const ReservationForm = ({
           date={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || ''}
           time={values[TIME_SLOT_MARKER]?.split(' ')?.[1] || ''}
           minDate={todayIso}
-          getSlots={(dateIso) =>
+          getSlots={dateIso =>
             getAvailableSlotsForDate(
-              restaurants.find(
-                (r) => r.value === (values[RESTAURANT_MARKER] ?? ''),
-              )?.schedule,
-              dateIso,
+              restaurants.find(r => r.value === (values[RESTAURANT_MARKER] ?? ''))?.schedule,
+              dateIso
             )
           }
           onApply={(d, tm) => {
@@ -404,12 +377,7 @@ type FieldProps = {
  * @param   {FieldProps}  props - Пропсы поля.
  * @returns {JSX.Element}       JSX поля.
  */
-const Field = ({
-  attr,
-  values,
-  onChange,
-  onOpenPicker,
-}: FieldProps): JSX.Element => {
+const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;
   const isUppercase = attr.marker === 'name' || attr.marker === 'surname';
 
@@ -430,17 +398,14 @@ const Field = ({
   if (attr.type === 'text') {
     return (
       <div className="flex flex-1 flex-col border-b border-b-muted">
-        <label
-          htmlFor={attr.marker}
-          className="font-normal text-[16px] text-paper"
-        >
+        <label htmlFor={attr.marker} className="font-normal text-[16px] text-paper">
           {label}
         </label>
         <textarea
           id={attr.marker}
           name={attr.marker}
           value={values[attr.marker] ?? ''}
-          onChange={(ev) => onChange(attr.marker, ev.currentTarget.value)}
+          onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
           className="cart_input resize-none w-full"
           rows={3}
         />
@@ -450,10 +415,7 @@ const Field = ({
 
   return (
     <div className="flex flex-1 flex-col border-b border-b-muted">
-      <label
-        htmlFor={attr.marker}
-        className="font-normal text-[16px] text-paper"
-      >
+      <label htmlFor={attr.marker} className="font-normal text-[16px] text-paper">
         {label}
       </label>
       <input
@@ -461,7 +423,7 @@ const Field = ({
         name={attr.marker}
         type={resolveInputType(attr.type as string, attr.marker)}
         value={values[attr.marker] ?? ''}
-        onChange={(ev) => onChange(attr.marker, ev.currentTarget.value)}
+        onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
         className={'cart_input' + (isUppercase ? ' uppercase' : '')}
       />
     </div>

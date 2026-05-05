@@ -7,11 +7,7 @@ import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  getTransition,
-  removeProduct,
-  setCartTransition,
-} from '@/app/store/reducers/CartSlice';
+import { getTransition, removeProduct, setCartTransition } from '@/app/store/reducers/CartSlice';
 
 /**
  * Анимации продукта
@@ -69,7 +65,7 @@ const ProductAnimations = ({
         dispatch(
           setCartTransition({
             productId: 0,
-          }),
+          })
         );
         dispatch(removeProduct(product.id));
       },

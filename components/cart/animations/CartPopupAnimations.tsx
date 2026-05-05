@@ -12,13 +12,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * Backdrop фейдит, тело выезжает снизу (мобила) /
  * справа (md+ — та же идиома, что у фильтра).
  */
-const CartPopupAnimations = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+const CartPopupAnimations = ({ children }: { children: ReactNode }): JSX.Element => {
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
@@ -53,7 +48,7 @@ const CartPopupAnimations = ({
         yPercent: 0,
         duration: 0.5,
       },
-      '-=0.25',
+      '-=0.25'
     );
 
     if (transition === 'close') {

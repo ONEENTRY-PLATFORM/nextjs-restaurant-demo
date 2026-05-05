@@ -14,13 +14,7 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-const HISTORY_STATUSES = new Set([
-  'delivered',
-  'canceled',
-  'cancelled',
-  'completed',
-  'rejected',
-]);
+const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
@@ -34,12 +28,11 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
 };
 
 const statusLabel = (o: IOrderByMarkerEntity): string => {
-  const localized = (o.statusLocalizeInfos as { title?: string } | undefined)
-    ?.title;
+  const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
   const id = o.statusIdentifier;
   if (!id) return '—';
-  return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
 /**
@@ -60,8 +53,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
  * переходов в OneEntry orders).
  */
 const BookingsPopup = (): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const { user } = useContext(AuthContext);
   const isOpen = open && component === 'BookingsPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
@@ -86,7 +78,7 @@ const BookingsPopup = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     getAllOrdersByMarker({ marker: 'booking_order', offset: 0, limit: 50 })
-      .then((res) => {
+      .then(res => {
         if (cancelled) return;
         setOrders(res.orders ?? []);
       })
@@ -128,9 +120,7 @@ const BookingsPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-semibold text-[24px] text-brand">
-            Active reservation
-          </p>
+          <p className="font-semibold text-[24px] text-brand">Active reservation</p>
           <ClosePopupButton onClose={close} ariaLabel="Close bookings" />
         </div>
 
@@ -145,7 +135,7 @@ const BookingsPopup = (): JSX.Element => {
                 You have no active reservations.
               </p>
             ) : (
-              active.map((o) => <ActiveBookingCard key={o.id} order={o} />)
+              active.map(o => <ActiveBookingCard key={o.id} order={o} />)
             )}
 
             <p className="mt-2.5 text-center font-bold text-[20px] tracking-[0.02em] text-brand">
@@ -153,12 +143,10 @@ const BookingsPopup = (): JSX.Element => {
             </p>
 
             {history.length === 0 ? (
-              <p className="text-center text-base text-paper/80">
-                No past reservations yet.
-              </p>
+              <p className="text-center text-base text-paper/80">No past reservations yet.</p>
             ) : (
               <div className="flex flex-col gap-3.75">
-                {history.map((o) => (
+                {history.map(o => (
                   <HistoryBookingCard key={o.id} order={o} />
                 ))}
               </div>
@@ -176,11 +164,7 @@ const BookingsPopup = (): JSX.Element => {
  * датой + ряд Cancel/Edit. Cancel/Edit сейчас заглушки — реальные
  * actions требуют допустимых статус-переходов в OneEntry.
  */
-const ActiveBookingCard = ({
-  order,
-}: {
-  order: IOrderByMarkerEntity;
-}): JSX.Element => {
+const ActiveBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Element => {
   // !!! SDK тип `IOrderByMarkerEntity` не объявляет `formattedCreated`,
   // но поле приходит в реальных ответах — берём через локальный cast,
   // если нет `createdDate`.
@@ -192,9 +176,7 @@ const ActiveBookingCard = ({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between rounded-[5px] border border-brand px-3.75 py-1.25">
-        <p className="font-bold text-base text-paper">
-          №{formatOrderNumber(order)}
-        </p>
+        <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
         <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
         <p className="font-normal text-base text-paper">{date}</p>
       </div>
@@ -220,20 +202,14 @@ const ActiveBookingCard = ({
  * Карточка из истории — паste-grey pill с номером, статусом и датой.
  * Без Cancel/Edit, потому что бронь уже завершена/отменена.
  */
-const HistoryBookingCard = ({
-  order,
-}: {
-  order: IOrderByMarkerEntity;
-}): JSX.Element => {
+const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Element => {
   const dateRaw = (order.createdDate ??
     (order as unknown as { formattedCreated?: string }).formattedCreated ??
     '') as string;
   const date = dateRaw ? formatDate(dateRaw) : '';
   return (
     <div className="flex items-center justify-between rounded-[5px] border border-paper px-3.75 py-1.25">
-      <p className="font-bold text-base text-paper">
-        №{formatOrderNumber(order)}
-      </p>
+      <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
       <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
       <p className="font-normal text-base text-paper">{date}</p>
     </div>

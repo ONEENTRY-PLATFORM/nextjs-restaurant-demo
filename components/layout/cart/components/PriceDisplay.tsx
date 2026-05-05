@@ -22,15 +22,10 @@ const PriceDisplay = ({
 
   return (
     <div className="flex gap-2.5 font-bold">
-      {currentPrice > 0 && (
-        <div className="text-lg leading-8 text-brand">{price}</div>
-      )}
+      {currentPrice > 0 && <div className="text-lg leading-8 text-brand">{price}</div>}
       <div
         className={
-          'leading-8 ' +
-          (currentPrice
-            ? 'text-paper text-sm line-through'
-            : 'text-brand text-lg')
+          'leading-8 ' + (currentPrice ? 'text-paper text-sm line-through' : 'text-brand text-lg')
         }
       >
         {oldPrice}

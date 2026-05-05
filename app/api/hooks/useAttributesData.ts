@@ -9,17 +9,9 @@ type AttributeValuesInput = IAttributeValues | undefined;
  * @param   {Record<string, unknown>} attributeValues - Значения атрибутов.
  * @returns {string}                                  Строковое значение или undefined.
  */
-export const getString = (
-  name: string,
-  attributeValues: AttributeValuesInput,
-): string => {
+export const getString = (name: string, attributeValues: AttributeValuesInput): string => {
   const attr = attributeValues?.[name];
-  if (
-    attr &&
-    typeof attr === 'object' &&
-    'value' in attr &&
-    typeof attr.value === 'string'
-  ) {
+  if (attr && typeof attr === 'object' && 'value' in attr && typeof attr.value === 'string') {
     return attr.value;
   }
   return '';
@@ -35,7 +27,7 @@ export const getString = (
 export const getText = (
   name: string,
   attributeValues: AttributeValuesInput,
-  type: 'html' | 'plain' = 'plain',
+  type: 'html' | 'plain' = 'plain'
 ): string | ReturnType<typeof parse> => {
   const data = attributeValues?.[name];
   if (
@@ -47,11 +39,7 @@ export const getText = (
   ) {
     const text = data.value[0] as { htmlValue?: string; plainValue?: string };
 
-    if (
-      text &&
-      typeof text === 'object' &&
-      ('htmlValue' in text || 'plainValue' in text)
-    ) {
+    if (text && typeof text === 'object' && ('htmlValue' in text || 'plainValue' in text)) {
       if (type === 'html' && typeof text.htmlValue === 'string') {
         return parse(text.htmlValue);
       }
@@ -175,7 +163,7 @@ export const getText = (
 export const getImageUrl = (
   name: string,
   attributeValues: AttributeValuesInput,
-  type: 'image' | 'preview' = 'image',
+  type: 'image' | 'preview' = 'image'
 ): string => {
   const data = attributeValues?.[name];
   if (data && typeof data === 'object' && 'value' in data) {

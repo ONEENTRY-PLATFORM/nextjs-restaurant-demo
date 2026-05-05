@@ -34,9 +34,7 @@ const NotFound = async (): Promise<JSX.Element> => {
       <p className="mb-4">
         {
           (
-            attributeValues?.error_description?.value as
-              | Array<{ plainValue?: string }>
-              | undefined
+            attributeValues?.error_description?.value as Array<{ plainValue?: string }> | undefined
           )?.[0]?.plainValue
         }
       </p>

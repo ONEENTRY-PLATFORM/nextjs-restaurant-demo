@@ -33,8 +33,7 @@ export const getProviderMeta = (p: IAuthProvidersEntity): ProviderMeta => {
   return (
     PROVIDER_META[p.identifier] ?? {
       label:
-        (p.localizeInfos as { title?: string } | undefined)?.title ??
-        `Login With ${p.identifier}`,
+        (p.localizeInfos as { title?: string } | undefined)?.title ?? `Login With ${p.identifier}`,
       icon: '/images/icons/login-email.svg',
       iconWidth: 24,
       iconHeight: 22,
@@ -43,10 +42,10 @@ export const getProviderMeta = (p: IAuthProvidersEntity): ProviderMeta => {
 };
 
 export const sortActiveAuthProviders = (
-  providers: IAuthProvidersEntity[],
+  providers: IAuthProvidersEntity[]
 ): IAuthProvidersEntity[] => {
   return providers
-    .filter((p) => p.isActive)
+    .filter(p => p.isActive)
     .slice()
     .sort((a, b) => {
       const ra = ORDER_RANK[a.identifier] ?? 99;

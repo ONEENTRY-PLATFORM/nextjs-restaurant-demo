@@ -38,9 +38,7 @@ const RestaurantPhotoSlider = ({
   const total = photos.length;
   const current = photos[active]?.downloadLink;
 
-  const frameClasses =
-    'relative w-full overflow-hidden rounded-[10px] bg-ink/40 ' +
-    frameClassName;
+  const frameClasses = 'relative w-full overflow-hidden rounded-[10px] bg-ink/40 ' + frameClassName;
 
   const frameContent = current ? (
     <Image
@@ -60,10 +58,7 @@ const RestaurantPhotoSlider = ({
           type="button"
           onClick={onImageClick}
           aria-label={`Open ${alt} photo fullscreen`}
-          className={
-            frameClasses +
-            ' transition-opacity hover:opacity-95 disabled:cursor-default'
-          }
+          className={frameClasses + ' transition-opacity hover:opacity-95 disabled:cursor-default'}
           disabled={total === 0}
         >
           {frameContent}

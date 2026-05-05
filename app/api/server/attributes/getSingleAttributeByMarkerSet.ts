@@ -22,11 +22,10 @@ export const getSingleAttributeByMarkerSet = cache(
     attribute?: IAttributesSetsEntity;
   }> => {
     try {
-      const attribute =
-        await getApi().AttributesSets.getSingleAttributeByMarkerSet(
-          setMarker,
-          attributeMarker,
-        );
+      const attribute = await getApi().AttributesSets.getSingleAttributeByMarkerSet(
+        setMarker,
+        attributeMarker
+      );
 
       if (typeError(attribute)) {
         return { isError: true, error: attribute as IError };
@@ -36,5 +35,5 @@ export const getSingleAttributeByMarkerSet = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

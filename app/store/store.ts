@@ -24,10 +24,7 @@ const createNoopStorage = () => {
   };
 };
 
-const storage =
-  typeof window !== 'undefined'
-    ? createWebStorage('local')
-    : createNoopStorage();
+const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
 const version = 1;
 
 /**
@@ -40,7 +37,7 @@ const cartReducer = persistReducer(
     version: version,
     whitelist: ['productsData', 'reservations'],
   },
-  cartSlice,
+  cartSlice
 );
 
 /**
@@ -53,7 +50,7 @@ const favoritesReducer = persistReducer(
     version: version,
     whitelist: ['products'],
   },
-  favoritesSlice,
+  favoritesSlice
 );
 
 /**
@@ -66,7 +63,7 @@ const formFieldsReducer = persistReducer(
     version: version,
     whitelist: ['fields'],
   },
-  formFieldsSlice,
+  formFieldsSlice
 );
 
 /**
@@ -79,7 +76,7 @@ const orderReducer = persistReducer(
     version: version,
     whitelist: ['products'],
   },
-  orderSlice,
+  orderSlice
 );
 
 /**
@@ -101,7 +98,7 @@ const rootReducer = combineReducers({
 export const setupStore = () => {
   return configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
+    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: false,
       }).concat(RTKApi.middleware),

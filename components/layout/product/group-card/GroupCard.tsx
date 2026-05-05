@@ -16,9 +16,7 @@ import ProductImage from './ProductImage';
 const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const attributeValues = product.attributeValues;
   const title = product.localizeInfos?.title;
-  const images = attributeValues.more_pic?.value as
-    | Array<{ downloadLink?: string }>
-    | undefined;
+  const images = attributeValues.more_pic?.value as Array<{ downloadLink?: string }> | undefined;
   const pic1 = images?.[0]?.downloadLink;
   const pic2 = images?.[1]?.downloadLink;
 
@@ -35,19 +33,9 @@ const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
         </div>
 
         <div className="flex w-[63%] flex-row justify-between">
-          {pic1 ? (
-            <ProductImage imageSrc={pic1} />
-          ) : (
-            <Placeholder className="min-h-27.5" />
-          )}
-          <div className="my-auto aspect-square w-4 shrink-0 text-white/90 text-center">
-            +
-          </div>
-          {pic2 ? (
-            <ProductImage imageSrc={pic2} />
-          ) : (
-            <Placeholder className="min-h-27.5" />
-          )}
+          {pic1 ? <ProductImage imageSrc={pic1} /> : <Placeholder className="min-h-27.5" />}
+          <div className="my-auto aspect-square w-4 shrink-0 text-white/90 text-center">+</div>
+          {pic2 ? <ProductImage imageSrc={pic2} /> : <Placeholder className="min-h-27.5" />}
         </div>
       </div>
     </div>

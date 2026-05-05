@@ -30,29 +30,22 @@ type CartEntry = {
 const TotalAmount = ({ className }: { className: string }): JSX.Element => {
   const t = useT();
   const productsData = useAppSelector(selectCartData) as CartEntry[];
-  const products = useAppSelector(
-    (state) => state.cartReducer.products as IProductsEntity[],
-  );
+  const products = useAppSelector(state => state.cartReducer.products as IProductsEntity[]);
   const deliveryPrice = useAppSelector(
-    (state) => Number(state.cartReducer.delivery?.price ?? 0) || 0,
+    state => Number(state.cartReducer.delivery?.price ?? 0) || 0
   );
 
   const cartTotal = useMemo(() => {
-    const productsById = new Map<number, IProductsEntity>(
-      products.map((p) => [p.id, p]),
-    );
+    const productsById = new Map<number, IProductsEntity>(products.map(p => [p.id, p]));
 
     const subtotal = productsData
-      .filter((entry) => entry.selected !== false)
+      .filter(entry => entry.selected !== false)
       .reduce((sum, entry) => {
         const product = productsById.get(entry.id);
         if (!product) return sum;
-        const sale = Number(
-          product.attributeValues?.sale?.value as number | undefined,
-        );
+        const sale = Number(product.attributeValues?.sale?.value as number | undefined);
         const list = Number(
-          (product.attributeValues?.price?.value as number | undefined) ??
-            product.price,
+          (product.attributeValues?.price?.value as number | undefined) ?? product.price
         );
         const unit = sale && sale > 0 ? sale : list || 0;
         const qty = Number(entry.quantity ?? 1);

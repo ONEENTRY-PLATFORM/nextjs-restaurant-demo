@@ -27,13 +27,9 @@ type CartQuantityControlProps = {
  * через {@link useCartRemoveWithUndo} — пользователь видит toast с кнопкой
  * Undo и таймером, в течение которого удаление можно откатить.
  */
-const CartQuantityControl = ({
-  id,
-  units,
-  title,
-}: CartQuantityControlProps): JSX.Element => {
+const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
-  const data = useAppSelector((state) => selectCartItemWithIdLength(state, id));
+  const data = useAppSelector(state => selectCartItemWithIdLength(state, id));
   const qty = (data?.quantity as number | undefined) ?? 1;
   const [draft, setDraft] = useState<string | null>(null);
   const value = draft ?? String(qty);
@@ -100,7 +96,7 @@ const CartQuantityControl = ({
         onChange={onChange}
         onBlur={commit}
         onKeyDown={onKeyDown}
-        onFocus={(e) => e.currentTarget.select()}
+        onFocus={e => e.currentTarget.select()}
         aria-label="Quantity"
         className="w-full shrink-0 bg-transparent text-center leading-none outline-none focus:text-brand"
       />

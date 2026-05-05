@@ -9,11 +9,7 @@ import HouseIcon from '@/components/icons/house';
 /**
  * Элемент navItem меню «Главная»
  */
-const NavItemHome = ({
-  item: { localizeInfos },
-}: {
-  item: IMenusPages;
-}): JSX.Element => {
+const NavItemHome = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.Element => {
   return (
     <Link
       href={'/'}

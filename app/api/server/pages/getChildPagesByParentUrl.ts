@@ -11,7 +11,7 @@ import { typeError } from '@/components/utils';
  */
 export const getChildPagesByParentUrl = cache(
   async (
-    url: string,
+    url: string
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -28,5 +28,5 @@ export const getChildPagesByParentUrl = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

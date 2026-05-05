@@ -49,7 +49,7 @@ const SearchResults = ({
             const pageData = await getPageById(firstPage.pageId);
             pagesData[product.id] = pageData;
           }
-        }),
+        })
       );
       setPages(pagesData);
     };
@@ -81,11 +81,7 @@ const SearchResults = ({
 
           return (
             <div key={id + i} className="flex w-full">
-              <ProductRow
-                pageData={pages[id]?.page}
-                product={product}
-                setState={setState}
-              />
+              <ProductRow pageData={pages[id]?.page} product={product} setState={setState} />
             </div>
           );
         })

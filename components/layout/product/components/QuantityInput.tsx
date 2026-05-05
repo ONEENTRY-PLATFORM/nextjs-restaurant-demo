@@ -26,7 +26,7 @@ const QuantityInput = ({
         id: id,
         quantity: Number(e.target.value),
         units: units,
-      }),
+      })
     );
   };
 
@@ -37,7 +37,7 @@ const QuantityInput = ({
       name={'qty_selector_' + id}
       id={'qty_selector_' + id}
       value={qty}
-      onChange={(e) => onChangeQtyHandle(e)}
+      onChange={e => onChangeQtyHandle(e)}
     />
   );
 };

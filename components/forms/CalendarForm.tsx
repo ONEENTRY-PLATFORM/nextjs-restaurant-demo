@@ -6,10 +6,7 @@ import { useContext, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import {
-  selectDeliveryData,
-  setDeliveryData,
-} from '@/app/store/reducers/CartSlice';
+import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -43,9 +40,7 @@ const CalendarForm = ({
     const d = ts ? new Date(ts) : new Date();
     return d.toISOString().slice(0, 10);
   });
-  const [time, setTime] = useState<string>(
-    (delivery?.time as string | undefined) ?? '',
-  );
+  const [time, setTime] = useState<string>((delivery?.time as string | undefined) ?? '');
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const onSave = () => {
@@ -54,7 +49,7 @@ const CalendarForm = ({
         ...delivery,
         date: new Date(date).getTime(),
         time,
-      }),
+      })
     );
     setTransition('close');
   };

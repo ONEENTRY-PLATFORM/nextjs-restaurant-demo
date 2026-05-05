@@ -70,7 +70,7 @@ export const cartSlice = createSlice({
       if (state.reservations.length < 1) {
         state.reservations.push(action.payload);
       }
-      state.reservations = state.reservations.map((entry) => {
+      state.reservations = state.reservations.map(entry => {
         if (action.payload.id === entry.id) {
           return {
             ...entry,
@@ -87,10 +87,10 @@ export const cartSlice = createSlice({
         id: number;
         selected: boolean;
         quantity: number;
-      }>,
+      }>
     ) {
       const index = state.productsData.findIndex(
-        (product: { id: number }) => product.id === action.payload.id,
+        (product: { id: number }) => product.id === action.payload.id
       );
       if (index === -1) {
         state.productsData.push(action.payload);
@@ -101,10 +101,10 @@ export const cartSlice = createSlice({
     },
     increaseProductQty(
       state,
-      action: PayloadAction<{ units: number; id: number; quantity: number }>,
+      action: PayloadAction<{ units: number; id: number; quantity: number }>
     ) {
       const index = state.productsData.findIndex(
-        (product: { id: number }) => product.id === action.payload.id,
+        (product: { id: number }) => product.id === action.payload.id
       );
       const entry = state.productsData[index];
       if (!entry) return;
@@ -121,12 +121,9 @@ export const cartSlice = createSlice({
         quantity: cap && qty > cap ? Number(cap) : qty,
       };
     },
-    decreaseProductQty(
-      state,
-      action: PayloadAction<{ id: number; quantity: number }>,
-    ) {
+    decreaseProductQty(state, action: PayloadAction<{ id: number; quantity: number }>) {
       const index = state.productsData.findIndex(
-        (product: { id: number }) => product.id === action.payload.id,
+        (product: { id: number }) => product.id === action.payload.id
       );
       const entry = state.productsData[index];
       if (!entry) return;
@@ -137,12 +134,9 @@ export const cartSlice = createSlice({
         quantity: qty <= 0 ? 1 : qty,
       };
     },
-    setProductQty(
-      state,
-      action: PayloadAction<{ units: number; id: number; quantity: number }>,
-    ) {
+    setProductQty(state, action: PayloadAction<{ units: number; id: number; quantity: number }>) {
       const index = state.productsData.findIndex(
-        (product: { id: number }) => product.id === action.payload.id,
+        (product: { id: number }) => product.id === action.payload.id
       );
       const entry = state.productsData[index];
       if (!entry) return;
@@ -159,7 +153,7 @@ export const cartSlice = createSlice({
     },
     removeProduct(state, action: PayloadAction<number>) {
       state.productsData = state.productsData.filter(
-        (item: { id: number }) => item.id !== action.payload,
+        (item: { id: number }) => item.id !== action.payload
       );
     },
     removeAllProducts(state) {
@@ -169,10 +163,7 @@ export const cartSlice = createSlice({
     addDeliveryToCart(state, action: PayloadAction<IProductsEntity>) {
       state.delivery = action.payload;
     },
-    setDeliveryData(
-      state,
-      action: PayloadAction<{ date: number; time: string; address: string }>,
-    ) {
+    setDeliveryData(state, action: PayloadAction<{ date: number; time: string; address: string }>) {
       state.deliveryData = {
         date: action.payload.date,
         time: action.payload.time,
@@ -181,7 +172,7 @@ export const cartSlice = createSlice({
     },
     deselectProduct(state, action: PayloadAction<number>) {
       const entry = state.productsData.find(
-        (product: { id: number }) => product.id === action.payload,
+        (product: { id: number }) => product.id === action.payload
       );
       if (entry) {
         entry.selected = !entry.selected;
@@ -221,10 +212,10 @@ export const {
  */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number }[] } },
-  id: number,
+  id: number
 ): boolean => {
   const added = state.cartReducer.productsData.findIndex(
-    (product: { id: number }) => product.id === id,
+    (product: { id: number }) => product.id === id
   );
   if (added === -1) {
     return false;
@@ -281,9 +272,8 @@ export const selectCartTotal = (state: {
 /**
  * Селектор id активного бронирования
  */
-export const selectReservationId = (state: {
-  cartReducer: { reservationId: number };
-}) => state.cartReducer.reservationId;
+export const selectReservationId = (state: { cartReducer: { reservationId: number } }) =>
+  state.cartReducer.reservationId;
 
 /**
  * Селектор элемента корзины по product id
@@ -294,9 +284,8 @@ export const selectCartItemWithIdLength = (
       productsData: ProductCartEntry[];
     };
   },
-  id: number,
-) =>
-  state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
+  id: number
+) => state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
 /**
  * Получает product id для анимаций перехода.
@@ -319,8 +308,7 @@ export const getTransition = (state: {
  * (`AuthContext`) получали устаревшее значение и cart-side версионирование
  * фактически было сломано. Исправлено.
  */
-export const selectCartVersion = (state: {
-  cartReducer: { version: number };
-}) => state.cartReducer.version;
+export const selectCartVersion = (state: { cartReducer: { version: number } }) =>
+  state.cartReducer.version;
 
 export default cartSlice.reducer;

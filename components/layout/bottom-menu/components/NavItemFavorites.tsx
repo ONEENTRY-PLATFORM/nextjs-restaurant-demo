@@ -22,12 +22,12 @@ const NavItemFavorites = (): JSX.Element => {
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
   const mounted = useSyncExternalStore(
-    (cb) => {
+    cb => {
       cb();
       return () => {};
     },
     () => true,
-    () => false,
+    () => false
   );
 
   return (

@@ -6,10 +6,7 @@ import { useState } from 'react';
 import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
-import {
-  clearAppliedCoupon,
-  setAppliedCoupon,
-} from '@/app/store/reducers/OrderSlice';
+import { clearAppliedCoupon, setAppliedCoupon } from '@/app/store/reducers/OrderSlice';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -18,9 +15,7 @@ type CartEntry = {
   selected?: boolean;
 };
 
-export type ApplyCouponResult =
-  | { ok: true; discount: number }
-  | { ok: false; error: string };
+export type ApplyCouponResult = { ok: true; discount: number } | { ok: false; error: string };
 
 type UseApplyCouponApi = {
   applyCoupon: (code: string) => Promise<ApplyCouponResult>;
@@ -54,12 +49,10 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
       return { ok: false, error: message };
     }
 
-    const anySelectionFlag = cartProducts.some(
-      (p) => typeof p.selected === 'boolean',
-    );
+    const anySelectionFlag = cartProducts.some(p => typeof p.selected === 'boolean');
     const products = cartProducts
-      .filter((p) => (anySelectionFlag ? p.selected !== false : true))
-      .map((p) => ({ productId: p.id, quantity: p.quantity ?? 1 }));
+      .filter(p => (anySelectionFlag ? p.selected !== false : true))
+      .map(p => ({ productId: p.id, quantity: p.quantity ?? 1 }));
 
     if (products.length === 0) {
       const message = 'Cart is empty';
@@ -77,15 +70,13 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
       });
 
       if (isError(preview)) {
-        const message =
-          (preview as { message?: string }).message || 'Invalid coupon code';
+        const message = (preview as { message?: string }).message || 'Invalid coupon code';
         setError(message);
         dispatch(clearAppliedCoupon());
         return { ok: false, error: message };
       }
 
-      const { totalSum, totalSumWithDiscount, currency } =
-        preview as IOrderPreviewResponse;
+      const { totalSum, totalSumWithDiscount, currency } = preview as IOrderPreviewResponse;
 
       // Сервер вернул успех, но скидка нулевая — код существует, но не
       // применился к этой корзине (условия не выполнились).
@@ -102,7 +93,7 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
           totalSum,
           totalSumWithDiscount,
           currency,
-        }),
+        })
       );
       return { ok: true, discount: totalSum - totalSumWithDiscount };
     } catch (e) {

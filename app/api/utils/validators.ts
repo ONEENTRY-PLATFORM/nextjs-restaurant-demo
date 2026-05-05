@@ -6,21 +6,13 @@ type StringValidator = {
   stringMin?: number | string;
   stringMax?: number | string;
 };
-type ValidatorPayload = MaskValidator &
-  StringValidator &
-  Record<string, unknown>;
+type ValidatorPayload = MaskValidator & StringValidator & Record<string, unknown>;
 
 export type Validators = {
   requiredValidator: (value: string, validator?: ValidatorPayload) => boolean;
-  emailInspectionValidator: (
-    value: string,
-    validator?: ValidatorPayload,
-  ) => boolean;
+  emailInspectionValidator: (value: string, validator?: ValidatorPayload) => boolean;
   fieldMaskValidator: (value: string, validator: MaskValidator) => boolean;
-  stringInspectionValidator: (
-    value: string,
-    validator: StringValidator,
-  ) => boolean;
+  stringInspectionValidator: (value: string, validator: StringValidator) => boolean;
   correctPasswordValidator: (value: string, repeatValue: string) => boolean;
 };
 

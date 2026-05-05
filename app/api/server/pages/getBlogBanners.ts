@@ -41,20 +41,13 @@ export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
   const { isError, pages } = await getChildPagesByParentUrl('blog');
   if (isError || !pages) return [];
 
-  type ImageValue =
-    | { downloadLink?: string }
-    | Array<{ downloadLink?: string }>
-    | null
-    | undefined;
+  type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
-  const sorted = [...pages].sort(
-    (a, b) => (a.position ?? 0) - (b.position ?? 0),
-  );
+  const sorted = [...pages].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
-  return sorted.map((p) => {
+  return sorted.map(p => {
     const attrs = p.attributeValues ?? {};
-    const desktopImage =
-      getImageUrl(attrs.bg_image?.value as ImageValue) || null;
+    const desktopImage = getImageUrl(attrs.bg_image?.value as ImageValue) || null;
     const mobileImage = getImageUrl(attrs.banner?.value as ImageValue) || null;
     return {
       id: p.id,

@@ -28,7 +28,7 @@ const ORDER_STORAGE_MARKER = 'booking_order';
  * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Результат серверного действия.
  */
 export async function submitReservation(
-  payload: ReservationPayload,
+  payload: ReservationPayload
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
     const created = await getApi().Orders.createOrder(ORDER_STORAGE_MARKER, {
@@ -44,9 +44,7 @@ export async function submitReservation(
     if (isError(created)) {
       return {
         ok: false,
-        message:
-          (created as { message?: string }).message ||
-          'Failed to submit reservation',
+        message: (created as { message?: string }).message || 'Failed to submit reservation',
       };
     }
     return { ok: true };

@@ -23,9 +23,7 @@ export const favoritesSlice = createSlice({
       }
     },
     removeFavorites(state, action: PayloadAction<number>) {
-      state.products = state.products.filter(
-        (product: number) => product !== action.payload,
-      );
+      state.products = state.products.filter((product: number) => product !== action.payload);
     },
     removeAllFavorites(state) {
       state.products = initialState.products;
@@ -36,30 +34,23 @@ export const favoritesSlice = createSlice({
   },
 });
 
-export const {
-  addFavorites,
-  removeFavorites,
-  removeAllFavorites,
-  setFavoritesVersion,
-} = favoritesSlice.actions;
+export const { addFavorites, removeFavorites, removeAllFavorites, setFavoritesVersion } =
+  favoritesSlice.actions;
 
 /**
  * Селектор товаров избранного
  */
-export const selectFavoritesItems = (state: {
-  favoritesReducer: { products: number[] };
-}) => state.favoritesReducer.products;
+export const selectFavoritesItems = (state: { favoritesReducer: { products: number[] } }) =>
+  state.favoritesReducer.products;
 
 /**
  * Селектор «есть ли в избранном» по product id
  */
 export const selectIsFavorites = (
   state: { favoritesReducer: { products: number[] } },
-  id: number,
+  id: number
 ): boolean => {
-  const added = state.favoritesReducer.products.findIndex(
-    (product: number) => product === id,
-  );
+  const added = state.favoritesReducer.products.findIndex((product: number) => product === id);
   if (added === -1) {
     return false;
   }
@@ -69,8 +60,7 @@ export const selectIsFavorites = (
 /**
  * Селектор версии избранного
  */
-export const selectFavoritesVersion = (state: {
-  favoritesReducer: { version: number };
-}) => state.favoritesReducer.version;
+export const selectFavoritesVersion = (state: { favoritesReducer: { version: number } }) =>
+  state.favoritesReducer.version;
 
 export default favoritesSlice.reducer;

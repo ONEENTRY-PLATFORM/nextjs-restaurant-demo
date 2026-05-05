@@ -8,12 +8,7 @@ import { useEffect, useState } from 'react';
 import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
-import {
-  addData,
-  addPaymentMethod,
-  setStep,
-  setStepError,
-} from '@/app/store/reducers/OrderSlice';
+import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/reducers/OrderSlice';
 
 /**
  * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
@@ -45,9 +40,7 @@ const StepPayment = (): JSX.Element => {
   const { onConfirmOrder, isLoading } = useCreateOrder();
 
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
-  const accounts: IAccountsEntity[] = (data ?? []).filter(
-    (a) => a.isVisible !== false,
-  );
+  const accounts: IAccountsEntity[] = (data ?? []).filter(a => a.isVisible !== false);
 
   const [identifier, setIdentifier] = useState<string>('');
   const [comment, setComment] = useState('');
@@ -64,9 +57,7 @@ const StepPayment = (): JSX.Element => {
 
   const persistOrderFields = () => {
     if (comment.trim()) {
-      dispatch(
-        addData({ marker: 'comment', type: 'string', value: comment.trim() }),
-      );
+      dispatch(addData({ marker: 'comment', type: 'string', value: comment.trim() }));
     }
     if (altReceiver && altPhone.trim()) {
       dispatch(
@@ -74,7 +65,7 @@ const StepPayment = (): JSX.Element => {
           marker: 'alt_phone',
           type: 'string',
           value: altPhone.trim(),
-        }),
+        })
       );
     }
   };
@@ -101,25 +92,16 @@ const StepPayment = (): JSX.Element => {
     <div className="flex flex-col gap-5">
       {/* Хедер */}
       <div className="flex items-center gap-2.5">
-        <Image
-          src="/images/icons/card-line.svg"
-          alt=""
-          width={23}
-          height={15}
-        />
-        <p className="font-normal text-[20px] text-paper">
-          {t('select_payment_text', 'Payment')}
-        </p>
+        <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
+        <p className="font-normal text-[20px] text-paper">{t('select_payment_text', 'Payment')}</p>
       </div>
 
       {isAccountsLoading ? (
         <p className="text-paper/70">Loading payment methods…</p>
       ) : accounts.length === 0 ? (
-        <p className="text-paper/70">
-          No payment methods are configured. Please contact support.
-        </p>
+        <p className="text-paper/70">No payment methods are configured. Please contact support.</p>
       ) : (
-        accounts.map((account) => (
+        accounts.map(account => (
           <PaymentMethodOption
             key={account.id}
             account={account}
@@ -133,7 +115,7 @@ const StepPayment = (): JSX.Element => {
       <input
         type="text"
         value={comment}
-        onChange={(e) => setComment(e.currentTarget.value)}
+        onChange={e => setComment(e.currentTarget.value)}
         placeholder={t('comment_order', 'Comments to the order')}
         className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
@@ -143,15 +125,10 @@ const StepPayment = (): JSX.Element => {
         <input
           type="checkbox"
           checked={altReceiver}
-          onChange={(e) => setAltReceiver(e.currentTarget.checked)}
+          onChange={e => setAltReceiver(e.currentTarget.checked)}
         />
         <span className="checkbox-box mr-2.5">
-          <Image
-            src="/images/icons/checkbox-mark.svg"
-            alt=""
-            width={18}
-            height={18}
-          />
+          <Image src="/images/icons/checkbox-mark.svg" alt="" width={18} height={18} />
         </span>
         {t('another_person_text', 'The order will be taken by another person')}
       </label>
@@ -162,7 +139,7 @@ const StepPayment = (): JSX.Element => {
           type="tel"
           autoComplete="tel"
           value={altPhone}
-          onChange={(e) => setAltPhone(e.currentTarget.value)}
+          onChange={e => setAltPhone(e.currentTarget.value)}
           placeholder="phone number"
           className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
         />
@@ -209,34 +186,16 @@ const PaymentMethodOption = ({
         onChange={onSelect}
         className="hidden peer"
       />
-      <label
-        htmlFor={id}
-        className="radio-custom flex items-center cursor-pointer select-none"
-      >
+      <label htmlFor={id} className="radio-custom flex items-center cursor-pointer select-none">
         <span className="ml-2 text-paper capitalize">{label}</span>
       </label>
       {type === 'paypal' ? (
-        <Image
-          src="/images/icons/paypal.png"
-          alt="PayPal"
-          width={68}
-          height={18}
-        />
+        <Image src="/images/icons/paypal.png" alt="PayPal" width={68} height={18} />
       ) : null}
       {type === 'stripe' ? (
         <>
-          <Image
-            src="/images/icons/visa.png"
-            alt="Visa"
-            width={36}
-            height={12}
-          />
-          <Image
-            src="/images/icons/mastercart.png"
-            alt="Mastercard"
-            width={28}
-            height={18}
-          />
+          <Image src="/images/icons/visa.png" alt="Visa" width={36} height={12} />
+          <Image src="/images/icons/mastercart.png" alt="Mastercard" width={28} height={18} />
         </>
       ) : null}
     </div>

@@ -42,42 +42,38 @@ export interface BlockProducts {
  *                                          пуст при любой ошибке SDK, чтобы вызывающие
  *                                          могли рендерить условно без try/catch.
  */
-export const getBlockProducts = cache(
-  async (marker: string): Promise<BlockProducts> => {
-    try {
-      const data = await getApi().Blocks.getBlockByMarker(marker);
-      if (typeError(data)) {
-        return { isError: true, error: data, title: '', products: [] };
-      }
-      const block = data as unknown as {
-        localizeInfos?: { title?: string };
-        products?: IProductsEntity[];
-        similarProducts?: { items?: IProductsEntity[] } | IProductsEntity[];
-        quantity?: number;
-        countElementsPerRow?: number;
-      };
-      const title = block.localizeInfos?.title ?? marker;
-      const raw =
-        block.products ??
-        (Array.isArray(block.similarProducts)
-          ? block.similarProducts
-          : (block.similarProducts?.items ?? [])) ??
-        [];
-      const products =
-        typeof block.quantity === 'number' && block.quantity > 0
-          ? raw.slice(0, block.quantity)
-          : raw;
-      return {
-        isError: false,
-        title,
-        products,
-        ...(block.quantity !== undefined && { quantity: block.quantity }),
-        ...(block.countElementsPerRow !== undefined && {
-          countElementsPerRow: block.countElementsPerRow,
-        }),
-      };
-    } catch (e: unknown) {
-      return { isError: true, error: e as IError, title: '', products: [] };
+export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
+  try {
+    const data = await getApi().Blocks.getBlockByMarker(marker);
+    if (typeError(data)) {
+      return { isError: true, error: data, title: '', products: [] };
     }
-  },
-);
+    const block = data as unknown as {
+      localizeInfos?: { title?: string };
+      products?: IProductsEntity[];
+      similarProducts?: { items?: IProductsEntity[] } | IProductsEntity[];
+      quantity?: number;
+      countElementsPerRow?: number;
+    };
+    const title = block.localizeInfos?.title ?? marker;
+    const raw =
+      block.products ??
+      (Array.isArray(block.similarProducts)
+        ? block.similarProducts
+        : (block.similarProducts?.items ?? [])) ??
+      [];
+    const products =
+      typeof block.quantity === 'number' && block.quantity > 0 ? raw.slice(0, block.quantity) : raw;
+    return {
+      isError: false,
+      title,
+      products,
+      ...(block.quantity !== undefined && { quantity: block.quantity }),
+      ...(block.countElementsPerRow !== undefined && {
+        countElementsPerRow: block.countElementsPerRow,
+      }),
+    };
+  } catch (e: unknown) {
+    return { isError: true, error: e as IError, title: '', products: [] };
+  }
+});

@@ -14,11 +14,7 @@ import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable
 /**
  * Форма доставки
  */
-const DeliveryForm = ({
-  deliveryData,
-}: {
-  deliveryData: IProductsEntity;
-}): JSX.Element => {
+const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const cartDelivery = useAppSelector(selectDeliveryData);
@@ -26,7 +22,7 @@ const DeliveryForm = ({
   return (
     <form
       className="flex w-182.5 max-w-full flex-col pb-5"
-      onSubmit={(e) => {
+      onSubmit={e => {
         e.preventDefault();
         // Пропускаем шаг выбора времени, если пользователь уже выбрал дату+время
         // через попап календаря; переходим сразу к sign-in (следующий шаг).

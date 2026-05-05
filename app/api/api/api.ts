@@ -51,10 +51,7 @@ export const getApi = (): ReturnType<typeof defineOneEntry> => api;
  * @param   {string}        [langCode]   - Текущий код языка (по умолчанию `en_US`).
  * @returns {Promise<void>}
  */
-export async function reDefine(
-  refreshToken: string,
-  langCode?: string,
-): Promise<void> {
+export async function reDefine(refreshToken: string, langCode?: string): Promise<void> {
   if (!refreshToken) {
     return;
   }
@@ -129,11 +126,7 @@ export const isError = (result: unknown): result is IError => {
   return typeof rec.statusCode === 'number' && typeof rec.message === 'string';
 };
 
-type ImageField =
-  | { downloadLink?: string }
-  | Array<{ downloadLink?: string }>
-  | null
-  | undefined;
+type ImageField = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
  * Нормализует значение атрибута `image` OneEntry в URL-строку.

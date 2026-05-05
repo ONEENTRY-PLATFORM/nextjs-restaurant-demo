@@ -18,18 +18,16 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  */
 const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
-  const count = useAppSelector(
-    (state) => state.cartReducer.productsData?.length ?? 0,
-  );
+  const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);
   // Persisted Redux-слайс регидратится на клиенте — гейтим бейдж через
   // useSyncExternalStore, чтобы серверная и клиентская разметка совпадали.
   const mounted = useSyncExternalStore(
-    (cb) => {
+    cb => {
       cb();
       return () => {};
     },
     () => true,
-    () => false,
+    () => false
   );
 
   const hidden = open;
@@ -51,16 +49,10 @@ const CenterCartButton = (): JSX.Element => {
           : 'scale-100 rotate-0 opacity-100')
       }
     >
-      <img
-        className="w-6.25 h-5.75"
-        src="/images/icons/cart_black.svg"
-        alt="cart"
-      />
+      <img className="w-6.25 h-5.75" src="/images/icons/cart_black.svg" alt="cart" />
       {mounted && count > 0 && (
         <div className="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-white border border-brand">
-          <p className="font-bold text-[10px] leading-none text-black">
-            {count}
-          </p>
+          <p className="font-bold text-[10px] leading-none text-black">{count}</p>
         </div>
       )}
     </button>

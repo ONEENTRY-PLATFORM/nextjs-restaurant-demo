@@ -26,14 +26,14 @@ export const updateUserState = async ({
     return;
   }
   const formData: IAuthFormData[] = user.formData
-    .filter((item) => item.marker !== 'otp_code')
-    .map((item) => ({
+    .filter(item => item.marker !== 'otp_code')
+    .map(item => ({
       marker: item.marker as string,
       type: 'string',
       value: item.value as string,
     }));
-  const email = user.formData.find((item) => item.marker === 'email');
-  const phone = user.formData.find((item) => item.marker === 'phone');
+  const email = user.formData.find(item => item.marker === 'email');
+  const phone = user.formData.find(item => item.marker === 'phone');
 
   const fresh = (await getApi().Users.getUser()) as IUserEntity | IError;
   if (!fresh || (fresh as IError)?.statusCode) {

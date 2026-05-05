@@ -11,7 +11,7 @@ import { typeError } from '@/components/utils';
  */
 export const getMenuByMarker = cache(
   async (
-    marker: string,
+    marker: string
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -28,5 +28,5 @@ export const getMenuByMarker = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

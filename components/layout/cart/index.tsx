@@ -26,11 +26,7 @@ import Loader from '@/components/shared/Spinner';
 /**
  * Страница корзины
  */
-const CartPage = ({
-  deliveryData,
-}: {
-  deliveryData: IProductsEntity;
-}): JSX.Element => {
+const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { isAuth, user } = useContext(AuthContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
@@ -43,16 +39,14 @@ const CartPage = ({
   useEffect(() => {
     const date = cartDelivery.date;
     const time = cartDelivery.time;
-    const addressReg =
-      user?.formData.find((el) => el.marker === 'address_reg')?.value ?? '';
+    const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value ?? '';
     const address = (cartDelivery.address as string | undefined) || addressReg;
 
     // OneEntry требует для `timeInterval` value формы массив пар
     // `[[startISO, endISO]]` (см. SDK skill `create-checkout`). DateTimePickerSheet
     // отдаёт 1-часовой слот в формате `HH.00`/`HH:MM`, поэтому собираем интервал
     // [hour, hour+1) на выбранном дне.
-    const hourMatch =
-      typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
+    const hourMatch = typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
     const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
     if (date && Number.isFinite(hour)) {
       const start = new Date(date);
@@ -64,7 +58,7 @@ const CartPage = ({
           type: 'timeInterval',
           value: [[start.toISOString(), end.toISOString()]],
           valid: true,
-        }),
+        })
       );
     }
     if (address) {
@@ -74,7 +68,7 @@ const CartPage = ({
           type: 'string',
           value: address,
           valid: true,
-        }),
+        })
       );
     }
   }, [cartDelivery, user, dispatch]);
@@ -84,7 +78,7 @@ const CartPage = ({
 
   // Получаем продукты по Ids из api
   const { data, isLoading } = useGetProductsByIdsQuery({
-    items: productsCartData.map((p) => p.id),
+    items: productsCartData.map(p => p.id),
   });
 
   // добавляем deliveryData
@@ -121,7 +115,7 @@ const CartPage = ({
         const ws = getApi().WS.connect(); // Подключаемся к WebSocket
         if (ws) {
           // Слушаем события 'notification' из WebSocket
-          ws.on('notification', async (res) => {
+          ws.on('notification', async res => {
             if (res?.product) {
               // Подготавливаем объект продукта с дополнительными значениями атрибутов
               const product = {
@@ -130,18 +124,13 @@ const CartPage = ({
               };
 
               // Находим индекс продукта в текущем массиве данных
-              const index = data.findIndex(
-                (p: IProductsEntity) => p.id === product.id,
-              );
+              const index = data.findIndex((p: IProductsEntity) => p.id === product.id);
 
               // Парсим новую цену из ответа уведомления
-              const newPrice = parseInt(
-                product?.attributeValues?.price?.value,
-                10,
-              );
+              const newPrice = parseInt(product?.attributeValues?.price?.value, 10);
 
               // Обновляем стейт продуктов с новой ценой и статусом
-              setProducts((prevProducts) => {
+              setProducts(prevProducts => {
                 // Создаём копию текущих продуктов
                 const newProducts = [...prevProducts];
                 if (newProducts[index]) {
@@ -195,9 +184,7 @@ const CartPage = ({
           // быть в другом порядке, чем `products` (порядок ответа RTK query
           // не гарантирован), и изменение `selected` одной записи мутирует
           // ссылку массива, так что lookup по индексу рассинхронизируется.
-          const cartEntry = productsCartData.find(
-            (p: { id: number }) => p.id === product.id,
-          );
+          const cartEntry = productsCartData.find((p: { id: number }) => p.id === product.id);
           return (
             <ProductCard
               key={product.id}

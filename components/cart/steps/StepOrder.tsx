@@ -30,27 +30,20 @@ const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const cartData = useAppSelector(selectCartData) as CartEntry[];
-  const products = useAppSelector(
-    (state) => state.cartReducer.products,
-  ) as IProductsEntity[];
-  const deliveryPrice = useAppSelector(
-    (state) => state.cartReducer.delivery?.price ?? 0,
-  );
+  const products = useAppSelector(state => state.cartReducer.products) as IProductsEntity[];
+  const deliveryPrice = useAppSelector(state => state.cartReducer.delivery?.price ?? 0);
   const appliedCoupon = useAppSelector(selectAppliedCoupon);
 
   const [promoCode, setPromoCode] = useState(appliedCoupon?.code ?? '');
   const { applyCoupon, removeCoupon, isLoading, error } = useApplyCoupon();
 
   const items = cartData
-    .map((entry) => ({
+    .map(entry => ({
       entry,
-      product: products.find((p) => p.id === entry.id),
+      product: products.find(p => p.id === entry.id),
     }))
     .filter(
-      (row) =>
-        row.product &&
-        row.entry.selected &&
-        row.product.statusIdentifier !== 'out_of_stock',
+      row => row.product && row.entry.selected && row.product.statusIdentifier !== 'out_of_stock'
     ) as Array<{
     entry: CartEntry;
     product: IProductsEntity;
@@ -63,9 +56,7 @@ const StepOrder = (): JSX.Element => {
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
-  const subtotalAfterDiscount = appliedCoupon
-    ? appliedCoupon.totalSumWithDiscount
-    : subtotal;
+  const subtotalAfterDiscount = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal;
   const total = subtotalAfterDiscount + deliveryPrice;
 
   const handleApply = (): void => {
@@ -83,20 +74,14 @@ const StepOrder = (): JSX.Element => {
       <div className="flex flex-col gap-5">
         {items.map(({ entry, product }) => {
           const title = product.localizeInfos?.title ?? 'Item';
-          const weight = product.attributeValues?.weight?.value as
-            | string
-            | number
-            | undefined;
+          const weight = product.attributeValues?.weight?.value as string | number | undefined;
           const unit = product.price ?? 0;
           const cover = product.attributeValues?.cover?.value as
             | { downloadLink?: string }
             | undefined;
           const imgSrc = cover?.downloadLink;
           return (
-            <div
-              key={entry.id}
-              className="flex items-center justify-between gap-2.5"
-            >
+            <div key={entry.id} className="flex items-center justify-between gap-2.5">
               <div className="relative size-17.25 shrink-0 overflow-hidden rounded">
                 {imgSrc ? (
                   <Image
@@ -113,12 +98,8 @@ const StepOrder = (): JSX.Element => {
               <div className="flex w-50 flex-col justify-between gap-1">
                 <p className="font-normal text-sm text-white">{title}</p>
                 <div className="flex items-center gap-2.5">
-                  {weight ? (
-                    <p className="font-normal text-sm text-white">{weight} g</p>
-                  ) : null}
-                  <p className="font-bold text-xl text-brand">
-                    {UsePrice({ amount: unit })}
-                  </p>
+                  {weight ? <p className="font-normal text-sm text-white">{weight} g</p> : null}
+                  <p className="font-bold text-xl text-brand">{UsePrice({ amount: unit })}</p>
                 </div>
               </div>
               <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-brand">
@@ -135,7 +116,7 @@ const StepOrder = (): JSX.Element => {
           <input
             type="text"
             value={promoCode}
-            onChange={(e) => setPromoCode(e.currentTarget.value)}
+            onChange={e => setPromoCode(e.currentTarget.value)}
             disabled={isLoading}
             placeholder="Promo Code"
             className="h-8 w-2/3 rounded-[5px] border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none disabled:opacity-60"
@@ -160,9 +141,7 @@ const StepOrder = (): JSX.Element => {
         ) : null}
         {appliedCoupon && !error ? (
           <p className="text-xs text-brand">
-            Coupon{' '}
-            <span className="font-bold uppercase">{appliedCoupon.code}</span>{' '}
-            applied
+            Coupon <span className="font-bold uppercase">{appliedCoupon.code}</span> applied
           </p>
         ) : null}
       </div>

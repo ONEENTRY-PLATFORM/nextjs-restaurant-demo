@@ -23,14 +23,14 @@ export const getProductsPriceRange = cache(
     try {
       const data = await getApi().Products.getProductsPriceByPageUrl(
         pageUrl,
-        langCode || getLang(),
+        langCode || getLang()
       );
       if (typeError(data)) {
         return { min: 0, max: 0 };
       }
       const prices = data.items
-        .map((item) => Number(item.price))
-        .filter((p) => Number.isFinite(p) && p > 0);
+        .map(item => Number(item.price))
+        .filter(p => Number.isFinite(p) && p > 0);
       if (prices.length === 0) {
         return { min: 0, max: 0 };
       }
@@ -41,5 +41,5 @@ export const getProductsPriceRange = cache(
     } catch {
       return { min: 0, max: 0 };
     }
-  },
+  }
 );

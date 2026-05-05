@@ -5,10 +5,7 @@ const cache = new Map<string, unknown>();
 /**
  * Получает закэшированные данные.
  */
-const getCachedData = async <T,>(
-  key: string,
-  fetchFn: () => Promise<T>,
-): Promise<T> => {
+const getCachedData = async <T,>(key: string, fetchFn: () => Promise<T>): Promise<T> => {
   if (cache.has(key)) {
     return cache.get(key) as T;
   }

@@ -33,9 +33,7 @@ const ColorFilter = ({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
 
-  const [activeColor, setActiveColor] = useState<string>(
-    params.get('color') || '',
-  );
+  const [activeColor, setActiveColor] = useState<string>(params.get('color') || '');
 
   // получаем colorFilters из attributes
   const colorFilters = useMemo(() => {
@@ -52,7 +50,7 @@ const ColorFilter = ({
         arr.push(color);
         return arr;
       },
-      [],
+      []
     );
     return colors;
   }, [attributes]);

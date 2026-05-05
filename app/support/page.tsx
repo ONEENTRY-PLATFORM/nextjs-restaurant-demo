@@ -56,22 +56,12 @@ const SupportPage = async (): Promise<JSX.Element> => {
             <div className="mt-4 flex justify-center gap-15">
               {whatsapp ? (
                 <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                  <Image
-                    src="/images/icons/watsap.svg"
-                    alt="WhatsApp"
-                    width={45}
-                    height={45}
-                  />
+                  <Image src="/images/icons/watsap.svg" alt="WhatsApp" width={45} height={45} />
                 </a>
               ) : null}
               {phone ? (
                 <a href={'tel:' + phone}>
-                  <Image
-                    src="/images/icons/call.svg"
-                    alt="Call"
-                    width={45}
-                    height={45}
-                  />
+                  <Image src="/images/icons/call.svg" alt="Call" width={45} height={45} />
                 </a>
               ) : null}
             </div>
@@ -88,21 +78,14 @@ const SupportPage = async (): Promise<JSX.Element> => {
               rel="noopener noreferrer"
               className="mt-4 flex justify-center"
             >
-              <Image
-                src="/images/icons/watsap.svg"
-                alt="WhatsApp"
-                width={45}
-                height={45}
-              />
+              <Image src="/images/icons/watsap.svg" alt="WhatsApp" width={45} height={45} />
             </a>
           </div>
         ) : null}
       </div>
 
       <div className="rounded-xl bg-ink/40 p-5">
-        <h2 className="mb-4 font-bold text-[18px] uppercase text-brand">
-          {formHeading}
-        </h2>
+        <h2 className="mb-4 font-bold text-[18px] uppercase text-brand">{formHeading}</h2>
         <ContactUsForm className="" />
       </div>
     </section>
@@ -116,10 +99,7 @@ export default SupportPage;
  * @returns {Promise<Metadata>} Метаданные страницы.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const [{ page }, dict] = await Promise.all([
-    getPageByUrl('support'),
-    getDictionary(),
-  ]);
+  const [{ page }, dict] = await Promise.all([getPageByUrl('support'), getDictionary()]);
   const title =
     (page?.attributeValues?.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??

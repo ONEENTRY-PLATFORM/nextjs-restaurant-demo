@@ -3,10 +3,7 @@
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  onSubscribeEvents,
-  onUnsubscribeEvents,
-} from '@/app/api/hooks/useEvents';
+import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
@@ -24,15 +21,12 @@ const UNDO_TIMEOUT_MS = 5000;
  * прогресс-таймером и кнопкой Undo. По нажатию Undo восстанавливает запись
  * (id/quantity/selected) через `addProductToCart` и переподписывает события.
  */
-export const useCartRemoveWithUndo = (
-  productId: number,
-  title: string,
-): (() => void) => {
+export const useCartRemoveWithUndo = (productId: number, title: string): (() => void) => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
-  const entry = useAppSelector((state) =>
-    selectCartItemWithIdLength(state, productId),
-  ) as { id: number; quantity: number; selected: boolean } | undefined;
+  const entry = useAppSelector(state => selectCartItemWithIdLength(state, productId)) as
+    | { id: number; quantity: number; selected: boolean }
+    | undefined;
 
   return () => {
     const snapshot = entry
@@ -67,7 +61,7 @@ export const useCartRemoveWithUndo = (
           </button>
         </div>
       ),
-      { autoClose: UNDO_TIMEOUT_MS },
+      { autoClose: UNDO_TIMEOUT_MS }
     );
 
     return toastId;

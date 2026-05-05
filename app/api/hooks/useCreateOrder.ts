@@ -1,22 +1,12 @@
 'use client';
 
-import type {
-  IOrderProductData,
-  IOrdersFormData,
-} from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  removeAllProducts,
-  selectCartData,
-} from '@/app/store/reducers/CartSlice';
-import {
-  removeOrder,
-  selectAppliedCoupon,
-  setLastOrderId,
-} from '@/app/store/reducers/OrderSlice';
+import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
+import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
 import type { IAppOrder } from '@/app/types/global';
 import { handleApiError } from '@/app/utils/errorHandler';
 
@@ -56,7 +46,7 @@ type UseCreateOrderApi = {
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
   const order = useAppSelector(
-    (state: { orderReducer: { order: IAppOrder } }) => state.orderReducer.order,
+    (state: { orderReducer: { order: IAppOrder } }) => state.orderReducer.order
   );
   // Визард никогда не диспатчит `addProducts` в order slice, поэтому позиции
   // заказа собираются напрямую из cart slice на этапе подтверждения.
@@ -97,12 +87,10 @@ export const useCreateOrder = (): UseCreateOrderApi => {
       // Собираем позиции из cart slice (в order slice они не заполняются на этапе выше).
       // Если есть хоть один selection-флаг — фильтруем только выбранные;
       // иначе включаем всё.
-      const anySelectionFlag = cartProducts.some(
-        (p) => typeof p.selected === 'boolean',
-      );
+      const anySelectionFlag = cartProducts.some(p => typeof p.selected === 'boolean');
       const orderProducts: IOrderProductData[] = cartProducts
-        .filter((p) => (anySelectionFlag ? p.selected !== false : true))
-        .map((p) => ({
+        .filter(p => (anySelectionFlag ? p.selected !== false : true))
+        .map(p => ({
           productId: p.id,
           quantity: p.quantity ?? 1,
         }));
@@ -122,8 +110,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
       });
 
       if (isError(created)) {
-        const message =
-          (created as { message?: string }).message || 'Order creation failed';
+        const message = (created as { message?: string }).message || 'Order creation failed';
         setError(message);
         return { ok: false, error: message };
       }
@@ -155,9 +142,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
       dispatch(removeAllProducts());
       dispatch(removeOrder());
 
-      return paymentUrl
-        ? { ok: true, orderId: id, paymentUrl }
-        : { ok: true, orderId: id };
+      return paymentUrl ? { ok: true, orderId: id, paymentUrl } : { ok: true, orderId: id };
     } catch (e) {
       const apiError = handleApiError('onConfirmOrder', e);
       setError(apiError.message);

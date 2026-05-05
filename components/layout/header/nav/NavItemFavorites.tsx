@@ -21,12 +21,12 @@ const NavItemFavorites = (): JSX.Element => {
   // Persisted-слайс регидратится на клиенте — гейтим бейдж, чтобы избежать
   // расхождения серверной/клиентской разметки (тот же трюк, что в NavItemCart).
   const mounted = useSyncExternalStore(
-    (cb) => {
+    cb => {
       cb();
       return () => {};
     },
     () => true,
-    () => false,
+    () => false
   );
 
   return (

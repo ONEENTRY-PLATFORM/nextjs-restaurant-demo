@@ -7,14 +7,8 @@ import { toast } from 'react-toastify';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  addProductToCart,
-  selectIsInCart,
-} from '@/app/store/reducers/CartSlice';
-import {
-  removeFavorites,
-  selectFavoritesItems,
-} from '@/app/store/reducers/FavoritesSlice';
+import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
+import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
@@ -29,7 +23,7 @@ const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
     { items: favoriteIds },
-    { skip: !favoriteIds || favoriteIds.length === 0 },
+    { skip: !favoriteIds || favoriteIds.length === 0 }
   );
 
   const products = (data ?? []) as IProductsEntity[];
@@ -48,7 +42,7 @@ const FavoritesGrid = (): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-4">
-      {products.map((product) => (
+      {products.map(product => (
         <FavoriteCard key={product.id} product={product} />
       ))}
     </div>
@@ -63,20 +57,16 @@ const FavoritesGrid = (): JSX.Element => {
  * @param   {IProductsEntity} props.product - Сущность избранного продукта.
  * @returns {JSX.Element}                   JSX карточки.
  */
-const FavoriteCard = ({
-  product,
-}: {
-  product: IProductsEntity;
-}): JSX.Element => {
+const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
+  const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const attrs = product.attributeValues ?? {};
   const imageSrc = getImageUrl(
     attrs.cover?.value as
       | { downloadLink?: string }
       | Array<{ downloadLink?: string }>
       | null
-      | undefined,
+      | undefined
   );
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
@@ -103,9 +93,7 @@ const FavoriteCard = ({
         <p className="favorites_title">{title}</p>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}
-          {priceRaw !== undefined ? (
-            <p className="favorites_price">$ {priceRaw}</p>
-          ) : null}
+          {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
         </div>
       </div>
 
@@ -118,7 +106,7 @@ const FavoriteCard = ({
                 id: product.id,
                 selected: true,
                 quantity: 1,
-              }),
+              })
             );
             toast('Product ' + title + ' added to cart!');
           }}

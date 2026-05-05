@@ -65,8 +65,7 @@ const FilterBottom = ({
   priceRange?: PriceRange;
 }): JSX.Element => {
   const t = useT();
-  const { open, component, setOpen, setComponent } =
-    useContext(OpenDrawerContext);
+  const { open, component, setOpen, setComponent } = useContext(OpenDrawerContext);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -88,9 +87,7 @@ const FilterBottom = ({
   useEffect(() => {
     if (!isVisible) return;
     const cookingMax = searchParams.get('cooking_time_max');
-    const matchedTime = WAITING_TIME.find(
-      (t) => t.max !== null && String(t.max) === cookingMax,
-    );
+    const matchedTime = WAITING_TIME.find(t => t.max !== null && String(t.max) === cookingMax);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setWaitingTime(matchedTime?.label ?? null);
 
@@ -99,9 +96,9 @@ const FilterBottom = ({
       prefsParam
         ? prefsParam
             .split(',')
-            .map((v) => v.trim())
+            .map(v => v.trim())
             .filter(Boolean)
-        : [],
+        : []
     );
 
     const min = searchParams.get('minPrice');
@@ -109,9 +106,9 @@ const FilterBottom = ({
     setPrice(
       priceChips
         .filter(({ key, value }) =>
-          key === 'minPrice' ? min === String(value) : max === String(value),
+          key === 'minPrice' ? min === String(value) : max === String(value)
         )
-        .map((p) => p.label),
+        .map(p => p.label)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
@@ -137,15 +134,11 @@ const FilterBottom = ({
   }, [isVisible]);
 
   const togglePreference = (item: string): void => {
-    setPreferences((prev) =>
-      prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item],
-    );
+    setPreferences(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
   };
 
   const togglePrice = (label: string): void => {
-    setPrice((prev) =>
-      prev.includes(label) ? prev.filter((x) => x !== label) : [...prev, label],
-    );
+    setPrice(prev => (prev.includes(label) ? prev.filter(x => x !== label) : [...prev, label]));
   };
 
   const reset = (): void => {
@@ -160,7 +153,7 @@ const FilterBottom = ({
   const apply = (): void => {
     const params = new URLSearchParams(searchParams.toString());
 
-    const time = WAITING_TIME.find((t) => t.label === waitingTime);
+    const time = WAITING_TIME.find(t => t.label === waitingTime);
     if (time?.max != null) {
       params.set('cooking_time_max', String(time.max));
     } else {
@@ -173,17 +166,13 @@ const FilterBottom = ({
       params.delete('preferences');
     }
 
-    const minChip = priceChips.find(
-      (p) => p.key === 'minPrice' && price.includes(p.label),
-    );
+    const minChip = priceChips.find(p => p.key === 'minPrice' && price.includes(p.label));
     if (minChip) {
       params.set('minPrice', String(minChip.value));
     } else {
       params.delete('minPrice');
     }
-    const maxChip = priceChips.find(
-      (p) => p.key === 'maxPrice' && price.includes(p.label),
-    );
+    const maxChip = priceChips.find(p => p.key === 'maxPrice' && price.includes(p.label));
     if (maxChip) {
       params.set('maxPrice', String(maxChip.value));
     } else {
@@ -215,9 +204,7 @@ const FilterBottom = ({
         onClick={close}
         className={
           'fixed inset-0 z-10 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
-          (isVisible
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none')
+          (isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
         }
         aria-hidden="true"
       />
@@ -233,21 +220,11 @@ const FilterBottom = ({
         }
       >
         <div className="max-w-89 mx-auto flex justify-between items-center mb-5">
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Back"
-            className="group_white"
-          >
+          <button type="button" onClick={close} aria-label="Back" className="group_white">
             <ArrowBackOrangeIcon />
           </button>
           <p className="font-normal text-[24px] text-white">Filter</p>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close"
-            className="group_white"
-          >
+          <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>
         </div>
@@ -273,9 +250,7 @@ const FilterBottom = ({
             <button
               key={label}
               type="button"
-              onClick={() =>
-                setWaitingTime((prev) => (prev === label ? null : label))
-              }
+              onClick={() => setWaitingTime(prev => (prev === label ? null : label))}
               className={itemClass(waitingTime === label)}
             >
               {label}
@@ -284,7 +259,7 @@ const FilterBottom = ({
         </div>
         <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75">
           <p className="filter_title">{preferencesTitle}</p>
-          {preferenceOptions.map((option) => (
+          {preferenceOptions.map(option => (
             <button
               key={option.value}
               type="button"

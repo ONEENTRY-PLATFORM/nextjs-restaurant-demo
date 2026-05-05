@@ -1,8 +1,5 @@
 import type { IError } from 'oneentry/dist/base/utils';
-import type {
-  IBaseOrdersEntity,
-  IOrderData,
-} from 'oneentry/dist/orders/ordersInterfaces';
+import type { IBaseOrdersEntity, IOrderData } from 'oneentry/dist/orders/ordersInterfaces';
 
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
@@ -26,11 +23,7 @@ export const updateOrderByMarkerAndId = async ({
   order?: IBaseOrdersEntity;
 }> => {
   try {
-    const orderData = await getApi().Orders.updateOrderByMarkerAndId(
-      marker,
-      id,
-      data,
-    );
+    const orderData = await getApi().Orders.updateOrderByMarkerAndId(marker, id, data);
 
     if (typeError(orderData)) {
       return { isError: true, error: orderData };

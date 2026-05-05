@@ -10,12 +10,7 @@ const CloseXIcon = (): JSX.Element => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M2 2L18 18M18 2L2 18"
-        stroke="#EC722B"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
+      <path d="M2 2L18 18M18 2L2 18" stroke="#EC722B" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 };

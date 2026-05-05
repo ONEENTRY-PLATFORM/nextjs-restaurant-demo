@@ -21,11 +21,7 @@ import AddToCartButton from '../components/AddToCartButton';
  * @param   {{product: IProductsEntity}} props - пропсы компонента
  * @returns {JSX.Element} JSX панели деталей продукта
  */
-const ProductDetails = async ({
-  product,
-}: {
-  product: IProductsEntity;
-}): Promise<JSX.Element> => {
+const ProductDetails = async ({ product }: { product: IProductsEntity }): Promise<JSX.Element> => {
   const {
     id,
     statusIdentifier,
@@ -49,18 +45,14 @@ const ProductDetails = async ({
 
   const prefs =
     (preferences?.value as Array<{ title: string; value: string }>)?.filter(
-      (o) => o?.title && o?.value,
+      o => o?.title && o?.value
     ) ?? [];
 
   const ingredientsText = ingredients?.value as string | undefined;
   const priceVal = price?.value as number | undefined;
   const currencyVal = (currency?.value as string | undefined) ?? 'USD';
   const priceFormatted =
-    priceVal != null
-      ? currencyVal === 'USD'
-        ? `$${priceVal}`
-        : `${priceVal} ${currencyVal}`
-      : '';
+    priceVal != null ? (currencyVal === 'USD' ? `$${priceVal}` : `${priceVal} ${currencyVal}`) : '';
 
   return (
     <div className="flex flex-col gap-3.75">
@@ -71,12 +63,7 @@ const ProductDetails = async ({
           <div className="flex gap-1.25 md:gap-3.75 items-center">
             {weightVal != null ? (
               <>
-                <Image
-                  src="/images/icons/weight.svg"
-                  alt="weight"
-                  width={27}
-                  height={20}
-                />
+                <Image src="/images/icons/weight.svg" alt="weight" width={27} height={20} />
                 <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
                   {weightVal} g
                 </p>
@@ -84,12 +71,7 @@ const ProductDetails = async ({
             ) : null}
             {calorrageVal != null ? (
               <>
-                <Image
-                  src="/images/icons/flame.svg"
-                  alt="flame"
-                  width={15}
-                  height={20}
-                />
+                <Image src="/images/icons/flame.svg" alt="flame" width={15} height={20} />
                 <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
                   {calorrageVal} ccal
                 </p>
@@ -147,7 +129,7 @@ const ProductDetails = async ({
           верхним скроллером тегов. */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
-          {prefs.map((p) => (
+          {prefs.map(p => (
             <Link
               key={p.value}
               href={'/shop?preferences=' + encodeURIComponent(p.value)}

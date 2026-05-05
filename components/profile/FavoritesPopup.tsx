@@ -11,14 +11,8 @@ import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import {
-  addProductToCart,
-  selectIsInCart,
-} from '@/app/store/reducers/CartSlice';
-import {
-  removeFavorites,
-  selectFavoritesItems,
-} from '@/app/store/reducers/FavoritesSlice';
+import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
+import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartOrangeIcon from '@/components/icons/cart-orange';
@@ -40,14 +34,13 @@ import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
  */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
 
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
     { items: favoriteIds },
-    { skip: !isOpen || !favoriteIds || favoriteIds.length === 0 },
+    { skip: !isOpen || !favoriteIds || favoriteIds.length === 0 }
   );
 
   const close = () => setTransition('close');
@@ -78,12 +71,7 @@ const FavoritesPopup = (): JSX.Element => {
             <ArrowBackOrangeIcon />
           </button>
           <p className="font-normal text-[24px] text-white">Favorites</p>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Menu"
-            className="group_white"
-          >
+          <button type="button" onClick={close} aria-label="Menu" className="group_white">
             <BurgerOrangeIcon />
           </button>
         </div>
@@ -117,7 +105,7 @@ const FavoritesPopup = (): JSX.Element => {
           </div>
         ) : (
           <div className="mt-15 flex w-full flex-wrap justify-center gap-7.5">
-            {products.map((product) => (
+            {products.map(product => (
               <FavoriteCard
                 key={product.id}
                 product={product}
@@ -149,14 +137,14 @@ const FavoriteCard = ({
   onNavigate: () => void;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const inCart = useAppSelector((state) => selectIsInCart(state, product.id));
+  const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const attrs = product.attributeValues ?? {};
   const imageSrc = getImageUrl(
     attrs.cover?.value as
       | { downloadLink?: string }
       | Array<{ downloadLink?: string }>
       | null
-      | undefined,
+      | undefined
   );
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
@@ -166,12 +154,7 @@ const FavoriteCard = ({
 
   return (
     <div className="flex w-full min-w-92.5 items-center justify-between rounded-[5px] border border-paper/30 p-2.5 md:w-half-gap">
-      <Link
-        href={productHref}
-        onClick={onNavigate}
-        aria-label={title}
-        className="mr-2.5 shrink-0"
-      >
+      <Link href={productHref} onClick={onNavigate} aria-label={title} className="mr-2.5 shrink-0">
         {imageSrc ? (
           <Image
             src={imageSrc}
@@ -188,17 +171,11 @@ const FavoriteCard = ({
         )}
       </Link>
 
-      <Link
-        href={productHref}
-        onClick={onNavigate}
-        className="flex w-1/2 flex-col"
-      >
+      <Link href={productHref} onClick={onNavigate} className="flex w-1/2 flex-col">
         <p className="favorites_title">{title}</p>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}
-          {priceRaw !== undefined ? (
-            <p className="favorites_price">$ {priceRaw}</p>
-          ) : null}
+          {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
         </div>
       </Link>
 
@@ -211,7 +188,7 @@ const FavoriteCard = ({
                 id: product.id,
                 selected: true,
                 quantity: 1,
-              }),
+              })
             );
             toast('Product ' + title + ' added to cart!');
           }}

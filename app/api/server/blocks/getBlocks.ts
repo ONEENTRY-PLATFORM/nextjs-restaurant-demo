@@ -1,8 +1,5 @@
 import type { IError } from 'oneentry/dist/base/utils';
-import type {
-  BlockType,
-  IBlocksResponse,
-} from 'oneentry/dist/blocks/blocksInterfaces';
+import type { BlockType, IBlocksResponse } from 'oneentry/dist/blocks/blocksInterfaces';
 import { cache } from 'react';
 
 import { getApi } from '@/app/api';
@@ -32,5 +29,5 @@ export const getBlocks = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

@@ -1,9 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type {
-  IOrderProductData,
-  IOrdersFormData,
-} from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 
 import type { IAppOrder } from '@/app/types/global';
 
@@ -72,15 +69,12 @@ const orderReducer = createSlice({
     clearAppliedCoupon(state) {
       delete state.appliedCoupon;
     },
-    addData(
-      state,
-      action: PayloadAction<IOrdersFormData & { valid?: boolean }>,
-    ) {
+    addData(state, action: PayloadAction<IOrdersFormData & { valid?: boolean }>) {
       if (!state.order) {
         return;
       }
       const index = state.order.formData.findIndex(
-        (item: { marker: string }) => item.marker === action.payload.marker,
+        (item: { marker: string }) => item.marker === action.payload.marker
       );
 
       if (index !== -1) {
@@ -101,7 +95,7 @@ const orderReducer = createSlice({
         Array<{
           identifier: string;
         }>
-      >,
+      >
     ) {
       if (!state.paymentMethods) {
         state.paymentMethods = action.payload;
@@ -172,17 +166,15 @@ export const {
   clearAppliedCoupon,
 } = orderReducer.actions;
 
-export const selectCheckoutStep = (state: {
-  orderReducer: InitialStateType;
-}): CheckoutStep => state.orderReducer.step;
+export const selectCheckoutStep = (state: { orderReducer: InitialStateType }): CheckoutStep =>
+  state.orderReducer.step;
 
 export const selectCheckoutStepError = (state: {
   orderReducer: InitialStateType;
 }): string | undefined => state.orderReducer.stepError;
 
-export const selectLastOrderId = (state: {
-  orderReducer: InitialStateType;
-}): number | undefined => state.orderReducer.lastOrderId;
+export const selectLastOrderId = (state: { orderReducer: InitialStateType }): number | undefined =>
+  state.orderReducer.lastOrderId;
 
 export const selectAppliedCoupon = (state: {
   orderReducer: InitialStateType;

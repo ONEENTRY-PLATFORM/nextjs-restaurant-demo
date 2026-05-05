@@ -22,11 +22,7 @@ export const dynamic = 'force-dynamic';
  * может ставить новые блоки, не ломая билд, а мы добавляем рендерер
  * под них, когда визуал готов.
  */
-const HOME_BLOCK_IDENTIFIERS = new Set([
-  'home_promo',
-  'recommended',
-  'home_categories',
-]);
+const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);
 
 /**
  * Главная страница — полностью управляется OneEntry CMS:
@@ -55,21 +51,19 @@ const HomePage = async (): Promise<JSX.Element> => {
 
   const { blocks = [] } = await getBlocksByPageUrl('home_web');
   const sortedBlocks = [...blocks]
-    .filter((b) => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
+    .filter(b => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   return (
     <>
-      {sortedBlocks.map((block) => {
+      {sortedBlocks.map(block => {
         if (block.identifier === 'home_promo') {
           return <HomePromo key={block.id} />;
         }
-        if (block.identifier === 'home_categories') {
-          return <HomeCategoriesSection key={block.id} />;
-        }
-        return (
-          <HomeBlockServer key={block.id} marker={block.identifier as string} />
-        );
+        // if (block.identifier === 'home_categories') {
+        //   return <HomeCategoriesSection key={block.id} />;
+        // }
+        return <HomeBlockServer key={block.id} marker={block.identifier as string} />;
       })}
     </>
   );

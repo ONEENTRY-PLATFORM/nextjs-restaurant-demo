@@ -27,10 +27,7 @@ export const dynamic = 'force-dynamic';
  */
 const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Извлекаем search-параметры из пропсов */
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
+  const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
   /** Прогреваем кеш словаря в server provider. */
   ServerProvider('dict', await getDictionary());
 
@@ -76,11 +73,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
       />
       <section className="shop_section">
         <div className="flex w-full flex-col items-center gap-5">
-          <Suspense
-            fallback={
-              <MemoizedProductsGridLoader productsLimit={productsLimit} />
-            }
-          >
+          <Suspense fallback={<MemoizedProductsGridLoader productsLimit={productsLimit} />}>
             <ProductsGridLayout
               productsLimit={productsLimit}
               params={params}
@@ -103,9 +96,7 @@ export default ShopPageLayout;
  * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
  * @see {@link https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata Next.js docs}
  */
-export async function generateMetadata({
-  params,
-}: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   /** Извлекаем handle и язык из параметров маршрута */
   const { handle, lang } = await params;
   /** Загружаем страницу магазина по URL */
@@ -123,8 +114,7 @@ export async function generateMetadata({
   return generatePageMetadata({
     handle: handle,
     title: localizeInfos.title,
-    description:
-      (localizeInfos as { plainContent?: string }).plainContent ?? '',
+    description: (localizeInfos as { plainContent?: string }).plainContent ?? '',
     isVisible: isVisible,
     imageUrl: getImageUrl('opengraph_image', attributeValues),
     imageAlt: localizeInfos.title,

@@ -20,8 +20,7 @@ const ProductsNotFound = (): JSX.Element => {
       </div>
       <h2 className="font-semibold text-2xl text-paper">Products not found</h2>
       <p className="text-base text-muted-text">
-        Try adjusting your filters or search query — nothing matched this
-        combination.
+        Try adjusting your filters or search query — nothing matched this combination.
       </p>
       <Link
         href="/shop"

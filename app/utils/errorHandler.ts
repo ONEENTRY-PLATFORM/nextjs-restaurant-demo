@@ -25,12 +25,7 @@ export class ApiError extends Error {
  * @returns {boolean}       true, если объект — IError, иначе false
  */
 export function isIError(error: unknown): error is IError {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'statusCode' in error &&
-    'message' in error
-  );
+  return typeof error === 'object' && error !== null && 'statusCode' in error && 'message' in error;
 }
 
 /**
@@ -49,11 +44,7 @@ export function handleApiError(handle: string, error: unknown): ApiError {
       timestamp: new Date().toISOString(),
     });
 
-    return new ApiError(
-      error.message || 'An error occurred',
-      error.statusCode || 500,
-      error,
-    );
+    return new ApiError(error.message || 'An error occurred', error.statusCode || 500, error);
   }
 
   if (error instanceof Error) {
@@ -98,7 +89,7 @@ export function useApiErrorHandler(): unknown {
  */
 export function formatErrorMessage(
   error: unknown,
-  defaultMessage: string = 'An error occurred',
+  defaultMessage: string = 'An error occurred'
 ): string {
   if (isIError(error)) {
     switch (error.statusCode) {

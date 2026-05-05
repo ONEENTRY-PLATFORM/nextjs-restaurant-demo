@@ -8,10 +8,7 @@ import { useContext, useEffect, useRef } from 'react';
 import { useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import {
-  addProductsToCart,
-  selectCartData,
-} from '@/app/store/reducers/CartSlice';
+import { addProductsToCart, selectCartData } from '@/app/store/reducers/CartSlice';
 import type { IProducts } from '@/app/types/global';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
@@ -33,14 +30,13 @@ import CartPopupAnimations from './animations/CartPopupAnimations';
 const CartPopup = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { open, component, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'CartPopup';
 
   const productsCartData = useAppSelector(selectCartData) as IProducts[];
   const { data, isLoading } = useGetProductsByIdsQuery(
-    { items: productsCartData.map((p) => p.id) },
-    { skip: !isOpen || productsCartData.length === 0 },
+    { items: productsCartData.map(p => p.id) },
+    { skip: !isOpen || productsCartData.length === 0 }
   );
 
   useEffect(() => {
@@ -75,21 +71,11 @@ const CartPopup = (): JSX.Element => {
               -top-5 компенсирует собственный pt-5 при «прилипании», bg+blur
               перекрывает уходящий вверх контент. */}
           <div className="z-10 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={close}
-              aria-label="Close cart"
-              className="group_white"
-            >
+            <button type="button" onClick={close} aria-label="Close cart" className="group_white">
               <ArrowBackOrangeIcon />
             </button>
             <p className="font-normal text-[24px] text-white">Cart</p>
-            <button
-              type="button"
-              onClick={close}
-              aria-label="Menu"
-              className="group_white"
-            >
+            <button type="button" onClick={close} aria-label="Menu" className="group_white">
               <BurgerOrangeIcon />
             </button>
           </div>
@@ -109,11 +95,7 @@ const CartPopup = (): JSX.Element => {
                     selected={productsCartData[i]?.selected as boolean}
                   />
                 ))}
-                <button
-                  type="button"
-                  onClick={handleApply}
-                  className="cart_btn mt-7.5 mx-auto"
-                >
+                <button type="button" onClick={handleApply} className="cart_btn mt-7.5 mx-auto">
                   APPLY
                 </button>
               </>

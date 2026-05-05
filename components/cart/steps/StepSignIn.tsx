@@ -43,8 +43,7 @@ const StepSignIn = (): JSX.Element => {
   const { isAuth, isLoading: isAuthLoading } = useContext(AuthContext);
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
-  const { data: providers, isLoading: isProvidersLoading } =
-    useGetAuthProvidersQuery('');
+  const { data: providers, isLoading: isProvidersLoading } = useGetAuthProvidersQuery('');
 
   useEffect(() => {
     if (isAuth) {
@@ -91,22 +90,12 @@ const StepSignIn = (): JSX.Element => {
         className="mx-auto h-auto w-42.5"
         priority
       />
-      {active.map((p) => {
+      {active.map(p => {
         const meta = getProviderMeta(p);
         return (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => onProviderClick(p)}
-            className="cart_btn"
-          >
+          <button key={p.id} type="button" onClick={() => onProviderClick(p)} className="cart_btn">
             <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-              <Image
-                src={meta.icon}
-                alt=""
-                width={meta.iconWidth}
-                height={meta.iconHeight}
-              />
+              <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
               {meta.label}
             </div>
           </button>

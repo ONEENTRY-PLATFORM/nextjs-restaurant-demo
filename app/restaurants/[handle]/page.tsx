@@ -40,14 +40,12 @@ const formatSchedule = (raw: unknown): string => {
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
   return (raw as ComfortItem[])
-    .map((item) => {
+    .map(item => {
       if (typeof item === 'string') return { title: item };
       const title = item.title ?? item.value ?? '';
       if (!title) return null;
       const iconUrl =
-        item.extended?.type === 'image'
-          ? item.extended?.value?.downloadLink
-          : undefined;
+        item.extended?.type === 'image' ? item.extended?.value?.downloadLink : undefined;
       return { title, iconUrl };
     })
     .filter((c): c is Comfort => c !== null);
@@ -194,15 +192,9 @@ const RestaurantPage = async ({
               {phone}
             </a>
           ) : null}
-          {address ? (
-            <p className="font-bold text-xl text-paper">{address}</p>
-          ) : null}
-          <p className="mt-3.75 font-bold text-xl uppercase text-brand">
-            opening hours
-          </p>
-          {schedule ? (
-            <p className="font-bold text-xl uppercase text-paper">{schedule}</p>
-          ) : null}
+          {address ? <p className="font-bold text-xl text-paper">{address}</p> : null}
+          <p className="mt-3.75 font-bold text-xl uppercase text-brand">opening hours</p>
+          {schedule ? <p className="font-bold text-xl uppercase text-paper">{schedule}</p> : null}
         </div>
 
         {hasCoords ? (

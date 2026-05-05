@@ -42,7 +42,7 @@ const ReviewAnimations = ({
         yPercent: 0,
         duration: 0.35,
         delay: index / 10,
-      },
+      }
     );
 
     if (!state) {

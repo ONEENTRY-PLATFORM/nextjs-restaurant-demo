@@ -15,9 +15,7 @@ import PhoneIcon from '@/components/icons/phone.svg';
 import CategoryFilter from '@/components/static/CategoryFilter';
 import FilterBottom from '@/components/static/FilterBottom';
 
-import CategoriesScroller, {
-  type PreferenceOption,
-} from './CategoriesScroller';
+import CategoriesScroller, { type PreferenceOption } from './CategoriesScroller';
 import CategoryButton from './CategoryButton';
 import FilterButton from './FilterButton';
 import Logo from './Logo';
@@ -36,12 +34,10 @@ const Header = async (): Promise<JSX.Element> => {
   // на странице `support`). Если CMS-значение отсутствует — кнопка деградирует
   // в visually-disabled (без ссылки), чтобы не вести в никуда.
   const { page: supportPage } = await getPageByUrl('support');
-  const supportPhone = supportPage?.attributeValues?.support_phone?.value as
-    | string
-    | undefined;
+  const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
 
   const populatedPages = ((pages ?? []) as IPagesEntity[])
-    .filter((p) => p.isVisible !== false)
+    .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   // Preferences-скроллер — list-type атрибут на set `dish`; каждый
@@ -54,7 +50,7 @@ const Header = async (): Promise<JSX.Element> => {
     !preferencesAttr.isError &&
     preferencesAttr.attribute &&
     'listTitles' in preferencesAttr.attribute
-      ? (preferencesAttr.attribute.listTitles as IListTitle[]).map((o) => ({
+      ? (preferencesAttr.attribute.listTitles as IListTitle[]).map(o => ({
           title: o.title,
           value: String(o.value),
         }))

@@ -38,7 +38,7 @@ const RelatedItems = async ({
 
   const canonical = await getRelatedProductsById(productId);
   if (!canonical.isError && canonical.products?.length) {
-    items = canonical.products.filter((p) => p.id !== productId);
+    items = canonical.products.filter(p => p.id !== productId);
   }
 
   if (!items.length && blocks?.length) {
@@ -46,7 +46,7 @@ const RelatedItems = async ({
       if (NON_SIMILAR_BLOCK_MARKERS.has(marker)) continue;
       const block = await getBlockProducts(marker);
       if (!block.isError && block.products.length) {
-        items = block.products.filter((p) => p.id !== productId);
+        items = block.products.filter(p => p.id !== productId);
         if (items.length) break;
       }
     }
@@ -65,12 +65,7 @@ const RelatedItems = async ({
       </ProductAnimations>
       <CardsGridAnimations className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
         {items.map((product, i) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            index={i}
-            productsLimit={0}
-          />
+          <ProductCard key={product.id} product={product} index={i} productsLimit={0} />
         ))}
       </CardsGridAnimations>
     </section>

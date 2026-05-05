@@ -14,11 +14,7 @@ import { setupStore } from '../store';
  * @param   {ReactNode}   props.children - дочерний ReactNode
  * @returns {JSX.Element}                Redux-провайдер
  */
-export default function StoreProvider({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element {
+export default function StoreProvider({ children }: { children: ReactNode }): JSX.Element {
   const [store] = useState(() => {
     const newStore = setupStore();
     persistStore(newStore);

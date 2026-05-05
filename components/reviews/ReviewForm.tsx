@@ -23,15 +23,12 @@ const TEXT_MARKER = 'review_text';
  * @param   {{ identifier?: string; formData?: unknown }} user - Сущность залогиненного пользователя.
  * @returns {string}                                            Отображаемое имя.
  */
-const resolveAuthorName = (user: {
-  identifier?: string;
-  formData?: unknown;
-}): string => {
+const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): string => {
   const formData = Array.isArray(user.formData)
     ? (user.formData as Array<{ marker?: unknown; value?: unknown }>)
     : [];
   const byMarker = (marker: string) => {
-    const field = formData.find((f) => f && f.marker === marker);
+    const field = formData.find(f => f && f.marker === marker);
     return typeof field?.value === 'string' ? field.value.trim() : '';
   };
   return byMarker('name_reg') || byMarker('email_reg') || user.identifier || '';
@@ -66,13 +63,9 @@ const ReviewForm = ({
     return (
       <div className="flex flex-col gap-3 rounded-xl bg-ink/60 p-5 text-paper">
         {hideTitle ? null : (
-          <h3 className="font-bold text-[18px] uppercase text-brand">
-            {leaveReviewLabel}
-          </h3>
+          <h3 className="font-bold text-[18px] uppercase text-brand">{leaveReviewLabel}</h3>
         )}
-        <p className="text-sm text-paper/80">
-          Please sign in to leave a review.
-        </p>
+        <p className="text-sm text-paper/80">Please sign in to leave a review.</p>
         <button
           type="button"
           onClick={() => {
@@ -123,9 +116,7 @@ const ReviewForm = ({
       });
       setLoading(false);
       if (isError(res)) {
-        setError(
-          (res as { message?: string }).message || 'Failed to submit review',
-        );
+        setError((res as { message?: string }).message || 'Failed to submit review');
         return;
       }
       setSuccess(true);
@@ -138,19 +129,13 @@ const ReviewForm = ({
   };
 
   if (success) {
-    return (
-      <div className="rounded-xl bg-ink/60 p-5 text-paper">
-        Thank you for your review!
-      </div>
-    );
+    return <div className="rounded-xl bg-ink/60 p-5 text-paper">Thank you for your review!</div>;
   }
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {hideTitle ? null : (
-        <h3 className="font-bold text-[18px] uppercase text-brand">
-          {leaveReviewLabel}
-        </h3>
+        <h3 className="font-bold text-[18px] uppercase text-brand">{leaveReviewLabel}</h3>
       )}
       <p className="text-sm text-paper/70">
         Posting as <span className="text-paper">{resolveAuthorName(user)}</span>
@@ -162,7 +147,7 @@ const ReviewForm = ({
       <textarea
         rows={4}
         value={text}
-        onChange={(e) => setText(e.currentTarget.value)}
+        onChange={e => setText(e.currentTarget.value)}
         placeholder="Tell us what you think..."
         className="w-full bg-transparent border border-muted rounded-md text-paper text-base p-3 focus:outline-none focus:border-brand"
       />

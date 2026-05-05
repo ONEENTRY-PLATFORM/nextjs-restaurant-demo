@@ -20,9 +20,7 @@ export const DictProvider = ({
 }: {
   value: IAttributeValues | undefined;
   children: ReactNode;
-}): JSX.Element => (
-  <DictContext.Provider value={value}>{children}</DictContext.Provider>
-);
+}): JSX.Element => <DictContext.Provider value={value}>{children}</DictContext.Provider>;
 
 /**
  * Возвращает функцию `t(marker, fallback)`, которая читает строку из
@@ -39,6 +37,6 @@ export const useT = (): ((marker: string, fallback: string) => string) => {
   const dict = useContext(DictContext);
   return useCallback(
     (marker: string, fallback: string) => dictText(dict, marker, fallback),
-    [dict],
+    [dict]
   );
 };

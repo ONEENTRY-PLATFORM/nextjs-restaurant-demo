@@ -27,7 +27,7 @@ const IncreaseButton = ({
         id: id,
         quantity: 1,
         units: units,
-      }),
+      })
     );
   };
 

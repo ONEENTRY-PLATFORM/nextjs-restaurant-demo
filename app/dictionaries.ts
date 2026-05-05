@@ -1,9 +1,6 @@
 import 'server-only';
 
-import type {
-  IAttributeValue,
-  IAttributeValues,
-} from 'oneentry/dist/base/utils';
+import type { IAttributeValue, IAttributeValues } from 'oneentry/dist/base/utils';
 
 import { dictText } from '@/components/utils';
 
@@ -38,8 +35,7 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
     }>) {
       const isEmpty =
         raw.value == null ||
-        (typeof raw.value === 'object' &&
-          Object.keys(raw.value as object).length === 0);
+        (typeof raw.value === 'object' && Object.keys(raw.value as object).length === 0);
       dict[raw.marker] = {
         ...raw,
         value: isEmpty ? (raw.initialValue ?? '') : raw.value,

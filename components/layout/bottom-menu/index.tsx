@@ -35,16 +35,12 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
 
   if (isError || !menu) {
     // eslint-disable-next-line no-console
-    console.warn(
-      '[BottomMenu] Menu "bottom_web" unavailable — rendering empty bar.',
-      error,
-    );
+    console.warn('[BottomMenu] Menu "bottom_web" unavailable — rendering empty bar.', error);
   }
 
-  const pages: IMenusPages[] =
-    menu && Array.isArray(menu.pages) ? menu.pages : [];
+  const pages: IMenusPages[] = menu && Array.isArray(menu.pages) ? menu.pages : [];
 
-  const navItems = pages.flatMap((page) => {
+  const navItems = pages.flatMap(page => {
     const config = page.pageUrl ? NAV_BY_URL[page.pageUrl] : undefined;
     return config ? [{ page, ...config }] : [];
   });

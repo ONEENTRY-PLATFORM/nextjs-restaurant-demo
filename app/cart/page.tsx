@@ -34,9 +34,7 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
   const response = await getProductById(83);
 
   /** Проверяем, есть ли в ответе ошибка */
-  const deliveryData = response.isError
-    ? undefined
-    : (response as ProductResponse).product;
+  const deliveryData = response.isError ? undefined : (response as ProductResponse).product;
 
   /** Промо-баннеры из OneEntry `blog` (десктопный sidebar). */
   const banners = await getBlogBanners();

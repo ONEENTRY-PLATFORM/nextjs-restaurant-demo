@@ -18,7 +18,7 @@ const ProductsGrid = ({
   // продукт всплывает по разным условиям и SDK не дедупает результат.
   // Дедупаем по `id`, иначе React падает с "two children with the same key".
   const seen = new Set<number>();
-  const uniqueVisible = (products ?? []).filter((item) => {
+  const uniqueVisible = (products ?? []).filter(item => {
     if (!item.isVisible) return false;
     if (seen.has(item.id)) return false;
     seen.add(item.id);

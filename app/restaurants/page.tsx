@@ -81,8 +81,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   }
 
   const parent = parentRes.page;
-  const title =
-    parent.localizeInfos?.title ?? 'Welcome to our restaurant chain';
+  const title = parent.localizeInfos?.title ?? 'Welcome to our restaurant chain';
   const descriptionRaw = parent.attributeValues?.description?.value as
     | Array<{ htmlValue?: string; plainValue?: string }>
     | undefined;
@@ -90,12 +89,10 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
 
   const visiblePages = (childrenRes.pages ?? [])
-    .filter((p) => p.isVisible !== false)
+    .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
-  const cards: RestaurantCard[] = visiblePages.map((p, idx) =>
-    buildCard(p, idx + 1),
-  );
+  const cards: RestaurantCard[] = visiblePages.map((p, idx) => buildCard(p, idx + 1));
 
   return (
     <section className="section_layout">
@@ -118,7 +115,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
         </p>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-7.5 md:grid-cols-2">
-          {cards.map((card) => (
+          {cards.map(card => (
             <RestaurantCardView key={card.id} card={card} />
           ))}
         </div>
@@ -127,11 +124,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   );
 };
 
-const RestaurantCardView = ({
-  card,
-}: {
-  card: RestaurantCard;
-}): JSX.Element => {
+const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => {
   return (
     <div className="flex flex-col items-stretch gap-5">
       <RestaurantPhotoSlider
@@ -151,15 +144,10 @@ const RestaurantCardView = ({
           ) : (
             <p className="text-base text-brand">{card.title}</p>
           )}
-          {card.schedule ? (
-            <p className="text-base text-brand">{card.schedule}</p>
-          ) : null}
+          {card.schedule ? <p className="text-base text-brand">{card.schedule}</p> : null}
         </div>
       </div>
-      <Link
-        href={card.href}
-        className="cart_btn bg-custom_btnorange hover:bg-brand-hover"
-      >
+      <Link href={card.href} className="cart_btn bg-custom_btnorange hover:bg-brand-hover">
         MORE ABOUT RESTORANT
       </Link>
     </div>

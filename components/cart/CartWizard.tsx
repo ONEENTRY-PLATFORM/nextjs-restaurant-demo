@@ -36,13 +36,10 @@ type CartWizardProps = {
 // auth-гейт (`signin` = выбор метода по `pk_login.html`) и
 // код подтверждения (`verification` по `pk_verif.html`). Сами формы sign-in /
 // sign-up живут в отдельном drawer (OpenDrawerContext), не здесь.
-const AUTH_POPUP_STEPS: ReadonlySet<CheckoutStep> = new Set([
-  'signin',
-  'verification',
-]);
+const AUTH_POPUP_STEPS: ReadonlySet<CheckoutStep> = new Set(['signin', 'verification']);
 
 const buildStepTitles = (
-  t: (marker: string, fallback: string) => string,
+  t: (marker: string, fallback: string) => string
 ): Record<CheckoutStep, string> => ({
   cart: 'Cart',
   time: 'Select time',
@@ -91,10 +88,7 @@ const useIsMdUp = (): boolean =>
  * @param   {CartWizardProps} props - Пропсы wizard.
  * @returns {JSX.Element}           JSX wizard для текущего шага.
  */
-const CartWizard = ({
-  deliveryData,
-  promoSidebar,
-}: CartWizardProps): JSX.Element => {
+const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const step = useAppSelector(selectCheckoutStep);
@@ -169,9 +163,7 @@ const CartWizard = ({
             {/* Товары корзины + APPLY — остаются примонтированными; скрыты на десктопе,
                 пока инлайн-шаг занимает этот слот, скрыты на мобиле
                 через внешний `cartWrapperClass`, когда активен попап. */}
-            <div
-              className={hideCartProductsOnDesktop ? 'md:hidden' : 'contents'}
-            >
+            <div className={hideCartProductsOnDesktop ? 'md:hidden' : 'contents'}>
               <CartPage deliveryData={deliveryData} />
             </div>
             {showInline && <div className="hidden md:block">{stepBody}</div>}

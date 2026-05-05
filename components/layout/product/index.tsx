@@ -28,11 +28,7 @@ type DishProduct = IProductsEntity & {
  * @param   {DishProduct}                                  props.product - продукт
  * @returns {Promise<JSX.Element>}                                       JSX страницы продукта
  */
-const ProductSingle = async ({
-  product,
-}: {
-  product: DishProduct;
-}): Promise<JSX.Element> => {
+const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages } = product;
 
   // Парсим "menu/desserts" → "desserts"
@@ -41,7 +37,7 @@ const ProductSingle = async ({
   const categoryLabel = categorySlug
     ? categorySlug
         .split('_')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ')
     : '';
 
@@ -57,9 +53,7 @@ const ProductSingle = async ({
             Category / {categoryLabel}
           </Link>
         ) : null}
-        <p className="font-bold text-[20px] tracking-[0.02em] text-paper">
-          {localizeInfos.title}
-        </p>
+        <p className="font-bold text-[20px] tracking-[0.02em] text-paper">{localizeInfos.title}</p>
       </div>
 
       {/* 2-колоночный layout (md+): картинка | детали + отзывы. */}

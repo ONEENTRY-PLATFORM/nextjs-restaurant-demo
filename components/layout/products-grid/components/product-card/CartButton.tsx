@@ -28,9 +28,9 @@ const CartButton = ({
   children: ReactNode;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const item = useAppSelector((state) =>
-    selectCartItemWithIdLength(state, id),
-  ) as { quantity?: number } | undefined;
+  const item = useAppSelector(state => selectCartItemWithIdLength(state, id)) as
+    | { quantity?: number }
+    | undefined;
   const qty = item?.quantity ?? 0;
 
   // redux-persist регидратит корзину на клиенте, поэтому qty может отличаться
@@ -46,7 +46,7 @@ const CartButton = ({
     return (
       <div
         className="menu_items_btn relative z-10"
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault();
           e.stopPropagation();
         }}
@@ -55,7 +55,7 @@ const CartButton = ({
           type="button"
           aria-label="Decrease quantity"
           className="text-brand"
-          onClick={(e) => {
+          onClick={e => {
             stop(e);
             if (qty <= 1) {
               dispatch(removeProduct(id));
@@ -72,7 +72,7 @@ const CartButton = ({
           type="button"
           aria-label="Increase quantity"
           className="text-brand"
-          onClick={(e) => {
+          onClick={e => {
             stop(e);
             dispatch(increaseProductQty({ id, quantity: 1, units: 99 }));
           }}
@@ -86,7 +86,7 @@ const CartButton = ({
   return (
     <button
       type="button"
-      onClick={(e) => {
+      onClick={e => {
         stop(e);
         dispatch(addProductToCart({ id, selected: true, quantity: 1 }));
         toast('Product ' + title + ' added to cart!');

@@ -31,7 +31,7 @@ export const getAllOrdersByMarker = cache(
         marker,
         langCode || getLang(),
         offset,
-        limit,
+        limit
       );
 
       if (typeError(data)) {
@@ -42,5 +42,5 @@ export const getAllOrdersByMarker = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError, total: 0 };
     }
-  },
+  }
 );

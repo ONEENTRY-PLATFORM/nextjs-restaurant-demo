@@ -19,8 +19,7 @@ export const getAttributesByMarker = cache(
     attributes?: IAttributeSetsEntity[];
   }> => {
     try {
-      const data =
-        await getApi().AttributesSets.getAttributesByMarker(attributeMarker);
+      const data = await getApi().AttributesSets.getAttributesByMarker(attributeMarker);
 
       if (typeError(data)) {
         return { isError: true, error: data as IError };
@@ -30,5 +29,5 @@ export const getAttributesByMarker = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

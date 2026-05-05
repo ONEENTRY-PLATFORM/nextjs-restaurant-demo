@@ -2,10 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type {
-  IOrderByMarkerEntity,
-  IOrderProducts,
-} from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity, IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -19,13 +16,7 @@ import { formatDate } from '@/app/utils/formatDate';
 import ReviewForm from '@/components/reviews/ReviewForm';
 import { UsePrice } from '@/components/utils';
 
-const HISTORY_STATUSES = new Set([
-  'delivered',
-  'canceled',
-  'cancelled',
-  'completed',
-  'rejected',
-]);
+const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
 /**
  * Возвращает читаемый статус заказа, отдавая приоритет локализованной информации из CMS.
@@ -33,12 +24,11 @@ const HISTORY_STATUSES = new Set([
  * @returns {string}                  Отображаемая подпись.
  */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
-  const localized = (o.statusLocalizeInfos as { title?: string } | undefined)
-    ?.title;
+  const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
   const id = o.statusIdentifier;
   if (!id) return '—';
-  return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
 /**
@@ -60,12 +50,9 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
  * @returns {{ subtotal: number; delivery: number; total: number }} Итоги.
  */
 const computeTotals = (
-  o: IOrderByMarkerEntity,
+  o: IOrderByMarkerEntity
 ): { subtotal: number; delivery: number; total: number } => {
-  const subtotal = o.products.reduce(
-    (s, p) => s + Number(p.price) * Number(p.quantity),
-    0,
-  );
+  const subtotal = o.products.reduce((s, p) => s + Number(p.price) * Number(p.quantity), 0);
   const total = Number(o.totalSum) || subtotal;
   const delivery = Math.max(0, total - subtotal);
   return { subtotal, delivery, total };
@@ -128,10 +115,7 @@ const OrderCard = ({
           alt=""
           width={12}
           height={7}
-          className={
-            'transition-transform duration-200 ' +
-            (expanded ? '' : 'rotate-180')
-          }
+          className={'transition-transform duration-200 ' + (expanded ? '' : 'rotate-180')}
         />
       </button>
       {expanded && (
@@ -207,12 +191,9 @@ const OrderLineItem = ({
   // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
   // подгружаемого по id через RTK на уровне `OrdersList`.
   const coverFromEntity = (
-    fullProduct?.attributeValues?.cover?.value as
-      | { downloadLink?: string }
-      | undefined
+    fullProduct?.attributeValues?.cover?.value as { downloadLink?: string } | undefined
   )?.downloadLink;
-  const previewSrc =
-    product.previewImage?.previewLink ?? coverFromEntity ?? null;
+  const previewSrc = product.previewImage?.previewLink ?? coverFromEntity ?? null;
   const href = '/shop/product/' + product.id;
   return (
     <div className={first ? '' : 'mt-5'}>
@@ -234,20 +215,15 @@ const OrderLineItem = ({
           )}
         </Link>
         <div className="flex min-w-0 flex-1 flex-col justify-between">
-          <Link
-            href={href}
-            className="text-sm font-normal text-white hover:text-brand"
-          >
+          <Link href={href} className="text-sm font-normal text-white hover:text-brand">
             {product.title}
           </Link>
           <div className="flex items-center gap-2.5">
-            <p className="text-xl font-bold text-brand">
-              {UsePrice({ amount: product.price })}
-            </p>
+            <p className="text-xl font-bold text-brand">{UsePrice({ amount: product.price })}</p>
           </div>
           <button
             type="button"
-            onClick={() => setReviewOpen((v) => !v)}
+            onClick={() => setReviewOpen(v => !v)}
             aria-expanded={reviewOpen}
             className="mt-1.25 self-start text-sm text-brand underline underline-offset-2 hover:no-underline"
           >
@@ -323,7 +299,7 @@ const OrdersList = ({
   const { active, history } = useMemo(() => {
     const a: IOrderByMarkerEntity[] = [];
     const h: IOrderByMarkerEntity[] = [];
-    orders.forEach((o) => (isHistoryOrder(o) ? h.push(o) : a.push(o)));
+    orders.forEach(o => (isHistoryOrder(o) ? h.push(o) : a.push(o)));
     return { active: a, history: h };
   }, [orders]);
 
@@ -332,23 +308,23 @@ const OrdersList = ({
   // вернул `previewImage: null`. RTK дедуплицирует с другими местами (cart).
   const productIds = useMemo(() => {
     const set = new Set<number>();
-    orders.forEach((o) => o.products.forEach((p) => set.add(p.id)));
+    orders.forEach(o => o.products.forEach(p => set.add(p.id)));
     return Array.from(set);
   }, [orders]);
   const { data: fetchedProducts } = useGetProductsByIdsQuery(
     { items: productIds },
-    { skip: productIds.length === 0 },
+    { skip: productIds.length === 0 }
   );
   const productsById = useMemo(() => {
     const map = new Map<number, IProductsEntity>();
-    (fetchedProducts ?? []).forEach((p) => map.set(p.id, p));
+    (fetchedProducts ?? []).forEach(p => map.set(p.id, p));
     return map;
   }, [fetchedProducts]);
 
   useEffect(() => {
     if (active.length === 0 && history.length === 0) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setExpandedIds((prev) => {
+    setExpandedIds(prev => {
       if (prev.size > 0) return prev;
       const next = new Set<number>();
       if (active[0]) next.add(active[0].id);
@@ -358,7 +334,7 @@ const OrdersList = ({
   }, [active, history]);
 
   const toggle = (id: number): void => {
-    setExpandedIds((prev) => {
+    setExpandedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
@@ -372,18 +348,13 @@ const OrdersList = ({
   let leftColumn: JSX.Element;
   if (authLoading || loading) {
     leftColumn = (
-      <div className="text-paper/80">
-        {t('loading_orders_text', 'Loading orders...')}
-      </div>
+      <div className="text-paper/80">{t('loading_orders_text', 'Loading orders...')}</div>
     );
   } else if (!isAuth) {
     // `orders_signin_prompt` хранит фразу целиком; чтобы оставить inline-кнопку
     // «sign in» внутри предложения, ищем её в шаблоне (case-insensitive). Если
     // шаблон не содержит подстроки — показываем cta-кнопку отдельно после текста.
-    const prompt = t(
-      'orders_signin_prompt',
-      'Please sign in to view your orders.',
-    );
+    const prompt = t('orders_signin_prompt', 'Please sign in to view your orders.');
     const signInLabel = t('sign_in_text', 'sign in');
     const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
     const before = idx >= 0 ? prompt.slice(0, idx) : prompt + ' ';
@@ -425,15 +396,13 @@ const OrdersList = ({
   } else {
     leftColumn = (
       <>
-        <p className="mt-2.5 text-xl text-paper">
-          {t('active_orders_title', 'Active orders')}
-        </p>
+        <p className="mt-2.5 text-xl text-paper">{t('active_orders_title', 'Active orders')}</p>
         {active.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
             {t('no_active_orders_text', 'You have no active orders.')}
           </p>
         ) : (
-          active.map((o) => (
+          active.map(o => (
             <OrderCard
               key={o.id}
               order={o}
@@ -444,15 +413,13 @@ const OrdersList = ({
             />
           ))
         )}
-        <p className="mt-5 text-xl text-paper">
-          {t('orders_history_title', 'Orders History')}
-        </p>
+        <p className="mt-5 text-xl text-paper">{t('orders_history_title', 'Orders History')}</p>
         {history.length === 0 ? (
           <p className="mt-2.75 text-sm text-paper/70">
             {t('no_history_orders_text', 'You have no past orders yet.')}
           </p>
         ) : (
-          history.map((o) => (
+          history.map(o => (
             <OrderCard
               key={o.id}
               order={o}
@@ -475,8 +442,8 @@ const OrdersList = ({
         <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
         <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
           {promoBanners
-            .filter((b) => b.mobileImage)
-            .map((b) => (
+            .filter(b => b.mobileImage)
+            .map(b => (
               <Link
                 key={b.id}
                 href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}

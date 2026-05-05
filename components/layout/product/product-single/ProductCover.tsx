@@ -11,13 +11,7 @@ import Placeholder from '@/components/shared/Placeholder';
  * @prop {string} alt - alt-атрибут картинки
  * @returns {JSX.Element} JSX-компонент для отображения картинки продукта
  */
-const ProductCover = ({
-  product,
-  alt,
-}: {
-  product: IProductsEntity;
-  alt: string;
-}): JSX.Element => {
+const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
   const coverRaw = product.attributeValues.cover?.value as
     | { downloadLink?: string }
     | Array<{ downloadLink?: string }>

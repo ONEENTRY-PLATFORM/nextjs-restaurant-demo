@@ -33,7 +33,7 @@ import NavItemProfile from './NavItemProfile';
 const NavGroup = async (): Promise<JSX.Element> => {
   const { menu } = await getMenuByMarker('user_menu');
   const topLevel = (menu?.pages ?? [])
-    .filter((p) => p.parentId === null)
+    .filter(p => p.parentId === null)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   return (
@@ -48,7 +48,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
             <NavItemProfile />
           </>
         ) : (
-          topLevel.map((page) => renderItem(page))
+          topLevel.map(page => renderItem(page))
         )}
       </div>
     </div>
@@ -66,9 +66,7 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
           key={page.id}
           prefetch={false}
           href="/"
-          aria-label={
-            page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? 'Home'
-          }
+          aria-label={page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? 'Home'}
           className="group relative my-auto box-border flex shrink-0"
         >
           <HouseIcon size="lg" />
@@ -90,11 +88,7 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
  * `attributeValues.menu_icon`. Используется для всех top-level пунктов,
  * у которых нет специализированного компонента (Home, etc.).
  */
-const NavGenericIcon = ({
-  page,
-}: {
-  page: IMenusPages;
-}): JSX.Element | null => {
+const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
   // `attributeValues.menu_icon.value` в SDK типизирован как `{}` — данные
   // приходят как `{ downloadLink, ... }` для type === 'image' (см.
   // inspect-api). Сужаем локальным cast'ом.
@@ -104,11 +98,7 @@ const NavGenericIcon = ({
   const iconUrl = icon?.type === 'image' ? icon.value?.downloadLink : undefined;
   if (!iconUrl) return null;
 
-  const title =
-    page.localizeInfos?.menuTitle ??
-    page.localizeInfos?.title ??
-    page.pageUrl ??
-    '';
+  const title = page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? page.pageUrl ?? '';
   // pageUrl `home_web` (как в админке) → ведёт на корень сайта;
   // остальные — на `/${pageUrl}`.
   const href = page.pageUrl === 'home_web' ? '/' : `/${page.pageUrl}`;

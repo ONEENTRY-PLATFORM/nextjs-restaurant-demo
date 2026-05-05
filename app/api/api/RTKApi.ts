@@ -10,18 +10,9 @@ import type {
   IOrderData,
   IOrdersEntity,
 } from 'oneentry/dist/orders/ordersInterfaces';
-import type {
-  IPagesEntity,
-  IPositionBlock,
-} from 'oneentry/dist/pages/pagesInterfaces';
-import type {
-  IAccountsEntity,
-  ISessionEntity,
-} from 'oneentry/dist/payments/paymentsInterfaces';
-import type {
-  IProductsEntity,
-  IProductsResponse,
-} from 'oneentry/dist/products/productsInterfaces';
+import type { IPagesEntity, IPositionBlock } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IAccountsEntity, ISessionEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IProductsEntity, IProductsResponse } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import type { IProducts } from '@/app/types/global';
@@ -48,17 +39,8 @@ export const RTKApi = createApi({
   reducerPath: 'api',
   baseQuery: fakeBaseQuery(),
   keepUnusedDataFor: 300, // 5 минут по умолчанию
-  tagTypes: [
-    'Products',
-    'Pages',
-    'Blocks',
-    'Forms',
-    'Orders',
-    'User',
-    'Accounts',
-    'Sessions',
-  ],
-  endpoints: (build) => ({
+  tagTypes: ['Products', 'Pages', 'Blocks', 'Forms', 'Orders', 'User', 'Accounts', 'Sessions'],
+  endpoints: build => ({
     /**
      * Получает все блоки по url страницы.
      * @property {string} pageUrl - Маркер блока.
@@ -122,17 +104,13 @@ export const RTKApi = createApi({
               } else {
                 return product as IProductsEntity;
               }
-            }),
-          ).then((results) => {
-            return results.filter(
-              (product): product is IProductsEntity => product !== undefined,
-            );
+            })
+          ).then(results => {
+            return results.filter((product): product is IProductsEntity => product !== undefined);
           });
         };
 
-        const result = await getProductsByIds(items.map((item) => item)).then(
-          (res) => res,
-        );
+        const result = await getProductsByIds(items.map(item => item)).then(res => res);
 
         if (typeError(result)) {
           return { error: 'Data error' };
@@ -339,11 +317,7 @@ export const RTKApi = createApi({
      */
     updateOrderByMarkerAndId: build.query<IBaseOrdersEntity, SingleOrderProps>({
       queryFn: async ({ id, marker, body }) => {
-        const result = await getApi().Orders.updateOrderByMarkerAndId(
-          marker,
-          id,
-          body,
-        );
+        const result = await getApi().Orders.updateOrderByMarkerAndId(marker, id, body);
         if (typeError(result)) {
           return { error: result };
         }
@@ -373,11 +347,7 @@ export const RTKApi = createApi({
      */
     updateOrder: build.mutation<IBaseOrdersEntity, SingleOrderProps>({
       queryFn: async ({ id, marker, body }) => {
-        const result = await getApi().Orders.updateOrderByMarkerAndId(
-          marker,
-          id,
-          body,
-        );
+        const result = await getApi().Orders.updateOrderByMarkerAndId(marker, id, body);
         if (typeError(result)) {
           return { error: result };
         }

@@ -20,19 +20,11 @@ const Header = dynamic(() => import('@/components/layout/header'), {
   ssr: true,
 });
 const CartPopup = dynamic(() => import('@/components/cart/CartPopup'));
-const FavoritesPopup = dynamic(
-  () => import('@/components/profile/FavoritesPopup'),
-);
+const FavoritesPopup = dynamic(() => import('@/components/profile/FavoritesPopup'));
 const ProfilePopup = dynamic(() => import('@/components/profile/ProfilePopup'));
-const BookingsPopup = dynamic(
-  () => import('@/components/profile/BookingsPopup'),
-);
-const ReservationPopup = dynamic(
-  () => import('@/components/reservation/ReservationPopup'),
-);
-const ReviewFormPopup = dynamic(
-  () => import('@/components/reviews/ReviewFormPopup'),
-);
+const BookingsPopup = dynamic(() => import('@/components/profile/BookingsPopup'));
+const ReservationPopup = dynamic(() => import('@/components/reservation/ReservationPopup'));
+const ReviewFormPopup = dynamic(() => import('@/components/reviews/ReviewFormPopup'));
 
 import './globals.css';
 

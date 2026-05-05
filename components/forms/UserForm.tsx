@@ -39,7 +39,7 @@ const UserForm = (): JSX.Element => {
   });
 
   // получаем поля из formFieldsReducer
-  const fields = useAppSelector((state) => state.formFieldsReducer.fields);
+  const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   const formData = useMemo(() => {
     return data?.attributes
@@ -87,14 +87,13 @@ const UserForm = (): JSX.Element => {
         setError('');
         toast('Data saved!');
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : 'An error occurred';
+        const message = error instanceof Error ? error.message : 'An error occurred';
         setError(message);
       } finally {
         setLoading(false);
       }
     },
-    [fields, formData, refreshUser, user?.formIdentifier],
+    [fields, formData, refreshUser, user?.formIdentifier]
   );
 
   if (isLoading) {
@@ -112,26 +111,17 @@ const UserForm = (): JSX.Element => {
     >
       <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
         {data?.attributes
-          .filter(
-            (field: { marker: string }) =>
-              field.marker !== 'email_notification_reg',
-          )
+          .filter((field: { marker: string }) => field.marker !== 'email_notification_reg')
           .map((field: IFormAttribute, index: number) => {
             const fieldData =
               Array.isArray(user?.formData) &&
               (user.formData.find(
-                (item) => item.marker === field.marker,
+                item => item.marker === field.marker
               ) as unknown as FormDataType[]);
-            return (
-              <FormInput key={index} index={index} {...field} {...fieldData} />
-            );
+            return <FormInput key={index} index={index} {...field} {...fieldData} />;
           })}
       </div>
-      <SubmitButton
-        title={t('submit_text', '')}
-        isLoading={loading}
-        index={10}
-      />
+      <SubmitButton title={t('submit_text', '')} isLoading={loading} index={10} />
       {isError && <ErrorMessage error={isError} />}
     </form>
   );

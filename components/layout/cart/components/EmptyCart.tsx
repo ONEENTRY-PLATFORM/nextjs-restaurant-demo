@@ -20,9 +20,7 @@ const EmptyCart = (): JSX.Element => {
         alt={'empty_cart'}
         className="mb-5 size-20 opacity-20"
       />
-      <h1 className="mb-5 text-lg font-bold uppercase text-brand">
-        Empty cart
-      </h1>
+      <h1 className="mb-5 text-lg font-bold uppercase text-brand">Empty cart</h1>
       <Link
         prefetch={true}
         href={'/shop/'}

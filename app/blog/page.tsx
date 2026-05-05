@@ -39,13 +39,10 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
   }
 
   const title = page.localizeInfos?.title ?? 'Promotions';
-  const description = page.attributeValues?.description?.value as
-    | DescriptionValue
-    | undefined;
-  const subtitleHtml =
-    description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const description = page.attributeValues?.description?.value as DescriptionValue | undefined;
+  const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
 
-  const visibleBanners = banners.filter((b) => b.desktopImage || b.mobileImage);
+  const visibleBanners = banners.filter(b => b.desktopImage || b.mobileImage);
 
   return (
     <section className="section_layout">
@@ -90,9 +87,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
                     alt={b.title}
                     width={1292}
                     height={192}
-                    sizes={
-                      hasBoth ? '(min-width: 768px) 1292px, 100vw' : '100vw'
-                    }
+                    sizes={hasBoth ? '(min-width: 768px) 1292px, 100vw' : '100vw'}
                     priority={i === 0}
                     className={
                       hasBoth
@@ -109,9 +104,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
                     height={278}
                     sizes="100vw"
                     priority={i === 0 && !b.desktopImage}
-                    className={
-                      hasBoth ? 'h-auto w-full md:hidden' : 'h-auto w-full'
-                    }
+                    className={hasBoth ? 'h-auto w-full md:hidden' : 'h-auto w-full'}
                   />
                 ) : null}
               </Link>
@@ -132,9 +125,7 @@ export default BlogPromoListPage;
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(BLOG_HANDLE);
   const title = page?.localizeInfos?.title ?? 'Promotions';
-  const description = page?.attributeValues?.description?.value as
-    | DescriptionValue
-    | undefined;
+  const description = page?.attributeValues?.description?.value as DescriptionValue | undefined;
   const descriptionText = description?.[0]?.plainValue ?? '';
   return {
     title,

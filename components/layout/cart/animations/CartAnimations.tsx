@@ -11,10 +11,7 @@ import type { AnimationsProps } from '@/app/types/global';
 /**
  * Анимации обёртки корзины при stage leaving
  */
-const CartAnimations = ({
-  children,
-  className,
-}: AnimationsProps): JSX.Element => {
+const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
   const ref = useRef(null);

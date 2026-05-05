@@ -94,9 +94,7 @@ const readNumber = (value: unknown): number => {
  * @param   {number}                    productId - Id отзываемого продукта (становится `entityIdentifier`).
  * @returns {Promise<ProductReview[]>}            Отзывы верхнего уровня, сначала новые.
  */
-export const getProductReviews = async (
-  productId: number,
-): Promise<ProductReview[]> => {
+export const getProductReviews = async (productId: number): Promise<ProductReview[]> => {
   unstable_noStore();
 
   try {
@@ -106,8 +104,7 @@ export const getProductReviews = async (
     const formMeta = form as unknown as {
       moduleFormConfigs?: Array<{ id?: number }>;
     };
-    const formModuleConfigId =
-      formMeta?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
+    const formModuleConfigId = formMeta?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
     const data = await getApi().FormData.getFormsDataByMarker(
       FORM_MARKER,
@@ -122,7 +119,7 @@ export const getProductReviews = async (
       1,
       lang,
       0,
-      REVIEWS_LIMIT,
+      REVIEWS_LIMIT
     );
 
     if (isError(data)) {
@@ -132,20 +129,14 @@ export const getProductReviews = async (
     const items = (data as unknown as { items?: RawReviewItem[] })?.items ?? [];
 
     return items
-      .filter((item) => item.parentId === null)
-      .map<ProductReview>((item) => {
-        const ratingField = item.formData?.find(
-          (f) => f.marker === 'review_rating',
-        );
-        const textField = item.formData?.find(
-          (f) => f.marker === 'review_text',
-        );
+      .filter(item => item.parentId === null)
+      .map<ProductReview>(item => {
+        const ratingField = item.formData?.find(f => f.marker === 'review_rating');
+        const textField = item.formData?.find(f => f.marker === 'review_text');
         return {
           id: String(item.id),
           author: item.userIdentifier?.trim() || 'Anonymous',
-          date: item.time
-            ? new Date(item.time).toLocaleDateString('en-US')
-            : '',
+          date: item.time ? new Date(item.time).toLocaleDateString('en-US') : '',
           rating: readNumber(ratingField?.value),
           text: readPlainText(textField?.value),
         };

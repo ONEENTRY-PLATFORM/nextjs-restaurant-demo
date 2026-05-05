@@ -4,12 +4,7 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
-import {
-  getLang,
-  hasActiveSession,
-  reDefine,
-  useLazyGetMeQuery,
-} from '@/app/api';
+import { getLang, hasActiveSession, reDefine, useLazyGetMeQuery } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 
 // import { updateUserState } from '@/app/api/server/users/updateUserState';
@@ -80,9 +75,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   // const favoritesVersion = useAppSelector(selectFavoritesVersion) as number;
   /** Получаем товары корзины из redux store */
   const productsInCart = useAppSelector(selectCartData);
-  const favoritesIds = useAppSelector(
-    (state: { favoritesReducer: { products: number[] } }) =>
-      selectFavoritesItems(state),
+  const favoritesIds = useAppSelector((state: { favoritesReducer: { products: number[] } }) =>
+    selectFavoritesItems(state)
   );
 
   /**
@@ -131,7 +125,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const checkToken = useCallback(async () => {
     /** Триггерим загрузку данных пользователя с текущим langCode из SDK */
     trigger(getLang())
-      .then(async (res) => {
+      .then(async res => {
         /** Проверяем, есть ли ошибка в ответе или отсутствует user ID */
         if ((res.isError && !res.isLoading) || !res.data?.id) {
           /** Чистим refresh token и выставляем auth в false */
@@ -188,17 +182,13 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     }
 
     /** Добавляем каждый товар из состояния пользователя в корзину Redux */
-    (user.state.cart as IProducts[] | undefined)?.forEach((product) => {
-      const productInCart = productsInCart?.find(
-        (p: { id: number }) => p.id === product.id,
-      );
+    (user.state.cart as IProducts[] | undefined)?.forEach(product => {
+      const productInCart = productsInCart?.find((p: { id: number }) => p.id === product.id);
       /** Если товара в корзине нет — добавляем */
       if (!productInCart) {
         // Редьюсер ожидает `{ id, selected, quantity }`; без quantity здесь
         // QuantitySelector в корзине скрывается, а тоталы остаются $0.
-        dispatch(
-          addProductToCart({ id: product.id, selected: true, quantity: 1 }),
-        );
+        dispatch(addProductToCart({ id: product.id, selected: true, quantity: 1 }));
       }
     });
 

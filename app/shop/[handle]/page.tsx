@@ -26,10 +26,7 @@ const MemoizedProductsGridLoader = memo(ProductsGridLoader);
  */
 const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   /** Извлекаем search-параметры из запроса */
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
+  const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
   /** Извлекаем параметры маршрута из запроса */
   const { handle } = params;
 
@@ -50,11 +47,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   return (
     <section className="shop_section">
       <div className="flex w-full flex-col items-center gap-5">
-        <Suspense
-          fallback={
-            <MemoizedProductsGridLoader productsLimit={productsLimit} />
-          }
-        >
+        <Suspense fallback={<MemoizedProductsGridLoader productsLimit={productsLimit} />}>
           <ProductsGridLayout
             params={{ handle }}
             searchParams={searchParams ?? {}}
@@ -72,9 +65,7 @@ export default ShopCatalogPage;
 /**
  * Генерирует метаданные страницы
  */
-export async function generateMetadata({
-  params,
-}: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);
 
@@ -91,8 +82,7 @@ export async function generateMetadata({
     height,
     altText: alt,
   } = {
-    url: (attributeValues?.icon as { downloadLink?: string } | undefined)
-      ?.downloadLink,
+    url: (attributeValues?.icon as { downloadLink?: string } | undefined)?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos?.title,
@@ -100,8 +90,7 @@ export async function generateMetadata({
 
   return {
     title: localizeInfos?.title,
-    description: (localizeInfos as { plainContent?: string } | undefined)
-      ?.plainContent,
+    description: (localizeInfos as { plainContent?: string } | undefined)?.plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

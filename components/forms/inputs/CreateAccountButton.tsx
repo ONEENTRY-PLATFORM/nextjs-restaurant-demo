@@ -7,11 +7,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * Кнопка Create account
  */
-const CreateAccountButton = ({
-  title = 'Create account',
-}: {
-  title: string;
-}) => {
+const CreateAccountButton = ({ title = 'Create account' }: { title: string }) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 
   return (

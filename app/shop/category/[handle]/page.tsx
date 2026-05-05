@@ -24,10 +24,7 @@ const MemoizedProductsGridLoader = memo(ProductsGridLoader);
  */
 const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   /** Извлекаем параметры маршрута из пропсов */
-  const [searchParams, params] = await Promise.all([
-    props.searchParams,
-    props.params,
-  ]);
+  const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
   /** Деструктурируем handle из параметров */
   const { handle } = params;
   /** Прогреваем кеш словаря в server provider. */
@@ -80,11 +77,7 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
       />
       <section className="shop_section">
         <div className="flex w-full flex-col items-center gap-5">
-          <Suspense
-            fallback={
-              <MemoizedProductsGridLoader productsLimit={productsLimit} />
-            }
-          >
+          <Suspense fallback={<MemoizedProductsGridLoader productsLimit={productsLimit} />}>
             <ProductsGridLayout
               searchParams={searchParams ?? {}}
               productsLimit={productsLimit}
@@ -103,9 +96,7 @@ export default ShopCategoryLayout;
 /**
  * Генерирует метаданные страницы
  */
-export async function generateMetadata({
-  params,
-}: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);
 
@@ -120,8 +111,7 @@ export async function generateMetadata({
     height,
     altText: alt,
   } = {
-    url: (attributeValues.icon as { downloadLink?: string } | undefined)
-      ?.downloadLink,
+    url: (attributeValues.icon as { downloadLink?: string } | undefined)?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos.title,

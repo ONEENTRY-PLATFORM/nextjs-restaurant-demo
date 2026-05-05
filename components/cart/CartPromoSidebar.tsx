@@ -29,12 +29,8 @@ const EXIT_DURATION = 0.4;
  * @param   {BlogBanner[]}  props.banners - Список баннеров из CMS.
  * @returns {JSX.Element}                 JSX сайдбара.
  */
-const CartPromoSidebar = ({
-  banners,
-}: {
-  banners: BlogBanner[];
-}): JSX.Element | null => {
-  const items = banners.filter((b) => b.mobileImage);
+const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element | null => {
+  const items = banners.filter(b => b.mobileImage);
   const asideRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -73,9 +69,7 @@ const CartPromoSidebar = ({
 
       const aside = asideRef.current;
       if (!aside) return;
-      const banners = aside.querySelectorAll<HTMLElement>(
-        '[data-promo-banner]',
-      );
+      const banners = aside.querySelectorAll<HTMLElement>('[data-promo-banner]');
       if (banners.length === 0) return;
 
       event.preventDefault();

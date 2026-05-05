@@ -3,14 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import {
-  type JSX,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { getImageUrl } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -75,9 +68,9 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
 
   const categories = useMemo<Category[]>(() => {
     const fromCms = pages
-      .filter((p) => p.isVisible !== false)
+      .filter(p => p.isVisible !== false)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-      .map<Category>((p) => {
+      .map<Category>(p => {
         // Атрибутный сет OneEntry: `icon` (image, форма массива).
         const iconAttr = p.attributeValues?.icon?.value as
           | { downloadLink?: string }
@@ -100,9 +93,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         onClick={close}
         className={
           'fixed inset-0 z-10 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
-          (isVisible
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none')
+          (isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
         }
         aria-hidden="true"
       />
@@ -117,28 +108,16 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         onTouchEnd={handleTouchEnd}
       >
         <div className="flex justify-between items-center pt-6">
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Back"
-            className="group_white"
-          >
+          <button type="button" onClick={close} aria-label="Back" className="group_white">
             <ArrowBackOrangeIcon />
           </button>
-          <p className="font-normal text-xl tracking-[0.02em] text-paper">
-            Category
-          </p>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close"
-            className="group_white"
-          >
+          <p className="font-normal text-xl tracking-[0.02em] text-paper">Category</p>
+          <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>
         </div>
         <div className="max-w-80 mx-auto pb-25 md:pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
-          {categories.map((cat) => (
+          {categories.map(cat => (
             <Link
               key={cat.label}
               href={cat.href}

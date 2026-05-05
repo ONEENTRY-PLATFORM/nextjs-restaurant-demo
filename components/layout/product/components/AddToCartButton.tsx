@@ -9,10 +9,7 @@ import { updateUserState } from '@/app/api/server/users/updateUserState';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
-import {
-  addProductToCart,
-  selectIsInCart,
-} from '@/app/store/reducers/CartSlice';
+import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import CartAddIcon from '@/components/icons/cart-add';
 
@@ -45,32 +42,24 @@ const AddToCartButton = ({
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
-    () => false,
+    () => false
   );
-  const inCartRaw = useAppSelector((state) => selectIsInCart(state, id));
+  const inCartRaw = useAppSelector(state => selectIsInCart(state, id));
   const inCart = mounted && inCartRaw;
-  const items = useAppSelector((state) => state.cartReducer.productsData);
+  const items = useAppSelector(state => state.cartReducer.productsData);
   const favoritesIds: number[] = useAppSelector(
-    (state: { favoritesReducer: { products: number[] } }) =>
-      selectFavoritesItems(state),
+    (state: { favoritesReducer: { products: number[] } }) => selectFavoritesItems(state)
   );
   const { user } = useContext(AuthContext);
   // OneEntry product status опционален: `null` означает «статус не назначен»
   // и должен трактоваться как доступный к продаже. Блокируем покупку только
   // когда стоит явный «непродажный» идентификатор.
-  const notInStock = useMemo(
-    () => statusIdentifier === 'out_of_stock',
-    [statusIdentifier],
-  );
+  const notInStock = useMemo(() => statusIdentifier === 'out_of_stock', [statusIdentifier]);
 
   // Если не InStock — показываем подпись out-of-stock из словаря CMS.
   if (notInStock) {
     return (
-      <div
-        className={
-          'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className
-        }
-      >
+      <div className={'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className}>
         {t('out_of_stock_button', 'Out of stock')}
       </div>
     );
@@ -78,8 +67,8 @@ const AddToCartButton = ({
 
   // Обновляем состояние пользователя и подписываемся на события
   const updateUserCartState = async () => {
-    const updatedItems = items.some((product) => product.id === id)
-      ? items.map((product) => ({
+    const updatedItems = items.some(product => product.id === id)
+      ? items.map(product => ({
           id: product.id,
           quantity: product.id === id ? product.quantity + 1 : product.quantity,
           selected: true,
@@ -117,12 +106,7 @@ const AddToCartButton = ({
       <CartAddIcon className="w-5 h-4.5" />
     </button>
   ) : (
-    <QuantitySelector
-      height={height}
-      id={id}
-      units={units}
-      title={productTitle}
-    />
+    <QuantitySelector height={height} id={id} units={units} title={productTitle} />
   );
 };
 

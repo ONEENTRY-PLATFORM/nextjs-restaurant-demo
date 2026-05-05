@@ -20,11 +20,7 @@ import type { BlogBanner } from '@/app/api';
  * `react-slick` ради такого случая, и совпадает с уже используемым в проекте
  * паттерном (см. мобильную ленту в `HomePromo`).
  */
-const RelatedPromosCarousel = ({
-  promos,
-}: {
-  promos: BlogBanner[];
-}): JSX.Element => {
+const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Element => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -73,7 +69,7 @@ const RelatedPromosCarousel = ({
         ref={scrollerRef}
         className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-15"
       >
-        {promos.map((b) => (
+        {promos.map(b => (
           <Link
             key={b.id}
             href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}

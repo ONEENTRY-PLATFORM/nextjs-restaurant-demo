@@ -26,9 +26,7 @@ const ProductsGridLoaderAnimations = ({
       yoyo: true,
       repeat: -1,
     });
-    const cards =
-      ref.current &&
-      (ref.current as HTMLDivElement).querySelectorAll('.product-card');
+    const cards = ref.current && (ref.current as HTMLDivElement).querySelectorAll('.product-card');
 
     tl.from(cards, {
       autoAlpha: 0,

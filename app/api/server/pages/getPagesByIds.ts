@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  */
 export const getPagesByIds = cache(
   async (
-    ids: [],
+    ids: []
   ): Promise<{
     isError: boolean;
     error?: IError;
@@ -21,8 +21,8 @@ export const getPagesByIds = cache(
         ids.map(async (id: number) => {
           const page = await getApi().Pages.getPageById(id);
           return page;
-        }),
-      ).then((results) => results);
+        })
+      ).then(results => results);
 
       if (typeError(data)) {
         return { isError: true, error: data };
@@ -32,5 +32,5 @@ export const getPagesByIds = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  },
+  }
 );

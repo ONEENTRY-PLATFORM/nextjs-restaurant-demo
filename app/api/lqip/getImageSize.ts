@@ -17,22 +17,16 @@ import url from 'url';
  * console.log(`Image dimensions: ${width}x${height}`);
  * ```
  */
-const getImageSize = async (
-  imgUrl: string,
-): Promise<{ width: number; height: number }> => {
+const getImageSize = async (imgUrl: string): Promise<{ width: number; height: number }> => {
   /** Парсим URL изображения в опции для HTTPS-запроса */
   const options = url.parse(imgUrl);
 
   /** Возвращаем promise, резолвящийся с размерами изображения */
   return new Promise((resolve, reject) => {
     https
-      .get(options, (response) => {
+      .get(options, response => {
         if (response.statusCode !== 200) {
-          reject(
-            new Error(
-              `Failed to fetch image. Status code: ${response.statusCode}`,
-            ),
-          );
+          reject(new Error(`Failed to fetch image. Status code: ${response.statusCode}`));
           response.resume(); // Поглощаем данные ответа, чтобы освободить память
           return;
         }
@@ -41,7 +35,7 @@ const getImageSize = async (
 
         /** Обрабатываем входящие чанки данных и пытаемся определить размеры изображения */
         response
-          .on('data', (chunk) => {
+          .on('data', chunk => {
             if (!dimensions) {
               chunks.push(chunk);
               try {
@@ -66,11 +60,11 @@ const getImageSize = async (
               reject(new Error('Could not determine image dimensions'));
             }
           })
-          .on('error', (err) => {
+          .on('error', err => {
             reject(err);
           });
       })
-      .on('error', (err) => {
+      .on('error', err => {
         reject(err);
       });
   });

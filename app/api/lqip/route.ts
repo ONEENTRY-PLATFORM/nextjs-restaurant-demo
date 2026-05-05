@@ -15,10 +15,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   const imageUrl = searchParams.get('url');
 
   if (!imageUrl) {
-    return NextResponse.json(
-      { error: 'Missing image URL parameter' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Missing image URL parameter' }, { status: 400 });
   }
 
   try {
@@ -27,9 +24,6 @@ export async function GET(request: Request): Promise<NextResponse> {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('Error generating LQIP:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate LQIP' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to generate LQIP' }, { status: 500 });
   }
 }

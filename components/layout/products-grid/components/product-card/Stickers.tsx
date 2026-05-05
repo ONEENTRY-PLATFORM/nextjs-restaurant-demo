@@ -6,11 +6,7 @@ import Sticker from './Sticker';
 /**
  * Stickers
  */
-const Stickers = ({
-  product: { attributeValues },
-}: {
-  product: IProductsEntity;
-}): JSX.Element => {
+const Stickers = ({ product: { attributeValues } }: { product: IProductsEntity }): JSX.Element => {
   // Получаем массив stickers напрямую или используем пустой массив как fallback
   const stickers = attributeValues?.stickers || [];
 
@@ -31,10 +27,10 @@ const Stickers = ({
                   };
                 };
               },
-              i: Key,
+              i: Key
             ) => {
               return <Sticker key={i} sticker={sticker} />;
-            },
+            }
           )
         : null}
     </>

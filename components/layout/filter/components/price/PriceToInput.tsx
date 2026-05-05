@@ -15,7 +15,7 @@ const PriceToInput = ({
     <input
       type="number"
       value={price}
-      onChange={(e) => setPrice(Number(e.target.value))}
+      onChange={e => setPrice(Number(e.target.value))}
       className="w-5/6 bg-transparent"
     />
   );

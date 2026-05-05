@@ -28,11 +28,9 @@ export interface CaptchaValidationObject {
  */
 export function useEnterpriseCaptcha(
   siteKey: string | undefined,
-  action: string = 'login',
+  action: string = 'login'
 ): CaptchaValidationObject | null {
-  const [validation, setValidation] = useState<CaptchaValidationObject | null>(
-    null,
-  );
+  const [validation, setValidation] = useState<CaptchaValidationObject | null>(null);
 
   useEffect(() => {
     if (!siteKey) return;
@@ -41,7 +39,7 @@ export function useEnterpriseCaptcha(
       window.grecaptcha?.enterprise.ready(() => {
         window.grecaptcha?.enterprise
           .execute(siteKey, { action })
-          .then((token) => setValidation({ event: { token, siteKey } }))
+          .then(token => setValidation({ event: { token, siteKey } }))
           .catch(() => {});
       });
     };

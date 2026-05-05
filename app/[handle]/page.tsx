@@ -36,10 +36,7 @@ const PageLayout = async ({
         </h1>
       ) : null}
       {html ? (
-        <div
-          className="text-base text-paper/90"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <div className="text-base text-paper/90" dangerouslySetInnerHTML={{ __html: html }} />
       ) : (
         <p className="text-paper/70">
           This page has no content yet. Configure attribute{' '}

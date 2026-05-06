@@ -131,11 +131,11 @@ const SignUpForm = (): JSX.Element => {
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
-      <form
-        onSubmit={onSignUpHandle}
-        className="mx-auto flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
-      >
-        <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
+      <form onSubmit={onSignUpHandle} className="mx-auto flex w-full max-w-[400px] flex-col gap-5">
+        <p className="font-normal text-xl text-white leading-150">
+          {t('sign_up_subtitle', 'Sign in or create account to quickly manage order')}
+        </p>
+        <div className="box-border flex shrink-0 flex-col gap-5">
           {formFields
             .map(marker => data?.attributes.find((f: IFormAttribute) => f.marker === marker))
             .filter((f): f is IFormAttribute => Boolean(f))

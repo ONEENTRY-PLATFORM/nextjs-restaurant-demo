@@ -59,70 +59,60 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
   }
 
   return (
-    <FormFieldAnimations index={field.index} className="relative box-border flex shrink-0 flex-col">
-      <label htmlFor={field.marker} className="text-xl text-white">
+    <FormFieldAnimations index={field.index} className="box-border flex shrink-0 flex-col">
+      <label htmlFor={field.marker} className="cart_label">
         {localizeInfos?.title} {required && <span className="text-red-500">*</span>}
       </label>
-      {/* inputType select */}
-      {type === 'list' && (
-        <select
-          id={field.marker}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full focus:outline-muted"
-          required={required}
-          value={value}
-          onChange={val => setValue(val.currentTarget.value)}
-        >
-          {field.listTitles.map((option, i: Key) => {
-            return (
+      <div className="flex items-center border-b border-b-muted">
+        {type === 'list' && (
+          <select
+            id={field.marker}
+            className="cart_input"
+            required={required}
+            value={value}
+            onChange={val => setValue(val.currentTarget.value)}
+          >
+            {field.listTitles.map((option, i: Key) => (
               <option key={i} value={option.value as string}>
                 {option.title}
               </option>
-            );
-          })}
-        </select>
-      )}
-      {/* inputType textarea */}
-      {type === 'textarea' && (
-        <textarea
-          id={field.marker}
-          placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
-          required={required}
-          onChange={val => setValue(val.currentTarget.value)}
-          value={value}
-        />
-      )}
-      {/* inputType text/password/email... */}
-      {type !== 'textarea' && type !== 'list' && (
-        <input
-          type={type}
-          id={field.marker}
-          placeholder={localizeInfos?.title}
-          className="bg-transparent border-b text-white text-[20px] font-normal h-10 w-full  focus:outline-muted"
-          required={required}
-          onChange={val => setValue(val.currentTarget.value)}
-          autoComplete={fieldType === 'password' ? 'password' : ''}
-          minLength={minLength}
-          maxLength={maxLength}
-          value={value}
-        />
-      )}
-      {/* кнопка пароля */}
-      {fieldType === 'password' && (
-        <button
-          onClick={e => {
-            e.preventDefault();
-            if (type === 'password') {
-              setType('text');
-            } else {
-              setType('password');
-            }
-          }}
-          className="absolute bottom-3 right-2 flex size-6 items-center"
-        >
-          {type === 'password' ? <EyeIcon /> : <EyeOpenIcon />}
-        </button>
-      )}
+            ))}
+          </select>
+        )}
+        {type === 'textarea' && (
+          <textarea
+            id={field.marker}
+            placeholder={localizeInfos?.title}
+            className="cart_input"
+            required={required}
+            onChange={val => setValue(val.currentTarget.value)}
+            value={value}
+          />
+        )}
+        {type !== 'textarea' && type !== 'list' && (
+          <input
+            type={type}
+            id={field.marker}
+            placeholder={localizeInfos?.title}
+            className="cart_input"
+            required={required}
+            onChange={val => setValue(val.currentTarget.value)}
+            autoComplete={fieldType === 'password' ? 'password' : ''}
+            minLength={minLength}
+            maxLength={maxLength}
+            value={value}
+          />
+        )}
+        {fieldType === 'password' && (
+          <button
+            type="button"
+            onClick={() => setType(prev => (prev === 'password' ? 'text' : 'password'))}
+            className="-ml-6.25 flex size-6 shrink-0 items-center"
+          >
+            {type === 'password' ? <EyeIcon /> : <EyeOpenIcon />}
+          </button>
+        )}
+      </div>
     </FormFieldAnimations>
   );
 };

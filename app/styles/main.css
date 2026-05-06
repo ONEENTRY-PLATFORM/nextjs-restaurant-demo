@@ -136,11 +136,15 @@ html {
 }
  
 .hover_btn_transp {
-  @apply hover:bg-btn_hover hover:text-white;
+  @apply 
+    hover:bg-btn_hover 
+    hover:text-white;
 }
 
 .hover_btn_white {
-  @apply hover:border-brand hover:text-white;
+  @apply 
+    hover:border-brand 
+    hover:text-white;
 }
 
 .list_item {
@@ -200,11 +204,6 @@ html {
 }
 
 @layer components {
-  /*
-   * Стандартная контентная секция страницы — повторяющийся паттерн
-   * (mx-auto + max-width-ladder по брейкпоинтам + px-4 + py-10).
-   * Использовать вместо копирования полного className на каждой странице.
-   */
   .section_layout {
     @apply
       mx-auto
@@ -218,11 +217,6 @@ html {
       py-10;
   }
 
-  /*
-   * Полностраничная shop/product секция — flex-колонка с тем же
-   * max-width-ladder, но без `py-10` и без mobile-капа `max-w-88`.
-   * Используется в shop / shop/[handle] / shop/category / product layout.
-   */
   .shop_section {
     @apply
       relative
@@ -239,11 +233,6 @@ html {
       px-4;
   }
 
-  /*
-   * Внутренняя обёртка ProductsGrid (без `px-4`, с `min-h-25` под лоадер).
-   * Парная с `.shop_section`, но рендерится внутри уже padding-нутого
-   * родителя — потому горизонтального паддинга нет.
-   */
   .products_grid_layout {
     @apply
       relative
@@ -260,12 +249,6 @@ html {
       self-stretch;
   }
 
-  /*
-   * Mobile-only slide-up sheet ревью (`ReviewsSlideUpPanel`).
-   * Glass-фон + анимация выезда снизу. `animation` прописана напрямую
-   * через `@keyframes slide-up` (определён выше в этом же файле), а не
-   * через Tailwind-утилиту.
-   */
   .review_sheet {
     @apply
       fixed
@@ -313,73 +296,209 @@ html {
 }
 
 .descr {
-  @apply relative z-10 h-8.5 md:h-11 -mt-8 md:-mt-10.75 bg-custom_black flex justify-around items-center font-normal text-xs md:text-base tracking-[0.02em] text-white px-1.25 md:px-2.5;
+  @apply 
+    relative 
+    z-10 
+    h-8.5 
+    md:h-11 
+    -mt-8 
+    md:-mt-10.75 
+    bg-custom_black 
+    flex 
+    justify-around 
+    items-center 
+    font-normal 
+    text-xs 
+    md:text-base 
+    tracking-[0.02em] 
+    text-white 
+    px-1.25 
+    md:px-2.5;
 }
 
 @layer components {
   .menu_item-title {
-    @apply grow font-normal text-[15px] md:text-base tracking-[0.02em] text-paper md:h-11.5 mt-3 mb-2 md:mt-4.25 md:mb-3 md:leading-normal;
+    @apply 
+      grow 
+      font-normal 
+      text-[15px] 
+      tracking-[0.02em] 
+      text-paper 
+      mt-3 
+      mb-2 
+      md:text-base 
+      md:h-11.5 
+      md:mt-4.25 
+      md:mb-3 
+      md:leading-normal;
   }
 }
 
 .rating {
-  @apply flex items-center justify-between;
+  @apply 
+    flex 
+    items-center 
+    justify-between;
 }
 .rating_img {
-  @apply mt-1.25 mr-0 md:mr-2.5;
+  @apply 
+    mt-1.25 
+    mr-0 
+    md:mr-2.5;
 }
 .menu_items_btn {
-  @apply flex items-center justify-center text-white border-[1.39px] border-custom_white rounded-[7px] px-4.75 py-0.75 md:py-1.5 gap-2.5 md:gap-3.25 cursor-pointer hover:border-custom_orange;
+  @apply 
+    flex 
+    items-center 
+    justify-center 
+    text-white 
+    border 
+    border-custom_white 
+    rounded-[7px] 
+    px-4.75 
+    py-0.75 
+    md:py-1.5 
+    gap-2.5 
+    md:gap-3.25 
+    cursor-pointer 
+    hover:border-custom_orange;
 }
 .heart_card {
-  @apply absolute top-3.75 md:top-5 right-2.5 md:right-3.75 cursor-pointer active:fill-white hover:fill-white focus:fill-white transition-all duration-1000;
+  @apply 
+    absolute 
+    top-3.75 
+    md:top-5 
+    right-2.5 
+    md:right-3.75 
+    cursor-pointer 
+    active:fill-white 
+    hover:fill-white 
+    focus:fill-white 
+    transition-all 
+    duration-1000;
 }
 .counter {
-  @apply font-normal text-base md:text-[22px] tracking-[0.02em] text-brand;
+  @apply 
+    font-normal 
+    text-base 
+    md:text-[22px] 
+    tracking-[0.02em] 
+    text-brand;
 }
 .category_item {
-  @apply flex flex-col justify-center items-center w-35.5 h-35.5 bg-muted rounded-full text-center transition-all duration-500 cursor-pointer hover:bg-brand active:bg-brand mb-3.75;
+  @apply 
+    flex 
+    flex-col 
+    justify-center 
+    items-center 
+    w-35.5 
+    h-35.5 
+    bg-muted 
+    rounded-full 
+    text-center 
+    transition-all 
+    duration-500 
+    cursor-pointer 
+    hover:bg-brand 
+    active:bg-brand mb-3.75;
 }
 .nav_bottom {
-  @apply hover:fill-brand active:fill-brand;
+  @apply 
+    hover:fill-brand 
+    active:fill-brand;
 }
 
 @layer components {
   .filter_btn {
-    @apply font-normal text-[20px] tracking-[0.02em] text-paper;
+    @apply 
+      font-normal 
+      text-[20px] 
+      tracking-[0.02em] 
+      text-paper;
   }
 }
 
 .filter_item {
-  @apply border border-paper rounded-[5px] px-3.75 py-1.5 h-7.75 text-[16px] leading-4.25 font-normal tracking-[0.02em] text-paper hover:bg-brand transition-colors active:bg-brand hover:border-transparent active:border-none;
+  @apply 
+    border 
+    border-paper 
+    rounded-[5px] 
+    px-3.75 
+    py-1.5 
+    h-7.75 
+    text-[16px] 
+    leading-4.25 
+    font-normal 
+    tracking-[0.02em] 
+    text-paper 
+    hover:bg-brand 
+    transition-colors 
+    active:bg-brand 
+    hover:border-transparent 
+    active:border-none;
 }
 .filter_title {
-  @apply w-full font-bold text-[16px] tracking-[0.02em] text-brand;
+  @apply 
+    w-full 
+    font-bold 
+    text-[16px] 
+    tracking-[0.02em] 
+    text-brand;
 }
 
 .favorites_title {
-  @apply font-normal text-[16px] tracking-[0.02em] text-paper w-35;
+  @apply 
+    font-normal 
+    text-[16px] 
+    tracking-[0.02em] 
+    text-paper w-35;
 }
 
 .favorites_weight {
-  @apply font-normal text-[14px] tracking-[0.02em] text-paper;
+  @apply 
+    font-normal 
+    text-[14px] 
+    tracking-[0.02em] 
+    text-paper;
 }
 .favorites_price {
-  @apply font-bold text-[20px] text-brand;
+  @apply 
+    font-bold 
+    text-[20px] 
+    text-brand;
 }
 
 .tr {
-  @apply flex items-center;
+  @apply 
+    flex 
+    items-center;
 }
 .td {
-  @apply flex items-center;
+  @apply 
+    flex 
+    items-center;
 }
 
 .label {
-  @apply font-normal text-[16px] text-paper w-27.5
+  @apply 
+    font-normal 
+    text-[16px] 
+    text-paper 
+    w-27.5;
 }
 .input {
-  @apply border border-muted rounded-[3px] w-42.5 h-6.75 px-2.5 bg-transparent text-paper focus:border-muted active:border-muted focus:outline-muted;
+  @apply 
+    border 
+    border-muted 
+    rounded-[3px] 
+    w-42.5 
+    h-6.75 
+    px-2.5 
+    bg-transparent 
+    text-paper 
+    focus:border-muted 
+    active:border-muted 
+    focus:outline-muted;
 }
 @layer components {
   .cart_btn {

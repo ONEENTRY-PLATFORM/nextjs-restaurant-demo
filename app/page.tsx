@@ -60,9 +60,9 @@ const HomePage = async (): Promise<JSX.Element> => {
         if (block.identifier === 'home_promo') {
           return <HomePromo key={block.id} />;
         }
-        // if (block.identifier === 'home_categories') {
-        //   return <HomeCategoriesSection key={block.id} />;
-        // }
+        if (block.identifier === 'home_categories') {
+          return <HomeCategoriesSection key={block.id} />;
+        }
         return <HomeBlockServer key={block.id} marker={block.identifier as string} />;
       })}
     </>

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 import { useContext } from 'react';
@@ -13,30 +12,23 @@ import EyeCircleIcon from '@/components/icons/eye-circle';
  * Ссылка nav-элемента профиля / кнопка SignInForm
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
-  const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
+  const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
   const title = item.localizeInfos?.menuTitle || item.localizeInfos?.title;
 
-  return !isAuth ? (
+  const handleClick = () => {
+    setOpen(true);
+    setComponent(isAuth ? 'ProfilePopup' : 'AuthProviderSelect');
+  };
+
+  return (
     <button
-      onClick={() => {
-        setOpen(!open);
-        setComponent('AuthProviderSelect');
-      }}
+      onClick={handleClick}
       title={title}
       className="group relative box-border flex size-6 shrink-0"
     >
       <EyeCircleIcon />
     </button>
-  ) : (
-    <Link
-      prefetch={false}
-      href={'/profile'}
-      title={title}
-      className="group relative box-border flex size-6 shrink-0"
-    >
-      <EyeCircleIcon />
-    </Link>
   );
 };
 

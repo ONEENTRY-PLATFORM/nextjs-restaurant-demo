@@ -297,23 +297,20 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 Хардкод-фразы (старые находки):
 
-- [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): wired — `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text`. Хардкод (нет маркера): «Pay with» (PayPal label), «Credit & Debit Cards», placeholder «phone number» под чекбоксом.
+- [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): wired — `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text`. Хардкод (маркеры предложены в C.4.1 «StepPayment — дополнительные фразы»): «Pay with», «Credit & Debit Cards», placeholder «phone number», «Processing...», «APPLY», loading/error сообщения.
 - [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) — STEP_TITLES уже подцеплены к `sign_in_text`/`verification_text`/`address_text`/`select_payment_text`. «Cart», «Select time», «Success», «Error» — нет соответствующих маркеров, оставлены хардкодом.
 
 #### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
 
-##### Профиль / аккаунт
+##### ✅ Профиль / аккаунт
 
 Используется в: [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx), [components/forms/UserForm.tsx](components/forms/UserForm.tsx), [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx), [components/layout/header/nav/user-menu/LogoutMenuItem.tsx](components/layout/header/nav/user-menu/LogoutMenuItem.tsx).
 
 | marker                  | type   | title         |
 |-------------------------|--------|---------------|
-| `my_profile_title`      | string | My Profile    |
-| `profile_tab_personal`  | string | Personal      |
-| `profile_tab_orders`    | string | Orders        |
-| `profile_tab_favorites` | string | Favorites     |
+| `my_profile`            | string | My Profile    |
 | `logout_text`           | string | Logout        |
 | `edit_button`           | string | Edit          |
 | `delete_button`         | string | Delete        |
@@ -323,14 +320,14 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `floor_label`           | string | Floor         |
 | `data_saved_toast`      | string | Data saved!   |
 
-##### Заказы (страница `/profile/orders`)
+##### ✅ Заказы (страница `/profile/orders`)
 
 Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx). Все ключи из таблицы прокинуты через проп `dict` (см. [app/profile/orders/page.tsx](app/profile/orders/page.tsx)) — до создания маркеров в админке UI отрендерит fallback-литералы.
 
 | marker                     | type   | title                                |
 |----------------------------|--------|--------------------------------------|
-| `contact_courier_button`   | string | Contact with the courier             |
-| `repeat_order_button`      | string | Repeat order                         |
+| `contact_courier`   | string | Contact with the courier             |
+| `repeat_order`      | string | Repeat order                         |
 | `loading_orders_text`      | string | Loading orders...                    |
 | `no_orders_text`           | string | You have no orders yet.              |
 | `go_shopping_button`       | string | Go to shopping                       |
@@ -343,7 +340,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `leave_review_button`      | string | Leave a review                       |
 | `cancel_review_button`     | string | Cancel review                        |
 
-##### Избранное (страница `/profile/favorites`)
+##### ✅ Избранное (страница `/profile/favorites`)
 
 Используется в: [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx).
 
@@ -351,16 +348,16 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 |---------------------|--------|----------------------------|
 | `no_favorites_text` | string | You have no favorites yet. |
 
-##### Корзина — пустое состояние
+##### ✅ Корзина — пустое состояние
 
 Используется в: [components/layout/cart/components/EmptyCart.tsx](components/layout/cart/components/EmptyCart.tsx). Существующий `empty_cart_text` («Your cart is empty») — тёплое предложение, остаётся для inline-состояний; `empty_cart_title` — короткий heading.
 
 | marker              | type   | title      |
 |---------------------|--------|------------|
 | `empty_cart_title`  | string | Empty cart |
-| `go_to_shop_button` | string | Go to shop |
+| `go_to_shop` | string | Go to shop |
 
-##### Cart wizard / шаги
+##### ✅ Cart wizard / шаги
 
 Используется в: [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) (STEP_TITLES).
 
@@ -371,7 +368,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `success_text`     | string | Success     |
 | `error_text`       | string | Error       |
 
-##### Toasts: cart / favorites (с плейсхолдером `{title}`)
+##### ✅ Toasts: cart / favorites (с плейсхолдером `{title}`)
 
 Используется в: [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx), [components/layout/product/components/DecreaseButton.tsx](components/layout/product/components/DecreaseButton.tsx), [components/layout/product/product-single/FavoritesButton.tsx](components/layout/product/product-single/FavoritesButton.tsx), [components/layout/products-grid/components/product-card/CartButton.tsx](components/layout/products-grid/components/product-card/CartButton.tsx), [components/layout/products-grid/components/product-card/HeartCardButton.tsx](components/layout/products-grid/components/product-card/HeartCardButton.tsx). Шаблон `{title}` подменяется в коде на название блюда (`String.replace` / template-literal).
 
@@ -383,7 +380,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `product_removed_favorites_toast` | string | Product {title} removed from Favorites!     |
 | `auth_error_prefix`               | string | Auth error!                                 |
 
-##### Auth / формы
+##### ✅ Auth / формы
 
 Используется в: [components/forms/PhoneAuthForm.tsx](components/forms/PhoneAuthForm.tsx), [components/forms/ResetPasswordForm.tsx](components/forms/ResetPasswordForm.tsx).
 
@@ -394,7 +391,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `new_password_label`     | string | New password                                |
 | `change_password_button` | string | Change password                             |
 
-##### Календарь / выбор даты-времени
+##### ✅ Календарь / выбор даты-времени
 
 Используется в: [components/forms/CalendarForm.tsx](components/forms/CalendarForm.tsx), [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx).
 
@@ -405,7 +402,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `select_time_placeholder`     | string | Select time        |
 | `select_datetime_placeholder` | string | Select date & time |
 
-##### Резервация (страница `/reservation`)
+##### ✅ Резервация (страница `/reservation`)
 
 Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx). `book_button` отделён от `submit_text` (default «Submit»), потому что в этой форме CTA — именно «Book».
 
@@ -414,7 +411,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `restaurant_placeholder` | string | Restaurant choosing |
 | `book_button`            | string | Book                |
 
-##### Поддержка (страница `/support`)
+##### ✅ Поддержка (страница `/support`)
 
 Используется в: [app/support/page.tsx](app/support/page.tsx).
 
@@ -423,13 +420,53 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `support_call_prompt`     | string | Would you like to call?              |
 | `support_question_prompt` | string | Would you like to ask a question?    |
 
-##### Главная
+##### ✅ Главная
 
 Используется в: [components/home/HomePromo.tsx](components/home/HomePromo.tsx).
 
 | marker             | type   | title      |
 |--------------------|--------|------------|
 | `promotions_title` | string | Promotions |
+
+##### ProfileTabs — вкладки попапа профиля
+
+Используется в: [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx).
+
+| marker          | type   | title     |
+|-----------------|--------|-----------|
+| `personal_tab`  | string | Personal  |
+| `orders_tab`    | string | Orders    |
+| `favorites_tab` | string | Favorites |
+
+##### StepPayment — дополнительные фразы
+
+Используется в: [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx).
+
+| marker                    | type   | title                                                         |
+|---------------------------|--------|---------------------------------------------------------------|
+| `loading_payment_text`    | string | Loading payment methods…                                      |
+| `no_payment_methods_text` | string | No payment methods are configured. Please contact support.    |
+| `processing_text`         | string | Processing...                                                 |
+| `apply_coupon_button`     | string | APPLY                                                         |
+| `pay_with_label`          | string | Pay with                                                      |
+| `credit_debit_label`      | string | Credit & Debit Cards                                          |
+| `phone_placeholder`       | string | phone number                                                  |
+
+##### CartWizard — пропущенный шаг «Order»
+
+Используется в: [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) (STEP_TITLES, шаг перед Payment).
+
+| marker            | type   | title |
+|-------------------|--------|-------|
+| `order_step_text` | string | Order |
+
+##### ReservationForm — лейбл «Preferences»
+
+Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) (fallback-лейбл поля гостевых предпочтений).
+
+| marker               | type   | title       |
+|----------------------|--------|-------------|
+| `preferences_label`  | string | Preferences |
 
 ##### Хедер / навигация / общие (aria-label, кнопки)
 
@@ -481,7 +518,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 - [forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) — `Please wait while captcha is loading.` → `captcha_loading_text`.
 - [reviews/StarRating.tsx](components/reviews/StarRating.tsx) — `Rating:` → `rating_prefix`. `aria-label` `N stars` (динамический множественный) пока оставить хардкодом — без полноценной i18n с pluralization подмена через словарь даст некрасивые формы.
 
-> ❓ **Уточнить у клиента:** для toast-фраз с `{title}` (5 маркеров в подразделе «Toasts») — устраивает ли формат с плейсхолдером `{title}` (код подменяет на название блюда), либо проще держать раздельные префикс/суффикс маркеры (e.g. `added_to_cart_suffix = " added to cart!"`)? Шаблон с `{title}` гибче для переводов («Блюдо X добавлено» vs «X added»), но требует подмены в рантайме.
+> ✅ Формат с плейсхолдером `{title}` подтверждён клиентом.
 >
 > ❓ **Уточнить у клиента:** placeholder поля Street в попапе «My Profile» сейчас захардкожен как «OneEntry» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) — похоже на тестовый стаб. Оставить пустым (`""`), заменить на пример (`«ул. Тверская»` / `«Main St»`) или завести под маркер? То же с примерами «40»/«27» для House/Floor.
 
@@ -489,7 +526,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
 
-- **Address** — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. **Локально**, не персистится. Нужно завести в `user`-форме атрибут:
+- **Address** ✅ — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. Атрибут `addresses` (json) создан в админке. Нужно читать/писать через `api.Users.updateUser`:
 
   | marker      | type | title                    | notes                                                        |
   |-------------|------|--------------------------|--------------------------------------------------------------|

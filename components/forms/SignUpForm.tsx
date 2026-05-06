@@ -37,9 +37,9 @@ const SignUpForm = (): JSX.Element => {
   // Получаем поля из formFieldsReducer
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Мемоизированные поля формы для лучшей производительности
+  // Поля формы — только нужные по верстке pk_sing_up.html, в порядке верстки
   const formFields = useMemo(
-    () => ['username', 'surname', 'email', 'phone', 'password', 'repeat_password'],
+    () => ['username', 'surname', 'password', 'repeat_password', 'email', 'phone'],
     []
   );
 
@@ -135,22 +135,13 @@ const SignUpForm = (): JSX.Element => {
         onSubmit={onSignUpHandle}
         className="mx-auto flex min-h-full w-full max-w-107.5 flex-col gap-4 text-xl leading-5"
       >
-        <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-paper/60 max-md:max-w-full">
-            <button onClick={() => setComponent('SignInForm')} className="underline">
-              {t('sign_in_text', 'Sign in')}
-            </button>{' '}
-            {t('create_account_text', 'Create account')}
-          </p>
-        </div>
-
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
-          {data?.attributes.map(
-            (field: IFormAttribute, index: number) =>
-              field.marker !== 'email_notification_reg' && (
-                <FormInput key={index} index={index} {...field} />
-              )
-          )}
+          {formFields
+            .map(marker => data?.attributes.find((f: IFormAttribute) => f.marker === marker))
+            .filter((f): f is IFormAttribute => Boolean(f))
+            .map((field, index) => (
+              <FormInput key={field.marker} index={index} {...field} />
+            ))}
         </div>
         <SubmitButton title={t('sign_up_text', '')} isLoading={loading || isLoading} index={10} />
         {error && <ErrorMessage error={error} />}

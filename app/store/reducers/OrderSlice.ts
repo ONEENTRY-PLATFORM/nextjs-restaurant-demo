@@ -4,16 +4,7 @@ import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/or
 
 import type { IAppOrder } from '@/app/types/global';
 
-export type CheckoutStep =
-  | 'cart'
-  | 'time'
-  | 'signin'
-  | 'verification'
-  | 'address'
-  | 'order'
-  | 'payment'
-  | 'success'
-  | 'error';
+export type CheckoutStep = 'cart' | 'order' | 'payment' | 'success' | 'error';
 
 export type AppliedCoupon = {
   code: string;

@@ -4,6 +4,7 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import { getApi } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
+import { normalizePhoneE164 } from '@/components/utils';
 
 /**
  * Обновляет состояние пользователя через API Users.
@@ -52,7 +53,7 @@ export const updateUserState = async ({
     notificationData: {
       email: email?.value as string,
       phonePush: [],
-      phoneSMS: phone?.value as string,
+      phoneSMS: normalizePhoneE164(phone?.value as string | undefined),
     },
   });
 

@@ -22,29 +22,16 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import StepOrder from './steps/StepOrder';
 import StepPayment from './steps/StepPayment';
 import StepResult from './steps/StepResult';
-import StepSignIn from './steps/StepSignIn';
-import StepTime from './steps/StepTime';
-import StepVerification from './steps/StepVerification';
 
 type CartWizardProps = {
   deliveryData: IProductsEntity;
   promoSidebar?: ReactNode;
 };
 
-// Шаги, которые ВСЕГДА рендерятся как центрированный попап-оверлей (мобила + десктоп):
-// auth-гейт (`signin` = выбор метода по `pk_login.html`) и
-// код подтверждения (`verification` по `pk_verif.html`). Сами формы sign-in /
-// sign-up живут в отдельном drawer (OpenDrawerContext), не здесь.
-const AUTH_POPUP_STEPS: ReadonlySet<CheckoutStep> = new Set(['signin', 'verification']);
-
 const buildStepTitles = (
   t: (marker: string, fallback: string) => string
 ): Record<CheckoutStep, string> => ({
   cart: 'Cart',
-  time: 'Select time',
-  signin: t('sign_in_text', 'Sign in'),
-  verification: t('verification_text', 'Verification'),
-  address: t('address_text', 'Delivery address'),
   order: 'Order',
   payment: t('select_payment_text', 'Payment'),
   success: 'Success',
@@ -66,19 +53,17 @@ const useIsMdUp = (): boolean =>
 /**
  * CartWizard — многошаговый checkout, управляемый через `orderReducer.step`.
  *
- * Flow:
- * `cart` → `time` (пропускается, если уже выбрано через попап календаря)
- *   → `signin` (авто-скип, если авторизован; ветка phone → `verification`)
- *   → `address` → `order` (review + promo) → `payment`
- *   → `success` | `error`
+ * Flow: `cart` → `order` (review + promo) → `payment` (address + time + payment
+ * в одном шаге) → `success` | `error`.
+ *
+ * Авторизация — через канонический `Modal` + `AuthProviderSelect`
+ * (`OpenDrawerContext`), запускаемый из `CartPage.onApply`. Wizard сам signin
+ * не рендерит — после успешного логина `CartPage` авто-переходит на `order`.
  *
  * Правила рендера (по десктоп-вариантам `pk_*.html` из static-html):
  * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа
  *   (`pk_cart.html`).
- * - Auth-шаги (`signin`, `verification`): центрированный попап-оверлей
- *   на ОБОИХ вьюпортах (`pk_login.html`, `pk_verif.html`). Корзина
- *   видна за попапом на десктопе, скрыта на мобиле.
- * - Прочие не-cart шаги (`time`, `address`, `order`, `payment`, …):
+ * - Прочие шаги (`order`, `payment`, …):
  *   - Десктоп (md+): рендерятся ИНЛАЙН на странице корзины, замещая
  *     товары корзины в левой колонке (паттерн `pk_order.html`). Хлебные крошки
  *     становятся "Cart / <Step>" с кликабельным "Cart" для возврата.
@@ -95,25 +80,18 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const isMdUp = useIsMdUp();
 
   const isCartStep = step === 'cart';
-  const isAuthPopup = AUTH_POPUP_STEPS.has(step);
-  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп, не-auth), либо в попапе.
-  const showInline = !isCartStep && !isAuthPopup && isMdUp;
-  const showPopup = !isCartStep && (isAuthPopup || !isMdUp);
-
-  // Товары корзины в левой колонке остаются примонтированными между шагами;
-  const hideCartProductsOnDesktop = !isCartStep && !isAuthPopup;
+  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп), либо в попапе (мобила).
+  const showInline = !isCartStep && isMdUp;
+  const showPopup = !isCartStep && !isMdUp;
 
   // Видимость обёртки корзины
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
   // Десктопные хлебные крошки
-  const showStepInBreadcrumb = !isCartStep && !isAuthPopup;
+  const showStepInBreadcrumb = !isCartStep;
 
   const stepBody = (
     <>
-      {step === 'time' && <StepTime />}
-      {step === 'signin' && <StepSignIn />}
-      {step === 'verification' && <StepVerification />}
       {step === 'order' && <StepOrder />}
       {step === 'payment' && <StepPayment />}
       {step === 'success' && <StepResult variant="success" />}
@@ -161,7 +139,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
             {/* Товары корзины + APPLY — остаются примонтированными; скрыты на десктопе,
                 пока инлайн-шаг занимает этот слот, скрыты на мобиле
                 через внешний `cartWrapperClass`, когда активен попап. */}
-            <div className={hideCartProductsOnDesktop ? 'md:hidden' : 'contents'}>
+            <div className={isCartStep ? 'contents' : 'md:hidden'}>
               <CartPage deliveryData={deliveryData} />
             </div>
             {showInline && <div className="hidden md:block">{stepBody}</div>}

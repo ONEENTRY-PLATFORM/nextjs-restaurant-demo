@@ -3,9 +3,8 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
-import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import PaymentButton from '@/components/layout/cart/components/PaymentButton';
 import TotalAmount from '@/components/layout/cart/components/TotalAmount';
@@ -17,17 +16,13 @@ import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable
 const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  const cartDelivery = useAppSelector(selectDeliveryData);
 
   return (
     <form
       className="flex w-182.5 max-w-full flex-col pb-5"
       onSubmit={e => {
         e.preventDefault();
-        // Пропускаем шаг выбора времени, если пользователь уже выбрал дату+время
-        // через попап календаря; переходим сразу к sign-in (следующий шаг).
-        const hasTime = Boolean(cartDelivery?.date && cartDelivery?.time);
-        dispatch(setStep(hasTime ? 'signin' : 'time'));
+        dispatch(setStep('order'));
       }}
     >
       <DeliveryTable delivery={deliveryData as IProductsEntity} />

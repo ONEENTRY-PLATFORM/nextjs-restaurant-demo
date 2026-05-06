@@ -96,13 +96,10 @@
 - 📁 Файлы проекта:
 [app/cart/page.tsx](app/cart/page.tsx)
 [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx)
-[components/cart/steps/StepTime.tsx](components/cart/steps/StepTime.tsx)
-[components/cart/steps/StepSignIn.tsx](components/cart/steps/StepSignIn.tsx)
-[components/cart/steps/StepVerification.tsx](components/cart/steps/StepVerification.tsx)
-[components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx)
 [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx)
 [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx)
 [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx)
+- Auth-шаги (sign-in / verification) рендерятся через канонический [Modal](components/layout/modal/index.tsx) + [AuthProviderSelect](components/forms/AuthProviderSelect.tsx) — отдельных wizard-шагов больше нет.
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
@@ -245,6 +242,26 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 >
 > На стороне кода фикса не требуется — `ReviewForm.tsx` шлёт корректное тело и валидный Bearer (см. логи fetch в `.claude/temp/test-review-with-user.mjs`). Как только админская конфигурация позволит сабмит — пометить ✅ и удалить пункт.
 
+#### C.1.5. `review_form` — чтение отзывов отдаёт 403 анонимной роли
+
+```text
+POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
+→ 403 "User doesn't have permissions to access the requested url or API method"
+```
+
+Симптом: на товаре с реальными отзывами (например `id=15` — `getProductById(15).rating = { value: 4, votes: 2 }` подтверждает 2 approved-записи) блок `<ProductReviewsList>` показывает empty-state «No reviews yet». `getProductReviews(productId)` ловит `isError(data)` от 403 и возвращает `[]`.
+
+Сравнение с эталоном `oneentry-next-shop` (`react-native-course.oneentry.cloud`, форма `comment_to_product`): тот же SDK-вызов `FormData.getFormsDataByMarker(marker, cfgId, { entityIdentifier, status: ['approved'] }, 1, lang, 0, 500)` возвращает `{ items[], total }` без авторизации. Разница ровно в одном поле `moduleFormConfigs[0]`:
+
+| проект                                                | `isGlobal` | анонимное чтение |
+| ----------------------------------------------------- | ---------- | ---------------- |
+| `oe-restaurants` (наш `review_form`, cfgId=2)         | `false`    | 403              |
+| `react-native-course` (`comment_to_product`, cfgId=5) | `true`     | работает         |
+
+> ❓ **Уточнить у клиента / поправить в админке:**
+>
+> Forms → `review_form` → конфигурация модуля `catalog` (id=2) → включить флаг **Global** (`isGlobal: true`). После этого approved-записи начнут читаться публично, и UI начнёт рендерить карточки. На стороне кода правок не требуется — нормализация ответа (`items` → фильтр `parentId === null` → `readPlainText`/`readNumber`) проверена на формате реального ответа (`{id, parentId, formData[{marker, value}], time, userIdentifier, status: 'approved'}`).
+
 ### C.2. Недостающие страницы
 
 #### C.2.3. Дочерние страницы под `blog` (акции)
@@ -338,7 +355,10 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `orders_load_error_prefix` | string | Unable to load orders:               |
 | `orders_signin_prompt`     | string | Please sign in to view your orders.  |
 | `leave_review_button`      | string | Leave a review                       |
-| `cancel_review_button`     | string | Cancel review                        |
+| `please_leave_review_text` | string | Please, leave a review!              |
+| `review_placeholder`       | string | Review                               |
+| `review_submitted_text`    | string | Thanks for your review!              |
+| `please_signin_review_text`| string | Please sign in to leave a review.    |
 
 ##### ✅ Избранное (страница `/profile/favorites`)
 
@@ -618,13 +638,17 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
+#### C.7.5. Form `user` — атрибут `user_address` (json) ✅
+
+Атрибут переведён в `type: json` (изначально был `string`). Код в [components/profile/ProfileSections.tsx](components/profile/ProfileSections.tsx) и [components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx) пишет/читает массив `[{ id, street, house, floor, selected }]` напрямую (без JSON.stringify). Парсер `parseAddresses` совместим с legacy-string-форматом — старые юзеры с stringified-JSON продолжат работать.
+
 ### C.8. Auth Providers
 
 #### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины
 
 В админке провайдер уже есть (`identifier: "google"`, `type: "oauth"`, `isActive: true`, `userGroupIdentifier: "guest"`), но:
 
-- **`config.oauthAuthUrl`** — сейчас **`null`**. Заполнить значением `https://accounts.google.com/o/oauth2/v2/auth` (или оставить null — тогда client редиректит на этот URL хардкодом из [StepSignIn.tsx](components/cart/steps/StepSignIn.tsx)).
+- **`config.oauthAuthUrl`** — сейчас **`null`**. Заполнить значением `https://accounts.google.com/o/oauth2/v2/auth` (или оставить null — тогда client редиректит на этот URL хардкодом из [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx)).
 - **Google Cloud Console → OAuth 2.0 Client IDs.** Создать клиента, добавить в Authorized redirect URIs:
   - `http://localhost:3000/auth/callback/google` (dev)
   - `https://<vercel-host>/auth/callback/google` (prod)
@@ -635,7 +659,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
   GOOGLE_CLIENT_SECRET=<client_secret>
   ```
 
-  Используется в [StepSignIn.tsx](components/cart/steps/StepSignIn.tsx) (редирект на Google) и [oauthLogIn.ts](app/api/server/users/oauthLogIn.ts) (server-only обмен code → token через `api.AuthProvider.oauth('google', ...)`). Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму).
+  Используется в [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx) (редирект на Google) и [oauthLogIn.ts](app/api/server/users/oauthLogIn.ts) (server-only обмен code → token через `api.AuthProvider.oauth('google', ...)`). Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму).
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 

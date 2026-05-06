@@ -113,6 +113,20 @@ export function typeError(res: IError | unknown): res is IError {
   return false;
 }
 
+/**
+ * Нормализует телефон к формату E.164 для OneEntry `notificationData.phoneSMS`/
+ * `phonePush`, который валидируется регуляркой `/^\+[0-9]{10,15}$/`.
+ * Снимает любые нецифровые символы (пробелы, скобки, дефисы) и подставляет
+ * префикс `+`. Пустую строку возвращает как `''` — пусть вызывающая сторона
+ * решает, отдавать её в API или нет.
+ * @param   {string|undefined|null} raw - сырое значение из инпута телефона
+ * @returns {string}                    `+<digits>` или `''`
+ */
+export const normalizePhoneE164 = (raw: string | undefined | null): string => {
+  const digits = (raw ?? '').replace(/\D/g, '');
+  return digits ? `+${digits}` : '';
+};
+
 export const shuffleArray = <T>(array: T[]): T[] => {
   return array
     .map(a => ({ sort: Math.random(), value: a }))

@@ -1,4 +1,5 @@
 import { unstable_noStore } from 'next/cache';
+import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 
 import { getApi, getLang, isError } from '@/app/api';
 
@@ -7,7 +8,7 @@ const FORM_MARKER = 'review_form';
 // через SDK Forms.getFormByMarker). Если админ пересоздаст конфиг —
 // первый id из `getFormByMarker` всегда побеждает над этим дефолтом.
 const DEFAULT_MODULE_CONFIG_ID = 2;
-const REVIEWS_LIMIT = 500;
+const REVIEWS_LIMIT = 50;
 
 /**
  * Одна запись OneEntry FormsData, возвращаемая `getFormsDataByMarker`.
@@ -101,7 +102,7 @@ export const getProductReviews = async (productId: number): Promise<ProductRevie
     const lang = getLang();
 
     const form = await getApi().Forms.getFormByMarker(FORM_MARKER);
-    const formMeta = form as unknown as {
+    const formMeta = form as IFormsEntity as {
       moduleFormConfigs?: Array<{ id?: number }>;
     };
     const formModuleConfigId = formMeta?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;

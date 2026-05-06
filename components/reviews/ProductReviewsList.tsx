@@ -2,10 +2,9 @@
 
 import Image from 'next/image';
 import type { JSX } from 'react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import type { ProductReview } from '@/app/api';
-import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
 import StarCardIcon from '@/components/icons/star-card';
 
@@ -22,19 +21,19 @@ import StarCardIcon from '@/components/icons/star-card';
  */
 const ProductReviewsList = ({
   reviews,
-  productId,
+  // productId,
 }: {
   reviews: ProductReview[];
-  productId: number;
+  // productId: number;
 }): JSX.Element => {
   const [index, setIndex] = useState(0);
-  const { setComponent, setAction, setOpen } = useContext(OpenDrawerContext);
+  // const { setComponent, setAction, setOpen } = useContext(OpenDrawerContext);
 
-  const openReviewPopup = () => {
-    setComponent('ReviewFormPopup');
-    setAction(String(productId));
-    setOpen(true);
-  };
+  // const openReviewPopup = () => {
+  //   setComponent('ReviewFormPopup');
+  //   setAction(String(productId));
+  //   setOpen(true);
+  // };
 
   const goPrev = () => setIndex(i => (i - 1 + reviews.length) % reviews.length);
   const goNext = () => setIndex(i => (i + 1) % reviews.length);
@@ -46,13 +45,13 @@ const ProductReviewsList = ({
           Reviews
           <ChatDotsIcon className="hover-target" />
         </div>
-        <button
+        {/* <button
           type="button"
           onClick={openReviewPopup}
           className="hover_btn_white flex h-8.75 items-center justify-center rounded-[5px] border border-brand px-3.75 font-normal text-[14px] text-brand"
         >
           Leave a review
-        </button>
+        </button> */}
       </div>
 
       {reviews.length === 0 ? (

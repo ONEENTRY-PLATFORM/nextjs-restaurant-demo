@@ -7,18 +7,41 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { getApi, useGetFormByMarkerQuery } from '@/app/api';
+import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import ProfileIcon from '@/components/icons/profile';
+import { normalizePhoneE164 } from '@/components/utils';
 
 type SavedAddress = {
   id: string;
   street: string;
   house: string;
   floor: string;
+  selected?: boolean;
 };
 
-const initialAddresses: SavedAddress[] = [];
+/**
+ * Парсит сохранённый список адресов из `user_address`. Атрибут формы `user`
+ * имеет тип `json` — SDK отдаёт `value` как массив напрямую. Поддерживаем
+ * также legacy-строку (старые юзеры могли быть сохранены ещё при `type: string`,
+ * когда мы клали JSON.stringify). Возвращает [] на любую ошибку.
+ */
+const parseAddresses = (raw: unknown): SavedAddress[] => {
+  if (!raw) return [];
+  let arr: unknown = raw;
+  if (typeof raw === 'string') {
+    try {
+      arr = JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(arr)) return [];
+  return arr.filter(
+    (a): a is SavedAddress => typeof a === 'object' && a !== null && typeof a.id === 'string'
+  );
+};
 
 // Атрибуты формы `user` из OneEntry, которые в секции "My Profile"
 // (Personal) рендерить не нужно. Секция Personal по эталону
@@ -54,11 +77,19 @@ const ProfileSections = (): JSX.Element => {
 
   const [profileOpen, setProfileOpen] = useState(true);
   const [addressOpen, setAddressOpen] = useState(true);
+  // Форма ввода нового адреса: открывается по клику «+ Add Address»,
+  // закрывается после успешного Apply.
+  const [addAddressOpen, setAddAddressOpen] = useState(false);
 
-  const [addresses, setAddresses] = useState<SavedAddress[]>(initialAddresses);
+  // Optimistic-перекрытие списка адресов: ставим из обработчиков (`apply`/
+  // `delete`/`select`) сразу же после клика, чтобы UI не ждал refreshUser, и
+  // снимаем по завершении persist'а. Когда `null` — рендерим `baseAddresses`
+  // (production-источник: `user_address` из user.formData).
+  const [pendingAddresses, setPendingAddresses] = useState<SavedAddress[] | null>(null);
   const [newStreet, setNewStreet] = useState('');
   const [newHouse, setNewHouse] = useState('');
   const [newFloor, setNewFloor] = useState('');
+  const [addressError, setAddressError] = useState('');
 
   // Локальные правки полей формы. Если ключ отсутствует — поле не
   // редактировалось и подставляется значение из user.formData.
@@ -88,12 +119,127 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
+  // То же, что `userField`, но возвращает raw value без кастa в string —
+  // нужно для полей с типом `json` (например, `user_address`), где SDK
+  // отдаёт массив/объект напрямую.
+  const userRawField = useCallback(
+    (marker: string): unknown => {
+      if (!user?.formData || !Array.isArray(user.formData)) return undefined;
+      const row = (user.formData as Array<{ marker: string; value: unknown }>).find(
+        f => f.marker === marker
+      );
+      return row?.value;
+    },
+    [user]
+  );
+
+  // Пароль OneEntry клиенту никогда не возвращает (хешируется на сервере).
+  // Но если в текущей сессии юзер логинился/регистрировался — его пароль
+  // лежит в Redux (`formFieldsReducer.fields.password`, заполняется
+  // {@link FormInput} через `dispatch(addField(...))`). Берём оттуда, чтобы
+  // в поле «Password» не было пусто и Save personal не падал на
+  // «Login or password values are missed». Если страницу обновили — поля
+  // пустые, юзер допишет вручную.
+  const sessionFields = useAppSelector(state => state.formFieldsReducer.fields);
+  const sessionPassword = sessionFields['password']?.value ?? '';
+
   const fieldValue = useCallback(
     (marker: string): string => {
-      if (marker.includes('password')) return edits[marker] ?? '';
+      if (marker.includes('password')) return edits[marker] ?? sessionPassword;
       return edits[marker] !== undefined ? edits[marker]! : userField(marker);
     },
-    [edits, userField]
+    [edits, sessionPassword, userField]
+  );
+
+  // Базовый список адресов выводится из `user_address` (JSON в user.formData).
+  // Если у юзера один или больше адресов, но выбранного нет — авто-выбираем
+  // первый, чтобы checkout сразу подтягивал его без лишних кликов.
+  // Локальная авто-выборка не сохраняется на сервер до первого пользователя
+  // действия. То же преселектирование делают checkout-хелперы
+  // (`pickSelectedAddress` из `components/cart/steps/savedAddress.ts`).
+  const baseAddresses = useMemo<SavedAddress[]>(() => {
+    const parsed = parseAddresses(userRawField('user_address'));
+    if (parsed.length > 0 && !parsed.some(a => a.selected)) {
+      parsed[0]!.selected = true;
+    }
+    return parsed;
+  }, [userRawField]);
+  const addresses = pendingAddresses ?? baseAddresses;
+
+  // Сохраняет переданный список адресов в `user_address` через `Users.updateUser`.
+  // Чтобы не затереть остальные поля профиля, мерджим текущий `user.formData`
+  // с одним override'ом — `user_address`. По правилу MCP `users-update` для
+  // `notificationData` всегда отдаём актуальные `email`/`phoneSMS`.
+  const persistAddresses = useCallback(
+    async (next: SavedAddress[]) => {
+      if (!user?.formIdentifier || !Array.isArray(user.formData)) return;
+      setAddressError('');
+      // ВАЖНО: `Users.updateUser` валидирует `formData[*].value` как `string`
+      // даже для атрибутов с `type: json` (сервер отдаёт 400 «must be a string»).
+      // Поэтому отправляем JSON.stringify, `type: 'json'` оставляем для семантики.
+      // SDK на чтение сам нормализует обратно в объект/массив.
+      const serialized = JSON.stringify(next);
+      // Сервер 400'ит при двух кейсах:
+      // 1. «form includes an attribute's marker that is not presented…» — если
+      //    шлём marker, которого нет в attribute-set формы. user.formData может
+      //    содержать legacy-маркеры после переименований/удалений в админке.
+      // 2. «Login or password values are missed» — если в formData есть атрибут
+      //    `isLogin` (например, `email` для email-провайдера) или `isPassword`,
+      //    но в `authData` нет пароля. Мы не меняем login/password здесь, поэтому
+      //    просто исключаем эти атрибуты из payload — сервер оставит их как есть.
+      const allowedMarkers = new Set(
+        (userForm?.attributes ?? []).filter(a => !a.isLogin && !a.isPassword).map(a => a.marker)
+      );
+      const formData = (user.formData as Array<{ marker: string; type?: string; value: unknown }>)
+        .filter(f => f.marker !== 'otp_code' && allowedMarkers.has(f.marker))
+        .map(f =>
+          f.marker === 'user_address'
+            ? { marker: 'user_address', type: 'json', value: serialized }
+            : { marker: f.marker, type: f.type ?? 'string', value: f.value }
+        );
+      if (allowedMarkers.has('user_address') && !formData.some(f => f.marker === 'user_address')) {
+        formData.push({ marker: 'user_address', type: 'json', value: serialized });
+      }
+      try {
+        // phoneSMS опционален в SDK-типе и валидируется сервером по regex
+        // /^\+[0-9]{10,15}$/. Если в user.formData лежит мусор (юзер
+        // раньше сохранил кривой телефон, а Save профиля упал), не шлём
+        // phoneSMS вообще — иначе сохранение адресов будет блокировано
+        // полем, к которому пользователь сейчас не имеет отношения.
+        const phone = normalizePhoneE164(userField('phone'));
+        const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
+        // Сервер требует authData при обновлении user-сущности с email-провайдером
+        // (иначе 400 «Login or password values are missed»). Берём пароль из
+        // Redux (текущая сессия). Если пароля нет (юзер пришёл с авто-логина по
+        // refresh-token и ни разу не вводил пароль в этой сессии) — пропускаем
+        // запрос с понятной ошибкой, чтобы не отправлять заведомо проигрышный
+        // payload.
+        if (!sessionPassword) {
+          setAddressError('Address save requires entering your password in My Profile first.');
+          return;
+        }
+        await getApi().Users.updateUser({
+          formIdentifier: user.formIdentifier,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formData: formData as any,
+          authData: [{ marker: 'password', value: sessionPassword }],
+          notificationData: {
+            // OneEntry-форма `user` для email-провайдера хранит email НЕ в
+            // `formData` (там его нет — см. реальный getUser ответ), а в
+            // `user.identifier` (значение, по которому юзер логинится).
+            // notificationData.email обязательное поле — fallback на identifier.
+            email: userField('email') || user.identifier || '',
+            phonePush: [],
+            ...(phoneValid ? { phoneSMS: phone } : {}),
+          },
+          state: {},
+        });
+        refreshUser();
+      } catch (e) {
+        setAddressError(e instanceof Error ? e.message : 'Failed to save address');
+      }
+    },
+    [refreshUser, sessionPassword, user, userField, userForm?.attributes]
   );
 
   const onSaveProfile = useCallback(async () => {
@@ -101,26 +247,78 @@ const ProfileSections = (): JSX.Element => {
     setSaving(true);
     setSaveError('');
     try {
-      const formData = profileAttributes
-        .filter(attr => !attr.marker.includes('password'))
-        .map(attr => ({
-          marker: attr.marker,
-          type: 'string',
-          value: fieldValue(attr.marker),
-        }));
-      const password = edits['password'] ?? '';
+      // Базовый payload — поля из формы (без password). Для скрытых
+      // (user_address и т.п.) подставляем существующее значение из
+      // user.formData (raw), чтобы Save личных данных НЕ перезатёр
+      // addresses. Тип берём из определения формы; для `json` сервер всё
+      // равно ждёт строку (см. `persistAddresses`) — JSON.stringify'им,
+      // если SDK уже распарсил value в объект.
+      // Если пароль введён (или подтянулся из Redux при текущей сессии), мы
+      // можем менять login-поля и слать authData с логином+паролем. Если нет —
+      // login-поля исключаем из payload, чтобы не словить «Login or password
+      // values are missed» (сервер требует authData при наличии isLogin в formData).
+      const password = fieldValue('password');
+      const login = fieldValue('email') || user.identifier || '';
+      const hasPassword = Boolean(password);
+      const formData = (userForm?.attributes ?? [])
+        .filter(attr => !attr.isPassword)
+        .filter(attr => hasPassword || !attr.isLogin)
+        .map(attr => {
+          const isHidden = HIDDEN_PROFILE_MARKERS.has(attr.marker);
+          let value: unknown = isHidden ? userRawField(attr.marker) : fieldValue(attr.marker);
+          if ((attr.type as string) === 'json') {
+            // Server валидирует value как string, но требует чтобы строка
+            // была валидным JSON-литералом. Кейсы:
+            // 1. SDK распарсил json в объект/массив → JSON.stringify.
+            // 2. Уже строка (после нашего persist) → проверяем JSON.parse;
+            //    если валидно — оставляем, иначе оборачиваем в кавычки
+            //    (legacy-строка вроде "test place" из времён type:string).
+            // 3. undefined/null → 'null'.
+            if (typeof value !== 'string') {
+              value = JSON.stringify(value ?? null);
+            } else {
+              try {
+                JSON.parse(value);
+              } catch {
+                value = JSON.stringify(value);
+              }
+            }
+          } else {
+            // string-поля: undefined/null → '' иначе сервер шлёт 400
+            // "formData[i].value is required" (особенно для скрытых маркеров,
+            // которых ещё нет в user.formData — типа email_notifications).
+            if (value === undefined || value === null) value = '';
+          }
+          return { marker: attr.marker, type: attr.type, value };
+        })
+        // Скрытые поля без значения вообще не шлём — сервер может ругаться
+        // на required даже на пустую строку. Если поле появится в user.formData,
+        // на следующем сейве оно подхватится автоматически.
+        .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
-        formData,
-        authData: password ? [{ marker: 'password', value: password }] : [],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        formData: formData as any,
+        // Согласно SDK-доке для updateUser, authData при изменении login-полей
+        // должна содержать ОБА маркера — login (email) и password — иначе
+        // 400 "Login or password values are missed".
+        authData: hasPassword
+          ? [
+              { marker: 'email', value: login },
+              { marker: 'password', value: password },
+            ]
+          : [],
         notificationData: {
-          email: fieldValue('email'),
+          email: fieldValue('email') || user.identifier || '',
           phonePush: [],
-          phoneSMS: fieldValue('phone'),
+          phoneSMS: normalizePhoneE164(fieldValue('phone')),
         },
         state: {},
       });
-      setEdits(prev => ({ ...prev, password: '' }));
+      // Не очищаем edits.password после Save — пароль остаётся в инпуте,
+      // чтобы юзер мог сделать ещё один Save без повторного ввода.
+      // Сам пароль на сервере не изменился (мы шлём его в authData как
+      // подтверждение операции, а не как новое значение).
       refreshUser();
       toast('Data saved!');
     } catch (e) {
@@ -128,22 +326,45 @@ const ProfileSections = (): JSX.Element => {
     } finally {
       setSaving(false);
     }
-  }, [edits, fieldValue, profileAttributes, refreshUser, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [edits, fieldValue, refreshUser, user, userForm, userRawField]);
 
-  const onApplyAddress = () => {
+  const onApplyAddress = async () => {
     if (!newStreet.trim()) return;
-    setAddresses(prev => [
-      ...prev,
-      {
-        id: `a${Date.now()}`,
-        street: newStreet.trim(),
-        house: newHouse.trim(),
-        floor: newFloor.trim(),
-      },
-    ]);
+    const newEntry: SavedAddress = {
+      id: `a${Date.now()}`,
+      street: newStreet.trim(),
+      house: newHouse.trim(),
+      floor: newFloor.trim(),
+      // Первый добавленный адрес автоматически становится selected'ом.
+      selected: addresses.length === 0,
+    };
+    const next = [...addresses, newEntry];
+    setPendingAddresses(next);
     setNewStreet('');
     setNewHouse('');
     setNewFloor('');
+    setAddAddressOpen(false);
+    await persistAddresses(next);
+    setPendingAddresses(null);
+  };
+
+  const onDeleteAddress = async (id: string) => {
+    const next = addresses.filter(a => a.id !== id);
+    // Если удалили выбранный — авто-выбираем первый из оставшихся.
+    if (next.length > 0 && !next.some(a => a.selected)) {
+      next[0]!.selected = true;
+    }
+    setPendingAddresses(next);
+    await persistAddresses(next);
+    setPendingAddresses(null);
+  };
+
+  const onSelectAddress = async (id: string) => {
+    const next = addresses.map(a => ({ ...a, selected: a.id === id }));
+    setPendingAddresses(next);
+    await persistAddresses(next);
+    setPendingAddresses(null);
   };
 
   return (
@@ -204,7 +425,7 @@ const ProfileSections = (): JSX.Element => {
                 disabled={saving || !user?.formIdentifier}
                 className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-[5px] border border-brand font-bold text-[16px] text-brand disabled:opacity-60"
               >
-                {saving ? '…' : 'Edit'}
+                {saving ? '…' : 'Save'}
               </button>
               {saveError && <p className="text-[13px] text-red-400">{saveError}</p>}
             </form>
@@ -232,34 +453,47 @@ const ProfileSections = (): JSX.Element => {
 
         {addressOpen && (
           <div className="mt-5">
-            <Image
+            {/* <Image
               src="/images/picture/maps.png"
               alt="map"
               width={350}
               height={210}
               className="w-full rounded-[5px] object-cover"
-            />
+            /> */}
             {addresses.map(addr => (
-              <div key={addr.id} className="mt-2.5 flex items-center justify-between">
-                <p className="font-normal text-xl text-white">
-                  {addr.street} str., {addr.house}
-                </p>
+              <div key={addr.id} className="mt-2.5 flex items-center justify-between gap-2.5">
+                <label className="flex items-center gap-2.5 cursor-pointer flex-1">
+                  <input
+                    type="radio"
+                    name="user-address"
+                    checked={Boolean(addr.selected)}
+                    onChange={() => onSelectAddress(addr.id)}
+                  />
+                  <span className="radio-custom" />
+                  <span className="font-normal text-xl text-white">
+                    {addr.street} str., {addr.house}
+                    {addr.floor ? `, fl. ${addr.floor}` : ''}
+                  </span>
+                </label>
                 <button
                   type="button"
-                  onClick={() => setAddresses(prev => prev.filter(a => a.id !== addr.id))}
+                  onClick={() => onDeleteAddress(addr.id)}
                   className="hover_btn_transp flex items-center justify-center rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
                 >
                   Delete
                 </button>
               </div>
             ))}
+            {addressError && <p className="mt-2.5 text-[13px] text-red-400">{addressError}</p>}
             <button
               type="button"
+              onClick={() => setAddAddressOpen(v => !v)}
               className="hover_btn_white mt-7.5 rounded-[5px] border border-white px-5 py-1.25 font-semibold text-[16px] text-paper"
             >
               + Add Address
             </button>
             <form
+              hidden={!addAddressOpen}
               className="mt-6.25 flex max-w-75 flex-wrap gap-2.5"
               onSubmit={e => {
                 e.preventDefault();
@@ -298,7 +532,7 @@ const ProfileSections = (): JSX.Element => {
               </div>
               <button
                 type="submit"
-                className="hover_btn_transp mt-5 flex h-6.75 items-center justify-center rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
+                className="hover_btn_transp flex h-6.75 items-center justify-center self-end rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
               >
                 {t('apply_text', 'Apply')}
               </button>

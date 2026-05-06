@@ -19,7 +19,7 @@ const ProductReviewsListServer = async ({
   productId: number;
 }): Promise<JSX.Element> => {
   const reviews = await getProductReviews(productId);
-  return <ProductReviewsList reviews={reviews} productId={productId} />;
+  return <ProductReviewsList reviews={reviews} />;
 };
 
 export default ProductReviewsListServer;

@@ -22,8 +22,8 @@ const redirectToOAuth = (url: string) => {
  * Первый шаг авторизации — выбор провайдера. Список провайдеров берётся из
  * OneEntry (`AuthProvider.getAuthProviders`), фильтруется по `isActive`. Email
  * открывают соответствующие формы AuthForm внутри
- * того же попапа. Google запускает OAuth-редирект (см. StepSignIn в корзине);
- * прочие OAuth-провайдеры — `config.oauthAuthUrl` напрямую.
+ * того же попапа. Google запускает OAuth-редирект; прочие OAuth-провайдеры —
+ * `config.oauthAuthUrl` напрямую.
  *
  * Дизайн — `pk_login.html` / `cart_login.html` / Figma 2383:2799: лого по центру
  */

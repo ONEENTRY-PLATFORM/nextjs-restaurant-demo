@@ -11,6 +11,7 @@ import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { normalizePhoneE164 } from '@/components/utils';
 
 // import AuthError from '../pages/AuthError';
 import SpinnerLoader from '../shared/SpinnerLoader';
@@ -77,7 +78,7 @@ const UserForm = (): JSX.Element => {
             notificationData: {
               email: fields['email']?.value || '',
               phonePush: [],
-              phoneSMS: fields['phone']?.value || '',
+              phoneSMS: normalizePhoneE164(fields['phone']?.value),
             },
             state: {},
           });

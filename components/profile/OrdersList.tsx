@@ -13,7 +13,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
-import ReviewForm from '@/components/reviews/ReviewForm';
+import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
@@ -97,8 +97,16 @@ const OrderCard = ({
   productsById: Map<number, IProductsEntity>;
 }): JSX.Element => {
   const t = useT();
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
+
+  const openReviewPopup = (): void => {
+    setOrderReviewTarget({ order, productsById });
+    setComponent('OrderReviewPopup');
+    setOpen(true);
+  };
+
   return (
     <div>
       <button
@@ -153,14 +161,23 @@ const OrderCard = ({
                 <p>{UsePrice({ amount: total })}</p>
               </div>
             </div>
-            {isHistory && (
+            <div className="mt-5 flex flex-wrap gap-3.75">
+              {isHistory && (
+                <button
+                  type="button"
+                  className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+                >
+                  {t('repeat_order_button', 'Repeat order')}
+                </button>
+              )}
               <button
                 type="button"
-                className="mt-5 block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+                onClick={openReviewPopup}
+                className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
               >
-                {t('repeat_order_button', 'Repeat order')}
+                {t('leave_review_button', 'Leave a review')}
               </button>
-            )}
+            </div>
           </div>
         </>
       )}
@@ -185,8 +202,6 @@ const OrderLineItem = ({
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
 }): JSX.Element => {
-  const t = useT();
-  const [reviewOpen, setReviewOpen] = useState(false);
   // `previewImage` в snapshot заказа часто null (зависит от настроек CMS на момент
   // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
   // подгружаемого по id через RTK на уровне `OrdersList`.
@@ -221,26 +236,11 @@ const OrderLineItem = ({
           <div className="flex items-center gap-2.5">
             <p className="text-xl font-bold text-brand">{UsePrice({ amount: product.price })}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => setReviewOpen(v => !v)}
-            aria-expanded={reviewOpen}
-            className="mt-1.25 self-start text-sm text-brand underline underline-offset-2 hover:no-underline"
-          >
-            {reviewOpen
-              ? t('cancel_review_button', 'Cancel review')
-              : t('leave_review_button', 'Leave a review')}
-          </button>
         </div>
         <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-white">
           x{product.quantity}
         </div>
       </div>
-      {reviewOpen && (
-        <div className="mt-3.75 rounded-xl bg-ink/60 p-5">
-          <ReviewForm productId={product.id} />
-        </div>
-      )}
     </div>
   );
 };

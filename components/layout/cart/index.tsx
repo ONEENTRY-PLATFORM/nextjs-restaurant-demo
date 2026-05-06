@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getApi, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
   addDeliveryToCart,
   addProductsToCart,
@@ -29,8 +30,15 @@ import Loader from '@/components/shared/Spinner';
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { isAuth, user } = useContext(AuthContext);
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
+  // Если юзер нажал APPLY без авторизации, мы открываем канонический
+  // AuthProviderSelect модалку и поднимаем флаг «после signin продолжить
+  // в order». Когда `isAuth` становится true (см. useEffect ниже) — авто-перевод
+  // на order. Без флага мы переводили бы любого вновь авторизованного юзера
+  // (например, через шапку) на order step из cart.
+  const [pendingCheckout, setPendingCheckout] = useState(false);
 
   // Зеркалим состояние доставки корзины в OrderSlice.formData, чтобы submit
   // на шаге `payment` всё равно имел `delivery_time` / `delivery_address`,
@@ -163,6 +171,16 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [products]);
 
+  // Когда auth завершился (через AuthProviderSelect / SignInForm в общей
+  // модалке), и юзер инициировал чекаут с этого экрана — продолжаем в order.
+  useEffect(() => {
+    if (pendingCheckout && isAuth) {
+      dispatch(setStep('order'));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPendingCheckout(false);
+    }
+  }, [pendingCheckout, isAuth, dispatch]);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -172,8 +190,13 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   }
 
   const onApply = () => {
-    const hasTime = Boolean(cartDelivery?.date && cartDelivery?.time);
-    dispatch(setStep(hasTime ? 'signin' : 'time'));
+    if (isAuth) {
+      dispatch(setStep('order'));
+      return;
+    }
+    setPendingCheckout(true);
+    setComponent('AuthProviderSelect');
+    setOpen(true);
   };
 
   return (

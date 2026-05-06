@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -15,6 +15,8 @@ import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/re
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
+
+import { formatAddressLine, parseSavedAddresses, pickSelectedAddress } from './savedAddress';
 
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
@@ -45,10 +47,28 @@ const StepPayment = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const delivery = useAppSelector(selectDeliveryData);
 
-  const userAddress = findUserField(user?.formData, ADDRESS_MARKERS);
+  // Сначала пробуем структурный `user_address` (street + house + floor),
+  // фоллбэк — плоские маркеры (`address_reg` и т.п.). Структурный путь нужен,
+  // чтобы в инпуте отображались дом и этаж, а не только улица.
+  const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
+  const initialPickedAddress = useMemo(() => pickSelectedAddress(savedAddresses), [savedAddresses]);
+  const userAddressFlat = findUserField(user?.formData, ADDRESS_MARKERS);
+  const userAddress = formatAddressLine(initialPickedAddress) || userAddressFlat;
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
 
   const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
+  // Поле `user.formData` приходит асинхронно из AuthContext — на первый
+  // рендер часто пустое. Если пользователь не редактировал инпут руками,
+  // подтягиваем адрес, как только формдата подгрузилась.
+  const [addressTouched, setAddressTouched] = useState<boolean>(
+    Boolean(delivery?.address as string | undefined)
+  );
+  useEffect(() => {
+    if (addressTouched) return;
+    const next = formatAddressLine(initialPickedAddress) || userAddressFlat;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (next) setAddress(next);
+  }, [addressTouched, initialPickedAddress, userAddressFlat]);
   const [mode, setMode] = useState<DeliveryMode>('asap');
   const [scheduleAt, setScheduleAt] = useState('');
 
@@ -110,7 +130,10 @@ const StepPayment = (): JSX.Element => {
         <input
           type="text"
           value={address}
-          onChange={e => setAddress(e.currentTarget.value)}
+          onChange={e => {
+            setAddress(e.currentTarget.value);
+            setAddressTouched(true);
+          }}
           placeholder="OneEntry str."
           className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
         />

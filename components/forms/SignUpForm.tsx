@@ -14,7 +14,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
-import { typeError } from '@/components/utils';
+import { normalizePhoneE164, typeError } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -82,11 +82,14 @@ const SignUpForm = (): JSX.Element => {
           },
         ],
         formData,
-        notificationData: {
-          email: fields.email?.value || '',
-          phonePush: [fields.phone?.value || ''],
-          phoneSMS: fields.phone?.value || '',
-        },
+        notificationData: (() => {
+          const phone = normalizePhoneE164(fields.phone?.value);
+          return {
+            email: fields.email?.value || '',
+            phonePush: phone ? [phone] : [],
+            phoneSMS: phone,
+          };
+        })(),
       };
 
       setLoading(true);
@@ -96,11 +99,12 @@ const SignUpForm = (): JSX.Element => {
         const res = await getApi().AuthProvider.signUp('email', data);
 
         if (typeError(res)) {
-          // Открываем форму Verification для активации пользователя
-          setOpen(true);
-          setComponent('VerificationForm');
-          setAction('activateUser');
-          setError(`Error ${(res as { statusCode?: number }).statusCode ?? ''}`);
+          // Ошибка sign-up — остаёмся в SignUpForm и показываем сообщение
+          // от сервера под кнопкой (через {@link ErrorMessage}). На
+          // VerificationForm НЕ переключаемся: пользователь не создан, код
+          // подтверждения слать некуда.
+          const err = res as { statusCode?: number; message?: string };
+          setError(err.message || `Error ${err.statusCode ?? ''}`);
         } else {
           const entity = res as ISignUpEntity;
           // Если ответ говорит, что аккаунт активен, логиним пользователя
@@ -131,7 +135,7 @@ const SignUpForm = (): JSX.Element => {
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
-      <form onSubmit={onSignUpHandle} className="mx-auto flex w-full max-w-[400px] flex-col gap-5">
+      <form onSubmit={onSignUpHandle} className="mx-auto flex w-full max-w-100 flex-col gap-5">
         <p className="font-normal text-xl text-white leading-150">
           {t('sign_up_subtitle', 'Sign in or create account to quickly manage order')}
         </p>

@@ -3,16 +3,17 @@
 
 import { useTransitionRouter } from 'next-transition-router';
 import type { FormEvent, JSX } from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import { getApi, logInUser } from '@/app/api';
+import { getApi, logInUser, useGetAuthProvidersQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
+import { typeError } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
@@ -37,6 +38,27 @@ const VerificationForm = (): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
+  // Cooldown между отправками OTP.
+  const { data: providers } = useGetAuthProvidersQuery('');
+  const ttl =
+    Number(providers?.find(p => p.identifier === 'email')?.config?.systemCodeTlsSec) || 60;
+  const [cooldown, setCooldown] = useState(60);
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (!initializedRef.current && providers) {
+      initializedRef.current = true;
+      setCooldown(ttl);
+    }
+  }, [providers, ttl]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCooldown(c => (c > 0 ? c - 1 : 0));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   useEffect(() => {
@@ -45,44 +67,54 @@ const VerificationForm = (): JSX.Element => {
     }
   }, [otp, dispatch]);
 
-  // Функция для обработки верификации OTP или активации пользователя
+  // Функция для обработки верификации OTP или активации пользователя.
   const handleVerification = async () => {
     try {
       if (action !== 'activateUser') {
-        // Если action — не активация пользователя, проверяем OTP-код
         const result = await getApi().AuthProvider.checkCode(
-          'email', // Метод верификации через email
-          fields.email?.value || '', // Email пользователя из полей формы
-          'otp', // Тип кода верификации (One-Time Password)
-          otp // OTP, введённый пользователем
+          'email',
+          fields.email?.value || '',
+          'otp',
+          otp
         );
-        if (result) setComponent('ResetPasswordForm'); // Переключаемся на Reset Password Form при успехе
-      } else {
-        // Если action — активация пользователя
-        const result = await getApi().AuthProvider.activateUser(
-          'email', // Метод активации через email
-          fields.email?.value || '', // Email пользователя из полей формы
-          otp // OTP, введённый пользователем
-        );
-        if (result) {
-          // При успешной активации логиним пользователя
-          await logInUser({
-            method: 'email', // Метод логина через email
-            login: fields.email?.value || '', // Email пользователя для логина
-            password: fields.password?.value || '', // Пароль пользователя для логина
-          });
-          authenticate(); // Вызываем функцию для установки auth-состояния
-          router.push('/profile'); // Редирект на страницу профиля пользователя
-          setOpen(false); // Закрываем любой открытый модал или drawer
-        } else {
-          throw new Error('Activation failed'); // Бросаем ошибку при провале активации
+        if (typeError(result)) {
+          const err = result as { statusCode?: number; message?: string };
+          setError(err.message || `Error ${err.statusCode ?? ''}`);
+          return;
         }
+        if (!result) {
+          setError('Invalid code');
+          return;
+        }
+        setComponent('ResetPasswordForm');
+      } else {
+        const result = await getApi().AuthProvider.activateUser(
+          'email',
+          fields.email?.value || '',
+          otp
+        );
+        if (typeError(result)) {
+          const err = result as { statusCode?: number; message?: string };
+          setError(err.message || `Error ${err.statusCode ?? ''}`);
+          return;
+        }
+        if (!result) {
+          setError('Activation failed');
+          return;
+        }
+        // Активация успешна — логинимся и закрываем попап
+        await logInUser({
+          method: 'email',
+          login: fields.email?.value || '',
+          password: fields.password?.value || '',
+        });
+        authenticate();
+        router.push('/profile');
+        setOpen(false);
       }
     } catch (e: unknown) {
-      // Ловим и устанавливаем любые ошибки, возникшие в процессе
       setError((e as { message?: string })?.message ?? 'An error occurred');
     } finally {
-      // Гарантируем сброс loading-состояния после обработки
       setLoading(false);
     }
   };
@@ -107,28 +139,29 @@ const VerificationForm = (): JSX.Element => {
     [otp, handleVerification]
   );
 
-  // Функция для обработки переотправки OTP-кода
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
+  // Переотправка OTP-кода.
   const onResendHandle = useCallback(async () => {
+    if (cooldown > 0) return;
     try {
-      // Включаем loading-состояние
       setLoading(true);
-      // Очищаем любые предыдущие сообщения об ошибках
       setError('');
-      await getApi().AuthProvider.generateCode(
-        'email', // Метод генерации кода через email
-        fields.email?.value || '', // Email пользователя из полей формы
-        'generate_code' // Тип action для генерации нового кода
+      const result = await getApi().AuthProvider.generateCode(
+        'email',
+        fields.email?.value || '',
+        'generate_code'
       );
+      if (typeError(result)) {
+        const err = result as { statusCode?: number; message?: string };
+        setError(err.message || `Error ${err.statusCode ?? ''}`);
+      } else {
+        setCooldown(ttl);
+      }
     } catch (e: unknown) {
-      // Ловим и устанавливаем любые ошибки, возникшие в процессе
       setError((e as { message?: string })?.message ?? 'An error occurred');
     } finally {
-      // Гарантируем сброс loading-состояния после обработки
       setLoading(false);
     }
-    // Зависимость useCallback
-  }, [fields.email?.value]);
+  }, [fields.email, cooldown, ttl]);
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
@@ -153,8 +186,14 @@ const VerificationForm = (): JSX.Element => {
           />
           <div className="self-end text-xs text-brand max-md:mr-2.5">
             <span className="text-paper/60">{t('receive_otp_text', '')} </span>
-            <button className="font-bold text-brand" type="button" onClick={onResendHandle}>
+            <button
+              className="font-bold text-brand disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              onClick={onResendHandle}
+              disabled={cooldown > 0 || isLoading}
+            >
               {t('resend_text', 'Resend')}
+              {cooldown > 0 ? ` (${cooldown}s)` : ''}
             </button>
           </div>
         </div>

@@ -519,6 +519,21 @@ html {
     focus:placeholder:text-transparent
     focus:outline-muted;
 }
+
+/* Сбрасываем светлый фон браузерного autofill (Chrome/Safari/Edge), чтобы
+   поля логина/регистрации не отличались по цвету от тёмной темы попапа.
+   `box-shadow inset` перекрывает автозаполненный фон цветом, совпадающим
+   с фоном попапа (`--color-ink/80` ~ #4c4d56), а `transition: 5000s`
+   откладывает повторную перерисовку браузером — стандартный приём. */
+.cart_input:-webkit-autofill,
+.cart_input:-webkit-autofill:hover,
+.cart_input:-webkit-autofill:focus,
+.cart_input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-ink) inset;
+  -webkit-text-fill-color: var(--color-paper);
+  caret-color: var(--color-paper);
+  transition: background-color 5000s ease-in-out 0s;
+}
 .cart_label {
   @apply 
     font-normal 

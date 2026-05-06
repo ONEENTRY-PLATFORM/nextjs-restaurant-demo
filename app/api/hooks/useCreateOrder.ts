@@ -16,6 +16,8 @@ type CartEntry = {
   selected?: boolean;
 };
 
+const DELIVERY_PRODUCT_ID = 33;
+
 export type ConfirmOrderResult =
   | { ok: true; orderId: number; paymentUrl?: string }
   | { ok: false; error: string };
@@ -99,6 +101,13 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         const message = 'Cart is empty';
         setError(message);
         return { ok: false, error: message };
+      }
+
+      // К каждому заказу добавляем услугу-доставку (productId 33). Чек создаётся
+      // только в визарде delivery_order, поэтому она применима всегда. Защищаемся
+      // от дубля, если по какой-то причине этот id уже попал из корзины.
+      if (!orderProducts.some(p => p.productId === DELIVERY_PRODUCT_ID)) {
+        orderProducts.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
       }
 
       const created = await getApi().Orders.createOrder('delivery_order', {

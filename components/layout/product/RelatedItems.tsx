@@ -9,7 +9,7 @@ import ProductCard from '../products-grid/components/product-card/ProductCard';
 import ProductAnimations from './animations/ProductAnimations';
 
 /** Markers handled elsewhere (e.g. ProductsGroup) — не пробуем как similar. */
-const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['multiply_items_offer']);
+const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
 
 /**
  * RelatedItems — секция «похожих товаров» внизу страницы одного блюда
@@ -61,7 +61,7 @@ const RelatedItems = async ({
   return (
     <section className="flex flex-col max-md:max-w-full pt-4">
       <ProductAnimations className={''} index={0}>
-        <h3 className="title_name max-md:max-w-full">{title}</h3>
+        <h3 className="title_name max-md:max-w-full text-paper!">{title}</h3>
       </ProductAnimations>
       <CardsGridAnimations className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
         {items.map((product, i) => (

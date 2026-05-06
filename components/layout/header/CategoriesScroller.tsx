@@ -33,7 +33,23 @@ type CategoriesScrollerProps = {
 const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Element => {
   const ref = useDragScroll<HTMLUListElement>();
   const searchParams = useSearchParams();
-  const active = searchParams.get('preferences') ?? '';
+  const activeSet = new Set(
+    (searchParams.get('preferences') ?? '')
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean)
+  );
+
+  const buildHref = (value: string, isActive: boolean): string => {
+    const params = new URLSearchParams(searchParams.toString());
+    const next = new Set(activeSet);
+    if (isActive) next.delete(value);
+    else next.add(value);
+    if (next.size > 0) params.set('preferences', [...next].join(','));
+    else params.delete('preferences');
+    const qs = params.toString();
+    return qs ? '/shop?' + qs : '/shop';
+  };
 
   return (
     <ul
@@ -42,13 +58,12 @@ const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Eleme
       className="flex gap-2.75 sm:px-3 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory select-none"
     >
       {preferences.map(option => {
-        const isActive = active === option.value;
-        const href = isActive ? '/shop' : '/shop?preferences=' + encodeURIComponent(option.value);
+        const isActive = activeSet.has(option.value);
         return (
-          <li key={option.value} className="list_item">
+          <li key={option.value} className={'list_item' + (isActive ? ' border-brand' : '')}>
             <Link
-              href={href}
-              className={'list_link' + (isActive ? ' text-brand' : '')}
+              href={buildHref(option.value, isActive)}
+              className={'list_link' + (isActive ? ' bg-brand text-white' : '')}
               draggable={false}
             >
               {option.title}

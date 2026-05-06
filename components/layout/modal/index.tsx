@@ -87,14 +87,18 @@ const Modal = (): JSX.Element => {
             (AuthProviderSelect). На самом первом шаге и в не-auth формах
             (CalendarForm и т.п.) Back закрывает модалку. */}
         <header className="absolute left-0 top-0 flex w-full items-center justify-between gap-5 px-8 py-6 max-sm:px-8 lg:px-12">
-          <button
-            type="button"
-            onClick={handleBack}
-            aria-label="Back"
-            className="group flex items-center justify-center"
-          >
-            <ArrowBackIcon className="hover-target text-paper" />
-          </button>
+          {isAuthSubStep ? (
+            <button
+              type="button"
+              onClick={handleBack}
+              aria-label="Back"
+              className="group flex items-center justify-center"
+            >
+              <ArrowBackIcon className="hover-target text-paper" />
+            </button>
+          ) : (
+            <div className="size-7" />
+          )}
           <p className="font-semibold text-[24px] text-brand">{title}</p>
           <CloseModal />
         </header>

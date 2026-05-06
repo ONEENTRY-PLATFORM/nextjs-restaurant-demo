@@ -47,7 +47,7 @@ const StepSignIn = (): JSX.Element => {
 
   useEffect(() => {
     if (isAuth) {
-      dispatch(setStep('address'));
+      dispatch(setStep('payment'));
     }
   }, [isAuth, dispatch]);
 

@@ -17,11 +17,7 @@ const FormSubmitButton = ({
 }): JSX.Element => {
   return (
     <FormFieldAnimations index={index} className="w-full">
-      <button
-        disabled={isLoading}
-        type="submit"
-        className="cart_btn cursor-pointer"
-      >
+      <button disabled={isLoading} type="submit" className="cart_btn cursor-pointer">
         {isLoading ? <Spinner /> : title}
       </button>
     </FormFieldAnimations>

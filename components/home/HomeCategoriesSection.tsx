@@ -5,7 +5,7 @@ import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 
 import CategoriesSection from './CategoriesSection';
 
-const SECTION_LIMIT = 8;
+const SECTION_LIMIT = 4;
 
 /**
  * Асинхронная секция, которая материализует список категорий на главной —

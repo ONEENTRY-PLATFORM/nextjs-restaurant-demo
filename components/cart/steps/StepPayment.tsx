@@ -1,53 +1,65 @@
 'use client';
 
 import Image from 'next/image';
+import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
-import { useAppDispatch } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/reducers/OrderSlice';
+import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
+import ClockCircleIcon from '@/components/icons/clock-circle';
+import PencilIcon from '@/components/icons/pencil';
+
+const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
+const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
+
+const findUserField = (
+  formData: ReadonlyArray<FormDataType> | undefined,
+  markers: readonly string[]
+): string => {
+  if (!formData) return '';
+  for (const marker of markers) {
+    const entry = formData.find(el => (el as { marker?: string }).marker === marker) as
+      | { value?: unknown }
+      | undefined;
+    if (typeof entry?.value === 'string' && entry.value) return entry.value;
+  }
+  return '';
+};
+
+type DeliveryMode = 'asap' | 'scheduled';
 
 /**
- * Шаг checkout — выбор метода оплаты (по `cart_PAYMENT.html`).
- *
- * Список методов берётся из OneEntry Payments API
- * (`getApi().Payments.getAccounts()` через {@link useGetAccountsQuery}) —
- * показываются только `isVisible === true` аккаунты, отсортированные
- * по `id`. Лейбл = `localizeInfos.title`, идентификатор для submit'а
- * = `identifier`. По типу (`type`) добавляется тематическая иконка:
- *  - `paypal` → лого PayPal
- *  - `stripe` → Visa + Mastercard (Stripe Checkout принимает карты)
- *  - `custom` (cash, etc.) → без иконки
- *
- * Ниже — textbox комментария + чекбокс «order taken by another person».
- *
- * При submit:
- *  1) Сохраняем `comment` / `alt_phone` через `addData`.
- *  2) Кладём identifier в `addPaymentMethod` (для последующих экранов).
- *  3) Вызываем `onConfirmOrder({ paymentAccountIdentifier })`. Если
- *     OneEntry вернёт `paymentUrl` (Stripe / другой redirect-payment) —
- *     редиректим, иначе сразу переходим на `success`.
- *
- * Stripe Checkout собирает данные карты на своей hosted-странице,
- * отдельный UI не нужен.
+ * Шаг checkout — адрес + время + оплата на одном экране (cart_PAYMENT.html).
  */
 const StepPayment = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const { onConfirmOrder, isLoading } = useCreateOrder();
+  const { user } = useContext(AuthContext);
+  const delivery = useAppSelector(selectDeliveryData);
+
+  const userAddress = findUserField(user?.formData, ADDRESS_MARKERS);
+  const userPhone = findUserField(user?.formData, PHONE_MARKERS);
+
+  const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
+  const [mode, setMode] = useState<DeliveryMode>('asap');
+  const [scheduleAt, setScheduleAt] = useState('');
 
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
   const accounts: IAccountsEntity[] = (data ?? []).filter(a => a.isVisible !== false);
 
-  const [identifier, setIdentifier] = useState<string>('');
+  const [identifier, setIdentifier] = useState('');
   const [comment, setComment] = useState('');
   const [altReceiver, setAltReceiver] = useState(false);
   const [altPhone, setAltPhone] = useState('');
 
-  // Дефолтный выбор — первый видимый аккаунт.
   useEffect(() => {
     if (!identifier && accounts.length > 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -55,28 +67,27 @@ const StepPayment = (): JSX.Element => {
     }
   }, [accounts, identifier]);
 
-  const persistOrderFields = () => {
+  const onNext = async () => {
+    if (!identifier || !address.trim()) return;
+
+    const deliveryTime = mode === 'asap' ? '40-45 min' : scheduleAt || '';
+    dispatch(setDeliveryData({ ...delivery, address, time: deliveryTime }));
+    dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
+    if (userPhone) {
+      dispatch(addData({ marker: 'contact_phone', type: 'string', value: userPhone }));
+    }
+    if (deliveryTime) {
+      dispatch(addData({ marker: 'delivery_time', type: 'string', value: deliveryTime }));
+    }
     if (comment.trim()) {
       dispatch(addData({ marker: 'comment', type: 'string', value: comment.trim() }));
     }
     if (altReceiver && altPhone.trim()) {
-      dispatch(
-        addData({
-          marker: 'alt_phone',
-          type: 'string',
-          value: altPhone.trim(),
-        })
-      );
+      dispatch(addData({ marker: 'alt_phone', type: 'string', value: altPhone.trim() }));
     }
-  };
 
-  const onNext = async () => {
-    if (!identifier) return;
-    persistOrderFields();
     dispatch(addPaymentMethod(identifier));
-    const result = await onConfirmOrder({
-      paymentAccountIdentifier: identifier,
-    });
+    const result = await onConfirmOrder({ paymentAccountIdentifier: identifier });
     if (!result.ok) {
       dispatch(setStepError(result.error));
       return;
@@ -90,8 +101,72 @@ const StepPayment = (): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Хедер */}
-      <div className="flex items-center gap-2.5">
+      {/* Address */}
+      <div className="flex items-center gap-2.5 text-paper">
+        <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
+        <p className="font-normal text-[20px] text-paper">{t('address_text', 'Address')}</p>
+      </div>
+      <div className="relative flex items-center text-paper">
+        <input
+          type="text"
+          value={address}
+          onChange={e => setAddress(e.currentTarget.value)}
+          placeholder="OneEntry str."
+          className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
+        />
+        <PencilIcon className="absolute right-1.75 top-1.75 pointer-events-none" />
+      </div>
+
+      {/* Time */}
+      <div className="mt-5 flex items-center gap-2.5 text-paper">
+        <ClockCircleIcon variant="paper" />
+        <p className="font-normal text-[20px] text-paper">{t('time_text', 'Time')}</p>
+      </div>
+      <div className="flex items-center gap-2.5 text-paper">
+        <input
+          type="radio"
+          id="time-asap"
+          name="delivery-time"
+          className="hidden peer"
+          checked={mode === 'asap'}
+          onChange={() => setMode('asap')}
+        />
+        <label
+          htmlFor="time-asap"
+          className="radio-custom flex cursor-pointer select-none items-center"
+        >
+          <span className="ml-2 text-paper">40-45 min</span>
+        </label>
+      </div>
+      <div className="flex items-center gap-2.5 text-paper">
+        <input
+          type="radio"
+          id="time-scheduled"
+          name="delivery-time"
+          className="hidden peer"
+          checked={mode === 'scheduled'}
+          onChange={() => setMode('scheduled')}
+        />
+        <label
+          htmlFor="time-scheduled"
+          className="radio-custom flex cursor-pointer select-none items-center"
+        >
+          <span className="ml-2 text-paper">{t('by_the_time', 'by the time')}</span>
+        </label>
+        <input
+          type="text"
+          value={scheduleAt}
+          onChange={e => {
+            setScheduleAt(e.currentTarget.value);
+            setMode('scheduled');
+          }}
+          placeholder="18.06.24  10.00"
+          className="rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
+        />
+      </div>
+
+      {/* Payment */}
+      <div className="mt-5 flex items-center gap-2.5">
         <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
         <p className="font-normal text-[20px] text-paper">{t('select_payment_text', 'Payment')}</p>
       </div>
@@ -111,16 +186,14 @@ const StepPayment = (): JSX.Element => {
         ))
       )}
 
-      {/* Комментарии к заказу */}
       <input
         type="text"
         value={comment}
         onChange={e => setComment(e.currentTarget.value)}
         placeholder={t('comment_order', 'Comments to the order')}
-        className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+        className="text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
 
-      {/* Заказ принимает другой человек */}
       <label className="custom-checkbox text-[14px] text-paper">
         <input
           type="checkbox"
@@ -128,27 +201,26 @@ const StepPayment = (): JSX.Element => {
           onChange={e => setAltReceiver(e.currentTarget.checked)}
         />
         <span className="checkbox-box mr-2.5">
-          <Image src="/images/icons/checkbox-mark.svg" alt="" width={18} height={18} />
+          <CheckboxMarkIcon />
         </span>
         {t('another_person_text', 'The order will be taken by another person')}
       </label>
 
-      {/* Телефон альтернативного получателя (виден, когда чекбокс включён) */}
-      {altReceiver ? (
+      {altReceiver && (
         <input
           type="tel"
           autoComplete="tel"
           value={altPhone}
           onChange={e => setAltPhone(e.currentTarget.value)}
           placeholder="phone number"
-          className="text-[16px] text-paper placeholder:text-[#a8a9b5] border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+          className="text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
         />
-      ) : null}
+      )}
 
       <button
         type="button"
         onClick={onNext}
-        disabled={isLoading || !identifier || (altReceiver && !altPhone.trim())}
+        disabled={isLoading || !identifier || !address.trim() || (altReceiver && !altPhone.trim())}
         className="cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
         {isLoading ? 'Processing...' : 'APPLY'}
@@ -158,10 +230,7 @@ const StepPayment = (): JSX.Element => {
 };
 
 /**
- * Радио-карточка одного payment-аккаунта. Иконки выбираем по
- * `account.type` — это `'paypal' | 'stripe' | 'custom' | ...` из
- * OneEntry. Для `custom` (наличные и др.) иконки нет — отображается
- * только лейбл.
+ * Радио-карточка одного payment-аккаунта.
  */
 const PaymentMethodOption = ({
   account,
@@ -186,18 +255,18 @@ const PaymentMethodOption = ({
         onChange={onSelect}
         className="hidden peer"
       />
-      <label htmlFor={id} className="radio-custom flex items-center cursor-pointer select-none">
+      <label htmlFor={id} className="radio-custom flex cursor-pointer select-none items-center">
         <span className="ml-2 text-paper capitalize">{label}</span>
       </label>
-      {type === 'paypal' ? (
+      {type === 'paypal' && (
         <Image src="/images/icons/paypal.png" alt="PayPal" width={68} height={18} />
-      ) : null}
-      {type === 'stripe' ? (
+      )}
+      {type === 'stripe' && (
         <>
           <Image src="/images/icons/visa.png" alt="Visa" width={36} height={12} />
           <Image src="/images/icons/mastercart.png" alt="Mastercard" width={28} height={18} />
         </>
-      ) : null}
+      )}
     </div>
   );
 };

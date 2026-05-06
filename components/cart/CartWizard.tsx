@@ -19,7 +19,6 @@ import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartPage from '@/components/layout/cart';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 
-import StepAddress from './steps/StepAddress';
 import StepOrder from './steps/StepOrder';
 import StepPayment from './steps/StepPayment';
 import StepResult from './steps/StepResult';
@@ -115,7 +114,6 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
       {step === 'time' && <StepTime />}
       {step === 'signin' && <StepSignIn />}
       {step === 'verification' && <StepVerification />}
-      {step === 'address' && <StepAddress />}
       {step === 'order' && <StepOrder />}
       {step === 'payment' && <StepPayment />}
       {step === 'success' && <StepResult variant="success" />}

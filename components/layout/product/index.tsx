@@ -56,19 +56,22 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
         <p className="font-bold text-[20px] tracking-[0.02em] text-paper">{localizeInfos.title}</p>
       </div>
 
-      {/* 2-колоночный layout (md+): картинка | детали + отзывы. */}
-      <div className="flex flex-col gap-15 md:mt-5 md:grid md:grid-cols-[minmax(0,1fr)_22rem] md:items-stretch md:gap-15 lg:grid-cols-[minmax(0,1fr)_27.5rem]">
+      {/* lg+ — flex-row (картинка | детали + отзывы), md и ниже — вертикальный стек.
+          Размеры по static-html/pk_product_details.html: картинка 615-700px на lg+,
+          gap 60px горизонтальный (lg+) / 20px вертикальный (mobile/md). */}
+      <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-15">
         {/* Картинка — col-1 */}
-        <ProductAnimations className="relative w-full md:min-h-full" index={0}>
-          <div className="absolute max-h-120 inset-0 flex items-center justify-center overflow-hidden">
-            <ProductCover alt={localizeInfos.title} product={product} />
-          </div>
+        <ProductAnimations
+          className="relative mx-auto block w-full max-w-112.5 md:max-w-175 lg:mx-0 lg:min-w-153.75 lg:shrink-0"
+          index={0}
+        >
+          <ProductCover alt={localizeInfos.title} product={product} />
         </ProductAnimations>
 
         {/* Детали + отзывы — col-2 */}
-        <ProductAnimations className="flex flex-col" index={1}>
+        <ProductAnimations className="flex w-full flex-col lg:min-w-0 lg:flex-1" index={1}>
           {/* Только для мобильной версии — категория + заголовок (над деталями на маленьких экранах) */}
-          <div className="mt-5 flex flex-col gap-2.5 md:hidden">
+          <div className="flex flex-col gap-2.5 md:hidden">
             {categoryLabel ? (
               <Link
                 href={'/shop/category/' + categorySlug}

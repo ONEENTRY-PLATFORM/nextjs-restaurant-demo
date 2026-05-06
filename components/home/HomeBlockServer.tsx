@@ -22,17 +22,21 @@ import HomeBlockSection from './HomeBlockSection';
 const HomeBlockServer = async ({
   marker,
   className,
+  limit,
 }: {
   marker: string;
   className?: string;
+  limit?: number;
 }): Promise<JSX.Element | null> => {
   const data = await getBlockProducts(marker);
   if (data.isError || data.products.length === 0) return null;
 
+  const products = limit ? data.products.slice(0, limit) : data.products;
+
   return (
     <HomeBlockSection
       title={data.title}
-      products={data.products}
+      products={products}
       countElementsPerRow={data.countElementsPerRow}
       className={className ?? 'section_layout'}
     />

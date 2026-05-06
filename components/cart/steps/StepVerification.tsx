@@ -40,7 +40,7 @@ const StepVerification = (): JSX.Element => {
         setError((res as { message?: string }).message ?? 'Invalid code. Try again.');
         return;
       }
-      dispatch(setStep('address'));
+      dispatch(setStep('payment'));
     } catch (e: unknown) {
       const message = (e as { message?: string }).message ?? 'Verification failed.';
       setError(message);

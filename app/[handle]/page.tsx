@@ -29,7 +29,7 @@ const PageLayout = async ({
   const html = descriptionRaw?.[0]?.htmlValue ?? '';
 
   return (
-    <article className="mx-auto flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
+    <article className="mx-auto flex w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
       {title ? (
         <h1 className="font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
           {title}

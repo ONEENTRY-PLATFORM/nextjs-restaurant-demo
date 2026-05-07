@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 import { useMemo, useState } from 'react';
 
+import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
@@ -94,28 +95,27 @@ type DateTimePickerSheetProps = {
   getSlots?: (dateIso: string) => string[];
   range?: [number, number];
   step?: 1 | 2;
-  /** Заголовок попапа целиком. */
-  title?: string;
-  /** Заголовок секции даты (по умолчанию "Date"). */
+  /** Заголовок шага выбора даты (по умолчанию "Date"). */
   dateTitle?: string;
-  /** Заголовок секции времени (по умолчанию "Time"). */
+  /** Заголовок шага выбора времени (по умолчанию "Time"). */
   timeTitle?: string;
   applyText?: string | undefined;
+  continueText?: string | undefined;
   noTimeText?: string | undefined;
 };
 
 /**
- * Объединённый bottom-sheet (на мобиле) / модальный попап (на md+) для выбора
- * даты и времени в одном UI:
+ * Двухшаговый bottom-sheet (на мобиле) / модальный попап (на md+) для выбора
+ * даты и времени:
  *
- *   1) Заголовок попапа сверху + подзаголовки секций ("Date", "Time").
- *   2) Сначала календарь — пользователь выбирает день.
- *   3) После выбора дня снизу появляется секция со слотами `timeInterval`.
- *   4) `Apply` активируется, когда выбраны и дата, и время.
+ *   Шаг 1 (`date`): календарь — пользователь выбирает день, нажимает `Continue`
+ *     и попадает на шаг 2.
+ *   Шаг 2 (`time`): сетка временных слотов из `timeInterval`, кнопка `Apply`
+ *     закрывает попап через `onApply(date, time)`. В шапке — стрелка назад,
+ *     возвращающая к шагу 1 (выбранный день и время сохраняются).
  *
- * Заменяет пару `DatePickerSheet` + `TimePickerSheet`, где сначала открывался
- * один попап, потом второй. См. вёрстку `service_date.html` / `service_time.html`
- * — теперь это слитый экран.
+ * См. вёрстку `static-html/service_date.html` (шаг 1) и
+ * `static-html/service_time.html` (шаг 2) — оригинал тоже был двухэкранный.
  */
 const DateTimePickerSheet = ({
   date,
@@ -126,10 +126,10 @@ const DateTimePickerSheet = ({
   getSlots,
   range = [10, 21],
   step = 1,
-  title = 'Select date and time',
   dateTitle = 'Date',
   timeTitle = 'Time',
   applyText = 'Apply',
+  continueText = 'Continue',
   noTimeText = 'No available time slots for the selected date.',
 }: DateTimePickerSheetProps): JSX.Element => {
   const today = useMemo(() => new Date(), []);
@@ -138,6 +138,7 @@ const DateTimePickerSheet = ({
   const [month, setMonth] = useState(initial.getMonth());
   const [selectedDate, setSelectedDate] = useState<string>(date ?? '');
   const [selectedTime, setSelectedTime] = useState<string>(time ?? '');
+  const [stepName, setStepName] = useState<'date' | 'time'>('date');
 
   const grid = useMemo(() => buildMonthGrid(year, month), [year, month]);
 
@@ -172,66 +173,86 @@ const DateTimePickerSheet = ({
     }
   };
 
+  const isDateStep = stepName === 'date';
+  const canContinue = !!selectedDate;
   const canApply = !!selectedDate && !!selectedTime;
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div className="fixed bottom-0 left-0 right-0 z-50 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
-        {onClose ? (
-          <div className="absolute right-5 top-5 md:right-10 md:top-10">
+        <div className="mb-5 flex items-center justify-between gap-5">
+          {isDateStep ? (
+            <span className="h-5 w-6.75" aria-hidden="true" />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setStepName('date')}
+              aria-label="Back to date selection"
+              className="group flex items-center justify-center"
+            >
+              <ArrowBackIcon className="hover-target text-paper" />
+            </button>
+          )}
+          <h2 className="flex-1 text-center font-bold text-[20px] uppercase text-brand">
+            {isDateStep ? dateTitle : timeTitle}
+          </h2>
+          {onClose ? (
             <ClosePopupButton onClose={onClose} ariaLabel="Close date and time picker" />
-          </div>
-        ) : null}
-
-        <h2 className="mb-5 text-center font-bold text-[20px] uppercase text-brand">{title}</h2>
+          ) : (
+            <span className="h-5 w-5" aria-hidden="true" />
+          )}
+        </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-87.5">
-            <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">{dateTitle}</h3>
-            <div className="grid grid-cols-7">
-              {WEEK.map(w => (
-                <div key={w} className="calend_mon">
-                  {w}
-                </div>
-              ))}
-              {grid.map(cell => {
-                const active = cell.iso === selectedDate && cell.monthOffset === 0;
-                const disabled = (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
-                return (
-                  <button
-                    key={cell.iso + cell.monthOffset}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => setSelectedDate(cell.iso)}
-                    className={
-                      'calend_days ' +
-                      (active ? 'bg-brand text-white font-bold ' : '') +
-                      (disabled ? 'opacity-40 pointer-events-none ' : '')
-                    }
-                  >
-                    {String(cell.day).padStart(2, '0')}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mb-5 mt-4 flex items-center justify-around">
-              <button type="button" onClick={goPrev} aria-label="Previous month" className="group">
-                <ChevronMiniLeftIcon />
-              </button>
-              <div className="flex gap-3.75">
-                <h2 className="font-semibold text-[20px] text-brand">{MONTH_NAMES[month]}</h2>
-                <h3 className="font-light text-[20px] text-brand">{year}</h3>
-              </div>
-              <button type="button" onClick={goNext} aria-label="Next month" className="group">
-                <ChevronMiniRightIcon />
-              </button>
-            </div>
-          </div>
-
-          {selectedDate ? (
+          {isDateStep ? (
             <div className="mx-auto w-full max-w-87.5">
-              <h3 className="mb-2.5 font-semibold text-[16px] uppercase text-paper">{timeTitle}</h3>
+              <div className="grid grid-cols-7">
+                {WEEK.map(w => (
+                  <div key={w} className="calend_mon">
+                    {w}
+                  </div>
+                ))}
+                {grid.map(cell => {
+                  const active = cell.iso === selectedDate && cell.monthOffset === 0;
+                  const disabled = (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
+                  return (
+                    <button
+                      key={cell.iso + cell.monthOffset}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => setSelectedDate(cell.iso)}
+                      className={
+                        'calend_days ' +
+                        (active ? 'bg-brand text-white font-bold ' : '') +
+                        (disabled ? 'opacity-40 pointer-events-none ' : '')
+                      }
+                    >
+                      {String(cell.day).padStart(2, '0')}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mb-5 mt-4 flex items-center justify-around">
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  aria-label="Previous month"
+                  className="group"
+                >
+                  <ChevronMiniLeftIcon />
+                </button>
+                <div className="flex gap-3.75">
+                  <h2 className="font-semibold text-[20px] text-brand">{MONTH_NAMES[month]}</h2>
+                  <h3 className="font-light text-[20px] text-brand">{year}</h3>
+                </div>
+                <button type="button" onClick={goNext} aria-label="Next month" className="group">
+                  <ChevronMiniRightIcon />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mx-auto w-full max-w-87.5">
               {slots.length === 0 ? (
                 <p className="py-5 text-center text-base text-paper/80">{noTimeText}</p>
               ) : (
@@ -255,18 +276,29 @@ const DateTimePickerSheet = ({
                 </div>
               )}
             </div>
-          ) : null}
+          )}
         </div>
 
         <div className="mt-5 flex items-center justify-center">
-          <button
-            type="button"
-            disabled={!canApply}
-            onClick={() => onApply(selectedDate, selectedTime)}
-            className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
-          >
-            {applyText}
-          </button>
+          {isDateStep ? (
+            <button
+              type="button"
+              disabled={!canContinue}
+              onClick={() => setStepName('time')}
+              className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
+            >
+              {continueText}
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={!canApply}
+              onClick={() => onApply(selectedDate, selectedTime)}
+              className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
+            >
+              {applyText}
+            </button>
+          )}
         </div>
       </div>
     </>

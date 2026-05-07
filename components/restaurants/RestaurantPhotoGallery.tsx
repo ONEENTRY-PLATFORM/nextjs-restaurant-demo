@@ -255,7 +255,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
         </button>
         <div
           ref={thumbsContainerRef}
-          className="flex h-full min-h-0 flex-col gap-11 overflow-y-auto pr-1 no-scrollbar touch-pan-y select-none cursor-grab active:cursor-grabbing"
+          className="flex h-full min-h-0 flex-col gap-11 overflow-y-auto px-1 no-scrollbar touch-pan-y select-none cursor-grab active:cursor-grabbing"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerEnd}

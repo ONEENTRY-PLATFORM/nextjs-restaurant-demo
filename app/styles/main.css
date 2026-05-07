@@ -243,8 +243,8 @@ html {
     @apply
       mx-auto
       w-full
-      max-w-88
-      sm:max-w-175
+      max-w-85
+      xs:max-w-none
       md:max-w-175
       lg:max-w-250
       xl:max-w-323
@@ -258,6 +258,8 @@ html {
       mx-auto
       flex
       w-full
+      max-w-85
+      xs:max-w-none
       md:max-w-175
       lg:max-w-250
       xl:max-w-323
@@ -275,6 +277,8 @@ html {
       flex
       min-h-25
       w-full
+      max-w-85
+      xs:max-w-none
       md:max-w-175
       lg:max-w-250
       xl:max-w-323

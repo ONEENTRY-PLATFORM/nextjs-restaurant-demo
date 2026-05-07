@@ -45,7 +45,7 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
    */
   return (
     <section className="min-h-screen bg-black">
-      <div className="mx-auto w-full max-w-97.5 px-4 md:max-w-175 lg:max-w-250 xl:max-w-323">
+      <div className="mx-auto w-full max-w-85 px-4 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
         <CartWizard
           deliveryData={deliveryData as IProductsEntity}
           promoSidebar={<CartPromoSidebar banners={banners} />}

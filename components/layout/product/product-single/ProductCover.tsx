@@ -28,7 +28,7 @@ const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string 
           sizes="(min-width: 1024px) 615px, (min-width: 768px) 700px, 100vw"
           src={src}
           alt={alt}
-          className="block h-auto w-full lg:h-115 lg:object-cover"
+          className="block h-auto max-h-75 w-full object-cover md:max-h-none lg:h-115"
         />
       ) : (
         <div className="relative aspect-4/3 w-full overflow-hidden">

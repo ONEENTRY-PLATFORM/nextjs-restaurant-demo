@@ -87,7 +87,7 @@ const Header = async (): Promise<JSX.Element> => {
       <div className="relative">
         <div className="relative">
           {/* header_mobile */}
-          <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col md:hidden">
+          <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
               {supportPhone ? (
                 <a

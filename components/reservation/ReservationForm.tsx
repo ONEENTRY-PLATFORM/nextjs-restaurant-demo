@@ -577,10 +577,10 @@ const ReservationForm = ({
             setPickerOpen(false);
           }}
           onClose={() => setPickerOpen(false)}
-          title={t('select_datetime_text', 'Select date and time')}
           dateTitle={t('date_text', 'Date')}
           timeTitle={t('time_text', 'Time')}
           applyText={t('apply_text', '') || undefined}
+          continueText={t('continue_text', '') || undefined}
           noTimeText={t('no_time_text', '') || undefined}
         />
       ) : null}

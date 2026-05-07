@@ -98,7 +98,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
         </div>
 
         {priceFormatted ? (
-          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient flex justify-center items-center font-bold text-white text-[20px] shrink-0 mt-8.5 md:mt-0">
+          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient hidden md:flex justify-center items-center font-bold text-white text-[20px] shrink-0 md:mt-0">
             {priceFormatted}
           </div>
         ) : null}

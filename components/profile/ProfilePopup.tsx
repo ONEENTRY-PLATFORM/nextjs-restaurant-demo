@@ -27,9 +27,6 @@ const PROFILE_NAV_ITEM_CLASS =
 const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';
 
-// Тот же breakpoint-helper, что в CartWizard / OrdersList: на md+ ссылки в
-// меню профиля ведут на отдельные страницы `/profile/{pageUrl}`, на мобиле —
-// переключаются как экраны внутри попапа (паттерн CartWizard).
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -43,8 +40,6 @@ const useIsMdUp = (): boolean =>
 
 type ProfileScreen = 'menu' | 'orders' | 'favorites' | 'bookings' | 'personal';
 
-// Маркеры pageUrl, которые на мобильном остаются внутри попапа (соответствуют
-// сабэкранам ProfileScreen). Прочие CMS-пункты — fallback-навигация по Link.
 const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
   orders: 'orders',
   favorites: 'favorites',
@@ -52,17 +47,8 @@ const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
 };
 
 /**
- * Список ссылок личного кабинета (Orders / Favorites / Bookings / …)
- * из CMS-меню `user_menu` — children пункта `profile`. Тот же источник, что
- * у hover-дропдауна десктопного {@link import('@/components/layout/header/nav/NavItemProfile').default}.
- *
- * - На md+ каждый пункт — `Link` на `/profile/{pageUrl}` (десктоп
- *   использует полноценные страницы). Спец-кейс `bookings` — открывает
- *   {@link import('./BookingsPopup').default} через `setComponent`,
- *   потому что отдельной страницы `/profile/bookings` нет.
- * - На мобиле клик переключает экран внутри попапа (`setScreen`),
- *   попап остаётся открытым, контент свопается — повторяет паттерн
- *   {@link import('@/components/cart/CartWizard').default}.
+ * List of personal-area links (Orders / Favorites / Bookings / …)
+ * from the CMS menu `user_menu` — children of the `profile` item.
  */
 const ProfileNavMenu = ({
   isMdUp,
@@ -110,7 +96,7 @@ const ProfileNavMenu = ({
         const label = page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
         const inlineScreen = page.pageUrl ? MOBILE_INLINE_SCREENS[page.pageUrl] : undefined;
 
-        // Мобильный inline-экран — кнопка переключает screen внутри попапа.
+        // Mobile inline screen — the button switches `screen` within the popup.
         if (!isMdUp && inlineScreen) {
           return (
             <button
@@ -125,9 +111,9 @@ const ProfileNavMenu = ({
           );
         }
 
-        // bookings на десктопе и при отсутствии inline-экрана для мобилы —
-        // открываем отдельный попап BookingsPopup через OpenDrawerContext
-        // (страницы `/profile/bookings` нет — bookings живут только overlay'ем).
+        // bookings on desktop, and when there's no inline mobile screen —
+        // open the dedicated BookingsPopup via OpenDrawerContext
+        // (there is no `/profile/bookings` page — bookings live only as an overlay).
         if (page.pageUrl === 'bookings') {
           return (
             <button
@@ -142,8 +128,8 @@ const ProfileNavMenu = ({
           );
         }
 
-        // Дефолт — md+ или незнакомые pageUrl: ссылка на отдельную
-        // страницу `/profile/{pageUrl}` с закрытием попапа.
+        // Default — md+ or unknown pageUrl: a link to the standalone
+        // `/profile/{pageUrl}` page that closes the popup.
         return (
           <Link
             key={page.id}
@@ -182,9 +168,9 @@ const SCREEN_TITLES: Record<Exclude<ProfileScreen, 'menu'>, string> = {
 };
 
 /**
- * Шапка под-экрана: стрелка назад → меню, заголовок по центру.
- * Используется на мобильном при screen !== 'menu'. Стиль повторяет
- * шапку {@link import('@/components/profile/BookingsPopup').default}.
+ * Sub-screen header: back arrow → menu, centered title.
+ * Used on mobile when screen !== 'menu'. Mirrors the header of
+ * {@link import('@/components/profile/BookingsPopup').default}.
  */
 const ScreenHeader = ({
   screen,
@@ -208,12 +194,8 @@ const ScreenHeader = ({
 );
 
 /**
- * Drawer-попап профиля. На md+ — drawer с навигационным меню (ссылки на
- * страницы `/profile/{pageUrl}`) + секции My Profile / Address. На мобиле
- * добавляется screen-swap внутри попапа: клик по Orders/Favorites/Bookings
- * не закрывает попап, а свапит контент (паттерн `CartWizard`); сверху
- * появляется шапка с кнопкой «back» — возврат к меню.
- * @returns {JSX.Element} JSX drawer-а профиля.
+ * Profile drawer popup.
+ * @returns {JSX.Element} JSX of the profile drawer.
  */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -222,8 +204,7 @@ const ProfilePopup = (): JSX.Element => {
   const isMdUp = useIsMdUp();
   const [screen, setScreen] = useState<ProfileScreen>('menu');
 
-  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы
-  // inline-transform от хука не перебивался `yPercent`-tween-ом.
+  // Swipe down closes directly
   useSwipeToClose(sheetRef, () => {
     setScreen('menu');
     setOpen(false);
@@ -238,8 +219,7 @@ const ProfilePopup = (): JSX.Element => {
     return <></>;
   }
 
-  // На десктопе всегда показываем меню + Personal/Address (screen-state
-  // игнорируется — все ссылки ведут на отдельные страницы).
+  // On desktop always show the menu
   const activeScreen = isMdUp ? 'menu' : screen;
 
   return (
@@ -258,11 +238,6 @@ const ProfilePopup = (): JSX.Element => {
         </div>
 
         <div className="mx-auto h-full max-w-87.5 overflow-x-hidden overflow-y-auto pb-25 no-scrollbar md:pb-0">
-          {/* Анимация drill-down: forward (menu → screen) — въезд справа,
-              back — въезд слева. `key={activeScreen}` перемонтирует блок,
-              чтобы CSS-keyframes запускались на каждом переходе. На десктопе
-              activeScreen всегда 'menu', анимация играется один раз при
-              маунте попапа — это допустимо. */}
           <div
             key={activeScreen}
             className={
@@ -273,10 +248,6 @@ const ProfilePopup = (): JSX.Element => {
             {activeScreen === 'menu' ? (
               <>
                 <ProfileNavMenu isMdUp={isMdUp} onNavigate={close} onSelectScreen={setScreen} />
-                {/* На десктопе ProfileSections (My Profile + Address) рендерятся
-                    инлайн под навигацией — десктоп не использует sub-screen swap.
-                    На мобильном "My Profile" — отдельный пункт меню, открывающий
-                    свой экран `personal`, поэтому инлайн-блок не нужен. */}
                 {isMdUp && (
                   <div className="mt-7.5">
                     <ProfileSections />

@@ -18,7 +18,7 @@ const NotFound = async (): Promise<JSX.Element> => {
   /** если данных страницы нет — возвращаем fallback */
   if (isError || !page) {
     return (
-      <div className="mx-auto flex min-h-80 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center py-8 text-paper">
+      <div className="mx-auto flex min-h-80 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
         <h1 className="mb-10 text-6xl">404</h1>
         <Link href="/">Return home</Link>
       </div>
@@ -29,7 +29,7 @@ const NotFound = async (): Promise<JSX.Element> => {
   const { localizeInfos, attributeValues } = page;
 
   return (
-    <div className="mx-auto flex min-h-96 w-full md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center py-8 text-paper">
+    <div className="mx-auto flex min-h-96 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
       <h1 className="mb-10 text-6xl">{localizeInfos?.title}</h1>
       <p className="mb-4">
         {

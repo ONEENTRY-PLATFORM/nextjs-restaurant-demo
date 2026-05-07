@@ -11,22 +11,22 @@ const FORM_STATUS = 'approved';
 const DEFAULT_MODULE_CONFIG_ID = 5;
 
 /**
- * Маркеры, ожидаемые в форме `comment_to_product` в OneEntry.
- * UI собирает только рейтинг (звёзды) + произвольный текст; любые другие поля
- * формы, которые админ добавит (изображения, спам и т.п.), всё равно отправляются
- * через ветку по умолчанию в {@link transformFormField} и остаются пустыми.
+ * Markers expected in the `comment_to_product` form in OneEntry.
+ * The UI only collects a rating (stars) + free-form text; any other fields
+ * the admin adds to the form (images, spam, etc.) are still sent through the
+ * default branch in {@link transformFormField} and remain empty.
  */
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
 /**
- * Payload отправки отзыва, собранный на клиенте.
- * Идентичность автора берётся из сессии авторизации OneEntry в SDK
- * (в UI форма доступна только после входа). Привязка к продукту
- * передаётся через `moduleEntityIdentifier`, а не через скрытое поле формы.
- * @property {number} rating    - Рейтинг звёздами 1–5.
- * @property {string} text      - Тело отзыва.
- * @property {number} productId - ID отзываемого продукта (становится `moduleEntityIdentifier`).
+ * Review submission payload assembled on the client.
+ * Author identity is taken from the OneEntry auth session in the SDK
+ * (in the UI the form is only available after login). The product binding
+ * is passed via `moduleEntityIdentifier`, not via a hidden form field.
+ * @property {number} rating    - Star rating 1–5.
+ * @property {string} text      - Review body.
+ * @property {number} productId - ID of the product being reviewed (becomes `moduleEntityIdentifier`).
  */
 export type ReviewPayload = {
   rating: number;
@@ -35,19 +35,19 @@ export type ReviewPayload = {
 };
 
 /**
- * Отправляет отзыв о продукте в OneEntry FormsData (маркер `review_form`).
+ * Submits a product review to OneEntry FormsData (marker `review_form`).
  *
- * Повторяет контракт отправки:
- * - поля формы читаются динамически из схемы формы, сортируются по `position`
- *   и трансформируются по типу через {@link transformFormField};
- * - `moduleEntityIdentifier` несёт id продукта, чтобы каждый отзыв был привязан
- *   к своему продукту без скрытого поля `productId` в форме;
- * - `formModuleConfigId` читается из `moduleFormConfigs[0].id` формы
- *   с общепроектным fallback;
- * - `status: 'approved'` совпадает с эталонным магазином — переключи в OneEntry,
- *   если модерация должна задерживать отзывы до публикации.
- * @param   {ReviewPayload}                                        payload - Данные отзыва.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Результат отправки.
+ * Replicates the submission contract:
+ * - form fields are read dynamically from the form schema, sorted by `position`,
+ *   and transformed by type via {@link transformFormField};
+ * - `moduleEntityIdentifier` carries the product id so each review is bound
+ *   to its product without a hidden `productId` field in the form;
+ * - `formModuleConfigId` is read from the form's `moduleFormConfigs[0].id`
+ *   with a project-wide fallback;
+ * - `status: 'approved'` matches the reference shop — switch in OneEntry if
+ *   moderation should hold reviews before publication.
+ * @param   {ReviewPayload}                                        payload - Review data.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Submission result.
  */
 export async function submitReview(
   payload: ReviewPayload

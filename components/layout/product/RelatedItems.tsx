@@ -59,7 +59,7 @@ const RelatedItems = async ({
   const title = await t('featured_objects', 'Featured objects');
 
   return (
-    <section className="flex flex-col max-md:max-w-full pt-4">
+    <section className="flex flex-col max-md:max-w-full pt-15">
       <ProductAnimations className={''} index={0}>
         <h3 className="title_name max-md:max-w-full text-paper!">{title}</h3>
       </ProductAnimations>

@@ -5,10 +5,10 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * Универсальный рендерер CMS-страниц у которых нет специализированного роута.
- * @param   {object}                          props        - Свойства страницы.
- * @param   {Promise<{ handle: string }>}     props.params - Параметры маршрута.
- * @returns {Promise<JSX.Element>}                         JSX универсальной страницы.
+ * Generic renderer for CMS pages that don't have a dedicated route.
+ * @param   {object}                          props        - Page properties.
+ * @param   {Promise<{ handle: string }>}     props.params - Route parameters.
+ * @returns {Promise<JSX.Element>}                         JSX of the generic page.
  */
 const PageLayout = async ({
   params,
@@ -51,10 +51,10 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * Генерирует метаданные страницы.
- * @param   {object}                          props        - Свойства страницы.
- * @param   {Promise<{ handle: string }>}     props.params - Параметры маршрута.
- * @returns {Promise<Metadata>}                            Метаданные страницы.
+ * Generates page metadata.
+ * @param   {object}                          props        - Page properties.
+ * @param   {Promise<{ handle: string }>}     props.params - Route parameters.
+ * @returns {Promise<Metadata>}                            Page metadata.
  */
 export async function generateMetadata({
   params,

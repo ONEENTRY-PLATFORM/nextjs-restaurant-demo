@@ -3,8 +3,8 @@ import type { JSX } from 'react';
 import Loader from '@/components/shared/Loader';
 
 /**
- * Компонент загрузки, отображающий спиннер-лоадер во время загрузки страницы.
- * @returns {JSX.Element} Компонент Loader, индицирующий состояние загрузки
+ * Loading component that displays a spinner loader while the page is loading.
+ * @returns {JSX.Element} Loader component indicating the loading state
  */
 export default function Loading(): JSX.Element {
   return <Loader />;

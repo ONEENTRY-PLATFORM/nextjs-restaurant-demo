@@ -6,9 +6,9 @@ import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import { getApi, isError } from '@/app/api';
 
 /**
- * Payload бронирования, отправляемый из клиентской формы.
- * Каждый элемент соответствует `marker`/`type` поля, определённого в OneEntry
- * Forms admin для маркера `booking_order`.
+ * Reservation payload sent from the client form.
+ * Each item corresponds to the `marker`/`type` of a field defined in OneEntry
+ * Forms admin for the `booking_order` marker.
  */
 export type ReservationPayload = {
   formData: FormDataType[];
@@ -17,15 +17,12 @@ export type ReservationPayload = {
 const ORDER_STORAGE_MARKER = 'booking_order';
 
 /**
- * Отправляет бронирование столика через OneEntry Orders API.
+ * Submits a table reservation via the OneEntry Orders API.
  *
- * `booking_order` в OneEntry — форма типа `order`, поэтому идёт через
- * `Orders.createOrder` (а не `FormData.postFormsData`, который возвращает
- * "Form has incorrect type: order"). У бронирования нет товаров и оплаты:
- * `products: []`, `paymentAccountIdentifier` — заглушка `cash` (любой
- * payment-account, привязанный к storage `booking_order`).
- * @param   {ReservationPayload}                                   payload - Поля бронирования, подготовленные на клиенте.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Результат серверного действия.
+ * `booking_order` in OneEntry is a form of type `order`, so it goes through
+ * `Orders.createOrder`.
+ * @param   {ReservationPayload}                                   payload - Reservation fields prepared on the client.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Result of the server action.
  */
 export async function submitReservation(
   payload: ReservationPayload
@@ -34,10 +31,7 @@ export async function submitReservation(
     const created = await getApi().Orders.createOrder(ORDER_STORAGE_MARKER, {
       formIdentifier: ORDER_STORAGE_MARKER,
       paymentAccountIdentifier: 'cash',
-      // FormDataType из FormsData SDK структурно совместим с IOrdersFormData
-      // (`{ marker, type, value }`), но TS-определения SDK представляют их
-      // отдельными типами; кастуем, чтобы не дублировать структуру.
-      formData: payload.formData as unknown as IOrdersFormData[],
+      formData: payload.formData as IOrdersFormData[],
       products: [],
     });
 

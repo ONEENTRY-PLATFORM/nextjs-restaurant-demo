@@ -9,8 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { addReservationToCart, selectReservationId } from '@/app/store/reducers/CartSlice';
 
 /**
- * Рендерер строки результатов поиска — ссылка на страницу продукта; записывает
- * продукт как активную запись reservation (используется селекторами cart/price).
+ * Рендерер строки результатов поиска — ссылка на страницу продукта;
  */
 const ProductRow = ({
   pageData,

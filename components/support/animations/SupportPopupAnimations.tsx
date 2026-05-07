@@ -8,10 +8,7 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Анимации открытия/закрытия попапа поддержки — slide-up снизу + fade-in
- * затемнённого `ModalBackdrop`-а (как в `FavoritesPopupAnimations` /
- * `CartPopupAnimations`). Mobile-only, sheet с верхними скруглениями
- * по образцу `static-html/m_support.html`.
+ * Анимации открытия/закрытия попапа поддержки
  * @param   {object}      props          - Пропсы компонента.
  * @param   {ReactNode}   props.children - Содержимое попапа (modalBg + modalBody).
  * @returns {JSX.Element}                JSX обёртки анимации.

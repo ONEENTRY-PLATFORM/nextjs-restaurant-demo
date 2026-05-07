@@ -37,20 +37,7 @@ const TIME_SLOT_MARKER = 'time_slot';
 
 /**
  * Возвращает массив доступных стартов слотов в формате `HH.MM` для
- * указанной даты (`yyyy-MM-dd`) на основе расписания ресторана из
- * OneEntry (`attribute schedule`, тип `timeInterval`).
- *
- * Алгоритм:
- *  1) Перебираем записи расписания.
- *  2) Запись применима, если `inEveryWeek === true` (каждую неделю), либо
- *     если выбранная дата попадает в диапазон `[dates[0], dates[1]]`.
- *  3) Из `times` берём `[from]` каждого слота — это и есть стартовое
- *     время, форматируем как `HH.MM` (точка — соответствует
- *     static-html стилю `service_time` "10.00").
- *  4) Дедуплицируем и сортируем.
- *
- * Если расписание пустое или ничего не подходит — вернём `[]`, тогда
- * TimePicker покажет «No available slots».
+ * указанной даты (`yyyy-MM-dd`) на основе расписания ресторана.
  * @param   {ScheduleSlotEntry[]} schedule - Сырые записи из `schedule.value`.
  * @param   {string}              dateIso  - Выбранная дата `yyyy-MM-dd`.
  * @returns {string[]}                     Список меток слотов.
@@ -82,13 +69,7 @@ const getAvailableSlotsForDate = (
 };
 
 /**
- * Конвертирует выбранный пользователем слот (`yyyy-MM-dd HH.MM`) в формат
- * `timeInterval`, которого ждёт OneEntry: `[[startISO, endISO]]`.
- *
- * Конец слота ищется в расписании ресторана (атрибут `schedule` типа
- * `timeInterval`): среди применимых записей берём первую с совпадающим
- * `from`. Если ничего не подошло (расписание пусто или есть рассинхрон) —
- * fallback на +1 час относительно стартового времени.
+ * Конвертирует выбранный пользователем слот (`yyyy-MM-dd HH.MM`) в формат `timeInterval`.
  * @param   {string}             raw           - Значение поля `time_slot`.
  * @param   {string | undefined} restaurantValue - Текущее значение `restaurant`.
  * @param   {RestaurantOption[]} restaurants   - Доступные опции ресторанов.
@@ -152,16 +133,7 @@ const resolveInputType = (type: string, marker: string): string => {
 type ReservationFormProps = {
   form: IFormsEntity;
   restaurants?: RestaurantOption[] | undefined;
-  // Предзаполнение полей по маркеру. Используется в попап-режиме —
-  // при открытии BOOK A TABLE со страницы конкретного ресторана
-  // сюда приходит `{ restaurant: '<handle>' }`, чтобы дропдаун уже
-  // показывал выбранный ресторан.
   initialValues?: Record<string, FieldValue> | undefined;
-  // Если задано — форма работает в режиме редактирования существующей
-  // брони: вместо `Orders.createOrder` используется
-  // `Orders.updateOrderByMarkerAndId`, шаги auth/payment скипаются
-  // (юзер уже авторизован и payment-method выбран на оригинальном заказе).
-  // Заполняется из {@link consumePendingReservationEdit} в ReservationPopup.
   editingOrder?:
     | {
         orderId: number;
@@ -170,31 +142,11 @@ type ReservationFormProps = {
       }
     | null
     | undefined;
-  // Колбэк закрытия попапа после успешного update — вызывает
-  // {@link OpenDrawerContext}.setOpen(false) в обёртке.
   onClose?: () => void;
 };
 
 /**
- * Форма бронирования — повторяет вёрстку `service_table.html` из static-html:
- * дропдаун ресторана, двухколоночная сетка для name/surname/phone/guests/date/time,
- * textarea для предпочтений, основная кнопка отправки.
- *
- * Поля даты и времени открывают объединённый полноэкранный bottom-sheet
- * пикер {@link DateTimePickerSheet} вместо нативного `<input type="date">` —
- * это соответствует мокапам `service_date.html` и `service_time.html`,
- * слитым в одну форму.
- * @param   {ReservationFormProps} props - Пропсы компонента.
- * @returns {JSX.Element}                JSX формы бронирования.
- */
-/**
- * Состояние мульти-шагового флоу бронирования:
- *   - `form`    — booking-form (Figma `service_table`)
- *   - `payment` — выбор способа оплаты + плейсхолдер карточной формы
- *                 (Figma `120:1875`); хранит подготовленные `formData`,
- *                 чтобы не пересобирать payload по нажатию Apply.
- *   - `success` — экран подтверждения (Figma `120:2338`); хранит id
- *                 заказа и текстовую сводку для нижнего блока.
+ * Интерфейс формы бронирования
  */
 type ReservationStep =
   | { kind: 'form' }
@@ -203,8 +155,7 @@ type ReservationStep =
   | { kind: 'success'; orderId: number; summary: string };
 
 /**
- * Форматирует сводку бронирования по Figma `120:2338`:
- * `DD.MM.YY HH.MM N person`. Источник — текущие значения формы.
+ * Форматирует сводку бронирования `DD.MM.YY HH.MM N person`.
  * @param   {Record<string, string>} values - Значения полей формы.
  * @returns {string}                        Сводка для success-экрана.
  */
@@ -267,8 +218,6 @@ const ReservationForm = ({
           return {
             marker: attr.marker,
             type: 'spam',
-            // OneEntry ожидает объект `{ event: { token, siteKey } }` —
-            // см. useEnterpriseCaptcha.
             value: captcha,
           } as unknown as IOrdersFormData;
         }
@@ -282,10 +231,6 @@ const ReservationForm = ({
           };
         }
         if (attr.type === 'entity') {
-          // У entity-атрибута формы нет listTitles — варианты выбора
-          // источаются динамически (для `restaurant` — из дочерних
-          // страниц `restaurants`). OneEntry ожидает массив числовых
-          // id: `value: [<pageId>]`.
           const opt = restaurants.find(r => r.value === raw);
           return {
             marker: attr.marker,
@@ -306,10 +251,6 @@ const ReservationForm = ({
           };
         }
         if (attr.type === 'timeInterval') {
-          // Значение хранится как `"yyyy-MM-dd HH.MM"` (см. DateTimePickerSheet
-          // и getAvailableSlotsForDate). OneEntry ждёт `[[startISO, endISO]]` —
-          // конец слота берём из расписания выбранного ресторана; если не
-          // совпало — fallback на +1 час.
           const interval = buildTimeIntervalValue(raw, values[RESTAURANT_MARKER], restaurants);
           return {
             marker: attr.marker,
@@ -325,13 +266,7 @@ const ReservationForm = ({
       });
   };
 
-  // Шаг 1: валидируем форму, собираем payload и:
-  //   - в режиме создания брони → переключаем попап на экран выбора
-  //     оплаты (или auth, если юзер не залогинен — `Orders.createOrder`
-  //     требует user-token).
-  //   - в режиме редактирования (editingOrder задан) → сразу вызываем
-  //     `Orders.updateOrderByMarkerAndId` без auth/payment-шагов: юзер
-  //     уже авторизован, payment-method взят с оригинального заказа.
+  // Шаг 1: валидируем форму
   const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (spamAttr && !captcha) {
@@ -376,10 +311,7 @@ const ReservationForm = ({
     );
   };
 
-  // Шаг 2: пользователь выбрал способ оплаты. Создаём order, для
-  // online-методов открываем Stripe-сессию и редиректим на её
-  // `paymentUrl`; для офлайна показываем success-экран в попапе
-  // (Figma 120:2338).
+  // Шаг 2: пользователь выбрал способ оплаты. Создаём order
   const onApplyPayment = async (paymentAccountIdentifier: string) => {
     if (step.kind !== 'payment') return;
     setLoading(true);
@@ -432,6 +364,7 @@ const ReservationForm = ({
   if (step.kind === 'auth') {
     return (
       <ReservationAuthStep
+        currentValues={values}
         onAuthSuccess={() => {
           setError('');
           setStep({ kind: 'payment', formData: step.formData, summary: step.summary });
@@ -542,9 +475,6 @@ const ReservationForm = ({
           />
         ))}
 
-      {/* Капча — invisible reCAPTCHA Enterprise, грузится через
-          useEnterpriseCaptcha; в DOM ничего не рендерим. */}
-
       {/* Основная кнопка отправки */}
       <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
         <button
@@ -558,9 +488,6 @@ const ReservationForm = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Объединённый попап выбора даты и времени. Слоты времени берутся из
-          `restaurant.schedule` (атрибут OneEntry типа `timeInterval`) — после
-          выбора даты ниже календаря показываются доступные слоты. */}
       {pickerOpen ? (
         <DateTimePickerSheet
           date={values[TIME_SLOT_MARKER]?.split(' ')?.[0] || ''}
@@ -596,11 +523,7 @@ type FieldProps = {
 };
 
 /**
- * Одиночное поле input/textarea, рендерящееся для атрибута формы. Стилизовано
- * по `service_table.html`: нижний бордер, прозрачный фон, uppercase для имени.
- *
- * Для маркеров `reservation_date` и `reservation_time` рендерит кнопку,
- * которая открывает соответствующий slide-up пикер вместо нативного input.
+ * Одиночное поле
  * @param   {FieldProps}  props - Пропсы поля.
  * @returns {JSX.Element}       JSX поля.
  */

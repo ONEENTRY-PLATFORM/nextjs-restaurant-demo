@@ -12,19 +12,7 @@ import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
- * Карточка продукта — 1:1 порт `.menu_item` из `static-html/index.html`.
- *
- * Структура (точно повторяет макет):
- *   - `<img>` (ProductImage)
- *   - `<div class="descr">` с `time / weight / rating (★ 5,0)`
- *   - `<p class="menu_item-title">`
- *   - `<div class="menu_items_btn">` с `counter (x1)` + cart SVG + цена
- *   - `<svg class="heart_card">` в правом верхнем углу (favorite)
- *   - прозрачный оверлей `<Link>` для клика-перехода на `/shop/product/[id]`
- *
- * Анимации сохранены через {@link CardAnimations}. Клик по избранному
- * обрабатывается отдельной absolute-кнопкой, лежащей поверх ссылки на всю
- * карточку, чтобы лайк продукта не уводил с навигацией.
+ * Карточка продукта.
  * @param   {object}          props            - Пропсы компонента.
  * @param   {IProductsEntity} props.product    - Сущность продукта OneEntry.
  * @param   {number}          props.index      - Индекс в гриде (для stagger-анимации).

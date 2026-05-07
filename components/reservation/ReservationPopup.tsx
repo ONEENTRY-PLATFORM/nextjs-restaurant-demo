@@ -16,18 +16,14 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
 import ReservationForm from './ReservationForm';
+import {
+  consumePendingReservationResume,
+  type ReservationOAuthResume,
+} from './reservationOAuthResumeState';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 /**
- * Конвертирует `order.formData` (формат OneEntry — `{marker, type, value}[]`)
- * в плоский `Record<marker, string>` для useState формы. Обратная операция
- * к билдеру payload в {@link ReservationForm}.
- *  - `string`/`integer`     → `String(value)`
- *  - `text`                 → `value[0].plainValue`
- *  - `entity`               → ищем ресторан с `id === value[0]`, берём его `value` (pageUrl)
- *  - `timeInterval`         → `[[startISO, endISO]]` → `"yyyy-MM-dd HH.MM"` (start)
- *  - `date`                 → `fullDate.slice(0, 10)`
- *  - всё остальное          → пропускаем (spam/button и unsupported)
+ * Конвертирует `order.formData`
  * @param   {IOrdersFormData[]}  formData    - Сырые поля заказа.
  * @param   {RestaurantOption[]} restaurants - Доступные опции для маппинга entity → pageUrl.
  * @returns {Record<string, string>}         Плоский набор начальных значений.
@@ -70,23 +66,7 @@ const buildInitialValuesFromOrder = (
 };
 
 /**
- * Попап бронирования столика — открывается по кнопке `BOOK A TABLE`
- * со страницы конкретного ресторана (см. `app/restaurants/[handle]/page.tsx`)
- * и из любых мест, где `setComponent('ReservationPopup')` вызван на
- * {@link OpenDrawerContext}. Ресторан, выбранный в дропдауне, передаётся
- * через `OpenDrawerContext.action` (= pageUrl ресторана) — тогда поле
- * `restaurant` формы предзаполняется этим значением.
- *
- * Данные тянутся клиентскими RTK-запросами:
- *  - {@link useGetFormByMarkerQuery} с `marker: 'booking_order'` — описание
- *    атрибутов формы из OneEntry (поля name/surname/phone/people_count/
- *    date/time/preferences/captcha).
- *  - {@link useGetChildPagesByParentUrlQuery} с `url: 'restaurants'` —
- *    список ресторанов для дропдауна, формат `RestaurantOption`
- *    (тот же, что у server-side `app/reservation/page.tsx`).
- *
- * При закрытом попапе оба запроса skip'аются (`{ skip: !isOpen }`),
- * чтобы не дёргать сеть на любой странице сайта.
+ * Попап бронирования столика
  */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
@@ -95,14 +75,8 @@ const ReservationPopup = (): JSX.Element => {
   const isOpen = open && component === 'ReservationPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Свайп вниз закрывает напрямую — без GSAP-tween'а.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // У ReservationPopup нет своего GSAP-Animations wrapper'а
-  // (FavoritesPopup/ProfilePopup имеют), некому реагировать на
-  // `setTransition('close')`. ModalBackdrop по клику зовёт именно
-  // `setTransition('close')`, поэтому слушаем это значение здесь и
-  // закрываем синхронно.
   useEffect(() => {
     if (isOpen && transition === 'close') {
       setOpen(false);
@@ -121,18 +95,10 @@ const ReservationPopup = (): JSX.Element => {
     { skip: !isOpen }
   );
 
-  // Маппинг как в `app/reservation/page.tsx` — value берётся из
-  // `pageUrl` (стабильный маркер), label — из `address` или `title`.
-  // Дополнительно прокидываем `schedule` (атрибут `timeInterval` на
-  // странице ресторана), чтобы TimePicker мог показать только реально
-  // доступные слоты для выбранной даты.
   const restaurants: RestaurantOption[] = useMemo(
     () =>
       (pages ?? []).map((p: IPagesEntity) => {
         const scheduleRaw = p.attributeValues?.schedule?.value;
-        // OneEntry возвращает schedule как
-        // `[{ values: ScheduleSlotEntry[] }, ...]`. Сплющиваем все
-        // `values` в один плоский массив записей.
         const scheduleEntries: ScheduleSlotEntry[] = Array.isArray(scheduleRaw)
           ? (scheduleRaw as Array<{ values?: ScheduleSlotEntry[] }>).flatMap(
               group => group?.values ?? []
@@ -156,12 +122,19 @@ const ReservationPopup = (): JSX.Element => {
   // submit'е вызовет `updateOrderByMarkerAndId` вместо `createOrder`.
   // Сбрасывается на закрытие попапа.
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
+  // Resume-режим: попап мог быть закрыт OAuth-редиректом (Google) — значения
+  // формы сохраняются в `sessionStorage` через `setPendingReservationResume`,
+  // и при ре-открытии из коллбэка авторизации мы их потребляем здесь, чтобы
+  // ReservationForm подхватил `initialValues`.
+  const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
   useEffect(() => {
     if (isOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setEditing(consumePendingReservationEdit());
+      setResume(consumePendingReservationResume());
     } else {
       setEditing(null);
+      setResume(null);
     }
   }, [isOpen]);
 
@@ -169,8 +142,11 @@ const ReservationPopup = (): JSX.Element => {
     if (editing) {
       return buildInitialValuesFromOrder(editing.formData, restaurants);
     }
+    if (resume) {
+      return resume.values;
+    }
     return action ? { restaurant: action } : undefined;
-  }, [action, editing, restaurants]);
+  }, [action, editing, resume, restaurants]);
 
   if (!isOpen) return <></>;
 
@@ -181,12 +157,8 @@ const ReservationPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        {/* Шапка по Figma-макету «Reservation»: стрелка-назад слева,
-            заголовок (orange, semibold) по центру, X-кнопка справа.
-            Back делает то же, что и X (закрывает попап) — отдельной
-            истории шагов внутри ReservationPopup нет. */}
         <div className="flex items-center justify-between gap-5">
           <button
             type="button"
@@ -213,6 +185,12 @@ const ReservationPopup = (): JSX.Element => {
         ) : (
           <div className="mt-7.5">
             <ReservationForm
+              // useEffect ниже вызывается уже после первого монтирования формы,
+              // поэтому при попадании edit/resume значений `initialValues`
+              // меняется на втором рендере — useState внутри формы уже
+              // зафиксировал старое начальное состояние. `key` форсит remount
+              // формы под новые начальные значения.
+              key={editing?.orderId ?? (resume ? 'oauth-resume' : 'fresh')}
               form={form}
               restaurants={restaurants}
               initialValues={initialValues}

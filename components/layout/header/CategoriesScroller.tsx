@@ -16,17 +16,7 @@ type CategoriesScrollerProps = {
 };
 
 /**
- * Горизонтальный snap-scroll список filter-чипов `preferences`
- * (set атрибутов `dish` в OneEntry, list-type атрибут `preferences`).
- *
- * Каждый чип — Link на `/shop?preferences=<value>`, который подхватывается
- * `getSearchParams` и транслируется в фильтр `preferences in <value>` для
- * `Products.getProducts` / `getProductsByPageUrl`. Активный чип — тот, чьё
- * value совпадает с текущим `?preferences=`; повторный клик по нему сбрасывает
- * параметр.
- *
- * Нативный touch-скролл работает без изменений; mouse drag-to-scroll реализован
- * через `useDragScroll` (по `static-html/script.js`).
+ * Горизонтальный snap-scroll список filter-чипов `preferences`.
  * @param   {CategoriesScrollerProps} props - Пропсы компонента.
  * @returns {JSX.Element}                   JSX скроллера.
  */

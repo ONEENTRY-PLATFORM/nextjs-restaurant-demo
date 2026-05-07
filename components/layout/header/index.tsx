@@ -31,9 +31,7 @@ import SupportButton from './SupportButton';
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
-  // Контакты поддержки для попапа `SupportPopup` (порт `m_support.html`),
-  // открываемого по клику на иконку телефона в мобильной шапке. Если оба
-  // контакта пусты — кнопка деградирует в visually-disabled.
+  // Контакты поддержки для попапа `SupportPopup`.
   const { page: supportPage } = await getPageByUrl('support');
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
   const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as

@@ -7,17 +7,27 @@ import { toast } from 'react-toastify';
 
 import { oauthLogIn, syncTokens } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { peekPendingReservationResume } from '@/components/reservation/reservationOAuthResumeState';
 
 /**
  * Google OAuth callback — обменивает `?code` на сессию OneEntry через
  * {@link oauthLogIn}, сохраняет refresh-токен, сигнализирует
  * {@link AuthContext} перезапросить данные пользователя, затем редиректит
  * туда, откуда начался флоу (`?return=/cart`, по умолчанию `/`).
+ *
+ * Если редирект был запущен из попапа бронирования
+ * ({@link ReservationAuthStep}), `sessionStorage` содержит resume-снэпшот:
+ * `returnTo` берётся из него (если в URL нет `?return=`), а попап
+ * программно переоткрывается через {@link OpenDrawerContext}, чтобы
+ * пользователь увидел свои значения формы — независимо от того, успешен
+ * был логин или отменён.
  */
 const GoogleAuthCallbackInner = (): JSX.Element => {
   const params = useSearchParams();
   const router = useRouter();
   const { authenticate } = useContext(AuthContext);
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const handled = useRef(false);
 
   useEffect(() => {
@@ -28,30 +38,32 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const state = params.get('state');
     const expectedState =
       typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-state') : null;
-    const returnTo = params.get('return') || '/';
+    const resume = peekPendingReservationResume();
+    const returnTo = params.get('return') || resume?.returnTo || '/';
 
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('google-oauth-state');
     }
 
+    const reopenReservationPopup = () => {
+      if (!resume) return;
+      setComponent('ReservationPopup');
+      setOpen(true);
+    };
+
     if (!code) {
       toast.error('Google sign-in was cancelled.');
       router.replace(returnTo);
+      reopenReservationPopup();
       return;
     }
     if (!state || state !== expectedState) {
       toast.error('Google sign-in failed (state mismatch).');
       router.replace(returnTo);
+      reopenReservationPopup();
       return;
     }
 
-    // Оптимистичный redirect: обмен code → token занимает 2-5 сек (наш Server
-    // Action → OneEntry → Google → OneEntry). Юзер залипал бы на пустой
-    // callback-странице. Уводим сразу на returnTo, обмен крутится в фоне —
-    // syncTokens/authenticate/toast работают на root-уровне (AuthContext,
-    // ToastContainer), поэтому корректно отрабатывают после смены маршрута.
-    // Loading-toast подсказывает юзеру, что логин ещё идёт; промисы тоста
-    // (.update) переводят его в success/error по результату.
     const redirectUri = `${window.location.origin}/auth/callback/google`;
     const toastId = toast.loading('Signing you in…');
     router.replace(returnTo);
@@ -64,6 +76,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
           isLoading: false,
           autoClose: 15000,
         });
+        reopenReservationPopup();
         return;
       }
       localStorage.setItem('refresh-token', res.data.refreshToken);
@@ -73,13 +86,14 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
         render: 'You signed in!',
         type: 'success',
         isLoading: false,
-        autoClose: 15000,
+        autoClose: 2000,
       });
+      reopenReservationPopup();
     });
-  }, [params, router, authenticate]);
+  }, [params, router, authenticate, setComponent, setOpen]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black text-paper">
+    <div className="flex min-h-[60vh] items-center justify-center bg-black text-paper">
       Signing you in…
     </div>
   );

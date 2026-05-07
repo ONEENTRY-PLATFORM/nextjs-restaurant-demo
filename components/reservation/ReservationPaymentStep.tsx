@@ -5,7 +5,7 @@ import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces'
 import type { JSX } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useGetAccountsQuery } from '@/app/api';
+import { useGetAccountsQuery, useGetOrderStorageByMarkerQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
@@ -47,9 +47,15 @@ type ReservationPaymentStepProps = {
  * реквизиты уже там (см. `ReservationForm.onApplyPayment`).
  *
  * Список аккаунтов берётся из `Payments.getAccounts()` (фильтруем
- * `isVisible && isUsed`). Storage-specific фильтрация по
- * `paymentAccountIdentifiers` сейчас не делается — `getAllOrdersStorage`
- * требует user-токен, и его в момент попапа может ещё не быть.
+ * `isVisible && isUsed`) и **пересекается** с `storage.paymentAccountIdentifiers`
+ * из `getOrderStorageByMarker('booking_order')`. Без пересечения легко
+ * показать аккаунт, который не привязан к storage в админке, и при
+ * `createOrder` поймать `400 "Your payment account is not connected"`.
+ * Этот шаг рендерится после успешной авторизации, поэтому user-токен
+ * для `getOrderStorageByMarker` уже выставлен.
+ *
+ * Если у storage пустой `paymentAccountIdentifiers` — fallback на полный
+ * список + предупреждение в UI (см. orders.md rule).
  * @param   {ReservationPaymentStepProps} props - Пропсы шага.
  * @returns {JSX.Element}                       JSX шага оплаты.
  */
@@ -61,11 +67,20 @@ const ReservationPaymentStep = ({
 }: ReservationPaymentStepProps): JSX.Element => {
   const t = useT();
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
+  const { data: storage, isLoading: isStorageLoading } = useGetOrderStorageByMarkerQuery({
+    marker: 'booking_order',
+  });
 
-  const accounts = useMemo<IAccountsEntity[]>(
-    () => (data ?? []).filter(a => a.isVisible !== false && a.isUsed !== false),
-    [data]
-  );
+  const allowedIdentifiers = useMemo(() => {
+    const list = (storage?.paymentAccountIdentifiers ?? []) as Array<{ identifier: string }>;
+    return new Set(list.map(x => x.identifier));
+  }, [storage]);
+
+  const accounts = useMemo<IAccountsEntity[]>(() => {
+    const visible = (data ?? []).filter(a => a.isVisible !== false && a.isUsed !== false);
+    if (allowedIdentifiers.size === 0) return visible;
+    return visible.filter(a => allowedIdentifiers.has(a.identifier));
+  }, [data, allowedIdentifiers]);
 
   const [selected, setSelected] = useState<string>('');
 
@@ -89,7 +104,7 @@ const ReservationPaymentStep = ({
 
       {/* Радио-список способов оплаты */}
       <div className="flex w-full flex-col gap-3.75">
-        {isAccountsLoading ? (
+        {isAccountsLoading || isStorageLoading ? (
           <p className="text-paper/70">{t('loading_text', 'Loading…')}</p>
         ) : accounts.length === 0 ? (
           <p className="text-paper/70">

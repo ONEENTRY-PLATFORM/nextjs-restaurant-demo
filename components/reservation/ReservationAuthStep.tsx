@@ -1,13 +1,25 @@
 'use client';
 
+import Image from 'next/image';
+import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { logInUser } from '@/app/api';
+import { logInUser, useGetAuthProvidersQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import {
+  getProviderMeta,
+  sortActiveAuthProviders,
+  startGoogleOAuth,
+} from '@/components/forms/authProviders';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
+
+import {
+  clearPendingReservationResume,
+  setPendingReservationResume,
+} from './reservationOAuthResumeState';
 
 type ReservationAuthStepProps = {
   /**
@@ -16,7 +28,15 @@ type ReservationAuthStepProps = {
    */
   onAuthSuccess: () => void;
   onBack: () => void;
+  /**
+   * Текущие значения формы бронирования. Сохраняются в `sessionStorage`
+   * перед OAuth-редиректом, чтобы попап смог восстановить их после
+   * возврата (см. {@link reservationOAuthResumeState}).
+   */
+  currentValues: Record<string, string>;
 };
+
+type SubStep = 'providers' | 'email';
 
 /**
  * Шаг авторизации внутри попапа бронирования. Появляется, когда юзер
@@ -26,20 +46,66 @@ type ReservationAuthStepProps = {
  *
  * Реализован inline, без глобального `OpenDrawerContext.setComponent`,
  * чтобы не уничтожать смонтированный `ReservationPopup` (это бы стёрло
- * собранные значения формы). Используется обычный email/password логин;
- * Google/SignUp вынесены в общий auth-flow и здесь не дублируются —
- * для них юзер закроет попап и пройдёт обычным путём из header'а.
+ * собранные значения формы).
+ *
+ * Двух-под-шаговый flow:
+ * 1. `providers` — список активных провайдеров OneEntry (email/google/…),
+ *    тот же UI, что и в [`AuthProviderSelect`](../forms/AuthProviderSelect.tsx).
+ *    Email/phone — переход к `email`. Google/OAuth — внешний редирект; перед
+ *    ним `currentValues` сохраняются в `sessionStorage` через
+ *    {@link setPendingReservationResume}, и {@link GoogleAuthCallbackInner}
+ *    после возврата автоматически переоткрывает попап с подставленными значениями.
+ * 2. `email` — встроенная email/password форма (логин не уничтожает попап).
  * @param   {ReservationAuthStepProps} props - Пропсы шага.
  * @returns {JSX.Element}                    JSX шага авторизации.
  */
-const ReservationAuthStep = ({ onAuthSuccess, onBack }: ReservationAuthStepProps): JSX.Element => {
+const ReservationAuthStep = ({
+  onAuthSuccess,
+  onBack,
+  currentValues,
+}: ReservationAuthStepProps): JSX.Element => {
   const t = useT();
   const { authenticate } = useContext(AuthContext);
+  const { data: providers, isLoading: isProvidersLoading } = useGetAuthProvidersQuery('');
 
+  const [subStep, setSubStep] = useState<SubStep>('providers');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const persistResumeBeforeOAuth = () => {
+    setPendingReservationResume({
+      values: currentValues,
+      returnTo:
+        typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/',
+    });
+  };
+
+  const onProviderClick = (p: IAuthProvidersEntity) => {
+    if (p.identifier === 'email' || p.identifier === 'phone') {
+      setSubStep('email');
+      return;
+    }
+    if (p.identifier === 'google') {
+      persistResumeBeforeOAuth();
+      if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
+        // Google OAuth ещё не сконфигурирован (см. MISMATCH-LOG.md §C.8.1) —
+        // fallback на встроенную email-форму. Снимаем resume, иначе он зря
+        // прорастёт в следующее открытие попапа.
+        clearPendingReservationResume();
+        setSubStep('email');
+      }
+      return;
+    }
+    if (p.type === 'oauth' && p.config?.oauthAuthUrl) {
+      persistResumeBeforeOAuth();
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = p.config.oauthAuthUrl;
+      return;
+    }
+    setSubStep('email');
+  };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,6 +127,48 @@ const ReservationAuthStep = ({ onAuthSuccess, onBack }: ReservationAuthStepProps
       setLoading(false);
     }
   };
+
+  if (subStep === 'providers') {
+    const active = sortActiveAuthProviders(providers ?? []);
+    return (
+      <div className="flex w-full flex-col items-center px-5 md:px-19">
+        <p className="text-center font-normal text-[16px] leading-5 text-paper">
+          {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
+        </p>
+        <div className="mt-2.5 flex w-full flex-col">
+          {active.map((p, idx) => {
+            const meta = getProviderMeta(p);
+            const isPrimary = idx === 0;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => onProviderClick(p)}
+                disabled={isProvidersLoading}
+                className={
+                  isPrimary
+                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover disabled:opacity-60'
+                    : 'cart_btn disabled:opacity-60'
+                }
+              >
+                <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+                  <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
+                  <span>{meta.label}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="mt-7.5 flex h-9 items-center justify-center rounded-[5px] border border-paper px-5 font-normal text-[16px] text-paper hover:opacity-80"
+        >
+          {t('back_text', 'Back')}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} className="flex w-full flex-col gap-5 px-5 md:px-19">
@@ -105,7 +213,7 @@ const ReservationAuthStep = ({ onAuthSuccess, onBack }: ReservationAuthStepProps
       <div className="mt-2.5 flex items-center justify-center gap-3.75">
         <button
           type="button"
-          onClick={onBack}
+          onClick={() => setSubStep('providers')}
           className="flex h-9 items-center justify-center rounded-[5px] border border-paper px-5 font-normal text-[16px] text-paper hover:opacity-80"
         >
           {t('back_text', 'Back')}

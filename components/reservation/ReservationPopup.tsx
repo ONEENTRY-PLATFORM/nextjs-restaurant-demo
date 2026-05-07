@@ -1,8 +1,9 @@
 'use client';
 
+import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -13,8 +14,60 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
+import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
 import ReservationForm from './ReservationForm';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
+
+/**
+ * Конвертирует `order.formData` (формат OneEntry — `{marker, type, value}[]`)
+ * в плоский `Record<marker, string>` для useState формы. Обратная операция
+ * к билдеру payload в {@link ReservationForm}.
+ *  - `string`/`integer`     → `String(value)`
+ *  - `text`                 → `value[0].plainValue`
+ *  - `entity`               → ищем ресторан с `id === value[0]`, берём его `value` (pageUrl)
+ *  - `timeInterval`         → `[[startISO, endISO]]` → `"yyyy-MM-dd HH.MM"` (start)
+ *  - `date`                 → `fullDate.slice(0, 10)`
+ *  - всё остальное          → пропускаем (spam/button и unsupported)
+ * @param   {IOrdersFormData[]}  formData    - Сырые поля заказа.
+ * @param   {RestaurantOption[]} restaurants - Доступные опции для маппинга entity → pageUrl.
+ * @returns {Record<string, string>}         Плоский набор начальных значений.
+ */
+const buildInitialValuesFromOrder = (
+  formData: IOrdersFormData[],
+  restaurants: RestaurantOption[]
+): Record<string, string> => {
+  const result: Record<string, string> = {};
+  for (const item of formData) {
+    const { marker, type, value } = item;
+    if (type === 'string' || type === 'integer' || type === 'real' || type === 'float') {
+      result[marker] = value == null ? '' : String(value);
+    } else if (type === 'text') {
+      const arr = Array.isArray(value) ? (value as Array<{ plainValue?: string }>) : [];
+      result[marker] = arr[0]?.plainValue ?? '';
+    } else if (type === 'entity') {
+      const ids = Array.isArray(value) ? (value as number[]) : [];
+      const id = ids[0];
+      const opt = id != null ? restaurants.find(r => r.id === id) : undefined;
+      if (opt) result[marker] = opt.value;
+    } else if (type === 'timeInterval') {
+      const arr = Array.isArray(value) ? (value as Array<[string, string]>) : [];
+      const first = arr[0];
+      if (first && first[0]) {
+        const start = new Date(first[0]);
+        const yyyy = start.getUTCFullYear();
+        const mm = String(start.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(start.getUTCDate()).padStart(2, '0');
+        const hh = String(start.getUTCHours()).padStart(2, '0');
+        const min = String(start.getUTCMinutes()).padStart(2, '0');
+        result[marker] = `${yyyy}-${mm}-${dd} ${hh}.${min}`;
+      }
+    } else if (type === 'date') {
+      const v = value as { fullDate?: string } | undefined;
+      if (v?.fullDate) result[marker] = v.fullDate.slice(0, 10);
+    }
+  }
+  return result;
+};
 
 /**
  * Попап бронирования столика — открывается по кнопке `BOOK A TABLE`
@@ -87,6 +140,7 @@ const ReservationPopup = (): JSX.Element => {
           : [];
         return {
           value: p.pageUrl ?? String(p.id),
+          id: p.id,
           label:
             ((p.attributeValues?.address?.value as string | undefined) || p.localizeInfos?.title) ??
             'Restaurant',
@@ -96,7 +150,27 @@ const ReservationPopup = (): JSX.Element => {
     [pages]
   );
 
-  const initialValues = useMemo(() => (action ? { restaurant: action } : undefined), [action]);
+  // Edit-режим: при открытии попапа вычитываем pending-данные из side-channel
+  // (см. `reservationEditState`). Если они есть — попап рендерится в режиме
+  // редактирования брони: ReservationForm получит editingOrderId и при
+  // submit'е вызовет `updateOrderByMarkerAndId` вместо `createOrder`.
+  // Сбрасывается на закрытие попапа.
+  const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
+  useEffect(() => {
+    if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEditing(consumePendingReservationEdit());
+    } else {
+      setEditing(null);
+    }
+  }, [isOpen]);
+
+  const initialValues = useMemo(() => {
+    if (editing) {
+      return buildInitialValuesFromOrder(editing.formData, restaurants);
+    }
+    return action ? { restaurant: action } : undefined;
+  }, [action, editing, restaurants]);
 
   if (!isOpen) return <></>;
 
@@ -138,7 +212,13 @@ const ReservationPopup = (): JSX.Element => {
           </div>
         ) : (
           <div className="mt-7.5">
-            <ReservationForm form={form} restaurants={restaurants} initialValues={initialValues} />
+            <ReservationForm
+              form={form}
+              restaurants={restaurants}
+              initialValues={initialValues}
+              editingOrder={editing}
+              onClose={close}
+            />
           </div>
         )}
       </div>

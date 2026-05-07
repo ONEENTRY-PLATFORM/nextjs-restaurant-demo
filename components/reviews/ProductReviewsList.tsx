@@ -10,30 +10,14 @@ import StarCardIcon from '@/components/icons/star-card';
 
 /**
  * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
- * `static-html/details.html`. Заголовок блока + кнопка «Leave a review»
- * рендерятся всегда, даже если отзывов нет — кнопка открывает попап
- * `ReviewFormPopup` через {@link OpenDrawerContext}, прокидывая `productId`
- * через `action`.
+ * `static-html/details.html`. Заголовок блока рендерится всегда, даже если отзывов нет.
  * @param   {object}          props           - Пропсы компонента.
  * @param   {ProductReview[]} props.reviews   - Отзывы верхнего уровня.
  * @param   {number}          props.productId - ID продукта (для триггера попапа).
  * @returns {JSX.Element}                     JSX блока отзывов.
  */
-const ProductReviewsList = ({
-  reviews,
-  // productId,
-}: {
-  reviews: ProductReview[];
-  // productId: number;
-}): JSX.Element => {
+const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Element => {
   const [index, setIndex] = useState(0);
-  // const { setComponent, setAction, setOpen } = useContext(OpenDrawerContext);
-
-  // const openReviewPopup = () => {
-  //   setComponent('ReviewFormPopup');
-  //   setAction(String(productId));
-  //   setOpen(true);
-  // };
 
   const goPrev = () => setIndex(i => (i - 1 + reviews.length) % reviews.length);
   const goNext = () => setIndex(i => (i + 1) % reviews.length);
@@ -45,13 +29,6 @@ const ProductReviewsList = ({
           Reviews
           <ChatDotsIcon className="hover-target" />
         </div>
-        {/* <button
-          type="button"
-          onClick={openReviewPopup}
-          className="hover_btn_white flex h-8.75 items-center justify-center rounded-[5px] border border-brand px-3.75 font-normal text-[14px] text-brand"
-        >
-          Leave a review
-        </button> */}
       </div>
 
       {reviews.length === 0 ? (

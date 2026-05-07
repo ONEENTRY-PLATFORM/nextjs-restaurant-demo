@@ -29,6 +29,7 @@ const ReservationPage = async (): Promise<JSX.Element> => {
   // нет, поэтому подпись опции откатывается на `address`, затем на `title`.
   const restaurants: RestaurantOption[] = (restaurantsRes.pages ?? []).map((p: IPagesEntity) => ({
     value: p.pageUrl ?? String(p.id),
+    id: p.id,
     label:
       ((p.attributeValues?.address?.value as string | undefined) || p.localizeInfos?.title) ??
       'Restaurant',

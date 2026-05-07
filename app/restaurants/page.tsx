@@ -43,9 +43,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
   return {
     id: page.id,
-    // Single-restaurant layout живёт в `app/restaurants/[handle]/page.tsx`
-    // (порт `mob_about.html` со слайдером, comforts, картой). pageUrl
-    // дочерней страницы — её маркер в OneEntry (`restaurant_1` и т.п.).
+    // Single-restaurant layout живёт в `app/restaurants/[handle]/page.tsx`.
     href: `/restaurants/${page.pageUrl}`,
     title,
     address,
@@ -56,15 +54,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
 };
 
 /**
- * Index-страница сети ресторанов — порт desktop-макета chain (см.
- * скриншот в задаче от 2026-05-01: 2×2 grid карточек, каждая с фото,
- * номером, адресом, расписанием, кнопкой "MORE ABOUT RESTORANT").
- *
- * В static-html нет готовой chain-страницы (есть только single-restaurant
- * `mob_about.html`), поэтому верстка собрана по дизайну: карточка
- * повторяет блок `.flex flex-col gap-[25px]` из `mob_about.html` (адрес +
- * расписание в orange-border-pill) + большое фото сверху + круглый номер
- * сбоку + кнопка `cart_btn` снизу.
+ * Index-страница сети ресторанов.
  *
  * Данные берутся из OneEntry: `restaurants` (родительская страница, hero
  * заголовок + описание) и её child-pages со своим attribute set
@@ -95,7 +85,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   const cards: RestaurantCard[] = visiblePages.map((p, idx) => buildCard(p, idx + 1));
 
   return (
-    <section className="section_layout">
+    <section className="section_layout pt-0">
       <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
         {title}
       </h1>

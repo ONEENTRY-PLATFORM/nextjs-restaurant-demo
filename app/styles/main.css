@@ -605,3 +605,43 @@ html {
 .no-blur {
   backdrop-filter: none !important;
 }
+
+/* react-toastify — project skin: ink/80 фон + blur (как у review_sheet),
+   brand-оранжевый прогресс/иконки, paper текст, radius 10px (как у cart_btn).
+   Тосты в проекте используются как `toast(...)` (default — без иконки) и
+   `toast.error(...)` — для последнего сохраняем красный прогресс. */
+.Toastify {
+  --toastify-color-dark: rgba(76, 77, 86, 0.8);
+  --toastify-text-color-dark: var(--color-paper);
+  --toastify-color-progress-dark: var(--color-brand);
+  --toastify-color-progress-info: var(--color-brand);
+  --toastify-color-progress-success: var(--color-brand);
+  --toastify-icon-color-info: var(--color-brand);
+  --toastify-icon-color-success: var(--color-brand);
+  --toastify-font-family: var(--font-main);
+  --toastify-toast-bd-radius: 10px;
+  --toastify-toast-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.Toastify__toast {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(236, 114, 43, 0.25);
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 14px 16px;
+}
+
+.Toastify__close-button {
+  color: var(--color-paper);
+  opacity: 0.6;
+  align-self: center;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+  color: var(--color-brand);
+}
+
+.Toastify__progress-bar {
+  height: 3px;
+}

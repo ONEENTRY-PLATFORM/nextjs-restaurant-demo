@@ -28,6 +28,7 @@ const ReviewFormPopup = dynamic(() => import('@/components/reviews/ReviewFormPop
 const OrderReviewPopup = dynamic(() => import('@/components/profile/OrderReviewPopup'));
 
 import './globals.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ToastContainer } from 'react-toastify';
 
@@ -94,7 +95,12 @@ export default async function RootLayout({
             </AuthProvider>
           </DictProvider>
         </StoreProvider>
-        <ToastContainer position="bottom-right" autoClose={2000} />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          theme="dark"
+          pauseOnFocusLoss={false}
+        />
       </body>
     </html>
   );

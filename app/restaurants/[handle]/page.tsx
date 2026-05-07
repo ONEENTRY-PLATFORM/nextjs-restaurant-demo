@@ -53,34 +53,11 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
 
 // Используем Google Maps embed без API-ключа: `&hl=en` принудительно
 // выдаёт английские названия независимо от Accept-Language браузера.
-// OSM-embed не имеет официального параметра локализации и подтягивал
-// то, что попало в multilingual-теги (для Ближнего Востока — арабский).
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
 /**
  * Single-restaurant страница.
- *
- * Два варианта верстки:
- *  - **Mobile** (< md) — порт `static-html/mob_about.html`: слайдер
- *    из всех фото, заголовок по центру, описание, comforts circles,
- *    далее блок «Contacts» с маленькой картой и address-pill.
- *  - **Desktop** (md+) — Figma «Подробнее 2» (file
- *    jC7SkO2Zor5u7Tk7N6ji8C, node 2413:1173):
- *      1) Заголовок-адрес сверху (orange uppercase, ~20px Bold).
- *      2) Photo grid 1+3: большое фото слева (aspect 956/678) +
- *         столбец из 3 миниатюр справа (aspect 278/197) — оба
- *         блока эквивалентны по высоте.
- *      3) Описание во всю ширину контента.
- *      4) Ряд: comforts circles слева + `BOOK A TABLE` справа.
- *      5) Контакты: 2 колонки — текст (Contacts / phone /
- *         address / opening hours / time) слева и широкая карта
- *         справа.
- *
- * Источник данных — OneEntry-страница с pageUrl = handle и
- * attribute set `restaurant` (`photos`, `address`, `description`,
- * `comforts`, `schedule`, `lat`, `long`, `phone`). 404, если страницы
- * нет (см. MISMATCH-LOG §C.7 — атрибуты подтверждены).
  */
 const RestaurantPage = async ({
   params,
@@ -107,11 +84,17 @@ const RestaurantPage = async ({
   const descriptionRaw = attrs.description?.value as
     | Array<{ htmlValue?: string; plainValue?: string }>
     | undefined;
-  const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
+  const descriptionHtmlRaw = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
+  // Rich-text редактор OneEntry для plain-only текста кладёт в `htmlValue`
+  // stub `<p><br></p>` — truthy, но визуально пусто. Считаем html «значимым»,
+  // только если после удаления тегов остаётся хоть какой-то текст.
+  const descriptionHtml = /\S/.test(descriptionHtmlRaw.replace(/<[^>]*>/g, ''))
+    ? descriptionHtmlRaw
+    : '';
 
   return (
-    <section className="section_layout">
+    <section className="section_layout pt-0">
       <div className="mb-5 flex items-center justify-between gap-4 text-sm text-paper/70">
         <Link href="/restaurants" className="hover:text-brand">
           ← All restaurants

@@ -84,7 +84,7 @@ const Header = async (): Promise<JSX.Element> => {
         </div>
       </header>
 
-      <div className="relative bg-custom">
+      <div className="relative">
         <div className="relative">
           {/* header_mobile */}
           <header className="header_mobile pt-7.5 px-2.5 max-w-88 mx-auto flex flex-col md:hidden">

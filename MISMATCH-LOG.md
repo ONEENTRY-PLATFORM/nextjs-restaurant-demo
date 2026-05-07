@@ -341,24 +341,26 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 
 Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx). Все ключи из таблицы прокинуты через проп `dict` (см. [app/profile/orders/page.tsx](app/profile/orders/page.tsx)) — до создания маркеров в админке UI отрендерит fallback-литералы.
 
-| marker                     | type   | title                                |
-|----------------------------|--------|--------------------------------------|
-| `contact_courier`   | string | Contact with the courier             |
-| `repeat_order`      | string | Repeat order                         |
-| `loading_orders_text`      | string | Loading orders...                    |
-| `no_orders_text`           | string | You have no orders yet.              |
-| `go_shopping_button`       | string | Go to shopping                       |
-| `active_orders_title`      | string | Active orders                        |
-| `no_active_orders_text`    | string | You have no active orders.           |
-| `orders_history_title`     | string | Orders History                       |
-| `no_history_orders_text`   | string | You have no past orders yet.         |
-| `orders_load_error_prefix` | string | Unable to load orders:               |
-| `orders_signin_prompt`     | string | Please sign in to view your orders.  |
-| `leave_review_button`      | string | Leave a review                       |
-| `please_leave_review_text` | string | Please, leave a review!              |
-| `review_placeholder`       | string | Review                               |
-| `review_submitted_text`    | string | Thanks for your review!              |
-| `please_signin_review_text`| string | Please sign in to leave a review.    |
+| marker                          | type   | title                                         |
+|---------------------------------|--------|-----------------------------------------------|
+| `contact_courier`               | string | Contact with the courier                      |
+| `repeat_order`                  | string | Repeat order                                  |
+| `loading_orders_text`           | string | Loading orders...                             |
+| `no_orders_text`                | string | You have no orders yet.                       |
+| `go_shopping_button`            | string | Go to shopping                                |
+| `active_orders_title`           | string | Active orders                                 |
+| `no_active_orders_text`         | string | You have no active orders.                    |
+| `orders_history_title`          | string | Orders History                                |
+| `no_history_orders_text`        | string | You have no past orders yet.                  |
+| `orders_load_error_prefix`      | string | Unable to load orders:                        |
+| `orders_signin_prompt`          | string | Please sign in to view your orders.           |
+| `leave_review_button`           | string | Leave a review                                |
+| `please_leave_review_text`      | string | Please, leave a review!                       |
+| `review_placeholder`            | string | Review                                        |
+| `review_submitted_text`         | string | Thanks for your review!                       |
+| `please_signin_review_text`     | string | Please sign in to leave a review.             |
+| `repeat_order_added_text`       | string | Items from your previous order added to cart  |
+| `repeat_order_all_unavailable`  | string | All items from this order are out of stock    |
 
 ##### ✅ Избранное (страница `/profile/favorites`)
 
@@ -430,6 +432,26 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 |--------------------------|--------|---------------------|
 | `restaurant_placeholder` | string | Restaurant choosing |
 | `book_button`            | string | Book                |
+
+##### Reservation booking — auth + payment + success step
+
+Новые маркеры для мульти-шагового флоу бронирования (Figma 120:1875 + 120:2338, плюс auth-шаг для незалогиненных). Используется в [components/reservation/ReservationAuthStep.tsx](components/reservation/ReservationAuthStep.tsx), [components/reservation/ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) и [components/reservation/ReservationSuccess.tsx](components/reservation/ReservationSuccess.tsx). Сейчас все ключи рендерятся через `useT(key, fallback)` — пока не созданы в админке, UI отдаст английский fallback.
+
+| marker                      | type   | title                                                       |
+|-----------------------------|--------|-------------------------------------------------------------|
+| `continue_text`             | string | Continue                                                    |
+| `back_text`                 | string | Back                                                        |
+| `apply_text`                | string | Apply                                                       |
+| `loading_text`              | string | Loading…                                                    |
+| `booking_deposit_text`      | string | 30% deposit is required to confirm your booking             |
+| `booking_pay_with`          | string | Pay with                                                    |
+| `booking_credit_cards`      | string | Credit & Debit Cards                                        |
+| `no_payment_methods`        | string | No payment methods are configured. Please contact support.  |
+| `booking_confirmed_message` | string | Your reservation has been confirmed.\nSee you soon!         |
+| `booking_signin_prompt`     | string | Please sign in to confirm your booking.                     |
+| `email_label`               | string | Email                                                       |
+| `password_label`            | string | Password                                                    |
+| `signed_in_toast`           | string | You signed in!                                              |
 
 ##### ✅ Поддержка (страница `/support`)
 
@@ -598,6 +620,27 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 
 > ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` / `delivery_time` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
 
+#### C.6.2. Booking-flow — payment + success (Figma 120:1875 / 120:2338)
+
+[ReservationForm.tsx](components/reservation/ReservationForm.tsx) теперь работает как мульти-шаговый визард: `form` → `payment` → `success`. Шаг `payment` использует [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx), `success` — [ReservationSuccess.tsx](components/reservation/ReservationSuccess.tsx).
+
+**Поведение payment-шага:**
+- Аккаунты тянутся через `useGetAccountsQuery` (= `Payments.getAccounts()`), фильтр `isVisible && isUsed`.
+- Дефолт-выбор — Stripe (по Figma «Credit & Debit Cards» отмечен по умолчанию). Иконки маппятся по `type/identifier`: `stripe` → Visa+Mastercard, `paypal` → PayPal-лого; для `apple_pay`/`google_pay` ассетов нет — рендерим текстовый fallback (см. ниже).
+- При выбранном `card` рендерится визуальный плейсхолдер карточной формы + дисклеймер «You will be redirected to Stripe Checkout». PCI-данные на нашей стороне не собираем.
+
+**Поведение createOrder/payment:**
+- `paymentAccountIdentifier === 'cash'` → success-экран в попапе.
+- иначе → `Payments.createSession(orderId, 'session')` → `window.location.href = paymentUrl`. Если `paymentUrl` не пришёл (PayPal-async, ошибка) — fallback на success в попапе.
+
+**Открытые задачи на стороне клиента/админки:**
+
+1. ✅ **Storage `booking_order` — `paymentAccountIdentifiers`.** Подтверждено клиентом 2026-05-07: `stripe` привязан к storage `booking_order`, `createOrder` + Stripe-сессия проходят. Опционально (по Figma) можно ещё добавить `paypal`/`apple_pay`/`google_pay` — см. п.2.
+2. **Apple Pay / Google Pay аккаунты в OneEntry.** В `Payments.getAccounts()` сейчас только `cash` и `stripe`. Если хотим Figma-полный комплект — нужно создать accounts с identifier `apple_pay` / `google_pay` (тип `custom` или `stripe`-через-Apple-Pay).
+3. **Иконки Apple Pay / Google Pay.** `public/images/icons/` — нет, добавить.
+4. **30% deposit — dictionary key `booking_deposit_text`.** Сейчас текст хардкод-fallback'ом `«30% deposit is required to confirm your booking»`. ❓ **Уточнить у клиента:** депозит реально 30% или другая ставка? Реализуется ли через preview/discount/promo на стороне OneEntry или это только UI-уведомление?
+5. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
+
 Дополнительно:
 
 Что нужно настроить в админке OneEntry для работающего промо:
@@ -682,3 +725,41 @@ MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер п
 Сейчас в админке `user_menu` уже создан, но содержит **не те** пункты:
 
 > ⚠️ В коде сейчас линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Это значит, что для совпадения с реальными Next.js-маршрутами `pageUrl` в CMS должен быть **полным** путём без ведущего `/` — например, `profile/orders`, а не просто `orders`. Если такой формат не подходит OneEntry — альтернатива: переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` будут совпадать. Решение за командой админки.
+
+### C.10. Профиль — Reservations history (Figma 78:1293)
+
+Отдельный экран в зоне профиля: «Active reservation» (одна оранжево-обведённая карточка с № и датой) + «Reservation History» (список карточек со статусами `Canceled` / `Reserved` / и т.п.). Сейчас в проекте такого экрана нет — нужно завести роут `/profile/reservations` (или сделать линком из `user_menu`, см. C.9) и компонент, аналогичный [OrdersList.tsx](components/profile/OrdersList.tsx).
+
+Источник данных — `Orders.getAllOrdersByMarker('booking_order')`, фильтр по `statusIdentifier`:
+
+- **Active** = `statusIdentifier in (<все «активные» маркеры>)` — обычно «inProgress», «reserved» и т.п. Точные маркеры зависят от настройки в OneEntry admin → Orders → Statuses.
+- **History** = всё остальное (Canceled, Completed, прошедшие даты).
+
+**Реализовано:**
+
+- ✅ **Edit-flow.** [BookingsPopup.tsx](components/profile/BookingsPopup.tsx) кнопка `Edit` сохраняет pending-данные брони в side-channel ([reservationEditState.ts](components/reservation/reservationEditState.ts)) и переключает `OpenDrawerContext.component` на `ReservationPopup`. Тот при открытии вычитывает pending, билдит initialValues через `buildInitialValuesFromOrder` (entity-id → pageUrl, timeInterval ISO → `yyyy-MM-dd HH.MM`, text → plainValue, …) и пробрасывает `editingOrder` в `ReservationForm`. В edit-режиме форма скипает auth/payment-шаги и при submit вызывает `Orders.updateOrderByMarkerAndId('booking_order', orderId, body)` с `paymentAccountIdentifier` оригинального заказа.
+- ⚠️ **Cancel-flow (заглушка).** Кнопка `Cancel` показывает confirm, оптимистично убирает бронь из локального списка и тостит «Cancellation request received». ❗ Реальной отмены через клиентский SDK сейчас сделать нельзя: `IOrderData` (body для `updateOrderByMarkerAndId`) не содержит `statusIdentifier`, отдельного `cancelOrder` в SDK нет (`Orders.cancelRefundRequest` относится только к refund-flow). После рефреша попапа бронь снова появится из ответа `Orders.getAllOrdersByMarker`.
+
+**Открытое для клиента:**
+
+1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
+2. **Cancel — настоящий API**. Без либо нового SDK-метода, либо разрешения передавать `statusIdentifier` в body update — только заглушка. Варианты: расширить SDK / OneEntry endpoint; завести FormData-форму `cancel_request` (юзер сабмитит → админ руками меняет status); принимать оптимистичную отмену + email-уведомление ресторану.
+3. **Edit ограничения.** Сейчас edit отдаёт `products: [{ productId: 34, quantity: 1 }]` (тот же placeholder, что и в `createOrder` — см. C.6.2). Если депозит привязан к product 34, при update это останется без изменений. ❓ Корректно ли или edit-флоу должен иметь другую логику по продуктам?
+4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
+
+**Новые dictionary-ключи для C.4.1:**
+
+| marker                       | type   | title                                                       |
+|------------------------------|--------|-------------------------------------------------------------|
+| `active_reservation_title`   | string | Active reservation                                          |
+| `reservation_history_title`  | string | Reservation History                                         |
+| `cancel_reservation_button`  | string | Cancel                                                      |
+| `edit_reservation_button`    | string | Edit                                                        |
+| `reservation_status_reserved`| string | Reserved                                                    |
+| `reservation_status_canceled`| string | Canceled                                                    |
+| `no_active_reservations`     | string | You have no active reservations.                            |
+| `no_reservation_history`     | string | You have no past reservations yet.                          |
+| `booking_cancel_confirm`     | string | Cancel reservation #{id}?                                   |
+| `booking_cancel_toast`       | string | Cancellation request received. We will contact you shortly. |
+| `booking_edit_unavailable`   | string | This booking cannot be edited.                              |
+| `booking_updated_toast`      | string | Reservation updated.                                        |

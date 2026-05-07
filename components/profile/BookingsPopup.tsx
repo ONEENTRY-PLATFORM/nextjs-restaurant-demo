@@ -1,15 +1,18 @@
 'use client';
 
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { getAllOrdersByMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
@@ -53,8 +56,10 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
  * переходов в OneEntry orders).
  */
 const BookingsPopup = (): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setComponent, setTransition } =
+    useContext(OpenDrawerContext);
   const { user } = useContext(AuthContext);
+  const t = useT();
   const isOpen = open && component === 'BookingsPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,6 +67,40 @@ const BookingsPopup = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
+
+  // Edit: сохраняем pending-данные брони в side-channel и переключаем
+  // глобальный popup-component на ReservationPopup. Тот при открытии
+  // прочитает pending и пред-заполнит форму, а при сабмите вызовет
+  // `Orders.updateOrderByMarkerAndId` вместо `createOrder`.
+  const onEdit = (order: IOrderByMarkerEntity) => {
+    if (!order.formIdentifier) {
+      toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
+      return;
+    }
+    setPendingReservationEdit({
+      orderId: order.id,
+      formData: (order.formData as IOrdersFormData[] | undefined) ?? [],
+      paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
+      formIdentifier: order.formIdentifier,
+    });
+    setComponent('ReservationPopup');
+  };
+
+  // Cancel: SDK не даёт менять `statusIdentifier` напрямую через клиентский
+  // API (см. MISMATCH-LOG.md §C.10). Поэтому делаем оптимистичное удаление
+  // из локального списка + toast-сообщение, что заявка передана. Реальное
+  // отмена — только админом или через отдельную бизнес-логику на бэке.
+  const onCancel = (order: IOrderByMarkerEntity) => {
+    const ok = window.confirm(
+      t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
+        '{id}',
+        formatOrderNumber(order)
+      )
+    );
+    if (!ok) return;
+    setOrders(prev => prev.filter(o => o.id !== order.id));
+    toast(t('booking_cancel_toast', 'Cancellation request received. We will contact you shortly.'));
+  };
 
   // Бекдроп шлёт `setTransition('close')` — реагируем на это и закрываем.
   useEffect(() => {
@@ -135,7 +174,14 @@ const BookingsPopup = (): JSX.Element => {
                 You have no active reservations.
               </p>
             ) : (
-              active.map(o => <ActiveBookingCard key={o.id} order={o} />)
+              active.map(o => (
+                <ActiveBookingCard
+                  key={o.id}
+                  order={o}
+                  onCancel={() => onCancel(o)}
+                  onEdit={() => onEdit(o)}
+                />
+              ))
             )}
 
             <p className="mt-2.5 text-center font-bold text-[20px] tracking-[0.02em] text-brand">
@@ -161,10 +207,20 @@ const BookingsPopup = (): JSX.Element => {
 
 /**
  * Карточка активной брони — orange-bordered pill с номером, статусом и
- * датой + ряд Cancel/Edit. Cancel/Edit сейчас заглушки — реальные
- * actions требуют допустимых статус-переходов в OneEntry.
+ * датой + ряд Cancel/Edit. Edit открывает {@link ReservationPopup} в
+ * режиме редактирования (через {@link setPendingReservationEdit}).
+ * Cancel — оптимистичное удаление + toast (SDK не предоставляет
+ * статус-перехода для отмены, см. MISMATCH-LOG.md §C.10).
  */
-const ActiveBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Element => {
+const ActiveBookingCard = ({
+  order,
+  onCancel,
+  onEdit,
+}: {
+  order: IOrderByMarkerEntity;
+  onCancel: () => void;
+  onEdit: () => void;
+}): JSX.Element => {
   // !!! SDK тип `IOrderByMarkerEntity` не объявляет `formattedCreated`,
   // но поле приходит в реальных ответах — берём через локальный cast,
   // если нет `createdDate`.
@@ -183,12 +239,14 @@ const ActiveBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Elem
       <div className="flex items-center justify-between gap-3.75">
         <button
           type="button"
+          onClick={onCancel}
           className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-paper text-base text-paper"
         >
           Cancel
         </button>
         <button
           type="button"
+          onClick={onEdit}
           className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-base text-brand"
         >
           Edit

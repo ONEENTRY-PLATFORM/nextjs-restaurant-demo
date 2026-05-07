@@ -3,14 +3,19 @@
 import type { IFormAttribute, IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { FormEvent, JSX } from 'react';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { getApi, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
+import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
+import ReservationAuthStep from './ReservationAuthStep';
+import ReservationPaymentStep from './ReservationPaymentStep';
+import ReservationSuccess from './ReservationSuccess';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 import RestaurantSelect from './RestaurantSelect';
 
@@ -77,6 +82,60 @@ const getAvailableSlotsForDate = (
 };
 
 /**
+ * Конвертирует выбранный пользователем слот (`yyyy-MM-dd HH.MM`) в формат
+ * `timeInterval`, которого ждёт OneEntry: `[[startISO, endISO]]`.
+ *
+ * Конец слота ищется в расписании ресторана (атрибут `schedule` типа
+ * `timeInterval`): среди применимых записей берём первую с совпадающим
+ * `from`. Если ничего не подошло (расписание пусто или есть рассинхрон) —
+ * fallback на +1 час относительно стартового времени.
+ * @param   {string}             raw           - Значение поля `time_slot`.
+ * @param   {string | undefined} restaurantValue - Текущее значение `restaurant`.
+ * @param   {RestaurantOption[]} restaurants   - Доступные опции ресторанов.
+ * @returns {Array<[string, string]>}         Интервалы для отправки.
+ */
+const buildTimeIntervalValue = (
+  raw: string,
+  restaurantValue: string | undefined,
+  restaurants: RestaurantOption[]
+): Array<[string, string]> => {
+  if (!raw) return [];
+  const [dateIso, slotStr] = raw.split(' ');
+  if (!dateIso || !slotStr) return [];
+  const [hhStr, mmStr] = slotStr.split('.');
+  if (!hhStr || !mmStr) return [];
+  const hh = Number(hhStr);
+  const mm = Number(mmStr);
+  if (Number.isNaN(hh) || Number.isNaN(mm)) return [];
+
+  const makeIso = (h: number, m: number): string => {
+    const d = new Date(`${dateIso}T00:00:00.000Z`);
+    d.setUTCHours(h, m, 0, 0);
+    return d.toISOString();
+  };
+
+  const schedule = restaurants.find(r => r.value === restaurantValue)?.schedule ?? [];
+  const target = new Date(`${dateIso}T00:00:00.000Z`).getTime();
+  for (const entry of schedule) {
+    let applies = false;
+    if (entry.inEveryWeek || entry.inEveryMonth) applies = true;
+    else if (entry.dates && entry.dates.length === 2) {
+      const start = new Date(entry.dates[0]).getTime();
+      const end = new Date(entry.dates[1]).getTime();
+      applies = target >= start && target <= end;
+    }
+    if (!applies || !entry.times) continue;
+    for (const [from, to] of entry.times) {
+      if (from.hours === hh && from.minutes === mm) {
+        return [[makeIso(from.hours, from.minutes), makeIso(to.hours, to.minutes)]];
+      }
+    }
+  }
+
+  return [[makeIso(hh, mm), makeIso((hh + 1) % 24, mm)]];
+};
+
+/**
  * Маппит тип атрибута OneEntry формы + маркер в нативный HTML input `type`.
  * @param   {string} type   - `type` атрибута OneEntry.
  * @param   {string} marker - Маркер атрибута, используется для эвристики.
@@ -98,6 +157,22 @@ type ReservationFormProps = {
   // сюда приходит `{ restaurant: '<handle>' }`, чтобы дропдаун уже
   // показывал выбранный ресторан.
   initialValues?: Record<string, FieldValue> | undefined;
+  // Если задано — форма работает в режиме редактирования существующей
+  // брони: вместо `Orders.createOrder` используется
+  // `Orders.updateOrderByMarkerAndId`, шаги auth/payment скипаются
+  // (юзер уже авторизован и payment-method выбран на оригинальном заказе).
+  // Заполняется из {@link consumePendingReservationEdit} в ReservationPopup.
+  editingOrder?:
+    | {
+        orderId: number;
+        paymentAccountIdentifier: string;
+        formIdentifier: string;
+      }
+    | null
+    | undefined;
+  // Колбэк закрытия попапа после успешного update — вызывает
+  // {@link OpenDrawerContext}.setOpen(false) в обёртке.
+  onClose?: () => void;
 };
 
 /**
@@ -112,16 +187,55 @@ type ReservationFormProps = {
  * @param   {ReservationFormProps} props - Пропсы компонента.
  * @returns {JSX.Element}                JSX формы бронирования.
  */
+/**
+ * Состояние мульти-шагового флоу бронирования:
+ *   - `form`    — booking-form (Figma `service_table`)
+ *   - `payment` — выбор способа оплаты + плейсхолдер карточной формы
+ *                 (Figma `120:1875`); хранит подготовленные `formData`,
+ *                 чтобы не пересобирать payload по нажатию Apply.
+ *   - `success` — экран подтверждения (Figma `120:2338`); хранит id
+ *                 заказа и текстовую сводку для нижнего блока.
+ */
+type ReservationStep =
+  | { kind: 'form' }
+  | { kind: 'auth'; formData: IOrdersFormData[]; summary: string }
+  | { kind: 'payment'; formData: IOrdersFormData[]; summary: string }
+  | { kind: 'success'; orderId: number; summary: string };
+
+/**
+ * Форматирует сводку бронирования по Figma `120:2338`:
+ * `DD.MM.YY HH.MM N person`. Источник — текущие значения формы.
+ * @param   {Record<string, string>} values - Значения полей формы.
+ * @returns {string}                        Сводка для success-экрана.
+ */
+const formatBookingSummary = (values: Record<string, string>): string => {
+  const slot = values[TIME_SLOT_MARKER] ?? '';
+  const [dateIso, time] = slot.split(' ');
+  let datePart = '';
+  if (dateIso) {
+    const [yyyy, mm, dd] = dateIso.split('-');
+    if (yyyy && mm && dd) datePart = `${dd}.${mm}.${yyyy.slice(2)}`;
+  }
+  const timePart = time ?? '';
+  const peopleRaw = values['people_count'] ?? '';
+  const peopleNum = Number(peopleRaw);
+  const peoplePart = !Number.isNaN(peopleNum) && peopleNum > 0 ? `${peopleNum} person` : '';
+  return [datePart, timePart, peoplePart].filter(Boolean).join(' ');
+};
+
 const ReservationForm = ({
   form,
   restaurants = [],
   initialValues,
+  editingOrder,
+  onClose,
 }: ReservationFormProps): JSX.Element => {
   const t = useT();
+  const { isAuth } = useContext(AuthContext);
   const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [step, setStep] = useState<ReservationStep>({ kind: 'form' });
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
@@ -145,16 +259,8 @@ const ReservationForm = ({
     setValues(prev => ({ ...prev, [marker]: value }));
   };
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (spamAttr && !captcha) {
-      setError('Please wait while captcha is loading.');
-      return;
-    }
-    setLoading(true);
-    setError('');
-
-    const payloadFormData: IOrdersFormData[] = attrs
+  const buildPayload = (): IOrdersFormData[] => {
+    return attrs
       .filter(attr => attr.type !== 'button')
       .map(attr => {
         if (attr.type === 'spam') {
@@ -175,6 +281,18 @@ const ReservationForm = ({
             value: [{ plainValue: raw }],
           };
         }
+        if (attr.type === 'entity') {
+          // У entity-атрибута формы нет listTitles — варианты выбора
+          // источаются динамически (для `restaurant` — из дочерних
+          // страниц `restaurants`). OneEntry ожидает массив числовых
+          // id: `value: [<pageId>]`.
+          const opt = restaurants.find(r => r.value === raw);
+          return {
+            marker: attr.marker,
+            type: 'entity',
+            value: opt ? [opt.id] : [],
+          };
+        }
         if (attr.type === 'date') {
           const d = raw ? new Date(raw) : new Date();
           return {
@@ -187,30 +305,119 @@ const ReservationForm = ({
             },
           };
         }
+        if (attr.type === 'timeInterval') {
+          // Значение хранится как `"yyyy-MM-dd HH.MM"` (см. DateTimePickerSheet
+          // и getAvailableSlotsForDate). OneEntry ждёт `[[startISO, endISO]]` —
+          // конец слота берём из расписания выбранного ресторана; если не
+          // совпало — fallback на +1 час.
+          const interval = buildTimeIntervalValue(raw, values[RESTAURANT_MARKER], restaurants);
+          return {
+            marker: attr.marker,
+            type: 'timeInterval',
+            value: interval,
+          };
+        }
         return {
           marker: attr.marker,
           type: attr.type === 'integer' ? 'integer' : 'string',
           value: raw,
         };
       });
+  };
 
-    // `booking_order` — форма типа `order`, поэтому идёт через
-    // `Orders.createOrder`. Вызываем напрямую с клиента, чтобы SDK
-    // подхватил user-token из auth-сессии (server action этот контекст
-    // не несёт — отсюда раньше был "You must authorize to send data").
+  // Шаг 1: валидируем форму, собираем payload и:
+  //   - в режиме создания брони → переключаем попап на экран выбора
+  //     оплаты (или auth, если юзер не залогинен — `Orders.createOrder`
+  //     требует user-token).
+  //   - в режиме редактирования (editingOrder задан) → сразу вызываем
+  //     `Orders.updateOrderByMarkerAndId` без auth/payment-шагов: юзер
+  //     уже авторизован, payment-method взят с оригинального заказа.
+  const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (spamAttr && !captcha) {
+      setError('Please wait while captcha is loading.');
+      return;
+    }
+    setError('');
+    const payload = buildPayload();
+    const summary = formatBookingSummary(values);
+
+    if (editingOrder) {
+      setLoading(true);
+      try {
+        const res = await getApi().Orders.updateOrderByMarkerAndId(
+          'booking_order',
+          editingOrder.orderId,
+          {
+            formIdentifier: editingOrder.formIdentifier,
+            paymentAccountIdentifier: editingOrder.paymentAccountIdentifier,
+            formData: payload,
+            products: [{ productId: 34, quantity: 1 }],
+          }
+        );
+        setLoading(false);
+        if (isError(res)) {
+          setError((res as { message?: string }).message ?? 'Failed to update reservation');
+          return;
+        }
+        toast(t('booking_updated_toast', 'Reservation updated.'));
+        onClose?.();
+      } catch (err) {
+        setLoading(false);
+        setError((err as Error).message || 'Failed to update reservation');
+      }
+      return;
+    }
+
+    setStep(
+      isAuth
+        ? { kind: 'payment', formData: payload, summary }
+        : { kind: 'auth', formData: payload, summary }
+    );
+  };
+
+  // Шаг 2: пользователь выбрал способ оплаты. Создаём order, для
+  // online-методов открываем Stripe-сессию и редиректим на её
+  // `paymentUrl`; для офлайна показываем success-экран в попапе
+  // (Figma 120:2338).
+  const onApplyPayment = async (paymentAccountIdentifier: string) => {
+    if (step.kind !== 'payment') return;
+    setLoading(true);
+    setError('');
     try {
       const res = await getApi().Orders.createOrder('booking_order', {
         formIdentifier: 'booking_order',
-        paymentAccountIdentifier: 'cash',
-        formData: payloadFormData,
-        products: [],
+        paymentAccountIdentifier,
+        formData: step.formData,
+        products: [{ productId: 34, quantity: 1 }],
       });
-      setLoading(false);
       if (isError(res)) {
+        setLoading(false);
         setError((res as { message?: string }).message ?? 'Failed to submit reservation');
         return;
       }
-      setSuccess(true);
+      const { id } = res as { id: number };
+
+      // Online → открываем платёжную сессию и редиректим. Стрипа
+      // достаточно — Cash-аккаунты вернут paymentUrl=null и попадут в
+      // ветку показа success в попапе.
+      if (paymentAccountIdentifier !== 'cash') {
+        try {
+          const session = await getApi().Payments.createSession(id, 'session');
+          if (!isError(session)) {
+            const url = (session as { paymentUrl?: string | null }).paymentUrl;
+            if (url) {
+              window.location.href = url;
+              return;
+            }
+          }
+        } catch {
+          // глушим — заказ уже создан, на success всё равно перейдём
+        }
+      }
+
+      setLoading(false);
+      setStep({ kind: 'success', orderId: id, summary: step.summary });
       setValues({});
     } catch (err) {
       setLoading(false);
@@ -218,16 +425,36 @@ const ReservationForm = ({
     }
   };
 
-  if (success) {
+  if (step.kind === 'success') {
+    return <ReservationSuccess orderId={step.orderId} summary={step.summary} />;
+  }
+
+  if (step.kind === 'auth') {
     return (
-      <div className="mx-auto max-w-107.5 rounded-xl bg-ink/60 p-6 text-center">
-        <h3 className="mb-2 font-bold text-[20px] uppercase text-brand">
-          {t('info_text', 'Table reserved!')}
-        </h3>
-        <p className="text-paper/90">
-          {t('reservation_confirmed', 'We will contact you shortly to confirm.')}
-        </p>
-      </div>
+      <ReservationAuthStep
+        onAuthSuccess={() => {
+          setError('');
+          setStep({ kind: 'payment', formData: step.formData, summary: step.summary });
+        }}
+        onBack={() => {
+          setError('');
+          setStep({ kind: 'form' });
+        }}
+      />
+    );
+  }
+
+  if (step.kind === 'payment') {
+    return (
+      <ReservationPaymentStep
+        onApply={onApplyPayment}
+        isLoading={loading}
+        error={error}
+        onBack={() => {
+          setError('');
+          setStep({ kind: 'form' });
+        }}
+      />
     );
   }
 
@@ -236,7 +463,7 @@ const ReservationForm = ({
   const todayIso = new Date().toISOString().slice(0, 10);
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0">
+    <form onSubmit={onFormSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0">
       {hasRestaurant ? (
         <RestaurantSelect
           options={restaurants}
@@ -325,7 +552,7 @@ const ReservationForm = ({
           disabled={loading}
           className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
         >
-          {loading ? '...' : t('submit_text', 'Book')}
+          {t('continue_text', 'Continue')}
         </button>
       </div>
 

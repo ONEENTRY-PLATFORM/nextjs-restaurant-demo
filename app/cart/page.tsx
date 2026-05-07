@@ -44,7 +44,7 @@ const CartPageLayout = async (): Promise<JSX.Element> => {
    * 2-колоночный флоу из `pk_cart.html` (md:700 / lg:1000 / xl:1292).
    */
   return (
-    <section className="min-h-screen bg-black bg-[url('/images/picture/bg_cart.png')] bg-cover bg-no-repeat md:bg-none">
+    <section className="min-h-screen bg-black">
       <div className="mx-auto w-full max-w-97.5 px-4 md:max-w-175 lg:max-w-250 xl:max-w-323">
         <CartWizard
           deliveryData={deliveryData as IProductsEntity}

@@ -92,7 +92,7 @@ const FavoritesPopup = (): JSX.Element => {
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">
-            <div className="flex flex-col items-center gap-5 rounded-xl bg-ink/60 p-6 text-center">
+            <div className="flex flex-col items-center gap-5 p-6 text-center">
               <p className="text-paper/90">You have no favorites yet.</p>
               <Link
                 href="/shop"

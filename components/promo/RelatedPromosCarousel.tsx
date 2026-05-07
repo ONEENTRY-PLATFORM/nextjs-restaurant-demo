@@ -74,7 +74,7 @@ const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Elemen
             key={b.id}
             href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
             title={b.title}
-            className="snap-start shrink-0 w-full md:w-[calc((100%-60px)/2)] block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
+            className="snap-start shrink-0 w-full md:w-[calc((100%-60px)/2)] block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
           >
             <Image
               src={b.mobileImage as string}

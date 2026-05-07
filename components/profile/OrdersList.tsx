@@ -6,12 +6,23 @@ import type { IOrderByMarkerEntity, IOrderProducts } from 'oneentry/dist/orders/
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
+import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
+import { updateUserState } from '@/app/api/server/users/updateUserState';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import {
+  addProductToCart,
+  increaseProductQty,
+  selectCartData,
+} from '@/app/store/reducers/CartSlice';
+import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
+import { setStep } from '@/app/store/reducers/OrderSlice';
 import { formatDate } from '@/app/utils/formatDate';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
@@ -98,12 +109,75 @@ const OrderCard = ({
 }): JSX.Element => {
   const t = useT();
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector(selectCartData);
+  const favoritesIds = useAppSelector(selectFavoritesItems);
+  const { user } = useContext(AuthContext);
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
+  const canReview = (order.statusIdentifier ?? '').toLowerCase() === 'delivered';
 
   const openReviewPopup = (): void => {
     setOrderReviewTarget({ order, productsById });
     setComponent('OrderReviewPopup');
+    setOpen(true);
+  };
+
+  // Repeat order: для каждой позиции заказа добавляем продукт в корзину
+  // (если ещё нет) или увеличиваем количество (если уже есть). Out-of-stock
+  // позиции пропускаем — пользователь увидит, что добавилось.
+  // `units: 0` в increaseProductQty означает «нет верхнего лимита» (см.
+  // CartSlice — атрибут `units_product` отсутствует в наборе `dish`).
+  const repeatOrder = async (): Promise<void> => {
+    const inCartIds = new Set(cartItems.map(c => c.id));
+    const skipped: string[] = [];
+    const addedItems: { id: number; quantity: number; selected: boolean }[] = cartItems.map(c => ({
+      id: c.id,
+      quantity: c.quantity,
+      selected: c.selected,
+    }));
+
+    for (const p of order.products) {
+      const fullProduct = productsById.get(p.id);
+      if (fullProduct?.statusIdentifier === 'out_of_stock') {
+        skipped.push(p.title);
+        continue;
+      }
+      const qty = Number(p.quantity) || 1;
+      if (inCartIds.has(p.id)) {
+        dispatch(increaseProductQty({ id: p.id, quantity: qty, units: 0 }));
+        const idx = addedItems.findIndex(i => i.id === p.id);
+        const existing = idx >= 0 ? addedItems[idx] : undefined;
+        if (existing) {
+          addedItems[idx] = { ...existing, quantity: existing.quantity + qty };
+        }
+      } else {
+        dispatch(addProductToCart({ id: p.id, quantity: qty, selected: true }));
+        addedItems.push({ id: p.id, quantity: qty, selected: true });
+        inCartIds.add(p.id);
+      }
+    }
+
+    if (addedItems.length === cartItems.length && skipped.length === order.products.length) {
+      toast(t('repeat_order_all_unavailable', 'All items from this order are out of stock'));
+      return;
+    }
+
+    toast(t('repeat_order_added_text', 'Items from your previous order added to cart'));
+
+    if (user) {
+      await updateUserState({ favorites: favoritesIds, cart: addedItems, user });
+      await Promise.all(
+        order.products
+          .filter(p => productsById.get(p.id)?.statusIdentifier !== 'out_of_stock')
+          .map(p => onSubscribeEvents(p.id))
+      );
+    }
+
+    // Сбрасываем wizard на cart-шаг — у пользователя в Redux могло остаться
+    // 'success'/'payment' от прошлой сессии, и попап открылся бы не на корзине.
+    dispatch(setStep('cart'));
+    setComponent('CartPopup');
     setOpen(true);
   };
 
@@ -165,18 +239,21 @@ const OrderCard = ({
               {isHistory && (
                 <button
                   type="button"
+                  onClick={repeatOrder}
                   className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
                 >
                   {t('repeat_order_button', 'Repeat order')}
                 </button>
               )}
-              <button
-                type="button"
-                onClick={openReviewPopup}
-                className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
-              >
-                {t('leave_review_button', 'Leave a review')}
-              </button>
+              {canReview && (
+                <button
+                  type="button"
+                  onClick={openReviewPopup}
+                  className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
+                >
+                  {t('leave_review_button', 'Leave a review')}
+                </button>
+              )}
             </div>
           </div>
         </>
@@ -448,7 +525,7 @@ const OrdersList = ({
                 key={b.id}
                 href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
                 title={b.title}
-                className="block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
+                className="block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
               >
                 <Image
                   src={b.mobileImage as string}

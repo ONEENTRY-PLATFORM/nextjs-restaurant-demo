@@ -102,7 +102,7 @@ const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element |
           <Link
             href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
             title={b.title}
-            className="block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.02]"
+            className="block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
           >
             <Image
               src={b.mobileImage as string}

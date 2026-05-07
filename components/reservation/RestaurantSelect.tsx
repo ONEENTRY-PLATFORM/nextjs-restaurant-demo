@@ -20,6 +20,10 @@ export type ScheduleSlotEntry = {
 export type RestaurantOption = {
   value: string;
   label: string;
+  // Числовой id страницы ресторана. Нужен для отправки формы
+  // `booking_order` — поле `restaurant` имеет тип `entity`, а OneEntry
+  // ждёт `value: [<numericPageId>]` (см. правило `forms.md` → entity).
+  id: number;
   // Расписание ресторана — пробрасывается в TimePicker, чтобы показать
   // только реально доступные слоты на выбранную дату (см.
   // `getAvailableSlotsForDate` в `ReservationForm`).

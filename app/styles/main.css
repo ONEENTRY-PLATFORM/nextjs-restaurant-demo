@@ -213,10 +213,10 @@ html {
 }
 
 .title {
-  @apply 
-    flex 
-    md:justify-between 
-    items-center 
+  @apply
+    flex
+    justify-between
+    items-center
     gap-5;
 }
 
@@ -230,11 +230,9 @@ html {
 }
 
 .subtitle {
-  @apply 
-    hidden 
-    md:block 
-    font-normal 
-    text-xs 
+  @apply
+    font-normal
+    text-xs
     text-white;
 }
 

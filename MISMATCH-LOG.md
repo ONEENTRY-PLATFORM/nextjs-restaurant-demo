@@ -40,7 +40,7 @@
 | [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) | 8 |
 | [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx) | 6 |
 | [components/reviews/ReviewsSlideUpPanel.tsx](components/reviews/ReviewsSlideUpPanel.tsx) | 6 |
-| [components/static/FilterBottom.tsx](components/static/FilterBottom.tsx) | 6 |
+| [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) | 6 |
 | [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) | 6 |
 
 > Действие: проходом по компоненту смотреть `value_px / 4 = N` → `*-N` или `*-N.MM`. Если значение часто повторяется (в 3+ местах) — добавлять токен в `@theme inline`.
@@ -60,6 +60,8 @@
 [components/home/HomeCategoriesSection.tsx](components/home/HomeCategoriesSection.tsx)
 [components/layout/header/index.tsx](components/layout/header/index.tsx)
 
+- **B.1.1** — `.subtitle` + `.title` (ссылка `View all (N)` в каждой категории главной): в `static-html/public/styles.css:2729-2742` намеренно `display: none` ниже `md` (768px), и `.title` использует `md:justify-between`. По решению клиента (2026-05-07) — отойти от макета: показывать кнопку на всех брейкпоинтах и прижимать её к правому краю. В [app/styles/main.css:215](app/styles/main.css#L215) `md:justify-between` → `justify-between`, в [app/styles/main.css:232](app/styles/main.css#L232) убраны `hidden md:block`. Severity: — (осознанное отступление).
+
 ### B.2. Карточка товара (`pk_product_details.html` ↔ `app/shop/product/[handle]`)
 
 - 🌐 Live: <http://localhost:3000/shop/product/13> _(заменить `13` на любой реальный product id, например через `/shop`)_
@@ -71,6 +73,8 @@
 [components/layout/product/product-single/ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx)
 [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx)
 
+- **B.2.1** — Reviews-карусель в карточке товара: в `static-html/pk_product_details.html:293` стрелки-пейджеры `<svg class="hidden md:block">` намеренно скрыты на мобильном (там просто статичный первый отзыв). По решению клиента (2026-05-07) — отойти от макета: на мобильном включить touch-свайп между отзывами и показать стрелки. В [components/reviews/ProductReviewsList.tsx](components/reviews/ProductReviewsList.tsx) добавлены `onTouchStart`/`onTouchEnd` со SWIPE_THRESHOLD=40px, у обеих кнопок убран `hidden md:flex`, у контейнера `md:px-8` → `px-8`, чтобы стрелки не накрывали текст отзыва. Severity: — (осознанное отступление).
+
 ### B.3. Каталог / категория (`index_category.html` ↔ `app/shop/...`)
 
 - 🌐 Live: <http://localhost:3000/shop> · <http://localhost:3000/shop/category/dinner> _(подставить реальный category handle)_
@@ -78,7 +82,7 @@
 - 📁 Файлы проекта:
 [app/shop/page.tsx](app/shop/page.tsx)
 [app/shop/category/[handle]/page.tsx](app/shop/category/[handle]/page.tsx)
-[components/static/CategoryFilter.tsx](components/static/CategoryFilter.tsx)
+[components/layout/filter/CategoryFilter.tsx](components/layout/filter/CategoryFilter.tsx)
 [components/layout/filter/FilterModal.tsx](components/layout/filter/FilterModal.tsx)
 [components/layout/products-grid/components/product-card/ProductCard.tsx](components/layout/products-grid/components/product-card/ProductCard.tsx)
 

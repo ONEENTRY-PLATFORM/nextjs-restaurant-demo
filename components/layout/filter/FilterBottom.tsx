@@ -11,9 +11,7 @@ import CloseXIcon from '@/components/icons/close-x';
 import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-// Cooking-time лейбл → значение URL-параметра `cooking_time_max`
-// (читается в `getSearchParams.ts`, превращается в фильтр `cooking_time lth N`).
-// `null` — фильтр не применяется (пункт «doesn't matter»).
+// Cooking-time
 const WAITING_TIME: Array<{ label: string; max: number | null }> = [
   { label: 'Under 30 mins', max: 30 },
   { label: 'Under 60 mins', max: 60 },
@@ -25,9 +23,7 @@ type PriceChip = {
   value: number;
 };
 
-// Чипы Price собираются из реальных min/max цен каталога
-// (`getProductsPriceRange()` в Header). Возвращает пустой массив, если
-// каталог пуст или цены не получены — секция Price тогда не рендерится.
+// Чипы Price.
 const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
   if (!priceRange || priceRange.max <= 0) return [];
   const chips: PriceChip[] = [];

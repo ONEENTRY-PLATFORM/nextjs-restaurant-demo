@@ -12,8 +12,8 @@ import {
 import BurgerIcon from '@/components/icons/burger';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import PhoneIcon from '@/components/icons/phone.svg';
-import CategoryFilter from '@/components/static/CategoryFilter';
-import FilterBottom from '@/components/static/FilterBottom';
+import CategoryFilter from '@/components/layout/filter/CategoryFilter';
+import FilterBottom from '@/components/layout/filter/FilterBottom';
 
 import CategoriesScroller, { type PreferenceOption } from './CategoriesScroller';
 import CategoryButton from './CategoryButton';

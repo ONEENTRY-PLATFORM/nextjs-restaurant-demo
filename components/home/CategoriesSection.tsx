@@ -14,15 +14,7 @@ type CategoriesSectionProps = {
 };
 
 /**
- * Секция категории главной — заголовок + ссылка `View all` + сетка
- * карточек продуктов. Перенесена 1:1 из `static-html/index.html` (секции `.recomended`,
- * `Brackfast`, `LUNCH`, `FIRST COURSE / SOUP`, `MAIN COURSE`, `DESERT`,
- * `BEVERAGEs`).
- *
- * Чисто рендерный компонент — продукты фетчатся в `app/page.tsx` по
- * каждой дочерней странице `menu`, поэтому секция никогда не делает свой API-запрос и
- * layout главной остаётся предсказуемым при пустых категориях (родитель
- * отфильтровывает их до маппинга).
+ * Секция категории главной
  * @param   {CategoriesSectionProps} props - Пропсы компонента.
  * @returns {JSX.Element}            JSX секции.
  */

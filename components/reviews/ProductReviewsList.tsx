@@ -2,11 +2,13 @@
 
 import Image from 'next/image';
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type { ProductReview } from '@/app/api';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
 import StarCardIcon from '@/components/icons/star-card';
+
+const SWIPE_THRESHOLD_PX = 40;
 
 /**
  * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
@@ -18,9 +20,25 @@ import StarCardIcon from '@/components/icons/star-card';
  */
 const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Element => {
   const [index, setIndex] = useState(0);
+  const touchStartXRef = useRef<number | null>(null);
 
   const goPrev = () => setIndex(i => (i - 1 + reviews.length) % reviews.length);
   const goNext = () => setIndex(i => (i + 1) % reviews.length);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = touchStartXRef.current;
+    touchStartXRef.current = null;
+    if (startX === null || reviews.length < 2) return;
+    const endX = e.changedTouches[0]?.clientX;
+    if (endX === undefined) return;
+    const delta = endX - startX;
+    if (delta <= -SWIPE_THRESHOLD_PX) goNext();
+    else if (delta >= SWIPE_THRESHOLD_PX) goPrev();
+  };
 
   return (
     <div className="mt-4.5 w-full">
@@ -36,17 +54,21 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
           No reviews yet — be the first to share your experience.
         </p>
       ) : (
-        <div className="relative flex items-stretch gap-3.75 mt-2.5 md:px-8">
+        <div className="relative flex items-stretch gap-3.75 mt-2.5 px-8 overflow-hidden">
           <button
             type="button"
             onClick={goPrev}
             aria-label="Previous review"
-            className="hidden md:flex shrink-0 items-center absolute left-0 top-1/2 -translate-y-1/2 z-10"
+            className="flex shrink-0 items-center absolute left-0 top-1/2 -translate-y-1/2 z-10"
           >
             <Image src="/images/icons/chevron-pager-left.svg" alt="" width={16} height={27} />
           </button>
 
-          <div className="relative w-full min-w-0 overflow-hidden">
+          <div
+            className="relative w-full min-w-0 overflow-hidden touch-pan-y"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div
               className="flex transition-transform duration-300 ease-out"
               style={{ transform: `translateX(-${index * 100}%)` }}
@@ -54,7 +76,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
               {reviews.map((review, i) => (
                 <div
                   key={review.id}
-                  className="w-full shrink-0 grow-0 basis-full flex flex-col gap-2.5"
+                  className="w-full shrink-0 grow-0 basis-full flex flex-col gap-2.5 overflow-hidden"
                   aria-hidden={i !== index}
                 >
                   <div className="mt-7 flex justify-between">
@@ -80,7 +102,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
             type="button"
             onClick={goNext}
             aria-label="Next review"
-            className="hidden md:flex shrink-0 items-center absolute right-0 top-1/2 -translate-y-1/2 z-10"
+            className="flex shrink-0 items-center absolute right-0 top-1/2 -translate-y-1/2 z-10"
           >
             <Image src="/images/icons/chevron-pager-right.svg" alt="" width={16} height={27} />
           </button>

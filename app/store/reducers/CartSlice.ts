@@ -110,10 +110,6 @@ export const cartSlice = createSlice({
       if (!entry) return;
       const qty = entry.quantity + action.payload.quantity;
 
-      // Атрибут `units_product` отсутствует в живом наборе `dish` →
-      // вызывающий код передаёт `0`/`undefined`. Считаем falsy `units` за «лимита
-      // склада нет» (иначе кнопка `+` снова обрезала бы qty до 0). Когда передан
-      // `units > 0` — всё равно уважаем его как реальный верхний предел.
       const cap = action.payload.units;
       state.productsData[index] = {
         ...entry,

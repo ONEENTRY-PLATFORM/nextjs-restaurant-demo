@@ -151,10 +151,6 @@ const OrderCard = ({
   };
 
   // Repeat order: для каждой позиции заказа добавляем продукт в корзину
-  // (если ещё нет) или увеличиваем количество (если уже есть). Out-of-stock
-  // позиции пропускаем — пользователь увидит, что добавилось.
-  // `units: 0` в increaseProductQty означает «нет верхнего лимита» (см.
-  // CartSlice — атрибут `units_product` отсутствует в наборе `dish`).
   const repeatOrder = async (): Promise<void> => {
     const inCartIds = new Set(cartItems.map(c => c.id));
     const skipped: string[] = [];
@@ -313,9 +309,6 @@ const OrderLineItem = ({
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
 }): JSX.Element => {
-  // `previewImage` в snapshot заказа часто null (зависит от настроек CMS на момент
-  // создания заказа). Фолбэк — `cover.value.downloadLink` из живого продукта,
-  // подгружаемого по id через RTK на уровне `OrdersList`.
   const coverFromEntity = (
     fullProduct?.attributeValues?.cover?.value as { downloadLink?: string } | undefined
   )?.downloadLink;
@@ -498,7 +491,7 @@ const OrdersList = ({
         <p>{t('no_orders_text', 'You have no orders yet.')}</p>
         <Link
           href="/shop"
-          className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+          className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
         >
           {t('go_shopping_button', 'Go to shopping')}
         </Link>

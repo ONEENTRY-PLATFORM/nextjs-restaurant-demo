@@ -9,8 +9,8 @@ const APP_TOKEN = (process.env.NEXT_PUBLIC_ONEENTRY_TOKEN ||
 const DEFAULT_LANG = 'en_US';
 
 /**
- * Сохраняет refreshToken в localStorage при каждой ротации SDK.
- * @param   {string}        refreshToken - Свежий refreshToken, выданный SDK.
+ * Persists the refreshToken to localStorage on every SDK rotation.
+ * @param   {string}        refreshToken - Fresh refreshToken issued by the SDK.
  * @returns {Promise<void>}
  */
 const saveFunction = async (refreshToken: string): Promise<void> => {
@@ -24,8 +24,8 @@ const saveFunction = async (refreshToken: string): Promise<void> => {
 };
 
 /**
- * Мутабельный экземпляр SDK. Пересоздаётся через {@link reDefine} при логине / смене langCode.
- * Экспортируется как `api` для обратной совместимости с существующими импортами.
+ * Mutable SDK instance. Recreated via {@link reDefine} on login / langCode change.
+ * Exported as `api` for backwards compatibility with existing imports.
  */
 export let api = defineOneEntry(PROJECT_URL, {
   langCode: DEFAULT_LANG,
@@ -36,19 +36,19 @@ export let api = defineOneEntry(PROJECT_URL, {
 });
 
 /**
- * Геттер текущего экземпляра SDK. Предпочтительнее использовать его, а не `api` —
- * гарантирует, что вызывающая сторона всегда видит актуальный экземпляр даже после {@link reDefine}.
- * @returns {ReturnType<typeof defineOneEntry>} Текущий экземпляр api.
+ * Getter for the current SDK instance. Prefer this over `api` —
+ * guarantees the caller always sees the up-to-date instance even after {@link reDefine}.
+ * @returns {ReturnType<typeof defineOneEntry>} Current api instance.
  */
 export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 
 /**
- * Пересоздаёт экземпляр SDK с (возможно) новым refreshToken и langCode.
+ * Recreates the SDK instance with a (possibly) new refreshToken and langCode.
  *
- * ⚠️ Всегда защищай через {@link hasActiveSession} — каждый вызов идёт в `/refresh`
- * и иначе сжёг бы текущий токен.
- * @param   {string}        refreshToken - Refresh token из localStorage.
- * @param   {string}        [langCode]   - Текущий код языка (по умолчанию `en_US`).
+ * ⚠️ Always guard with {@link hasActiveSession} — each call hits `/refresh`
+ * and would otherwise burn the current token.
+ * @param   {string}        refreshToken - Refresh token from localStorage.
+ * @param   {string}        [langCode]   - Current language code (defaults to `en_US`).
  * @returns {Promise<void>}
  */
 export async function reDefine(refreshToken: string, langCode?: string): Promise<void> {
@@ -66,14 +66,7 @@ export async function reDefine(refreshToken: string, langCode?: string): Promise
 }
 
 /**
- * Содержит ли текущий экземпляр SDK активный accessToken.
- *
- * SDK хранит токены в state-модуле, который доступен через любой sub-API
- * (например, `api.AuthProvider.state.accessToken`). На верхнем уровне
- * объекта `api` поля `state`/`config` НЕТ — раньше тут было
- * `api.config.auth.accessToken`, и проверка молча всегда возвращала false,
- * из-за чего `reDefine` пере-создавал SDK на каждом маунте и сбрасывал
- * только что выданный access-token.
+ * Whether the current SDK instance holds an active accessToken.
  * @returns {boolean}
  */
 export const hasActiveSession = (): boolean => {
@@ -84,16 +77,16 @@ export const hasActiveSession = (): boolean => {
 };
 
 /**
- * Кладёт оба токена напрямую в state текущего SDK-инстанса. Канонический
- * паттерн `login()` по правилам MCP `tokens`: ответ `AuthProvider.auth()`
- * содержит `accessToken`+`refreshToken`, и без `syncTokens` после этого
- * первый же auth-protected запрос пойдёт без `Authorization`, получит 400
- * (`postFormsData`, `createOrder`) и упадёт — SDK ретраит только 401.
+ * Writes both tokens directly into the state of the current SDK instance. The
+ * canonical `login()` pattern per MCP `tokens` rules: the `AuthProvider.auth()`
+ * response contains `accessToken`+`refreshToken`, and without `syncTokens`
+ * the very next auth-protected request will go out without `Authorization`,
+ * get a 400 (`postFormsData`, `createOrder`) and fail — the SDK only retries 401.
  *
- * Использовать вместо `reDefine` в момент логина / OAuth-callback. `reDefine`
- * оставляем только для восстановления сессии из localStorage на mount.
- * @param {string} accessToken  - JWT доступа из `auth()`.
- * @param {string} refreshToken - Refresh-токен из `auth()`.
+ * Use instead of `reDefine` at login / OAuth-callback time. `reDefine` is kept
+ * only for restoring a session from localStorage on mount.
+ * @param {string} accessToken  - Access JWT from `auth()`.
+ * @param {string} refreshToken - Refresh token from `auth()`.
  */
 export const syncTokens = (accessToken: string, refreshToken: string): void => {
   const provider = api.AuthProvider as unknown as {
@@ -105,8 +98,8 @@ export const syncTokens = (accessToken: string, refreshToken: string): void => {
 };
 
 /**
- * Текущий langCode экземпляра SDK.
- * @returns {string} Код языка, например `en_US`.
+ * Current langCode of the SDK instance.
+ * @returns {string} Language code, e.g. `en_US`.
  */
 export const getLang = (): string => {
   const cfg = (api as unknown as { config?: { langCode?: string } }).config;
@@ -114,8 +107,8 @@ export const getLang = (): string => {
 };
 
 /**
- * Type guard для ответов SDK — возвращает `true`, если значение является `IError`.
- * @param   {unknown} result - Ответ SDK для проверки.
+ * Type guard for SDK responses — returns `true` if the value is an `IError`.
+ * @param   {unknown} result - SDK response to check.
  * @returns {boolean}
  */
 export const isError = (result: unknown): result is IError => {
@@ -129,12 +122,12 @@ export const isError = (result: unknown): result is IError => {
 type ImageField = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
- * Нормализует значение атрибута `image` OneEntry в URL-строку.
+ * Normalizes a OneEntry `image` attribute value into a URL string.
  *
- * SDK возвращает объект для Products и массив для Pages/Blocks —
- * этот хелпер обрабатывает обе формы.
+ * The SDK returns an object for Products and an array for Pages/Blocks —
+ * this helper handles both shapes.
  * @param   {ImageField} value - `attributeValues.<marker>.value`.
- * @returns {string}           URL для скачивания или пустая строка.
+ * @returns {string}           Download URL, or an empty string.
  */
 export const getImageUrl = (value: ImageField): string => {
   if (!value) {

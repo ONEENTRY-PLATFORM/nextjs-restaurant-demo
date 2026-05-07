@@ -598,7 +598,7 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 | `delivery_address` | string       | required (strict)     | ✅     |
 | `contact_phone`    | string       | required (strict)     | ✅     |
 | `floor`            | string       | required (без strict) | ❌     |
-| `delivery_time`    | timeInterval | —                     | ❌     |
+| `delivery_time`    | timeInterval | —                     | ✅     |
 | `comment`          | string       | —                     | ✅     |
 | `apartment_number` | string       | —                     | ❌     |
 | `alt_phone`        | string       | —                     | ✅     |
@@ -609,16 +609,15 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 - `delivery_address` — [StepAddress.tsx:80](components/cart/steps/StepAddress.tsx#L80), `addData` по нажатию Continue.
 - `contact_phone` — [StepAddress.tsx:84](components/cart/steps/StepAddress.tsx#L84), берём `phone` / `phone_reg` / `contact_phone` из `user.formData`.
 - `comment`, `alt_phone` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) (`alt_phone` — только если включён чекбокс «another person»).
-- `delivery_time` — кодом отправляется маркер `time` (cart slice), а не `delivery_time` — поле игнорируется. [useCreateOrder.ts:87](app/api/hooks/useCreateOrder.ts#L87) фильтрует `time` из formData.
+- `delivery_time` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) собирает `[[startISO, endISO]]` через `buildDeliveryTimeInterval` и шлёт `addData({ marker: 'delivery_time', type: 'timeInterval', ... })`. ASAP → start=now, end=now+45 мин; scheduled → start=parsed `DD.MM.YY HH.MM`, end=start+1 ч.
 - `floor`, `apartment_number`, `addresses` — UI пока не собирает (см. C.5 про адресную книгу юзера).
 
 **Открытые задачи:**
 
 - `floor` — добавить поле в [StepAddress.tsx](components/cart/steps/StepAddress.tsx) рядом со street (или брать из адресной книги юзера, см. C.5). Иначе при `requiredValidator: { strict: true }` (если клиент его выставит) — будет 400 после `contact_phone`.
-- `delivery_time` — пробрасывать выбранный slot/datetime в `addData({ marker: 'delivery_time', type: 'timeInterval', value: <ISO range> })`. Сейчас «40-45 min» / scheduled-input нигде не сохраняются в OneEntry, только в локальном Redux.
 - `apartment_number` — опциональное поле, можно добавить рядом с floor.
 
-> ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` / `delivery_time` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
+> ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
 
 #### C.6.2. Booking-flow — payment + success (Figma 120:1875 / 120:2338)
 

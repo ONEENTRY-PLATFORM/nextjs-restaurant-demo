@@ -56,7 +56,7 @@ export default function TransitionProvider({ children }: { children: ReactNode }
               y: 0,
               duration: ENTER_DURATION,
               ease: 'power2.out',
-            },
+            }
           )
           .call(next);
         return () => {

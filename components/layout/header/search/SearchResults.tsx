@@ -73,7 +73,7 @@ const SearchResults = ({
       ) : products.length > 0 ? (
         products
           .filter(
-            (product: IProductsEntity) => product.attributeSetIdentifier !== 'service_product',
+            (product: IProductsEntity) => product.attributeSetIdentifier !== 'service_product'
           )
           .map((product: IProductsEntity) => {
             const { id } = product;

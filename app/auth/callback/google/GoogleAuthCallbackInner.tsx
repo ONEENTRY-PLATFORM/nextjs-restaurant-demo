@@ -30,34 +30,51 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
       typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-state') : null;
     const returnTo = params.get('return') || '/';
 
-    const finish = (ok: boolean, message?: string) => {
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('google-oauth-state');
-      }
-      if (!ok && message) toast.error(message);
-      router.replace(returnTo);
-    };
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('google-oauth-state');
+    }
 
     if (!code) {
-      finish(false, 'Google sign-in was cancelled.');
+      toast.error('Google sign-in was cancelled.');
+      router.replace(returnTo);
       return;
     }
     if (!state || state !== expectedState) {
-      finish(false, 'Google sign-in failed (state mismatch).');
+      toast.error('Google sign-in failed (state mismatch).');
+      router.replace(returnTo);
       return;
     }
 
+    // Оптимистичный redirect: обмен code → token занимает 2-5 сек (наш Server
+    // Action → OneEntry → Google → OneEntry). Юзер залипал бы на пустой
+    // callback-странице. Уводим сразу на returnTo, обмен крутится в фоне —
+    // syncTokens/authenticate/toast работают на root-уровне (AuthContext,
+    // ToastContainer), поэтому корректно отрабатывают после смены маршрута.
+    // Loading-toast подсказывает юзеру, что логин ещё идёт; промисы тоста
+    // (.update) переводят его в success/error по результату.
     const redirectUri = `${window.location.origin}/auth/callback/google`;
+    const toastId = toast.loading('Signing you in…');
+    router.replace(returnTo);
+
     oauthLogIn({ marker: 'google', code, redirectUri }).then(res => {
       if (res?.error || !res?.data) {
-        finish(false, res?.error ?? 'Google sign-in failed.');
+        toast.update(toastId, {
+          render: res?.error ?? 'Google sign-in failed.',
+          type: 'error',
+          isLoading: false,
+          autoClose: 15000,
+        });
         return;
       }
       localStorage.setItem('refresh-token', res.data.refreshToken);
       syncTokens(res.data.accessToken, res.data.refreshToken);
       authenticate();
-      toast('You signed in!');
-      finish(true);
+      toast.update(toastId, {
+        render: 'You signed in!',
+        type: 'success',
+        isLoading: false,
+        autoClose: 15000,
+      });
     });
   }, [params, router, authenticate]);
 

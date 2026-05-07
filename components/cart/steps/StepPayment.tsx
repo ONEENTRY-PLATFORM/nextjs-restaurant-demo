@@ -15,11 +15,55 @@ import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/re
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import PencilIcon from '@/components/icons/pencil';
+import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import { formatAddressLine, parseSavedAddresses, pickSelectedAddress } from './savedAddress';
 
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
+
+const formatScheduleAt = (dateIso: string, time: string): string => {
+  const [yyyy, mm, dd] = dateIso.split('-');
+  if (!yyyy || !mm || !dd || !time) return '';
+  return `${dd}.${mm}.${yyyy.slice(2)} ${time}`;
+};
+
+const parseScheduleAt = (raw: string): { date: string; time: string } => {
+  const m = raw.match(/^(\d{2})\.(\d{2})\.(\d{2})\s+(\d{2}\.\d{2})$/);
+  if (!m) return { date: '', time: '' };
+  const [, dd, mm, yy, time] = m;
+  return { date: `20${yy}-${mm}-${dd}`, time: time! };
+};
+
+const ASAP_INTERVAL_MIN = 45;
+
+/**
+ * Собирает значение для атрибута `delivery_time` (тип `timeInterval`):
+ * массив пар `[[startISO, endISO]]`, как требует OneEntry SDK.
+ * - asap: start=now, end=now+45 мин.
+ * - scheduled (`DD.MM.YY HH.MM`): start=parsed, end=start+1 ч.
+ * Возвращает null, если scheduled-значение не парсится — тогда поле не
+ * шлём в заказ (form-validator пропустит, если поле необязательное).
+ */
+const buildDeliveryTimeInterval = (
+  mode: DeliveryMode,
+  scheduledRaw: string
+): [[string, string]] | null => {
+  if (mode === 'asap') {
+    const start = new Date();
+    const end = new Date(start.getTime() + ASAP_INTERVAL_MIN * 60 * 1000);
+    return [[start.toISOString(), end.toISOString()]];
+  }
+  const m = scheduledRaw.match(/^(\d{2})\.(\d{2})\.(\d{2})\s+(\d{2})\.(\d{2})$/);
+  if (!m) return null;
+  const [, dd, mm, yy, hh, min] = m;
+  const start = new Date(
+    Date.UTC(2000 + Number(yy), Number(mm) - 1, Number(dd), Number(hh), Number(min))
+  );
+  if (Number.isNaN(start.getTime())) return null;
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+  return [[start.toISOString(), end.toISOString()]];
+};
 
 const findUserField = (
   formData: ReadonlyArray<FormDataType> | undefined,
@@ -71,6 +115,8 @@ const StepPayment = (): JSX.Element => {
   }, [addressTouched, initialPickedAddress, userAddressFlat]);
   const [mode, setMode] = useState<DeliveryMode>('asap');
   const [scheduleAt, setScheduleAt] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const todayIso = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
   const accounts: IAccountsEntity[] = (data ?? []).filter(a => a.isVisible !== false);
@@ -91,13 +137,14 @@ const StepPayment = (): JSX.Element => {
     if (!identifier || !address.trim()) return;
 
     const deliveryTime = mode === 'asap' ? '40-45 min' : scheduleAt || '';
+    const deliveryInterval = buildDeliveryTimeInterval(mode, scheduleAt);
     dispatch(setDeliveryData({ ...delivery, address, time: deliveryTime }));
     dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
     if (userPhone) {
       dispatch(addData({ marker: 'contact_phone', type: 'string', value: userPhone }));
     }
-    if (deliveryTime) {
-      dispatch(addData({ marker: 'delivery_time', type: 'string', value: deliveryTime }));
+    if (deliveryInterval) {
+      dispatch(addData({ marker: 'delivery_time', type: 'timeInterval', value: deliveryInterval }));
     }
     if (comment.trim()) {
       dispatch(addData({ marker: 'comment', type: 'string', value: comment.trim() }));
@@ -179,12 +226,13 @@ const StepPayment = (): JSX.Element => {
         <input
           type="text"
           value={scheduleAt}
-          onChange={e => {
-            setScheduleAt(e.currentTarget.value);
+          readOnly
+          onClick={() => {
             setMode('scheduled');
+            setPickerOpen(true);
           }}
           placeholder="18.06.24  10.00"
-          className="rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
+          className="cursor-pointer rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
         />
       </div>
 
@@ -248,6 +296,25 @@ const StepPayment = (): JSX.Element => {
       >
         {isLoading ? 'Processing...' : 'APPLY'}
       </button>
+
+      {pickerOpen ? (
+        <DateTimePickerSheet
+          date={parseScheduleAt(scheduleAt).date}
+          time={parseScheduleAt(scheduleAt).time}
+          minDate={todayIso}
+          onApply={(d, tm) => {
+            setScheduleAt(formatScheduleAt(d, tm));
+            setMode('scheduled');
+            setPickerOpen(false);
+          }}
+          onClose={() => setPickerOpen(false)}
+          title={t('select_datetime_text', 'Select date and time')}
+          dateTitle={t('date_text', 'Date')}
+          timeTitle={t('time_text', 'Time')}
+          applyText={t('apply_text', '') || undefined}
+          noTimeText={t('no_time_text', '') || undefined}
+        />
+      ) : null}
     </div>
   );
 };

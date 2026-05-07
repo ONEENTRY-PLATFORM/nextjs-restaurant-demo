@@ -4,10 +4,9 @@ import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/or
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
 import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
-import type { IAppOrder } from '@/app/types/global';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -47,14 +46,12 @@ type UseCreateOrderApi = {
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
-  const order = useAppSelector(
-    (state: { orderReducer: { order: IAppOrder } }) => state.orderReducer.order
-  );
-  // Визард никогда не диспатчит `addProducts` в order slice, поэтому позиции
-  // заказа собираются напрямую из cart slice на этапе подтверждения.
-  // `selectCartData` возвращает записи `{ id, quantity, selected }`.
-  const cartProducts = useAppSelector(selectCartData) as CartEntry[];
-  const appliedCoupon = useAppSelector(selectAppliedCoupon);
+  // Берём стейт через store.getState() в момент вызова, а не через
+  // useSelector на этапе рендера: вызывающий код (StepPayment.onNext)
+  // диспатчит addData(...) и сразу вызывает onConfirmOrder в том же тике —
+  // useSelector ещё не успел обновить замыкание, и мы бы прочитали
+  // formData из ПРЕДЫДУЩЕГО рендера (на первой попытке — пустой `[]`).
+  const store = useAppStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -62,6 +59,11 @@ export const useCreateOrder = (): UseCreateOrderApi => {
   const onConfirmOrder = async ({
     paymentAccountIdentifier,
   }: ConfirmOrderArgs): Promise<ConfirmOrderResult> => {
+    const state = store.getState();
+    const order = state.orderReducer.order;
+    const cartProducts = selectCartData(state) as CartEntry[];
+    const appliedCoupon = selectAppliedCoupon(state);
+
     if (!order?.formIdentifier) {
       const message = 'Order form is not initialised';
       setError(message);

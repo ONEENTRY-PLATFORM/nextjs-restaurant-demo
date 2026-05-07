@@ -31,7 +31,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
       params.delete('search');
       setIsSearchActive(false);
     }
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

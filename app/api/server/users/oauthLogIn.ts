@@ -19,7 +19,7 @@ type OauthLoginProps = {
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {
-    const clientId = marker === 'google' ? process.env.GOOGLE_CLIENT_ID : undefined;
+    const clientId = marker === 'google' ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID : undefined;
     const clientSecret = marker === 'google' ? process.env.GOOGLE_CLIENT_SECRET : undefined;
 
     if (!clientId || !clientSecret) {

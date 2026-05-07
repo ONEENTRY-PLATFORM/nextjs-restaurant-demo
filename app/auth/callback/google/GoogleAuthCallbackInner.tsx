@@ -47,7 +47,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
       return;
     }
 
-    const redirectUri = `${window.location.origin}/auth/callback`;
+    const redirectUri = `${window.location.origin}/auth/callback/google`;
     oauthLogIn({ marker: 'google', code, redirectUri }).then(res => {
       if (res?.error || !res?.data) {
         finish(false, res?.error ?? 'Google sign-in failed.');

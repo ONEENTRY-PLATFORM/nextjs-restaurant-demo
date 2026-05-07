@@ -1,6 +1,9 @@
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-export const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+// Fallback на случай, если в OneEntry admin у провайдера `google` пуст
+// `config.oauthAuthUrl` — основной источник истины для URL это сам провайдер,
+// см. `startGoogleOAuth(authUrl)`.
+const GOOGLE_AUTH_URL_FALLBACK = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 export type ProviderMeta = {
   label: string;
@@ -55,11 +58,15 @@ export const sortActiveAuthProviders = (
 };
 
 /**
- * Запускает Google OAuth-редирект. Возвращает `false`, если
- * `NEXT_PUBLIC_GOOGLE_CLIENT_ID` не задан (см. MISMATCH-LOG.md §C.8.1) —
- * в этом случае вызывающая сторона должна сделать fallback на email-логин.
+ * Запускает Google OAuth-редирект. `authUrl` берётся из
+ * `provider.config.oauthAuthUrl` (OneEntry admin) — если он `null`/пуст,
+ * падаем на `GOOGLE_AUTH_URL_FALLBACK`.
+ *
+ * Возвращает `false`, если `NEXT_PUBLIC_GOOGLE_CLIENT_ID` не задан
+ * (см. MISMATCH-LOG.md §C.8.1) — в этом случае вызывающая сторона должна
+ * сделать fallback на email-логин.
  */
-export const startGoogleOAuth = (): boolean => {
+export const startGoogleOAuth = (authUrl?: string | null): boolean => {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   if (!clientId) return false;
   const state = crypto.randomUUID();
@@ -74,6 +81,6 @@ export const startGoogleOAuth = (): boolean => {
     prompt: 'consent',
     state,
   });
-  window.location.href = `${GOOGLE_AUTH_URL}?${search.toString()}`;
+  window.location.href = `${authUrl || GOOGLE_AUTH_URL_FALLBACK}?${search.toString()}`;
   return true;
 };

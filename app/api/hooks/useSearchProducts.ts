@@ -31,7 +31,13 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       if (cancelled) {
         return;
       }
-      setProducts(result as IProductsEntity[]);
+      const seen = new Set<number>();
+      const unique = (result as IProductsEntity[]).filter(p => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+      setProducts(unique);
       setLoading(false);
     })();
     return () => {

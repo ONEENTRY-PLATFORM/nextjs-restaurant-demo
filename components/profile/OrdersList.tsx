@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { IOrderByMarkerEntity, IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import type { BlogBanner } from '@/app/api';
@@ -28,6 +29,25 @@ import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
+
+// Совпадает с константой в `app/api/hooks/useCreateOrder.ts` — сервис «Delivery»
+// записывается в заказ как обычный продукт с этим id, поэтому его нужно
+// отделять от настоящих позиций при подсчёте subtotal/delivery.
+const DELIVERY_PRODUCT_ID = 33;
+
+// Тот же паттерн, что и в `components/cart/CartWizard.tsx` — md+ открывает
+// корзину как страницу (`/cart`), а не как drawer. Repeat order на десктопе
+// должен следовать этому же правилу.
+const MD_QUERY = '(min-width: 768px)';
+const subscribeMd = (cb: () => void): (() => void) => {
+  const mq = window.matchMedia(MD_QUERY);
+  mq.addEventListener('change', cb);
+  return () => mq.removeEventListener('change', cb);
+};
+const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
+const getMdServerSnapshot = (): boolean => false;
+const useIsMdUp = (): boolean =>
+  useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
  * Возвращает читаемый статус заказа, отдавая приоритет локализованной информации из CMS.
@@ -63,9 +83,14 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 const computeTotals = (
   o: IOrderByMarkerEntity
 ): { subtotal: number; delivery: number; total: number } => {
-  const subtotal = o.products.reduce((s, p) => s + Number(p.price) * Number(p.quantity), 0);
-  const total = Number(o.totalSum) || subtotal;
-  const delivery = Math.max(0, total - subtotal);
+  let subtotal = 0;
+  let delivery = 0;
+  for (const p of o.products) {
+    const line = Number(p.price) * Number(p.quantity);
+    if (p.id === DELIVERY_PRODUCT_ID) delivery += line;
+    else subtotal += line;
+  }
+  const total = Number(o.totalSum) || subtotal + delivery;
   return { subtotal, delivery, total };
 };
 
@@ -108,6 +133,8 @@ const OrderCard = ({
   productsById: Map<number, IProductsEntity>;
 }): JSX.Element => {
   const t = useT();
+  const router = useRouter();
+  const isMdUp = useIsMdUp();
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartData);
@@ -175,10 +202,15 @@ const OrderCard = ({
     }
 
     // Сбрасываем wizard на cart-шаг — у пользователя в Redux могло остаться
-    // 'success'/'payment' от прошлой сессии, и попап открылся бы не на корзине.
+    // 'success'/'payment' от прошлой сессии, иначе и страница, и попап открылись
+    // бы не на корзине.
     dispatch(setStep('cart'));
-    setComponent('CartPopup');
-    setOpen(true);
+    if (isMdUp) {
+      router.push('/cart');
+    } else {
+      setComponent('CartPopup');
+      setOpen(true);
+    }
   };
 
   return (
@@ -211,14 +243,16 @@ const OrderCard = ({
             </button>
           )}
           <div className="mt-5 flex flex-col">
-            {order.products.map((p, idx) => (
-              <OrderLineItem
-                key={`${p.id}-${idx}`}
-                product={p}
-                first={idx === 0}
-                fullProduct={productsById.get(p.id)}
-              />
-            ))}
+            {order.products
+              .filter(p => p.id !== DELIVERY_PRODUCT_ID)
+              .map((p, idx) => (
+                <OrderLineItem
+                  key={`${p.id}-${idx}`}
+                  product={p}
+                  first={idx === 0}
+                  fullProduct={productsById.get(p.id)}
+                />
+              ))}
             <div className="mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
@@ -240,7 +274,7 @@ const OrderCard = ({
                 <button
                   type="button"
                   onClick={repeatOrder}
-                  className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-ink hover_btn_transp"
+                  className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
                 >
                   {t('repeat_order_button', 'Repeat order')}
                 </button>

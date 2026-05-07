@@ -71,20 +71,18 @@ const SearchResults = ({
       {isBusy ? (
         <Spinner />
       ) : products.length > 0 ? (
-        products.map((product: IProductsEntity, i: number) => {
-          const { id, attributeSetIdentifier } = product;
-
-          // Пропускаем рендер для типа 'service_product'
-          if (attributeSetIdentifier === 'service_product') {
-            return null;
-          }
-
-          return (
-            <div key={id + i} className="flex w-full">
-              <ProductRow pageData={pages[id]?.page} product={product} setState={setState} />
-            </div>
-          );
-        })
+        products
+          .filter(
+            (product: IProductsEntity) => product.attributeSetIdentifier !== 'service_product',
+          )
+          .map((product: IProductsEntity) => {
+            const { id } = product;
+            return (
+              <div key={id} className="flex w-full">
+                <ProductRow pageData={pages[id]?.page} product={product} setState={setState} />
+              </div>
+            );
+          })
       ) : (
         <p>No products found</p>
       )}

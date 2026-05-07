@@ -5,8 +5,14 @@ import { TransitionRouter } from 'next-transition-router';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
+const LEAVE_DURATION = 0.28;
+const ENTER_DURATION = 0.35;
+
 /**
- * Transition provider — основной провайдер переходов 'stage'
+ * Transition provider — основной провайдер переходов 'stage'.
+ * Лист уходит фейдом + лёгким lift-up, затем сразу скроллится вверх (уже
+ * невидимым), новый — вплывает снизу. Без этого navigation-свапа выглядит
+ * как «прыжок наверх и резкая смена».
  */
 export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -15,50 +21,50 @@ export default function TransitionProvider({ children }: { children: ReactNode }
     <TransitionRouter
       auto={true}
       leave={next => {
-        if (!ref.current) {
+        const el = ref.current;
+        if (!el) {
+          next();
           return;
         }
         const tl = gsap
-          .timeline({
-            duration: 0.85,
+          .timeline()
+          .to(el, {
+            opacity: 0,
+            y: -8,
+            duration: LEAVE_DURATION,
+            ease: 'power2.in',
           })
-          // .to(ref.current, {
-          //   height: ref.current.clientHeight,
-          //   duration: 0.5,
-          // })
-          .set(window, {
-            scrollTo: 0,
-          })
-          .call(next, undefined, 0.85);
+          .set(window, { scrollTo: 0 })
+          .call(next);
         return () => {
           tl.kill();
         };
       }}
       enter={next => {
-        if (!ref.current) {
+        const el = ref.current;
+        if (!el) {
+          next();
           return;
         }
-
         const tl = gsap
           .timeline()
-          .set(ref.current, {
-            height: ref.current.clientHeight,
-          })
-          .to(ref.current, {
-            height: 'auto',
-            duration: 0.85,
-          })
-          .call(next, undefined, 0.85);
-
+          .fromTo(
+            el,
+            { opacity: 0, y: 12 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: ENTER_DURATION,
+              ease: 'power2.out',
+            },
+          )
+          .call(next);
         return () => {
           tl.kill();
         };
       }}
     >
-      <div
-        ref={ref}
-        className="relative flex flex-col grow justify-between transition-transform duration-500"
-      >
+      <div ref={ref} className="relative flex flex-col grow justify-between">
         {children}
       </div>
     </TransitionRouter>

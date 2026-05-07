@@ -45,7 +45,7 @@ const AuthProviderSelect = ({
       return;
     }
     if (p.identifier === 'google') {
-      if (!startGoogleOAuth()) {
+      if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
         // Google OAuth ещё не сконфигурирован (см. MISMATCH-LOG.md §C.8.1).
         // Падаем в email, чтобы у пользователя был рабочий путь логина.
         setComponent('SignInForm');

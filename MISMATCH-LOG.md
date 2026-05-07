@@ -689,9 +689,11 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
 
 #### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины
 
-В админке провайдер уже есть (`identifier: "google"`, `type: "oauth"`, `isActive: true`, `userGroupIdentifier: "guest"`), но:
+Code-side всё подключено (см. ниже), осталась настройка снаружи. Маршрут callback'а — `/auth/callback/google` (см. [app/auth/callback/google/page.tsx](app/auth/callback/google/page.tsx) и [app/auth/callback/google/GoogleAuthCallbackInner.tsx](app/auth/callback/google/GoogleAuthCallbackInner.tsx)); инициатор — [components/forms/authProviders.ts](components/forms/authProviders.ts) `startGoogleOAuth()`. Оба URI выровнены, обмен `code → token` идёт через server-only [app/api/server/users/oauthLogIn.ts](app/api/server/users/oauthLogIn.ts).
 
-- **`config.oauthAuthUrl`** — сейчас **`null`**. Заполнить значением `https://accounts.google.com/o/oauth2/v2/auth` (или оставить null — тогда client редиректит на этот URL хардкодом из [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx)).
+Что нужно настроить вручную:
+
+- **OneEntry admin → Auth Providers → `google`.** Убедиться, что провайдер `identifier: "google"`, `type: "oauth"`, `isActive: true`. `config.oauthAuthUrl` можно оставить `null` — клиент использует хардкод `https://accounts.google.com/o/oauth2/v2/auth` из [authProviders.ts](components/forms/authProviders.ts).
 - **Google Cloud Console → OAuth 2.0 Client IDs.** Создать клиента, добавить в Authorized redirect URIs:
   - `http://localhost:3000/auth/callback/google` (dev)
   - `https://<vercel-host>/auth/callback/google` (prod)
@@ -702,7 +704,7 @@ POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
   GOOGLE_CLIENT_SECRET=<client_secret>
   ```
 
-  Используется в [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx) (редирект на Google) и [oauthLogIn.ts](app/api/server/users/oauthLogIn.ts) (server-only обмен code → token через `api.AuthProvider.oauth('google', ...)`). Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму).
+  Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму) — см. [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx).
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 

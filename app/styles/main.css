@@ -7,6 +7,40 @@
   }
 }
 
+/* Drill-down переходы между экранами в `ProfilePopup` (паттерн CartWizard).
+   Forward (menu → orders/etc) — новый экран въезжает справа; back — меню
+   въезжает слева. Лёгкая opacity-fade сглаживает мгновенный размонтаж
+   предыдущего экрана (без AnimatePresence). */
+@keyframes profile-slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(8%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes profile-slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-8%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.profile-screen-enter-right {
+  animation: profile-slide-in-right 0.28s ease-out both;
+}
+
+.profile-screen-enter-left {
+  animation: profile-slide-in-left 0.28s ease-out both;
+}
+
 input[type="radio"] {
   display: none;
 }

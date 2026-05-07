@@ -177,7 +177,7 @@ const DateTimePickerSheet = ({
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} aria-hidden="true" />
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-7.25 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
         {onClose ? (
           <div className="absolute right-5 top-5 md:right-10 md:top-10">
             <ClosePopupButton onClose={onClose} ariaLabel="Close date and time picker" />

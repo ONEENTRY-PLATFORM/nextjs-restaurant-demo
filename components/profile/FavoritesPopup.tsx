@@ -47,7 +47,8 @@ const FavoritesPopup = (): JSX.Element => {
   const sheetRef = useRef<HTMLDivElement | null>(null);
   // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не перебивался `yPercent`-tween-ом.
   useSwipeToClose(sheetRef, () => setOpen(false));
-  const products = (data ?? []) as IProductsEntity[];
+  const favoriteIdSet = new Set(favoriteIds);
+  const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
   const addToCartLabel = t('add_to_cart', 'Add to cart');
 
   return (

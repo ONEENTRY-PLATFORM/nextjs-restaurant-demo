@@ -132,41 +132,6 @@
 [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx)
 [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx)
 
-### B.6. Резервация (`service_table.html`, `service_date.html`, `service_time.html` ↔ `app/reservation`)
-
-- 🌐 Live: <http://localhost:3000/reservation>
-- 📄 Static:
-  - main form:
-  [service_table.html](static-html/service_table.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_table.html>
-
-  - date picker:
-  [service_date.html](static-html/service_date.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_date.html>
-
-  - time picker:
-  [service_time.html](static-html/service_time.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_time.html>
-
-  - sign-up:
-  [service_Sign_up.html](static-html/service_Sign_up.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_Sign_up.html>
-
-  - reservation about:
-  [mob_about_reservation.html](static-html/mob_about_reservation.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/mob_about_reservation.html>
-
-- 📁 Файлы проекта:
-[app/reservation/page.tsx](app/reservation/page.tsx)
-[components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx)
-[components/reservation/RestaurantSelect.tsx](components/reservation/RestaurantSelect.tsx)
-[components/ui/DateTimePickerSheet.tsx](components/ui/DateTimePickerSheet.tsx)
-
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-| B.6.5 | `bg-[url('/images/picture/bg_cart.png')] ... md:bg-none` — на md+ фон убирается. Сверить со static-html — там градиентная подложка может быть на всех брейкпоинтах. Заглянуть в `service_table.html` | [app/reservation/page.tsx:63](app/reservation/page.tsx#L63) | — (требует визуала) |
-| B.6.6 | `RestaurantSelect.label` берётся из `address` или `localizeInfos.title`. В `static-html/service_table.html` дропдаун ресторана показывает скорее всего читаемое название («Restaurant 1» / название локации), а не адрес. Сейчас приоритет адреса — может выглядеть избыточно длинной строкой | [app/reservation/page.tsx:34-42](app/reservation/page.tsx#L34) | P2 |
-
 ### B.7. Поддержка / Service (`service_support.html`, `service.html` ↔ `app/support`, `app/service`)
 
 #### B.7a. ServicePage (`service.html`)

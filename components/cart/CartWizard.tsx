@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import {
   type CheckoutStep,
   goBackStep,
+  resetCheckout,
   selectCheckoutStep,
   setStep,
 } from '@/app/store/reducers/OrderSlice';
@@ -78,6 +79,17 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const step = useAppSelector(selectCheckoutStep);
   const STEP_TITLES = buildStepTitles(t);
   const isMdUp = useIsMdUp();
+
+  // Терминальные шаги (success/error) — одноразовые. Если они пережили
+  // навигацию (через persisted store), сбрасываем wizard на `cart` при
+  // следующем монтировании страницы корзины — иначе `/cart` навсегда показывает
+  // экран подтверждения предыдущего заказа.
+  useEffect(() => {
+    if (step === 'success' || step === 'error') {
+      dispatch(resetCheckout());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isCartStep = step === 'cart';
   // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп), либо в попапе (мобила).

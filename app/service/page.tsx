@@ -11,7 +11,7 @@ type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> |
 
 /**
  * Точка входа сервиса — лендинг с логотипом и двумя основными CTA:
- * «Food delivery» (→ `/shop`) и «Book a table» (→ `/reservation`).
+ * «Food delivery» (→ `/shop`) и «Book a table» (→ `/restaurants`).
  *
  * Все тексты и изображения — из атрибутов CMS-страницы `services`:
  * `service_logo`, `service_bg_image`,

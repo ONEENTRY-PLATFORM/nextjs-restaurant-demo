@@ -26,7 +26,8 @@ const FavoritesGrid = (): JSX.Element => {
     { skip: !favoriteIds || favoriteIds.length === 0 }
   );
 
-  const products = (data ?? []) as IProductsEntity[];
+  const favoriteIdSet = new Set(favoriteIds);
+  const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
 
   if (isLoading) {
     return <Loader />;

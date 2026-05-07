@@ -9,19 +9,20 @@ import {
   getProductsPriceRange,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
-import BurgerIcon from '@/components/icons/burger';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
-import PhoneIcon from '@/components/icons/phone.svg';
 import CategoryFilter from '@/components/layout/filter/CategoryFilter';
 import FilterBottom from '@/components/layout/filter/FilterBottom';
+import SupportPopup from '@/components/support/SupportPopup';
 
 import CategoriesScroller, { type PreferenceOption } from './CategoriesScroller';
 import CategoryButton from './CategoryButton';
 import FilterButton from './FilterButton';
 import Logo from './Logo';
+import MobileBurgerButton from './MobileBurgerButton';
 import NavGroup from './nav/NavGroup';
 import SearchBar from './search/SearchBar';
 import SearchFallback from './search/SearchFallback';
+import SupportButton from './SupportButton';
 
 /**
  * Секция Header
@@ -30,18 +31,20 @@ import SearchFallback from './search/SearchFallback';
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
-  // Телефон поддержки для иконки-звонилки в мобильной шапке (`support_phone`
-  // на странице `support`). Если CMS-значение отсутствует — кнопка деградирует
-  // в visually-disabled (без ссылки), чтобы не вести в никуда.
+  // Контакты поддержки для попапа `SupportPopup` (порт `m_support.html`),
+  // открываемого по клику на иконку телефона в мобильной шапке. Если оба
+  // контакта пусты — кнопка деградирует в visually-disabled.
   const { page: supportPage } = await getPageByUrl('support');
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
+  const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as
+    | string
+    | undefined;
 
   const populatedPages = ((pages ?? []) as IPagesEntity[])
     .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
-  // Preferences-скроллер — list-type атрибут на set `dish`; каждый
-  // listTitle становится чипом со ссылкой на `/shop?preferences=<value>`.
+  // Preferences-скроллер.
   const preferencesAttr = await getSingleAttributeByMarkerSet({
     setMarker: 'dish',
     attributeMarker: 'preferences',
@@ -56,8 +59,7 @@ const Header = async (): Promise<JSX.Element> => {
         }))
       : [];
 
-  // Минимальная и максимальная цена реальных товаров каталога — нужна
-  // FilterBottom-у, чтобы чипы Price не были захардкожены.
+  // Минимальная и максимальная цена реальных товаров каталога
   const priceRange = await getProductsPriceRange();
 
   return (
@@ -89,25 +91,11 @@ const Header = async (): Promise<JSX.Element> => {
           {/* header_mobile */}
           <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
-              {supportPhone ? (
-                <a
-                  className="w-4.5 h-4.5"
-                  href={'tel:' + supportPhone.replace(/\s+/g, '')}
-                  aria-label={'Call ' + supportPhone}
-                >
-                  <PhoneIcon title="call" />
-                </a>
-              ) : (
-                <span className="w-4.5 h-4.5 opacity-60" aria-hidden="true">
-                  <PhoneIcon />
-                </span>
-              )}
+              <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
               <a href="/" aria-label="Home">
                 <LogoMobileIcon title="logo" />
               </a>
-              <div className="cursor-pointer group_stroke">
-                <BurgerIcon />
-              </div>
+              <MobileBurgerButton />
             </div>
 
             <div className="relative max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
@@ -133,6 +121,8 @@ const Header = async (): Promise<JSX.Element> => {
       <FilterBottom preferences={preferenceOptions} priceRange={priceRange} />
       {/* Category Filter */}
       <CategoryFilter pages={populatedPages} />
+      {/* Support Popup (mobile-only, открывается из SupportButton) */}
+      <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />
     </div>
   );
 };

@@ -17,11 +17,11 @@ type Category = {
 };
 
 // Завершающий CTA — не является категорией меню, оставлен захардкоженным,
-// потому что живёт вне дерева страницы `menu` (ссылается на /reservation).
+// потому что живёт вне дерева страницы `menu` (ссылается на /restaurants).
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
-  href: '/reservation',
+  href: '/restaurants',
 };
 
 /**

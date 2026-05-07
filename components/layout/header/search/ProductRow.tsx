@@ -38,7 +38,7 @@ const ProductRow = ({
   return (
     <Link
       prefetch={false}
-      href={`/shop/${pageData?.pageUrl || ''}`}
+      href={`/shop/product/${product.id}`}
       onClick={() => onApplyHandle()}
       className="flex w-full py-2 text-paper hover:text-brand"
     >

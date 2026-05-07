@@ -128,6 +128,17 @@ const orderReducer = createSlice({
       state.step = previous ?? 'cart';
       delete state.stepError;
     },
+    /**
+     * Полный сброс wizard-а в начальное состояние (`cart`, пустой стек, без ошибки).
+     * Вызывается после терминальных шагов (`success`/`error`), чтобы они не
+     * пережили переход на другую страницу из-за персистентности Redux store —
+     * иначе при следующем заходе на `/cart` рендерится `StepResult` поверх корзины.
+     */
+    resetCheckout(state) {
+      state.step = 'cart';
+      state.stepHistory = [];
+      delete state.stepError;
+    },
     setStepError(state, action: PayloadAction<string>) {
       if (state.step !== 'error') {
         state.stepHistory.push(state.step);
@@ -151,6 +162,7 @@ export const {
   addOrderCurrency,
   setStep,
   goBackStep,
+  resetCheckout,
   setStepError,
   setLastOrderId,
   setAppliedCoupon,

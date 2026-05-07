@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import {
   removeOrder,
+  resetCheckout,
   selectCheckoutStepError,
   selectLastOrderId,
   setStep,
@@ -100,7 +101,10 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
         {/* CTA */}
         <Link
           href="/profile/orders"
-          onClick={() => dispatch(removeOrder())}
+          onClick={() => {
+            dispatch(removeOrder());
+            dispatch(resetCheckout());
+          }}
           className="cart_btn mt-4"
         >
           View my orders

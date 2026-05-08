@@ -18,12 +18,11 @@ import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-
-import FavoritesPopupAnimations from './animations/FavoritesPopupAnimations';
 
 /**
  * Попап избранного — порт `static-html/pk_favorites.html` (строки 361–470).
@@ -52,7 +51,7 @@ const FavoritesPopup = (): JSX.Element => {
   const addToCartLabel = t('add_to_cart', 'Add to cart');
 
   return (
-    <FavoritesPopupAnimations>
+    <DrawerAnimations component="FavoritesPopup">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -118,7 +117,7 @@ const FavoritesPopup = (): JSX.Element => {
         )}
       </div>
       <ModalBackdrop />
-    </FavoritesPopupAnimations>
+    </DrawerAnimations>
   );
 };
 

@@ -7,8 +7,7 @@ import { useContext } from 'react';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
-
-import SupportPopupAnimations from './animations/SupportPopupAnimations';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 
 /**
  * Попап поддержки — мобильная версия.
@@ -33,10 +32,10 @@ const SupportPopup = ({
   const telHref = phone ? 'tel:' + phone.replace(/\s+/g, '') : undefined;
 
   return (
-    <SupportPopupAnimations>
+    <DrawerAnimations component="SupportPopup" wrapperClassName="md:hidden">
       <div
         id="modalBody"
-        className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-[rgba(76,77,86,0.8)] backdrop-blur-[10px] pt-5 px-5 pb-25"
+        className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-ink/80 backdrop-blur-[10px] pt-5 px-5 pb-25 shadow-xl"
       >
         <div className="mx-auto max-w-88.75">
           <div className="flex justify-center">
@@ -80,7 +79,7 @@ const SupportPopup = ({
         </div>
       </div>
       <ModalBackdrop />
-    </SupportPopupAnimations>
+    </DrawerAnimations>
   );
 };
 

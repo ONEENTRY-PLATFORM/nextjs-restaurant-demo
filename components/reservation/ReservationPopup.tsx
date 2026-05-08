@@ -10,6 +10,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
@@ -70,21 +71,13 @@ const buildInitialValuesFromOrder = (
  */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, action, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
+  const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ReservationPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  useEffect(() => {
-    if (isOpen && transition === 'close') {
-      setOpen(false);
-      setTransition('');
-    }
-  }, [isOpen, transition, setOpen, setTransition]);
-
-  const close = () => setOpen(false);
+  const close = () => setTransition('close');
 
   const { data: form, isLoading: isFormLoading } = useGetFormByMarkerQuery(
     { marker: 'booking_order' },
@@ -148,12 +141,10 @@ const ReservationPopup = (): JSX.Element => {
     return action ? { restaurant: action } : undefined;
   }, [action, editing, resume, restaurants]);
 
-  if (!isOpen) return <></>;
-
   const isLoading = isFormLoading || isPagesLoading;
 
   return (
-    <>
+    <DrawerAnimations component="ReservationPopup">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -201,7 +192,7 @@ const ReservationPopup = (): JSX.Element => {
         )}
       </div>
       <ModalBackdrop />
-    </>
+    </DrawerAnimations>
   );
 };
 

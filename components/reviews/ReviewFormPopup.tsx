@@ -1,12 +1,13 @@
 'use client';
 
 import type { JSX } from 'react';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useRef } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
@@ -22,31 +23,18 @@ import ReviewForm from './ReviewForm';
  */
 const ReviewFormPopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, action, transition, setOpen, setTransition } =
-    useContext(OpenDrawerContext);
-  const isOpen = open && component === 'ReviewFormPopup';
+  const { action, setOpen, setTransition } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // Без своего GSAP-Animations wrapper'а реагируем на `setTransition('close')`
-  // от `ModalBackdrop` напрямую — иначе backdrop-клик не закрывал бы попап.
-  useEffect(() => {
-    if (isOpen && transition === 'close') {
-      setOpen(false);
-      setTransition('');
-    }
-  }, [isOpen, transition, setOpen, setTransition]);
-
-  if (!isOpen) return <></>;
-
   const productId = Number(action);
   if (!Number.isFinite(productId) || productId <= 0) return <></>;
 
-  const close = () => setOpen(false);
+  const close = () => setTransition('close');
 
   return (
-    <>
+    <DrawerAnimations component="ReviewFormPopup">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -72,7 +60,7 @@ const ReviewFormPopup = (): JSX.Element => {
         </div>
       </div>
       <ModalBackdrop />
-    </>
+    </DrawerAnimations>
   );
 };
 

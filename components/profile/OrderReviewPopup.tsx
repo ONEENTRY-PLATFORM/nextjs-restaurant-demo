@@ -19,6 +19,7 @@ import {
   useOrderReviewTarget,
 } from '@/components/profile/orderReviewStore';
 import StarRating from '@/components/reviews/StarRating';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
@@ -344,7 +345,7 @@ const ReviewableItem = ({
  */
 const OrderReviewPopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const { isAuth, user } = useContext(AuthContext);
   const { order, productsById } = useOrderReviewTarget();
   const isOpen = open && component === 'OrderReviewPopup';
@@ -358,15 +359,6 @@ const OrderReviewPopup = (): JSX.Element => {
   const [prefilling, setPrefilling] = useState(false);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
-
-  // Backdrop-клик зовёт `setTransition('close')` — закрываем сами,
-  // как в `ReviewFormPopup`.
-  useEffect(() => {
-    if (isOpen && transition === 'close') {
-      setOpen(false);
-      setTransition('');
-    }
-  }, [isOpen, transition, setOpen, setTransition]);
 
   // Чистим target после закрытия и сбрасываем prefilled-кэш.
   useEffect(() => {
@@ -415,10 +407,9 @@ const OrderReviewPopup = (): JSX.Element => {
     };
   }, [isOpen, orderId, userId, productIds]);
 
-  if (!isOpen) return <></>;
   if (!order) return <></>;
 
-  const close = (): void => setOpen(false);
+  const close = (): void => setTransition('close');
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const statusLabel =
     (order.statusLocalizeInfos as { title?: string } | undefined)?.title ??
@@ -426,7 +417,7 @@ const OrderReviewPopup = (): JSX.Element => {
     '';
 
   return (
-    <>
+    <DrawerAnimations component="OrderReviewPopup">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -481,7 +472,7 @@ const OrderReviewPopup = (): JSX.Element => {
         )}
       </div>
       <ModalBackdrop />
-    </>
+    </DrawerAnimations>
   );
 };
 

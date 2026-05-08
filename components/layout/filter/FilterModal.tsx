@@ -4,11 +4,11 @@ import type { JSX } from 'react';
 import { Suspense, useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import Loader from '@/components/shared/Loader';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import ModalBackdrop from '../modal/components/ModalBackdrop';
-import FilterModalAnimations from './animations/FilterModalAnimations';
 import FilterHeader from './components/header/FilterHeader';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import FiltersForm from './FiltersForm';
@@ -24,7 +24,7 @@ const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   useSwipeToClose(sheetRef, () => setOpen(false));
 
   return (
-    <FilterModalAnimations>
+    <DrawerAnimations component="FilterForm" variant="slide-right">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -36,7 +36,7 @@ const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
         </Suspense>
       </div>
       <ModalBackdrop />
-    </FilterModalAnimations>
+    </DrawerAnimations>
   );
 };
 

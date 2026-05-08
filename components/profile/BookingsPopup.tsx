@@ -1,11 +1,12 @@
 'use client';
 
 import type { JSX } from 'react';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
@@ -25,26 +26,15 @@ import BookingsContent from './BookingsContent';
  * (паттерн `CartWizard`).
  */
 const BookingsPopup = (): JSX.Element => {
-  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
-  const isOpen = open && component === 'BookingsPopup';
+  const { setOpen, setTransition } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // Бекдроп шлёт `setTransition('close')` — реагируем на это и закрываем.
-  useEffect(() => {
-    if (isOpen && transition === 'close') {
-      setOpen(false);
-      setTransition('');
-    }
-  }, [isOpen, transition, setOpen, setTransition]);
-
-  if (!isOpen) return <></>;
-
-  const close = () => setOpen(false);
+  const close = () => setTransition('close');
 
   return (
-    <>
+    <DrawerAnimations component="BookingsPopup">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -69,7 +59,7 @@ const BookingsPopup = (): JSX.Element => {
         </div>
       </div>
       <ModalBackdrop />
-    </>
+    </DrawerAnimations>
   );
 };
 

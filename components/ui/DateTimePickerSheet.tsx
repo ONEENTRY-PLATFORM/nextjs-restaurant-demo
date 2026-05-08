@@ -1,7 +1,9 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
 import type { JSX } from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
@@ -114,6 +116,14 @@ type DateTimePickerSheetProps = {
  *     закрывает попап через `onApply(date, time)`. В шапке — стрелка назад,
  *     возвращающая к шагу 1 (выбранный день и время сохраняются).
  *
+ * Анимации зеркалят паттерн `DrawerAnimations` (мобила: slide-up снизу;
+ * десктоп: scale + fade), но GSAP-таймлайн локальный — попап не управляется
+ * через `OpenDrawerContext`, его mount/unmount контролирует родитель
+ * (ReservationForm / CalendarForm / StepPayment) через свой `pickerOpen`-флаг.
+ * При закрытии играем таймлайн в реверсе и только по `onReverseComplete`
+ * зовём `onClose`/`onApply` родителя — чтобы exit-анимация успевала
+ * проиграться до размонтирования.
+ *
  * См. вёрстку `static-html/service_date.html` (шаг 1) и
  * `static-html/service_time.html` (шаг 2) — оригинал тоже был двухэкранный.
  */
@@ -139,6 +149,64 @@ const DateTimePickerSheet = ({
   const [selectedDate, setSelectedDate] = useState<string>(date ?? '');
   const [selectedTime, setSelectedTime] = useState<string>(time ?? '');
   const [stepName, setStepName] = useState<'date' | 'time'>('date');
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+
+  useGSAP(() => {
+    const modalBg = wrapperRef.current?.querySelector('#modalBg') ?? null;
+    const modalBody = wrapperRef.current?.querySelector('#modalBody') ?? null;
+    const isMobile =
+      typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+
+    gsap.set(modalBg, { autoAlpha: 0 });
+    if (isMobile) {
+      gsap.set(modalBody, { yPercent: 100 });
+    } else {
+      gsap.set(modalBody, { autoAlpha: 0, scale: 0.85 });
+    }
+
+    const tl = gsap.timeline({ paused: true });
+    tl.to(modalBg, {
+      autoAlpha: 1,
+      backdropFilter: 'blur(10px)',
+      duration: 0.5,
+    }).to(
+      modalBody,
+      isMobile
+        ? { autoAlpha: 1, yPercent: 0, duration: 0.5 }
+        : { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'back.out(1.4)' },
+      '-=0.25'
+    );
+
+    tlRef.current = tl;
+    tl.play();
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
+  // Закрываем попап с exit-анимацией: реверсим таймлайн, и только в
+  // `onReverseComplete` зовём колбэк родителя — он размонтирует компонент.
+  // Если по какой-то причине таймлайна нет — закрываемся синхронно.
+  const animateAndRun = (cb: () => void): void => {
+    const tl = tlRef.current;
+    if (!tl) {
+      cb();
+      return;
+    }
+    tl.eventCallback('onReverseComplete', cb);
+    tl.reverse(2);
+  };
+
+  const handleClose = (): void => {
+    if (!onClose) return;
+    animateAndRun(onClose);
+  };
+  const handleApply = (): void => {
+    animateAndRun(() => onApply(selectedDate, selectedTime));
+  };
 
   const grid = useMemo(() => buildMonthGrid(year, month), [year, month]);
 
@@ -178,9 +246,17 @@ const DateTimePickerSheet = ({
   const canApply = !!selectedDate && !!selectedTime;
 
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} aria-hidden="true" />
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10">
+    <div ref={wrapperRef} className="z-500 fixed inset-0 flex h-screen w-full">
+      <div
+        id="modalBg"
+        className="fixed inset-0 size-full min-w-full min-h-full bg-black/50"
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+      <div
+        id="modalBody"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+      >
         <div className="mb-5 flex items-center justify-between gap-5">
           {isDateStep ? (
             <span className="h-5 w-6.75" aria-hidden="true" />
@@ -198,7 +274,7 @@ const DateTimePickerSheet = ({
             {isDateStep ? dateTitle : timeTitle}
           </h2>
           {onClose ? (
-            <ClosePopupButton onClose={onClose} ariaLabel="Close date and time picker" />
+            <ClosePopupButton onClose={handleClose} ariaLabel="Close date and time picker" />
           ) : (
             <span className="h-5 w-5" aria-hidden="true" />
           )}
@@ -293,7 +369,7 @@ const DateTimePickerSheet = ({
             <button
               type="button"
               disabled={!canApply}
-              onClick={() => onApply(selectedDate, selectedTime)}
+              onClick={handleApply}
               className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
             >
               {applyText}
@@ -301,7 +377,7 @@ const DateTimePickerSheet = ({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

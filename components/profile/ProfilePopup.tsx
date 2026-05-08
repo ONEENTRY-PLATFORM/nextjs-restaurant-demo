@@ -12,10 +12,10 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-import ProfilePopupAnimations from './animations/ProfilePopupAnimations';
 import BookingsContent from './BookingsContent';
 import FavoritesGrid from './FavoritesGrid';
 import OrdersList from './OrdersList';
@@ -223,7 +223,7 @@ const ProfilePopup = (): JSX.Element => {
   const activeScreen = isMdUp ? 'menu' : screen;
 
   return (
-    <ProfilePopupAnimations>
+    <DrawerAnimations component="ProfilePopup" variant="slide-up">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -268,7 +268,7 @@ const ProfilePopup = (): JSX.Element => {
         </div>
       </div>
       <ModalBackdrop />
-    </ProfilePopupAnimations>
+    </DrawerAnimations>
   );
 };
 

@@ -28,10 +28,9 @@ import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
+import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-
-import CartPopupAnimations from './animations/CartPopupAnimations';
 
 // id продукта-доставки. Соответствует серверной выборке в `app/cart/page.tsx` —
 // нужен для StepPayment / StepOrder (delivery price в `total`).
@@ -127,7 +126,7 @@ const CartPopup = (): JSX.Element => {
   };
 
   return (
-    <CartPopupAnimations>
+    <DrawerAnimations component="CartPopup" variant="slide-up">
       <div
         id="modalBody"
         ref={sheetRef}
@@ -188,7 +187,7 @@ const CartPopup = (): JSX.Element => {
         </div>
       </div>
       <ModalBackdrop />
-    </CartPopupAnimations>
+    </DrawerAnimations>
   );
 };
 

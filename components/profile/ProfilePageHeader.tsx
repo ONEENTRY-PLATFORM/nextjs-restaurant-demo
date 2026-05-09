@@ -3,41 +3,60 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { JSX } from 'react';
+import { Fragment } from 'react';
+
+import HomeIcon from '@/components/icons/home';
 
 /**
  * Шапка страниц `/profile/**` — заменяет хардкод `<h1>My Account</h1>`
  * в `app/profile/layout.tsx`. Рендерит breadcrumbs + заголовок текущей
  * страницы. Маппинг `pathname → метаданные` лежит в одном месте, чтобы
- * табов в дизайне нет, но навигация наверх по иерархии (Profile →
+ * табов в дизайне нет, но навигация наверх по иерархии (Home → Profile →
  * Orders / Favorites) была доступна через хлебные крошки.
  *
- * Если pathname не совпадает ни с одним известным маршрутом — fallback
- * `My Account` без крошек, чтобы страница всё равно имела заголовок.
+ * Стиль крошек повторяет десктопный breadcrumb из `CartWizard`: иконка
+ * домой → Profile → текущая страница.
  */
-type Meta = { title: string; breadcrumb?: string };
+type Crumb = { label: string; href: string };
+type Meta = { title: string; trail?: Crumb[] };
+
+const PROFILE_CRUMB: Crumb = { label: 'Profile', href: '/profile' };
 
 const PAGE_META: Record<string, Meta> = {
   '/profile': { title: 'Personal' },
-  '/profile/orders': { title: 'Orders', breadcrumb: 'Profile' },
-  '/profile/favorites': { title: 'Favorites', breadcrumb: 'Profile' },
-  '/profile/bookings': { title: 'Active reservation', breadcrumb: 'Profile' },
+  '/profile/orders': { title: 'Orders', trail: [PROFILE_CRUMB] },
+  '/profile/favorites': { title: 'Favorites', trail: [PROFILE_CRUMB] },
+  '/profile/bookings': { title: 'Active reservation', trail: [PROFILE_CRUMB] },
 };
 
 const ProfilePageHeader = (): JSX.Element => {
   const pathname = usePathname();
   const meta: Meta = PAGE_META[pathname] ?? { title: 'My Account' };
+  const trail = meta.trail ?? [];
 
   return (
     <div className="mb-6">
-      {meta.breadcrumb ? (
-        <p className="mb-2 text-base text-paper/70">
-          <Link href="/profile" className="hover:text-brand">
-            {meta.breadcrumb}
-          </Link>
-          <span> / </span>
+      <div className="mb-2 flex items-center gap-2.5 text-base text-muted-text">
+        <Link
+          href="/"
+          aria-label="Home"
+          className="group inline-flex h-4 w-4 items-center justify-center"
+        >
+          <HomeIcon />
+        </Link>
+        <p>
+          {trail.map((item, i) => (
+            <Fragment key={item.href}>
+              {i > 0 && ' / '}
+              <Link href={item.href} className="hover:text-brand">
+                {item.label}
+              </Link>
+            </Fragment>
+          ))}
+          {trail.length > 0 && ' / '}
           <span className="text-paper">{meta.title}</span>
         </p>
-      ) : null}
+      </div>
       <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
         {meta.title}
       </h1>

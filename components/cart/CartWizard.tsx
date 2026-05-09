@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
-import { useEffect, useSyncExternalStore } from 'react';
+import { Fragment, useEffect, useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -18,6 +18,7 @@ import {
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import BurgerOrangeIcon from '@/components/icons/burger-orange';
+import HomeIcon from '@/components/icons/home';
 import CartPage from '@/components/layout/cart';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 
@@ -39,6 +40,15 @@ const buildStepTitles = (
   success: 'Success',
   error: 'Error',
 });
+
+// Канонический порядок шагов в чекауте
+const CHECKOUT_FLOW: CheckoutStep[] = ['cart', 'order', 'payment'];
+
+const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
+  const idx = CHECKOUT_FLOW.indexOf(current);
+  if (idx >= 0) return CHECKOUT_FLOW.slice(0, idx + 1);
+  return [...CHECKOUT_FLOW, current];
+};
 
 // Отслеживает брейкпоинт md+ (768px) на клиенте, чтобы рендерить тело шага ровно в одном месте
 const MD_QUERY = '(min-width: 768px)';
@@ -62,14 +72,6 @@ const useIsMdUp = (): boolean =>
  * (`OpenDrawerContext`), запускаемый из `CartPage.onApply`. Wizard сам signin
  * не рендерит — после успешного логина `CartPage` авто-переходит на `order`.
  *
- * Правила рендера (по десктоп-вариантам `pk_*.html` из static-html):
- * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа.
- * - Прочие шаги (`order`, `payment`, …):
- *   - Десктоп (md+): рендерятся ИНЛАЙН на странице корзины, замещая
- *     товары корзины в левой колонке (паттерн `pk_order.html`). Хлебные крошки
- *     становятся "Cart / <Step>" с кликабельным "Cart" для возврата.
- *   - Мобила: фуллскрин-попап (`cart_*.html`).
- *
  * @param   {CartWizardProps} props - Пропсы wizard.
  * @returns {JSX.Element}           JSX wizard для текущего шага.
  */
@@ -92,21 +94,15 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   }, []);
 
   const isCartStep = step === 'cart';
-  // Тело шага рендерится ОДИН РАЗ — либо инлайн (десктоп), либо в попапе (мобила).
+  const breadcrumbPath = buildBreadcrumbPath(step);
   const showInline = !isCartStep && isMdUp;
   const showPopup = !isCartStep && !isMdUp;
 
   // Возврат с inline-шага (order/payment/…) на шаг корзины через breadcrumb.
-  // 1) reverse-анимация строк текущего шага → 2) `setStep('cart')` → 3) forward
-  // entrance на карточках корзины. CartPage не перемонтируется (она была
-  // `md:hidden`), поэтому ProductAnimations.useGSAP не запускается заново —
-  // приходится вручную проигрывать вход.
   const handleBackToCart = (): void => {
     const orderRows = document.querySelectorAll('.step-order-row');
 
     const replayCartEntrance = (): void => {
-      // Дожидаемся next frame, чтобы CSS-классы CartPage уже переключились
-      // (md:hidden → contents) перед стартом таймлайна.
       requestAnimationFrame(() => {
         const cards = document.querySelectorAll('.product-in-cart');
         const button = document.querySelectorAll('.cart-apply-btn');
@@ -142,6 +138,21 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   // Десктопные хлебные крошки
   const showStepInBreadcrumb = !isCartStep;
 
+  // Переход по клику в хлебных крошках.
+  const goToStep = (target: CheckoutStep): void => {
+    if (target === step) return;
+    if (target === 'cart') {
+      handleBackToCart();
+      return;
+    }
+    dispatch(setStep(target));
+  };
+
+  const handleBreadcrumbBack = (): void => {
+    const prev = breadcrumbPath[breadcrumbPath.length - 2];
+    if (prev) goToStep(prev);
+  };
+
   const stepBody = (
     <>
       {step === 'order' && <StepOrder />}
@@ -165,28 +176,48 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           </div>
         </div>
 
-        {/* Хлебные крошки только для десктопа — `pk_cart.html` показывает "Cart",
-            `pk_order.html` показывает "Cart / Order". Когда активен инлайн-шаг,
-            "Cart" — это кнопка, возвращающая на шаг корзины. */}
-        <p className="hidden pt-3.75 text-base text-muted-text md:block">
+        {/* Хлебные крошки только для десктопа. */}
+        <div className="hidden items-center gap-2.5 text-base text-muted-text md:flex">
           {showStepInBreadcrumb ? (
-            <>
-              <button type="button" onClick={handleBackToCart} className="hover:text-brand">
-                Cart
-              </button>
-              <span> / {STEP_TITLES[step]}</span>
-            </>
+            <button
+              type="button"
+              onClick={handleBreadcrumbBack}
+              aria-label="Back"
+              className="transition-colors hover:text-brand"
+            >
+              <ArrowBackIcon className="h-3.5 w-auto" />
+            </button>
           ) : (
-            'Cart'
+            <Link
+              href="/"
+              aria-label="Home"
+              className="group inline-flex h-4 w-4 items-center justify-center"
+            >
+              <HomeIcon />
+            </Link>
           )}
-        </p>
+          <p>
+            {breadcrumbPath.map((s, i) => {
+              const isLast = i === breadcrumbPath.length - 1;
+              return (
+                <Fragment key={s}>
+                  {i > 0 && ' / '}
+                  {isLast ? (
+                    <span>{STEP_TITLES[s]}</span>
+                  ) : (
+                    <button type="button" onClick={() => goToStep(s)} className="hover:text-brand">
+                      {STEP_TITLES[s]}
+                    </button>
+                  )}
+                </Fragment>
+              );
+            })}
+          </p>
+        </div>
 
         {/* Стак на мобиле, 2 колонки (50/50) на md+ */}
         <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13">
           <div className="flex flex-col gap-4 md:w-1/2">
-            {/* Товары корзины + APPLY — остаются примонтированными; скрыты на десктопе,
-                пока инлайн-шаг занимает этот слот, скрыты на мобиле
-                через внешний `cartWrapperClass`, когда активен попап. */}
             <div className={isCartStep ? 'contents' : 'md:hidden'}>
               <CartPage deliveryData={deliveryData} />
             </div>

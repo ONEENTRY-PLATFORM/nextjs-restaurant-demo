@@ -45,11 +45,6 @@ type UseCreateOrderApi = {
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
-  // Берём стейт через store.getState() в момент вызова, а не через
-  // useSelector на этапе рендера: вызывающий код (StepPayment.onNext)
-  // диспатчит addData(...) и сразу вызывает onConfirmOrder в том же тике —
-  // useSelector ещё не успел обновить замыкание, и мы бы прочитали
-  // formData из ПРЕДЫДУЩЕГО рендера (на первой попытке — пустой `[]`).
   const store = useAppStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -87,9 +82,6 @@ export const useCreateOrder = (): UseCreateOrderApi => {
           value: data.value,
         }));
 
-      // Собираем позиции из cart slice (в order slice они не заполняются на этапе выше).
-      // Если есть хоть один selection-флаг — фильтруем только выбранные;
-      // иначе включаем всё.
       const anySelectionFlag = cartProducts.some(p => typeof p.selected === 'boolean');
       const orderProducts: IOrderProductData[] = cartProducts
         .filter(p => (anySelectionFlag ? p.selected !== false : true))
@@ -104,9 +96,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         return { ok: false, error: message };
       }
 
-      // К каждому заказу добавляем услугу-доставку (productId 33). Чек создаётся
-      // только в визарде delivery_order, поэтому она применима всегда. Защищаемся
-      // от дубля, если по какой-то причине этот id уже попал из корзины.
+      // К каждому заказу добавляем услугу-доставку (productId 33).
       if (!orderProducts.some(p => p.productId === DELIVERY_PRODUCT_ID)) {
         orderProducts.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
       }
@@ -132,27 +122,62 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
       dispatch(setLastOrderId(id));
 
-      // Пытаемся открыть платёжную сессию для безналичных способов. Сбой здесь
-      // НЕ откатывает заказ — заказ уже существует в OneEntry; мы пробрасываем
-      // это вызывающей стороне, чтобы UI мог показать "оплачено offline" или CTA
-      // для повтора.
-      let paymentUrl: string | undefined;
-      if (createdPayment !== 'cash') {
-        try {
-          const session = await getApi().Payments.createSession(id, 'session');
-          if (!isError(session)) {
-            paymentUrl = (session as { paymentUrl?: string }).paymentUrl;
-          }
-        } catch {
-          // глушим — заказ уже создан
-        }
+      // Локальную корзину + draft заказа в Redux чистим ТОЛЬКО на успешных
+      // ветках (cash success или удачный Stripe paymentUrl). Если открыть
+      // payment-сессию не получилось — оставляем оба, чтобы пользователь не
+      // потерял свой выбор и мог повторить попытку. Заказ в OneEntry уже
+      // создан, повторное оформление сделает второй заказ — это меньшее зло
+      // по сравнению с полностью потерянной корзиной.
+      const clearCheckoutState = (): void => {
+        dispatch(removeAllProducts());
+        dispatch(removeOrder());
+      };
+
+      // Cash — оплата офлайн, paymentUrl не нужен.
+      if (createdPayment === 'cash') {
+        clearCheckoutState();
+        return { ok: true, orderId: id };
       }
 
-      // Чистим локальную корзину + заказ в работе теперь, когда он сохранён.
-      dispatch(removeAllProducts());
-      dispatch(removeOrder());
+      // Для всех остальных способов (Stripe и пр.) пытаемся открыть hosted
+      // checkout. В отличие от прошлой версии, ошибки НЕ глушатся: если
+      // session-эндпоинт вернёт IError или paymentUrl=null, мы возвращаем
+      // ok:false с сообщением — иначе wizard молча уходит на success без
+      // редиректа на Stripe (см. PaymentsApi.createSession и orders.md).
+      let session;
+      try {
+        session = await getApi().Payments.createSession(id, 'session');
+      } catch (e) {
+        const apiError = handleApiError('createSession', e);
+        return {
+          ok: false,
+          error: `Order #${id} created, but payment session failed: ${apiError.message}`,
+        };
+      }
 
-      return paymentUrl ? { ok: true, orderId: id, paymentUrl } : { ok: true, orderId: id };
+      if (isError(session)) {
+        const sErr = session as { message?: string; statusCode?: number };
+        const detail = sErr.message || `HTTP ${sErr.statusCode ?? '?'}`;
+        return {
+          ok: false,
+          error: `Order #${id} created, but payment session failed: ${detail}`,
+        };
+      }
+
+      const paymentUrl = (session as { paymentUrl?: string | null }).paymentUrl ?? undefined;
+      if (!paymentUrl) {
+        // Stripe возвращает paymentUrl сразу; null здесь означает либо
+        // несконфигурированный аккаунт, либо асинхронный провайдер (PayPal
+        // и т.п. — для него нужен polling getSessionByOrderId, мы пока не
+        // поддерживаем).
+        return {
+          ok: false,
+          error: `Order #${id} created, but payment provider returned no checkout URL.`,
+        };
+      }
+
+      clearCheckoutState();
+      return { ok: true, orderId: id, paymentUrl };
     } catch (e) {
       const apiError = handleApiError('onConfirmOrder', e);
       setError(apiError.message);

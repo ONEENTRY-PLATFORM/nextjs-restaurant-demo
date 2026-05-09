@@ -19,7 +19,7 @@ import ProfilePageHeader from '@/components/profile/ProfilePageHeader';
  */
 const ProfileLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (
-    <section className="section_layout">
+    <section className="section_layout pt-0">
       <ProfilePageHeader />
       {children}
     </section>

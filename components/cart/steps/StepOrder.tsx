@@ -68,8 +68,11 @@ const StepOrder = (): JSX.Element => {
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
-  const subtotalAfterDiscount = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal;
-  const total = subtotalAfterDiscount + deliveryPrice;
+  // Купон в OneEntry настроен «To Entire Order» — сервер считает скидку от
+  // (items + delivery), и `totalSumWithDiscount` уже включает доставку. Поэтому
+  // при наличии купона берём total напрямую от сервера, а не прибавляем
+  // deliveryPrice ещё раз — иначе доставка задваивается.
+  const total = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal + deliveryPrice;
 
   const handleApply = (): void => {
     if (appliedCoupon && appliedCoupon.code === promoCode.trim()) {
@@ -242,16 +245,16 @@ const StepOrder = (): JSX.Element => {
           <p>{t('subtotal_text', 'Subtotal')}:</p>
           <p>{UsePrice({ amount: subtotal })}</p>
         </div>
+        <div className="flex gap-1.25 text-brand">
+          <p>{t('delivery_text', 'Delivery')}:</p>
+          <p>{UsePrice({ amount: deliveryPrice })}</p>
+        </div>
         {discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
             <p>−{UsePrice({ amount: discount })}</p>
           </div>
         ) : null}
-        <div className="flex gap-1.25 text-brand">
-          <p>{t('delivery_text', 'Delivery')}:</p>
-          <p>{UsePrice({ amount: deliveryPrice })}</p>
-        </div>
         <div className="flex gap-1.25 text-white">
           <p>{t('total_amount_text', 'Total Amount')}:</p>
           <p>{UsePrice({ amount: total })}</p>

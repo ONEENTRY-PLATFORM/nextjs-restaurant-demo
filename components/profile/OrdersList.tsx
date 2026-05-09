@@ -72,13 +72,17 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 };
 
 /**
- * Считает subtotal / delivery / total для заказа.
+ * Считает subtotal / delivery / discount / total для заказа.
+ *
+ * `discount` — расхождение между суммой позиций (subtotal + delivery) и
+ * `totalSum` от сервера. Если применялся купон, `totalSum` уже
+ * содержит скидку — поэтому положительная разница и есть скидка.
  * @param   {IOrderByMarkerEntity} o - Сущность заказа.
- * @returns {{ subtotal: number; delivery: number; total: number }} Итоги.
+ * @returns {{ subtotal: number; delivery: number; discount: number; total: number }} Итоги.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
-): { subtotal: number; delivery: number; total: number } => {
+): { subtotal: number; delivery: number; discount: number; total: number } => {
   let subtotal = 0;
   let delivery = 0;
   for (const p of o.products) {
@@ -86,8 +90,10 @@ const computeTotals = (
     if (p.id === DELIVERY_PRODUCT_ID) delivery += line;
     else subtotal += line;
   }
-  const total = Number(o.totalSum) || subtotal + delivery;
-  return { subtotal, delivery, total };
+  const serverTotal = Number(o.totalSum);
+  const total = serverTotal || subtotal + delivery;
+  const discount = serverTotal > 0 ? Math.max(0, subtotal + delivery - serverTotal) : 0;
+  return { subtotal, delivery, discount, total };
 };
 
 /**
@@ -132,7 +138,7 @@ const OrderCard = ({
   const cartItems = useAppSelector(selectCartData);
   const favoritesIds = useAppSelector(selectFavoritesItems);
   const { user } = useContext(AuthContext);
-  const { subtotal, delivery, total } = computeTotals(order);
+  const { subtotal, delivery, discount, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const canReview = (order.statusIdentifier ?? '').toLowerCase() === 'delivered';
 
@@ -295,6 +301,12 @@ const OrderCard = ({
                   <p>{t('delivery_text', 'Delivery:')}</p>
                   <p>{UsePrice({ amount: delivery })}</p>
                 </div>
+                {discount > 0 ? (
+                  <div className="flex gap-1.25 text-brand">
+                    <p>Discount:</p>
+                    <p>−{UsePrice({ amount: discount })}</p>
+                  </div>
+                ) : null}
               </div>
               <div className="flex gap-3.75 text-xl font-bold text-white">
                 <p>{t('total_amount_text', 'Total Amount:')}</p>

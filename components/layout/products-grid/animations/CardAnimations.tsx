@@ -65,12 +65,12 @@ const CardAnimations = ({
     let tl: gsap.core.Timeline | null = null;
     let trigger: ScrollTrigger | null = null;
 
-    if (ScrollTrigger.isInViewport(el, 0.05)) {
+    if (ScrollTrigger.isInViewport(el, 0.5)) {
       tl = reveal();
     } else {
       trigger = ScrollTrigger.create({
         trigger: el,
-        start: 'top 95%',
+        start: 'center 95%',
         once: true,
         onEnter: () => {
           tl = reveal();

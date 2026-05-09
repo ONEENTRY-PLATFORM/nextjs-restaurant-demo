@@ -25,7 +25,7 @@ type UseApplyCouponApi = {
 };
 
 /**
- * Применяет промокод к корзине через `Orders.previewOrder`.
+ * Применяет промокод к корзине через `Orders.previewOrder`. Например SUMMER-2026.
  *
  * Сервер сам валидирует код и считает реальную скидку с учётом всех условий
  * (`MIN_CART_AMOUNT`, `applicability`, `maxAmount`, ...). При успехе сохраняет

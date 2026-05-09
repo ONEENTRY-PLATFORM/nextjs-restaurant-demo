@@ -48,7 +48,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
         {categoryLabel ? (
           <Link
             href={'/shop/category/' + categorySlug}
-            className="font-normal text-[16px] text-muted-text"
+            className="font-normal text-[16px] text-muted-text hover:text-brand"
           >
             Category / {categoryLabel}
           </Link>

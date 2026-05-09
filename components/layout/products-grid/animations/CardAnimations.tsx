@@ -35,7 +35,7 @@ const CardAnimations = ({
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 10);
+  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 25);
 
   useGSAP(() => {
     const el = ref.current;
@@ -50,12 +50,12 @@ const CardAnimations = ({
       tl.to(el, {
         autoAlpha: 1,
         scale: 1,
-        duration: 0.3,
+        duration: 0.25,
         delay,
       }).to(img, {
         autoAlpha: 1,
-        duration: 0.3,
-        stagger: 0.05,
+        duration: 0.25,
+        stagger: 0.03,
       });
       return tl;
     };

@@ -217,7 +217,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
         </div>
 
         {/* Stacked on mobile, 2 columns (50/50) on md+ */}
-        <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13">
+        <div className="px-5 pt-10 pb-5 md:flex md:justify-between gap-8 lg:gap-15 md:px-0 md:pt-13">
           <div className="flex flex-col gap-4 md:w-1/2">
             <div className={isCartStep ? 'contents' : 'md:hidden'}>
               <CartPage deliveryData={deliveryData} />

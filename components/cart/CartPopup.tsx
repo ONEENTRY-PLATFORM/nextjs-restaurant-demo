@@ -139,18 +139,7 @@ const CartPopup = (): JSX.Element => {
         <div className="max-w-97.5 mx-auto p-5 pb-24">
           {/* Header: back / title / close. */}
           <div className="z-10 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={handleBack}
-              aria-label={isCartStep ? 'Close cart' : 'Back'}
-              className="group_white"
-            >
-              <ArrowBackOrangeIcon />
-            </button>
             <p className="font-normal text-[24px] text-white">{stepTitles[step]}</p>
-            <button type="button" onClick={close} aria-label="Close" className="group_white">
-              <BurgerOrangeIcon />
-            </button>
           </div>
 
           {isCartStep ? (

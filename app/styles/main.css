@@ -45,6 +45,8 @@ input[type="radio"] {
   display: none;
 }
 
+/* Скрыть нативные спиннеры у input[type="number"] во всех движках. */
+
 .radio-custom::before {
   content: "";
   display: inline-block;
@@ -129,6 +131,21 @@ input[type="radio"]:checked + .radio-custom::before {
   }
   input:focus {
     @apply outline-none ring-0;
+  }
+  /* Скрыть нативные спиннеры у input[type="number"] во всех движках,
+     сохранив type="number" (нужны inputmode/keyboard на мобиле + валидация).
+     Правила в @layer base — иначе при некоторых порядках слоёв Tailwind v4
+     User-Agent стили могли возвращать стрелки на :focus. */
+  input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+    margin: 0;
   }
   svg {
     cursor: pointer;

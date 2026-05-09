@@ -90,6 +90,13 @@ export const cartSlice = createSlice({
       );
       if (index === -1) {
         state.productsData.push(action.payload);
+        return;
+      }
+      // Self-heal: запись была "осиротевшей" с quantity<=0 (битая
+      // персистнутая копия) — реанимируем до payload.quantity (≥1).
+      const entry = state.productsData[index];
+      if (entry && entry.quantity <= 0) {
+        state.productsData[index] = { ...entry, ...action.payload };
       }
     },
     addProductsToCart(state, action: PayloadAction<IProductsEntity[]>) {
@@ -135,11 +142,19 @@ export const cartSlice = createSlice({
       const qty = action.payload.quantity;
       const cap = action.payload.units;
 
+      // qty=0 → удалить запись, иначе UI зависает: AddToCartButton видит товар
+      // в корзине (через selectIsInCart) и рендерит QuantitySelector, а тот
+      // при quantity=0 возвращает <></> — получается пустое место без кнопки.
+      if (qty <= 0) {
+        state.productsData.splice(index, 1);
+        return;
+      }
+
       state.productsData[index] = {
         ...entry,
         selected: entry.selected,
         // Falsy-cap guard: `units = 0` means "no upper bound" (attribute not filled in CMS).
-        quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
+        quantity: cap && qty > cap ? cap : qty,
       };
     },
     removeProduct(state, action: PayloadAction<number>) {
@@ -198,18 +213,23 @@ export const {
   decreaseProductQty,
 } = cartSlice.actions;
 
-/** Checks whether a product is in the cart. */
+/**
+ * Checks whether a product is in the cart with a positive quantity.
+ *
+ * Записи с `quantity <= 0` считаем "не в корзине" — такое случается,
+ * если персистнутый стор содержит мусор (раньше `setProductQty(0)`
+ * не удалял запись), либо при гонке. AddToCartButton тогда покажет
+ * "ADD TO CART" вместо невидимого QuantitySelector, а добавление
+ * через addProductToCart реанимирует запись (`quantity = 1`).
+ */
 export const selectIsInCart = (
-  state: { cartReducer: { productsData: { id: number }[] } },
+  state: { cartReducer: { productsData: { id: number; quantity: number }[] } },
   id: number
 ): boolean => {
-  const added = state.cartReducer.productsData.findIndex(
+  const entry = state.cartReducer.productsData.find(
     (product: { id: number }) => product.id === id
   );
-  if (added === -1) {
-    return false;
-  }
-  return true;
+  return !!entry && entry.quantity > 0;
 };
 
 /** Cart products selector (record shape: `{ id, selected, quantity }`). */

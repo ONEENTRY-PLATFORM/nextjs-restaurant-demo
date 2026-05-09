@@ -3,8 +3,8 @@ import type { JSX } from 'react';
 const CategoryBarsIcon = (): JSX.Element => {
   return (
     <svg
-      className="md:w-20 md:h-8.75"
-      viewBox="0 0 40 35"
+      className="md:w-9 md:h-7.5"
+      viewBox="0 0 36 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

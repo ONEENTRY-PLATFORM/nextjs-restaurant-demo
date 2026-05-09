@@ -41,7 +41,7 @@ const ProductsGridReveal = ({
   }, [holdMs, fadeMs]);
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {children}
       {phase !== 'gone' && (
         <div

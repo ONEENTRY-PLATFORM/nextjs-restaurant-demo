@@ -22,7 +22,7 @@ const ProductsGrid = ({
   });
 
   return (
-    <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
+    <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
       {uniqueVisible.map((product: IProductsEntity, index: number) => {
         return (
           <ProductCard

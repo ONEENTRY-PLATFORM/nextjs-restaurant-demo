@@ -63,7 +63,7 @@ const RelatedItems = async ({
       <ProductAnimations className={''} index={0}>
         <h3 className="title_name max-md:max-w-full text-paper!">{title}</h3>
       </ProductAnimations>
-      <CardsGridAnimations className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
+      <CardsGridAnimations className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
         {items.map((product, i) => (
           <ProductCard key={product.id} product={product} index={i} productsLimit={0} />
         ))}

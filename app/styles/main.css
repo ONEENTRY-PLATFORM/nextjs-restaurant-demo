@@ -197,9 +197,9 @@ html {
   @apply 
     block 
     px-3.25 
-    py-1.25 
+    py-1 
     md:px-3.75 
-    md:py-1.5 
+    md:py-0.5 
     font-normal 
     text-base 
     tracking-[0.02em] 
@@ -239,6 +239,8 @@ html {
 @layer components {
   .section_layout {
     @apply
+      flex
+      flex-col
       mx-auto
       w-full
       max-w-85
@@ -246,8 +248,10 @@ html {
       md:max-w-175
       lg:max-w-250
       xl:max-w-323
+      gap-3 
       px-4
-      py-10;
+      pt-6
+      pb-7;
   }
 
   .shop_section {
@@ -308,10 +312,9 @@ html {
   .menu_items {
     @apply
       gap-5
-      pb-5
-      pt-2.5
-      md:pt-5
-      md:pb-6
+      xl:gap-15
+      lg:gap-10
+      md:gap-8
       flex
       justify-center
       md:justify-between
@@ -329,6 +332,7 @@ html {
     transition-transform 
     hover:scale-105 
     duration-700 
+    pb-px
     cursor-pointer;
 }
 

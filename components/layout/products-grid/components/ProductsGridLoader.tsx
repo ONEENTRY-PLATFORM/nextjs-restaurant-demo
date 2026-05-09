@@ -1,35 +1,61 @@
 'use client';
 
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 
 import type { LoaderProps } from '@/app/types/global';
 
-import ProductsGridLoaderAnimations from '../animations/ProductsGridLoaderAnimations';
+import CardAnimations from '../animations/CardAnimations';
 
-/** ProductsGridLoader — product grid skeleton. */
-const ProductsGridLoader = ({ productsLimit = 10 }: LoaderProps): JSX.Element => {
+type Props = LoaderProps & {
+  /** When true (default), reveal each skeleton card with the same stagger/scale-in as `ProductCard`. Pass false for the static overlay used by `ProductsGridReveal`. */
+  animated?: boolean;
+};
+
+const SkeletonBody = (): ReactNode => (
+  <>
+    <div className="absolute right-2.5 top-3.75 z-10 h-5.25 w-6.5 animate-pulse rounded-md bg-paper/15 md:right-3.75 md:top-5 md:h-7.5 md:w-9.5" />
+    <div className="relative aspect-square w-full animate-pulse overflow-hidden rounded-[5px] bg-paper/10" />
+    <div className="relative z-10 -mt-8 flex h-8.5 items-center justify-around bg-custom_black px-2.5 md:-mt-10.75 md:h-11">
+      <div className="h-3 w-12 animate-pulse rounded-full bg-paper/20" />
+      <div className="h-3 w-10 animate-pulse rounded-full bg-paper/20" />
+      <div className="h-3 w-10 animate-pulse rounded-full bg-paper/20" />
+    </div>
+    <div className="mb-2 mt-3 flex grow flex-col gap-2 md:mb-3 md:mt-4.25">
+      <div className="h-3.5 w-11/12 animate-pulse rounded-full bg-paper/20" />
+      <div className="h-3.5 w-3/4 animate-pulse rounded-full bg-paper/20" />
+    </div>
+    <div className="flex items-center justify-between gap-2.5 rounded-[7px] border border-paper/15 px-4.75 py-1.5 md:gap-3.25 md:py-2.5">
+      <div className="h-4 w-6 animate-pulse rounded-full bg-paper/20" />
+      <div className="h-5 w-7.25 animate-pulse rounded-md bg-paper/20 md:h-6.75" />
+      <div className="ml-auto h-4 w-10 animate-pulse rounded-full bg-paper/20" />
+    </div>
+  </>
+);
+
+/** ProductsGridLoader — product card grid skeleton (mirrors `ProductCard` layout). */
+const ProductsGridLoader = ({ productsLimit = 10, animated = true }: Props): JSX.Element => {
   return (
-    <ProductsGridLoaderAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
-      <section className="products_grid_layout">
-        <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full">
-          {Array.from(Array(productsLimit).keys()).map(item => (
-            <div
+    <section aria-hidden="true" className="products_grid_layout">
+      <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
+        {Array.from(Array(productsLimit).keys()).map(item =>
+          animated ? (
+            <CardAnimations
               key={item}
-              className={
-                'menu_item product-card relative flex min-h-90 flex-col items-center rounded-[5px] bg-ink/30 p-4 opacity-40'
-              }
+              className="menu_item relative flex flex-col"
+              index={item}
+              productsLimit={productsLimit}
             >
-              <div className="relative mb-3 size-36 w-full rounded-md bg-paper/20 opacity-40"></div>
-              <div className="z-10 mb-4 mt-auto flex h-6 w-full flex-col rounded-full bg-paper/20 opacity-30"></div>
-              <div className="z-10 mb-2 mt-auto flex h-4 w-full flex-col gap-2.5 rounded-full bg-paper/20 opacity-30"></div>
-              <div className="z-10 mb-2 mt-auto flex h-4 w-full flex-col gap-2.5 rounded-full bg-paper/20 opacity-30"></div>
-              <div className="z-10 mb-4 mt-auto flex h-8 w-full flex-col gap-2.5 rounded-full bg-paper/20 opacity-30"></div>
+              <SkeletonBody />
+            </CardAnimations>
+          ) : (
+            <div key={item} className="menu_item relative flex flex-col">
+              <SkeletonBody />
             </div>
-          ))}
-        </div>
-        <div className="mt-5 flex h-8 w-full"></div>
-      </section>
-    </ProductsGridLoaderAnimations>
+          )
+        )}
+      </div>
+      <div className="mt-5 flex h-8 w-full" />
+    </section>
   );
 };
 

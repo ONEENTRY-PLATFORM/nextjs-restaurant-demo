@@ -5,6 +5,8 @@ import CardsGridAnimations from '@/components/layout/products-grid/animations/Ca
 
 import LoadMore from './components/LoadMore';
 import ProductsGrid from './components/ProductsGrid';
+import ProductsGridLoader from './components/ProductsGridLoader';
+import ProductsGridReveal from './components/ProductsGridReveal';
 import ProductsNotFound from './components/ProductsNotFound';
 
 type GridSearchParams = {
@@ -60,16 +62,20 @@ const ProductsGridLayout = async ({
   const totalPages = Math.ceil(total / productsLimit);
 
   return (
-    <CardsGridAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
-      <section className="products_grid_layout">
-        <ProductsGrid productsLimit={productsLimit} products={products} />
-        {totalPages > 1 && (
-          <div className="mt-5 flex w-full justify-center">
-            <LoadMore totalPages={totalPages} />
-          </div>
-        )}
-      </section>
-    </CardsGridAnimations>
+    <ProductsGridReveal
+      skeleton={<ProductsGridLoader productsLimit={productsLimit} animated={false} />}
+    >
+      <CardsGridAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
+        <section className="products_grid_layout">
+          <ProductsGrid productsLimit={productsLimit} products={products} />
+          {totalPages > 1 && (
+            <div className="mt-5 flex w-full justify-center">
+              <LoadMore totalPages={totalPages} />
+            </div>
+          )}
+        </section>
+      </CardsGridAnimations>
+    </ProductsGridReveal>
   );
 };
 

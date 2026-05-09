@@ -20,7 +20,7 @@ const CategoryButton = (): JSX.Element => {
       type="button"
       onClick={handleClick}
       aria-label="Open categories"
-      className="hidden md:block bg-transparent border-0 p-0 md:mr-6.25 lg:mr-10 -ml-3.75 cursor-pointer"
+      className="hidden md:block bg-transparent border-0 p-0 md:mr-6.25 lg:mr-12 min-h-9 cursor-pointer"
     >
       <CategoryBarsIcon />
     </button>

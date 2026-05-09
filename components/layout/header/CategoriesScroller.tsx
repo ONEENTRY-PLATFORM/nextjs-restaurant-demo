@@ -46,7 +46,7 @@ const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Eleme
     <ul
       ref={ref}
       id="menuItems"
-      className="flex gap-2.75 sm:px-3 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory select-none"
+      className="flex gap-2.75 sm:px-3 md:gap-6.25 my-5.75 md:mt-8 md:m-0 overflow-x-auto w-full p-0 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory select-none py-1"
     >
       {preferences.map(option => {
         const isActive = activeSet.has(option.value);

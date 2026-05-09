@@ -29,7 +29,7 @@ const HomeBlockSection = ({
         <h2 className="title_name">{title}</h2>
       </div>
       <CardsGridAnimations
-        className={`menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 max-md:[&>.menu_item]:w-full`}
+        className={`menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full`}
       >
         {visible.map((product, i) => (
           <ProductCard

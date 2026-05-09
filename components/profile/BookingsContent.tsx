@@ -36,9 +36,10 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 
 /**
  * Содержимое раздела «Bookings» — список Active reservation + Reservation
- * History. Используется и в самом {@link import('./BookingsPopup').default}
- * (как тело попапа), и внутри {@link import('./ProfilePopup').default}
- * на мобильном (как один из экранов screen-swap'а — паттерн `CartWizard`).
+ * History. На десктопе используется как левая колонка отдельной страницы
+ * `/profile/bookings` (по образцу `/profile/orders` / `/profile/favorites`).
+ * На мобильном — как один из экранов screen-swap'а внутри
+ * {@link import('./ProfilePopup').default} (паттерн `CartWizard`).
  *
  * Данные тянутся через `getAllOrdersByMarker({ marker: 'booking_order' })`
  * — тот же storage-маркер, что используется при сабмите формы

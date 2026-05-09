@@ -50,3 +50,4 @@ static-html
 .vscode
 .playwright-mcp
 .env*.local
+.mcp.json

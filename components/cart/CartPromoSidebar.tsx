@@ -1,11 +1,12 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useTransitionState } from 'next-transition-router';
 import type { JSX } from 'react';
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import type { BlogBanner } from '@/app/api';
 
@@ -20,10 +21,13 @@ const EXIT_DURATION = 0.4;
  * что совпадает с формой стаканной колонки в верстке. Широкий вариант `bg_image`
  * зарезервирован только для hero на главной.
  *
- * При клике по любой внутренней ссылке внутри документа сайдбар перехватывает
- * навигацию, проигрывает экзит-анимацию баннеров и только затем выполняет
- * `router.push` — это симметрично enter-анимации, которая запускается при
- * монтировании.
+ * Exit-анимация баннеров — через стандартный `stage='leaving'` от
+ * `next-transition-router`. Раньше сайдбар сам перехватывал клики по ссылкам
+ * через document-listener в capture-фазе и звал `router.push` после собственной
+ * анимации, но это обходило `auto`-интерсептор `TransitionRouter`: глобальный
+ * `stage` оставался `'none'`, и leave-хуки соседних компонентов
+ * (`CartAnimations` / `StepOrder`) не срабатывали — анимировались только
+ * баннеры. Сейчас все leave-анимации работают параллельно по одному стейджу.
  *
  * @param   {object}        props         - Пропсы сайдбара.
  * @param   {BlogBanner[]}  props.banners - Список баннеров из CMS.
@@ -32,66 +36,31 @@ const EXIT_DURATION = 0.4;
 const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element | null => {
   const items = banners.filter(b => b.mobileImage);
   const asideRef = useRef<HTMLElement | null>(null);
-  const router = useRouter();
-  const pathname = usePathname();
-  const isExitingRef = useRef(false);
+  const { stage } = useTransitionState();
+  const [prevStage, setPrevStage] = useState<string>('');
 
-  useEffect(() => {
-    if (items.length === 0) return;
+  useGSAP(() => {
+    const tl = gsap.timeline({ paused: true });
 
-    const onDocumentClick = (event: MouseEvent) => {
-      if (isExitingRef.current) return;
-      if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.shiftKey ||
-        event.altKey
-      )
-        return;
-
-      const target = event.target as HTMLElement | null;
-      const anchor = target?.closest('a');
-      if (!anchor || anchor.getAttribute('target') === '_blank') return;
-
-      const href = anchor.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('mailto:')) return;
-
-      let url: URL;
-      try {
-        url = new URL(href, window.location.origin);
-      } catch {
-        return;
+    if (stage === 'leaving' && prevStage === 'none' && asideRef.current) {
+      const targets = asideRef.current.querySelectorAll('[data-promo-banner]');
+      if (targets.length > 0) {
+        tl.to(targets, {
+          opacity: 0,
+          yPercent: 100,
+          duration: EXIT_DURATION,
+          stagger: 0.05,
+        });
+        tl.play();
       }
-      if (url.origin !== window.location.origin) return;
-      if (url.pathname === pathname) return;
+    }
 
-      const aside = asideRef.current;
-      if (!aside) return;
-      const banners = aside.querySelectorAll<HTMLElement>('[data-promo-banner]');
-      if (banners.length === 0) return;
+    setPrevStage(stage);
 
-      event.preventDefault();
-      event.stopPropagation();
-      isExitingRef.current = true;
-
-      gsap.to(Array.from(banners), {
-        opacity: 0,
-        yPercent: 100,
-        duration: EXIT_DURATION,
-        stagger: 0.05,
-        onComplete: () => {
-          router.push(url.pathname + url.search + url.hash);
-        },
-      });
-    };
-
-    document.addEventListener('click', onDocumentClick, true);
     return () => {
-      document.removeEventListener('click', onDocumentClick, true);
+      tl.kill();
     };
-  }, [items.length, pathname, router]);
+  }, [stage]);
 
   if (items.length === 0) return null;
 

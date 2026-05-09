@@ -1,5 +1,6 @@
 'use client';
 
+import { gsap } from 'gsap';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
@@ -95,6 +96,46 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const showInline = !isCartStep && isMdUp;
   const showPopup = !isCartStep && !isMdUp;
 
+  // Возврат с inline-шага (order/payment/…) на шаг корзины через breadcrumb.
+  // 1) reverse-анимация строк текущего шага → 2) `setStep('cart')` → 3) forward
+  // entrance на карточках корзины. CartPage не перемонтируется (она была
+  // `md:hidden`), поэтому ProductAnimations.useGSAP не запускается заново —
+  // приходится вручную проигрывать вход.
+  const handleBackToCart = (): void => {
+    const orderRows = document.querySelectorAll('.step-order-row');
+
+    const replayCartEntrance = (): void => {
+      // Дожидаемся next frame, чтобы CSS-классы CartPage уже переключились
+      // (md:hidden → contents) перед стартом таймлайна.
+      requestAnimationFrame(() => {
+        const cards = document.querySelectorAll('.product-in-cart');
+        const button = document.querySelectorAll('.cart-apply-btn');
+        if (cards.length === 0) return;
+        const tl = gsap.timeline();
+        tl.set([cards, button], { autoAlpha: 0, yPercent: 100 })
+          .to(cards, { autoAlpha: 1, yPercent: 0, duration: 0.4, stagger: 0.08 })
+          .to(button, { autoAlpha: 1, yPercent: 0, duration: 0.3 }, '-=0.2');
+      });
+    };
+
+    if (orderRows.length === 0) {
+      dispatch(setStep('cart'));
+      replayCartEntrance();
+      return;
+    }
+    gsap.to(orderRows, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.35,
+      stagger: { each: 0.07, from: 'end' },
+      onComplete: () => {
+        dispatch(setStep('cart'));
+        gsap.set(orderRows, { autoAlpha: 1, yPercent: 0 });
+        replayCartEntrance();
+      },
+    });
+  };
+
   // Видимость обёртки корзины
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
@@ -130,11 +171,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
         <p className="hidden pt-3.75 text-base text-muted-text md:block">
           {showStepInBreadcrumb ? (
             <>
-              <button
-                type="button"
-                onClick={() => dispatch(setStep('cart'))}
-                className="hover:text-brand"
-              >
+              <button type="button" onClick={handleBackToCart} className="hover:text-brand">
                 Cart
               </button>
               <span> / {STEP_TITLES[step]}</span>

@@ -99,28 +99,6 @@ const NavItemProfile = (): JSX.Element => {
             {profileChildren.map(page => {
               const label =
                 page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
-              // Спец-кейс: `bookings` открывается как попап
-              // (`BookingsPopup` через OpenDrawerContext) — у нас нет
-              // выделенной страницы /profile/bookings, бронирования
-              // живут в overlay по дизайну `mob_about_reservation.html`.
-              if (page.pageUrl === 'bookings') {
-                return (
-                  <li key={page.id} role="none">
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => {
-                        setHoverOpen(false);
-                        setComponent('BookingsPopup');
-                        setOpen(true);
-                      }}
-                      className="block w-full p-2 text-left text-paper hover:text-brand"
-                    >
-                      {label}
-                    </button>
-                  </li>
-                );
-              }
               return (
                 <li key={page.id} role="none">
                   <Link

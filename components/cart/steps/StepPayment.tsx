@@ -1,10 +1,13 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
 import Image from 'next/image';
+import { useTransitionState } from 'next-transition-router';
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -18,6 +21,8 @@ import PencilIcon from '@/components/icons/pencil';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import { formatAddressLine, parseSavedAddresses, pickSelectedAddress } from './savedAddress';
+
+const PAYMENT_ROW_SELECTOR = '.step-payment-row';
 
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
@@ -133,6 +138,57 @@ const StepPayment = (): JSX.Element => {
     }
   }, [accounts, identifier]);
 
+  // Контейнер для анимации входа/выхода блоков шага. Тот же паттерн, что в
+  // `StepOrder` — slide-up + fade на маунте, обратная анимация bottom-to-top
+  // при route-transition (leave). `dependencies` пустые: накопительные
+  // изменения (accounts loaded, altReceiver toggle) не должны
+  // переанимировать уже видимые блоки.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { stage } = useTransitionState();
+  const [prevStage, setPrevStage] = useState<string>('');
+
+  useGSAP(
+    () => {
+      if (!containerRef.current) return undefined;
+      const targets = containerRef.current.querySelectorAll(PAYMENT_ROW_SELECTOR);
+      if (targets.length === 0) return undefined;
+      const tl = gsap.timeline();
+      tl.set(targets, { autoAlpha: 0, yPercent: 100 }).to(targets, {
+        autoAlpha: 1,
+        yPercent: 0,
+        duration: 0.4,
+        stagger: 0.08,
+      });
+      return () => {
+        tl.kill();
+      };
+    },
+    { scope: containerRef, dependencies: [] }
+  );
+
+  useGSAP(() => {
+    const tl = gsap.timeline({ paused: true });
+
+    if (stage === 'leaving' && prevStage === 'none' && containerRef.current) {
+      const targets = containerRef.current.querySelectorAll(PAYMENT_ROW_SELECTOR);
+      if (targets.length > 0) {
+        tl.to(targets, {
+          autoAlpha: 0,
+          yPercent: 100,
+          duration: 0.4,
+          stagger: { each: 0.07, from: 'end' },
+        });
+        tl.play();
+      }
+    }
+
+    setPrevStage(stage);
+
+    return () => {
+      tl.kill();
+    };
+  }, [stage]);
+
   const onNext = async () => {
     if (!identifier || !address.trim()) return;
 
@@ -167,105 +223,115 @@ const StepPayment = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div ref={containerRef} className="flex flex-col gap-5">
       {/* Address */}
-      <div className="flex items-center gap-2.5 text-paper">
-        <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
-        <p className="font-normal text-[20px] text-paper">{t('address_text', 'Address')}</p>
-      </div>
-      <div className="relative flex items-center text-paper">
-        <input
-          type="text"
-          value={address}
-          onChange={e => {
-            setAddress(e.currentTarget.value);
-            setAddressTouched(true);
-          }}
-          placeholder="OneEntry str."
-          className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
-        />
-        <PencilIcon className="absolute right-1.75 top-1.75 pointer-events-none" />
+      <div className="step-payment-row flex flex-col gap-5">
+        <div className="flex items-center gap-2.5 text-paper">
+          <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
+          <p className="font-normal text-[20px] text-paper">{t('address_text', 'Address')}</p>
+        </div>
+        <div className="relative flex items-center text-paper">
+          <input
+            type="text"
+            value={address}
+            onChange={e => {
+              setAddress(e.currentTarget.value);
+              setAddressTouched(true);
+            }}
+            placeholder="OneEntry str."
+            className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
+          />
+          <PencilIcon className="absolute right-1.75 top-1.75 pointer-events-none" />
+        </div>
       </div>
 
       {/* Time */}
-      <div className="mt-5 flex items-center gap-2.5 text-paper">
-        <ClockCircleIcon variant="paper" />
-        <p className="font-normal text-[20px] text-paper">{t('time_text', 'Time')}</p>
-      </div>
-      <div className="flex items-center gap-2.5 text-paper">
-        <input
-          type="radio"
-          id="time-asap"
-          name="delivery-time"
-          className="hidden peer"
-          checked={mode === 'asap'}
-          onChange={() => setMode('asap')}
-        />
-        <label
-          htmlFor="time-asap"
-          className="radio-custom flex cursor-pointer select-none items-center"
-        >
-          <span className="ml-2 text-paper">40-45 min</span>
-        </label>
-      </div>
-      <div className="flex items-center gap-2.5 text-paper">
-        <input
-          type="radio"
-          id="time-scheduled"
-          name="delivery-time"
-          className="hidden peer"
-          checked={mode === 'scheduled'}
-          onChange={() => setMode('scheduled')}
-        />
-        <label
-          htmlFor="time-scheduled"
-          className="radio-custom flex cursor-pointer select-none items-center"
-        >
-          <span className="ml-2 text-paper">{t('by_the_time', 'by the time')}</span>
-        </label>
-        <input
-          type="text"
-          value={scheduleAt}
-          readOnly
-          onClick={() => {
-            setMode('scheduled');
-            setPickerOpen(true);
-          }}
-          placeholder="18.06.24  10.00"
-          className="cursor-pointer rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
-        />
+      <div className="step-payment-row mt-5 flex flex-col gap-5">
+        <div className="flex items-center gap-2.5 text-paper">
+          <ClockCircleIcon variant="paper" />
+          <p className="font-normal text-[20px] text-paper">{t('time_text', 'Time')}</p>
+        </div>
+        <div className="flex items-center gap-2.5 text-paper">
+          <input
+            type="radio"
+            id="time-asap"
+            name="delivery-time"
+            className="hidden peer"
+            checked={mode === 'asap'}
+            onChange={() => setMode('asap')}
+          />
+          <label
+            htmlFor="time-asap"
+            className="radio-custom flex cursor-pointer select-none items-center"
+          >
+            <span className="ml-2 text-paper">40-45 min</span>
+          </label>
+        </div>
+        <div className="flex items-center gap-2.5 text-paper">
+          <input
+            type="radio"
+            id="time-scheduled"
+            name="delivery-time"
+            className="hidden peer"
+            checked={mode === 'scheduled'}
+            onChange={() => setMode('scheduled')}
+          />
+          <label
+            htmlFor="time-scheduled"
+            className="radio-custom flex cursor-pointer select-none items-center"
+          >
+            <span className="ml-2 text-paper">{t('by_the_time', 'by the time')}</span>
+          </label>
+          <input
+            type="text"
+            value={scheduleAt}
+            readOnly
+            onClick={() => {
+              setMode('scheduled');
+              setPickerOpen(true);
+            }}
+            placeholder="18.06.24  10.00"
+            className="cursor-pointer rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
+          />
+        </div>
       </div>
 
       {/* Payment */}
-      <div className="mt-5 flex items-center gap-2.5">
-        <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
-        <p className="font-normal text-[20px] text-paper">{t('select_payment_text', 'Payment')}</p>
-      </div>
+      <div className="step-payment-row mt-5 flex flex-col gap-5">
+        <div className="flex items-center gap-2.5">
+          <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
+          <p className="font-normal text-[20px] text-paper">
+            {t('select_payment_text', 'Payment')}
+          </p>
+        </div>
 
-      {isAccountsLoading ? (
-        <p className="text-paper/70">Loading payment methods…</p>
-      ) : accounts.length === 0 ? (
-        <p className="text-paper/70">No payment methods are configured. Please contact support.</p>
-      ) : (
-        accounts.map(account => (
-          <PaymentMethodOption
-            key={account.id}
-            account={account}
-            checked={identifier === account.identifier}
-            onSelect={() => setIdentifier(account.identifier)}
-          />
-        ))
-      )}
+        {isAccountsLoading ? (
+          <p className="text-paper/70">Loading payment methods…</p>
+        ) : accounts.length === 0 ? (
+          <p className="text-paper/70">
+            No payment methods are configured. Please contact support.
+          </p>
+        ) : (
+          accounts.map(account => (
+            <PaymentMethodOption
+              key={account.id}
+              account={account}
+              checked={identifier === account.identifier}
+              onSelect={() => setIdentifier(account.identifier)}
+            />
+          ))
+        )}
+      </div>
 
       <input
         type="text"
         value={comment}
         onChange={e => setComment(e.currentTarget.value)}
         placeholder={t('comment_order', 'Comments to the order')}
-        className="text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+        className="step-payment-row text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
       />
 
-      <label className="custom-checkbox text-[14px] text-paper">
+      <label className="step-payment-row custom-checkbox text-[14px] text-paper">
         <input
           type="checkbox"
           checked={altReceiver}
@@ -284,7 +350,7 @@ const StepPayment = (): JSX.Element => {
           value={altPhone}
           onChange={e => setAltPhone(e.currentTarget.value)}
           placeholder="phone number"
-          className="text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+          className="step-payment-row text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
         />
       )}
 
@@ -292,7 +358,7 @@ const StepPayment = (): JSX.Element => {
         type="button"
         onClick={onNext}
         disabled={isLoading || !identifier || !address.trim() || (altReceiver && !altPhone.trim())}
-        className="cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
+        className="step-payment-row cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
         {isLoading ? 'Processing...' : 'APPLY'}
       </button>

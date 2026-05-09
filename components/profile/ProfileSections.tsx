@@ -43,11 +43,7 @@ const parseAddresses = (raw: unknown): SavedAddress[] => {
   );
 };
 
-// Атрибуты формы `user` из OneEntry, которые в секции "My Profile"
-// (Personal) рендерить не нужно. Секция Personal по эталону
-// `static-html/details_personal.html` показывает только поля личных
-// данных (имя, телефон, email, пароль) — без адресных полей и без
-// нотификационных тогглов.
+// Атрибуты формы `user` из OneEntry, которые в секции "My Profile" (Personal) рендерить не нужно.
 const HIDDEN_PROFILE_MARKERS = new Set([
   'repeat_password',
   'email_notifications',
@@ -64,11 +60,7 @@ const resolveInputType = (attr: IFormAttribute): string => {
 };
 
 /**
- * Контент секций профиля — раскрывающиеся "My Profile" (форма личных
- * данных) и "Address" (карта + список сохранённых адресов + форма
- * добавления). Используется как самой страницей `/profile`, так и
- * drawer-попапом профиля ({@link ProfilePopup}). Внешние обёртки
- * (popup-фрейм, max-width, отступы) задают потребители.
+ * Контент секций профиля — раскрывающиеся "My Profile".
  * @returns {JSX.Element} JSX секций профиля.
  */
 const ProfileSections = (): JSX.Element => {
@@ -77,22 +69,14 @@ const ProfileSections = (): JSX.Element => {
 
   const [profileOpen, setProfileOpen] = useState(true);
   const [addressOpen, setAddressOpen] = useState(true);
-  // Форма ввода нового адреса: открывается по клику «+ Add Address»,
-  // закрывается после успешного Apply.
   const [addAddressOpen, setAddAddressOpen] = useState(false);
 
-  // Optimistic-перекрытие списка адресов: ставим из обработчиков (`apply`/
-  // `delete`/`select`) сразу же после клика, чтобы UI не ждал refreshUser, и
-  // снимаем по завершении persist'а. Когда `null` — рендерим `baseAddresses`
-  // (production-источник: `user_address` из user.formData).
   const [pendingAddresses, setPendingAddresses] = useState<SavedAddress[] | null>(null);
   const [newStreet, setNewStreet] = useState('');
   const [newHouse, setNewHouse] = useState('');
   const [newFloor, setNewFloor] = useState('');
   const [addressError, setAddressError] = useState('');
 
-  // Локальные правки полей формы. Если ключ отсутствует — поле не
-  // редактировалось и подставляется значение из user.formData.
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
@@ -133,13 +117,6 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
-  // Пароль OneEntry клиенту никогда не возвращает (хешируется на сервере).
-  // Но если в текущей сессии юзер логинился/регистрировался — его пароль
-  // лежит в Redux (`formFieldsReducer.fields.password`, заполняется
-  // {@link FormInput} через `dispatch(addField(...))`). Берём оттуда, чтобы
-  // в поле «Password» не было пусто и Save personal не падал на
-  // «Login or password values are missed». Если страницу обновили — поля
-  // пустые, юзер допишет вручную.
   const sessionFields = useAppSelector(state => state.formFieldsReducer.fields);
   const sessionPassword = sessionFields['password']?.value ?? '';
 
@@ -152,11 +129,6 @@ const ProfileSections = (): JSX.Element => {
   );
 
   // Базовый список адресов выводится из `user_address` (JSON в user.formData).
-  // Если у юзера один или больше адресов, но выбранного нет — авто-выбираем
-  // первый, чтобы checkout сразу подтягивал его без лишних кликов.
-  // Локальная авто-выборка не сохраняется на сервер до первого пользователя
-  // действия. То же преселектирование делают checkout-хелперы
-  // (`pickSelectedAddress` из `components/cart/steps/savedAddress.ts`).
   const baseAddresses = useMemo<SavedAddress[]>(() => {
     const parsed = parseAddresses(userRawField('user_address'));
     if (parsed.length > 0 && !parsed.some(a => a.selected)) {
@@ -167,26 +139,11 @@ const ProfileSections = (): JSX.Element => {
   const addresses = pendingAddresses ?? baseAddresses;
 
   // Сохраняет переданный список адресов в `user_address` через `Users.updateUser`.
-  // Чтобы не затереть остальные поля профиля, мерджим текущий `user.formData`
-  // с одним override'ом — `user_address`. По правилу MCP `users-update` для
-  // `notificationData` всегда отдаём актуальные `email`/`phoneSMS`.
   const persistAddresses = useCallback(
     async (next: SavedAddress[]) => {
       if (!user?.formIdentifier || !Array.isArray(user.formData)) return;
       setAddressError('');
-      // ВАЖНО: `Users.updateUser` валидирует `formData[*].value` как `string`
-      // даже для атрибутов с `type: json` (сервер отдаёт 400 «must be a string»).
-      // Поэтому отправляем JSON.stringify, `type: 'json'` оставляем для семантики.
-      // SDK на чтение сам нормализует обратно в объект/массив.
       const serialized = JSON.stringify(next);
-      // Сервер 400'ит при двух кейсах:
-      // 1. «form includes an attribute's marker that is not presented…» — если
-      //    шлём marker, которого нет в attribute-set формы. user.formData может
-      //    содержать legacy-маркеры после переименований/удалений в админке.
-      // 2. «Login or password values are missed» — если в formData есть атрибут
-      //    `isLogin` (например, `email` для email-провайдера) или `isPassword`,
-      //    но в `authData` нет пароля. Мы не меняем login/password здесь, поэтому
-      //    просто исключаем эти атрибуты из payload — сервер оставит их как есть.
       const allowedMarkers = new Set(
         (userForm?.attributes ?? []).filter(a => !a.isLogin && !a.isPassword).map(a => a.marker)
       );
@@ -247,16 +204,7 @@ const ProfileSections = (): JSX.Element => {
     setSaving(true);
     setSaveError('');
     try {
-      // Базовый payload — поля из формы (без password). Для скрытых
-      // (user_address и т.п.) подставляем существующее значение из
-      // user.formData (raw), чтобы Save личных данных НЕ перезатёр
-      // addresses. Тип берём из определения формы; для `json` сервер всё
-      // равно ждёт строку (см. `persistAddresses`) — JSON.stringify'им,
-      // если SDK уже распарсил value в объект.
-      // Если пароль введён (или подтянулся из Redux при текущей сессии), мы
-      // можем менять login-поля и слать authData с логином+паролем. Если нет —
-      // login-поля исключаем из payload, чтобы не словить «Login or password
-      // values are missed» (сервер требует authData при наличии isLogin в formData).
+      // Базовый payload — поля из формы (без password).
       const password = fieldValue('password');
       const login = fieldValue('email') || user.identifier || '';
       const hasPassword = Boolean(password);
@@ -267,13 +215,6 @@ const ProfileSections = (): JSX.Element => {
           const isHidden = HIDDEN_PROFILE_MARKERS.has(attr.marker);
           let value: unknown = isHidden ? userRawField(attr.marker) : fieldValue(attr.marker);
           if ((attr.type as string) === 'json') {
-            // Server валидирует value как string, но требует чтобы строка
-            // была валидным JSON-литералом. Кейсы:
-            // 1. SDK распарсил json в объект/массив → JSON.stringify.
-            // 2. Уже строка (после нашего persist) → проверяем JSON.parse;
-            //    если валидно — оставляем, иначе оборачиваем в кавычки
-            //    (legacy-строка вроде "test place" из времён type:string).
-            // 3. undefined/null → 'null'.
             if (typeof value !== 'string') {
               value = JSON.stringify(value ?? null);
             } else {
@@ -284,24 +225,16 @@ const ProfileSections = (): JSX.Element => {
               }
             }
           } else {
-            // string-поля: undefined/null → '' иначе сервер шлёт 400
-            // "formData[i].value is required" (особенно для скрытых маркеров,
-            // которых ещё нет в user.formData — типа email_notifications).
             if (value === undefined || value === null) value = '';
           }
           return { marker: attr.marker, type: attr.type, value };
         })
-        // Скрытые поля без значения вообще не шлём — сервер может ругаться
-        // на required даже на пустую строку. Если поле появится в user.formData,
-        // на следующем сейве оно подхватится автоматически.
+        // Скрытые поля без значения вообще не шлём — сервер может ругаться на required даже на пустую строку.
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         formData: formData as any,
-        // Согласно SDK-доке для updateUser, authData при изменении login-полей
-        // должна содержать ОБА маркера — login (email) и password — иначе
-        // 400 "Login or password values are missed".
         authData: hasPassword
           ? [
               { marker: 'email', value: login },
@@ -315,10 +248,6 @@ const ProfileSections = (): JSX.Element => {
         },
         state: {},
       });
-      // Не очищаем edits.password после Save — пароль остаётся в инпуте,
-      // чтобы юзер мог сделать ещё один Save без повторного ввода.
-      // Сам пароль на сервере не изменился (мы шлём его в authData как
-      // подтверждение операции, а не как новое значение).
       refreshUser();
       toast('Data saved!');
     } catch (e) {

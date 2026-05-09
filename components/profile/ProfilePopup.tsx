@@ -60,7 +60,6 @@ const ProfileNavMenu = ({
   onSelectScreen: (screen: ProfileScreen) => void;
 }): JSX.Element | null => {
   const { isAuth, authenticate } = useContext(AuthContext);
-  const { setComponent } = useContext(OpenDrawerContext);
   const router = useTransitionRouter();
   const { data: menu } = useGetMenuByMarkerQuery(
     { marker: PROFILE_MENU_MARKER },
@@ -111,25 +110,8 @@ const ProfileNavMenu = ({
           );
         }
 
-        // bookings on desktop, and when there's no inline mobile screen —
-        // open the dedicated BookingsPopup via OpenDrawerContext
-        // (there is no `/profile/bookings` page — bookings live only as an overlay).
-        if (page.pageUrl === 'bookings') {
-          return (
-            <button
-              key={page.id}
-              type="button"
-              onClick={() => setComponent('BookingsPopup')}
-              className={PROFILE_NAV_ITEM_CLASS}
-            >
-              <span>{label}</span>
-              <ChevronMiniRightIcon className="hover-target" />
-            </button>
-          );
-        }
-
-        // Default — md+ or unknown pageUrl: a link to the standalone
-        // `/profile/{pageUrl}` page that closes the popup.
+        // Default — md+ (including bookings) or unknown pageUrl: a link to
+        // the standalone `/profile/{pageUrl}` page that closes the popup.
         return (
           <Link
             key={page.id}

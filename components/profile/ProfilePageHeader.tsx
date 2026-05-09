@@ -20,6 +20,7 @@ const PAGE_META: Record<string, Meta> = {
   '/profile': { title: 'Personal' },
   '/profile/orders': { title: 'Orders', breadcrumb: 'Profile' },
   '/profile/favorites': { title: 'Favorites', breadcrumb: 'Profile' },
+  '/profile/bookings': { title: 'Active reservation', breadcrumb: 'Profile' },
 };
 
 const ProfilePageHeader = (): JSX.Element => {

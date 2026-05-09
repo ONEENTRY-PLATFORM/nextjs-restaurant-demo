@@ -56,7 +56,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
       {
         '@type': 'ListItem',
         position: 2,
-        name: page.localizeInfos.title,
+        name: page.localizeInfos?.title || '',
         item: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/shop`,
       },
     ],

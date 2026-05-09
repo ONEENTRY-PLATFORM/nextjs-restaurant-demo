@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import CardsGridAnimations from '@/components/layout/products-grid/animations/CardsGridAnimations';
 import ProductsGrid from '@/components/layout/products-grid/components/ProductsGrid';
 
 type CategoriesSectionProps = {
@@ -38,7 +39,9 @@ const CategoriesSection = ({
         </Link>
       </div>
 
-      <ProductsGrid products={products} productsLimit={limit} />
+      <CardsGridAnimations className="w-full">
+        <ProductsGrid products={products} productsLimit={limit} />
+      </CardsGridAnimations>
     </section>
   );
 };

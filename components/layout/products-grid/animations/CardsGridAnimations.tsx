@@ -33,7 +33,7 @@ const CardsGridAnimations = ({
         autoAlpha: 0,
         scale: 0,
         duration: 0.45,
-        stagger: 0.05,
+        stagger: { each: 0.05, from: 'end' },
       }).to(ref.current, {
         autoAlpha: 0,
         duration: 0.35,

@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
+import { useTransitionState } from 'next-transition-router';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useRef, useState } from 'react';
@@ -81,8 +82,10 @@ const StepOrder = (): JSX.Element => {
 
   // Контейнер для анимации входа/выхода строк ордера. Тот же паттерн, что в
   // `CartAnimations` — slide-up + fade на маунте, обратная анимация перед
-  // переходом на следующий шаг.
+  // переходом на следующий шаг или на другую страницу (route transition).
   const containerRef = useRef<HTMLDivElement>(null);
+  const { stage } = useTransitionState();
+  const [prevStage, setPrevStage] = useState<string>('');
 
   useGSAP(
     () => {
@@ -102,6 +105,33 @@ const StepOrder = (): JSX.Element => {
     },
     { scope: containerRef, dependencies: [items.length] }
   );
+
+  // Reverse-анимация при уходе на другую страницу (клик по любой ссылке /
+  // breadcrumb за пределы /cart). Тот же паттерн, что в `CartAnimations`
+  // и `CardsGridAnimations` — paused timeline + `play()` строго на переходе
+  // 'none' → 'leaving'.
+  useGSAP(() => {
+    const tl = gsap.timeline({ paused: true });
+
+    if (stage === 'leaving' && prevStage === 'none' && containerRef.current) {
+      const targets = containerRef.current.querySelectorAll(ORDER_ROW_SELECTOR);
+      if (targets.length > 0) {
+        tl.to(targets, {
+          autoAlpha: 0,
+          yPercent: 100,
+          duration: 0.4,
+          stagger: { each: 0.07, from: 'end' },
+        });
+        tl.play();
+      }
+    }
+
+    setPrevStage(stage);
+
+    return () => {
+      tl.kill();
+    };
+  }, [stage]);
 
   const handleProceedToPayment = (): void => {
     const root = containerRef.current;
@@ -140,27 +170,29 @@ const StepOrder = (): JSX.Element => {
               key={entry.id}
               className="step-order-row flex items-center justify-between gap-2.5"
             >
-              <div className="relative size-17.25 shrink-0 overflow-hidden rounded">
-                {imgSrc ? (
-                  <Image
-                    src={imgSrc}
-                    alt={title}
-                    width={69}
-                    height={69}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <Placeholder />
-                )}
-              </div>
-              <div className="flex w-50 flex-col justify-between gap-1">
-                <p className="font-normal text-sm text-white">{title}</p>
-                <div className="flex items-center gap-2.5">
-                  {weight ? <p className="font-normal text-sm text-white">{weight} g</p> : null}
-                  <p className="font-bold text-xl text-brand">{UsePrice({ amount: unit })}</p>
+              <div className="flex min-w-0 items-center gap-4">
+                <div className="relative size-17.25 shrink-0 overflow-hidden rounded">
+                  {imgSrc ? (
+                    <Image
+                      src={imgSrc}
+                      alt={title}
+                      width={69}
+                      height={69}
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    <Placeholder />
+                  )}
+                </div>
+                <div className="flex min-w-0 flex-col justify-between gap-1">
+                  <p className="font-normal text-sm text-white">{title}</p>
+                  <div className="flex items-center gap-2.5">
+                    {weight ? <p className="font-normal text-sm text-white">{weight} g</p> : null}
+                    <p className="font-bold text-xl text-brand">{UsePrice({ amount: unit })}</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-brand">
+              <div className="flex h-11.25 w-8.75 shrink-0 items-center justify-center rounded-[5px] border border-white text-base font-normal text-brand">
                 x{entry.quantity ?? 1}
               </div>
             </div>

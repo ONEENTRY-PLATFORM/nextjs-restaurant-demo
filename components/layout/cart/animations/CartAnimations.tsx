@@ -16,40 +16,31 @@ const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element =
   const [prevStage, setPrevStage] = useState<string>('');
   const ref = useRef(null);
 
-  // анимации stage leaving
+  // Leave-анимация на route-transition. Bottom-to-top stagger — у корзины
+  // кнопка APPLY внизу, и пользовательская модель «сначала уходит действие,
+  // потом контент» читается естественнее, чем top-to-bottom. На остальных
+  // страницах leave идёт сверху вниз (см. `OrdersAnimations`,
+  // `CardsGridAnimations`). Entrance каждого элемента — в per-component
+  // хуках (`ProductAnimations` / `TableRowAnimations`), здесь только leave.
   useGSAP(() => {
-    const tl = gsap.timeline({
-      paused: true,
-      onReverseComplete: () => {
-        gsap.set('.product-in-cart, .tr, #total', {
-          autoAlpha: 0,
-          yPercent: 100,
-        });
-      },
-    });
-
-    tl.set('.product-in-cart, .tr, #total', {
+    if (stage !== 'leaving' || prevStage !== 'none') {
+      setPrevStage(stage);
+      return undefined;
+    }
+    const targets = gsap.utils.toArray<HTMLElement>(
+      '.product-in-cart, .tr, #total, .cart-apply-btn'
+    );
+    if (targets.length === 0) {
+      setPrevStage(stage);
+      return undefined;
+    }
+    const tl = gsap.to(targets, {
       autoAlpha: 0,
       yPercent: 100,
-    })
-      .to('.product-in-cart', {
-        autoAlpha: 1,
-        yPercent: 0,
-        stagger: 0.1,
-        delay: 0.35,
-      })
-      .to('.tr, #total', {
-        autoAlpha: 1,
-        yPercent: 0,
-        stagger: 0.1,
-      });
-
-    if (stage === 'leaving' && prevStage === 'none') {
-      tl.reverse(1.2);
-    }
-
+      duration: 0.4,
+      stagger: { each: 0.07, from: 'end' },
+    });
     setPrevStage(stage);
-
     return () => {
       tl.kill();
     };

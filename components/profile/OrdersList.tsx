@@ -1,12 +1,14 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { IOrderByMarkerEntity, IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import type { BlogBanner } from '@/app/api';
@@ -26,6 +28,7 @@ import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
+import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
@@ -59,8 +62,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * Должен ли заказ попасть в группу "Orders History" вместо
- * "Active orders".
+ * Должен ли заказ попасть в группу "Orders History" вместо "Active orders".
  * @param   {IOrderByMarkerEntity} o - Сущность заказа.
  * @returns {boolean}                 True, если заказ завершён или отменён.
  */
@@ -70,9 +72,7 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 };
 
 /**
- * Считает subtotal / delivery / total для заказа. Subtotal — сумма
- * позиций; delivery — остаток между `totalSum` заказа и subtotal
- * (обрезается до 0).
+ * Считает subtotal / delivery / total для заказа.
  * @param   {IOrderByMarkerEntity} o - Сущность заказа.
  * @returns {{ subtotal: number; delivery: number; total: number }} Итоги.
  */
@@ -91,8 +91,8 @@ const computeTotals = (
 };
 
 /**
- * Форматирует номер заказа как в static-html (`№OE...`). Возвращает чистый
- * числовой id, если SDK не предоставляет отформатированный код.
+ * Форматирует номер заказа (`№OE...`). Возвращает чистый числовой id,
+ * если SDK не предоставляет отформатированный код.
  * @param   {IOrderByMarkerEntity} o - Сущность заказа.
  * @returns {string}                  Отображаемый номер.
  */
@@ -103,16 +103,12 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * Одна строка: pill со сводкой заказа + раскрывающееся тело с позициями,
- * итогами и CTA. Повторяет `pk_active_orders.html`.
+ * Одна строка: pill со сводкой заказа + раскрывающееся тело с позициями, итогами и CTA.
  * @param   {object}              props          - Пропсы карточки.
  * @param   {IOrderByMarkerEntity} props.order   - Сущность заказа.
  * @param   {boolean}             props.expanded - Раскрыто ли тело.
  * @param   {() => void}          props.onToggle - Обработчик переключения.
- * @param   {boolean}             props.isHistory- Рендерить ли CTA Repeat
- *                                                 только для истории
- *                                                 (вместо активного CTA
- *                                                 "Contact with the courier").
+ * @param   {boolean}             props.isHistory- Рендерить ли CTA Repeat.
  * @returns {JSX.Element}                         JSX карточки.
  */
 const OrderCard = ({
@@ -139,6 +135,52 @@ const OrderCard = ({
   const { subtotal, delivery, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const canReview = (order.statusIdentifier ?? '').toLowerCase() === 'delivered';
+
+  // Анимация раскрытия/сворачивания тела заказа.
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [rendered, setRendered] = useState(expanded);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (expanded) setRendered(true);
+  }, [expanded]);
+
+  useGSAP(
+    () => {
+      if (!bodyRef.current) return undefined;
+      const targets = bodyRef.current.querySelectorAll('.order-body-row');
+      if (targets.length === 0) return undefined;
+
+      if (expanded && rendered) {
+        const tl = gsap.timeline();
+        tl.set(targets, { autoAlpha: 0, yPercent: 100 }).to(targets, {
+          autoAlpha: 1,
+          yPercent: 0,
+          duration: 0.35,
+          stagger: 0.06,
+        });
+        return () => {
+          tl.kill();
+        };
+      }
+      if (!expanded && rendered) {
+        const tl = gsap.timeline({
+          onComplete: () => setRendered(false),
+        });
+        tl.to(targets, {
+          autoAlpha: 0,
+          yPercent: 100,
+          duration: 0.3,
+          stagger: { each: 0.05, from: 'end' },
+        });
+        return () => {
+          tl.kill();
+        };
+      }
+      return undefined;
+    },
+    { scope: bodyRef, dependencies: [expanded, rendered] }
+  );
 
   const openReviewPopup = (): void => {
     setOrderReviewTarget({ order, productsById });
@@ -193,9 +235,7 @@ const OrderCard = ({
       );
     }
 
-    // Сбрасываем wizard на cart-шаг — у пользователя в Redux могло остаться
-    // 'success'/'payment' от прошлой сессии, иначе и страница, и попап открылись
-    // бы не на корзине.
+    // Сбрасываем wizard на cart-шаг
     dispatch(setStep('cart'));
     if (isMdUp) {
       router.push('/cart');
@@ -206,7 +246,7 @@ const OrderCard = ({
   };
 
   return (
-    <div>
+    <div className="orders-row">
       <button
         type="button"
         onClick={onToggle}
@@ -224,12 +264,12 @@ const OrderCard = ({
           className={'transition-transform duration-200 ' + (expanded ? '' : 'rotate-180')}
         />
       </button>
-      {expanded && (
-        <>
+      {rendered && (
+        <div ref={bodyRef}>
           {!isHistory && (
             <button
               type="button"
-              className="mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+              className="order-body-row mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
               {t('contact_courier_button', 'Contact with the courier')}
             </button>
@@ -245,7 +285,7 @@ const OrderCard = ({
                   fullProduct={productsById.get(p.id)}
                 />
               ))}
-            <div className="mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
+            <div className="order-body-row mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
                   <p>{t('subtotal_text', 'Subtotal:')}</p>
@@ -261,28 +301,30 @@ const OrderCard = ({
                 <p>{UsePrice({ amount: total })}</p>
               </div>
             </div>
-            <div className="mt-5 flex flex-wrap gap-3.75">
-              {isHistory && (
-                <button
-                  type="button"
-                  onClick={repeatOrder}
-                  className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
-                >
-                  {t('repeat_order_button', 'Repeat order')}
-                </button>
-              )}
-              {canReview && (
-                <button
-                  type="button"
-                  onClick={openReviewPopup}
-                  className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
-                >
-                  {t('leave_review_button', 'Leave a review')}
-                </button>
-              )}
-            </div>
+            {(isHistory || canReview) && (
+              <div className="order-body-row mt-5 flex flex-wrap gap-3.75">
+                {isHistory && (
+                  <button
+                    type="button"
+                    onClick={repeatOrder}
+                    className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+                  >
+                    {t('repeat_order_button', 'Repeat order')}
+                  </button>
+                )}
+                {canReview && (
+                  <button
+                    type="button"
+                    onClick={openReviewPopup}
+                    className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
+                  >
+                    {t('leave_review_button', 'Leave a review')}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -311,7 +353,7 @@ const OrderLineItem = ({
   const previewSrc = product.previewImage?.previewLink ?? coverFromEntity ?? null;
   const href = '/shop/product/' + product.id;
   return (
-    <div className={first ? '' : 'mt-5'}>
+    <div className={'order-body-row' + (first ? '' : ' mt-5')}>
       <div className="flex items-center justify-between gap-3.75">
         <Link href={href} aria-label={product.title} className="shrink-0">
           {previewSrc ? (
@@ -346,12 +388,7 @@ const OrderLineItem = ({
 };
 
 /**
- * Дашборд заказов — разбивает заказы пользователя на "Active orders" и
- * "Orders History", с промо-сайдбаром только на десктопе. Повторяет верстку
- * `static-html/pk_active_orders.html`.
- *
- * Загружает данные через storage-маркер `delivery_order`; gracefully обрабатывает
- * состояния авторизации / пустого ответа / ошибки.
+ * Дашборд заказов — разбивает заказы пользователя на "Active orders" и "Orders History"
  * @returns {JSX.Element} JSX списка заказов.
  */
 const OrdersList = ({
@@ -382,9 +419,7 @@ const OrdersList = ({
       });
       if (cancelled) return;
       if (res.isError) {
-        // Fallback на случай когда `error.message` пустой; обычно SDK возвращает
-        // локализованное сообщение, поэтому через словарь не гоняем (иначе пришлось
-        // бы добавлять `dict` в deps эффекта и ре-фетчить заказы при ре-рендере).
+        // Fallback на случай когда `error.message` пустой;
         setError(res.error?.message ?? 'Failed to load orders');
       } else {
         setOrders(res.orders ?? []);
@@ -403,9 +438,6 @@ const OrdersList = ({
     return { active: a, history: h };
   }, [orders]);
 
-  // Подгружаем актуальные сущности продуктов для всех позиций во всех заказах,
-  // чтобы взять `cover.value.downloadLink` как фолбэк, когда snapshot заказа
-  // вернул `previewImage: null`. RTK дедуплицирует с другими местами (cart).
   const productIds = useMemo(() => {
     const set = new Set<number>();
     orders.forEach(o => o.products.forEach(p => set.add(p.id)));
@@ -496,9 +528,11 @@ const OrdersList = ({
   } else {
     leftColumn = (
       <>
-        <p className="mt-2.5 text-xl text-paper">{t('active_orders_title', 'Active orders')}</p>
+        <p className="orders-row mt-2.5 text-xl text-paper">
+          {t('active_orders_title', 'Active orders')}
+        </p>
         {active.length === 0 ? (
-          <p className="mt-2.75 text-sm text-paper/70">
+          <p className="orders-row mt-2.75 text-sm text-paper/70">
             {t('no_active_orders_text', 'You have no active orders.')}
           </p>
         ) : (
@@ -513,9 +547,11 @@ const OrdersList = ({
             />
           ))
         )}
-        <p className="mt-5 text-xl text-paper">{t('orders_history_title', 'Orders History')}</p>
+        <p className="orders-row mt-5 text-xl text-paper">
+          {t('orders_history_title', 'Orders History')}
+        </p>
         {history.length === 0 ? (
-          <p className="mt-2.75 text-sm text-paper/70">
+          <p className="orders-row mt-2.75 text-sm text-paper/70">
             {t('no_history_orders_text', 'You have no past orders yet.')}
           </p>
         ) : (
@@ -536,31 +572,33 @@ const OrdersList = ({
 
   return (
     <section>
-      <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-        {/* `min-w-0` + `shrink-0` фиксируют 50/50: без них flex-дети раскрытой
-            позиции заказа могут раздуть левую колонку и забрать ширину у правой. */}
-        <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
-        <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
-          {promoBanners
-            .filter(b => b.mobileImage)
-            .map(b => (
-              <Link
-                key={b.id}
-                href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
-                title={b.title}
-                className="block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
-              >
-                <Image
-                  src={b.mobileImage as string}
-                  alt={b.title}
-                  width={620}
-                  height={240}
-                  className="h-auto w-full"
-                />
-              </Link>
-            ))}
-        </aside>
-      </div>
+      <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
+        <div className="flex flex-col gap-10 md:flex-row md:gap-15">
+          {/* `min-w-0` + `shrink-0` фиксируют 50/50: без них flex-дети раскрытой
+              позиции заказа могут раздуть левую колонку и забрать ширину у правой. */}
+          <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
+          <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
+            {promoBanners
+              .filter(b => b.mobileImage)
+              .map(b => (
+                <Link
+                  key={b.id}
+                  href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                  title={b.title}
+                  className="orders-row block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
+                >
+                  <Image
+                    src={b.mobileImage as string}
+                    alt={b.title}
+                    width={620}
+                    height={240}
+                    className="h-auto w-full"
+                  />
+                </Link>
+              ))}
+          </aside>
+        </div>
+      </OrdersAnimations>
     </section>
   );
 };

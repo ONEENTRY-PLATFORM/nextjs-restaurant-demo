@@ -10,8 +10,7 @@ import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
  * сужает тип атрибута. Используется везде, где компонент принимает проп
  * `dict?: IAttributeValues` (см. [app/dictionaries.ts](app/dictionaries.ts)).
  *
- * @example
- *   const title = dictText(dict, 'leave_review_button', 'Leave a review');
+ * @example const title = dictText(dict, 'leave_review_button', 'Leave a review');
  *
  * @param   {IAttributeValues|undefined} dict     - Словарь (атрибут-сет `static_content`).
  * @param   {string}                     marker   - Маркер атрибута.

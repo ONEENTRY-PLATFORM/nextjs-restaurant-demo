@@ -79,27 +79,15 @@ const buildMonthGrid = (year: number, month: number): DayCell[] => {
 const formatHour = (h: number): string => `${String(h).padStart(2, '0')}.00`;
 
 type DateTimePickerSheetProps = {
-  /** Стартовая дата `yyyy-MM-dd`. Если не задана — день не выбран и слоты не показаны. */
   date?: string;
-  /** Стартовое время вида `HH.MM`. */
   time?: string;
-  /** Выбор подтверждён — единый callback с обоими значениями. */
   onApply: (date: string, time: string) => void;
   onClose?: () => void;
-  /** Минимальная допустимая дата `yyyy-MM-dd` (включительно). */
   minDate?: string;
-  /**
-   * Поставщик слотов для выбранной даты. Используется в форме бронирования —
-   * слоты приходят из расписания ресторана OneEntry (атрибут `schedule`,
-   * тип `timeInterval`). Если не задан — слоты генерятся по `range`/`step`.
-   * Если задан и вернул `[]` — показывается `noTimeText`.
-   */
   getSlots?: (dateIso: string) => string[];
   range?: [number, number];
   step?: 1 | 2;
-  /** Заголовок шага выбора даты (по умолчанию "Date"). */
   dateTitle?: string;
-  /** Заголовок шага выбора времени (по умолчанию "Time"). */
   timeTitle?: string;
   applyText?: string | undefined;
   continueText?: string | undefined;
@@ -115,17 +103,6 @@ type DateTimePickerSheetProps = {
  *   Шаг 2 (`time`): сетка временных слотов из `timeInterval`, кнопка `Apply`
  *     закрывает попап через `onApply(date, time)`. В шапке — стрелка назад,
  *     возвращающая к шагу 1 (выбранный день и время сохраняются).
- *
- * Анимации зеркалят паттерн `DrawerAnimations` (мобила: slide-up снизу;
- * десктоп: scale + fade), но GSAP-таймлайн локальный — попап не управляется
- * через `OpenDrawerContext`, его mount/unmount контролирует родитель
- * (ReservationForm / CalendarForm / StepPayment) через свой `pickerOpen`-флаг.
- * При закрытии играем таймлайн в реверсе и только по `onReverseComplete`
- * зовём `onClose`/`onApply` родителя — чтобы exit-анимация успевала
- * проиграться до размонтирования.
- *
- * См. вёрстку `static-html/service_date.html` (шаг 1) и
- * `static-html/service_time.html` (шаг 2) — оригинал тоже был двухэкранный.
  */
 const DateTimePickerSheet = ({
   date,
@@ -187,9 +164,7 @@ const DateTimePickerSheet = ({
     };
   }, []);
 
-  // Закрываем попап с exit-анимацией: реверсим таймлайн, и только в
-  // `onReverseComplete` зовём колбэк родителя — он размонтирует компонент.
-  // Если по какой-то причине таймлайна нет — закрываемся синхронно.
+  // Закрываем попап с exit-анимацией.
   const animateAndRun = (cb: () => void): void => {
     const tl = tlRef.current;
     if (!tl) {

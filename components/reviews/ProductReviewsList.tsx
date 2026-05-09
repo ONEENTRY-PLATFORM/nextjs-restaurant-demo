@@ -11,8 +11,7 @@ import StarCardIcon from '@/components/icons/star-card';
 const SWIPE_THRESHOLD_PX = 40;
 
 /**
- * Список отзывов на карточке товара — порт блока `<!-- rewiews -->` из
- * `static-html/details.html`. Заголовок блока рендерится всегда, даже если отзывов нет.
+ * Список отзывов на карточке товара.
  * @param   {object}          props           - Пропсы компонента.
  * @param   {ProductReview[]} props.reviews   - Отзывы верхнего уровня.
  * @param   {number}          props.productId - ID продукта (для триггера попапа).

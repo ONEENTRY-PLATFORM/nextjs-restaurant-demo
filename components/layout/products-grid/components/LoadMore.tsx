@@ -61,7 +61,11 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
     return () => {
       trigger.kill();
     };
-  }, [currentPage]);
+    // searchParams в deps — иначе ScrollTrigger.onEnter держит stale closure
+    // на goToNextPage с пустым searchParams.toString(), и при первом срабатывании
+    // (после клика по чипу CategoriesScroller на той же странице) preferences
+    // вылетают из URL.
+  }, [currentPage, searchParams]);
 
   return (
     <button

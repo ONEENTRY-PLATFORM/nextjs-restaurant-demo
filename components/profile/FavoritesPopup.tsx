@@ -96,7 +96,7 @@ const FavoritesPopup = (): JSX.Element => {
               <p className="text-paper/90">You have no favorites yet.</p>
               <Link
                 href="/shop"
-                onClick={close}
+                onClick={() => setOpen(false)}
                 className="rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-paper hover:bg-brand-hover"
               >
                 Go to shop

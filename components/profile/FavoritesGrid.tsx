@@ -15,8 +15,7 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * Сетка избранного в дашборде — порт сетки карточек модалки
- * `static-html/pk_favorites.html`. На странице `/profile/favorites`
+ * Сетка избранного в дашборде
  * @returns {JSX.Element} JSX сетки избранного.
  */
 const FavoritesGrid = (): JSX.Element => {
@@ -51,9 +50,7 @@ const FavoritesGrid = (): JSX.Element => {
 };
 
 /**
- * Одиночная карточка избранного в десктоп-сетке — повторяет карточку модалки
- * из `static-html/pk_favorites.html`: изображение | название/вес/цена |
- * колонка действий с корзиной и корзиной для мусора.
+ * Одиночная карточка избранного в десктоп-сетке.
  * @param   {object}          props         - Пропсы карточки.
  * @param   {IProductsEntity} props.product - Сущность избранного продукта.
  * @returns {JSX.Element}                   JSX карточки.
@@ -113,9 +110,6 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
           }}
           aria-label={inCart ? 'In cart' : 'Add to cart'}
           aria-pressed={inCart}
-          // Когда товар уже в корзине — кнопка показывается как
-          // «нажатая»: brand-circle + белая иконка (зеркалит hover-state
-          // через `.group_white.is-active` в `app/styles/main.css`).
           className={
             inCart
               ? 'group_white is-active flex h-10 w-10 items-center justify-center rounded-full bg-brand'

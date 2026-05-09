@@ -24,13 +24,7 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-/**
- * Попап избранного — порт `static-html/pk_favorites.html` (строки 361–470).
- * Модалка по центру на десктопе (соответствует паттерну `Modal` проекта),
- * нижний sheet на мобиле. Управляется через `OpenDrawerContext` (`open` +
- * `component === 'FavoritesPopup'`).
- * @returns {JSX.Element} JSX попапа избранного.
- */
+/** FavoritesPopup — попап избранного: модалка по центру на md+, bottom-sheet на мобиле. */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -44,7 +38,7 @@ const FavoritesPopup = (): JSX.Element => {
 
   const close = () => setTransition('close');
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп вниз закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не перебивался `yPercent`-tween-ом.
+  // Свайп закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не конфликтовал с `yPercent`-tween.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const favoriteIdSet = new Set(favoriteIds);
   const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
@@ -57,10 +51,7 @@ const FavoritesPopup = (): JSX.Element => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        {/* Мобильный хедер — повторяет шапку CartPopup: back-стрелка слева,
-            заголовок по центру, бургер справа. На md+ скрыт, там сверху —
-            обычная X-кнопка. На мобиле sticky к верху скролл-контейнера, чтобы
-            не уезжал вместе со списком избранного. */}
+        {/* Мобильный хедер: back / title / burger; sticky чтобы не уезжал со списком. На md+ скрыт. */}
         <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between px-5 pt-5 pb-2.5 md:hidden">
           <button
             type="button"
@@ -76,10 +67,7 @@ const FavoritesPopup = (): JSX.Element => {
           </button>
         </div>
 
-        {/* Десктоп-хедер — раньше был только X-кнопкой и заголовок не
-            рисовался. Добавлен `<p>Favorites</p>` по центру по образцу
-            других попапов (ReservationPopup / Modal — `font-semibold
-            text-[24px] text-brand`). */}
+        {/* Десктоп-хедер: spacer / title / X — выравнивание заголовка по центру. */}
         <div className="hidden items-center justify-between md:flex">
           <span aria-hidden="true" className="h-11.5 w-11.5" />
           <p className="font-semibold text-[24px] text-brand">Favorites</p>
@@ -121,12 +109,7 @@ const FavoritesPopup = (): JSX.Element => {
   );
 };
 
-/**
- * Одиночная карточка избранного — повторяет карточку модалки `pk_favorites.html`.
- * @param   {object}          props         - Пропсы карточки.
- * @param   {IProductsEntity} props.product - Сущность избранного продукта.
- * @returns {JSX.Element}                   JSX карточки.
- */
+/** FavoriteCard — одиночная карточка избранного в попапе. */
 const FavoriteCard = ({
   product,
   addToCartLabel,

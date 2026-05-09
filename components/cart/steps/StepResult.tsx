@@ -15,12 +15,7 @@ import {
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 
-/**
- * Форматирует дату как `dd.MM.yy HH.mm` — совпадает с форматированием
- * `Get delivery by: 28.02.24 15.30` из `cart_PAYMENT_masseges.html`.
- * @param   {Date}   d - Дата для форматирования.
- * @returns {string}   Отформатированная строка.
- */
+/** Форматирует дату как `dd.MM.yy HH.mm` (для штампа «Get delivery by: …»). */
 const formatDeliveryStamp = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(d.getFullYear()).slice(
@@ -29,19 +24,9 @@ const formatDeliveryStamp = (d: Date): string => {
 };
 
 /**
- * Шаг checkout — экран success / error сообщения.
- *
- * Вариант success (`cart_PAYMENT_masseges.html`):
- *   - Номер заказа (оранжевый, сверху) + сводка товаров
- *   - Штамп "Get delivery by: <date>"
- *   - Горизонтальный разделитель
- *   - Заголовок "Order Confirmed" + текст подтверждения + "See you soon!"
- *
- * Вариант error (`cart_error_masseges.html`):
- *   - Две центрированные строки: "Something went wrong." + "Please try again."
- * @param   {object}              props         - Пропсы компонента.
- * @param   {'success' | 'error'} props.variant - Какой экран рендерить.
- * @returns {JSX.Element}                       JSX шага.
+ * StepResult — финальный экран wizard'а: success или error.
+ * @param {object}              props         - Пропсы.
+ * @param {'success' | 'error'} props.variant - Какой экран рендерить.
  */
 const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -52,9 +37,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     quantity?: number;
     product?: IProductsEntity;
   }>;
-  // Захватываем нечистый `Date.now()` один раз в initial state, чтобы рендер оставался
-  // чистым, а штамп — стабильным на всё время жизни компонента. Номер заказа
-  // приходит из id, присвоенного CMS в момент подтверждения.
+  // `Date.now()` захватываем в initial state — рендер чистый, штамп стабилен на всё время жизни компонента.
   const orderNumber = lastOrderId ? '№' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000))

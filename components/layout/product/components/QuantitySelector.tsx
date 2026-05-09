@@ -10,9 +10,7 @@ import DecreaseButton from './DecreaseButton';
 import IncreaseButton from './IncreaseButton';
 import QuantityInput from './QuantityInput';
 
-/**
- * Селектор количества
- */
+/** QuantitySelector — −/qty/+ контрол количества товара в корзине. */
 const QuantitySelector = ({
   id,
   units,
@@ -28,11 +26,9 @@ const QuantitySelector = ({
 }): JSX.Element => {
   const [qty, setQty] = useState(0);
 
-  // извлекаем данные из cartSlice
   const data = useAppSelector(state => selectCartItemWithIdLength(state, id));
   const quantity = data?.quantity || 0;
 
-  // устанавливаем стейт qty при изменении quantity
   useEffect(() => {
     if (!quantity) {
       return;

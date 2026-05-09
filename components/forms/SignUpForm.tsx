@@ -20,9 +20,7 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
 
-/**
- * Форма SignUp
- */
+/** SignUpForm — форма регистрации пользователя. */
 const SignUpForm = (): JSX.Element => {
   const t = useT();
   const [loading, setLoading] = useState(false);
@@ -31,25 +29,21 @@ const SignUpForm = (): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
 
-  // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
-  // Получаем поля из formFieldsReducer
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Поля формы — только нужные по верстке pk_sing_up.html, в порядке верстки
+  // Поля формы по верстке pk_sing_up.html, в порядке верстки.
   const formFields = useMemo(
     () => ['username', 'surname', 'password', 'repeat_password', 'email', 'phone'],
     []
   );
 
-  // Проверяем, может ли пользователь засабмитить форму
   const canSubmit = useMemo(
     () => formFields.every(field => fields[field]?.valid),
     [fields, formFields]
   );
 
-  // Готовим formData
   const formData = useMemo(
     () =>
       formFields.map(field => ({
@@ -60,15 +54,13 @@ const SignUpForm = (): JSX.Element => {
     [fields, formFields]
   );
 
-  // Обработчик sign up
   const onSignUpHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       if (!canSubmit) return;
 
-      // Готовим объект data для запроса sign-up.
-      // `formIdentifier` должен совпадать с `formIdentifier` auth-провайдера
+      // `formIdentifier` должен совпадать с `formIdentifier` auth-провайдера.
       const data: ISignUpData = {
         formIdentifier: 'user',
         authData: [
@@ -95,19 +87,14 @@ const SignUpForm = (): JSX.Element => {
       setLoading(true);
 
       try {
-        // Пытаемся зарегистрировать пользователя через предоставленный API
         const res = await getApi().AuthProvider.signUp('email', data);
 
         if (typeError(res)) {
-          // Ошибка sign-up — остаёмся в SignUpForm и показываем сообщение
-          // от сервера под кнопкой (через {@link ErrorMessage}). На
-          // VerificationForm НЕ переключаемся: пользователь не создан, код
-          // подтверждения слать некуда.
+          // Ошибка sign-up — остаёмся в SignUpForm: пользователь не создан, на VerificationForm не переключаемся.
           const err = res as { statusCode?: number; message?: string };
           setError(err.message || `Error ${err.statusCode ?? ''}`);
         } else {
           const entity = res as ISignUpEntity;
-          // Если ответ говорит, что аккаунт активен, логиним пользователя
           if (entity.isActive) {
             await logInUser({
               method: 'email',

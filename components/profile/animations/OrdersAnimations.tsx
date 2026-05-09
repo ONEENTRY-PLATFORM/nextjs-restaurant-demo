@@ -9,18 +9,11 @@ import { useRef, useState } from 'react';
 const ORDERS_ROW_SELECTOR = '.orders-row';
 
 /**
- * Анимации для `/profile/orders`. Аналог `StepOrder` / `CartAnimations`:
- * entrance — stagger slide-up + fade на маунте и при изменении количества
- * строк (когда заказы дохдят async из API), leave — обратная stagger-анимация
- * на стадии 'leaving' от `next-transition-router`. Целится в `.orders-row`
- * — этот класс ставится на заголовки секций ("Active orders" / "Orders
- * History"), карточки заказов и баннеры промо-сайдбара.
+ * OrdersAnimations — entrance/leave stagger для `.orders-row` на `/profile/orders`.
  *
- * @param   {object}      props           - Пропсы.
- * @param   {ReactNode}   props.children  - Контент (вся OrdersList включая sidebar).
- * @param   {number}      props.rowsKey   - Сигнал ре-маунта entrance-таймлайна
- *                                          (например, `active.length + history.length`).
- * @returns {JSX.Element}                 JSX обёртки с ref.
+ * @param   {object}    props          - Пропсы.
+ * @param   {ReactNode} props.children - Контент OrdersList (включая sidebar).
+ * @param   {number}    props.rowsKey  - Сигнал ре-маунта entrance-таймлайна.
  */
 const OrdersAnimations = ({
   children,

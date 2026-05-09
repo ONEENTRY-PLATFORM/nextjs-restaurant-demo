@@ -6,9 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/**
- * Анимации Review
- */
+/** ReviewAnimations — toggle/leaving анимация блока отзыва. */
 const ReviewAnimations = ({
   children,
   className,
@@ -24,7 +22,6 @@ const ReviewAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // анимации toggle компонента
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,
@@ -56,7 +53,6 @@ const ReviewAnimations = ({
     };
   }, [state]);
 
-  // анимации stage leaving
   useGSAP(() => {
     const tl = gsap.timeline();
 

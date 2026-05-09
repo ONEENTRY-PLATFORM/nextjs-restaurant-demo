@@ -34,54 +34,37 @@ export const resetPasswordFormFields = [
 ];
 
 /**
- * Форма сброса пароля.
+ * ResetPasswordForm — форма сброса пароля через OTP.
  *
- * ⚠️ Это намеренно фронтовая форма (статические `<input>`-поля), а НЕ
- * `getFormByMarker`-форма из админки OneEntry. В CMS такой формы нет — данные
- * напрямую отправляются в SDK `AuthProvider.changePassword(...)`. MCP-правило
- * «Forms ALWAYS dynamic» относится к контентным формам (Contact Us, Sign Up),
- * а не к auth-flow методам с фиксированной сигнатурой SDK. См. MISMATCH-LOG §C.8.2.
+ * Намеренно статические `<input>`-поля (не `getFormByMarker` из CMS) — данные
+ * напрямую идут в SDK `AuthProvider.changePassword(...)`. См. MISMATCH-LOG §C.8.2.
  */
 const ResetPasswordForm = (): JSX.Element => {
   const t = useT();
-  // Деструктурируем значения полей формы из Redux store через селектор
   const { email, password, password_confirm, otp_code } = useAppSelector(
     state => state.formFieldsReducer.fields
   );
 
-  // Получаем функции смены текущего компонента и action из контекста
   const { setComponent, setAction } = useContext(OpenDrawerContext);
 
-  // State для управления статусом загрузки во время асинхронных операций
   const [isLoading, setLoading] = useState(false);
-
-  // State для управления сообщениями об ошибках для отображения пользователю
   const [isError, setError] = useState('');
 
-  /**
-   * Меняет пароль через API AuthProvider
-   * @param e FormEvent
-   */
   const onResetSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    // Предотвращаем дефолтное поведение сабмита формы
     e.preventDefault();
-
-    // Включаем loading-состояние на время обработки запроса сброса пароля
     setLoading(true);
 
     try {
-      // Пытаемся сменить пароль пользователя через предоставленный API
       const result = await getApi().AuthProvider.changePassword(
-        'email', // Метод аутентификации (на , 'email', 'google' и т.д.)
-        email?.value as string, // Email, введённый пользователем
-        'otp', // Тип используемой верификации, здесь OTP (One-Time Password)
-        1, // Индикатор версии или типа процесса OTP
-        otp_code?.value.toString() || '', // OTP-код, введённый пользователем, конвертированный в строку
-        password?.value || '', // Новый пароль, введённый пользователем
-        password_confirm?.value || '' // Подтверждение нового пароля
+        'email',
+        email?.value as string,
+        'otp',
+        1,
+        otp_code?.value.toString() || '',
+        password?.value || '',
+        password_confirm?.value || ''
       );
 
-      // Если смена пароля успешна, переключаемся на форму sign-in
       if (result) {
         setComponent('SignInForm');
         setAction('');

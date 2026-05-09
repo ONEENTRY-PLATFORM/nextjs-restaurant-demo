@@ -5,11 +5,8 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import { useSyncExternalStore } from 'react';
 
 /**
- * Внешнее значение, которое OrdersList публикует перед открытием
- * `OrderReviewPopup`, и которое попап читает в свой рендер. Хранится
- * вне React-tree (модульный singleton), потому что `OpenDrawerContext`
- * умеет передавать в попап только строковый `action`, а здесь нужны
- * полная сущность заказа + map продуктов для фолбэка обложки.
+ * OrderReviewTarget — публикуется OrdersList перед открытием OrderReviewPopup.
+ * Singleton вне React-tree, т.к. `OpenDrawerContext` пробрасывает только строковый `action`.
  */
 export interface OrderReviewTarget {
   order: IOrderByMarkerEntity | null;
@@ -30,8 +27,7 @@ const subscribe = (cb: () => void): (() => void) => {
 
 const getSnapshot = (): OrderReviewTarget => state;
 
-// SSR-фолбэк. Попап рендерится только клиентом (`'use client'`), но
-// `useSyncExternalStore` всё равно требует серверный snapshot.
+// SSR-фолбэк: попап клиентский, но `useSyncExternalStore` требует серверный snapshot.
 const getServerSnapshot = (): OrderReviewTarget => EMPTY;
 
 export const setOrderReviewTarget = (target: OrderReviewTarget): void => {

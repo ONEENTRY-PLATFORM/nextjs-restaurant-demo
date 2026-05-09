@@ -11,11 +11,7 @@ type ProductCartEntry = {
   selected: boolean;
 };
 
-/**
- * Запись бронирования в cart-slice — представляет слот бронирования столика
- * для одного филиала ресторана. Заменяет легаси-поля `salon`/`master`
- * (из исходного шаблона salon, с которого этот репо клонировался).
- */
+/** Запись бронирования в cart-slice — слот бронирования столика для одного филиала ресторана. */
 type ReservationEntry = {
   id: number;
   restaurant?: IPagesEntity;
@@ -142,8 +138,7 @@ export const cartSlice = createSlice({
       state.productsData[index] = {
         ...entry,
         selected: entry.selected,
-        // Тот же falsy-cap guard, что и в `increaseProductQty` — считаем `units = 0`
-        // за «нет верхнего предела», т.к. атрибут не заполнен в CMS.
+        // Falsy-cap guard: `units = 0` означает «нет верхнего предела» (атрибут не заполнен в CMS).
         quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
       };
     },
@@ -203,9 +198,7 @@ export const {
   decreaseProductQty,
 } = cartSlice.actions;
 
-/**
- * selectIsInCart
- */
+/** Проверяет, есть ли товар в корзине. */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number }[] } },
   id: number
@@ -219,24 +212,17 @@ export const selectIsInCart = (
   return true;
 };
 
-/**
- * Селектор товаров корзины (items, добавленные через addProductToCart).
- * Форма каждой записи: `{ id, selected, quantity }`.
- */
+/** Селектор товаров корзины (форма записи: `{ id, selected, quantity }`). */
 export const selectCartData = (state: {
   cartReducer: { productsData: ProductCartEntry[] };
 }): ProductCartEntry[] => state.cartReducer.productsData;
 
-/**
- * Селектор списка бронирований (table bookings — отдельно от корзины товаров).
- */
+/** Селектор списка бронирований (table bookings — отдельно от корзины товаров). */
 export const selectReservations = (state: {
   cartReducer: { reservations: ReservationEntry[] };
 }): ReservationEntry[] => state.cartReducer.reservations;
 
-/**
- * Селектор данных доставки
- */
+/** Селектор данных доставки. */
 export const selectDeliveryData = (state: {
   cartReducer: {
     deliveryData: {
@@ -247,9 +233,7 @@ export const selectDeliveryData = (state: {
   };
 }) => state.cartReducer.deliveryData;
 
-/**
- * Селектор итоговой цены корзины
- */
+/** Селектор итоговой цены корзины. */
 export const selectCartTotal = (state: {
   cartReducer: {
     reservationId: number;
@@ -259,21 +243,16 @@ export const selectCartTotal = (state: {
   const rId = state.cartReducer.reservationId;
   const product = state.cartReducer.reservations[rId]?.product;
   const price = product?.price;
-  // salePrice === oldPrice
   const salePrice = product?.attributeValues?.sale?.value;
 
   return price || salePrice;
 };
 
-/**
- * Селектор id активного бронирования
- */
+/** Селектор id активного бронирования. */
 export const selectReservationId = (state: { cartReducer: { reservationId: number } }) =>
   state.cartReducer.reservationId;
 
-/**
- * Селектор элемента корзины по product id
- */
+/** Селектор элемента корзины по product id. */
 export const selectCartItemWithIdLength = (
   state: {
     cartReducer: {
@@ -283,11 +262,7 @@ export const selectCartItemWithIdLength = (
   id: number
 ) => state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
-/**
- * Получает product id для анимаций перехода.
- * Возвращает объект `{ transitionId }`, чтобы caller мог
- * `const { transitionId } = useAppSelector(getTransition)`.
- */
+/** Возвращает `{ transitionId }` — product id для анимаций перехода. */
 export const getTransition = (state: {
   cartReducer: {
     transitionId: number;
@@ -296,14 +271,7 @@ export const getTransition = (state: {
   transitionId: state.cartReducer.transitionId,
 });
 
-/**
- * Селектор версии корзины.
- *
- * Раньше читал `state.favoritesReducer.version`, что не соответствовало
- * `setCartVersion`, который пишет в `cartReducer.version` — потребители
- * (`AuthContext`) получали устаревшее значение и cart-side версионирование
- * фактически было сломано. Исправлено.
- */
+/** Селектор версии корзины (читает `cartReducer.version`, куда пишет `setCartVersion`). */
 export const selectCartVersion = (state: { cartReducer: { version: number } }) =>
   state.cartReducer.version;
 

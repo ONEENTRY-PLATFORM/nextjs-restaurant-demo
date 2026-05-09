@@ -31,17 +31,11 @@ type UseCreateOrderApi = {
 };
 
 /**
- * Создаёт заказ через OneEntry `Orders.createOrder` и (если выбранный
- * способ оплаты — не наличные) открывает платёжную сессию через `Payments.createSession`.
+ * useCreateOrder — создаёт заказ через `Orders.createOrder` и при не-cash оплате открывает payment-сессию.
  *
- * Хук управляется вызывающей стороной: он НЕ навигирует, НЕ переключает шаги
- * визарда, НЕ чистит локальное состояние самостоятельно. Возвращает объект-результат,
- * чтобы вызывающий код сам решил, что делать дальше (например, dispatch `setStep('success')`,
- * редирект на `paymentUrl` и т.п.). При успехе хук:
- *   - сохраняет новый id заказа через `setLastOrderId` (чтобы экран успеха
- *     смог его показать),
- *   - чистит локальную корзину + сбрасывает заказ в работе в Redux.
- * @returns {UseCreateOrderApi} Колбэк подтверждения + состояние loading / error.
+ * Не навигирует и не чистит state сам — возвращает результат, чтобы вызывающий решил, что делать дальше.
+ * При успехе сохраняет id заказа через `setLastOrderId`, чистит корзину и сбрасывает draft заказа в Redux.
+ * @returns {UseCreateOrderApi} Колбэк подтверждения + loading/error.
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();
@@ -122,12 +116,9 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
       dispatch(setLastOrderId(id));
 
-      // Локальную корзину + draft заказа в Redux чистим ТОЛЬКО на успешных
-      // ветках (cash success или удачный Stripe paymentUrl). Если открыть
-      // payment-сессию не получилось — оставляем оба, чтобы пользователь не
-      // потерял свой выбор и мог повторить попытку. Заказ в OneEntry уже
-      // создан, повторное оформление сделает второй заказ — это меньшее зло
-      // по сравнению с полностью потерянной корзиной.
+      // Чистим локальную корзину + draft заказа ТОЛЬКО на успешных ветках (cash или удачный
+      // Stripe paymentUrl). При сбое payment-сессии оставляем — заказ в OneEntry уже создан,
+      // повторная попытка без потерянной корзины — меньшее зло, чем дубль заказа.
       const clearCheckoutState = (): void => {
         dispatch(removeAllProducts());
         dispatch(removeOrder());
@@ -139,11 +130,9 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         return { ok: true, orderId: id };
       }
 
-      // Для всех остальных способов (Stripe и пр.) пытаемся открыть hosted
-      // checkout. В отличие от прошлой версии, ошибки НЕ глушатся: если
-      // session-эндпоинт вернёт IError или paymentUrl=null, мы возвращаем
-      // ok:false с сообщением — иначе wizard молча уходит на success без
-      // редиректа на Stripe (см. PaymentsApi.createSession и orders.md).
+      // Для остальных способов (Stripe и пр.) открываем hosted checkout. Ошибки НЕ глушим:
+      // при IError / paymentUrl=null возвращаем ok:false — иначе wizard молча уходит на success
+      // без редиректа на Stripe (см. PaymentsApi.createSession и orders.md).
       let session;
       try {
         session = await getApi().Payments.createSession(id, 'session');
@@ -166,10 +155,8 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
       const paymentUrl = (session as { paymentUrl?: string | null }).paymentUrl ?? undefined;
       if (!paymentUrl) {
-        // Stripe возвращает paymentUrl сразу; null здесь означает либо
-        // несконфигурированный аккаунт, либо асинхронный провайдер (PayPal
-        // и т.п. — для него нужен polling getSessionByOrderId, мы пока не
-        // поддерживаем).
+        // null = несконфигурированный аккаунт или async-провайдер (PayPal, требует
+        // polling getSessionByOrderId — пока не поддерживаем).
         return {
           ok: false,
           error: `Order #${id} created, but payment provider returned no checkout URL.`,

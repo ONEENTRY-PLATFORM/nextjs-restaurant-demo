@@ -5,9 +5,7 @@ import { gsap } from 'gsap';
 import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
 import { useRef } from 'react';
 
-/**
- * Анимации меню профиля при изменении state
- */
+/** Анимации меню профиля при изменении state. */
 const ProfileMenuAnimations = ({
   children,
   className,
@@ -21,7 +19,6 @@ const ProfileMenuAnimations = ({
 }): JSX.Element => {
   const ref = useRef(null);
 
-  // анимации при изменении state
   useGSAP(() => {
     if (!ref.current) {
       return;

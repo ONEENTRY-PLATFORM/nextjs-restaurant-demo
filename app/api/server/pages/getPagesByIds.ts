@@ -5,9 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает объекты страниц.
- */
+/** getPagesByIds — страницы по массиву id. */
 export const getPagesByIds = cache(
   async (
     ids: []

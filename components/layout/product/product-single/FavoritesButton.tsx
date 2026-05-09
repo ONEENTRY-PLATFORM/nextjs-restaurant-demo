@@ -17,9 +17,7 @@ import {
 import HeartIcon from '@/components/icons/heart';
 import HeartOpenIcon from '@/components/icons/heart-o';
 
-/**
- * Кнопка избранного
- */
+/** FavoritesButton — кнопка-сердце на странице продукта. */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
@@ -32,9 +30,6 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   }, []);
   const isFav = mounted ? isFavStored : false;
 
-  /**
-   * Обновить избранное
-   */
   const onUpdateFavoritesHandle = () => {
     if (isFav) {
       dispatch(removeFavorites(product.id));
@@ -45,10 +40,6 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
     }
   };
 
-  /**
-   * Обновить данные избранного у пользователя
-   * @async
-   */
   const onUpdateUserFavoritesHandle = async () => {
     try {
       if (!isFav) {

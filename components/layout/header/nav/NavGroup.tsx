@@ -11,24 +11,9 @@ import NavItemFavorites from './NavItemFavorites';
 import NavItemProfile from './NavItemProfile';
 
 /**
- * Группа пользовательской навигации (верхняя панель иконок: Home, Cart,
- * Favorites, Profile). Состав и порядок берутся из CMS-меню `user_menu`
- * — top-level entries (`parentId === null`), отсортированные по
- * `position`.
+ * NavGroup — группа верхней навигации (Home/Cart/Favorites/Profile + generic-пункты CMS-меню `user_menu`).
  *
- * Сопоставление `pageUrl → компонент`:
- *  - `cart` → {@link NavItemCart} (ссылка с бейджем количества)
- *  - `favorites` → {@link NavItemFavorites} (ссылка с бейджем)
- *  - `profile` → {@link NavItemProfile} (иконка с hover-дропдауном
- *    из children пункта `profile` в `user_menu`)
- *  - любая другая → generic-ссылка с иконкой из
- *    `attributeValues.menu_icon` (атрибут типа `image`) и href
- *    `/${pageUrl}`. Если `menu_icon` не задан — пункт пропускается,
- *    чтобы не выводить пустую кнопку.
- *
- * Если меню не получено (ошибка SDK или маркера ещё нет) — fallback
- * на `[Home, Cart, Favorites, Profile]` хардкодом, чтобы хедер не
- * рассыпался.
+ * Fallback: если меню не пришло — рисуем дефолтный набор иконок.
  */
 const NavGroup = async (): Promise<JSX.Element> => {
   const { menu } = await getMenuByMarker('user_menu');
@@ -40,8 +25,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
     <div className="flex justify-between relative self-end cursor-pointer">
       <div className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
         {topLevel.length === 0 ? (
-          // Фоллбек: меню не пришло — рисуем дефолтный набор иконок,
-          // чтобы юзер не остался без навигации.
+          // Фоллбек: меню не пришло — дефолтный набор иконок.
           <>
             <NavItemCart />
             <NavItemFavorites />
@@ -58,9 +42,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
 const renderItem = (page: IMenusPages): JSX.Element | null => {
   switch (page.pageUrl) {
     case 'home_web':
-      // Home — у CMS-страницы пустой `attributeValues`, иконки в `menu_icon`
-      // нет, поэтому используем встроенный `HouseIcon` (тот же, что был
-      // до перевода NavGroup на CMS-меню).
+      // У страницы Home нет `menu_icon` в CMS — используем встроенный `HouseIcon`.
       return (
         <Link
           key={page.id}
@@ -83,15 +65,9 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
   }
 };
 
-/**
- * Generic-ссылка для верхнего меню — рендерит иконку из
- * `attributeValues.menu_icon`. Используется для всех top-level пунктов,
- * у которых нет специализированного компонента (Home, etc.).
- */
+/** Generic-ссылка для верхнего меню — иконка из `attributeValues.menu_icon`. */
 const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
-  // `attributeValues.menu_icon.value` в SDK типизирован как `{}` — данные
-  // приходят как `{ downloadLink, ... }` для type === 'image' (см.
-  // inspect-api). Сужаем локальным cast'ом.
+  // SDK типизирует `menu_icon.value` как `{}`, но для image приходит `{ downloadLink, ... }`.
   const icon = page.attributeValues?.menu_icon as
     | { type?: string; value?: { downloadLink?: string } }
     | undefined;
@@ -99,8 +75,6 @@ const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => 
   if (!iconUrl) return null;
 
   const title = page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? page.pageUrl ?? '';
-  // pageUrl `home_web` (как в админке) → ведёт на корень сайта;
-  // остальные — на `/${pageUrl}`.
   const href = page.pageUrl === 'home_web' ? '/' : `/${page.pageUrl}`;
 
   return (

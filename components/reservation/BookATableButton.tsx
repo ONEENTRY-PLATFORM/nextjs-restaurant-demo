@@ -6,14 +6,10 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Кнопка `BOOK A TABLE` для страницы ресторана. Открывает попап
- * {@link ReservationPopup} через {@link OpenDrawerContext} и кладёт в
- * `action` маркер ресторана (= `pageUrl`), чтобы попап предзаполнил
- * дропдаун выбора ресторана.
+ * BookATableButton — клиентская кнопка-триггер ReservationPopup.
  *
- * Server-страница ресторана `app/restaurants/[handle]/page.tsx` не
- * может сама дёргать context (она серверная), поэтому кнопка-триггер
- * вынесена в отдельный клиентский компонент.
+ * Кладёт в `action` маркер ресторана (= `pageUrl`), чтобы попап
+ * предзаполнил дропдаун выбора ресторана.
  */
 const BookATableButton = ({
   restaurantHandle,

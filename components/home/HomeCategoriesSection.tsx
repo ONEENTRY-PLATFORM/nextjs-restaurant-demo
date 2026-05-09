@@ -8,20 +8,9 @@ import CategoriesSection from './CategoriesSection';
 const SECTION_LIMIT = 4;
 
 /**
- * Асинхронная секция, которая материализует список категорий на главной —
- * один {@link CategoriesSection} на каждую видимую дочернюю страницу `menu`, отсортированы по
- * `page.position`, до {@link SECTION_LIMIT} продуктов в каждой.
- *
- * Живёт за блоком `home_categories`, чтобы редактор контролировал,
- * *где* в ритме страницы окажется весь блок категорий (через
- * пересортировку блоков в админке OneEntry), не теряя при этом ритм чередования
- * фона по дочерним внутри.
- *
- * Запросы продуктов выполняются последовательно, потому что параллельный fan-out поверх
- * общего auth-состояния OneEntry SDK выдавал пустые ответы на некоторых
- * категориях в прошлых тестах.
- * @returns {Promise<JSX.Element|null>} JSX списка категорий, либо `null`, если
- *                                      ни в одной категории нет продуктов.
+ * HomeCategoriesSection — список секций категорий на главной (по дочерним страницам `menu`).
+ * Запросы продуктов выполняются последовательно: параллельный fan-out над общим auth-состоянием SDK иногда давал пустые ответы.
+ * @returns {Promise<JSX.Element|null>} JSX списка либо `null`, если ни в одной категории нет продуктов.
  */
 const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
   const { pages = [] } = await getChildPagesByParentUrl('menu');

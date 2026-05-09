@@ -8,19 +8,14 @@ import { getApi, isError, syncTokens } from '@/app/api';
 type LogInProps = { method: string; login: string; password: string };
 
 /**
- * Авторизация пользователя через API AuthProvider.
+ * logInUser — авторизация пользователя через API AuthProvider.
  *
- * ⚠️ Несмотря на путь `app/api/server/...`, файл НЕ помечен `'use server'` и
- * исполняется на клиенте — все вызовы идут из `'use client'`-форм
- * (SignInForm, SignUpForm, VerificationForm). По MCP-правилу
- * `AuthProvider.auth/signUp/generateCode/checkCode` обязаны быть client-side
- * (иначе fingerprint берётся серверный `Node.js/...`).
- *
- * После успешного `auth()` SDK НЕ кладёт токены в свой state автоматически —
- * нужно сделать это руками через `syncTokens`, иначе следующий
- * auth-protected POST уйдёт без `Authorization` и сервер вернёт
- * `400 "You must authorize to send data"` (SDK ретраит только 401).
- * См. правило MCP `tokens` (раздел «syncTokens — mandatory pattern»).
+ * Несмотря на путь `app/api/server/...`, файл НЕ `'use server'` — исполняется на клиенте
+ * (вызывается из `'use client'`-форм). По MCP-правилу `AuthProvider.auth/signUp/generateCode/checkCode`
+ * обязаны быть client-side, иначе fingerprint берётся серверный.
+ * После `auth()` SDK не кладёт токены в state — обязателен `syncTokens`, иначе следующий
+ * auth-protected POST уйдёт без `Authorization` и упадёт 400 (SDK ретраит только 401).
+ * См. MCP-правило `tokens` (syncTokens — mandatory pattern).
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {

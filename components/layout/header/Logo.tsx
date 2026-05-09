@@ -3,9 +3,7 @@ import type { JSX } from 'react';
 
 import LogoIcon from '../../shared/LogoIcon';
 
-/**
- * Компонент Logo
- */
+/** Логотип в шапке. */
 const Logo = (): JSX.Element => {
   return (
     <Link

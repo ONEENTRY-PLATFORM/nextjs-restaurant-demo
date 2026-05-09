@@ -5,9 +5,7 @@ import type { JSX } from 'react';
 
 import ArrowBackIcon from '@/components/icons/arrow-back';
 
-/**
- * Компонент кнопки «назад по истории»
- */
+/** Кнопка «назад по истории». */
 const HistoryBack = (): JSX.Element => {
   const router = useRouter();
   return (

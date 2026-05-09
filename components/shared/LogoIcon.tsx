@@ -1,8 +1,6 @@
 import type { JSX } from 'react';
 
-/**
- * Иконка логотипа
- */
+/** LogoIcon — SVG-логотип проекта. */
 const LogoIcon = ({
   fill = 'currentColor',
   className,

@@ -34,9 +34,7 @@ import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
-// Тот же паттерн, что и в `components/cart/CartWizard.tsx` — md+ открывает
-// корзину как страницу (`/cart`), а не как drawer. Repeat order на десктопе
-// должен следовать этому же правилу.
+// md+ открывает корзину как страницу `/cart` (см. CartWizard) — Repeat order на десктопе ведёт туда же, не в drawer.
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -48,11 +46,7 @@ const getMdServerSnapshot = (): boolean => false;
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
-/**
- * Возвращает читаемый статус заказа, отдавая приоритет локализованной информации из CMS.
- * @param   {IOrderByMarkerEntity} o - Сущность заказа.
- * @returns {string}                  Отображаемая подпись.
- */
+/** Читаемый статус заказа: локализованный из CMS, иначе human-readable из identifier. */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
@@ -61,11 +55,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
   return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
-/**
- * Должен ли заказ попасть в группу "Orders History" вместо "Active orders".
- * @param   {IOrderByMarkerEntity} o - Сущность заказа.
- * @returns {boolean}                 True, если заказ завершён или отменён.
- */
+/** Заказ относится к "Orders History" (завершён/отменён), а не к "Active". */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
   return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
@@ -73,12 +63,7 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 
 /**
  * Считает subtotal / delivery / discount / total для заказа.
- *
- * `discount` — расхождение между суммой позиций (subtotal + delivery) и
- * `totalSum` от сервера. Если применялся купон, `totalSum` уже
- * содержит скидку — поэтому положительная разница и есть скидка.
- * @param   {IOrderByMarkerEntity} o - Сущность заказа.
- * @returns {{ subtotal: number; delivery: number; discount: number; total: number }} Итоги.
+ * `discount` = (subtotal + delivery) − serverTotal: если применялся купон, `totalSum` уже со скидкой.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
@@ -96,27 +81,14 @@ const computeTotals = (
   return { subtotal, delivery, discount, total };
 };
 
-/**
- * Форматирует номер заказа (`№OE...`). Возвращает чистый числовой id,
- * если SDK не предоставляет отформатированный код.
- * @param   {IOrderByMarkerEntity} o - Сущность заказа.
- * @returns {string}                  Отображаемый номер.
- */
+/** Номер заказа `OE...` от SDK, иначе fallback на числовой id. */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
   if (fromSdk) return fromSdk;
   return String(o.id);
 };
 
-/**
- * Одна строка: pill со сводкой заказа + раскрывающееся тело с позициями, итогами и CTA.
- * @param   {object}              props          - Пропсы карточки.
- * @param   {IOrderByMarkerEntity} props.order   - Сущность заказа.
- * @param   {boolean}             props.expanded - Раскрыто ли тело.
- * @param   {() => void}          props.onToggle - Обработчик переключения.
- * @param   {boolean}             props.isHistory- Рендерить ли CTA Repeat.
- * @returns {JSX.Element}                         JSX карточки.
- */
+/** OrderCard — pill со сводкой заказа + раскрывающееся тело с позициями, итогами и CTA. */
 const OrderCard = ({
   order,
   expanded,
@@ -142,7 +114,6 @@ const OrderCard = ({
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const canReview = (order.statusIdentifier ?? '').toLowerCase() === 'delivered';
 
-  // Анимация раскрытия/сворачивания тела заказа.
   const bodyRef = useRef<HTMLDivElement>(null);
   const [rendered, setRendered] = useState(expanded);
 
@@ -194,7 +165,6 @@ const OrderCard = ({
     setOpen(true);
   };
 
-  // Repeat order: для каждой позиции заказа добавляем продукт в корзину
   const repeatOrder = async (): Promise<void> => {
     const inCartIds = new Set(cartItems.map(c => c.id));
     const skipped: string[] = [];
@@ -241,7 +211,6 @@ const OrderCard = ({
       );
     }
 
-    // Сбрасываем wizard на cart-шаг
     dispatch(setStep('cart'));
     if (isMdUp) {
       router.push('/cart');
@@ -342,14 +311,7 @@ const OrderCard = ({
   );
 };
 
-/**
- * Одна строка позиции внутри раскрытого тела заказа.
- * @param   {object}         props         - Пропсы строки.
- * @param   {IOrderProducts} props.product - Позиция заказа.
- * @param   {boolean}        props.first   - Является ли это первой строкой
- *                                           (без верхнего отступа).
- * @returns {JSX.Element}                  JSX строки.
- */
+/** OrderLineItem — одна строка позиции внутри раскрытого тела заказа. */
 const OrderLineItem = ({
   product,
   first,
@@ -399,10 +361,7 @@ const OrderLineItem = ({
   );
 };
 
-/**
- * Дашборд заказов — разбивает заказы пользователя на "Active orders" и "Orders History"
- * @returns {JSX.Element} JSX списка заказов.
- */
+/** OrdersList — дашборд заказов: "Active orders" + "Orders History" + промо-сайдбар на md+. */
 const OrdersList = ({
   promoBanners = [],
 }: {
@@ -431,7 +390,6 @@ const OrdersList = ({
       });
       if (cancelled) return;
       if (res.isError) {
-        // Fallback на случай когда `error.message` пустой;
         setError(res.error?.message ?? 'Failed to load orders');
       } else {
         setOrders(res.orders ?? []);
@@ -486,18 +444,14 @@ const OrdersList = ({
     });
   };
 
-  // Левая колонка — содержит контент, зависящий от состояния (loading /
-  // not-auth / error / empty / orders-list). Правая колонка (промо) рендерится
-  // на md+ во ВСЕХ состояниях, чтобы 2-колоночный layout соответствовал корзине.
+  // Левая колонка зависит от состояния; правая (промо) рендерится на md+ всегда — 2-колоночный layout как в корзине.
   let leftColumn: JSX.Element;
   if (authLoading || loading) {
     leftColumn = (
       <div className="text-paper/80">{t('loading_orders_text', 'Loading orders...')}</div>
     );
   } else if (!isAuth) {
-    // `orders_signin_prompt` хранит фразу целиком; чтобы оставить inline-кнопку
-    // «sign in» внутри предложения, ищем её в шаблоне (case-insensitive). Если
-    // шаблон не содержит подстроки — показываем cta-кнопку отдельно после текста.
+    // Inline-кнопка «sign in» внутри фразы из словаря: ищем подстроку (case-insensitive); если нет — кнопка после текста.
     const prompt = t('orders_signin_prompt', 'Please sign in to view your orders.');
     const signInLabel = t('sign_in_text', 'sign in');
     const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
@@ -586,8 +540,7 @@ const OrdersList = ({
     <section>
       <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
         <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-          {/* `min-w-0` + `shrink-0` фиксируют 50/50: без них flex-дети раскрытой
-              позиции заказа могут раздуть левую колонку и забрать ширину у правой. */}
+          {/* `min-w-0` + `shrink-0` фиксируют 50/50 — без них flex-дети раскрытой позиции раздувают левую колонку. */}
           <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
           <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
             {promoBanners

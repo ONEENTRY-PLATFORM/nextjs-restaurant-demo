@@ -24,7 +24,8 @@ import {
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 /**
- * Конвертирует `order.formData`
+ * Конвертирует `order.formData` в плоский набор initialValues для ReservationForm.
+ *
  * @param   {IOrdersFormData[]}  formData    - Сырые поля заказа.
  * @param   {RestaurantOption[]} restaurants - Доступные опции для маппинга entity → pageUrl.
  * @returns {Record<string, string>}         Плоский набор начальных значений.
@@ -66,9 +67,7 @@ const buildInitialValuesFromOrder = (
   return result;
 };
 
-/**
- * Попап бронирования столика
- */
+/** ReservationPopup — попап бронирования столика. */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -109,16 +108,9 @@ const ReservationPopup = (): JSX.Element => {
     [pages]
   );
 
-  // Edit-режим: при открытии попапа вычитываем pending-данные из side-channel
-  // (см. `reservationEditState`). Если они есть — попап рендерится в режиме
-  // редактирования брони: ReservationForm получит editingOrderId и при
-  // submit'е вызовет `updateOrderByMarkerAndId` вместо `createOrder`.
-  // Сбрасывается на закрытие попапа.
+  // Edit-режим: pending-данные из reservationEditState → ReservationForm вызовет updateOrderByMarkerAndId.
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
-  // Resume-режим: попап мог быть закрыт OAuth-редиректом (Google) — значения
-  // формы сохраняются в `sessionStorage` через `setPendingReservationResume`,
-  // и при ре-открытии из коллбэка авторизации мы их потребляем здесь, чтобы
-  // ReservationForm подхватил `initialValues`.
+  // Resume-режим: восстановление значений формы после OAuth-редиректа (sessionStorage).
   const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
   useEffect(() => {
     if (isOpen) {
@@ -176,11 +168,7 @@ const ReservationPopup = (): JSX.Element => {
         ) : (
           <div className="mt-7.5">
             <ReservationForm
-              // useEffect ниже вызывается уже после первого монтирования формы,
-              // поэтому при попадании edit/resume значений `initialValues`
-              // меняется на втором рендере — useState внутри формы уже
-              // зафиксировал старое начальное состояние. `key` форсит remount
-              // формы под новые начальные значения.
+              // `key` форсит remount формы при попадании edit/resume значений во второй рендер.
               key={editing?.orderId ?? (resume ? 'oauth-resume' : 'fresh')}
               form={form}
               restaurants={restaurants}

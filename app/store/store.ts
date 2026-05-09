@@ -27,9 +27,6 @@ const createNoopStorage = () => {
 const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
 const version = 1;
 
-/**
- * Persist для cartReducer
- */
 const cartReducer = persistReducer(
   {
     key: 'cart-slice',
@@ -40,9 +37,6 @@ const cartReducer = persistReducer(
   cartSlice
 );
 
-/**
- * Persist для favoritesReducer
- */
 const favoritesReducer = persistReducer(
   {
     key: 'favorites-slice',
@@ -53,9 +47,6 @@ const favoritesReducer = persistReducer(
   favoritesSlice
 );
 
-/**
- * Persist для formFieldsReducer
- */
 const formFieldsReducer = persistReducer(
   {
     key: 'form-fields',
@@ -66,9 +57,6 @@ const formFieldsReducer = persistReducer(
   formFieldsSlice
 );
 
-/**
- * Persist для orderReducer
- */
 const orderReducer = persistReducer(
   {
     key: 'order-slice',
@@ -79,9 +67,6 @@ const orderReducer = persistReducer(
   orderSlice
 );
 
-/**
- * Объединяет редьюсеры
- */
 const rootReducer = combineReducers({
   cartReducer,
   orderReducer,
@@ -92,7 +77,8 @@ const rootReducer = combineReducers({
 });
 
 /**
- * Настраивает redux store с persist-ом — сохраняет redux state в storage
+ * Настраивает Redux store с persist-ом.
+ *
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */
 export const setupStore = () => {

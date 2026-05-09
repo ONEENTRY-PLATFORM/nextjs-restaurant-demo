@@ -8,9 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
 
-/**
- * Компонент кнопки Apply
- */
+/** ApplyButton — Apply/Cancel-тоггл добавления продукта группы в корзину. */
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

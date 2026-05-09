@@ -43,12 +43,8 @@ const parseScheduleAt = (raw: string): { date: string; time: string } => {
 const ASAP_INTERVAL_MIN = 45;
 
 /**
- * Собирает значение для атрибута `delivery_time` (тип `timeInterval`):
- * массив пар `[[startISO, endISO]]`, как требует OneEntry SDK.
- * - asap: start=now, end=now+45 мин.
- * - scheduled (`DD.MM.YY HH.MM`): start=parsed, end=start+1 ч.
- * Возвращает null, если scheduled-значение не парсится — тогда поле не
- * шлём в заказ (form-validator пропустит, если поле необязательное).
+ * Значение `delivery_time` (тип `timeInterval`) — `[[startISO, endISO]]`.
+ * asap: now → now+45 мин; scheduled (`DD.MM.YY HH.MM`): parsed → +1 ч. null если scheduled не парсится — поле не шлём.
  */
 const buildDeliveryTimeInterval = (
   mode: DeliveryMode,
@@ -86,9 +82,7 @@ const findUserField = (
 
 type DeliveryMode = 'asap' | 'scheduled';
 
-/**
- * Шаг checkout — адрес + время + оплата на одном экране (cart_PAYMENT.html).
- */
+/** StepPayment — шаг checkout: адрес + время + оплата на одном экране. */
 const StepPayment = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -96,9 +90,7 @@ const StepPayment = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const delivery = useAppSelector(selectDeliveryData);
 
-  // Сначала пробуем структурный `user_address` (street + house + floor),
-  // фоллбэк — плоские маркеры (`address_reg` и т.п.). Структурный путь нужен,
-  // чтобы в инпуте отображались дом и этаж, а не только улица.
+  // Структурный `user_address` (street+house+floor) приоритетнее плоских маркеров — иначе в инпуте только улица.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
   const initialPickedAddress = useMemo(() => pickSelectedAddress(savedAddresses), [savedAddresses]);
   const userAddressFlat = findUserField(user?.formData, ADDRESS_MARKERS);
@@ -106,9 +98,7 @@ const StepPayment = (): JSX.Element => {
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
 
   const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
-  // Поле `user.formData` приходит асинхронно из AuthContext — на первый
-  // рендер часто пустое. Если пользователь не редактировал инпут руками,
-  // подтягиваем адрес, как только формдата подгрузилась.
+  // `user.formData` приходит async — на первый рендер пустой; если юзер не правил инпут руками, подтягиваем по готовности.
   const [addressTouched, setAddressTouched] = useState<boolean>(
     Boolean(delivery?.address as string | undefined)
   );
@@ -138,11 +128,7 @@ const StepPayment = (): JSX.Element => {
     }
   }, [accounts, identifier]);
 
-  // Контейнер для анимации входа/выхода блоков шага. Тот же паттерн, что в
-  // `StepOrder` — slide-up + fade на маунте, обратная анимация bottom-to-top
-  // при route-transition (leave). `dependencies` пустые: накопительные
-  // изменения (accounts loaded, altReceiver toggle) не должны
-  // переанимировать уже видимые блоки.
+  // Анимация блоков шага: slide-up + fade на маунте, reverse на route leave (см. StepOrder). `dependencies: []` — иначе toggle/accounts ре-анимируют уже видимые блоки.
   const containerRef = useRef<HTMLDivElement>(null);
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
@@ -385,9 +371,7 @@ const StepPayment = (): JSX.Element => {
   );
 };
 
-/**
- * Радио-карточка одного payment-аккаунта.
- */
+/** PaymentMethodOption — радио-карточка одного payment-аккаунта. */
 const PaymentMethodOption = ({
   account,
   checked,

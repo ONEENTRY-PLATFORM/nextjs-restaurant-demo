@@ -5,17 +5,14 @@ import { useEffect, useState } from 'react';
 
 import { getApi } from '@/app/api';
 
-/**
- * Поиск продуктов через Products API.
- */
+/** useSearchProducts — поиск продуктов через Products API. */
 export const useSearchProducts = ({ name }: { name: string }) => {
-  // Стартуем в `loading`, когда `name` непустое, чтобы первый рендер нового
-  // запроса не мигал "No products found" до того, как effect отработал.
+  // Стартуем в `loading` при непустом `name`, чтобы первый рендер не мигал "No products found"
+  // до отработки effect.
   const [loading, setLoading] = useState<boolean>(Boolean(name));
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const [refetch, setRefetch] = useState(false);
 
-  // ищем продукты при изменении данных
   useEffect(() => {
     if (!name) {
       // eslint-disable-next-line react-hooks/set-state-in-effect

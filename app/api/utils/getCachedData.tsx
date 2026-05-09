@@ -2,9 +2,7 @@ import 'server-only';
 
 const cache = new Map<string, unknown>();
 
-/**
- * Получает закэшированные данные.
- */
+/** getCachedData — мемоизированный кэш по ключу (in-memory Map). */
 const getCachedData = async <T,>(key: string, fetchFn: () => Promise<T>): Promise<T> => {
   if (cache.has(key)) {
     return cache.get(key) as T;

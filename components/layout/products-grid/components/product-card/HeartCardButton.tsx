@@ -17,11 +17,9 @@ import HeartCardIcon from '@/components/icons/heart-card';
 
 /**
  * HeartCardButton — переключает продукт в сторе избранного.
- * Использует тот же SVG `heart_card` из вёрстки, так что визуал карточки 1:1
- * с `static-html/index.html`. Заполненная обводка, когда в избранном.
  *
- * Лежит над абсолютным click-through оверлеем `<Link>` в ProductCard
- * через z-index, чтобы клик по сердцу не приводил к навигации.
+ * Лежит над абсолютным click-through оверлеем `<Link>` в ProductCard через z-index,
+ * чтобы клик по сердцу не приводил к навигации.
  * @param   {object}          props         - Пропсы компонента.
  * @param   {IProductsEntity} props.product - Продукт для переключения.
  * @returns {JSX.Element}                   JSX кнопки-сердца.
@@ -30,10 +28,8 @@ const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const isFavStored = useAppSelector(state => selectIsFavorites(state, product.id));
-  // Избранное восстанавливается из localStorage на клиенте после гидратации,
-  // так что SSR видит `false`, в то время как клиент может увидеть `true` —
-  // обойти через useSyncExternalStore, чтобы серверный снапшот был `false`,
-  // а клиент после маунта переключился на `true`, соответствуя persisted slice.
+  // useSyncExternalStore — чтобы серверный снапшот был `false`, а клиент после маунта
+  // переключился на актуальное persisted-значение из localStorage без hydration mismatch.
   const hydrated = useSyncExternalStore(
     cb => {
       cb();

@@ -10,8 +10,8 @@ import CartIcon from '@/components/icons/cart';
 const NavItemCart = (): JSX.Element => {
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;
   const count = items?.length ?? 0;
-  // Redux store гидратируется из localStorage только на клиенте — пропускаем
-  // бейдж на первом рендере, чтобы серверная и клиентская разметка совпадали.
+  // Redux store гидратируется из localStorage только на клиенте — гейтим
+  // бейдж, чтобы серверная и клиентская разметка совпадали.
   const mounted = useSyncExternalStore(
     cb => {
       cb();

@@ -15,11 +15,10 @@ import {
 const UNDO_TIMEOUT_MS = 5000;
 
 /**
- * Удаляет позицию из корзины с возможностью отмены: запускает анимацию ухода
- * через `setCartTransition` (фактический `removeProduct` дёргается в
- * `ProductAnimations` после fade-out), а пользователю показывает toast с
- * прогресс-таймером и кнопкой Undo. По нажатию Undo восстанавливает запись
- * (id/quantity/selected) через `addProductToCart` и переподписывает события.
+ * useCartRemoveWithUndo — удаление позиции из корзины с undo-toast.
+ *
+ * Запускает анимацию ухода через `setCartTransition` (реальный `removeProduct`
+ * дёргается в `ProductAnimations` после fade-out); Undo восстанавливает запись.
  */
 export const useCartRemoveWithUndo = (productId: number, title: string): (() => void) => {
   const dispatch = useAppDispatch();

@@ -11,7 +11,6 @@ import CloseXIcon from '@/components/icons/close-x';
 import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-// Cooking-time
 const WAITING_TIME: Array<{ label: string; max: number | null }> = [
   { label: 'Under 30 mins', max: 30 },
   { label: 'Under 60 mins', max: 60 },
@@ -23,7 +22,6 @@ type PriceChip = {
   value: number;
 };
 
-// Чипы Price.
 const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
   if (!priceRange || priceRange.max <= 0) return [];
   const chips: PriceChip[] = [];
@@ -45,12 +43,8 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
 };
 
 /**
- * Нижний sheet фильтра — порт 1:1 `#side-menu` из `static-html/index_filter.html`.
+ * FilterBottom — нижний sheet фильтра, переключается через `OpenDrawerContext`.
  *
- * Переключается через {@link FilterButton} с помощью `OpenDrawerContext`.
- * Смонтирован в хедере, чтобы панель была доступна с любой страницы.
- * Рендерится как slide-up sheet на мобиле и как центрированная панель на
- * экранах md+.
  * @returns {JSX.Element} JSX панели фильтра.
  */
 const FilterBottom = ({
@@ -76,10 +70,8 @@ const FilterBottom = ({
 
   const isVisible = open && component === 'FilterForm';
 
-  // Гидратация локального стейта из URL при открытии. Открываем — берём текущие
-  // активные фильтры, чтобы пользователь видел уже выбранные чипы. Делаем это
-  // только в момент перехода в visible, чтобы не затирать пользовательские правки
-  // при быстрых ре-рендерах роутера.
+  // Гидратация локального стейта из URL только в момент перехода в visible,
+  // чтобы не затирать пользовательские правки при быстрых ре-рендерах роутера.
   useEffect(() => {
     if (!isVisible) return;
     const cookingMax = searchParams.get('cooking_time_max');
@@ -115,12 +107,9 @@ const FilterBottom = ({
   };
 
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп вниз закрывает фильтр-панель напрямую через `close()`,
-  // как и у остальных bottom-меню попапов (Cart / Favorites / Profile).
   useSwipeToClose(sheetRef, close);
 
-  // При повторном открытии чистим inline-стили, оставленные хуком после
-  // swipe-dismiss. Иначе панель останется за нижней кромкой, а
+  // При повторном открытии чистим inline-стили после swipe-dismiss, иначе
   // Tailwind-класс `translate-y-0` будет перебит inline-`transform`.
   useEffect(() => {
     if (isVisible && sheetRef.current) {
@@ -143,9 +132,8 @@ const FilterBottom = ({
     setPrice([]);
   };
 
-  // Сериализуем выбранные чипы в URL и обновляем текущий маршрут.
-  // Page-компоненты (`/shop`, `/shop/[handle]`, …) уже `force-dynamic` и
-  // подхватят новые `searchParams` без перезагрузки.
+  // Сериализуем выбранные чипы в URL и обновляем маршрут;
+  // page-компоненты `/shop/...` уже `force-dynamic`.
   const apply = (): void => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -176,10 +164,8 @@ const FilterBottom = ({
     }
 
     const qs = params.toString();
-    // Фильтр-панель доступна с любой страницы (живёт в шапке), но реально
-    // фильтрует только списки товаров под `/shop`. Если пользователь применил
-    // фильтр с домашней / продуктовой страницы — отправляем его на `/shop` с теми
-    // же query-параметрами, иначе остаёмся на текущем маршруте через replace.
+    // Если пользователь применил фильтр вне `/shop` — отправляем его на `/shop`,
+    // иначе остаёмся на текущем маршруте через replace.
     const isShopRoute = pathname.startsWith('/shop');
     const targetPath = isShopRoute ? pathname : '/shop';
     const url = qs ? `${targetPath}?${qs}` : targetPath;

@@ -10,14 +10,13 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import StarRating from './StarRating';
 
 /**
- * Фиксированная slide-up панель отзыва — повторяет нижний sheet из
- * `about_reviews.html`. По умолчанию видна только на мобиле (`md:hidden`).
+ * ReviewsSlideUpPanel — фиксированная slide-up панель отзыва (мобильный sheet).
  * Отправляет отзыв через {@link submitReview} Server Action.
- * @param   {object} props                - Пропсы компонента.
- * @param   {number} props.productId      - Product ID для привязки отзыва.
- * @param   {string} [props.title]        - Переопределение заголовка панели.
- * @param   {string} [props.description]  - Переопределение описания панели.
- * @returns {JSX.Element}                 JSX панели.
+ * @param   {object} props               - Пропсы.
+ * @param   {number} props.productId     - Product ID для привязки отзыва.
+ * @param   {string} [props.title]       - Переопределение заголовка панели.
+ * @param   {string} [props.description] - Переопределение описания панели.
+ * @returns {JSX.Element}                JSX панели.
  */
 const ReviewsSlideUpPanel = ({
   productId,

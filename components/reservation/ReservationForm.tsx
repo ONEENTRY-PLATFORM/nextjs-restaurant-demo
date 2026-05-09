@@ -21,11 +21,7 @@ import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
 
-/**
- * Поля, рендерящиеся в 2-колоночных строках (согласно вёрстке `service_table.html`).
- * Маркеры соответствуют админской форме `booking_order`.
- * @private
- */
+/** Поля для 2-колоночных строк по вёрстке `service_table.html` (форма `booking_order`). */
 const ROW_PAIRS: Array<[string, string]> = [
   ['name', 'surname'],
   ['phone', 'people_count'],
@@ -36,8 +32,8 @@ const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
 
 /**
- * Возвращает массив доступных стартов слотов в формате `HH.MM` для
- * указанной даты (`yyyy-MM-dd`) на основе расписания ресторана.
+ * Возвращает доступные старты слотов `HH.MM` для даты на основе расписания ресторана.
+ *
  * @param   {ScheduleSlotEntry[]} schedule - Сырые записи из `schedule.value`.
  * @param   {string}              dateIso  - Выбранная дата `yyyy-MM-dd`.
  * @returns {string[]}                     Список меток слотов.
@@ -69,11 +65,12 @@ const getAvailableSlotsForDate = (
 };
 
 /**
- * Конвертирует выбранный пользователем слот (`yyyy-MM-dd HH.MM`) в формат `timeInterval`.
- * @param   {string}             raw           - Значение поля `time_slot`.
- * @param   {string | undefined} restaurantValue - Текущее значение `restaurant`.
- * @param   {RestaurantOption[]} restaurants   - Доступные опции ресторанов.
- * @returns {Array<[string, string]>}         Интервалы для отправки.
+ * Конвертирует выбранный слот (`yyyy-MM-dd HH.MM`) в формат `timeInterval`.
+ *
+ * @param   {string}              raw             - Значение поля `time_slot`.
+ * @param   {string | undefined}  restaurantValue - Текущее значение `restaurant`.
+ * @param   {RestaurantOption[]}  restaurants     - Доступные опции ресторанов.
+ * @returns {Array<[string, string]>}             Интервалы для отправки.
  */
 const buildTimeIntervalValue = (
   raw: string,
@@ -118,8 +115,9 @@ const buildTimeIntervalValue = (
 
 /**
  * Маппит тип атрибута OneEntry формы + маркер в нативный HTML input `type`.
+ *
  * @param   {string} type   - `type` атрибута OneEntry.
- * @param   {string} marker - Маркер атрибута, используется для эвристики.
+ * @param   {string} marker - Маркер атрибута для эвристики.
  * @returns {string}        HTML input type.
  */
 const resolveInputType = (type: string, marker: string): string => {
@@ -145,9 +143,6 @@ type ReservationFormProps = {
   onClose?: () => void;
 };
 
-/**
- * Интерфейс формы бронирования
- */
 type ReservationStep =
   | { kind: 'form' }
   | { kind: 'auth'; formData: IOrdersFormData[]; summary: string }
@@ -156,6 +151,7 @@ type ReservationStep =
 
 /**
  * Форматирует сводку бронирования `DD.MM.YY HH.MM N person`.
+ *
  * @param   {Record<string, string>} values - Значения полей формы.
  * @returns {string}                        Сводка для success-экрана.
  */
@@ -266,7 +262,7 @@ const ReservationForm = ({
       });
   };
 
-  // Шаг 1: валидируем форму
+  // Шаг 1: валидируем форму.
   const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (spamAttr && !captcha) {
@@ -311,7 +307,7 @@ const ReservationForm = ({
     );
   };
 
-  // Шаг 2: пользователь выбрал способ оплаты. Создаём order
+  // Шаг 2: пользователь выбрал способ оплаты — создаём order.
   const onApplyPayment = async (paymentAccountIdentifier: string) => {
     if (step.kind !== 'payment') return;
     setLoading(true);
@@ -330,9 +326,8 @@ const ReservationForm = ({
       }
       const { id } = res as { id: number };
 
-      // Online → открываем платёжную сессию и редиректим. Стрипа
-      // достаточно — Cash-аккаунты вернут paymentUrl=null и попадут в
-      // ветку показа success в попапе.
+      // Online → открываем платёжную сессию и редиректим. Cash-аккаунты вернут paymentUrl=null
+      // и попадут в ветку показа success в попапе.
       if (paymentAccountIdentifier !== 'cash') {
         try {
           const session = await getApi().Payments.createSession(id, 'session');
@@ -344,7 +339,7 @@ const ReservationForm = ({
             }
           }
         } catch {
-          // глушим — заказ уже создан, на success всё равно перейдём
+          // Глушим — заказ уже создан, на success всё равно перейдём.
         }
       }
 
@@ -523,7 +518,8 @@ type FieldProps = {
 };
 
 /**
- * Одиночное поле
+ * Field — одиночное поле формы бронирования.
+ *
  * @param   {FieldProps}  props - Пропсы поля.
  * @returns {JSX.Element}       JSX поля.
  */

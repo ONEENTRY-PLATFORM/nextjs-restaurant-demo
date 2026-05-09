@@ -8,9 +8,10 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 
 /**
- * Регистрирует плагины GSAP
+ * RegisterGSAP — регистрирует плагины и кастомные эффекты GSAP.
+ *
+ * @returns {null} Ничего не рендерит.
  * @see {@link https://gsap.com/cheatsheet/#plugins- gsap cheatsheet}
- * @returns {JSX.Element} - Пустой компонент
  */
 const RegisterGSAP = () => {
   useIsomorphicLayoutEffect(() => {
@@ -21,10 +22,8 @@ const RegisterGSAP = () => {
       autoSleep: 120,
       force3D: true,
       nullTargetWarn: false,
-      // units: {left: "%", top: "%", rotation: "rad"}
     });
 
-    // cardAnimations с scrub
     gsap.registerEffect({
       name: 'cardAnimations',
       effect: (
@@ -62,14 +61,7 @@ const RegisterGSAP = () => {
       defaults: { duration: 2, delay: 0, scrub: 4 },
       extendTimeline: true,
     });
-    // Теперь можно использовать так:
-    // gsap.effects.cardAnimations('.box', { duration: 3 });
-    // Или напрямую на timeline-ах
-    // tl.fade('.box', { duration: 3 });
 
-    /**
-     * Анимации slideUp
-     */
     gsap.registerEffect({
       name: 'slideUp',
       effect: (
@@ -98,9 +90,6 @@ const RegisterGSAP = () => {
       extendTimeline: true,
     });
 
-    /**
-     * Анимации fadeInOut
-     */
     gsap.registerEffect({
       name: 'fadeIn',
       effect: (

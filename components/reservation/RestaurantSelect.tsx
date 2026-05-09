@@ -5,11 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import ChevronDownIcon from '@/components/icons/chevron-down';
 
-/**
- * Один интервал расписания ресторана из OneEntry (атрибут
- * `schedule` типа `timeInterval`). Совпадает с подмножеством формата
- * SDK, нужного для генерации слотов в TimePicker.
- */
+/** Один интервал расписания ресторана из OneEntry (атрибут `schedule` типа `timeInterval`). */
 export type ScheduleSlotEntry = {
   dates?: [string, string];
   times?: Array<[{ hours: number; minutes: number }, { hours: number; minutes: number }]>;
@@ -20,25 +16,21 @@ export type ScheduleSlotEntry = {
 export type RestaurantOption = {
   value: string;
   label: string;
-  // Числовой id страницы ресторана. Нужен для отправки формы
-  // `booking_order` — поле `restaurant` имеет тип `entity`, а OneEntry
-  // ждёт `value: [<numericPageId>]` (см. правило `forms.md` → entity).
+  // Числовой id страницы ресторана: поле `restaurant` имеет тип `entity` и ждёт `value: [<numericPageId>]`.
   id: number;
-  // Расписание ресторана — пробрасывается в TimePicker, чтобы показать
-  // только реально доступные слоты на выбранную дату (см.
-  // `getAvailableSlotsForDate` в `ReservationForm`).
+  // Расписание — пробрасывается в TimePicker для показа только доступных слотов.
   schedule?: ScheduleSlotEntry[];
 };
 
 /**
- * Кастомный dropdown, соответствующий паттерну `.custom-select` из static-html.
- * Рендерит оранжевый триггер + панель с опциями; закрывается по клику снаружи.
- * @param   {object}                  props          - Пропсы компонента.
- * @param   {RestaurantOption[]}      props.options  - Доступные опции ресторанов.
- * @param   {string}                  props.value    - Текущее выбранное значение.
- * @param   {(v: string) => void}     props.onChange - Обработчик изменения.
+ * RestaurantSelect — кастомный dropdown по паттерну `.custom-select` из static-html.
+ *
+ * @param   {object}                  props               - Пропсы компонента.
+ * @param   {RestaurantOption[]}      props.options       - Доступные опции ресторанов.
+ * @param   {string}                  props.value         - Текущее выбранное значение.
+ * @param   {(v: string) => void}     props.onChange      - Обработчик изменения.
  * @param   {string}                  [props.placeholder] - Текст-плейсхолдер триггера.
- * @returns {JSX.Element}                            JSX дропдауна.
+ * @returns {JSX.Element}                                 JSX дропдауна.
  */
 const RestaurantSelect = ({
   options,

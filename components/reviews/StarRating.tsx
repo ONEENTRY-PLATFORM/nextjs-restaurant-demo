@@ -5,12 +5,12 @@ import type { JSX } from 'react';
 import StarCardIcon from '@/components/icons/star-card';
 
 /**
- * Компонент звёздного рейтинга — отображает заполненные звёзды для данного значения от 5.
- * @param   {object}                  props          - Пропсы компонента.
- * @param   {number}                  props.value    - Текущий рейтинг (0–5).
- * @param   {(v: number) => void}     [props.onChange] - Опциональный обработчик изменения.
- * @param   {number}                  [props.size]     - Размер звезды в px (по умолчанию 16).
- * @returns {JSX.Element}                            JSX строки звёзд.
+ * StarRating — отображает заполненные звёзды для значения от 5; интерактивный, если задан `onChange`.
+ * @param   {object}              props            - Пропсы.
+ * @param   {number}              props.value      - Текущий рейтинг (0–5).
+ * @param   {(v: number) => void} [props.onChange] - Опциональный обработчик изменения.
+ * @param   {number}              [props.size]     - Размер звезды в px (по умолчанию 16).
+ * @returns {JSX.Element}                          JSX строки звёзд.
  */
 const StarRating = ({
   value,

@@ -1,12 +1,8 @@
-// 'use client';
-
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import MobileMenuItem from './MobileMenuItem';
 
-/**
- * Список мобильного меню
- */
+/** Список мобильного меню. */
 function MobileMenu({
   menu,
   className = '',

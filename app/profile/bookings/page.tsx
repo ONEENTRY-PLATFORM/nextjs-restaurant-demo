@@ -7,14 +7,7 @@ import BookingsContent from '@/components/profile/BookingsContent';
 export const dynamic = 'force-dynamic';
 
 /**
- * Вкладка бронирований в личном кабинете на десктопе — 2-колоночный layout
- * по образцу `/profile/favorites` и `/profile/orders`: слева Active
- * reservation + Reservation History (тот же {@link BookingsContent}, что
- * на мобиле рендерится inline-экраном внутри `ProfilePopup`), справа
- * промо-баннеры из CMS `blog`. На мобиле колонки стакаются — баннеры
- * скрыты (`md:flex` в сайдбаре), но в реальной мобильной навигации
- * пользователь сюда не попадает: bookings там доступны как screen-swap
- * в `ProfilePopup`.
+ * ProfileBookingsPage — вкладка бронирований в личном кабинете (2-колоночный layout).
  * @returns {Promise<JSX.Element>} JSX страницы бронирований.
  */
 const ProfileBookingsPage = async (): Promise<JSX.Element> => {

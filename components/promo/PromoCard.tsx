@@ -5,20 +5,10 @@ import type { JSX } from 'react';
 import { getImageUrl } from '@/app/api';
 
 /**
- * Одиночная промо-карточка — питается атрибутами дочерней страницы `blog`
- * OneEntry (set: `blog_page`).
- *
- * Реальные атрибуты из CMS:
- *   - `banner`      (image) — используется как превью карточки;
- *   - `bg_image`    (image) — десктопный fallback, если `banner` пустой;
- *   - `description` (text)  — markdown/plain/html, отображается как подзаголовок;
- *   - `action_type` (list)  — `[{ title, value }]`, первая опция становится
- *                             подписью CTA; fallback — "Learn more".
- *
- * Заголовок берётся из `localizeInfos.title` (атрибута `title` в админском
- * наборе `blog_page` нет — проверено через `inspect-api`).
- * @param   {object}        props      - Свойства компонента.
- * @param   {IPagesEntity}  props.page - Сущность промо-страницы из OneEntry CMS.
+ * PromoCard — одиночная промо-карточка из дочерней страницы `blog` OneEntry (set: `blog_page`).
+ * Атрибуты: `banner`/`bg_image` (image), `description` (text), `action_type` (list, CTA).
+ * @param   {object}        props      - Пропсы.
+ * @param   {IPagesEntity}  props.page - Сущность промо-страницы.
  * @returns {JSX.Element}              JSX промо-карточки.
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {

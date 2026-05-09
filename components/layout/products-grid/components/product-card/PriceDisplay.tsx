@@ -2,9 +2,7 @@ import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
-/**
- * Отображение цены
- */
+/** PriceDisplay — цена продукта со скидкой/без для карточки грида. */
 const PriceDisplay = ({
   attributes: { sale, price },
 }: {
@@ -19,7 +17,6 @@ const PriceDisplay = ({
     return <></>;
   }
 
-  // Форматируем цену через Intl.NumberFormat
   const newPrice = UsePrice({ amount: currentPrice });
   const oldPrice = UsePrice({
     amount: originalPrice,

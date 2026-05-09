@@ -6,15 +6,7 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 
-/**
- * Центральная outlined-кнопка закрытия — видна только пока открыт drawer
- * (попап корзины, фильтр, модалка входа и т.п.). Заменяет выступающую кнопку
- * корзины на время drawer'а. Делает dispatch `setTransition('close')`, чтобы
- * GSAP-анимация reverse drawer'а проигралась до размонтирования.
- * Кросс-фейд + поворот в зеркальную сторону относительно
- * {@link CenterCartButton}, чтобы переключение между ними выглядело как одна
- * связная анимация.
- */
+/** Центральная outlined-кнопка закрытия — видна, когда открыт drawer; делает `setTransition('close')` для reverse-анимации. */
 const CenterCloseButton = (): JSX.Element => {
   const { open, setTransition } = useContext(OpenDrawerContext);
   const hidden = !open;

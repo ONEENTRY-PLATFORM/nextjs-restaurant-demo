@@ -18,9 +18,7 @@ type GridSearchParams = {
   cooking_time_max?: string;
 };
 
-/**
- * Layout сетки продуктов
- */
+/** ProductsGridLayout — сетка продуктов с пагинацией. */
 const ProductsGridLayout = async ({
   params,
   searchParams: sp,
@@ -43,7 +41,6 @@ const ProductsGridLayout = async ({
   const limit = currentPage * productsLimit > 0 ? currentPage * productsLimit : productsLimit;
   const combinedParams = searchParams ? { ...p, searchParams } : { ...p };
 
-  // Получаем все продукты из api или продукты byPageUrl
   const { isError, products, total } = !isCategory
     ? await getProducts({
         offset: 0,

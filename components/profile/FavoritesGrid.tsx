@@ -14,10 +14,7 @@ import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
-/**
- * Сетка избранного в дашборде
- * @returns {JSX.Element} JSX сетки избранного.
- */
+/** FavoritesGrid — сетка избранного в дашборде. */
 const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
@@ -49,12 +46,7 @@ const FavoritesGrid = (): JSX.Element => {
   );
 };
 
-/**
- * Одиночная карточка избранного в десктоп-сетке.
- * @param   {object}          props         - Пропсы карточки.
- * @param   {IProductsEntity} props.product - Сущность избранного продукта.
- * @returns {JSX.Element}                   JSX карточки.
- */
+/** FavoriteCard — одиночная карточка избранного в десктоп-сетке. */
 const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));

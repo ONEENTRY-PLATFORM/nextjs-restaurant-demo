@@ -5,15 +5,11 @@ import type { JSX } from 'react';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * Картинка продукта — 1:1 порт `.menu_item > img.w-full` из
- * `static-html/index.html`. Читает `attributes.cover.value` (главное
- * изображение продукта из OneEntry set'а атрибутов `dish` — поддерживает обе
- * формы: объект и массив), fallback на {@link Placeholder}, если изображение
- * не задано.
- * @param   {object}          props            - Пропсы компонента.
- * @param   {IAttributeValues} props.attributes - `product.attributeValues`.
- * @param   {string}          props.alt        - Текст alt для accessibility.
- * @returns {JSX.Element}                      JSX картинки.
+ * ProductImage — картинка продукта в карточке грида.
+ * @param   {object}           props            - Пропсы компонента.
+ * @param   {IAttributeValues} props.attributes - `product.attributeValues` (читается `cover.value`, поддерживает объект и массив).
+ * @param   {string}           props.alt        - Текст alt для accessibility.
+ * @returns {JSX.Element}                       JSX картинки.
  */
 const ProductImage = ({
   attributes,
@@ -31,9 +27,8 @@ const ProductImage = ({
     : productImage?.downloadLink;
 
   if (!imageSrc) {
-    // pb-12 сдвигает центрированный логотип вверх, чтобы визуально
-    // компенсировать info-полоску ("30-45 min · 50g · ★ 4"), наложенную
-    // на нижний край картинки карточки — без этого логотип кажется смещённым.
+    // pb-8 компенсирует info-полоску ("30-45 min · 50g · ★ 4") на нижнем краю карточки —
+    // иначе центрированный логотип-плейсхолдер выглядит смещённым.
     return (
       <div className="relative aspect-square w-full">
         <Placeholder className="pb-8" />
@@ -41,8 +36,7 @@ const ProductImage = ({
     );
   }
 
-  // Оборачиваем картинку в контейнер с overflow-hidden, чтобы scale на hover
-  // не вылезал за границы карточки.
+  // overflow-hidden — чтобы scale на hover не вылезал за границы карточки.
   return (
     <div className="relative aspect-square w-full overflow-hidden">
       <Image

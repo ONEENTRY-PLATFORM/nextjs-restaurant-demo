@@ -7,14 +7,11 @@ import { useContext } from 'react';
 import { logOutUser } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
-/**
- * Кнопка пункта меню Logout
- */
+/** Кнопка пункта меню Logout. */
 const LogoutMenuItem = (): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();
 
-  /** Обработка выхода пользователя */
   const handleLogout = async () => {
     try {
       await logOutUser({ marker: 'email' });

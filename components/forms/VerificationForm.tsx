@@ -19,13 +19,10 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
- * Компонент VerificationForm — ввод 6-значного OTP-кода.
+ * VerificationForm — ввод 6-значного OTP-кода.
  *
- * ⚠️ Намеренно фронтовая форма (OTP-input, не из CMS). В админке OneEntry
- * соответствующей формы нет — код отправляется в SDK `AuthProvider.checkCode(...)`
- * (или `activateUser(...)` если идёт активация после регистрации). MCP-правило
- * «Forms ALWAYS dynamic» сюда не применимо — это auth-flow метод с фиксированной
- * сигнатурой SDK. См. MISMATCH-LOG §C.8.2.
+ * Намеренно статическая форма (не из CMS) — код идёт в SDK `AuthProvider.checkCode(...)`
+ * или `activateUser(...)` при активации после регистрации. См. MISMATCH-LOG §C.8.2.
  */
 const VerificationForm = (): JSX.Element => {
   const t = useT();
@@ -67,7 +64,6 @@ const VerificationForm = (): JSX.Element => {
     }
   }, [otp, dispatch]);
 
-  // Функция для обработки верификации OTP или активации пользователя.
   const handleVerification = async () => {
     try {
       if (action !== 'activateUser') {
@@ -102,7 +98,7 @@ const VerificationForm = (): JSX.Element => {
           setError('Activation failed');
           return;
         }
-        // Активация успешна — логинимся и закрываем попап
+        // Активация успешна — логинимся и закрываем попап.
         await logInUser({
           method: 'email',
           login: fields.email?.value || '',
@@ -119,23 +115,15 @@ const VerificationForm = (): JSX.Element => {
     }
   };
 
-  // Функция для обработки сабмита формы
   const onSubmitHandle = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      // Предотвращаем дефолтное поведение сабмита формы
       e.preventDefault();
-
-      // Проверяем валидность длины OTP
       if (otp.length === 6) {
-        // Включаем loading-состояние
         setLoading(true);
-        // Очищаем любые предыдущие сообщения об ошибках
         setError('');
-        // Вызываем обработчик верификации
         await handleVerification();
       }
     },
-    // Зависимости useCallback
     [otp, handleVerification]
   );
 

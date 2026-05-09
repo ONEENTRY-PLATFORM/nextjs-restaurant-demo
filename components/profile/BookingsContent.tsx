@@ -35,21 +35,8 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * Содержимое раздела «Bookings» — список Active reservation + Reservation
- * History. На десктопе используется как левая колонка отдельной страницы
- * `/profile/bookings` (по образцу `/profile/orders` / `/profile/favorites`).
- * На мобильном — как один из экранов screen-swap'а внутри
- * {@link import('./ProfilePopup').default} (паттерн `CartWizard`).
- *
- * Данные тянутся через `getAllOrdersByMarker({ marker: 'booking_order' })`
- * — тот же storage-маркер, что используется при сабмите формы
- * `ReservationForm`. Активные брони фильтруются по статусу (исключаем
- * `canceled / completed / ...`); остальные попадают в History.
- *
- * Cancel/Edit пока заглушены (toast-сообщение). Реальные actions —
- * отдельная задача (зависит от админ-настройки статусов и допустимых
- * переходов в OneEntry orders).
- * @returns {JSX.Element} JSX тела секции «Bookings».
+ * BookingsContent — Active reservation + Reservation History.
+ * Данные: `getAllOrdersByMarker({ marker: 'booking_order' })` (тот же storage-маркер, что в `ReservationForm`).
  */
 const BookingsContent = (): JSX.Element => {
   const { setComponent } = useContext(OpenDrawerContext);
@@ -59,10 +46,7 @@ const BookingsContent = (): JSX.Element => {
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Edit: сохраняем pending-данные брони в side-channel и переключаем
-  // глобальный popup-component на ReservationPopup. Тот при открытии
-  // прочитает pending и пред-заполнит форму, а при сабмите вызовет
-  // `Orders.updateOrderByMarkerAndId` вместо `createOrder`.
+  // Edit: pending → side-channel, открываем ReservationPopup; сабмит вызовет `Orders.updateOrderByMarkerAndId` вместо `createOrder`.
   const onEdit = (order: IOrderByMarkerEntity) => {
     if (!order.formIdentifier) {
       toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
@@ -77,10 +61,7 @@ const BookingsContent = (): JSX.Element => {
     setComponent('ReservationPopup');
   };
 
-  // Cancel: SDK не даёт менять `statusIdentifier` напрямую через клиентский
-  // API (см. MISMATCH-LOG.md §C.10). Поэтому делаем оптимистичное удаление
-  // из локального списка + toast-сообщение, что заявка передана. Реальное
-  // отмена — только админом или через отдельную бизнес-логику на бэке.
+  // Cancel: SDK не даёт менять `statusIdentifier` клиентом (MISMATCH-LOG §C.10) — оптимистичное удаление + toast.
   const onCancel = (order: IOrderByMarkerEntity) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(

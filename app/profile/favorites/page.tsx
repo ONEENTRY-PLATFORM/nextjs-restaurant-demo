@@ -7,13 +7,7 @@ import FavoritesGrid from '@/components/profile/FavoritesGrid';
 export const dynamic = 'force-dynamic';
 
 /**
- * Вкладка избранного в личном кабинете — порт `static-html/pk_favorites.html`
- * в 2-колоночный layout по образцу корзины (`pk_cart.html`): слева список
- * избранного (одна колонка карточек), справа промо-баннеры из CMS `blog`
- * (тот же `CartPromoSidebar`, что и на странице корзины). На мобиле колонки
- * стакаются — баннеры скрыты (`md:flex` в сайдбаре), карточки занимают всю
- * ширину.
- *
+ * ProfileFavoritesPage — вкладка избранного в личном кабинете (2-колоночный layout).
  * @returns {Promise<JSX.Element>} JSX страницы избранного.
  */
 const ProfileFavoritesPage = async (): Promise<JSX.Element> => {

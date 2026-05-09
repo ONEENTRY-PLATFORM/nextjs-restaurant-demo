@@ -24,14 +24,10 @@ import SearchBar from './search/SearchBar';
 import SearchFallback from './search/SearchFallback';
 import SupportButton from './SupportButton';
 
-/**
- * Секция Header
- * @returns React-компонент
- */
+/** Секция Header. */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
-  // Контакты поддержки для попапа `SupportPopup`.
   const { page: supportPage } = await getPageByUrl('support');
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
   const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as
@@ -42,7 +38,6 @@ const Header = async (): Promise<JSX.Element> => {
     .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
-  // Preferences-скроллер.
   const preferencesAttr = await getSingleAttributeByMarkerSet({
     setMarker: 'dish',
     attributeMarker: 'preferences',
@@ -57,7 +52,6 @@ const Header = async (): Promise<JSX.Element> => {
         }))
       : [];
 
-  // Минимальная и максимальная цена реальных товаров каталога
   const priceRange = await getProductsPriceRange();
 
   return (
@@ -74,7 +68,6 @@ const Header = async (): Promise<JSX.Element> => {
               </h1>
             </div>
             <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
-              {/* SearchBar */}
               <Suspense fallback={<SearchFallback />}>
                 <SearchBar placeholder={'Search'} />
               </Suspense>
@@ -86,7 +79,6 @@ const Header = async (): Promise<JSX.Element> => {
 
       <div className="relative">
         <div className="relative">
-          {/* header_mobile */}
           <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
               <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
@@ -104,22 +96,17 @@ const Header = async (): Promise<JSX.Element> => {
             </div>
           </header>
 
-          {/* navigation */}
+          {/* Навигация */}
           <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
-            {/* Category Button */}
             <CategoryButton />
-            {/* Categories Scroller */}
             <Suspense fallback={null}>
               <CategoriesScroller preferences={preferenceOptions} />
             </Suspense>
           </section>
         </div>
       </div>
-      {/* Filter Bottom */}
       <FilterBottom preferences={preferenceOptions} priceRange={priceRange} />
-      {/* Category Filter */}
       <CategoryFilter pages={populatedPages} />
-      {/* Support Popup (mobile-only, открывается из SupportButton) */}
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />
     </div>
   );

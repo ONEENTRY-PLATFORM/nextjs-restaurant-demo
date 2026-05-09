@@ -12,38 +12,26 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 import { getDictionary } from '../../dictionaries';
 
-/** Мемоизируем компонент-лоадер, чтобы избежать лишних ре-рендеров */
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * Страница каталога магазина
- * @async
- * @param   {object}                                                    props              - пропсы страницы
- * @param   {Promise<{ handle: string; lang: string }>}                 props.params       - параметры страницы
- * @param   {Promise<{ [key: string]: string | string[] | undefined }>} props.searchParams - search-параметры
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
- * @returns {Promise<JSX.Element>}                                                         JSX.Element layout-а страницы магазина
+ * ShopCatalogPage — страница каталога магазина.
+ * @param   {PageProps} props - Пропсы страницы.
+ * @returns {Promise<JSX.Element>} JSX layout-а страницы.
  */
 const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
-  /** Извлекаем search-параметры из запроса */
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-  /** Извлекаем параметры маршрута из запроса */
   const { handle } = params;
 
-  /** Прогреваем кеш словаря в server provider. */
   ServerProvider('dict', await getDictionary());
 
-  // получаем страницу по url из API
   const { page, isError } = await getPageByUrl(handle);
-
-  /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
   const productsLimit = SHOP_PAGE_LIMIT;
 
   if (!page || isError) {
     return notFound();
   }
 
-  /** Рендерим layout страницы каталога магазина */
   return (
     <section className="shop_section">
       <div className="flex w-full flex-col items-center gap-5">
@@ -62,9 +50,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
 
 export default ShopCatalogPage;
 
-/**
- * Генерирует метаданные страницы
- */
+/** generateMetadata — метаданные страницы каталога. */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);
@@ -73,7 +59,6 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     return notFound();
   }
 
-  // извлекаем данные из page
   const { localizeInfos, isVisible, attributeValues } = page;
 
   const {

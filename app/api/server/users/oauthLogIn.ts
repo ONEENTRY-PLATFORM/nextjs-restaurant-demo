@@ -11,11 +11,10 @@ type OauthLoginProps = {
 };
 
 /**
- * Обменивает OAuth authorization code на сессию OneEntry.
+ * oauthLogIn — обменивает OAuth authorization code на сессию OneEntry.
  *
- * Только серверная функция — `client_secret` не должен попадать в браузерный бандл.
- * Повторяет {@link logInUser}, но вызывает `AuthProvider.oauth(...)` вместо
- * `auth(...)` (OAuth-провайдеры в OneEntry не привязаны к форме).
+ * Только server action — `client_secret` не должен попадать в браузерный бандл.
+ * Аналог {@link logInUser}, но через `AuthProvider.oauth(...)` (OAuth-провайдеры не привязаны к форме).
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {

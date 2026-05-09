@@ -5,10 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает страницы, включённые в меню, по маркеру.
- * Обёрнут в React cache() — дедуплицирует одинаковые вызовы внутри одного рендера.
- */
+/** getMenuByMarker — страницы меню по маркеру (React cache() дедуплицирует вызовы внутри рендера). */
 export const getMenuByMarker = cache(
   async (
     marker: string

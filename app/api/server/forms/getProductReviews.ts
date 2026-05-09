@@ -4,22 +4,12 @@ import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import { getApi, getLang, isError } from '@/app/api';
 
 const FORM_MARKER = 'review_form';
-// `moduleFormConfigs[0].id` формы `review_form` в OneEntry = 2 (проверено
-// через SDK Forms.getFormByMarker). Если админ пересоздаст конфиг —
-// первый id из `getFormByMarker` всегда побеждает над этим дефолтом.
+// `moduleFormConfigs[0].id` формы `review_form` = 2 (проверено через SDK). При пересоздании
+// конфига первый id из `getFormByMarker` всегда побеждает над этим дефолтом.
 const DEFAULT_MODULE_CONFIG_ID = 2;
 const REVIEWS_LIMIT = 50;
 
-/**
- * Одна запись OneEntry FormsData, возвращаемая `getFormsDataByMarker`.
- * Слабо типизирована, потому что форма ответа SDK не экспортируется как
- * стабильный тип — описаны только те поля, которые мы реально используем.
- * @property {number}      id              - Внутренний id записи FormsData.
- * @property {number|null} parentId        - Id родительской записи для вложенных комментариев (null = отзыв верхнего уровня).
- * @property {string}      [userIdentifier] - Id автора, разрешённый SDK (выставляется при отправке под авторизованной сессией).
- * @property {string}      [time]          - ISO-таймстамп отправки.
- * @property {Array}       formData        - Отправленные значения полей, ключи — маркеры.
- */
+/** RawReviewItem — запись OneEntry FormsData из `getFormsDataByMarker` (слабо типизирована — SDK не экспортирует стабильный тип). */
 export interface RawReviewItem {
   id: number;
   parentId: number | null;
@@ -32,14 +22,7 @@ export interface RawReviewItem {
   }>;
 }
 
-/**
- * Нормализованная запись отзыва, которую использует `<ProductReviewsList />`.
- * @property {string} id     - Стабильный ключ.
- * @property {string} author - Отображаемое имя (`userIdentifier` или "Anonymous").
- * @property {string} date   - Дата, отформатированная по локали.
- * @property {number} rating - Рейтинг звёздами 0–5.
- * @property {string} text   - Тело отзыва в plain-text.
- */
+/** ProductReview — нормализованная запись отзыва для `<ProductReviewsList />`. */
 export interface ProductReview {
   id: string;
   author: string;
@@ -49,11 +32,9 @@ export interface ProductReview {
 }
 
 /**
- * Извлекает plain-значение текстового поля OneEntry из полиморфной формы
- * `formData[].value` — SDK возвращает массив `[{ plainValue }]` для полей
- * `text` и строку для примитивов.
+ * readPlainText — plain-текст из полиморфного `formData[].value` (SDK даёт `[{ plainValue }]` для `text`, строку для примитивов).
  * @param   {unknown} value - Сырое `formData[].value`.
- * @returns {string}        Содержимое в виде plain-текста.
+ * @returns {string}        Plain-текст.
  */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
@@ -64,8 +45,7 @@ const readPlainText = (value: unknown): string => {
 };
 
 /**
- * Приводит `formData[].value` к числу для полей рейтинга.
- * Возвращает `0` для отсутствующих / не-числовых значений.
+ * readNumber — приводит `formData[].value` к числу для рейтинга (`0` для нечисловых).
  * @param   {unknown} value - Сырое `formData[].value`.
  * @returns {number}        Числовой рейтинг.
  */
@@ -79,20 +59,13 @@ const readNumber = (value: unknown): number => {
 };
 
 /**
- * Получает одобренные отзывы о продукте из OneEntry FormsData по `entityIdentifier`.
+ * getProductReviews — одобренные отзывы продукта из OneEntry FormsData по `entityIdentifier`.
  *
- * Повторяет паттерн чтения из `ReviewsSectionServer` в `oneentry-next-shop`:
- * - `unstable_noStore()` отключает кэширование маршрута, чтобы только что отправленные
- *   отзывы появлялись при следующем рендере без ручной revalidation;
- * - фильтр `status: ['approved']` соответствует publish-статусу, который выставляет
- *   server action `submitReview`;
- * - возвращаются только записи верхнего уровня (`parentId === null`) — вложенные
- *   ответы текущим UI не рендерятся.
- *
- * Падает на пустой массив при любой ошибке SDK или отсутствии данных, чтобы
- * компонент мог отрендерить `null` (согласно правилу graceful-fallback на
- * "Resource is closed" в `MISMATCH-LOG.md` §C).
- * @param   {number}                    productId - Id отзываемого продукта (становится `entityIdentifier`).
+ * `unstable_noStore()` отключает route cache — свежие отзывы появляются без ручной revalidation.
+ * Фильтр `status: ['approved']` совпадает с publish-статусом server action `submitReview`.
+ * Возвращаются только верхнеуровневые (`parentId === null`) — вложенные ответы UI не рендерит.
+ * Graceful fallback на пустой массив при любой ошибке SDK ("Resource is closed", см. MISMATCH-LOG §C).
+ * @param   {number}                    productId - Id продукта (становится `entityIdentifier`).
  * @returns {Promise<ProductReview[]>}            Отзывы верхнего уровня, сначала новые.
  */
 export const getProductReviews = async (productId: number): Promise<ProductReview[]> => {

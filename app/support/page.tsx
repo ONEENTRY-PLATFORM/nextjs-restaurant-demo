@@ -9,8 +9,7 @@ import ContactUsForm from '@/components/forms/ContactUsForm';
 export const dynamic = 'force-dynamic';
 
 /**
- * Страница поддержки — рендерит управляемые из CMS title/description/contacts со
- * страницы `support` плюс динамическую форму Contact-Us.
+ * SupportPage — страница поддержки (CMS title/description/contacts + форма Contact-Us).
  * @returns {Promise<JSX.Element>} JSX страницы поддержки.
  */
 const SupportPage = async (): Promise<JSX.Element> => {
@@ -94,10 +93,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
 export default SupportPage;
 
-/**
- * Генерирует метаданные страницы для маршрута support.
- * @returns {Promise<Metadata>} Метаданные страницы.
- */
+/** generateMetadata — метаданные страницы поддержки. */
 export async function generateMetadata(): Promise<Metadata> {
   const [{ page }, dict] = await Promise.all([getPageByUrl('support'), getDictionary()]);
   const title =

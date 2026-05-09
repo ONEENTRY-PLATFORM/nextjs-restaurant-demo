@@ -5,9 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает объект страницы с информацией о формах, блоках, меню, привязанных к странице.
- */
+/** getPageById — страница с привязанными формами, блоками и меню. */
 export const getPageById = cache(
   async (
     id: number

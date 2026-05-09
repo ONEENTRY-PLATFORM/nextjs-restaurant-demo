@@ -16,7 +16,8 @@ type CategoriesScrollerProps = {
 };
 
 /**
- * Горизонтальный snap-scroll список filter-чипов `preferences`.
+ * CategoriesScroller — горизонтальный snap-scroll список filter-чипов `preferences`.
+ *
  * @param   {CategoriesScrollerProps} props - Пропсы компонента.
  * @returns {JSX.Element}                   JSX скроллера.
  */

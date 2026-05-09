@@ -1,9 +1,7 @@
 /* eslint-disable no-console */
 import { getApi } from '@/app/api';
 
-/**
- * Подписка на события через Events API.
- */
+/** onSubscribeEvents — подписка на события через Events API. */
 export const onSubscribeEvents = async (id: number) => {
   try {
     await getApi().Events.subscribeByMarker('catalog_event', id);
@@ -14,9 +12,7 @@ export const onSubscribeEvents = async (id: number) => {
   }
 };
 
-/**
- * Отписка от событий через Events API.
- */
+/** onUnsubscribeEvents — отписка от событий через Events API. */
 export const onUnsubscribeEvents = async (id: number) => {
   try {
     await getApi().Events.unsubscribeByMarker('catalog_event', id);

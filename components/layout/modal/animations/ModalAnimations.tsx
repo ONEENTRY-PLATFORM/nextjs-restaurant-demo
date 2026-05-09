@@ -7,13 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Анимации формы модалки — slide-up + backdrop blur, зеркалят паттерн drawer
- * для корзины / фильтра. На `md+` тело центрируется (CSS), поэтому slide-up
- * читается как карточка, поднимающаяся в видимую область. Пропс `component`
- * сохранён для обратной совместимости (использовался, чтобы увеличить
- * длительность закрытия для `CalendarForm`).
- */
+/** Анимации модалки: slide-up на mobile, центрированный fade+scale на md+, особый scale+blur для CalendarForm. */
 const ModalAnimations = ({
   children,
   component,
@@ -32,10 +26,8 @@ const ModalAnimations = ({
     const modalBg = ref.current.querySelector('#modalBg');
     const modalBody = ref.current.querySelector('#modalBody');
 
-    // На десктопе попап центрирован через md:-translate-x-1/2 md:-translate-y-1/2.
-    // GSAP-transform перетирает CSS-translate, поэтому центрирование нужно
-    // задать через xPercent/yPercent внутри самой timeline. На мобиле этих
-    // translate-классов нет — анимация остаётся обычным slide-up bottom-sheet.
+    // GSAP-transform перетирает CSS `md:-translate-x/y-1/2`, поэтому центрирование
+    // на десктопе задаём через `xPercent/yPercent` внутри timeline.
     const isDesktop =
       typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
 
@@ -50,8 +42,7 @@ const ModalAnimations = ({
       },
     });
 
-    // У календаря более резкий entrance со scale + blur + opacity — ощущается
-    // ближе к попапу, чем bottom-sheet slide-up, используемый формами auth.
+    // Календарь — резкий entrance scale + blur + opacity вместо slide-up.
     if (component === 'CalendarForm') {
       gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
       gsap.set(modalBody, {
@@ -79,8 +70,7 @@ const ModalAnimations = ({
         '-=0.3'
       );
     } else if (isDesktop) {
-      // Desktop: попап появляется по центру с fade + лёгким scale,
-      // сохраняя -50%/-50% сдвиг для точного центрирования.
+      // Desktop: fade + лёгкий scale с -50%/-50% сдвигом для центрирования.
       gsap.set(modalBg, { autoAlpha: 0 });
       gsap.set(modalBody, {
         autoAlpha: 0,

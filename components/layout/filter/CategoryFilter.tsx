@@ -16,8 +16,7 @@ type Category = {
   href: string;
 };
 
-// Завершающий CTA — не является категорией меню, оставлен захардкоженным,
-// потому что живёт вне дерева страницы `menu` (ссылается на /restaurants).
+// Завершающий CTA — захардкожен, т.к. живёт вне дерева страницы `menu`.
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
@@ -25,17 +24,10 @@ const BOOKING_TILE: Category = {
 };
 
 /**
- * CategoryFilter — выезжающая слева панель со списком категорий меню,
- * получаемых из OneEntry (дочерние страницы страницы `menu`) плюс
- * завершающий CTA "Booking Table". Повторяет блок `<!-- category -->` из
- * `static-html/about_category.html`.
+ * CategoryFilter — выезжающая слева панель со списком категорий меню + CTA "Booking Table".
  *
- * Переключается через {@link OpenDrawerContext} с `component === 'CategoryFilter'`.
- * Открывается по клику на burger-кнопку в десктопном хедере.
  * @param   {object}          props       - Пропсы компонента.
- * @param   {IPagesEntity[]}  props.pages - Дочерние страницы страницы `menu`
- *                                          (категории), передаются серверным
- *                                          `Header`.
+ * @param   {IPagesEntity[]}  props.pages - Дочерние страницы страницы `menu`.
  * @returns {JSX.Element}                 JSX панели категорий.
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
@@ -71,7 +63,6 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       .filter(p => p.isVisible !== false)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map<Category>(p => {
-        // Атрибутный сет OneEntry: `icon` (image, форма массива).
         const iconAttr = p.attributeValues?.icon?.value as
           | { downloadLink?: string }
           | Array<{ downloadLink?: string }>

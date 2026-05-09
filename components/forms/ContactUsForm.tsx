@@ -18,32 +18,29 @@ type SpamCaptchaSettings = {
 };
 
 /**
- * Форма ContactUs
- * @param {string} className - Класс-обёртка.
- * @returns {JSX.Element}      JSX формы.
+ * ContactUsForm — форма обратной связи.
+ *
+ * @param   {object}     props           - Пропсы.
+ * @param   {string}     props.className - Класс-обёртка.
+ * @returns {JSX.Element}                JSX формы.
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  // Получаем форму по маркеру через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'contact_us' });
 
-  // Получаем поля из formFieldsReducer
   const fieldsData = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Сортируем поля по position
   const formFields = data?.attributes
     .slice()
     .sort((a: { position: number }, b: { position: number }) => a.position - b.position);
 
-  // Поле капчи (type: 'spam') и его настройки. captchaKey/action приходят из OneEntry
-  // в `settings.captcha.{key,action}`.
+  // captchaKey/action приходят из OneEntry в `settings.captcha.{key,action}`.
   const spamField = useMemo(() => formFields?.find(f => f.type === 'spam'), [formFields]);
   const spamSettings = spamField?.settings as SpamCaptchaSettings | undefined;
   const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
 
-  // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

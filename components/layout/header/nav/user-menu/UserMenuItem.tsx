@@ -4,9 +4,7 @@ import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 
-/**
- * Компонент-ссылка пункта пользовательского меню.
- */
+/** Ссылка пункта пользовательского меню. */
 const UserMenuItem = ({
   page,
   setState,

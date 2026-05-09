@@ -1,9 +1,7 @@
 import Image from 'next/image';
 import type { JSX } from 'react';
 
-/**
- * Sticker
- */
+/** Sticker — иконка-стикер на карточке продукта. */
 const Sticker = ({
   sticker,
 }: {
@@ -23,7 +21,6 @@ const Sticker = ({
     return <></>;
   }
 
-  // Извлекаем данные из sticker
   const title = sticker.value?.title;
   const imgSrc =
     sticker.value.extended?.value.downloadLink ||

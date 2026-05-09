@@ -9,14 +9,10 @@ export type PriceRange = {
 };
 
 /**
- * Возвращает min/max цену по всем товарам каталога (`pageUrl = "services"`)
- * через `Products.getProductsPriceByPageUrl` — лёгкий вызов, который отдаёт
- * только `{id, price}[]`. Используется для динамической сборки чипов цены в
- * фильтре, чтобы границы соответствовали реальным товарам в админке OneEntry,
- * а не хардкоду.
+ * getProductsPriceRange — min/max цена каталога через `Products.getProductsPriceByPageUrl` (лёгкий `{id, price}[]`).
  *
- * Graceful fallback на `{ min: 0, max: 0 }` при пустом каталоге или ошибке —
- * UI чипы тогда просто не покажутся.
+ * Используется для динамической сборки чипов цены в фильтре, чтобы границы соответствовали реальным товарам.
+ * Graceful fallback `{ min: 0, max: 0 }` при пустом каталоге или ошибке — UI чипы тогда просто не покажутся.
  */
 export const getProductsPriceRange = cache(
   async (pageUrl = 'services', langCode?: string): Promise<PriceRange> => {

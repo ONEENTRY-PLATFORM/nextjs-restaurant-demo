@@ -12,12 +12,12 @@ import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
- * Карточка продукта.
- * @param   {object}          props            - Пропсы компонента.
- * @param   {IProductsEntity} props.product    - Сущность продукта OneEntry.
- * @param   {number}          props.index      - Индекс в гриде (для stagger-анимации).
+ * ProductCard — карточка продукта в сетке.
+ * @param   {object}          props               - Пропсы компонента.
+ * @param   {IProductsEntity} props.product       - Сущность продукта OneEntry.
+ * @param   {number}          props.index         - Индекс в гриде (для stagger-анимации).
  * @param   {number}          props.productsLimit - productsLimit для анимации.
- * @returns {JSX.Element}                      JSX карточки.
+ * @returns {JSX.Element}                         JSX карточки.
  */
 const ProductCard = ({
   product,
@@ -41,7 +41,6 @@ const ProductCard = ({
   const ratingRaw = attrs.rating?.value as string | number | undefined;
   const rating = ratingRaw != null && ratingRaw !== '' ? String(ratingRaw) : null;
 
-  // Цена
   const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
   const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
 

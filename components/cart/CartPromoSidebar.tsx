@@ -15,23 +15,11 @@ import PromoBannerAnimations from './animations/PromoBannerAnimations';
 const EXIT_DURATION = 0.4;
 
 /**
- * Промо-сайдбар только для десктопа, показывается рядом с корзиной (порт правой
- * колонки `static-html/pk_cart.html`). Управляется дочерними страницами
- * `blog` из OneEntry — использует `attributeValues.banner` (mobile/portrait вариант),
- * что совпадает с формой стаканной колонки в верстке. Широкий вариант `bg_image`
- * зарезервирован только для hero на главной.
- *
- * Exit-анимация баннеров — через стандартный `stage='leaving'` от
- * `next-transition-router`. Раньше сайдбар сам перехватывал клики по ссылкам
- * через document-listener в capture-фазе и звал `router.push` после собственной
- * анимации, но это обходило `auto`-интерсептор `TransitionRouter`: глобальный
- * `stage` оставался `'none'`, и leave-хуки соседних компонентов
- * (`CartAnimations` / `StepOrder`) не срабатывали — анимировались только
- * баннеры. Сейчас все leave-анимации работают параллельно по одному стейджу.
+ * CartPromoSidebar — десктоп-сайдбар рядом с корзиной из `blog` страниц OneEntry.
+ * Использует `attributeValues.banner` (portrait); exit-анимация по `stage='leaving'` — иначе leave соседей не срабатывает.
  *
  * @param   {object}        props         - Пропсы сайдбара.
  * @param   {BlogBanner[]}  props.banners - Список баннеров из CMS.
- * @returns {JSX.Element}                 JSX сайдбара.
  */
 const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element | null => {
   const items = banners.filter(b => b.mobileImage);

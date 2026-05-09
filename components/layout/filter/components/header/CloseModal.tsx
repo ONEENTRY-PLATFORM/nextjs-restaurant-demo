@@ -5,9 +5,7 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Компонент кнопки закрытия модалки
- */
+/** Кнопка закрытия модалки. */
 const CloseModal = (): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);
   return (

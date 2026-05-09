@@ -1,24 +1,13 @@
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 
-/**
- * Один атрибут формы OneEntry, возвращаемый `Forms.getFormByMarker`.
- * @property {string} marker     - Маркер поля (используется как ключ при отправке данных формы).
- * @property {string} type       - Тип поля OneEntry (`text`, `string`, `integer`, `groupOfImages`, `spam`, `button`, …).
- * @property {number} [position] - Порядок, в котором рендерятся поля.
- */
+/** Один атрибут формы OneEntry, возвращаемый `Forms.getFormByMarker`. */
 export interface FormAttribute {
   marker: string;
   type: string;
   position?: number;
 }
 
-/**
- * Входные данные для трансформации одного поля, передаваемые в {@link transformFormField}.
- * @property {string}  marker    - Маркер поля.
- * @property {string}  type      - Тип поля из схемы формы OneEntry.
- * @property {unknown} value     - Сырое значение, подаваемое из UI (string / number / array).
- * @property {number}  productId - Product ID — нужен для скоупа загрузок `groupOfImages`.
- */
+/** Входные данные для трансформации одного поля, передаваемые в {@link transformFormField}. */
 export interface TransformFieldParams {
   marker: string;
   type: string;
@@ -27,12 +16,10 @@ export interface TransformFieldParams {
 }
 
 /**
- * Конвертирует одно UI-значение в payload-запись `FormDataType` OneEntry.
- * Повторяет конвенцию из `transformFormField` в `oneentry-next-shop` —
- * dispatch сначала по маркеру (`spam`, `send`), затем по типу поля
- * (`text`, `groupOfImages`), с проваливанием в дефолт для примитивов.
+ * Конвертирует одно UI-значение в payload-запись `FormDataType`.
+ * Dispatch сначала по маркеру (`spam`, `send`), затем по типу поля.
  * @param   {TransformFieldParams} params - Входные данные поля.
- * @returns {FormDataType}                Запись FormData, готовая для `postFormsData`.
+ * @returns {FormDataType}                Запись FormData для `postFormsData`.
  */
 export const transformFormField = ({
   marker,
@@ -71,8 +58,7 @@ export const transformFormField = ({
 };
 
 /**
- * Валидирует, что трансформированный массив FormData содержит хотя бы одно непустое поле контента.
- * Записи `spam`/`button` игнорируются — они никогда не несут пользовательский ввод.
+ * Валидирует, что payload содержит хотя бы одно непустое поле контента (spam/button игнорируются).
  * @param   {FormDataType[]}                       data - Трансформированный payload формы.
  * @returns {{ isValid: boolean; error?: string }}      Результат валидации.
  */

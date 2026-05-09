@@ -10,9 +10,7 @@ import { useCallback } from 'react';
 
 import Spinner from '@/components/shared/Spinner';
 
-/**
- * LoadMore
- */
+/** LoadMore — авто-подгрузка следующей страницы по ScrollTrigger. */
 const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -61,10 +59,8 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
     return () => {
       trigger.kill();
     };
-    // searchParams в deps — иначе ScrollTrigger.onEnter держит stale closure
-    // на goToNextPage с пустым searchParams.toString(), и при первом срабатывании
-    // (после клика по чипу CategoriesScroller на той же странице) preferences
-    // вылетают из URL.
+    // searchParams в deps — иначе ScrollTrigger.onEnter держит stale closure на goToNextPage,
+    // и preferences вылетают из URL при первом срабатывании после клика по чипу.
   }, [currentPage, searchParams]);
 
   return (
@@ -75,7 +71,6 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
       ref={ref}
       className="relative mx-auto flex h-6 w-20"
     >
-      {/* {currentPage !== totalPages && 'Load more'} */}
       {currentPage < totalPages && <Spinner />}
     </button>
   );

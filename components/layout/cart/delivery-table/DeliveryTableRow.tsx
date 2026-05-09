@@ -5,13 +5,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/**
- * Строка таблицы доставки — превью даты на начальном шаге `cart`.
- * Клик по строке открывает модальный попап `CalendarForm` (зарегистрирован в
- * `components/forms/index.tsx`, рендерится через общий слой `Modal`). Модалка
- * обновляет `cartReducer.deliveryData` и закрывается — вью корзины остаётся
- * на месте, поэтому анимации корзины не проигрываются заново.
- */
+/** Строка таблицы доставки с превью даты; клик открывает попап `CalendarForm`. */
 const DeliveryTableRow = ({
   label,
   value,

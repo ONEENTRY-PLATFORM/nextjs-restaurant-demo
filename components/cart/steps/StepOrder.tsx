@@ -25,13 +25,7 @@ type CartEntry = {
   selected?: boolean;
 };
 
-/**
- * Шаг checkout — обзор заказа (по `cart_Order.html`).
- *
- * Список товаров (картинка + название + вес/цена + плашка количества) + поле промо-кода +
- * сводка subtotal/delivery/total + кнопка APPLY → `payment`.
- * @returns {JSX.Element} JSX шага.
- */
+/** StepOrder — шаг checkout: товары + промо-код + сводка + APPLY → `payment`. */
 const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -53,8 +47,7 @@ const StepOrder = (): JSX.Element => {
         row.product &&
         row.entry.selected &&
         row.product.statusIdentifier !== 'out_of_stock' &&
-        // Доставка показывается отдельной строкой в итогах (Delivery: …), поэтому
-        // исключаем её из списка товаров, иначе она задваивается и в subtotal.
+        // Доставка идёт отдельной строкой в итогах — иначе задваивается в subtotal.
         row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{
     entry: CartEntry;
@@ -68,10 +61,7 @@ const StepOrder = (): JSX.Element => {
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
-  // Купон в OneEntry настроен «To Entire Order» — сервер считает скидку от
-  // (items + delivery), и `totalSumWithDiscount` уже включает доставку. Поэтому
-  // при наличии купона берём total напрямую от сервера, а не прибавляем
-  // deliveryPrice ещё раз — иначе доставка задваивается.
+  // Купон «To Entire Order»: `totalSumWithDiscount` уже включает delivery — не прибавляем повторно, иначе задваивается.
   const total = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal + deliveryPrice;
 
   const handleApply = (): void => {
@@ -83,9 +73,7 @@ const StepOrder = (): JSX.Element => {
     void applyCoupon(promoCode);
   };
 
-  // Контейнер для анимации входа/выхода строк ордера. Тот же паттерн, что в
-  // `CartAnimations` — slide-up + fade на маунте, обратная анимация перед
-  // переходом на следующий шаг или на другую страницу (route transition).
+  // Анимация строк ордера: slide-up + fade на маунте, обратная — на route transition (см. CartAnimations).
   const containerRef = useRef<HTMLDivElement>(null);
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
@@ -109,10 +97,7 @@ const StepOrder = (): JSX.Element => {
     { scope: containerRef, dependencies: [items.length] }
   );
 
-  // Reverse-анимация при уходе на другую страницу (клик по любой ссылке /
-  // breadcrumb за пределы /cart). Тот же паттерн, что в `CartAnimations`
-  // и `CardsGridAnimations` — paused timeline + `play()` строго на переходе
-  // 'none' → 'leaving'.
+  // Reverse-анимация на route leave: paused timeline + play() строго на переходе 'none' → 'leaving'.
   useGSAP(() => {
     const tl = gsap.timeline({ paused: true });
 
@@ -150,7 +135,7 @@ const StepOrder = (): JSX.Element => {
       stagger: { each: 0.07, from: 'end' },
       onComplete: () => {
         dispatch(setStep('payment'));
-        // Сброс — чтобы при возврате на этот шаг entrance-таймлайн стартовал чисто.
+        // Сброс — чтобы при возврате на шаг entrance-таймлайн стартовал чисто.
         gsap.set(targets, { autoAlpha: 1, yPercent: 0 });
       },
     });
@@ -203,7 +188,7 @@ const StepOrder = (): JSX.Element => {
         })}
       </div>
 
-      {/* Промо-код — отдельный инпут + кнопка, по pk_order.html */}
+      {/* Промо-код */}
       <div className="step-order-row mt-5 flex w-full flex-col gap-1.5">
         <div className="flex w-full items-center justify-between gap-6.25">
           <input

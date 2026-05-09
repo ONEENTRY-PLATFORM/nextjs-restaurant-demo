@@ -4,14 +4,8 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
 
 /**
- * Достаёт строковое значение из словаря `static_content` по маркеру с
- * fallback'ом. Канонический способ читать `dict?.<marker>?.value` из
- * компонентов — даёт `string` (а не `string | undefined`) и единообразно
- * сужает тип атрибута. Используется везде, где компонент принимает проп
- * `dict?: IAttributeValues` (см. [app/dictionaries.ts](app/dictionaries.ts)).
- *
+ * dictText — достаёт строковое значение из словаря `static_content` по маркеру с fallback-ом.
  * @example const title = dictText(dict, 'leave_review_button', 'Leave a review');
- *
  * @param   {IAttributeValues|undefined} dict     - Словарь (атрибут-сет `static_content`).
  * @param   {string}                     marker   - Маркер атрибута.
  * @param   {string}                     fallback - Значение, если маркера/строкового value нет.
@@ -26,7 +20,7 @@ export const dictText = (
   return typeof raw === 'string' ? raw : fallback;
 };
 
-// UsePrice — форматирование цены
+/** UsePrice — форматирует число в строку валюты. */
 export const UsePrice = ({ amount }: { amount: number | string }): string => {
   const currency = CurrencyEnum['en' as keyof typeof CurrencyEnum];
   const intlEnum = IntlEnum['en' as keyof typeof IntlEnum];
@@ -38,7 +32,7 @@ export const UsePrice = ({ amount }: { amount: number | string }): string => {
   return formattedPrice;
 };
 
-// UseDate — форматирование даты
+/** UseDate — форматирует дату в строку `dd-MMM-yyyy`. */
 export const UseDate = ({
   fullDate,
   format = 'en',
@@ -85,7 +79,7 @@ export const sortObjectFieldsByPosition = (
   return sortedObj;
 };
 
-// flatMenuToNested — преобразование плоского меню в дерево
+/** flatMenuToNested — превращает плоский список меню в дерево по `parentId`. */
 export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | null) => {
   return data.reduce((r: IMenusPages[], element: IMenusPages) => {
     if (pid == element.parentId) {
@@ -100,11 +94,7 @@ export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | nu
   }, []);
 };
 
-/**
- * Проверка typeError
- * @param {IError | unknown} res - any
- * @returns {res is IError} - boolean
- */
+/** typeError — type guard для `IError` (по наличию `statusCode`). */
 export function typeError(res: IError | unknown): res is IError {
   if ((res as IError)?.statusCode) {
     return true;
@@ -113,13 +103,10 @@ export function typeError(res: IError | unknown): res is IError {
 }
 
 /**
- * Нормализует телефон к формату E.164 для OneEntry `notificationData.phoneSMS`/
- * `phonePush`, который валидируется регуляркой `/^\+[0-9]{10,15}$/`.
- * Снимает любые нецифровые символы (пробелы, скобки, дефисы) и подставляет
- * префикс `+`. Пустую строку возвращает как `''` — пусть вызывающая сторона
- * решает, отдавать её в API или нет.
- * @param   {string|undefined|null} raw - сырое значение из инпута телефона
- * @returns {string}                    `+<digits>` или `''`
+ * normalizePhoneE164 — нормализует телефон к E.164 (`/^\+[0-9]{10,15}$/`) для OneEntry.
+ * Пустую строку возвращает как `''` — вызывающая сторона решает, отдавать её или нет.
+ * @param   {string|undefined|null} raw - сырое значение из инпута телефона.
+ * @returns {string}                    `+<digits>` или `''`.
  */
 export const normalizePhoneE164 = (raw: string | undefined | null): string => {
   const digits = (raw ?? '').replace(/\D/g, '');

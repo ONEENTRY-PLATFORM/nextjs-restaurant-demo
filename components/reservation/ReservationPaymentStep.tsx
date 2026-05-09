@@ -11,12 +11,8 @@ import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 /**
  * Категория визуального представления способа оплаты по Figma 120:1875.
- *
- *  - `card` — Credit & Debit Cards (Stripe), показывает иконки Visa/MC.
- *  - `paypal` — PayPal, показывает PayPal-лого.
- *  - `wallet` — Apple Pay / Google Pay (нет ассетов в проекте, рендерим
- *     текстовое имя).
- *  - `other` — fallback (включая `cash`, если он сконфигурирован в storage).
+ * `card` — Stripe (Visa/MC), `paypal` — PayPal, `wallet` — Apple/Google Pay (текст),
+ * `other` — fallback (включая cash).
  */
 type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
 
@@ -39,23 +35,13 @@ type ReservationPaymentStepProps = {
 };
 
 /**
- * Шаг выбора способа оплаты для бронирования столика. Соответствует
- * Figma `120:1875` в `Rest_desktop` — отрисовывает плашку про депозит,
- * радио-список платёжных методов и кнопки Back/Apply. Карточная форма
- * на этом шаге не рендерится: для Stripe `Payments.createSession`
- * возвращает `paymentUrl` на hosted Stripe Checkout, и юзер вводит
- * реквизиты уже там (см. `ReservationForm.onApplyPayment`).
+ * ReservationPaymentStep — шаг выбора способа оплаты для бронирования.
  *
- * Список аккаунтов берётся из `Payments.getAccounts()` (фильтруем
- * `isVisible && isUsed`) и **пересекается** с `storage.paymentAccountIdentifiers`
- * из `getOrderStorageByMarker('booking_order')`. Без пересечения легко
- * показать аккаунт, который не привязан к storage в админке, и при
- * `createOrder` поймать `400 "Your payment account is not connected"`.
- * Этот шаг рендерится после успешной авторизации, поэтому user-токен
- * для `getOrderStorageByMarker` уже выставлен.
+ * Список аккаунтов = `Payments.getAccounts()` (фильтр isVisible && isUsed)
+ * пересечённый с `storage.paymentAccountIdentifiers` из
+ * `getOrderStorageByMarker('booking_order')`, иначе createOrder словит
+ * 400 "Your payment account is not connected".
  *
- * Если у storage пустой `paymentAccountIdentifiers` — fallback на полный
- * список + предупреждение в UI (см. orders.md rule).
  * @param   {ReservationPaymentStepProps} props - Пропсы шага.
  * @returns {JSX.Element}                       JSX шага оплаты.
  */
@@ -84,8 +70,7 @@ const ReservationPaymentStep = ({
 
   const [selected, setSelected] = useState<string>('');
 
-  // Когда подгрузились аккаунты — выбираем по умолчанию Stripe (Credit
-  // & Debit), как в Figma. Если его нет — первый из списка.
+  // По умолчанию выбираем Stripe (Credit & Debit) по Figma; если его нет — первый из списка.
   useEffect(() => {
     if (selected || accounts.length === 0) return;
     const stripe = accounts.find(a => resolveVisualKind(a) === 'card');
@@ -147,8 +132,8 @@ const ReservationPaymentStep = ({
 };
 
 /**
- * Радио-строка одного payment-аккаунта. Цвет круга/текста по Figma —
- * paper для невыбранного, brand для выбранного.
+ * PaymentRow — радио-строка одного payment-аккаунта.
+ *
  * @param   {object}          props          - Пропсы строки.
  * @param   {IAccountsEntity} props.account  - Платёжный аккаунт.
  * @param   {boolean}         props.checked  - Активна ли строка.
@@ -168,9 +153,7 @@ const PaymentRow = ({
   const kind = resolveVisualKind(account);
   const id = `pay-${account.identifier}`;
 
-  // Лейбл по Figma:
-  //   - card → "Credit & Debit Cards"
-  //   - paypal/wallet/other → "Pay with"
+  // Лейбл по Figma: card → "Credit & Debit Cards", остальные → "Pay with".
   const label =
     kind === 'card'
       ? t('booking_credit_cards', 'Credit & Debit Cards')
@@ -204,8 +187,9 @@ const PaymentRow = ({
 };
 
 /**
- * Логотипы платёжной системы для строки выбора по Figma. Для Apple/Google
- * Pay в проекте нет ассетов — рендерим текстовый fallback.
+ * PaymentLogos — логотипы платёжной системы для строки выбора.
+ * Для Apple/Google Pay нет ассетов — рендерим текстовый fallback.
+ *
  * @param   {object}             props          - Пропсы.
  * @param   {PaymentVisualKind}  props.kind     - Категория способа оплаты.
  * @param   {string}             props.fallback - Текст для fallback-варианта.

@@ -1,15 +1,9 @@
 import { NextResponse } from 'next/server';
 
-/**
- * Простой in-memory кэш файлов шрифтов для повышения производительности.
- * Сопоставляет имена файлов шрифтов с их буферами и Content-Type.
- */
+/** In-memory кэш файлов шрифтов: filename → { buffer, contentType }. */
 const fontCache = new Map();
 
-/**
- * Расширения файлов шрифтов, сопоставленные с соответствующими MIME-типами.
- * Это обеспечивает корректные заголовки Content-Type при отдаче шрифтов.
- */
+/** Расширения файлов шрифтов → MIME-типы для Content-Type. */
 const FONT_TYPES: Record<string, string> = {
   woff: 'font/woff',
   woff2: 'font/woff2',
@@ -19,16 +13,14 @@ const FONT_TYPES: Record<string, string> = {
 };
 
 /**
- * GET-эндпоинт для отдачи файлов шрифтов с поддержкой кэширования.
+ * GET — отдача файлов шрифтов с in-memory кэшированием.
  * @param   {Request}               request - Входящий HTTP-запрос.
- * @returns {Promise<NextResponse>}         NextResponse с данными файла шрифта или ошибкой.
+ * @returns {Promise<NextResponse>}         Файл шрифта или 404.
  */
 export async function GET(request: Request): Promise<NextResponse> {
-  /** Извлекает имя файла шрифта из пути URL */
   const { pathname } = new URL(request.url);
   const fontFile = pathname.split('/').pop();
 
-  /** Проверяет, закэширован ли уже шрифт, чтобы избежать лишней обработки */
   if (fontCache.has(fontFile)) {
     const cached = fontCache.get(fontFile);
     const response = new NextResponse(cached.buffer, {
@@ -42,19 +34,12 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   try {
-    /**
-     * Здесь должна быть логика получения шрифта — из файловой системы или CDN.
-     * Сейчас используется placeholder-реализация для демонстрации.
-     */
-
-    /** Определяет MIME-тип шрифта по расширению файла */
+    // TODO: подгружать реальные данные шрифта (FS/CDN) — сейчас заглушка с пустым буфером.
     const ext = fontFile?.split('.').pop() || '';
     const contentType = FONT_TYPES[ext] || 'font/woff2';
 
-    /** Создаёт пустой буфер в качестве placeholder — реальная реализация загружала бы фактические данные шрифта */
     const buffer = Buffer.from('');
 
-    /** Сохраняет шрифт в кэш для будущих запросов */
     fontCache.set(fontFile, { buffer, contentType });
 
     const response = new NextResponse(buffer, {
@@ -68,14 +53,13 @@ export async function GET(request: Request): Promise<NextResponse> {
     return response;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    /** Возвращает ошибку 404, если шрифт не удалось получить */
     return new NextResponse('Font not found', { status: 404 });
   }
 }
 
 /**
- * OPTIONS-эндпоинт для обработки CORS preflight-запросов.
- * @returns {Promise<NextResponse>} NextResponse с CORS-заголовками.
+ * OPTIONS — CORS preflight для шрифтов.
+ * @returns {Promise<NextResponse>} CORS-заголовки.
  */
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {

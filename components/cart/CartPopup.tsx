@@ -35,16 +35,8 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
- * Попап-drawer корзины — порт `static-html/cart_cart.html`, открывается с
- * кнопки корзины в bottom-menu и из «Repeat order» в `OrdersList`. Зеркалит
- * drawer-паттерн {@link FilterModal}: управляется через `OpenDrawerContext`
- * (`open` + `component === 'CartPopup'`), обёрнут в slide-in анимацию + backdrop.
- *
- * Внутри попапа крутится весь wizard (`cart` → `order` → `payment` → `success`/
- * `error`) — APPLY на cart-шаге не уводит на `/cart`, а переключает Redux-step,
- * и попап рендерит контент следующего шага. Кнопка «назад» поднимается по стеку
- * шагов через `goBackStep`. На `/cart` параллельно работает `CartWizard`, у
- * него та же модель шагов — Redux-step единственный источник правды для обоих.
+ * CartPopup — drawer корзины с полным wizard'ом (`cart` → `order` → `payment` → `success`/`error`).
+ * APPLY на cart-шаге переключает Redux-step, не уводит на `/cart`. Параллельно работает `CartWizard` на `/cart` — общий Redux-step.
  */
 const CartPopup = (): JSX.Element => {
   const t = useT();
@@ -60,10 +52,7 @@ const CartPopup = (): JSX.Element => {
     { skip: !isOpen || productsCartData.length === 0 }
   );
 
-  // Подгружаем продукт-доставку. На `/cart` это делает server-component, но
-  // когда поппап открывают из bottom-меню или «Repeat order», мы можем быть
-  // вне `/cart` и `cartReducer.delivery` тогда пустой — total в шагах считался
-  // бы без доставки.
+  // Доставка: на `/cart` её тянет server-component; здесь подгружаем сами, иначе total на шагах считается без неё.
   const { data: deliveryProduct } = useGetProductByIdQuery(
     { id: DELIVERY_PRODUCT_ID },
     { skip: !isOpen }
@@ -81,9 +70,7 @@ const CartPopup = (): JSX.Element => {
     }
   }, [deliveryProduct, dispatch]);
 
-  // Когда попап закрывается на любом не-cart шаге — сбрасываем wizard на 'cart',
-  // чтобы при следующем открытии не оказаться на промежуточном или success/error
-  // экране без контекста.
+  // Закрытие на не-cart шаге сбрасывает wizard на 'cart' — иначе следующее открытие приземлится на промежуточный экран без контекста.
   const wasOpenRef = useRef(isOpen);
   useEffect(() => {
     if (wasOpenRef.current && !isOpen && step !== 'cart') {
@@ -94,10 +81,7 @@ const CartPopup = (): JSX.Element => {
 
   const close = (): void => setTransition('close');
 
-  // APPLY на шаге cart — обратная анимация карточек (slide-down + fade) и
-  // только потом переход на шаг ордера. Зеркальная entrance-анимации в
-  // `ProductAnimations`/`CartAnimations`. Сброс стилей в `onComplete` —
-  // чтобы при возврате на шаг корзины карточки появились заново.
+  // APPLY на cart: reverse-анимация карточек, потом setStep('order'). Сброс стилей в onComplete — чтобы при возврате карточки появились заново.
   const handleCartApply = (): void => {
     const cards = document.querySelectorAll('.product-in-cart');
     const button = document.querySelectorAll('.cart_btn');
@@ -119,7 +103,7 @@ const CartPopup = (): JSX.Element => {
     }).to(button, { autoAlpha: 0, yPercent: 100, duration: 0.25 }, '-=0.15');
   };
 
-  // Назад: на cart-шаге закрываем попап, на остальных — поднимаемся по стеку.
+  // Back: на cart — закрыть попап, иначе подняться по стеку шагов.
   const handleBack = (): void => {
     if (isCartStep) {
       close();
@@ -129,12 +113,10 @@ const CartPopup = (): JSX.Element => {
   };
 
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы не было
-  // конфликта между inline-transform и `yPercent`-tween анимации.
+  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform не конфликтовал с `yPercent`-tween.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // Доставка отображается отдельной строкой в итогах, а в каталог-списке
-  // корзины показывать её не нужно (та же логика, что и в `CartPage`).
+  // Доставка идёт отдельной строкой в итогах, в списке товаров не показываем (как в CartPage).
   const products = (data ?? []).filter(
     (p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID
   ) as IProductsEntity[];
@@ -155,8 +137,7 @@ const CartPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] overflow-y-auto bg-ink/80 backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
-          {/* Шапка — back / title / close. На cart-шаге back закрывает попап,
-              на других шагах поднимается по wizard-стеку. */}
+          {/* Шапка: back / title / close. */}
           <div className="z-10 flex items-center justify-between">
             <button
               type="button"

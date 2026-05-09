@@ -13,23 +13,10 @@ import ProfileIcon from '@/components/icons/profile';
 import LogoutMenuItem from './user-menu/LogoutMenuItem';
 
 /**
- * Иконка профиля в верхнем меню навигации.
+ * NavItemProfile — иконка профиля в верхнем меню.
  *
- * - **Не авторизован** → клик открывает SignInForm в общей `Modal`.
- * - **Авторизован** → клик ведёт на `/profile` (страница Personal),
- *   а наведение мышкой раскрывает выпадающее подменю с дочерними
- *   пунктами CMS-меню `user_menu`, привязанными к странице `profile`
- *   (Orders, Bookings и т.п.) + `<LogoutMenuItem />`.
- *
- * Маркер CMS — `user_menu`. Под `profile` (entry с
- * `pageUrl === 'profile'`) в админке заведены sub-страницы как
- * children: их `parentId` равен id этого entry. Их URL'ы строятся как
- * `/profile/${pageUrl}` — соответствует структуре `app/profile/{...}`.
- *
- * Подменю появляется на `pointerenter` всей обёртки и скрывается на
- * `pointerleave` — типичный hover-pattern для desktop-навигации
- * (touch-устройства open/close через тап по другому пункту, потому что
- * сам Profile-пункт — это `<Link>`, а не toggle).
+ * Не авторизован → открывает SignInForm; авторизован → ведёт на `/profile`,
+ * hover раскрывает sub-меню children пункта `profile` из CMS-меню `user_menu`.
  */
 const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';
@@ -45,8 +32,7 @@ const NavItemProfile = (): JSX.Element => {
     { skip: !isAuth }
   );
 
-  // Children пункта `profile` в `user_menu` — то, что должно быть
-  // в подменю. Сортируем по `position`.
+  // Children пункта `profile` в `user_menu` — содержимое подменю.
   const profileChildren = useMemo<IMenusPages[]>(() => {
     const pages = menu?.pages ?? [];
     const profileEntry = pages.find(p => p.pageUrl === PROFILE_PAGE_URL);
@@ -90,9 +76,7 @@ const NavItemProfile = (): JSX.Element => {
       {hoverOpen && (profileChildren.length > 0 || isAuth) ? (
         <ul
           role="menu"
-          // Подвешиваем подменю под иконкой; небольшой gap через `pt-2`
-          // обеспечивает, что курсор продолжает hover-зону при переходе
-          // между иконкой и подменю (без `pt-2` mouse leaves wrapper).
+          // `pt-2` — gap, чтобы hover-зона не разрывалась при переходе курсора с иконки на подменю.
           className="absolute right-0 top-6 z-30 w-48 pt-2"
         >
           <div className="rounded-[10px] bg-ink/80 px-4 py-2 text-paper shadow-lg backdrop-blur-[10px]">

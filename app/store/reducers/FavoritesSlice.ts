@@ -37,15 +37,11 @@ export const favoritesSlice = createSlice({
 export const { addFavorites, removeFavorites, removeAllFavorites, setFavoritesVersion } =
   favoritesSlice.actions;
 
-/**
- * Селектор товаров избранного
- */
+/** Селектор товаров избранного. */
 export const selectFavoritesItems = (state: { favoritesReducer: { products: number[] } }) =>
   state.favoritesReducer.products;
 
-/**
- * Селектор «есть ли в избранном» по product id
- */
+/** Селектор «есть ли в избранном» по product id. */
 export const selectIsFavorites = (
   state: { favoritesReducer: { products: number[] } },
   id: number
@@ -57,9 +53,7 @@ export const selectIsFavorites = (
   return true;
 };
 
-/**
- * Селектор версии избранного
- */
+/** Селектор версии избранного. */
 export const selectFavoritesVersion = (state: { favoritesReducer: { version: number } }) =>
   state.favoritesReducer.version;
 

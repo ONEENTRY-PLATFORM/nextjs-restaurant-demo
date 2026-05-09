@@ -5,13 +5,10 @@ import { getProductReviews } from '@/app/api';
 import ProductReviewsList from './ProductReviewsList';
 
 /**
- * Серверная обёртка для `<ProductReviewsList />` — запрашивает одобренные
- * отзывы для данного продукта через `getProductReviews` и передаёт их в
- * клиентскую карусель. Кеширование отключено внутри `getProductReviews`,
- * так что свежеотправленные отзывы появляются без ручной ревалидации.
- * @param   {object}               props           - Пропсы компонента.
+ * ProductReviewsListServer — серверная обёртка над {@link ProductReviewsList}: фетчит одобренные отзывы.
+ * @param   {object}               props           - Пропсы.
  * @param   {number}               props.productId - Product id (становится `entityIdentifier`).
- * @returns {Promise<JSX.Element>}                 JSX списка отзывов (или пустой рендер, если отзывов нет).
+ * @returns {Promise<JSX.Element>}                 JSX списка отзывов.
  */
 const ProductReviewsListServer = async ({
   productId,

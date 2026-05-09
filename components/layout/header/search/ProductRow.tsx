@@ -8,9 +8,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { addReservationToCart, selectReservationId } from '@/app/store/reducers/CartSlice';
 
-/**
- * Рендерер строки результатов поиска — ссылка на страницу продукта;
- */
+/** Строка результатов поиска — ссылка на страницу продукта. */
 const ProductRow = ({
   pageData,
   product,

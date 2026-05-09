@@ -1,19 +1,18 @@
-// app/utils/metadataUtils.ts
 import type { Metadata } from 'next';
 
 /**
- * Опции для генерации метаданных страницы.
- * @interface PageMetadataOptions
+ * PageMetadataOptions — опции генерации метаданных страницы.
+ *
  * @property {string}  handle        - Handle страницы.
  * @property {string}  title         - Заголовок страницы.
  * @property {string}  description   - Описание страницы.
  * @property {boolean} isVisible     - Видима ли страница.
- * @property {string}  [imageUrl]    - URL изображения, связанного со страницей.
- * @property {number}  [imageWidth]  - Ширина изображения страницы. По умолчанию 300.
- * @property {number}  [imageHeight] - Высота изображения страницы. По умолчанию 300.
- * @property {string}  [imageAlt]    - Alt-текст изображения. По умолчанию — заголовок страницы.
- * @property {string}  lang          - Код языка страницы.
- * @property {string}  baseUrl       - Базовый URL страницы.
+ * @property {string}  [imageUrl]    - URL изображения.
+ * @property {number}  [imageWidth]  - Ширина изображения (по умолчанию 300).
+ * @property {number}  [imageHeight] - Высота изображения (по умолчанию 300).
+ * @property {string}  [imageAlt]    - Alt-текст изображения (по умолчанию — title).
+ * @property {string}  lang          - Код языка.
+ * @property {string}  baseUrl       - Базовый URL.
  */
 interface PageMetadataOptions {
   handle: string;
@@ -29,19 +28,10 @@ interface PageMetadataOptions {
 }
 
 /**
- * Генерирует стандартизированные метаданные страницы.
- * @param   {object}   props             - Опции генерации метаданных
- * @param   {string}   props.handle      - Handle страницы
- * @param   {string}   props.title       - Заголовок страницы
- * @param   {string}   props.description - Описание страницы
- * @param   {boolean}  props.isVisible   - Видима ли страница
- * @param   {string}   props.imageUrl    - URL изображения, связанного со страницей
- * @param   {number}   props.imageWidth  - Ширина изображения. По умолчанию 300
- * @param   {number}   props.imageHeight - Высота изображения. По умолчанию 300
- * @param   {string}   props.imageAlt    - Alt-текст изображения. По умолчанию — заголовок страницы
- * @param   {string}   props.lang        - Код языка страницы
- * @param   {string}   props.baseUrl     - Базовый URL страницы. По умолчанию пустая строка
- * @returns {Metadata}                   Объект метаданных
+ * generatePageMetadata — генерирует стандартизированные метаданные страницы Next.js.
+ *
+ * @param   {PageMetadataOptions} props - Опции генерации метаданных.
+ * @returns {Metadata}                  Объект `Metadata` для Next.js.
  */
 export const generatePageMetadata = ({
   handle = '',

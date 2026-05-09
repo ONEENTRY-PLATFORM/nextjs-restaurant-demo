@@ -2,9 +2,7 @@ import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
-/**
- * Компонент отображения цены
- */
+/** PriceDisplay — текущая/оригинальная цена продукта. */
 const PriceDisplay = ({
   currentPrice,
   originalPrice,

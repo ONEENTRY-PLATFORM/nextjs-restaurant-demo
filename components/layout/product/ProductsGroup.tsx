@@ -6,9 +6,7 @@ import { getBlockByMarker } from '@/app/api';
 import ProductAnimations from './animations/ProductAnimations';
 import GroupCard from './group-card/GroupCard';
 
-/**
- * Компонент ProductsGroup
- */
+/** ProductsGroup — секция «купить вместе» по блоку OneEntry. */
 const ProductsGroup = async ({ marker }: { marker: string }): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);
 

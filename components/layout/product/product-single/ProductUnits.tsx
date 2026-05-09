@@ -1,8 +1,6 @@
 import type { JSX } from 'react';
 
-/**
- * Количество единиц продукта
- */
+/** ProductUnits — индикатор остатка единиц продукта в виде прогресс-бара. */
 const ProductUnits = ({ units }: { units: number }): JSX.Element => {
   const maxUnits = units < 50 ? 50 : units * 1.2;
   const width = (units / maxUnits) * 100;

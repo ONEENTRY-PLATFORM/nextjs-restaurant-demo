@@ -1,15 +1,6 @@
 /**
- * Side-channel для сохранения значений {@link ReservationForm} перед
- * OAuth-редиректом (Google и прочие провайдеры). Браузер делает full-page
- * navigation — React-tree уничтожается, локальный `useState` теряет
- * введённые данные. Через `sessionStorage` они переживают редирект и
- * подхватываются обратно при автоматическом ре-открытии попапа из
- * {@link GoogleAuthCallbackInner} после возврата с OAuth.
- *
- * `sessionStorage`, а не `localStorage`, чтобы данные жили только в рамках
- * одной табы и сами очищались при её закрытии — это совпадает с
- * жизненным циклом OAuth-флоу. Same-origin, поэтому Google-редирект
- * сохраняет тот же storage.
+ * Side-channel в `sessionStorage` для сохранения значений ReservationForm
+ * перед OAuth-редиректом (full-page navigation уничтожает React-tree).
  */
 export type ReservationOAuthResume = {
   /** Значения формы бронирования на момент клика по OAuth-провайдеру. */
@@ -22,6 +13,7 @@ const STORAGE_KEY = 'reservation-oauth-resume';
 
 /**
  * Сохраняет состояние формы перед OAuth-редиректом.
+ *
  * @param   {ReservationOAuthResume} next - Снэпшот для восстановления.
  * @returns {void}
  */
@@ -36,8 +28,9 @@ export const setPendingReservationResume = (next: ReservationOAuthResume): void 
 };
 
 /**
- * Читает pending-resume без удаления — нужно в callback-странице, чтобы
- * понять, куда возвращаться, не «сжигая» снэпшот: его потребит сам попап.
+ * Читает pending-resume без удаления — нужно в callback-странице, чтобы понять,
+ * куда возвращаться, не «сжигая» снэпшот: его потребит сам попап.
+ *
  * @returns {ReservationOAuthResume | null} Снэпшот или null.
  */
 export const peekPendingReservationResume = (): ReservationOAuthResume | null => {
@@ -51,9 +44,8 @@ export const peekPendingReservationResume = (): ReservationOAuthResume | null =>
 };
 
 /**
- * Читает и удаляет pending-resume (одноразово). Вызывает
- * {@link ReservationPopup} при открытии — если есть данные, попап
- * рендерится с восстановленными значениями полей.
+ * Читает и удаляет pending-resume (одноразово).
+ *
  * @returns {ReservationOAuthResume | null} Снэпшот или null.
  */
 export const consumePendingReservationResume = (): ReservationOAuthResume | null => {
@@ -69,8 +61,9 @@ export const consumePendingReservationResume = (): ReservationOAuthResume | null
 };
 
 /**
- * Удаляет pending-resume — например, когда OAuth-редирект сорвался ещё до
+ * Удаляет pending-resume — например, когда OAuth-редирект сорвался до
  * `window.location.href` (нет client-id, no-op fallback на email-форму).
+ *
  * @returns {void}
  */
 export const clearPendingReservationResume = (): void => {

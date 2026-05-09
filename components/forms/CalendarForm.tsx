@@ -11,13 +11,8 @@ import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 /**
- * Calendar form — модальный попап для выбора delivery date + time. Открывается
- * из строк превью корзины ({@link DeliveryTableRow}) через
- * `setComponent('CalendarForm')` и рендерится через общий слой {@link Modal}.
+ * CalendarForm — модальный попап для выбора delivery date + time.
  *
- * Сохраняет выбор в `cartReducer.deliveryData` и закрывает модалку. Внутри
- * использует объединённый {@link DateTimePickerSheet}: сначала календарь,
- * после выбора дня — временные слоты, единый `Apply`.
  * @param   {object}  props           - Пропсы формы.
  * @param   {string}  props.className - Класс-обёртка.
  * @param   {boolean} props.isActive  - Открыта ли модалка.

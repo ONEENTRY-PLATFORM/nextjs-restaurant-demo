@@ -5,10 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает объекты дочерних страниц с информацией в виде массива.
- * Обёрнут в React cache() — дедуплицирует одинаковые вызовы внутри одного рендера.
- */
+/** getChildPagesByParentUrl — дочерние страницы по url родителя (React cache() дедуплицирует вызовы внутри рендера). */
 export const getChildPagesByParentUrl = cache(
   async (
     url: string

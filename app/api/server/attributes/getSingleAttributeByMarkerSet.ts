@@ -9,9 +9,7 @@ interface HandleProps {
   attributeMarker: string;
   setMarker: string;
 }
-/**
- * Получает один атрибут с данными из attribute sets.
- */
+/** getSingleAttributeByMarkerSet — один атрибут с данными из attribute sets. */
 export const getSingleAttributeByMarkerSet = cache(
   async ({
     attributeMarker,

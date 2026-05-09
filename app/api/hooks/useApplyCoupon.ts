@@ -25,13 +25,11 @@ type UseApplyCouponApi = {
 };
 
 /**
- * Применяет промокод к корзине через `Orders.previewOrder`. Например SUMMER-2026.
+ * useApplyCoupon — применяет промокод к корзине через `Orders.previewOrder`.
  *
- * Сервер сам валидирует код и считает реальную скидку с учётом всех условий
- * (`MIN_CART_AMOUNT`, `applicability`, `maxAmount`, ...). При успехе сохраняет
- * `{ code, totalSum, totalSumWithDiscount }` в `OrderSlice.appliedCoupon`,
- * откуда `StepOrder` берёт строку «Discount» и пересчитанный total, а
- * `useCreateOrder` пробрасывает `couponCode` в `Orders.createOrder`.
+ * Сервер сам валидирует код и считает скидку с учётом условий (`MIN_CART_AMOUNT`, `applicability`, `maxAmount`).
+ * При успехе сохраняет `{ code, totalSum, totalSumWithDiscount }` в `OrderSlice.appliedCoupon` —
+ * `StepOrder` берёт оттуда строку «Discount», `useCreateOrder` пробрасывает `couponCode` в `Orders.createOrder`.
  * @returns {UseApplyCouponApi} apply/remove + loading/error.
  */
 export const useApplyCoupon = (): UseApplyCouponApi => {

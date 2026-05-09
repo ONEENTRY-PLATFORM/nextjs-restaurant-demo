@@ -7,11 +7,9 @@ import { getProductById } from '@/app/api';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * Layout страницы товара
- * @param   {object}                                    props        - Пропсы страницы.
- * @param   {Promise<{ handle: string; lang: string }>} props.params - Параметры страницы с handle и lang.
- * @returns {Promise<JSX.Element>}                                   Promise<JSX.Element> — layout страницы товара.
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * ProductPageLayout — layout страницы товара.
+ * @param   {object} props - Пропсы страницы.
+ * @returns {Promise<JSX.Element>} JSX layout-а страницы товара.
  */
 const ProductPageLayout = async ({
   params,
@@ -20,21 +18,15 @@ const ProductPageLayout = async ({
 }): Promise<JSX.Element> => {
   const { handle } = await params;
 
-  /** Получаем товар по текущему Id */
   const { isError, product } = await getProductById(Number(handle));
 
-  /** Возвращаем 404, если товар не найден или произошла ошибка */
   if (isError || !product) {
     return notFound();
   }
 
-  /** Извлекаем данные из товара для генерации structured data */
   const { attributeValues, localizeInfos, additional, statusIdentifier } = product;
 
-  /**
-   * Structured data товара в формате JSON-LD для SEO
-   * https://json-ld.org/
-   */
+  // JSON-LD structured data товара (https://json-ld.org/) для SEO.
   const descriptionValue = attributeValues.description?.value as
     | Array<{ plainValue?: string }>
     | undefined;
@@ -74,9 +66,7 @@ const ProductPageLayout = async ({
 
 export default ProductPageLayout;
 
-/**
- * Генерирует метаданные страницы
- */
+/** generateMetadata — метаданные страницы товара. */
 export async function generateMetadata({
   params,
 }: {

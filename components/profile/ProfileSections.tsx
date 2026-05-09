@@ -21,12 +21,7 @@ type SavedAddress = {
   selected?: boolean;
 };
 
-/**
- * Парсит сохранённый список адресов из `user_address`. Атрибут формы `user`
- * имеет тип `json` — SDK отдаёт `value` как массив напрямую. Поддерживаем
- * также legacy-строку (старые юзеры могли быть сохранены ещё при `type: string`,
- * когда мы клали JSON.stringify). Возвращает [] на любую ошибку.
- */
+/** Парсит `user_address`: json (массив) или legacy-строку с JSON. Возвращает [] на любую ошибку. */
 const parseAddresses = (raw: unknown): SavedAddress[] => {
   if (!raw) return [];
   let arr: unknown = raw;
@@ -43,7 +38,7 @@ const parseAddresses = (raw: unknown): SavedAddress[] => {
   );
 };
 
-// Атрибуты формы `user` из OneEntry, которые в секции "My Profile" (Personal) рендерить не нужно.
+/** Атрибуты формы `user`, которые в секции "My Profile" не рендерим. */
 const HIDDEN_PROFILE_MARKERS = new Set([
   'repeat_password',
   'email_notifications',
@@ -59,10 +54,7 @@ const resolveInputType = (attr: IFormAttribute): string => {
   return 'text';
 };
 
-/**
- * Контент секций профиля — раскрывающиеся "My Profile".
- * @returns {JSX.Element} JSX секций профиля.
- */
+/** ProfileSections — раскрывающиеся секции "My Profile" + "Address". */
 const ProfileSections = (): JSX.Element => {
   const t = useT();
   const { user, refreshUser } = useContext(AuthContext);
@@ -103,9 +95,7 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
-  // То же, что `userField`, но возвращает raw value без кастa в string —
-  // нужно для полей с типом `json` (например, `user_address`), где SDK
-  // отдаёт массив/объект напрямую.
+  // Raw value без кастa в string — для полей типа `json` (`user_address`), где SDK отдаёт массив/объект.
   const userRawField = useCallback(
     (marker: string): unknown => {
       if (!user?.formData || !Array.isArray(user.formData)) return undefined;
@@ -128,7 +118,6 @@ const ProfileSections = (): JSX.Element => {
     [edits, sessionPassword, userField]
   );
 
-  // Базовый список адресов выводится из `user_address` (JSON в user.formData).
   const baseAddresses = useMemo<SavedAddress[]>(() => {
     const parsed = parseAddresses(userRawField('user_address'));
     if (parsed.length > 0 && !parsed.some(a => a.selected)) {
@@ -138,7 +127,6 @@ const ProfileSections = (): JSX.Element => {
   }, [userRawField]);
   const addresses = pendingAddresses ?? baseAddresses;
 
-  // Сохраняет переданный список адресов в `user_address` через `Users.updateUser`.
   const persistAddresses = useCallback(
     async (next: SavedAddress[]) => {
       if (!user?.formIdentifier || !Array.isArray(user.formData)) return;
@@ -158,19 +146,10 @@ const ProfileSections = (): JSX.Element => {
         formData.push({ marker: 'user_address', type: 'json', value: serialized });
       }
       try {
-        // phoneSMS опционален в SDK-типе и валидируется сервером по regex
-        // /^\+[0-9]{10,15}$/. Если в user.formData лежит мусор (юзер
-        // раньше сохранил кривой телефон, а Save профиля упал), не шлём
-        // phoneSMS вообще — иначе сохранение адресов будет блокировано
-        // полем, к которому пользователь сейчас не имеет отношения.
+        // phoneSMS опционален и валидируется сервером по /^\+[0-9]{10,15}$/ — мусорный телефон в formData не шлём, иначе он заблокирует сохранение адресов.
         const phone = normalizePhoneE164(userField('phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
-        // Сервер требует authData при обновлении user-сущности с email-провайдером
-        // (иначе 400 «Login or password values are missed»). Берём пароль из
-        // Redux (текущая сессия). Если пароля нет (юзер пришёл с авто-логина по
-        // refresh-token и ни разу не вводил пароль в этой сессии) — пропускаем
-        // запрос с понятной ошибкой, чтобы не отправлять заведомо проигрышный
-        // payload.
+        // authData обязателен для email-провайдера (иначе 400 «Login or password values are missed»). После авто-логина по refresh-token пароля в сессии нет — выходим.
         if (!sessionPassword) {
           setAddressError('Address save requires entering your password in My Profile first.');
           return;
@@ -181,10 +160,7 @@ const ProfileSections = (): JSX.Element => {
           formData: formData as any,
           authData: [{ marker: 'password', value: sessionPassword }],
           notificationData: {
-            // OneEntry-форма `user` для email-провайдера хранит email НЕ в
-            // `formData` (там его нет — см. реальный getUser ответ), а в
-            // `user.identifier` (значение, по которому юзер логинится).
-            // notificationData.email обязательное поле — fallback на identifier.
+            // Email для email-провайдера лежит в `user.identifier`, а не в `formData` — fallback на identifier.
             email: userField('email') || user.identifier || '',
             phonePush: [],
             ...(phoneValid ? { phoneSMS: phone } : {}),
@@ -204,7 +180,6 @@ const ProfileSections = (): JSX.Element => {
     setSaving(true);
     setSaveError('');
     try {
-      // Базовый payload — поля из формы (без password).
       const password = fieldValue('password');
       const login = fieldValue('email') || user.identifier || '';
       const hasPassword = Boolean(password);
@@ -229,7 +204,7 @@ const ProfileSections = (): JSX.Element => {
           }
           return { marker: attr.marker, type: attr.type, value };
         })
-        // Скрытые поля без значения вообще не шлём — сервер может ругаться на required даже на пустую строку.
+        // Скрытые поля без значения не шлём — сервер ругается на required даже на пустую строку.
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
@@ -265,7 +240,7 @@ const ProfileSections = (): JSX.Element => {
       street: newStreet.trim(),
       house: newHouse.trim(),
       floor: newFloor.trim(),
-      // Первый добавленный адрес автоматически становится selected'ом.
+      // Первый добавленный адрес авто-выбирается.
       selected: addresses.length === 0,
     };
     const next = [...addresses, newEntry];
@@ -280,7 +255,7 @@ const ProfileSections = (): JSX.Element => {
 
   const onDeleteAddress = async (id: string) => {
     const next = addresses.filter(a => a.id !== id);
-    // Если удалили выбранный — авто-выбираем первый из оставшихся.
+    // Удалили выбранный — авто-выбираем первый из оставшихся.
     if (next.length > 0 && !next.some(a => a.selected)) {
       next[0]!.selected = true;
     }
@@ -382,13 +357,6 @@ const ProfileSections = (): JSX.Element => {
 
         {addressOpen && (
           <div className="mt-5">
-            {/* <Image
-              src="/images/picture/maps.png"
-              alt="map"
-              width={350}
-              height={210}
-              className="w-full rounded-[5px] object-cover"
-            /> */}
             {addresses.map(addr => (
               <div key={addr.id} className="mt-2.5 flex items-center justify-between gap-2.5">
                 <label className="flex items-center gap-2.5 cursor-pointer flex-1">

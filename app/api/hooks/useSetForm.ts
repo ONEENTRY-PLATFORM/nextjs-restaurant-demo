@@ -5,9 +5,7 @@ import { useState } from 'react';
 
 import { getApi } from '@/app/api';
 
-/**
- * Отправка данных формы через FormData API.
- */
+/** useSetForm — отправка данных формы через FormData API. */
 export const useSetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const sendData = (data: IBodyPostFormData) => {

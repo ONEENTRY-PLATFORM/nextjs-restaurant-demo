@@ -10,38 +10,25 @@ import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
-/** Мемоизируем компонент-лоадер, чтобы избежать лишних ре-рендеров */
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * Layout страницы категории магазина
- * @param   {object}               props              - Пропсы страницы
- * @param   {object}               props.params       - параметры страницы
- * @param   {object}               props.searchParams - динамические search-параметры
- * @returns {Promise<JSX.Element>}                    JSX.Element layout-а страницы магазина
- * @see {@link https://doc.oneentry.cloud/docs/pages OneEntry CMS docs}
- * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
+ * ShopCategoryLayout — layout страницы категории магазина.
+ * @param   {PageProps} props - Пропсы страницы.
+ * @returns {Promise<JSX.Element>} JSX layout-а страницы.
  */
 const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
-  /** Извлекаем параметры маршрута из пропсов */
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-  /** Деструктурируем handle из параметров */
   const { handle } = params;
-  /** Прогреваем кеш словаря в server provider. */
   ServerProvider('dict', await getDictionary());
 
-  /** Загружаем данные страницы категории из CMS */
   const { page } = await getPageByUrl(handle);
-
-  /** Лимит карточек товаров на одну страницу каталога (см. `NEXT_PUBLIC_SHOP_PAGE_LIMIT`). */
   const productsLimit = SHOP_PAGE_LIMIT;
 
-  /** Показываем 404, если страница категории не найдена */
   if (!page) {
     return notFound();
   }
 
-  /** Генерируем structured data для хлебных крошек для улучшения SEO */
   const breadcrumbStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -93,9 +80,7 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
 
 export default ShopCategoryLayout;
 
-/**
- * Генерирует метаданные страницы
- */
+/** generateMetadata — метаданные страницы категории. */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);

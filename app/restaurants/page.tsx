@@ -25,10 +25,7 @@ type RestaurantCard = {
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
-  // SDK для атрибута `timeInterval` отдаёт либо одиночный объект `{from, to}`,
-  // либо массив таких объектов (на случай нескольких интервалов в день).
-  // Берём первый интервал — совпадает с тем, что показано в `mob_about.html`
-  // ("11:00 - 00:00" одной строкой).
+  // `timeInterval` приходит объектом или массивом — берём первый интервал.
   const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
   const first = arr ? arr[0] : (raw as ScheduleInterval);
   if (!first || (!first.from && !first.to)) return '';
@@ -43,7 +40,6 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
   return {
     id: page.id,
-    // Single-restaurant layout живёт в `app/restaurants/[handle]/page.tsx`.
     href: `/restaurants/${page.pageUrl}`,
     title,
     address,
@@ -53,13 +49,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   };
 };
 
-/**
- * Index-страница сети ресторанов.
- *
- * Данные берутся из OneEntry: `restaurants` (родительская страница, hero
- * заголовок + описание) и её child-pages со своим attribute set
- * `restaurant` (`address`, `photos`, `schedule`).
- */
+/** RestaurantsPage — index-страница сети ресторанов из OneEntry `restaurants` + child-pages. */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
     getPageByUrl('restaurants'),

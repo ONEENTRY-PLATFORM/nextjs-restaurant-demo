@@ -22,40 +22,22 @@ import {
 } from './reservationOAuthResumeState';
 
 type ReservationAuthStepProps = {
-  /**
-   * Колбэк при успешной авторизации. Вызывающий код переключит шаг
-   * визарда на `payment` (форма уже валидирована и payload собран).
-   */
+  /** Колбэк при успешной авторизации — переключит шаг визарда на `payment`. */
   onAuthSuccess: () => void;
   onBack: () => void;
-  /**
-   * Текущие значения формы бронирования. Сохраняются в `sessionStorage`
-   * перед OAuth-редиректом, чтобы попап смог восстановить их после
-   * возврата (см. {@link reservationOAuthResumeState}).
-   */
+  /** Текущие значения формы бронирования; сохраняются в sessionStorage перед OAuth-редиректом. */
   currentValues: Record<string, string>;
 };
 
 type SubStep = 'providers' | 'email';
 
 /**
- * Шаг авторизации внутри попапа бронирования. Появляется, когда юзер
- * нажал Continue на форме, но не залогинен — `Orders.createOrder`
- * требует user-token, иначе SDK вернёт 401 («You must authorize to send
- * data»).
+ * ReservationAuthStep — шаг авторизации внутри попапа бронирования.
  *
- * Реализован inline, без глобального `OpenDrawerContext.setComponent`,
- * чтобы не уничтожать смонтированный `ReservationPopup` (это бы стёрло
- * собранные значения формы).
+ * Реализован inline (без `OpenDrawerContext.setComponent`), чтобы не
+ * уничтожать смонтированный `ReservationPopup` и не терять собранные
+ * значения формы. Два под-шага: `providers` → `email`.
  *
- * Двух-под-шаговый flow:
- * 1. `providers` — список активных провайдеров OneEntry (email/google/…),
- *    тот же UI, что и в [`AuthProviderSelect`](../forms/AuthProviderSelect.tsx).
- *    Email/phone — переход к `email`. Google/OAuth — внешний редирект; перед
- *    ним `currentValues` сохраняются в `sessionStorage` через
- *    {@link setPendingReservationResume}, и {@link GoogleAuthCallbackInner}
- *    после возврата автоматически переоткрывает попап с подставленными значениями.
- * 2. `email` — встроенная email/password форма (логин не уничтожает попап).
  * @param   {ReservationAuthStepProps} props - Пропсы шага.
  * @returns {JSX.Element}                    JSX шага авторизации.
  */
@@ -90,9 +72,7 @@ const ReservationAuthStep = ({
     if (p.identifier === 'google') {
       persistResumeBeforeOAuth();
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth ещё не сконфигурирован (см. MISMATCH-LOG.md §C.8.1) —
-        // fallback на встроенную email-форму. Снимаем resume, иначе он зря
-        // прорастёт в следующее открытие попапа.
+        // Google OAuth не сконфигурирован (MISMATCH-LOG §C.8.1) — fallback на email-форму. Снимаем resume.
         clearPendingReservationResume();
         setSubStep('email');
       }

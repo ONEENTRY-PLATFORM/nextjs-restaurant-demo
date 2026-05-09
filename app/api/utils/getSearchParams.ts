@@ -1,8 +1,6 @@
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
-/**
- * Получает параметры поиска для фильтра.
- */
+/** getSearchParams — собирает массив `IFilterParams` для запроса продуктов. */
 const getSearchParams = (
   searchParams?: {
     search?: string;
@@ -17,7 +15,7 @@ const getSearchParams = (
 ) => {
   const expandedFilters: Array<IFilterParams & { statusMarker?: string }> | undefined = [];
 
-  // проверяем, есть ли у продукта SKU или это сервисный продукт
+  // Отсекаем сервисные продукты без SKU.
   const servicesFilter: IFilterParams = {
     attributeMarker: 'sku',
     conditionMarker: 'nin',

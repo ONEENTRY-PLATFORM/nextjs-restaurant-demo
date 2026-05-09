@@ -12,14 +12,9 @@ type HomeBlockSectionProps = {
 };
 
 /**
- * Универсальный блок главной — заголовок + сетка продуктов, полностью управляется
- * через конфиг блока OneEntry. Позволяет редактору пересортировывать, ресайзить и
- * рекурировать верх главной без правки кода: позиция задаётся
- * на блоке в админке, элементы — через drag-and-drop, колонки через
- * `countElementsPerRow`, общее число через `quantity`.
- * @param   {HomeBlockSectionProps} props - Пропсы компонента.
- * @returns {JSX.Element|null}            JSX секции, либо `null`, когда нечего
- *                                        видимого рендерить.
+ * HomeBlockSection — заголовок + сетка продуктов, конфигурируется через блок OneEntry.
+ * @param   {HomeBlockSectionProps} props - Пропсы.
+ * @returns {JSX.Element|null}            JSX секции либо `null`, если нечего рендерить.
  */
 const HomeBlockSection = ({
   title,

@@ -14,12 +14,8 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import ReviewForm from './ReviewForm';
 
 /**
- * Попап для отправки отзыва о продукте — открывается из заголовка блока
- * отзывов в карточке товара (см. {@link ProductReviewsList}). productId
- * прокидывается через `OpenDrawerContext.action` (как и в
- * {@link ReservationPopup} с `restaurantHandle`), чтобы попап оставался
- * глобально зарегистрированным в [app/layout.tsx] без знания о текущей
- * странице продукта.
+ * ReviewFormPopup — попап с формой отзыва. productId прокидывается через `OpenDrawerContext.action`,
+ * чтобы попап оставался глобально зарегистрированным без знания о текущей странице.
  */
 const ReviewFormPopup = (): JSX.Element => {
   const t = useT();

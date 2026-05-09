@@ -8,17 +8,17 @@ import { useRef } from 'react';
 import type { AnimationsProps } from '../types/global';
 
 /**
- * Анимация плавного появления (fade)
- * @param   {object}      props           - Свойства анимации
- * @param   {ReactNode}   props.children  - дочерний ReactNode
- * @param   {string}      props.className - CSS className ref-элемента
- * @param   {number}      props.index     - Индекс элемента для stagger-анимаций
- * @returns {JSX.Element}                 JSX.Element с анимированным ref
+ * FadeTransition — анимация плавного появления (fade) c stagger по `index`.
+ *
+ * @param   {AnimationsProps} props           - Свойства анимации.
+ * @param   {ReactNode}       props.children  - Дочерний ReactNode.
+ * @param   {string}          props.className - CSS className ref-элемента.
+ * @param   {number}          props.index     - Индекс элемента для stagger-анимаций.
+ * @returns {JSX.Element}                     JSX с анимированным ref.
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
 const FadeTransition = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
-  // анимации при входе на стадию
   useGSAP(() => {
     const tl = gsap
       .timeline()

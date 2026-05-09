@@ -12,26 +12,9 @@ const SWIPE_THRESHOLD_PX = 40;
 const DIRECTION_LOCK_PX = 8;
 
 /**
- * Слайдер фото ресторана — клиентский компонент с dot-индикаторами,
- * горизонтальным свайпом (touch + mouse drag) и автопрокруткой.
- *
- * Повторяет паттерн `static-html/mob_about.html` (горизонтальная лента
- * + точки), но переключение делает по pointer-событиям, а не через
- * scroll-snap, чтобы стабильно работало и на десктопе, и в lightbox-обёртке.
- *
- * `onImageClick` — опциональный обработчик клика по самому изображению.
- * Когда он задан, image-frame оборачивается в `<button>`. Точки-индикаторы
- * выводятся **рядом** (sibling), а не внутри этой кнопки, чтобы не
- * получалось `<button>` внутри `<button>` — иначе React падает на
- * hydration-mismatch (HTML не разрешает вложенные интерактивные
- * элементы). Click после swipe-жеста подавляется в `onClickCapture`,
- * чтобы свайп не открывал lightbox.
- *
- * Автопрокрутка: каждые `autoplayMs` мс активный слайд продвигается на
- * следующий (циклически). Эффект пересоздаётся при смене `active`, поэтому
- * ручное переключение (свайп/тап по точке) корректно сбрасывает таймер.
- * Пока пользователь держит палец/мышь — автопрокрутка пауза. Передать
- * `autoplayMs={null}` чтобы выключить.
+ * RestaurantPhotoSlider — слайдер фото ресторана с dot-индикаторами, свайпом и автопрокруткой.
+ * Если задан `onImageClick`, dots выводятся sibling-ом, чтобы не было `<button>` внутри `<button>`.
+ * Передать `autoplayMs={null}` чтобы выключить автопрокрутку.
  */
 const RestaurantPhotoSlider = ({
   photos,
@@ -102,14 +85,13 @@ const RestaurantPhotoSlider = ({
     const dy = e.clientY - s.startY;
     s.moved = Math.abs(dx);
     s.direction = dx > 0 ? 1 : dx < 0 ? -1 : 0;
-    // Lock в горизонтальный жест только когда горизонтальная компонента
-    // явно доминирует — иначе пропускаем вертикальный скролл страницы.
+    // Lock в горизонтальный жест только когда горизонтальная компонента доминирует — иначе пропускаем вертикальный скролл.
     if (!s.locked && Math.abs(dx) > DIRECTION_LOCK_PX && Math.abs(dx) > Math.abs(dy)) {
       s.locked = true;
       try {
         e.currentTarget.setPointerCapture(s.pointerId);
       } catch {
-        // pointerId уже мог быть отпущен (быстрый flick) — не критично.
+        // pointerId уже мог быть отпущен (быстрый flick).
       }
     }
   };
@@ -130,8 +112,7 @@ const RestaurantPhotoSlider = ({
   };
 
   const onClickCapture = (e: React.MouseEvent<HTMLElement>) => {
-    // Подавляем click после swipe-жеста — иначе по button-варианту откроется
-    // lightbox прямо при отпускании пальца.
+    // Подавляем click после swipe-жеста — иначе lightbox откроется при отпускании пальца.
     if (dragState.current.moved > SWIPE_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();
@@ -152,10 +133,7 @@ const RestaurantPhotoSlider = ({
     onDragStart: (e: React.DragEvent) => e.preventDefault(),
   };
 
-  // Все слайды монтируем одновременно и переключаем `opacity` — получаем
-  // плавный crossfade при смене активного фото (свайп / тап по точке /
-  // автопрокрутка). `priority` ставим только на первое, чтобы не утащить
-  // LCP в фон.
+  // Все слайды монтируем одновременно и переключаем `opacity` — плавный crossfade. `priority` только на первое, чтобы не утащить LCP.
   const frameContent =
     total > 0
       ? photos.map((p, i) =>

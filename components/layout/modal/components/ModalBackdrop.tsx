@@ -4,9 +4,7 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Модальный backdrop
- */
+/** Модальный backdrop. */
 const ModalBackdrop = () => {
   const { setTransition } = useContext(OpenDrawerContext);
 

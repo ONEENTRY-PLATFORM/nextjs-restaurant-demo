@@ -5,22 +5,15 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 
 /**
- * Промо-полоса главной страницы — порт двух блоков `<section>` сразу после
- * `navigation` в `static-html/index.html`. Управляется дочерними `blog`
- * из OneEntry:
- *   - Hero для десктопа — `bg_image` первого дочернего `blog` (например, "DEAL OF THE
- *     DAY"). Картинка уже содержит весь контент заголовка / скидки,
- *     поэтому компонент просто рендерит её как кликабельный баннер.
- *   - Горизонтальный скролл для мобилы — атрибут `banner` каждого баннера.
- *
- * @returns {Promise<JSX.Element | null>} JSX промо.
+ * HomePromo — промо-полоса главной (hero для desktop + горизонтальный скролл для mobile).
+ * Управляется дочерними `blog` из OneEntry.
+ * @returns {Promise<JSX.Element | null>} JSX промо либо `null`, если баннеров нет.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();
   const heroBanner = banners.find(b => b.desktopImage) ?? null;
   const mobileBanners = banners.filter(b => b.mobileImage);
 
-  // Ничего не рендерит, если в CMS нет баннеров.
   if (!heroBanner && mobileBanners.length === 0) return null;
 
   return (

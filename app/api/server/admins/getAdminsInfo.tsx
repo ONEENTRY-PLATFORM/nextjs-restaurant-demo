@@ -13,9 +13,7 @@ interface HandleProps {
   langCode?: string;
 }
 
-/**
- * Получает один атрибут с данными из attribute sets.
- */
+/** getAdminsInfo — список администраторов с пагинацией и фильтром. */
 export const getAdminsInfo = cache(
   async ({
     body,

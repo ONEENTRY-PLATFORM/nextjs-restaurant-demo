@@ -13,7 +13,6 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { normalizePhoneE164 } from '@/components/utils';
 
-// import AuthError from '../pages/AuthError';
 import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -25,21 +24,17 @@ export type InputValue = {
   [key: string]: unknown;
 };
 
-/**
- * Форма User
- */
+/** UserForm — форма редактирования профиля пользователя. */
 const UserForm = (): JSX.Element => {
   const t = useT();
   const { isAuth, refreshUser, user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isError, setError] = useState('');
 
-  // Получаем форму по маркеру через RTK
   const { data, isLoading, error } = useGetFormByMarkerQuery({
     marker: 'user',
   });
 
-  // получаем поля из formFieldsReducer
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   const formData = useMemo(() => {
@@ -57,7 +52,6 @@ const UserForm = (): JSX.Element => {
       .filter(Boolean) as IAuthFormData[];
   }, [data?.attributes, fields]);
 
-  // Обновляем данные пользователя
   /* eslint-disable react-hooks/preserve-manual-memoization */
   const onUpdateUserData = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
@@ -102,7 +96,6 @@ const UserForm = (): JSX.Element => {
   }
 
   if (!isAuth || error || !user?.formData) {
-    // return <AuthError />;
   }
 
   return (

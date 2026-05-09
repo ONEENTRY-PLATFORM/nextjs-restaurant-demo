@@ -6,7 +6,7 @@ import OrdersList from '@/components/profile/OrdersList';
 export const dynamic = 'force-dynamic';
 
 /**
- * Вкладка заказов в личном кабинете.
+ * ProfileOrdersPage — вкладка заказов в личном кабинете.
  * @returns {Promise<JSX.Element>} JSX страницы заказов.
  */
 const ProfileOrdersPage = async (): Promise<JSX.Element> => {

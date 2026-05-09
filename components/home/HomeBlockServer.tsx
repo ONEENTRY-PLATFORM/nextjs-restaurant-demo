@@ -5,19 +5,13 @@ import { getBlockProducts } from '@/app/api';
 import HomeBlockSection from './HomeBlockSection';
 
 /**
- * Асинхронная обёртка для {@link HomeBlockSection}, которая фетчит блок OneEntry
- * по маркеру и пробрасывает его title, курированный список продуктов и конфиг
- * layout (`quantity`, `countElementsPerRow`) в рендерер. Каждый home-блок
- * на `home_web` (например, `home_promo`, `recommended`) живёт за одной
- * из таких обёрток, чтобы `app/page.tsx` только диспетчил по
- * `block.identifier` и оставался декларативным.
- *
- * Возвращает `null`, если в блоке нет продуктов для отображения, чтобы пустые
- * блоки не оставляли фантомную секцию/заголовок на странице.
- * @param   {object}                  props        - Пропсы компонента.
- * @param   {string}                  props.marker - Идентификатор блока (например, `recommended`).
- * @param   {string}                  [props.className] - Переопределение className секции.
- * @returns {Promise<JSX.Element|null>}              JSX блока, либо `null`, если пусто.
+ * HomeBlockServer — async-обёртка над {@link HomeBlockSection}: фетчит блок OneEntry по marker.
+ * Возвращает `null`, если в блоке нет продуктов — чтобы не оставлять пустую секцию.
+ * @param   {object}                    props             - Пропсы.
+ * @param   {string}                    props.marker      - Идентификатор блока.
+ * @param   {string}                    [props.className] - Переопределение className секции.
+ * @param   {number}                    [props.limit]     - Ограничение по количеству продуктов.
+ * @returns {Promise<JSX.Element|null>}                   JSX блока либо `null`.
  */
 const HomeBlockServer = async ({
   marker,

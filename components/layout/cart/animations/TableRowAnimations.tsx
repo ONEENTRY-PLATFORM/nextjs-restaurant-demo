@@ -7,13 +7,10 @@ import { useRef } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/**
- * Анимации строки таблицы
- */
+/** Анимации строки таблицы. */
 const TableRowAnimations = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
 
-  // анимации первой загрузки
   useGSAP(() => {
     if (!ref.current) {
       return;

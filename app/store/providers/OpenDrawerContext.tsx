@@ -3,17 +3,7 @@
 import type { Dispatch, JSX, ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
 
-/**
- * Контекст open drawer
- * @property {string}            component     - Название компонента
- * @property {boolean}           open          - Состояние открытости
- * @property {string}            action        - Тип действия
- * @property {string}            transition    - Тип перехода
- * @property {Dispatch<string>}  setComponent  - Сеттер компонента
- * @property {Dispatch<boolean>} setOpen       - Сеттер состояния открытости
- * @property {Dispatch<string>}  setAction     - Сеттер действия
- * @property {Dispatch<string>}  setTransition - Сеттер перехода
- */
+/** OpenDrawerContext — контекст открытия drawer/попапов. */
 export const OpenDrawerContext = createContext<{
   component: string;
   open: boolean;
@@ -35,34 +25,23 @@ export const OpenDrawerContext = createContext<{
 });
 
 /**
- * Провайдер контекста для модалок
- * @param   {object}      props          - Пропсы провайдера
- * @param   {ReactNode}   props.children - Дочерний ReactNode
- * @returns {JSX.Element}                Провайдер контекста drawer
+ * OpenDrawerProvider — провайдер контекста drawer/попапов.
+ *
+ * @param   {object}      props          - Пропсы.
+ * @param   {ReactNode}   props.children - Дочерний ReactNode.
+ * @returns {JSX.Element}                JSX провайдер.
  */
 export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
-  /** Отслеживаем состояние открытости drawer */
   const [open, setOpen] = useState<boolean>(false);
-  /** Отслеживаем компонент для рендера в drawer */
   const [component, setComponent] = useState<string>('');
-  /** Отслеживаем тип действия для drawer */
   const [action, setAction] = useState<string>('');
-  /** Отслеживаем тип перехода для drawer */
   const [transition, setTransition] = useState<string>('');
 
-  // Блокируем скролл фона, пока открыт любой попап. Запираем и `<html>`,
-  // и `<body>`, потому что в зависимости от страницы скролл-контейнером
-  // может оказаться любой из них (особенно на мобильных browsers'ах). На
-  // iOS дополнительно фиксируем `body` через `position: fixed`, чтобы
-  // body-rubber-band не пробивал лок. Сохраняем предыдущие inline-стили
-  // и возвращаем их при закрытии.
-  //
-  // Чтобы при скрытии полосы прокрутки контент не дёргался на ~15px (десктоп
-  // Windows/Linux, где скроллбар занимает место в layout-е), компенсируем
-  // ширину скроллбара через padding-right у body и публикуем её в CSS-переменной
-  // `--scrollbar-width`, чтобы fixed-элементы (хедер / правые drawer'ы) могли
-  // подвинуться при необходимости. На macOS / overlay-скроллбарах ширина = 0,
-  // компенсация просто не вступает.
+  // Блокируем скролл фона при открытом попапе: запираем и `<html>`, и `<body>`
+  // (скролл-контейнер зависит от страницы), на iOS фиксируем `body` через
+  // `position: fixed` против body-rubber-band. Компенсируем ширину скроллбара
+  // через padding-right + CSS-переменную `--scrollbar-width`, чтобы контент
+  // не прыгал на ~15px на десктопе (на macOS/overlay-скроллбарах = 0).
   useEffect(() => {
     if (!open) return;
     const html = document.documentElement;
@@ -105,7 +84,6 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
     };
   }, [open]);
 
-  /** Прокидываем значения контекста дочерним компонентам */
   return (
     <OpenDrawerContext.Provider
       value={{

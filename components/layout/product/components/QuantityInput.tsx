@@ -5,9 +5,7 @@ import type { ChangeEvent, JSX } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { setProductQty } from '@/app/store/reducers/CartSlice';
 
-/**
- * Инпут количества продукта
- */
+/** QuantityInput — числовой инпут количества для QuantitySelector. */
 const QuantityInput = ({
   id,
   qty,
@@ -19,7 +17,6 @@ const QuantityInput = ({
 }): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  // Устанавливаем ProductQty в cartSlice при изменении значения инпута
   const onChangeQtyHandle = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setProductQty({

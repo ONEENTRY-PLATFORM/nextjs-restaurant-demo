@@ -6,9 +6,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlice';
 
-/**
- * Кнопка уменьшения количества
- */
+/** DecreaseButton — кнопка «−» для QuantitySelector, удаляет товар при qty<=1. */
 const DecreaseButton = ({
   id,
   qty,
@@ -24,9 +22,6 @@ const DecreaseButton = ({
     return <></>;
   }
 
-  /**
-   * Удалить продукт из корзины и отписаться от событий
-   */
   const onRemoveFromCart = async () => {
     dispatch(removeProduct(id));
     toast('Product ' + title + ' removed from cart!');
@@ -36,9 +31,6 @@ const DecreaseButton = ({
     }
   };
 
-  /**
-   * Уменьшить количество продукта
-   */
   const onDecreaseHandle = () => {
     dispatch(decreaseProductQty({ id: id, quantity: 1 }));
   };

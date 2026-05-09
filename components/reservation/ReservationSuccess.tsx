@@ -6,26 +6,15 @@ import { useT } from '@/app/store/providers/DictProvider';
 
 type ReservationSuccessProps = {
   orderId: number;
-  /**
-   * Сводка по бронированию: дата + время + кол-во гостей.
-   * Формат по Figma 120:2338 — `DD.MM.YY HH.MM N person`. Подставляется
-   * вызывающим кодом, потому что значения сидят в form-state и оттуда
-   * формируются (см. `buildBookingSummary` в `ReservationForm`).
-   */
+  /** Сводка `DD.MM.YY HH.MM N person` по Figma 120:2338. Формируется вызывающим кодом. */
   summary: string;
 };
 
 /**
- * Экран подтверждения брони — Figma `120:2338` в `Rest_desktop`. Большой
- * текст оранжевый Lato Light 32/40 с номером заказа, разделитель paper,
- * мелкая сводка `DD.MM.YY HH.MM N person` снизу Lato Regular 20/paper.
+ * ReservationSuccess — экран подтверждения брони после `Orders.createOrder`.
  *
- * Появляется в попапе сразу после успешного `Orders.createOrder`. Для
- * online-методов (Stripe) пользователя редиректит на `paymentUrl` ещё
- * до этого экрана — туда возврат происходит уже на success-URL,
- * сконфигурированный в OneEntry (см. `MISMATCH-LOG.md` § C.6).
  * @param   {ReservationSuccessProps} props - Пропсы экрана.
- * @returns {JSX.Element}                  JSX экрана подтверждения.
+ * @returns {JSX.Element}                   JSX экрана подтверждения.
  */
 const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.Element => {
   const t = useT();

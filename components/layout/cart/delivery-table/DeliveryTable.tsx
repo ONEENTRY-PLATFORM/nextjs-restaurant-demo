@@ -16,37 +16,30 @@ import AddressRow from './AddressRow';
 import DeliveryRow from './DeliveryRow';
 import DeliveryTableRow from './DeliveryTableRow';
 
-/**
- * Таблица доставки
- */
+/** Таблица доставки. */
 const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const deliveryData = useAppSelector(selectDeliveryData);
 
-  // получаем форму по marker через RTK
   const { data } = useGetFormByMarkerQuery({
     marker: 'delivery_order',
   });
 
-  // `order_info_*_placeholder` отсутствуют в `static_content` — используем
-  // существующие `time_text` / `address_text` (проверено через inspect-api).
   const timeText = t('time_text', 'Time');
   const addressText = t('address_text', 'Address');
 
   const attrs = data?.attributes.filter((attr: IFormAttribute) => attr.marker !== 'time2');
   const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value || '';
 
-  // устанавливаем данные доставки onChange — markers соответствуют форме `delivery_order` в admin
   useEffect(() => {
     const date = deliveryData.date;
     const time = deliveryData.time;
     const address = deliveryData.address || addressReg || '';
 
-    // OneEntry для `timeInterval` ждёт массив пар `[[startISO, endISO]]`
-    // (см. SDK skill `create-checkout`). Если час ещё не выбран — пропускаем
-    // dispatch, чтобы не отправить невалидный value.
+    // OneEntry для `timeInterval` ждёт `[[startISO, endISO]]`;
+    // если час ещё не выбран — пропускаем dispatch.
     const hourMatch = typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
     const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
     if (date && Number.isFinite(hour)) {

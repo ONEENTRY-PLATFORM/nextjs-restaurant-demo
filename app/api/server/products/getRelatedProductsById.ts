@@ -5,9 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает все связанные объекты Products через API.
- */
+/** getRelatedProductsById — все related-продукты по id. */
 export const getRelatedProductsById = cache(
   async (
     id: number

@@ -17,15 +17,8 @@ export const dynamic = 'force-dynamic';
 const BLOG_HANDLE = 'blog';
 
 /**
- * Корневая промо-страница — рендерит список всех дочерних страниц `blog` в виде
- * вертикального списка баннеров на всю ширину контейнера. На больших экранах
- * (md+) показывается десктопное изображение (`bg_image`), на мобильных —
- * портретное (`banner`); если у страницы заполнено только одно из двух — оно
- * используется в обоих вариантах.
- *
- * Этот файл специально перекрывает дефолтный generic-рендер `app/[handle]/page.tsx`
- * для слага `/blog`, поскольку Next.js приоритизирует статические сегменты над
- * динамическими `[handle]`.
+ * BlogPromoListPage — корневая промо-страница со списком дочерних страниц `blog`.
+ * Перекрывает generic-рендер `app/[handle]/page.tsx` для `/blog` (статический сегмент > `[handle]`).
  * @returns {Promise<JSX.Element>} JSX корневой промо-страницы.
  */
 const BlogPromoListPage = async (): Promise<JSX.Element> => {
@@ -118,10 +111,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
 
 export default BlogPromoListPage;
 
-/**
- * Метаданные корневой промо-страницы.
- * @returns {Promise<Metadata>} Объект метаданных.
- */
+/** generateMetadata — метаданные корневой промо-страницы. */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(BLOG_HANDLE);
   const title = page?.localizeInfos?.title ?? 'Promotions';

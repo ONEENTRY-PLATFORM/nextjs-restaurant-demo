@@ -3,10 +3,8 @@ import type { JSX } from 'react';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * Кнопка submit корзины — CTA `APPLY` из `cart_cart.html` / `pk_cart.html`.
- * Сплошной `bg-custom_btnorange`, на всю ширину панели корзины, h-60 на
- * мобильных и h-45 на десктопе. Сабмитит родительскую форму, которая делает
- * dispatch следующего шага checkout-визарда.
+ * PaymentButton — submit-кнопка корзины (CTA `APPLY`).
+ *
  * @param   {object}      props      - Пропсы кнопки.
  * @param   {string}      props.text - Подпись кнопки (из CMS).
  * @returns {JSX.Element}            JSX кнопки.

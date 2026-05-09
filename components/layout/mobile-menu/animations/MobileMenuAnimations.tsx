@@ -7,9 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Анимации открытия/закрытия мобильного меню
- */
+/** Анимации открытия/закрытия мобильного меню. */
 const MobileMenuAnimations = ({
   children,
   className,
@@ -22,7 +20,6 @@ const MobileMenuAnimations = ({
   const { open, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
-  // анимации открытия/закрытия
   useGSAP(() => {
     if (!open) {
       return;

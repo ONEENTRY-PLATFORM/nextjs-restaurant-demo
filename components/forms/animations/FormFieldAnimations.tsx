@@ -7,9 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Анимации полей формы
- */
+/** Анимации полей формы. */
 const FormFieldAnimations = ({
   children,
   className,
@@ -22,7 +20,6 @@ const FormFieldAnimations = ({
   const { open, transition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
-  // triggerTl
   useGSAP(() => {
     if (!ref.current) {
       return;

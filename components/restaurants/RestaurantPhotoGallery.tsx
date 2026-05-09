@@ -18,9 +18,8 @@ import RestaurantPhotoSlider from './RestaurantPhotoSlider';
 type Photo = { downloadLink?: string };
 
 /**
- * Галерея single-restaurant (Figma «Подробнее 2», node 2413:1173).
- * Мобила: единый горизонтальный слайдер через {@link RestaurantPhotoSlider}
- * (как в `mob_about.html`); тап по фото открывает тот же lightbox.
+ * RestaurantPhotoGallery — галерея single-restaurant с lightbox-ом.
+ * Мобила: горизонтальный слайдер через {@link RestaurantPhotoSlider}; тап открывает lightbox.
  */
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);
@@ -54,7 +53,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     const node = thumbRefs.current[active];
     if (!container || !node) return;
 
-    // Скролл считаем вручную и применяем ТОЛЬКО к thumbs-контейнеру.
+    // Скролл считаем вручную и применяем ТОЛЬКО к thumbs-контейнеру (чтобы страница не дёргалась).
     const cRect = container.getBoundingClientRect();
     const nRect = node.getBoundingClientRect();
 
@@ -78,9 +77,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       return;
     }
 
-    // 3) Активный полностью виден — но если он крайний снизу и за ним
-    //    есть скрытые, подкручиваем на один слайд вперёд, чтобы стал
-    //    виден сосед.
+    // 3) Виден, но крайний снизу — подкручиваем на один слайд вперёд, чтобы стал виден сосед.
     const next = thumbRefs.current[active + 1];
     if (next) {
       const nextRect = next.getBoundingClientRect();
@@ -189,7 +186,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       target.releasePointerCapture(e.pointerId);
     }
     if (s.moved > MAIN_DRAG_THRESHOLD_PX && total > 0) {
-      // Тянем вверх → следующее фото; вниз → предыдущее. Циклически.
+      // Вверх → следующее, вниз → предыдущее. Циклически.
       const delta = s.direction === -1 ? 1 : -1;
       setActive(i => (i + delta + total) % total);
     }
@@ -197,7 +194,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
   };
 
   const onMainClickCapture = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // После swipe-жеста подавляем click, чтобы не открывать lightbox.
+    // После swipe подавляем click, чтобы не открывать lightbox.
     if (mainDragState.current.moved > MAIN_DRAG_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();

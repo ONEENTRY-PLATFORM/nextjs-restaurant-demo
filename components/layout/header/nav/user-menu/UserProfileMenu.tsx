@@ -11,13 +11,10 @@ import ProfileMenuAnimations from '../../animations/ProfileMenuAnimations';
 import LogoutMenuItem from './LogoutMenuItem';
 import UserMenuItem from './UserMenuItem';
 
-/**
- * Компонент меню User Profile.
- */
+/** Меню User Profile. */
 const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Убеждаемся, что pages определены и корректного типа
   const pages = (userMenu.pages || []) as IMenusPages[];
 
   return (

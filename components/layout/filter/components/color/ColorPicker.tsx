@@ -1,8 +1,6 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
-/**
- * Компонент color picker
- */
+/** Color picker. */
 const ColorPicker = ({
   code,
   name,

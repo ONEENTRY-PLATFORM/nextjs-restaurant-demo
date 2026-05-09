@@ -12,19 +12,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import BookingsContent from './BookingsContent';
 
-/**
- * Попап «Бронирования» — порт `static-html/mob_about_reservation.html`
- * (секции «Active reservation» и «Reservation History»). Открывается
- * через `OpenDrawerContext` (`component === 'BookingsPopup'`); триггер —
- * пункт «Bookings» в hover-дропдауне иконки профиля
- * ({@link import('@/components/layout/header/nav/NavItemProfile').default}),
- * у которого pageUrl `bookings` (child пункта `profile` в CMS-меню `user_menu`).
- *
- * Тело (загрузка списка, карточки, cancel/edit) вынесено в
- * {@link BookingsContent} — оно же реюзается на мобильном внутри
- * {@link import('./ProfilePopup').default} как один из экранов screen-swap'а
- * (паттерн `CartWizard`).
- */
+/** BookingsPopup — попап «Бронирования» (Active reservation + History). Тело — в {@link BookingsContent}. */
 const BookingsPopup = (): JSX.Element => {
   const { setOpen, setTransition } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
@@ -40,7 +28,7 @@ const BookingsPopup = (): JSX.Element => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        {/* Шапка по образцу ReservationPopup: back / title / X */}
+        {/* Шапка: back / title / X */}
         <div className="flex items-center justify-between gap-5">
           <button
             type="button"

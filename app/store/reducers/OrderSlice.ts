@@ -119,9 +119,8 @@ const orderReducer = createSlice({
       }
     },
     /**
-     * Возврат к фактическому предыдущему шагу из стека `stepHistory`.
-     * Если стек пуст — фолбэк на `cart` (это закроет попап, т.к. при
-     * `step === 'cart'` `showPopup` в `CartWizard` равен `false`).
+     * Возврат к предыдущему шагу из `stepHistory`. Если стек пуст — фолбэк на
+     * `cart` (закрывает попап, т.к. при `step === 'cart'` `showPopup` = false).
      */
     goBackStep(state) {
       const previous = state.stepHistory.pop();
@@ -129,10 +128,9 @@ const orderReducer = createSlice({
       delete state.stepError;
     },
     /**
-     * Полный сброс wizard-а в начальное состояние (`cart`, пустой стек, без ошибки).
-     * Вызывается после терминальных шагов (`success`/`error`), чтобы они не
-     * пережили переход на другую страницу из-за персистентности Redux store —
-     * иначе при следующем заходе на `/cart` рендерится `StepResult` поверх корзины.
+     * Полный сброс wizard-а в начальное состояние. Вызывается после терминальных
+     * шагов (`success`/`error`), иначе из-за персистентности Redux при следующем
+     * заходе на `/cart` рендерится `StepResult` поверх корзины.
      */
     resetCheckout(state) {
       state.step = 'cart';

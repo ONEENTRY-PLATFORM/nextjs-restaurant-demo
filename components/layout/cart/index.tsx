@@ -27,7 +27,11 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * Страница корзины
+ * CartPage — список товаров в корзине + кнопка APPLY (переход к чекауту).
+ *
+ * @param   {object}            props              - Пропсы.
+ * @param   {IProductsEntity}   props.deliveryData - Сущность продукта-доставки.
+ * @returns {JSX.Element}                          JSX страницы корзины.
  */
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -35,27 +39,17 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
-  // Если юзер нажал APPLY без авторизации, мы открываем канонический
-  // AuthProviderSelect модалку и поднимаем флаг «после signin продолжить
-  // в order». Когда `isAuth` становится true (см. useEffect ниже) — авто-перевод
-  // на order. Без флага мы переводили бы любого вновь авторизованного юзера
-  // (например, через шапку) на order step из cart.
+  // Флаг «после signin продолжить в order» — иначе любой логин из шапки переключал бы cart → order.
   const [pendingCheckout, setPendingCheckout] = useState(false);
 
-  // Зеркалим состояние доставки корзины в OrderSlice.formData, чтобы submit
-  // на шаге `payment` всё равно имел `delivery_time` / `delivery_address`,
-  // даже хотя legacy DeliveryForm не рендерится (по cart_cart.html /
-  // pk_cart.html — на экране корзины только продукты и APPLY).
+  // Зеркалим delivery state в OrderSlice.formData, чтобы submit шага `payment` имел delivery_time/address.
   useEffect(() => {
     const date = cartDelivery.date;
     const time = cartDelivery.time;
     const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value ?? '';
     const address = (cartDelivery.address as string | undefined) || addressReg;
 
-    // OneEntry требует для `timeInterval` value формы массив пар
-    // `[[startISO, endISO]]` (см. SDK skill `create-checkout`). DateTimePickerSheet
-    // отдаёт 1-часовой слот в формате `HH.00`/`HH:MM`, поэтому собираем интервал
-    // [hour, hour+1) на выбранном дне.
+    // OneEntry ждёт для timeInterval массив пар [[startISO, endISO]]; собираем 1-часовой слот [hour, hour+1).
     const hourMatch = typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
     const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
     if (date && Number.isFinite(hour)) {
@@ -83,26 +77,19 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [cartDelivery, user, dispatch]);
 
-  // продукты в redux carSlice
   const productsCartData = useAppSelector(selectCartData) as IProducts[];
 
-  // Получаем продукты по Ids из api
   const { data, isLoading } = useGetProductsByIdsQuery({
     items: productsCartData.map(p => p.id),
   });
 
-  // добавляем deliveryData
   useEffect(() => {
     if (deliveryData) {
       dispatch(addDeliveryToCart(deliveryData));
     }
   }, [deliveryData]);
 
-  // Чистим stale id из persist-корзины: если в OneEntry продукта больше нет
-  // (404 в `getProductsByIds`), он не попадает в `data` — соответствующий
-  // entry в `productsData` навсегда останется в localStorage и при каждом
-  // маунте будет шуметь в network 404'ом. Удаляем такие записи разово после
-  // загрузки.
+  // Чистим stale id из persist-корзины: продукты, удалённые из OneEntry, иначе шумят 404'ом на каждом маунте.
   useEffect(() => {
     if (!data) return;
     const returnedIds = new Set(data.map((p: IProductsEntity) => p.id));
@@ -113,49 +100,38 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [data]);
 
-  // добавляем продукты в slice корзины
   useEffect(() => {
-    // Проверяем, есть ли данные для установки продуктов
     if (data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setProducts(data); // Инициализируем стейт продуктов полученными данными
+      setProducts(data);
 
-      // Если пользователь авторизован, устанавливаем WebSocket-соединение
+      // Подписываемся на WS-уведомления об изменении цен/статусов товаров (только для авторизованных).
       if (isAuth) {
-        const ws = getApi().WS.connect(); // Подключаемся к WebSocket
+        const ws = getApi().WS.connect();
         if (ws) {
-          // Слушаем события 'notification' из WebSocket
           ws.on('notification', async res => {
             if (res?.product) {
-              // Подготавливаем объект продукта с дополнительными значениями атрибутов
               const product = {
                 ...res.product,
                 attributeValues: res.product?.attributes,
               };
-
-              // Находим индекс продукта в текущем массиве данных
               const index = data.findIndex((p: IProductsEntity) => p.id === product.id);
-
-              // Парсим новую цену из ответа уведомления
               const newPrice = parseInt(product?.attributeValues?.price?.value, 10);
 
-              // Обновляем стейт продуктов с новой ценой и статусом
               setProducts(prevProducts => {
-                // Создаём копию текущих продуктов
                 const newProducts = [...prevProducts];
                 if (newProducts[index]) {
                   newProducts[index] = {
-                    ...newProducts[index], // Сохраняем существующие свойства продукта
-                    price: newPrice, // Обновляем цену новым значением
-                    statusIdentifier: res?.product?.status?.identifier, // Обновляем идентификатор статуса
+                    ...newProducts[index],
+                    price: newPrice,
+                    statusIdentifier: res?.product?.status?.identifier,
                   };
                 }
-                return newProducts; // Возвращаем обновлённый массив продуктов
+                return newProducts;
               });
             }
           });
 
-          // Cleanup-функция для отключения WebSocket при размонтировании компонента или изменении зависимостей
           return () => {
             ws.disconnect();
           };
@@ -163,18 +139,15 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       }
     }
     return undefined;
-    // Массив зависимостей: эффект будет выполнен при изменении 'data'
   }, [data]);
 
-  // обновляем продукты в корзине
   useEffect(() => {
     if (products) {
       dispatch(addProductsToCart(products));
     }
   }, [products]);
 
-  // Когда auth завершился (через AuthProviderSelect / SignInForm в общей
-  // модалке), и юзер инициировал чекаут с этого экрана — продолжаем в order.
+  // После завершения auth (через общую модалку) — авто-переход на шаг order, если чекаут начат отсюда.
   useEffect(() => {
     if (pendingCheckout && isAuth) {
       dispatch(setStep('order'));
@@ -187,7 +160,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     return <Loader />;
   }
 
-  // Доставка — не должна показываться как карточка товара.
+  // Доставка не должна рендериться как карточка товара.
   const visibleProducts = products.filter((p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID);
 
   if (visibleProducts.length < 1) {
@@ -201,10 +174,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       setOpen(true);
       return;
     }
-    // Обратная анимация карточек корзины (slide-down + fade) перед переходом
-    // на шаг ордера. Symmetric к entrance-таймлайну в `CartAnimations`/
-    // `ProductAnimations`. По завершении сбрасываем стили — иначе при возврате
-    // на шаг корзины (через breadcrumb) элементы остались бы скрытыми.
+    // Reverse-анимация карточек перед переходом на order; по завершении сбрасываем стили для возврата по breadcrumb.
     const cards = document.querySelectorAll('.product-in-cart');
     const button = document.querySelectorAll('.cart-apply-btn');
     if (cards.length === 0) {
@@ -229,10 +199,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {visibleProducts.map((product: IProductsEntity, i: number) => {
-          // Ищем selection по id, а не по индексу — `productsCartData` может
-          // быть в другом порядке, чем `products` (порядок ответа RTK query
-          // не гарантирован), и изменение `selected` одной записи мутирует
-          // ссылку массива, так что lookup по индексу рассинхронизируется.
+          // Lookup по id (не по индексу) — порядок RTK-ответа не гарантирован, индексы рассинхронизируются.
           const cartEntry = productsCartData.find((p: { id: number }) => p.id === product.id);
           return (
             <ProductCard

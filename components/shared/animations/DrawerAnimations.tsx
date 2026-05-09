@@ -8,33 +8,17 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Варианты анимации появления попапа.
- *
- * - `bottom-sheet` — мобила: slide-up снизу (`yPercent: 100 → 0`); десктоп:
- *   scale + fade. Используется попапами, которые на md+ центрируются через
- *   `md:-translate-x-1/2 md:-translate-y-1/2` (Favorites, Reservation,
- *   Bookings, ReviewForm, OrderReview, Support).
- * - `slide-up` — `yPercent: 100 → 0` и на мобиле, и на десктопе. Подходит
- *   попапам, у которых десктопная позиция якорится за `top-*`/`right-*` без
- *   transform-центрирования (Cart, Profile).
- * - `slide-right` — `xPercent: 100 → 0` всегда (Filter).
+ * Варианты анимации появления попапа:
+ * - `bottom-sheet` — мобила: slide-up; десктоп: scale + fade (центрированные попапы).
+ * - `slide-up`     — `yPercent: 100 → 0` всегда (Cart, Profile — якорятся через top/right).
+ * - `slide-right`  — `xPercent: 100 → 0` всегда (Filter).
  */
 export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right';
 
 /**
- * Универсальная GSAP-обёртка для попапов, управляемых через
- * {@link OpenDrawerContext}. Внутри детей должны быть элементы с id
- * `modalBg` (backdrop) и `modalBody` (тело попапа) — см. {@link ModalBackdrop}.
- *
- * Заменяет per-popup wrapper'ы (`CartPopupAnimations`,
- * `ProfilePopupAnimations`, `FavoritesPopupAnimations`,
- * `FilterModalAnimations`, `SupportPopupAnimations`) — все они выполняли
- * одну и ту же work с минимальными отличиями в transform.
- *
- * Анимация привязана к `component`-флагу контекста, поэтому при смене
- * попапа другие обёртки не активируются. Закрытие триггерится `setTransition('close')`
- * (например, по клику на backdrop) — таймлайн играется в реверсе и по
- * `onReverseComplete` сбрасывает `open` и `transition`.
+ * DrawerAnimations — универсальная GSAP-обёртка для попапов через {@link OpenDrawerContext}.
+ * Дети должны содержать элементы с id `modalBg` (backdrop) и `modalBody` (тело).
+ * Закрытие триггерится `setTransition('close')` — таймлайн играется в реверсе.
  */
 const DrawerAnimations = ({
   children,
@@ -45,11 +29,7 @@ const DrawerAnimations = ({
   children: ReactNode;
   component: string;
   variant?: DrawerAnimationVariant;
-  /**
-   * Дополнительные классы на root-обёртку (поверх дефолтных
-   * `z-500 fixed inset-0 flex h-screen w-full`). Нужен, например,
-   * для `md:hidden` мобильно-специфичных попапов (SupportPopup).
-   */
+  /** Дополнительные классы на root-обёртку (например, `md:hidden` для мобильно-специфичных попапов). */
   wrapperClassName?: string;
 }): JSX.Element => {
   const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -73,8 +53,7 @@ const DrawerAnimations = ({
     const modalBg = ref.current?.querySelector('#modalBg') ?? null;
     const modalBody = ref.current?.querySelector('#modalBody') ?? null;
 
-    // На мобиле всегда slide-up снизу — единая идиома bottom-меню.
-    // На md+ поведение зависит от варианта.
+    // На мобиле всегда slide-up снизу — единая идиома bottom-меню; на md+ зависит от варианта.
     const isMobile =
       typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
@@ -86,7 +65,6 @@ const DrawerAnimations = ({
     } else if (isMobile) {
       gsap.set(modalBody, { yPercent: 100 });
     } else {
-      // bottom-sheet desktop: scale + fade (центрированный попап).
       gsap.set(modalBody, { autoAlpha: 0, scale: 0.85 });
     }
 

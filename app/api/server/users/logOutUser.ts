@@ -2,9 +2,7 @@ import { getApi } from '@/app/api';
 
 type LogOutProps = { marker: string; token?: string };
 
-/**
- * Выход пользователя через API AuthProvider.
- */
+/** logOutUser — выход пользователя через API AuthProvider. */
 export const logOutUser = async ({ marker }: LogOutProps) => {
   try {
     const token = localStorage.getItem('refresh-token');

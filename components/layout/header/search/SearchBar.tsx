@@ -9,9 +9,7 @@ import SearchIcon from '@/components/icons/search';
 
 import SearchResults from './SearchResults';
 
-/**
- * Компонент SearchBar
- */
+/** Поисковая строка в шапке. */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);

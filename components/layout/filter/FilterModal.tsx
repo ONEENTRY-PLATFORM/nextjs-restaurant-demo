@@ -13,14 +13,12 @@ import FilterHeader from './components/header/FilterHeader';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import FiltersForm from './FiltersForm';
 
-/**
- * Компонент FilterModal
- */
+/** FilterModal — модалка фильтров с slide-right анимацией. */
 const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform
-  // от хука не конфликтовал с `yPercent`-tween-ом close-анимации.
+  // Свайп закрывает напрямую, минуя GSAP-reverse, иначе inline-transform
+  // конфликтует с `yPercent`-tween-ом close-анимации.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
   return (

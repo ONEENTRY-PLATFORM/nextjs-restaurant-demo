@@ -11,20 +11,15 @@ import { useT } from '@/app/store/providers/DictProvider';
 import PriceFromInput from './PriceFromInput';
 import PriceToInput from './PriceToInput';
 
-/**
- * Компонент фильтра по цене
- */
 export type PriceBounds = { min?: number; max?: number } | undefined;
 
+/** Фильтр по цене. */
 const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const t = useT();
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-
-  // `filter_price_title` ✅ добавлен; `price_from`/`price_to` отсутствуют в
-  // наборе `static_content` — используем существующие `from` / `to_text`.
 
   const STEP = 10;
   const MIN = prices?.min || 0;
@@ -37,7 +32,6 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
     params.get('maxPrice') ? Number(params.get('maxPrice')) : MAX
   );
 
-  // параметры minPrice
   useEffect(() => {
     if (priceFrom && priceFrom !== MIN) {
       params.set('minPrice', priceFrom.toString());
@@ -47,7 +41,6 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
     replace(`${pathname}?${params.toString()}`);
   }, [priceFrom]);
 
-  // параметры maxPrice
   useEffect(() => {
     if (priceTo && priceTo !== MAX) {
       params.set('maxPrice', priceTo.toString());
@@ -57,7 +50,6 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
     replace(`${pathname}?${params.toString()}`);
   }, [priceTo]);
 
-  // установка priceFrom
   useEffect(() => {
     if (!params.get('minPrice')) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -65,7 +57,6 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
     }
   }, [params.get('minPrice')]);
 
-  // установка priceTo
   useEffect(() => {
     if (!params.get('maxPrice')) {
       // eslint-disable-next-line react-hooks/set-state-in-effect

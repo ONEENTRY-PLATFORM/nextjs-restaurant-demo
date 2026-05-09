@@ -15,25 +15,19 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
-/**
- * Форма ForgotPassword
- */
+/** ForgotPasswordForm — форма запроса OTP-кода для сброса пароля. */
 export const ForgotPasswordForm = (): JSX.Element => {
   const t = useT();
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [isError, setError] = useState<string>('');
 
-  // Получаем данные формы из API через RTK
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Сабмит формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      // Генерируем код верификации через API
       await getApi().AuthProvider.generateCode('email', fields.email?.value || '', 'generate_otp');
-      // Открываем форму Verification
       setComponent('VerificationForm');
       setAction('checkCode');
     } catch (error: unknown) {

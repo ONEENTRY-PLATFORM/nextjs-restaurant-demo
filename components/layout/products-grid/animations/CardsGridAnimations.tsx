@@ -6,9 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/**
- * Компонент анимаций CardsGrid
- */
+/** CardsGridAnimations — leaving-анимация всех видимых карточек грида. */
 const CardsGridAnimations = ({
   children,
   className,
@@ -20,7 +18,6 @@ const CardsGridAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // анимации leaving
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,

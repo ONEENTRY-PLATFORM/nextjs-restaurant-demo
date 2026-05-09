@@ -3,9 +3,7 @@ import type { JSX } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
-/**
- * Компонент кнопки увеличения
- */
+/** IncreaseButton — кнопка «+» для QuantitySelector. */
 const IncreaseButton = ({
   id,
   qty,
@@ -20,7 +18,6 @@ const IncreaseButton = ({
     return <></>;
   }
 
-  // Увеличить количество продукта
   const onIncreaseHandle = () => {
     dispatch(
       increaseProductQty({

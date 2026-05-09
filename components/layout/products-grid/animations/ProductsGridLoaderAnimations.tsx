@@ -7,9 +7,7 @@ import type { JSX } from 'react';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
-/**
- * Анимации лоадера ProductsGrid
- */
+/** ProductsGridLoaderAnimations — пульсирующая анимация скелетона ProductsGrid. */
 const ProductsGridLoaderAnimations = ({
   children,
   className,

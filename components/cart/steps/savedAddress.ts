@@ -9,12 +9,7 @@ export type SavedAddress = {
 };
 
 /**
- * Достаёт массив сохранённых адресов из `user_address` в профиле пользователя.
- *
- * `user_address` — массив объектов `{ id, street, house, floor, selected? }`,
- * редактируется в попапе профиля. OneEntry хранит value либо как массив,
- * либо как сериализованный JSON-строку (зависит от того, как админка
- * сохранила) — поддерживаем оба варианта.
+ * Достаёт сохранённые адреса из `user_address`. OneEntry хранит value как массив или JSON-строку — поддерживаем оба.
  */
 export const parseSavedAddresses = (
   formData: ReadonlyArray<FormDataType> | undefined

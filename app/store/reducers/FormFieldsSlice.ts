@@ -16,9 +16,7 @@ const initialState: InitialStateType = {
   fields: {},
 };
 
-/**
- * Получает первый ключ
- */
+/** Возвращает первый ключ объекта или `undefined`. */
 function getFirstKey(obj: Record<string, FieldType>): string | undefined {
   const keys = Object.keys(obj);
   return keys.length > 0 ? keys[0] : undefined;

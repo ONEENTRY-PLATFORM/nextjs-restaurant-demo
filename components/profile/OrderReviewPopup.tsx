@@ -41,7 +41,7 @@ type ItemState = {
   loading: boolean;
   /** Id уже отправленной записи FormsData — null = ещё ничего не сохранено. */
   existingId: number | null;
-  /** True = строка в режиме редактирования (поля активны, видна кнопка Apply). */
+  /** True = строка в режиме редактирования. */
   isEditing: boolean;
   error: string;
 };
@@ -51,27 +51,18 @@ const initialItemState = (initial: ExistingReview | null): ItemState => ({
   text: initial?.text ?? '',
   loading: false,
   existingId: initial?.id ?? null,
-  // Если отзыв уже есть — стартуем в read-only; если нет — сразу редактируем.
+  // Уже отправленный отзыв — стартуем в read-only.
   isEditing: initial === null,
   error: '',
 });
 
-/**
- * Тот же формат номера заказа, что в `OrdersList` — поле `orderId` или
- * фолбэк на числовой `id`.
- * @param   {{ id: number; orderId?: string }} o - Сущность заказа.
- * @returns {string}                              Отображаемый номер.
- */
+/** Номер заказа `OE...` от SDK, иначе fallback на числовой id. */
 const formatOrderNumber = (o: { id: number; orderId?: string }): string => {
   if (o.orderId) return o.orderId;
   return String(o.id);
 };
 
-/**
- * Извлекает plain-текст из значения OneEntry-поля типа `text`.
- * @param   {unknown} value - Сырое `formData[].value`.
- * @returns {string}        Plain-текст.
- */
+/** Извлекает plain-текст из значения OneEntry-поля типа `text`. */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
     const first = value[0] as { plainValue?: unknown } | undefined;
@@ -80,11 +71,7 @@ const readPlainText = (value: unknown): string => {
   return typeof value === 'string' ? value : '';
 };
 
-/**
- * Кастит значение OneEntry-поля типа `integer` в число.
- * @param   {unknown} value - Сырое `formData[].value`.
- * @returns {number}        Числовое значение или 0.
- */
+/** Кастит значение OneEntry-поля типа `integer` в число (0 на ошибку). */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
@@ -94,14 +81,7 @@ const readNumber = (value: unknown): number => {
   return 0;
 };
 
-/**
- * Подгружает уже отправленный отзыв текущего пользователя на конкретный
- * продукт. Возвращает `null`, если такого ещё нет, или при любой ошибке
- * SDK (graceful-fallback по правилам MISMATCH-LOG §C).
- * @param   {number} productId - Id продукта (он же `entityIdentifier`).
- * @param   {string} userId    - `user.identifier` авторизованного пользователя.
- * @returns {Promise<ExistingReview|null>}
- */
+/** Подгружает уже отправленный отзыв пользователя на продукт. null = нет / ошибка SDK (graceful fallback). */
 const fetchUserReview = async (
   productId: number,
   userId: string
@@ -134,8 +114,7 @@ const fetchUserReview = async (
       }
     ).items;
     if (!items || items.length === 0) return null;
-    // На случай, если фильтр userIdentifier не сработал на сервере —
-    // дополнительно сверяем клиентом + берём свежую запись (max id).
+    // Доп. фильтр клиентом (на случай если серверный userIdentifier не отработал) + берём свежую запись (max id).
     const mine = items
       .filter(i => i.parentId === null && i.userIdentifier === userId)
       .sort((a, b) => b.id - a.id)[0];
@@ -153,17 +132,8 @@ const fetchUserReview = async (
 };
 
 /**
- * Одна строка попапа — продукт заказа: название сверху, ниже строка
- * `image | (stars + input + Apply/Edit)`. Apply создаёт новый отзыв
- * (`postFormsData`) или обновляет уже существующий (`updateFormsDataByid`)
- * — Edit переводит строку в режим редактирования. На вход подаётся
- * `initialReview`: если уже есть запись текущего пользователя для этого
- * продукта — стартуем с прочитанными значениями и в read-only.
- * @param   {object}                props                - Пропсы строки.
- * @param   {IOrderProducts}        props.product        - Позиция заказа.
- * @param   {IProductsEntity?}      props.fullProduct    - Актуальная сущность продукта (для cover-фолбэка).
- * @param   {ExistingReview | null} props.initialReview  - Уже отправленный отзыв пользователя или null.
- * @returns {JSX.Element}                                JSX строки.
+ * ReviewableItem — строка попапа: продукт + звёзды + инпут + Apply/Edit.
+ * Apply создаёт `postFormsData` или обновляет `updateFormsDataByid`. Если `initialReview` есть — стартуем в read-only.
  */
 const ReviewableItem = ({
   product,
@@ -203,10 +173,7 @@ const ReviewableItem = ({
     ];
     try {
       if (state.existingId !== null) {
-        // Редактирование уже отправленной записи. Эндпоинт PUT
-        // `/api/content/form-data/{id}` (см. `FormData.updateFormsDataByid`)
-        // требует авторизованного пользователя. Шлём тот же body, что
-        // и `postFormsData`, без id (id в URL).
+        // Edit: PUT `/api/content/form-data/{id}` — тот же body, что в `postFormsData`, id в URL. Требует auth.
         const res = await getApi().FormData.updateFormsDataByid(state.existingId, {
           formIdentifier: FORM_MARKER,
           formModuleConfigId: FORM_MODULE_CONFIG_ID,
@@ -327,21 +294,9 @@ const ReviewableItem = ({
 };
 
 /**
- * Попап «Leave a review» — открывается из `OrdersList` для заказа
- * целиком (одна кнопка на заказ, не на каждый товар). Внутри показывает
- * сводку заказа и список позиций; для каждой позиции — звёзды +
- * инпут отзыва + Apply/Edit. Повторяет фигму node 2383:7883.
- *
- * Открывается через `OpenDrawerContext` (component === 'OrderReviewPopup').
- * Полная сущность заказа + map продуктов передаётся через модульный
- * `orderReviewStore` (см. {@link useOrderReviewTarget}), потому что
- * контекст drawer-а пробрасывает в попап только строковый `action`.
- *
- * При открытии параллельно подгружаем уже отправленные отзывы текущего
- * пользователя на каждый продукт заказа — если есть, строка стартует в
- * read-only с прочитанными rating/text, Edit ↔ Apply переключают режим
- * и Apply вызывает `updateFormsDataByid` вместо `postFormsData`.
- * @returns {JSX.Element} JSX попапа.
+ * OrderReviewPopup — попап «Leave a review» для заказа целиком (одна кнопка на заказ).
+ * Сводка заказа + список позиций; на каждой строке звёзды + инпут + Apply/Edit.
+ * Сущность заказа передаётся через `orderReviewStore`, т.к. `OpenDrawerContext` пробрасывает только строковый `action`.
  */
 const OrderReviewPopup = (): JSX.Element => {
   const t = useT();
@@ -351,8 +306,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const isOpen = open && component === 'OrderReviewPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Map productId → существующий отзыв пользователя (или null если не
-  // загружен либо отсутствует). `undefined` ключ = ещё грузится.
+  // Map productId → existing review (null = нет, undefined-ключ = ещё грузится).
   const [existingReviews, setExistingReviews] = useState<Map<number, ExistingReview | null>>(
     new Map()
   );
@@ -360,7 +314,6 @@ const OrderReviewPopup = (): JSX.Element => {
 
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // Чистим target после закрытия и сбрасываем prefilled-кэш.
   useEffect(() => {
     if (!isOpen) {
       clearOrderReviewTarget();
@@ -372,10 +325,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const orderId = order?.id ?? null;
   const userId = user?.identifier ?? '';
 
-  // Параллельно подгружаем уже отправленные отзывы юзера на каждый продукт
-  // заказа. Запускается один раз на (открытие × order × user). Map ключуем
-  // по productId — первый продукт каждого id выигрывает (если в заказе
-  // одинаковые позиции, отзыв ставится один раз на продукт).
+  // Уникальные productId — отзыв ставится один раз на продукт, даже если позиция повторяется в заказе.
   const productIds = useMemo(() => {
     if (!order) return [] as number[];
     const seen = new Set<number>();

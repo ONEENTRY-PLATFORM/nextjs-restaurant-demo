@@ -3,37 +3,28 @@ import { imageSize } from 'image-size';
 import url from 'url';
 
 /**
- * Асинхронно получает размеры (ширину и высоту) изображения по URL.
+ * getImageSize — определяет размеры удалённого изображения по URL без полной загрузки.
  *
- * Функция получает изображение по указанному URL и определяет его размеры
- * без скачивания всего изображения. Использует библиотеку image-size для парсинга
- * заголовка изображения и извлечения информации о ширине и высоте.
- * @param   {string}                                     imgUrl - URL изображения для анализа.
- * @returns {Promise<{ width: number; height: number }>}        Promise, резолвящийся в объект со свойствами width и height.
- * @throws {Error} если изображение не удалось получить или определить размеры.
- * @example
- * ```typescript
- * const { width, height } = await getImageSize('https://example.com/image.jpg');
- * console.log(`Image dimensions: ${width}x${height}`);
- * ```
+ * Парсит заголовок через image-size по мере поступления чанков и обрывает соединение, как только
+ * width/height становятся известны.
+ * @param   {string}                                     imgUrl - URL изображения.
+ * @returns {Promise<{ width: number; height: number }>}        Размеры.
+ * @throws {Error} Если изображение не удалось получить или определить размеры.
  */
 const getImageSize = async (imgUrl: string): Promise<{ width: number; height: number }> => {
-  /** Парсим URL изображения в опции для HTTPS-запроса */
   const options = url.parse(imgUrl);
 
-  /** Возвращаем promise, резолвящийся с размерами изображения */
   return new Promise((resolve, reject) => {
     https
       .get(options, response => {
         if (response.statusCode !== 200) {
           reject(new Error(`Failed to fetch image. Status code: ${response.statusCode}`));
-          response.resume(); // Поглощаем данные ответа, чтобы освободить память
+          response.resume();
           return;
         }
         const chunks: Uint8Array[] = [];
         let dimensions: { width?: number; height?: number } | null = null;
 
-        /** Обрабатываем входящие чанки данных и пытаемся определить размеры изображения */
         response
           .on('data', chunk => {
             if (!dimensions) {
@@ -47,11 +38,10 @@ const getImageSize = async (imgUrl: string): Promise<{ width: number; height: nu
                     height: dimensions.height,
                   });
                   response.destroy();
-                  /** Останавливаем дальнейший приём данных */
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
               } catch (error) {
-                /** Если image-size бросает ошибку из-за нехватки данных — продолжаем приём */
+                // image-size бросает при нехватке данных — продолжаем приём.
               }
             }
           })

@@ -5,9 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает блок по маркеру.
- */
+/** getBlockByMarker — блок по маркеру. */
 export const getBlockByMarker = cache(
   async (
     marker: string

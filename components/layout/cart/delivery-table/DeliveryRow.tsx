@@ -6,9 +6,7 @@ import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/**
- * Строка формы доставки
- */
+/** Строка формы доставки. */
 const DeliveryRow = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   return (
     <TableRowAnimations

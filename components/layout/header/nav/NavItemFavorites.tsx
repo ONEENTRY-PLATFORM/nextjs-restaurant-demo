@@ -7,19 +7,12 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
-/**
- * Кнопка nav-элемента избранного — десктопный триггер в header, открывает
- * `FavoritesPopup` (центрированная модалка — порт `static-html/pk_favorites.html`).
- * Зеркалит мобильный триггер из bottom-меню, чтобы избранное было попапом на
- * всех брейкпоинтах. Страница `/profile/favorites` остаётся как fallback-route.
- * @returns {JSX.Element} JSX кнопки избранного.
- */
+/** NavItemFavorites — десктопный триггер избранного, открывает `FavoritesPopup`. */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
-  // Persisted-слайс регидратится на клиенте — гейтим бейдж, чтобы избежать
-  // расхождения серверной/клиентской разметки (тот же трюк, что в NavItemCart).
+  // Persisted-слайс регидратится на клиенте — гейтим бейдж (см. NavItemCart).
   const mounted = useSyncExternalStore(
     cb => {
       cb();

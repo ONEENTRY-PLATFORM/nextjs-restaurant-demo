@@ -7,16 +7,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
-/**
- * Кнопка избранного в bottom-меню — мобильный триггер, открывающий drawer
- * `FavoritesPopup` через `OpenDrawerContext`. Зеркалит иконку сердца в нижней
- * навигации из `cart_login.html` static-html. На десктопе вместо неё страница
- * `/profile/favorites` (см. `NavItemFavorites` в header).
- *
- * Подключается к `BottomMobileMenu` через `NAV_BY_URL['favorites']` — требует
- * страницу `favorites` в меню OneEntry `bottom_web`.
- * @returns {JSX.Element} JSX кнопки избранного в bottom-меню.
- */
+/** Кнопка избранного в bottom-меню — мобильный триггер `FavoritesPopup`. */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);

@@ -6,7 +6,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import PhoneIcon from '@/components/icons/phone.svg';
 
 /**
- * SupportButton — иконка телефона в мобильной шапке
+ * SupportButton — иконка телефона в мобильной шапке.
+ *
  * @param   {object}      props          - Пропсы кнопки.
  * @param   {boolean}     props.disabled - Нет ни телефона, ни WhatsApp.
  * @returns {JSX.Element}                JSX триггера попапа.

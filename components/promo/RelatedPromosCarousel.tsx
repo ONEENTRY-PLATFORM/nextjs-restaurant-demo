@@ -8,17 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 
 /**
- * Карусель «похожих промо» внизу страницы `/promo/[handle]` — горизонтальная
- * scroll-snap лента с dot-индикаторами под ней. Используется, когда соседних
- * промо-страниц минимум 3 (1-2 укладываются в обычный flex-ряд без свайпа).
- *
- * Текущая страница в массиве `promos` уже исключена — это всегда «другие»
- * промо-страницы, чтобы было что листать.
- *
- * Подход — нативный CSS scroll-snap (`overflow-x-auto snap-x snap-mandatory`)
- * + точки под лентой, как `RestaurantPhotoSlider`. Это легче, чем тянуть
- * `react-slick` ради такого случая, и совпадает с уже используемым в проекте
- * паттерном (см. мобильную ленту в `HomePromo`).
+ * RelatedPromosCarousel — горизонтальная scroll-snap лента «похожих промо» с dot-индикаторами.
+ * Используется, когда соседних промо-страниц минимум 3 (1-2 укладываются в обычный flex-ряд).
  */
 const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Element => {
   const scrollerRef = useRef<HTMLDivElement>(null);

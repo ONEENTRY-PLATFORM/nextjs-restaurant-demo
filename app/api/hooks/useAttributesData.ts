@@ -4,10 +4,11 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
- * Использует тип String.
+ * Извлекает строковое значение атрибута типа String.
+ *
  * @param   {string}                  name            - Имя атрибута.
- * @param   {Record<string, unknown>} attributeValues - Значения атрибутов.
- * @returns {string}                                  Строковое значение или undefined.
+ * @param   {AttributeValuesInput}    attributeValues - Значения атрибутов.
+ * @returns {string}                                  Строковое значение или пустая строка.
  */
 export const getString = (name: string, attributeValues: AttributeValuesInput): string => {
   const attr = attributeValues?.[name];
@@ -18,11 +19,12 @@ export const getString = (name: string, attributeValues: AttributeValuesInput): 
 };
 
 /**
- * Использует тип Text.
- * @param   {string}                name            - Имя атрибута.
- * @param   {object}                attributeValues - Объект значений атрибутов.
- * @param   {string}                type            - Тип контента.
- * @returns {string | [] | unknown}                 HTML-контент.
+ * Извлекает HTML/plain значение атрибута типа Text.
+ *
+ * @param   {string}                          name            - Имя атрибута.
+ * @param   {AttributeValuesInput}            attributeValues - Значения атрибутов.
+ * @param   {'html' | 'plain'}                type            - Формат вывода.
+ * @returns {string | ReturnType<typeof parse>}               HTML-узлы или строка.
  */
 export const getText = (
   name: string,
@@ -49,116 +51,13 @@ export const getText = (
   return '';
 };
 
-// /**
-//  * getTextWithHeader
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const getTextWithHeader = (
-//   name: string,
-//   attributeValues: any,
-//   type: 'html' | 'plain' = 'plain',
-// ): string | [] | any => {};
-
-// /**
-//  * Integer
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useInteger = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Real
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useReal = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Float
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useFloat = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Дата и время
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useDateTime = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Дата
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useDate = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Время
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useTime = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
-// /**
-//  * Файл
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useFile = (
-//   name: any,
-//   attributeValues: any,
-//   type: '' | '' = '',
-// ): any => {};
-
 /**
- * Использует тип image — извлекает URL изображения из значений атрибута.
- * @param   {string}  name            - Имя атрибута.
- * @param   {unknown} attributeValues - Значения атрибутов.
- * @param   {string}  type            - Тип изображения.
- * @returns {string}                  URL изображения или пустая строка.
+ * Извлекает URL изображения из значений атрибута типа Image.
+ *
+ * @param   {string}                  name            - Имя атрибута.
+ * @param   {AttributeValuesInput}    attributeValues - Значения атрибутов.
+ * @param   {'image' | 'preview'}     type            - Полное изображение или превью.
+ * @returns {string}                                  URL или пустая строка.
  */
 export const getImageUrl = (
   name: string,
@@ -188,77 +87,3 @@ export const getImageUrl = (
   }
   return '';
 };
-
-// /**
-//  * Группа изображений
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useImagesGroup = (
-//   name: string,
-//   attributeValues: any,
-//   type: 'image' | 'preview' = 'image',
-// ): string[] | [] | any => {};
-
-// /**
-//  * Radio Button
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useRadio = (
-//   name: string,
-//   attributeValues: any,
-// ): string | [] | any => {};
-
-// /**
-//  * Entity
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useEntity = (
-//   name: string,
-//   attributeValues: any,
-// ): string | [] | any => {};
-
-// /**
-//  * Integer
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useList = (
-//   name: string,
-//   attributeValues: any,
-//   type: 'html' | 'plain' = 'plain',
-// ): string | [] | any => {};
-
-// /**
-//  * Временной интервал
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useTimeInterval = (
-//   name: string,
-//   attributeValues: any,
-// ): string | [] | any => {};
-
-// /**
-//  * JSON
-//  *
-//  * @param name
-//  * @param attributeValues
-//  * @param type
-//  */
-// export const useJson = (
-//   name: string,
-//   attributeValues: any,
-// ): string | [] | any => {};

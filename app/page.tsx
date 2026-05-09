@@ -6,41 +6,19 @@ import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
 
-// Отключаем static prerender — общая цепочка layout-ов включает клиентские
-// компоненты, читающие `useSearchParams()` (search bar, filter bottom sheet),
-// которые Next.js требует оборачивать в Suspense для static-генерации.
-// Рендер dynamic обходит prerender-time bailout.
+// Force-dynamic: цепочка layout-ов содержит `useSearchParams()`.
 export const dynamic = 'force-dynamic';
 
-/**
- * Block identifier → тип секции. Каждый блок, прикреплённый к странице
- * `home_web`, выступает позиционным маркером одного из этих компонентов
- * секций, поэтому переупорядочивание блоков в админке OneEntry (`block.position`)
- * меняет порядок секций на странице без изменений в коде.
- *
- * Идентификаторы, которых нет в этом списке, тихо пропускаются — редактор
- * может ставить новые блоки, не ломая билд, а мы добавляем рендерер
- * под них, когда визуал готов.
- */
+// Whitelisted block identifiers; неизвестные тихо пропускаются.
 const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);
 
 /**
- * Главная страница — полностью управляется OneEntry CMS:
- *   1. Загружает сущность страницы `home_web`, чтобы убедиться, что она существует
- *      (и оставить хук под будущие метаданные / hero-атрибуты уровня страницы).
- *   2. Загружает прикреплённые к ней блоки через `getBlocksByPageUrl`,
- *      отсортированные по `block.position`.
- *   3. Для каждого блока делает диспетч по `block.identifier`:
- *        - `home_promo`      → статичный баннер {@link HomePromo} (DEAL OF
- *                              THE DAY -50%). Блок CMS используется только
- *                              как позиционный якорь; контент баннера
- *                              захардкожен, пока у блока не появятся
- *                              атрибуты title/product/image.
- *        - `recommended`     → курируемая сетка через {@link HomeBlockServer}
- *        - `home_categories` → все секции категорий меню через
- *                              {@link HomeCategoriesSection}
- *      Переупорядочивание блоков в админке (`block.position`) меняет порядок
- *      секций на странице без изменений в коде.
+ * HomePage — главная страница, управляется блоками CMS-страницы `home_web`.
+ *
+ * Грузит page + прикреплённые блоки (отсортированы по `block.position`) и для каждого
+ * делает диспетч по `block.identifier`: `home_promo` → {@link HomePromo}, `recommended`
+ * → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
+ * Переупорядочивание блоков в админке меняет порядок секций без изменений в коде.
  * @returns {Promise<JSX.Element>} JSX главной страницы.
  */
 const HomePage = async (): Promise<JSX.Element> => {

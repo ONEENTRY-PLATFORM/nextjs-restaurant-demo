@@ -6,21 +6,9 @@ import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * Нормализованный payload, возвращаемый {@link getBlockProducts}: локализованный
- * заголовок блока, массив прикреплённых продуктов (уже обрезанный до
- * `block.quantity`, если задан) и подсказка о количестве колонок
- * (`block.countElementsPerRow`), которую рендерер использует для размера сетки.
- *
- * Разные типы блоков OneEntry хранят продукты в разных полях —
- * `product_block` использует `block.products`, `similar_products_block` —
- * `block.similarProducts.items`. Этот хелпер скрывает асимметрию от
- * вызывающих.
- * @property {boolean}            isError             - Вызов SDK завершился ошибкой.
- * @property {IError}             [error]             - Исходная ошибка SDK.
- * @property {string}             title               - Локализованный заголовок блока.
- * @property {IProductsEntity[]}  products            - Элементы в порядке, заданном в CMS.
- * @property {number}             [quantity]          - Заданный редактором максимум элементов (уже применён).
- * @property {number}             [countElementsPerRow] - Заданная редактором подсказка о колонках.
+ * BlockProducts — payload {@link getBlockProducts}: title, products (обрезанные до `block.quantity`)
+ * и подсказка о количестве колонок. Скрывает асимметрию между `product_block` (`block.products`)
+ * и `similar_products_block` (`block.similarProducts.items`).
  */
 export interface BlockProducts {
   isError: boolean;
@@ -32,15 +20,12 @@ export interface BlockProducts {
 }
 
 /**
- * Получает блок по маркеру и извлекает продукты + конфиг раскладки в форме,
- * которую рендерер главной страницы может использовать без знания типа блока.
+ * getBlockProducts — блок по маркеру + продукты и layout-конфиг в нормализованной форме.
  *
- * Порядок в `products` — это порядок, заданный редактором (drag-and-drop в
- * OneEntry admin); мы его не пересортировываем.
+ * Порядок в `products` — заданный редактором (drag-and-drop в admin), не пересортируем.
+ * При любой ошибке SDK возвращает пустой `products`, чтобы вызывающие рендерили условно без try/catch.
  * @param   {string}                marker - Идентификатор блока (например, `recommended`).
- * @returns {Promise<BlockProducts>}        Нормализованные данные блока; `products`
- *                                          пуст при любой ошибке SDK, чтобы вызывающие
- *                                          могли рендерить условно без try/catch.
+ * @returns {Promise<BlockProducts>}        Нормализованные данные блока.
  */
 export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
   try {

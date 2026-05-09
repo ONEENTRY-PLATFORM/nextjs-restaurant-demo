@@ -5,10 +5,9 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * Generic renderer for CMS pages that don't have a dedicated route.
- * @param   {object}                          props        - Page properties.
- * @param   {Promise<{ handle: string }>}     props.params - Route parameters.
- * @returns {Promise<JSX.Element>}                         JSX of the generic page.
+ * PageLayout — generic renderer for CMS pages without a dedicated route.
+ * @param   {object} props - Page properties.
+ * @returns {Promise<JSX.Element>} JSX of the generic page.
  */
 const PageLayout = async ({
   params,
@@ -51,10 +50,8 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * Generates page metadata.
- * @param   {object}                          props        - Page properties.
- * @param   {Promise<{ handle: string }>}     props.params - Route parameters.
- * @returns {Promise<Metadata>}                            Page metadata.
+ * generateMetadata — генерирует метаданные страницы.
+ * @returns {Promise<Metadata>} Page metadata.
  */
 export async function generateMetadata({
   params,

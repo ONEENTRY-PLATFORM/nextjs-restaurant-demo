@@ -7,12 +7,11 @@ import type { IProducts } from '@/app/types/global';
 import { normalizePhoneE164 } from '@/components/utils';
 
 /**
- * Обновляет состояние пользователя через API Users.
+ * updateUserState — обновляет state пользователя через API Users.
  *
- * MCP-правило `user.state`: перед `updateUser` всегда перезапрашивать свежего
- * пользователя (`getUser`) и спредить его `state`, иначе параллельные изменения
- * в другой вкладке/устройстве будут перезатёрты. `formIdentifier` тоже берётся
- * из свежего ответа, а не хардкодится.
+ * MCP-правило `user.state`: перед `updateUser` обязательно перезапросить свежего пользователя
+ * (`getUser`) и спредить его `state`, иначе параллельные изменения в другой вкладке/устройстве
+ * перезатрутся. `formIdentifier` тоже из свежего ответа, не хардкодится.
  */
 export const updateUserState = async ({
   favorites,

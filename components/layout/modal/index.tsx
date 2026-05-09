@@ -13,9 +13,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import CloseModal from './components/CloseModal';
 import ModalBackdrop from './components/ModalBackdrop';
 
-/**
- * Компонент модалки
- */
+/** Заголовок модалки по имени компонента формы. */
 const useTitleData = (component: string): string => {
   const t = useT();
   const titlesData: Record<string, string> = {
@@ -30,8 +28,7 @@ const useTitleData = (component: string): string => {
   return titlesData[component] ?? '';
 };
 
-// Подшаги auth-флоу, у которых первый шаг — AuthProviderSelect. Из них
-// «назад» возвращает на выбор провайдера, а не закрывает попап.
+// Подшаги auth-флоу: «назад» возвращает на AuthProviderSelect, а не закрывает попап.
 const AUTH_FLOW_SUB_STEPS = new Set([
   'SignInForm',
   'SignUpForm',
@@ -40,15 +37,12 @@ const AUTH_FLOW_SUB_STEPS = new Set([
   'VerificationForm',
 ]);
 
-/**
- * Компонент модалки форм
- */
+/** Modal — модалка форм аутентификации/календаря. */
 const Modal = (): JSX.Element => {
   const { component, setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);
 
-  // выбираем компонент формы по имени компонента. Каст к общему типу,
-  // потому что forms[component] — union с разнородными props (часть форм
-  // не принимает className/isActive); они их просто игнорируют.
+  // Каст к общему типу: `forms[component]` — union с разнородными props,
+  // часть форм игнорирует className/isActive.
   const Form = (forms[component as keyof typeof forms] || null) as ComponentType<{
     className?: string;
     isActive?: boolean;
@@ -78,14 +72,7 @@ const Modal = (): JSX.Element => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] min-h-140 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 backdrop-blur-[10px] p-6 px-16 pt-24 pb-25 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:w-182.5 md:max-w-[95vw] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:p-10 lg:px-33.5 lg:pt-24"
       >
-        {/* Шапка попапа — back / title / close. Повторяет паттерн
-            `static-html/pk_sing_in.html` (десктоп) и `cart_Sign_in_tel.html`
-            (мобила): стрелка назад слева, заголовок по центру (brand-цвет,
-            semibold, 24px), круглая X-кнопка справа. На подшагах auth-флоу
-            (SignInForm / SignUpForm / Forgot / Reset /
-            Verification) Back возвращает на первый шаг — выбор провайдера
-            (AuthProviderSelect). На самом первом шаге и в не-auth формах
-            (CalendarForm и т.п.) Back закрывает модалку. */}
+        {/* Шапка попапа: back / title / close. */}
         <header className="absolute left-0 top-0 flex w-full items-center justify-between gap-5 px-8 py-6 max-sm:px-8 lg:px-12">
           {isAuthSubStep ? (
             <button

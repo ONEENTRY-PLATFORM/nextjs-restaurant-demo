@@ -6,9 +6,7 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает все продукты с пагинацией и фильтром.
- */
+/** getProducts — все продукты с пагинацией и фильтром. */
 export const getProducts = cache(
   async (props: {
     limit: number;
@@ -39,11 +37,9 @@ export const getProducts = cache(
       .map(v => v.trim())
       .filter(Boolean);
 
-    // OR-семантика для multi-select preferences: SDK поддерживает только
-    // скалярный `conditionValue`, поэтому каждое значение фетчим отдельным
-    // запросом и мерджим уникальные результаты. AND-вариант (по одному фильтру
-    // на значение в одном запросе) возвращал бы блюда, у которых ВСЕ выбранные
-    // preferences присутствуют сразу — это почти всегда пусто.
+    // OR-семантика для multi-select preferences: SDK принимает только скаляр в `conditionValue`,
+    // поэтому каждое значение фетчим отдельным запросом и мерджим уникальные. AND-вариант почти
+    // всегда пуст — в админке нет блюд со всеми выбранными preferences одновременно.
     if (prefList.length > 1) {
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
@@ -86,9 +82,7 @@ export const getProducts = cache(
       const data = await getApi().Products.getProducts(
         expandedFilters,
         lang,
-        // Sort key/order настраивается в OneEntry admin —
-        // опуская `sortKey`/`sortOrder`, мы позволяем серверу применить то,
-        // что выбрал редактор, и учесть per-product position-локи.
+        // sortKey/sortOrder опускаем — сервер применит выбранную в админке сортировку и position-локи.
         { offset, limit }
       );
       if (typeError(data)) {

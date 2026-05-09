@@ -18,11 +18,7 @@ const FORM_MODULE_CONFIG_ID = 2;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
-/**
- * Резолвит отображаемое имя для залогиненного пользователя.
- * @param   {{ identifier?: string; formData?: unknown }} user - Сущность залогиненного пользователя.
- * @returns {string}                                            Отображаемое имя.
- */
+/** Резолвит отображаемое имя залогиненного пользователя. */
 const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): string => {
   const formData = Array.isArray(user.formData)
     ? (user.formData as Array<{ marker?: unknown; value?: unknown }>)
@@ -35,11 +31,11 @@ const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): s
 };
 
 /**
- * Форма отзыва на продукт — звёздный рейтинг + текст.
- * @param   {object}      props           - Пропсы компонента.
- * @param   {number}      props.productId - Product ID, к которому привязан отзыв.
- * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок (`Leave a review`), если он уже есть в шапке родителя (попап).
- * @returns {JSX.Element}                 JSX формы отзыва.
+ * ReviewForm — форма отзыва на продукт (звёздный рейтинг + текст).
+ * @param   {object}      props             - Пропсы.
+ * @param   {number}      props.productId   - Product ID, к которому привязан отзыв.
+ * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок, если он уже есть в шапке родителя.
+ * @returns {JSX.Element}                   JSX формы отзыва.
  */
 const ReviewForm = ({
   productId,

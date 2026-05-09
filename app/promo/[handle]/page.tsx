@@ -25,26 +25,11 @@ type DescriptionValue = Array<{
 }>;
 
 /**
- * Страница деталей промо-акции (`/promo/<pageUrl>`).
- *
- * По сути это страница-категория товаров: товары тянутся через
- * `getProductsByPageUrl(handle)` внутри `ProductsGridLayout` с `isCategory=true`,
- * что даёт ровно тот же UX, что и `/shop/[handle]` — фильтры по
- * `searchParams`, пагинация через `LoadMore`, fallback `ProductsNotFound` и
- * Suspense-скелетон.
- *
- * Управляется атрибутами дочерних страниц `blog` в OneEntry (набор `blog_page`):
- *   - `bg_image`    (image) — hero для десктопа;
- *   - `banner`      (image) — мобильный fallback, если `bg_image` пуст;
- *   - `description` (text)  — тело в markdown/html.
- *
- * Структура страницы (Figma АКЦИЯ_DEAL OF THA DAY + static-html/pk_promo_day.html):
- *   1) hero-картинка (bg_image / banner);
- *   2) `h1` с названием + тело описания;
- *   3) сетка товаров промо как у обычной категории;
- *   4) два соседних промо-баннера (другие дочерние `blog`) внизу.
- * @param   {PageProps}            props - Пропсы динамического маршрута Next.js.
- * @returns {Promise<JSX.Element>}       JSX страницы деталей промо.
+ * PromoDetailPage — страница деталей промо-акции (`/promo/<pageUrl>`).
+ * Атрибуты дочерней страницы `blog` (набор `blog_page`): `bg_image` (hero desktop),
+ * `banner` (mobile fallback), `description` (md/html). Товары тянутся как у обычной категории.
+ * @param   {PageProps} props - Пропсы динамического маршрута.
+ * @returns {Promise<JSX.Element>} JSX страницы деталей промо.
  */
 const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -166,11 +151,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
 
 export default PromoDetailPage;
 
-/**
- * Генерирует метаданные страницы для маршрута деталей промо.
- * @param   {MetadataParams}    props - Пропсы Next.js.
- * @returns {Promise<Metadata>}       Объект метаданных.
- */
+/** generateMetadata — метаданные страницы деталей промо. */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const [{ page }, dict] = await Promise.all([getPageByUrl(handle), getDictionary()]);

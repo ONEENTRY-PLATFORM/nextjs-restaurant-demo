@@ -8,20 +8,12 @@ import { useRef, useState } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/**
- * Анимации обёртки корзины при stage leaving
- */
+/** Анимации обёртки корзины: bottom-to-top leave-stagger при route-transition (entrance — в per-component хуках). */
 const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
   const ref = useRef(null);
 
-  // Leave-анимация на route-transition. Bottom-to-top stagger — у корзины
-  // кнопка APPLY внизу, и пользовательская модель «сначала уходит действие,
-  // потом контент» читается естественнее, чем top-to-bottom. На остальных
-  // страницах leave идёт сверху вниз (см. `OrdersAnimations`,
-  // `CardsGridAnimations`). Entrance каждого элемента — в per-component
-  // хуках (`ProductAnimations` / `TableRowAnimations`), здесь только leave.
   useGSAP(() => {
     if (stage !== 'leaving' || prevStage !== 'none') {
       setPrevStage(stage);

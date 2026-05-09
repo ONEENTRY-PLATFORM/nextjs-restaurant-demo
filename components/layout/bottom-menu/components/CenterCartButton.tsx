@@ -6,21 +6,11 @@ import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Центральная выступающая кнопка корзины — 1:1 порт оранжевого шарика из
- * `static-html/.../MenuBottom`. Открывает drawer корзины через `OpenDrawerContext`
- * (`component === 'CartPopup'`) — тот же паттерн drawer, что и у фильтра.
- * Кросс-фейд + поворот при переключении с {@link CenterCloseButton}: обе кнопки
- * лежат друг под другом (absolute inset-0 внутри родительского стека) и
- * анимируются opacity / rotate / scale, чтобы переход не был резким.
- * Бейдж замаунтен через mount-gate, чтобы избежать рассинхрона hydration при
- * клиентской регидратации persisted-корзины.
- */
+/** Центральная выступающая кнопка корзины — открывает `CartPopup` drawer; crossfade с `CenterCloseButton`. */
 const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);
-  // Persisted Redux-слайс регидратится на клиенте — гейтим бейдж через
-  // useSyncExternalStore, чтобы серверная и клиентская разметка совпадали.
+  // Persisted Redux-слайс регидратится на клиенте — гейтим бейдж через mount-gate.
   const mounted = useSyncExternalStore(
     cb => {
       cb();

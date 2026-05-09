@@ -9,8 +9,8 @@ const APP_TOKEN = (process.env.NEXT_PUBLIC_ONEENTRY_TOKEN ||
 const DEFAULT_LANG = 'en_US';
 
 /**
- * Persists the refreshToken to localStorage on every SDK rotation.
- * @param   {string}        refreshToken - Fresh refreshToken issued by the SDK.
+ * saveFunction — сохраняет refreshToken в localStorage при каждой ротации SDK.
+ * @param   {string}        refreshToken - Свежий refreshToken от SDK.
  * @returns {Promise<void>}
  */
 const saveFunction = async (refreshToken: string): Promise<void> => {
@@ -23,10 +23,7 @@ const saveFunction = async (refreshToken: string): Promise<void> => {
   localStorage.setItem('refresh-token', refreshToken);
 };
 
-/**
- * Mutable SDK instance. Recreated via {@link reDefine} on login / langCode change.
- * Exported as `api` for backwards compatibility with existing imports.
- */
+/** Мутируемый SDK-инстанс. Пересоздаётся через {@link reDefine} при логине / смене langCode. */
 export let api = defineOneEntry(PROJECT_URL, {
   langCode: DEFAULT_LANG,
   token: APP_TOKEN,
@@ -36,19 +33,18 @@ export let api = defineOneEntry(PROJECT_URL, {
 });
 
 /**
- * Getter for the current SDK instance. Prefer this over `api` —
- * guarantees the caller always sees the up-to-date instance even after {@link reDefine}.
- * @returns {ReturnType<typeof defineOneEntry>} Current api instance.
+ * getApi — геттер актуального SDK-инстанса. Предпочтительнее, чем `api`: всегда
+ * отдаёт свежий инстанс после {@link reDefine}.
+ * @returns {ReturnType<typeof defineOneEntry>} Текущий api-инстанс.
  */
 export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 
 /**
- * Recreates the SDK instance with a (possibly) new refreshToken and langCode.
+ * reDefine — пересоздаёт SDK-инстанс с (возможно) новым refreshToken и langCode.
  *
- * ⚠️ Always guard with {@link hasActiveSession} — each call hits `/refresh`
- * and would otherwise burn the current token.
- * @param   {string}        refreshToken - Refresh token from localStorage.
- * @param   {string}        [langCode]   - Current language code (defaults to `en_US`).
+ * Всегда оборачивай через {@link hasActiveSession} — каждый вызов идёт на `/refresh` и иначе сжигает текущий токен.
+ * @param   {string}        refreshToken - Refresh-токен из localStorage.
+ * @param   {string}        [langCode]   - Текущий язык (по умолчанию `en_US`).
  * @returns {Promise<void>}
  */
 export async function reDefine(refreshToken: string, langCode?: string): Promise<void> {
@@ -66,7 +62,7 @@ export async function reDefine(refreshToken: string, langCode?: string): Promise
 }
 
 /**
- * Whether the current SDK instance holds an active accessToken.
+ * hasActiveSession — есть ли в текущем SDK-инстансе валидный accessToken.
  * @returns {boolean}
  */
 export const hasActiveSession = (): boolean => {
@@ -77,16 +73,15 @@ export const hasActiveSession = (): boolean => {
 };
 
 /**
- * Writes both tokens directly into the state of the current SDK instance. The
- * canonical `login()` pattern per MCP `tokens` rules: the `AuthProvider.auth()`
- * response contains `accessToken`+`refreshToken`, and without `syncTokens`
- * the very next auth-protected request will go out without `Authorization`,
- * get a 400 (`postFormsData`, `createOrder`) and fail — the SDK only retries 401.
+ * syncTokens — записывает оба токена прямо в state текущего SDK-инстанса.
  *
- * Use instead of `reDefine` at login / OAuth-callback time. `reDefine` is kept
- * only for restoring a session from localStorage on mount.
- * @param {string} accessToken  - Access JWT from `auth()`.
- * @param {string} refreshToken - Refresh token from `auth()`.
+ * Канонический login()-паттерн по MCP `tokens`: `AuthProvider.auth()` возвращает токены,
+ * но SDK не кладёт их в state сам — без `syncTokens` следующий auth-protected POST уйдёт
+ * без `Authorization` и упадёт с 400 (SDK ретраит только 401).
+ * Используется вместо `reDefine` при логине / OAuth-callback; `reDefine` остаётся только
+ * для восстановления сессии из localStorage на mount.
+ * @param {string} accessToken  - Access JWT из `auth()`.
+ * @param {string} refreshToken - Refresh-токен из `auth()`.
  */
 export const syncTokens = (accessToken: string, refreshToken: string): void => {
   const provider = api.AuthProvider as unknown as {
@@ -98,8 +93,8 @@ export const syncTokens = (accessToken: string, refreshToken: string): void => {
 };
 
 /**
- * Current langCode of the SDK instance.
- * @returns {string} Language code, e.g. `en_US`.
+ * getLang — текущий langCode SDK-инстанса.
+ * @returns {string} Код языка, напр. `en_US`.
  */
 export const getLang = (): string => {
   const cfg = (api as unknown as { config?: { langCode?: string } }).config;
@@ -107,8 +102,8 @@ export const getLang = (): string => {
 };
 
 /**
- * Type guard for SDK responses — returns `true` if the value is an `IError`.
- * @param   {unknown} result - SDK response to check.
+ * isError — type guard для SDK-ответов: `true`, если значение — `IError`.
+ * @param   {unknown} result - SDK-ответ для проверки.
  * @returns {boolean}
  */
 export const isError = (result: unknown): result is IError => {
@@ -122,12 +117,11 @@ export const isError = (result: unknown): result is IError => {
 type ImageField = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
- * Normalizes a OneEntry `image` attribute value into a URL string.
+ * getImageUrl — нормализует значение OneEntry-атрибута `image` в URL-строку.
  *
- * The SDK returns an object for Products and an array for Pages/Blocks —
- * this helper handles both shapes.
+ * SDK возвращает объект для Products и массив для Pages/Blocks — хелпер обрабатывает обе формы.
  * @param   {ImageField} value - `attributeValues.<marker>.value`.
- * @returns {string}           Download URL, or an empty string.
+ * @returns {string}           Download URL или пустая строка.
  */
 export const getImageUrl = (value: ImageField): string => {
   if (!value) {

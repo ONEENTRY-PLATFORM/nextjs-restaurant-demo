@@ -7,16 +7,7 @@ import { Fragment } from 'react';
 
 import HomeIcon from '@/components/icons/home';
 
-/**
- * Шапка страниц `/profile/**` — заменяет хардкод `<h1>My Account</h1>`
- * в `app/profile/layout.tsx`. Рендерит breadcrumbs + заголовок текущей
- * страницы. Маппинг `pathname → метаданные` лежит в одном месте, чтобы
- * табов в дизайне нет, но навигация наверх по иерархии (Home → Profile →
- * Orders / Favorites) была доступна через хлебные крошки.
- *
- * Стиль крошек повторяет десктопный breadcrumb из `CartWizard`: иконка
- * домой → Profile → текущая страница.
- */
+/** ProfilePageHeader — breadcrumbs + заголовок страниц `/profile/**`. */
 type Crumb = { label: string; href: string };
 type Meta = { title: string; trail?: Crumb[] };
 

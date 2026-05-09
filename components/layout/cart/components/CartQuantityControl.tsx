@@ -20,12 +20,7 @@ type CartQuantityControlProps = {
 };
 
 /**
- * Компактный контрол количества только для корзины — вертикальный стек
- * `+ / qty / -` в тонком бордерном боксе, по `cart_cart.html`.
- *
- * Шаг `-` при qty === 1 (или ввод 0 в инпут) удаляет позицию из корзины
- * через {@link useCartRemoveWithUndo} — пользователь видит toast с кнопкой
- * Undo и таймером, в течение которого удаление можно откатить.
+ * CartQuantityControl — компактный +/qty/- контрол; шаг `-` при qty===1 удаляет с undo-toast.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -35,16 +30,10 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
   const value = draft ?? String(qty);
   const removeWithUndo = useCartRemoveWithUndo(id, title);
 
-  /** Увеличивает количество товара в корзине */
   const onIncrease = () => {
     dispatch(increaseProductQty({ id, quantity: 1, units }));
   };
 
-  /**
-   * Уменьшает количество товара в корзине
-   * Если количество меньше или равно 1, удаляет элемент полностью с возможностью отмены
-   * В противном случае уменьшает количество товара на 1
-   */
   const onDecrease = () => {
     if (qty <= 1) {
       removeWithUndo();
@@ -53,11 +42,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
     dispatch(decreaseProductQty({ id, quantity: 1 }));
   };
 
-  /**
-   * Commits the quantity change to the cart state after validation.
-   * Parses the input value, validates it, and updates the product quantity in the store.
-   * If the input is invalid or zero/negative, removes the item from the cart with undo option.
-   */
+  /** Применяет введённое количество; невалидное / 0 — удаляет позицию с undo. */
   const commit = () => {
     const parsed = parseInt(value, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {

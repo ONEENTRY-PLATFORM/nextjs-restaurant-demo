@@ -33,9 +33,8 @@ const CartButton = ({
     | undefined;
   const qty = item?.quantity ?? 0;
 
-  // redux-persist регидратит корзину на клиенте, поэтому qty может отличаться
-  // от SSR (0). На первом paint рендерим кнопку «add», чтобы совпадало с
-  // сервером, и переключаемся после mount.
+  // redux-persist регидратит корзину на клиенте — qty может отличаться от SSR (0).
+  // На первом paint рендерим кнопку «add» (как на сервере), переключаемся после mount.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

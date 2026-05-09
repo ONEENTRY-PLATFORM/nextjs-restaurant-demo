@@ -6,20 +6,15 @@ import { useEffect, useState } from 'react';
 type Phase = 'show' | 'fading' | 'gone';
 
 /**
- * Cross-fade оверлея скелетона в реальное содержимое грида.
+ * ProductsGridReveal — cross-fade оверлея скелетона в реальное содержимое грида.
  *
  * Закрывает разрыв между resolve Suspense (fallback скелетон размонтируется) и
  * завершением reveal-анимации в {@link CardAnimations} — без этого пользователи
- * видят короткое пустое состояние, пока карточки ещё скрыты их стартовым
- * `opacity:0`. Скелетон лежит поверх грида один кадр, затем затухает за
- * `fadeMs`, пока карточки анимируются внизу.
+ * видят короткое пустое состояние, пока карточки ещё скрыты их стартовым `opacity:0`.
  * @param   {object}      props          - Пропсы компонента.
- * @param   {ReactNode}   props.children - Настоящее содержимое грида (уже
- *                                         анимируется на клиенте `CardAnimations`).
+ * @param   {ReactNode}   props.children - Настоящее содержимое грида.
  * @param   {ReactNode}   props.skeleton - Скелетон/лоадер для оверлея.
- * @param   {number}      [props.holdMs] - Время до старта fade (покрывает
- *                                         worst-case stagger delay reveal'а
- *                                         первого ряда). По умолчанию 700.
+ * @param   {number}      [props.holdMs] - Время до старта fade. По умолчанию 700.
  * @param   {number}      [props.fadeMs] - Длительность cross-fade. По умолчанию 350.
  * @returns {JSX.Element}                JSX обёртки.
  */

@@ -5,10 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * Получает все блоки по url страницы.
- * Обёрнут в React cache() — дедуплицирует одинаковые вызовы внутри одного рендера.
- */
+/** getBlocksByPageUrl — все блоки по url страницы (React cache() дедуплицирует вызовы внутри рендера). */
 export const getBlocksByPageUrl = cache(
   async (
     pageUrl: string

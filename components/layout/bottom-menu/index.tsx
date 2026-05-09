@@ -24,12 +24,7 @@ const NAV_BY_URL: Record<string, NavConfig> = {
   bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
 };
 
-/**
- * Нижняя фиксированная навигация для мобильных — 1:1 порт `static-html/.../MenuBottom`:
- * фон с clipped polygon-нотчем, две группы иконок слева/справа, наполняемые из
- * меню OneEntry `bottom_web` (в порядке CMS), и центральная пара — выступающая
- * оранжевая корзина + outlined-крестик как смысловой центр макета.
- */
+/** BottomMobileMenu — фиксированная нижняя навигация (мобильная) на основе меню `bottom_web` + центральная Cart/Close-пара. */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');
 
@@ -61,10 +56,7 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
         </div>
 
         <div className="relative w-1/3 flex justify-center items-start -mt-5 p-5 z-50">
-          {/* Стек из двух кнопок (cart / close) одного размера, по очереди
-              анимируется через opacity+rotate+scale в зависимости от
-              `OpenDrawerContext.open`. Обе всегда в DOM, чтобы переход
-              был плавным crossfade'ом, а не сменой компонента. */}
+          {/* Стек cart/close, crossfade через opacity+rotate+scale по `OpenDrawerContext.open`. */}
           <div className="relative w-11.5 h-11.5 -mt-2.5">
             <CenterCartButton />
             <CenterCloseButton />

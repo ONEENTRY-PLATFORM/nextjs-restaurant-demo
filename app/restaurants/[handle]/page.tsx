@@ -31,12 +31,7 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// Атрибут `comforts` в OneEntry — тип `list`. Каждый item имеет `title`,
-// `value` (маркер) и `extended` с дополнительным значением; в нашей
-// админке задано `extended.type === 'image'` с иконкой comfort'а
-// (см. скрин — «150 seats» / «Large terrace» / «Live music» с иконками
-// стула, террасы, гитары соответственно). Нормализуем к
-// `{ title, iconUrl? }[]`.
+// `comforts` — list с `extended.type === 'image'`; нормализуем к `{ title, iconUrl? }[]`.
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
   return (raw as ComfortItem[])
@@ -51,14 +46,11 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
     .filter((c): c is Comfort => c !== null);
 };
 
-// Используем Google Maps embed без API-ключа: `&hl=en` принудительно
-// выдаёт английские названия независимо от Accept-Language браузера.
+// Google Maps embed без API-ключа; `&hl=en` фиксирует английские подписи.
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
-/**
- * Single-restaurant страница.
- */
+/** RestaurantPage — single-restaurant страница. */
 const RestaurantPage = async ({
   params,
 }: {
@@ -86,9 +78,7 @@ const RestaurantPage = async ({
     | undefined;
   const descriptionHtmlRaw = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
-  // Rich-text редактор OneEntry для plain-only текста кладёт в `htmlValue`
-  // stub `<p><br></p>` — truthy, но визуально пусто. Считаем html «значимым»,
-  // только если после удаления тегов остаётся хоть какой-то текст.
+  // Rich-text иногда отдаёт `<p><br></p>` — считаем html значимым только если есть текст.
   const descriptionHtml = /\S/.test(descriptionHtmlRaw.replace(/<[^>]*>/g, ''))
     ? descriptionHtmlRaw
     : '';
@@ -101,8 +91,7 @@ const RestaurantPage = async ({
         </Link>
       </div>
 
-      {/* Заголовок — на десктопе небольшой, на мобиле центрируем как
-          в `mob_about.html` */}
+      {/* Заголовок */}
       <h1 className="text-center md:text-left font-bold text-xl md:text-[20px] uppercase tracking-[0.02em] text-brand">
         {title}
       </h1>
@@ -122,11 +111,7 @@ const RestaurantPage = async ({
         </p>
       ) : null}
 
-      {/* Ряд comforts + BOOK A TABLE.
-          - mobile: comforts по `mob_about.html` flex-row justify-between,
-            кнопка резервации показана в самом низу страницы (по
-            `mob_about.html` отдельной кнопки в hero нет — ставим её ниже).
-          - desktop: 2 колонки в одной строке (Figma). */}
+      {/* Ряд comforts + BOOK A TABLE */}
       <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-15">
         {comforts.length > 0 ? (
           <div className="flex flex-wrap items-center justify-between gap-5 md:justify-start md:gap-7.5">
@@ -161,9 +146,7 @@ const RestaurantPage = async ({
         </BookATableButton>
       </div>
 
-      {/* Контакты:
-          - mobile: «Contacts» заголовок → маленькая карта → address-pill (mob_about.html).
-          - desktop: 2 колонки (Figma) — текст слева, широкая карта справа. */}
+      {/* Контакты */}
       <div className="mt-12 grid grid-cols-1 gap-7.5 md:grid-cols-[338fr_953fr] md:gap-10">
         <div className="flex flex-col gap-2.5">
           <p className="font-bold text-xl uppercase text-brand">Contacts</p>
@@ -194,7 +177,7 @@ const RestaurantPage = async ({
         )}
       </div>
 
-      {/* Мобильный CTA — на десктопе кнопка уже в ряду с comforts */}
+      {/* Мобильный CTA — на десктопе кнопка уже в ряду с comforts. */}
       <div className="mt-10 md:hidden">
         <BookATableButton
           restaurantHandle={handle}

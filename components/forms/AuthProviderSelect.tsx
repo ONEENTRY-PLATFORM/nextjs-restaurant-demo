@@ -19,13 +19,12 @@ const redirectToOAuth = (url: string) => {
 };
 
 /**
- * Первый шаг авторизации — выбор провайдера. Список провайдеров берётся из
- * OneEntry (`AuthProvider.getAuthProviders`), фильтруется по `isActive`. Email
- * открывают соответствующие формы AuthForm внутри
- * того же попапа. Google запускает OAuth-редирект; прочие OAuth-провайдеры —
- * `config.oauthAuthUrl` напрямую.
+ * AuthProviderSelect — первый шаг авторизации (выбор провайдера).
  *
- * Дизайн — `pk_login.html` / `cart_login.html` / Figma 2383:2799: лого по центру
+ * @param   {object}     props           - Пропсы.
+ * @param   {string}     props.className - Класс-обёртка.
+ * @param   {boolean}    props.isActive  - Активен ли шаг (для анимаций).
+ * @returns {JSX.Element}                JSX списка провайдеров.
  */
 const AuthProviderSelect = ({
   className,

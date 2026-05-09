@@ -6,9 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/**
- * Обёртка анимаций продукта
- */
+/** ProductAnimations — fade-in/leaving обёртка для блоков страницы продукта. */
 const ProductAnimations = ({
   children,
   className,
@@ -22,7 +20,6 @@ const ProductAnimations = ({
   const [prevStage, setPrevStage] = useState('');
   const ref = useRef(null);
 
-  // анимации входа
   useGSAP(() => {
     const tl = gsap.timeline({
       paused: true,
@@ -41,7 +38,6 @@ const ProductAnimations = ({
     };
   }, []);
 
-  // анимации leaving
   useGSAP(() => {
     const tl = gsap.timeline();
 

@@ -21,9 +21,7 @@ function hasCardLeave(pathname: string): boolean {
   );
 }
 
-/**
- * Transition provider — основной провайдер переходов 'stage'.
- */
+/** TransitionProvider — основной провайдер переходов 'stage'. */
 export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();

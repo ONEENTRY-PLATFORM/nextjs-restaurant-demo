@@ -46,10 +46,7 @@ const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
   bookings: 'bookings',
 };
 
-/**
- * List of personal-area links (Orders / Favorites / Bookings / …)
- * from the CMS menu `user_menu` — children of the `profile` item.
- */
+/** ProfileNavMenu — список ссылок личного кабинета из CMS-меню `user_menu` (дети `profile`). */
 const ProfileNavMenu = ({
   isMdUp,
   onNavigate,
@@ -95,7 +92,7 @@ const ProfileNavMenu = ({
         const label = page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
         const inlineScreen = page.pageUrl ? MOBILE_INLINE_SCREENS[page.pageUrl] : undefined;
 
-        // Mobile inline screen — the button switches `screen` within the popup.
+        // Мобильный inline-экран — кнопка переключает `screen` внутри попапа.
         if (!isMdUp && inlineScreen) {
           return (
             <button
@@ -110,8 +107,7 @@ const ProfileNavMenu = ({
           );
         }
 
-        // Default — md+ (including bookings) or unknown pageUrl: a link to
-        // the standalone `/profile/{pageUrl}` page that closes the popup.
+        // По умолчанию (md+ или неизвестный pageUrl) — ссылка на standalone `/profile/{pageUrl}`, закрывающая попап.
         return (
           <Link
             key={page.id}
@@ -149,11 +145,7 @@ const SCREEN_TITLES: Record<Exclude<ProfileScreen, 'menu'>, string> = {
   personal: 'My Profile',
 };
 
-/**
- * Sub-screen header: back arrow → menu, centered title.
- * Used on mobile when screen !== 'menu'. Mirrors the header of
- * {@link import('@/components/profile/BookingsPopup').default}.
- */
+/** ScreenHeader — заголовок мобильного sub-экрана: back / title. */
 const ScreenHeader = ({
   screen,
   onBack,
@@ -175,10 +167,7 @@ const ScreenHeader = ({
   </div>
 );
 
-/**
- * Profile drawer popup.
- * @returns {JSX.Element} JSX of the profile drawer.
- */
+/** ProfilePopup — drawer профиля. */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
@@ -186,7 +175,6 @@ const ProfilePopup = (): JSX.Element => {
   const isMdUp = useIsMdUp();
   const [screen, setScreen] = useState<ProfileScreen>('menu');
 
-  // Swipe down closes directly
   useSwipeToClose(sheetRef, () => {
     setScreen('menu');
     setOpen(false);
@@ -201,7 +189,7 @@ const ProfilePopup = (): JSX.Element => {
     return <></>;
   }
 
-  // On desktop always show the menu
+  // На десктопе всегда показываем меню.
   const activeScreen = isMdUp ? 'menu' : screen;
 
   return (

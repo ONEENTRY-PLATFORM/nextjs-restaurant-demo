@@ -9,9 +9,7 @@ import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { getTransition, removeProduct, setCartTransition } from '@/app/store/reducers/CartSlice';
 
-/**
- * Анимации продукта
- */
+/** Анимации продукта в корзине. */
 const ProductAnimations = ({
   children,
   className,
@@ -27,7 +25,6 @@ const ProductAnimations = ({
   const ref = useRef(null);
   const { transitionId } = useAppSelector(getTransition);
 
-  // анимации первой загрузки
   useGSAP(() => {
     if (!ref.current) {
       return;
@@ -51,7 +48,7 @@ const ProductAnimations = ({
     };
   }, []);
 
-  // анимации удаления продукта из корзины
+  // Анимация удаления продукта из корзины.
   useGSAP(() => {
     if (!ref.current || product.id !== transitionId) {
       return;

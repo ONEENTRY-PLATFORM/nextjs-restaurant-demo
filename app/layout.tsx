@@ -42,9 +42,7 @@ const lato = Lato({
   variable: '--font-lato',
 });
 
-/**
- * Статические метаданные главной страницы
- */
+/** Статические метаданные главной страницы. */
 export const metadata: Metadata = {
   title: 'Restaurant — Excellence taste in every bite',
   description: 'Restaurant ordering platform built with Next.js + OneEntry CMS',
@@ -53,15 +51,12 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Root layout
- */
+/** RootLayout — корневой layout приложения. */
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Получаем словарь и проставляем в server provider
   const dictValue = await getDictionary();
   ServerProvider('dict', dictValue);
   const dict = dictValue;

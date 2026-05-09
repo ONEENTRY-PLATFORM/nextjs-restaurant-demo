@@ -3,14 +3,10 @@ import type { JSX, Key } from 'react';
 
 import Sticker from './Sticker';
 
-/**
- * Stickers
- */
+/** Stickers — список иконок-стикеров продукта. */
 const Stickers = ({ product: { attributeValues } }: { product: IProductsEntity }): JSX.Element => {
-  // Получаем массив stickers напрямую или используем пустой массив как fallback
   const stickers = attributeValues?.stickers || [];
 
-  // Маппим stickers и рендерим компоненты Sticker
   return (
     <>
       {Array.isArray(stickers)

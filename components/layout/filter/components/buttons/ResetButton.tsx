@@ -5,9 +5,7 @@ import type { JSX } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';
 
-/**
- * Компонент кнопки сброса фильтра
- */
+/** Кнопка сброса фильтра. */
 const ResetButton = (): JSX.Element => {
   const t = useT();
   const searchParams = useSearchParams();

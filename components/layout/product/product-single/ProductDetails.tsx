@@ -9,17 +9,13 @@ import StarPuffyIcon from '@/components/icons/star-puffy';
 import AddToCartButton from '../components/AddToCartButton';
 
 /**
- * Панель деталей продукта — порт правой колонки `static-html/details.html`.
- * Поля (OneEntry, set атрибутов `dish`):
- *   - `weight` (integer) — граммы
- *   - `calorrage` (integer) — ккал
- *   - `rating` (float)
- *   - `cooking_time` (integer min)
- *   - `preferences` (list) — теги
- *   - `ingredients` (string)
- *   - `price` + `currency`
- * @param   {{product: IProductsEntity}} props - пропсы компонента
- * @returns {JSX.Element} JSX панели деталей продукта
+ * ProductDetails — правая колонка страницы продукта (метрики, теги, CTA).
+ *
+ * Читает из OneEntry set `dish`: `weight`, `calorrage`, `rating`, `cooking_time`,
+ * `preferences`, `ingredients`, `price` + `currency`.
+ * @param   {object}          props         - Пропсы компонента.
+ * @param   {IProductsEntity} props.product - Сущность продукта OneEntry.
+ * @returns {Promise<JSX.Element>}          JSX панели деталей.
  */
 const ProductDetails = async ({ product }: { product: IProductsEntity }): Promise<JSX.Element> => {
   const {
@@ -121,12 +117,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
         </h3>
       ) : null}
 
-      {/* Preferences / теги — кликабельные пилюли, ведут на
-          `/shop?preferences=<value>`. Тот же контракт, что и
-          `CategoriesScroller` в шапке: повторный клик по активному чипу
-          сбрасывает фильтр (логика — на стороне CategoriesScroller, тут
-          ссылка простая). Стили `list_item`/`list_link` совпадают с
-          верхним скроллером тегов. */}
+      {/* Preferences / теги — пилюли, ведут на /shop?preferences=<value> (тот же контракт, что у CategoriesScroller) */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
           {prefs.map(p => (

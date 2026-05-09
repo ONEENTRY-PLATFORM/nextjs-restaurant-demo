@@ -10,13 +10,7 @@ export const dynamic = 'force-dynamic';
 type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
- * Точка входа сервиса — лендинг с логотипом и двумя основными CTA:
- * «Food delivery» (→ `/shop`) и «Book a table» (→ `/restaurants`).
- *
- * Все тексты и изображения — из атрибутов CMS-страницы `services`:
- * `service_logo`, `service_bg_image`,
- * `service_primary_cta` / `service_primary_href`,
- * `service_secondary_cta` / `service_secondary_href`.
+ * ServicePage — лендинг сервиса с логотипом и CTA из атрибутов CMS-страницы `services`.
  * @returns {Promise<JSX.Element>} JSX страницы входа сервиса.
  */
 const ServicePage = async (): Promise<JSX.Element> => {
@@ -71,10 +65,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
 
 export default ServicePage;
 
-/**
- * Генерирует метаданные для маршрута входа сервиса.
- * @returns {Promise<Metadata>} Метаданные страницы.
- */
+/** generateMetadata — метаданные страницы входа сервиса. */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('services');
   return { title: page?.localizeInfos?.title };

@@ -10,9 +10,7 @@ interface HandleProps {
   data: IOrderData;
 }
 
-/**
- * Обновляет заказ в объекте хранилища заказов, созданном пользователем.
- */
+/** updateOrderByMarkerAndId — обновляет заказ в order-storage пользователя. */
 export const updateOrderByMarkerAndId = async ({
   marker,
   id,

@@ -156,22 +156,7 @@ export type IOrderProducts = {
   price: number;
 };
 
-/**
- * Пропсы изображения.
- * @property {string}                                              src              - Источник изображения.
- * @property {string}                                              alt              - Alt-текст изображения.
- * @property {boolean}                                             fill             - Должно ли изображение заполнять доступное пространство.
- * @property {number}                                              [width]          - Ширина изображения.
- * @property {number}                                              [height]         - Высота изображения.
- * @property {boolean}                                             [isImageLoading] - Идёт ли загрузка изображения.
- * @property {string}                                              [className]      - Имя класса изображения.
- * @property {React.CSSProperties}                                 [style]          - Стиль изображения.
- * @property {string}                                              [objectFit]      - Object fit изображения.
- * @property {string}                                              [priority]       - Приоритет изображения.
- * @property {(result?: unknown) => void}                          [onLoad]         - Колбэк по завершению загрузки изображения.
- * @property {React.Ref<unknown>}                                  ref              - Ref изображения.
- * @property {(event: React.MouseEvent<HTMLImageElement>) => void} [onClick]        - Колбэк клика по изображению.
- */
+/** ImageProps — пропсы обёртки `next/image`. */
 export type ImageProps = {
   src: string;
   alt?: string;
@@ -189,7 +174,6 @@ export type ImageProps = {
   onLoad?: React.ReactEventHandler<HTMLImageElement>;
   ref: React.Ref<HTMLImageElement>;
   onClick?: React.MouseEventHandler<HTMLImageElement>;
-  // decoding?: 'async' | 'sync' | 'auto';
 };
 
 export type FormProps = { dict: IAttributeValues; className: string };

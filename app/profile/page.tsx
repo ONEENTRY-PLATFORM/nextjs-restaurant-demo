@@ -8,11 +8,7 @@ import ProfilePageClient from './ProfilePageClient';
 export const dynamic = 'force-dynamic';
 
 /**
- * Страница персональных данных профиля — 2-колоночный layout по образцу
- * корзины (`pk_cart.html`) и `/profile/favorites`: слева секции профиля
- * (My Profile + Address — те же, что в drawer-попапе), справа промо-баннеры
- * из CMS `blog`. На мобиле колонки стакаются — баннеры скрыты
- * (`md:flex` в сайдбаре), секции занимают всю ширину.
+ * ProfilePage — страница персональных данных профиля (2-колоночный layout).
  * @returns {Promise<JSX.Element>} JSX страницы персональных данных.
  */
 const ProfilePage = async (): Promise<JSX.Element> => {

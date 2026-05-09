@@ -323,15 +323,16 @@ html {
 }
 
 .menu_item {
-  @apply 
-    flex flex-col 
-    justify-between 
-    w-full 
-    overflow-hidden 
-    relative 
-    transition-transform 
-    hover:scale-105 
-    duration-700 
+  @apply
+    flex flex-col
+    justify-between
+    w-full
+    overflow-hidden
+    relative
+    transition-transform
+    hover:scale-105
+    duration-700
+    px-px
     pb-px
     cursor-pointer;
 }

@@ -133,14 +133,16 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
       ) : null}
 
       {/* CTA Add to cart */}
-      <AddToCartButton
-        id={id}
-        units={0}
-        statusIdentifier={statusIdentifier || ''}
-        productTitle={title || ''}
-        height={50}
-        className="mt-2.5 w-full flex justify-center items-center gap-2.5 font-bold text-[20px] text-white uppercase py-4.5 bg-custom-gradient rounded-[10px] hover:bg-gradient-to-r-hover"
-      />
+      <div className="mt-2.5 min-h-16.5">
+        <AddToCartButton
+          id={id}
+          units={0}
+          statusIdentifier={statusIdentifier || ''}
+          productTitle={title || ''}
+          height={50}
+          className="min-h-16.5 w-full flex justify-center items-center gap-2.5 font-bold text-[20px] text-white uppercase py-4.5 bg-custom-gradient rounded-[10px] hover:bg-gradient-to-r-hover"
+        />
+      </div>
     </div>
   );
 };

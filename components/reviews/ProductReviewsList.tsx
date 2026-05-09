@@ -39,7 +39,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
   };
 
   return (
-    <div className="mt-4.5 w-full">
+    <div className="mt-5 w-full">
       <div className="flex items-center justify-between gap-2.5">
         <div className="group_white flex items-center justify-start gap-1.25 font-normal text-[17px] text-brand">
           Reviews
@@ -77,7 +77,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
                   className="w-full shrink-0 grow-0 basis-full flex flex-col gap-2.5 overflow-hidden"
                   aria-hidden={i !== index}
                 >
-                  <div className="mt-7 flex justify-between">
+                  <div className="flex justify-between">
                     <div className="flex items-center gap-1.25">
                       <div className="flex items-center gap-0.75">
                         <StarCardIcon size={11} filled={review.rating >= 1} />

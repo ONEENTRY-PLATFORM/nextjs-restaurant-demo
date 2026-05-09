@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getBlocks — блоки по типу. */
+/** getBlocks — blocks by type. */
 export const getBlocks = cache(
   async ({
     type,

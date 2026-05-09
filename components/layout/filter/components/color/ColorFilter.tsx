@@ -17,7 +17,7 @@ type Color = {
   selected?: boolean;
 };
 
-/** Фильтр по цвету. */
+/** Color filter. */
 const ColorFilter = ({
   title,
   attributes,

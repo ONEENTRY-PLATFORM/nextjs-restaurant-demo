@@ -1,13 +1,13 @@
 import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
 
-/** Один атрибут формы OneEntry, возвращаемый `Forms.getFormByMarker`. */
+/** A single OneEntry form attribute returned by `Forms.getFormByMarker`. */
 export interface FormAttribute {
   marker: string;
   type: string;
   position?: number;
 }
 
-/** Входные данные для трансформации одного поля, передаваемые в {@link transformFormField}. */
+/** Input parameters for transforming a single field, passed to {@link transformFormField}. */
 export interface TransformFieldParams {
   marker: string;
   type: string;
@@ -16,10 +16,10 @@ export interface TransformFieldParams {
 }
 
 /**
- * Конвертирует одно UI-значение в payload-запись `FormDataType`.
- * Dispatch сначала по маркеру (`spam`, `send`), затем по типу поля.
- * @param   {TransformFieldParams} params - Входные данные поля.
- * @returns {FormDataType}                Запись FormData для `postFormsData`.
+ * Converts a single UI value into a `FormDataType` payload record.
+ * Dispatches first by marker (`spam`, `send`), then by field type.
+ * @param   {TransformFieldParams} params - Field input parameters.
+ * @returns {FormDataType}                FormData record for `postFormsData`.
  */
 export const transformFormField = ({
   marker,
@@ -58,9 +58,9 @@ export const transformFormField = ({
 };
 
 /**
- * Валидирует, что payload содержит хотя бы одно непустое поле контента (spam/button игнорируются).
- * @param   {FormDataType[]}                       data - Трансформированный payload формы.
- * @returns {{ isValid: boolean; error?: string }}      Результат валидации.
+ * Validates that the payload contains at least one non-empty content field (spam/button are ignored).
+ * @param   {FormDataType[]}                       data - Transformed form payload.
+ * @returns {{ isValid: boolean; error?: string }}      Validation result.
  */
 export const validateFormData = (data: FormDataType[]): { isValid: boolean; error?: string } => {
   if (data.length === 0) {

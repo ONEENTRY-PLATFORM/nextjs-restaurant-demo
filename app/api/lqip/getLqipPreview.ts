@@ -1,15 +1,15 @@
 import lqipModern from 'lqip-modern';
 
-// lqip-modern зависит от sharp (Node-only: child_process, fs) — использовать только серверно.
-// Для клиента — обернуть в API-эндпоинт или взять браузер-совместимую альтернативу.
+// lqip-modern depends on sharp (Node-only: child_process, fs) — server-side use only.
+// For the client either wrap it in an API endpoint or use a browser-compatible alternative.
 
 const lqipCache = new Map<string, { dataURI: string; timestamp: number }>();
 const CACHE_DURATION = 10 * 60 * 1000;
 
 /**
- * getLqipPreview — генерирует низкокачественный base64 placeholder (LQIP) для URL изображения.
- * @param   {string}          imageUrl - URL изображения.
- * @returns {Promise<string>}          base64 data URI плейсхолдера (или дефолтный SVG при ошибке).
+ * getLqipPreview — generates a low-quality base64 image placeholder (LQIP) for the given image URL.
+ * @param   {string}          imageUrl - Image URL.
+ * @returns {Promise<string>}          Base64 data URI of the placeholder (or a default SVG on error).
  */
 const getLqipPreview = async (imageUrl: string): Promise<string> => {
   const cached = lqipCache.get(imageUrl);

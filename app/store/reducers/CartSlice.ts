@@ -11,7 +11,7 @@ type ProductCartEntry = {
   selected: boolean;
 };
 
-/** Запись бронирования в cart-slice — слот бронирования столика для одного филиала ресторана. */
+/** Reservation record in the cart slice — a table booking slot for a single restaurant branch. */
 type ReservationEntry = {
   id: number;
   restaurant?: IPagesEntity;
@@ -138,7 +138,7 @@ export const cartSlice = createSlice({
       state.productsData[index] = {
         ...entry,
         selected: entry.selected,
-        // Falsy-cap guard: `units = 0` означает «нет верхнего предела» (атрибут не заполнен в CMS).
+        // Falsy-cap guard: `units = 0` means "no upper bound" (attribute not filled in CMS).
         quantity: qty <= 0 ? 0 : cap && qty > cap ? cap : qty,
       };
     },
@@ -198,7 +198,7 @@ export const {
   decreaseProductQty,
 } = cartSlice.actions;
 
-/** Проверяет, есть ли товар в корзине. */
+/** Checks whether a product is in the cart. */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number }[] } },
   id: number
@@ -212,17 +212,17 @@ export const selectIsInCart = (
   return true;
 };
 
-/** Селектор товаров корзины (форма записи: `{ id, selected, quantity }`). */
+/** Cart products selector (record shape: `{ id, selected, quantity }`). */
 export const selectCartData = (state: {
   cartReducer: { productsData: ProductCartEntry[] };
 }): ProductCartEntry[] => state.cartReducer.productsData;
 
-/** Селектор списка бронирований (table bookings — отдельно от корзины товаров). */
+/** Selector for the list of reservations (table bookings — separate from the products cart). */
 export const selectReservations = (state: {
   cartReducer: { reservations: ReservationEntry[] };
 }): ReservationEntry[] => state.cartReducer.reservations;
 
-/** Селектор данных доставки. */
+/** Selector for delivery data. */
 export const selectDeliveryData = (state: {
   cartReducer: {
     deliveryData: {
@@ -233,7 +233,7 @@ export const selectDeliveryData = (state: {
   };
 }) => state.cartReducer.deliveryData;
 
-/** Селектор итоговой цены корзины. */
+/** Selector for the cart total price. */
 export const selectCartTotal = (state: {
   cartReducer: {
     reservationId: number;
@@ -248,11 +248,11 @@ export const selectCartTotal = (state: {
   return price || salePrice;
 };
 
-/** Селектор id активного бронирования. */
+/** Selector for the active reservation id. */
 export const selectReservationId = (state: { cartReducer: { reservationId: number } }) =>
   state.cartReducer.reservationId;
 
-/** Селектор элемента корзины по product id. */
+/** Selector for a cart item by product id. */
 export const selectCartItemWithIdLength = (
   state: {
     cartReducer: {
@@ -262,7 +262,7 @@ export const selectCartItemWithIdLength = (
   id: number
 ) => state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
-/** Возвращает `{ transitionId }` — product id для анимаций перехода. */
+/** Returns `{ transitionId }` — product id used for transition animations. */
 export const getTransition = (state: {
   cartReducer: {
     transitionId: number;
@@ -271,7 +271,7 @@ export const getTransition = (state: {
   transitionId: state.cartReducer.transitionId,
 });
 
-/** Селектор версии корзины (читает `cartReducer.version`, куда пишет `setCartVersion`). */
+/** Cart version selector (reads `cartReducer.version`, written by `setCartVersion`). */
 export const selectCartVersion = (state: { cartReducer: { version: number } }) =>
   state.cartReducer.version;
 

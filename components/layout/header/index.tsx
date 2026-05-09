@@ -24,7 +24,7 @@ import SearchBar from './search/SearchBar';
 import SearchFallback from './search/SearchFallback';
 import SupportButton from './SupportButton';
 
-/** Секция Header. */
+/** Header section. */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');
 
@@ -96,7 +96,7 @@ const Header = async (): Promise<JSX.Element> => {
             </div>
           </header>
 
-          {/* Навигация */}
+          {/* Navigation */}
           <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
             <CategoryButton />
             <Suspense fallback={null}>

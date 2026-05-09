@@ -11,10 +11,10 @@ import StarCardIcon from '@/components/icons/star-card';
 const SWIPE_THRESHOLD_PX = 40;
 
 /**
- * ProductReviewsList — карусель отзывов на карточке товара со swipe-навигацией.
- * @param   {object}          props         - Пропсы.
- * @param   {ProductReview[]} props.reviews - Отзывы верхнего уровня.
- * @returns {JSX.Element}                   JSX блока отзывов.
+ * ProductReviewsList — reviews carousel on the product card with swipe navigation.
+ * @param   {object}          props         - Props.
+ * @param   {ProductReview[]} props.reviews - Top-level reviews.
+ * @returns {JSX.Element}                   Reviews block JSX.
  */
 const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Element => {
   const [index, setIndex] = useState(0);

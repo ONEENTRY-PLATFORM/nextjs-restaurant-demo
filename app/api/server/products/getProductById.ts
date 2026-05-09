@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getProductById — продукт по id. */
+/** getProductById — product by id. */
 export const getProductById = cache(
   async (
     id: number

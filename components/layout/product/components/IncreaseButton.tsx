@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
-/** IncreaseButton — кнопка «+» для QuantitySelector. */
+/** IncreaseButton — "+" button for QuantitySelector. */
 const IncreaseButton = ({
   id,
   qty,

@@ -13,7 +13,7 @@ import PriceToInput from './PriceToInput';
 
 export type PriceBounds = { min?: number; max?: number } | undefined;
 
-/** Фильтр по цене. */
+/** Price filter. */
 const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const t = useT();
   const pathname = usePathname();

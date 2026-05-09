@@ -16,20 +16,20 @@ import {
 import HeartCardIcon from '@/components/icons/heart-card';
 
 /**
- * HeartCardButton — переключает продукт в сторе избранного.
+ * HeartCardButton — toggles a product in the favorites store.
  *
- * Лежит над абсолютным click-through оверлеем `<Link>` в ProductCard через z-index,
- * чтобы клик по сердцу не приводил к навигации.
- * @param   {object}          props         - Пропсы компонента.
- * @param   {IProductsEntity} props.product - Продукт для переключения.
- * @returns {JSX.Element}                   JSX кнопки-сердца.
+ * Sits above the absolute click-through `<Link>` overlay in ProductCard via z-index,
+ * so clicking the heart does not trigger navigation.
+ * @param   {object}          props         - Component props.
+ * @param   {IProductsEntity} props.product - Product to toggle.
+ * @returns {JSX.Element}                   Heart button JSX.
  */
 const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const isFavStored = useAppSelector(state => selectIsFavorites(state, product.id));
-  // useSyncExternalStore — чтобы серверный снапшот был `false`, а клиент после маунта
-  // переключился на актуальное persisted-значение из localStorage без hydration mismatch.
+  // useSyncExternalStore — so the server snapshot is `false` and the client after mount
+  // switches to the actual persisted value from localStorage without a hydration mismatch.
   const hydrated = useSyncExternalStore(
     cb => {
       cb();

@@ -9,10 +9,10 @@ export type PriceRange = {
 };
 
 /**
- * getProductsPriceRange — min/max цена каталога через `Products.getProductsPriceByPageUrl` (лёгкий `{id, price}[]`).
+ * getProductsPriceRange — catalog min/max price via `Products.getProductsPriceByPageUrl` (lightweight `{id, price}[]`).
  *
- * Используется для динамической сборки чипов цены в фильтре, чтобы границы соответствовали реальным товарам.
- * Graceful fallback `{ min: 0, max: 0 }` при пустом каталоге или ошибке — UI чипы тогда просто не покажутся.
+ * Used to build the price chips in the filter dynamically, so the bounds match real products.
+ * Graceful fallback `{ min: 0, max: 0 }` on an empty catalog or error — the UI then simply hides the chips.
  */
 export const getProductsPriceRange = cache(
   async (pageUrl = 'services', langCode?: string): Promise<PriceRange> => {

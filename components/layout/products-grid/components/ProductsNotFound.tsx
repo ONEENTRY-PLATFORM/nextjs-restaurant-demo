@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { type JSX } from 'react';
 
 /**
- * Empty state для сетки товаров — показывается, когда `getProducts` вернул
- * пусто (поиск/фильтр без результатов или отсутствуют товары в категории).
+ * Empty state for the product grid — shown when `getProducts` returns
+ * nothing (search/filter without results or no products in the category).
  */
 const ProductsNotFound = (): JSX.Element => {
   return (

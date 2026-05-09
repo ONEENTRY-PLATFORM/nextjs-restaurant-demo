@@ -7,7 +7,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
-/** Кнопка избранного в bottom-меню — мобильный триггер `FavoritesPopup`. */
+/** Favorites button in the bottom menu — mobile `FavoritesPopup` trigger. */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);

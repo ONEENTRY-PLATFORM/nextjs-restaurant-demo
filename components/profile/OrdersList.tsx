@@ -34,7 +34,7 @@ import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
-// md+ открывает корзину как страницу `/cart` (см. CartWizard) — Repeat order на десктопе ведёт туда же, не в drawer.
+// md+ opens the cart as the `/cart` page (see CartWizard) — Repeat order on desktop navigates there too, not into the drawer.
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -46,7 +46,7 @@ const getMdServerSnapshot = (): boolean => false;
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
-/** Читаемый статус заказа: локализованный из CMS, иначе human-readable из identifier. */
+/** Human-readable order status: localized from CMS, otherwise derived from identifier. */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
@@ -55,15 +55,15 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
   return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
-/** Заказ относится к "Orders History" (завершён/отменён), а не к "Active". */
+/** Order belongs to "Orders History" (completed/cancelled), not "Active". */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
   return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
 };
 
 /**
- * Считает subtotal / delivery / discount / total для заказа.
- * `discount` = (subtotal + delivery) − serverTotal: если применялся купон, `totalSum` уже со скидкой.
+ * Computes subtotal / delivery / discount / total for an order.
+ * `discount` = (subtotal + delivery) − serverTotal: if a coupon was applied, `totalSum` already includes the discount.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
@@ -81,14 +81,14 @@ const computeTotals = (
   return { subtotal, delivery, discount, total };
 };
 
-/** Номер заказа `OE...` от SDK, иначе fallback на числовой id. */
+/** Order number `OE...` from the SDK, otherwise fallback to the numeric id. */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
   if (fromSdk) return fromSdk;
   return String(o.id);
 };
 
-/** OrderCard — pill со сводкой заказа + раскрывающееся тело с позициями, итогами и CTA. */
+/** OrderCard — pill with the order summary + expandable body with line items, totals, and CTA. */
 const OrderCard = ({
   order,
   expanded,
@@ -311,7 +311,7 @@ const OrderCard = ({
   );
 };
 
-/** OrderLineItem — одна строка позиции внутри раскрытого тела заказа. */
+/** OrderLineItem — a single line item row inside the expanded order body. */
 const OrderLineItem = ({
   product,
   first,
@@ -361,7 +361,7 @@ const OrderLineItem = ({
   );
 };
 
-/** OrdersList — дашборд заказов: "Active orders" + "Orders History" + промо-сайдбар на md+. */
+/** OrdersList — orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+. */
 const OrdersList = ({
   promoBanners = [],
 }: {
@@ -444,14 +444,14 @@ const OrdersList = ({
     });
   };
 
-  // Левая колонка зависит от состояния; правая (промо) рендерится на md+ всегда — 2-колоночный layout как в корзине.
+  // The left column depends on state; the right one (promo) always renders on md+ — same 2-column layout as the cart.
   let leftColumn: JSX.Element;
   if (authLoading || loading) {
     leftColumn = (
       <div className="text-paper/80">{t('loading_orders_text', 'Loading orders...')}</div>
     );
   } else if (!isAuth) {
-    // Inline-кнопка «sign in» внутри фразы из словаря: ищем подстроку (case-insensitive); если нет — кнопка после текста.
+    // Inline "sign in" button inside the dictionary phrase: search for the substring (case-insensitive); if not found — render the button after the text.
     const prompt = t('orders_signin_prompt', 'Please sign in to view your orders.');
     const signInLabel = t('sign_in_text', 'sign in');
     const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
@@ -540,7 +540,7 @@ const OrdersList = ({
     <section>
       <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
         <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-          {/* `min-w-0` + `shrink-0` фиксируют 50/50 — без них flex-дети раскрытой позиции раздувают левую колонку. */}
+          {/* `min-w-0` + `shrink-0` lock the 50/50 split — without them, flex children of an expanded item inflate the left column. */}
           <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
           <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
             {promoBanners

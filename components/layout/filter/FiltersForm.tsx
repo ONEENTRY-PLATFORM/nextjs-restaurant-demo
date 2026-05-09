@@ -16,7 +16,7 @@ import ColorFilter from './components/color/ColorFilter';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import PricePickerFilter from './components/price/PricePickerFilter';
 
-/** Форма фильтров продуктов. */
+/** Product filters form. */
 const FiltersForm = async ({ prices }: { prices: PriceBounds }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({

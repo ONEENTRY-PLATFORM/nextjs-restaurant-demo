@@ -5,7 +5,7 @@ import { useTransitionRouter } from 'next-transition-router';
 import type { JSX } from 'react';
 import { useCallback } from 'react';
 
-/** Pagination — постраничная навигация по сетке продуктов. */
+/** Pagination — page-by-page navigation for the product grid. */
 const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();
   const searchParams = useSearchParams();

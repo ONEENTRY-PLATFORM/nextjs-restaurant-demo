@@ -21,7 +21,7 @@ import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
 
-/** Поля для 2-колоночных строк по вёрстке `service_table.html` (форма `booking_order`). */
+/** Fields used for the two-column rows per `service_table.html` markup (form `booking_order`). */
 const ROW_PAIRS: Array<[string, string]> = [
   ['name', 'surname'],
   ['phone', 'people_count'],
@@ -32,11 +32,11 @@ const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
 
 /**
- * Возвращает доступные старты слотов `HH.MM` для даты на основе расписания ресторана.
+ * Returns available `HH.MM` slot starts for a date, based on the restaurant schedule.
  *
- * @param   {ScheduleSlotEntry[]} schedule - Сырые записи из `schedule.value`.
- * @param   {string}              dateIso  - Выбранная дата `yyyy-MM-dd`.
- * @returns {string[]}                     Список меток слотов.
+ * @param   {ScheduleSlotEntry[]} schedule - Raw entries from `schedule.value`.
+ * @param   {string}              dateIso  - Selected date `yyyy-MM-dd`.
+ * @returns {string[]}                     List of slot labels.
  */
 const getAvailableSlotsForDate = (
   schedule: ScheduleSlotEntry[] | undefined,
@@ -65,12 +65,12 @@ const getAvailableSlotsForDate = (
 };
 
 /**
- * Конвертирует выбранный слот (`yyyy-MM-dd HH.MM`) в формат `timeInterval`.
+ * Converts the selected slot (`yyyy-MM-dd HH.MM`) into the `timeInterval` shape.
  *
- * @param   {string}              raw             - Значение поля `time_slot`.
- * @param   {string | undefined}  restaurantValue - Текущее значение `restaurant`.
- * @param   {RestaurantOption[]}  restaurants     - Доступные опции ресторанов.
- * @returns {Array<[string, string]>}             Интервалы для отправки.
+ * @param   {string}              raw             - Value of the `time_slot` field.
+ * @param   {string | undefined}  restaurantValue - Current `restaurant` value.
+ * @param   {RestaurantOption[]}  restaurants     - Available restaurant options.
+ * @returns {Array<[string, string]>}             Intervals ready to submit.
  */
 const buildTimeIntervalValue = (
   raw: string,
@@ -114,10 +114,10 @@ const buildTimeIntervalValue = (
 };
 
 /**
- * Маппит тип атрибута OneEntry формы + маркер в нативный HTML input `type`.
+ * Maps a OneEntry form attribute type + marker to a native HTML input `type`.
  *
- * @param   {string} type   - `type` атрибута OneEntry.
- * @param   {string} marker - Маркер атрибута для эвристики.
+ * @param   {string} type   - OneEntry attribute `type`.
+ * @param   {string} marker - Attribute marker used as a heuristic.
  * @returns {string}        HTML input type.
  */
 const resolveInputType = (type: string, marker: string): string => {
@@ -150,10 +150,10 @@ type ReservationStep =
   | { kind: 'success'; orderId: number; summary: string };
 
 /**
- * Форматирует сводку бронирования `DD.MM.YY HH.MM N person`.
+ * Formats the booking summary as `DD.MM.YY HH.MM N person`.
  *
- * @param   {Record<string, string>} values - Значения полей формы.
- * @returns {string}                        Сводка для success-экрана.
+ * @param   {Record<string, string>} values - Form field values.
+ * @returns {string}                        Summary for the success screen.
  */
 const formatBookingSummary = (values: Record<string, string>): string => {
   const slot = values[TIME_SLOT_MARKER] ?? '';
@@ -219,7 +219,7 @@ const ReservationForm = ({
         }
         const raw = values[attr.marker] ?? '';
         if (attr.type === 'text') {
-          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
+          // OneEntry: "Only one of htmlValue, plainValue or mdValue can be provided".
           return {
             marker: attr.marker,
             type: 'text',
@@ -262,7 +262,7 @@ const ReservationForm = ({
       });
   };
 
-  // Шаг 1: валидируем форму.
+  // Step 1: validate the form.
   const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (spamAttr && !captcha) {
@@ -307,7 +307,7 @@ const ReservationForm = ({
     );
   };
 
-  // Шаг 2: пользователь выбрал способ оплаты — создаём order.
+  // Step 2: the user picked a payment method — create the order.
   const onApplyPayment = async (paymentAccountIdentifier: string) => {
     if (step.kind !== 'payment') return;
     setLoading(true);
@@ -326,8 +326,8 @@ const ReservationForm = ({
       }
       const { id } = res as { id: number };
 
-      // Online → открываем платёжную сессию и редиректим. Cash-аккаунты вернут paymentUrl=null
-      // и попадут в ветку показа success в попапе.
+      // Online → open a payment session and redirect. Cash accounts return paymentUrl=null
+      // and fall through to the success branch shown inside the popup.
       if (paymentAccountIdentifier !== 'cash') {
         try {
           const session = await getApi().Payments.createSession(id, 'session');
@@ -339,7 +339,7 @@ const ReservationForm = ({
             }
           }
         } catch {
-          // Глушим — заказ уже создан, на success всё равно перейдём.
+          // Swallow — the order is already created, we still proceed to success.
         }
       }
 
@@ -401,7 +401,7 @@ const ReservationForm = ({
         />
       ) : null}
 
-      {/* 2-колоночные строки */}
+      {/* Two-column rows */}
       {ROW_PAIRS.map(([left, right]) => {
         const leftAttr = attrByMarker.get(left);
         const rightAttr = attrByMarker.get(right);
@@ -432,7 +432,7 @@ const ReservationForm = ({
         );
       })}
 
-      {/* Textarea предпочтений (полная ширина) */}
+      {/* Preferences textarea (full width) */}
       {hasNotes ? (
         <div className="flex flex-col border-b border-b-muted">
           <label htmlFor={TEXT_MARKER} className="font-normal text-[16px] text-paper">
@@ -450,7 +450,7 @@ const ReservationForm = ({
         </div>
       ) : null}
 
-      {/* Все оставшиеся поля, не размещённые в сетке выше (fallback) */}
+      {/* All remaining fields not placed in the grid above (fallback) */}
       {attrs
         .filter(
           a =>
@@ -470,7 +470,7 @@ const ReservationForm = ({
           />
         ))}
 
-      {/* Основная кнопка отправки */}
+      {/* Primary submit button */}
       <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
         <button
           type="submit"
@@ -518,10 +518,10 @@ type FieldProps = {
 };
 
 /**
- * Field — одиночное поле формы бронирования.
+ * Field — a single field of the booking form.
  *
- * @param   {FieldProps}  props - Пропсы поля.
- * @returns {JSX.Element}       JSX поля.
+ * @param   {FieldProps}  props - Field props.
+ * @returns {JSX.Element}       Field JSX.
  */
 const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;

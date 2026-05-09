@@ -3,7 +3,7 @@
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-/** ApiTestClient — клиентская часть тестовой страницы API: 20 запросов и среднее время. */
+/** ApiTestClient — client part of the API test page: 20 requests and the average time. */
 export default function ApiTestClient(): JSX.Element {
   const [loadingTimes, setLoadingTimes] = useState<number[]>([]);
   const [averageTime, setAverageTime] = useState<number>(0);

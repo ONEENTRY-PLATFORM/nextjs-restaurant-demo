@@ -9,7 +9,7 @@ import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimatio
 import EyeIcon from '@/components/icons/eye';
 import EyeOpenIcon from '@/components/icons/eye-o';
 
-/** FormInput — универсальный input для полей OneEntry-формы. */
+/** FormInput — generic input for OneEntry form fields. */
 const FormInput = (field: IFormAttribute & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;
   const [value, setValue] = useState<string>(field.value || '');

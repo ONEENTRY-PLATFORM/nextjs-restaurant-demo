@@ -8,9 +8,9 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 
 /**
- * RegisterGSAP — регистрирует плагины и кастомные эффекты GSAP.
+ * RegisterGSAP — registers GSAP plugins and custom effects.
  *
- * @returns {null} Ничего не рендерит.
+ * @returns {null} Renders nothing.
  * @see {@link https://gsap.com/cheatsheet/#plugins- gsap cheatsheet}
  */
 const RegisterGSAP = () => {

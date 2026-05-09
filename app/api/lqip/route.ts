@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 import getLqipPreview from '@/app/api/lqip/getLqipPreview';
 
 /**
- * GET — API-эндпоинт для генерации LQIP-плейсхолдера по URL изображения.
- * @param   {Request}               request - Запрос с `?url=...` в query.
- * @returns {Promise<NextResponse>}         JSON `{ preview }` с base64 data URI.
+ * GET — API endpoint that generates an LQIP placeholder for the given image URL.
+ * @param   {Request}               request - Request with `?url=...` in the query.
+ * @returns {Promise<NextResponse>}         JSON `{ preview }` containing a base64 data URI.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);

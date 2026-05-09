@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getPageByUrl — страница по URL с привязанными формами, блоками и меню (React cache() дедуплицирует вызовы внутри рендера). */
+/** getPageByUrl — page by URL with attached forms, blocks, and menus (React cache() deduplicates calls within a render). */
 export const getPageByUrl = cache(
   async (
     url: string

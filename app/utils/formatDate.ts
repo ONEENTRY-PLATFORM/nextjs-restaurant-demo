@@ -1,8 +1,8 @@
 /**
- * Форматирует ISO / ms-дату как `dd.MM.yy` (формат «пилюли заказа» в
- * `static-html/index_rewiews.html` и `pk_active_orders.html`).
- * @param   {string | number | Date | undefined} when - Входное значение даты.
- * @returns {string}                                    Отформатированная метка или пустая строка.
+ * formatDate — formats an ISO / ms date as `dd.MM.yy` (the "order pill" format
+ * used in `static-html/index_rewiews.html` and `pk_active_orders.html`).
+ * @param   {string | number | Date | undefined} when - Input date value.
+ * @returns {string}                                    Formatted label or an empty string.
  */
 export const formatDate = (when: string | number | Date | undefined): string => {
   if (!when) return '';

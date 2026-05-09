@@ -15,10 +15,10 @@ import {
 const UNDO_TIMEOUT_MS = 5000;
 
 /**
- * useCartRemoveWithUndo — удаление позиции из корзины с undo-toast.
+ * useCartRemoveWithUndo — removes a cart item with an undo toast.
  *
- * Запускает анимацию ухода через `setCartTransition` (реальный `removeProduct`
- * дёргается в `ProductAnimations` после fade-out); Undo восстанавливает запись.
+ * Triggers the leaving animation via `setCartTransition` (the actual `removeProduct`
+ * fires in `ProductAnimations` after the fade-out); Undo restores the entry.
  */
 export const useCartRemoveWithUndo = (productId: number, title: string): (() => void) => {
   const dispatch = useAppDispatch();

@@ -14,11 +14,11 @@ const HIDDEN_STYLE: CSSProperties = {
 };
 
 /**
- * Анимация reveal карточек. Карточки стартуют скрытыми через inline-стиль (без
- * вспышки до бута GSAP), затем либо анимируются сразу (если уже во вьюпорте на
- * монтировании, с небольшим stagger по `index`), либо ждут срабатывания
- * `ScrollTrigger` при scroll-in. Переключают `.in-view`, чтобы
- * {@link CardsGridAnimations} мог таргетить только видимые карточки в leaving-анимации.
+ * Card reveal animation. Cards start hidden via inline style (no flash before
+ * GSAP boots), then either animate immediately (if already in the viewport on
+ * mount, with a small stagger by `index`), or wait for the `ScrollTrigger` to
+ * fire on scroll-in. Toggle `.in-view` so that {@link CardsGridAnimations} can
+ * target only visible cards in the leaving animation.
  */
 const CardAnimations = ({
   children,

@@ -2,10 +2,10 @@ import Image from 'next/image';
 import type { JSX } from 'react';
 
 /**
- * ProductImage — картинка продукта в карточке группы.
- * @param   {object} props          - Пропсы компонента.
- * @param   {string} props.imageSrc - URL картинки продукта.
- * @returns {JSX.Element}           JSX картинки.
+ * ProductImage — product image inside the group card.
+ * @param   {object} props          - Component props.
+ * @param   {string} props.imageSrc - Product image URL.
+ * @returns {JSX.Element}           Image JSX.
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (

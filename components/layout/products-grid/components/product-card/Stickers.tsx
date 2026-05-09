@@ -3,7 +3,7 @@ import type { JSX, Key } from 'react';
 
 import Sticker from './Sticker';
 
-/** Stickers — список иконок-стикеров продукта. */
+/** Stickers — list of product sticker icons. */
 const Stickers = ({ product: { attributeValues } }: { product: IProductsEntity }): JSX.Element => {
   const stickers = attributeValues?.stickers || [];
 

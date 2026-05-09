@@ -2,7 +2,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import MobileMenuItem from './MobileMenuItem';
 
-/** Список мобильного меню. */
+/** Mobile menu list. */
 function MobileMenu({
   menu,
   className = '',

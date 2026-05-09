@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Кнопка сброса пароля. */
+/** Password reset button. */
 const ResetPasswordButton = ({ title }: { title: string }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 

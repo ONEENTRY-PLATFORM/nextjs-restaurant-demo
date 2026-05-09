@@ -6,8 +6,8 @@ import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';
 
-// Force-dynamic: цепочка layout-ов содержит `useSearchParams()`, который иначе
-// требует оборачивать в Suspense для prerender.
+// Force-dynamic: the layout chain uses `useSearchParams()`, which would
+// otherwise require Suspense wrapping for prerender.
 export const dynamic = 'force-dynamic';
 
 type ProductResponse = {
@@ -20,8 +20,8 @@ type ProductResponse = {
 };
 
 /**
- * CartPageLayout — серверная страница `/cart`, грузит deliveryData/баннеры и рендерит wizard.
- * @returns {Promise<JSX.Element>} JSX layout-а страницы корзины.
+ * CartPageLayout — server-rendered `/cart` page; loads deliveryData/banners and renders the wizard.
+ * @returns {Promise<JSX.Element>} JSX of the cart page layout.
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
   const response = await getProductById(DELIVERY_PRODUCT_ID);

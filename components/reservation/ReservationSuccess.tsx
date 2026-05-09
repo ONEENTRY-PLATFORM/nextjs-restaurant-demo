@@ -6,15 +6,15 @@ import { useT } from '@/app/store/providers/DictProvider';
 
 type ReservationSuccessProps = {
   orderId: number;
-  /** Сводка `DD.MM.YY HH.MM N person` по Figma 120:2338. Формируется вызывающим кодом. */
+  /** Summary `DD.MM.YY HH.MM N person` per Figma 120:2338. Built by the caller. */
   summary: string;
 };
 
 /**
- * ReservationSuccess — экран подтверждения брони после `Orders.createOrder`.
+ * ReservationSuccess — booking confirmation screen shown after `Orders.createOrder`.
  *
- * @param   {ReservationSuccessProps} props - Пропсы экрана.
- * @returns {JSX.Element}                   JSX экрана подтверждения.
+ * @param   {ReservationSuccessProps} props - Screen props.
+ * @returns {JSX.Element}                   Confirmation screen JSX.
  */
 const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.Element => {
   const t = useT();

@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlice';
 
-/** DecreaseButton — кнопка «−» для QuantitySelector, удаляет товар при qty<=1. */
+/** DecreaseButton — "−" button for QuantitySelector; removes the item when qty<=1. */
 const DecreaseButton = ({
   id,
   qty,

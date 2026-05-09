@@ -7,7 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Анимации полей формы. */
+/** Form field animations. */
 const FormFieldAnimations = ({
   children,
   className,

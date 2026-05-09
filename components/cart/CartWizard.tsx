@@ -41,7 +41,7 @@ const buildStepTitles = (
   error: 'Error',
 });
 
-// Канонический порядок шагов в чекауте
+// Canonical order of checkout steps
 const CHECKOUT_FLOW: CheckoutStep[] = ['cart', 'order', 'payment'];
 
 const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
@@ -50,7 +50,7 @@ const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
   return [...CHECKOUT_FLOW, current];
 };
 
-// Отслеживает брейкпоинт md+ (768px) на клиенте, чтобы рендерить тело шага ровно в одном месте
+// Tracks the md+ (768px) breakpoint on the client to render the step body in exactly one place
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -63,17 +63,18 @@ const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
- * CartWizard — многошаговый checkout, управляемый через `orderReducer.step`.
+ * CartWizard — multi-step checkout driven by `orderReducer.step`.
  *
  * Flow: `cart` → `order` (review + promo) → `payment` (address + time + payment
- * в одном шаге) → `success` | `error`.
+ * in one step) → `success` | `error`.
  *
- * Авторизация — через канонический `Modal` + `AuthProviderSelect`
- * (`OpenDrawerContext`), запускаемый из `CartPage.onApply`. Wizard сам signin
- * не рендерит — после успешного логина `CartPage` авто-переходит на `order`.
+ * Authorization runs through the canonical `Modal` + `AuthProviderSelect`
+ * (`OpenDrawerContext`) launched from `CartPage.onApply`. The wizard itself
+ * does not render signin — after a successful login, `CartPage` auto-advances
+ * to `order`.
  *
- * @param   {CartWizardProps} props - Пропсы wizard.
- * @returns {JSX.Element}           JSX wizard для текущего шага.
+ * @param   {CartWizardProps} props - Wizard props.
+ * @returns {JSX.Element}           Wizard JSX for the current step.
  */
 const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Element => {
   const t = useT();
@@ -82,10 +83,10 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const STEP_TITLES = buildStepTitles(t);
   const isMdUp = useIsMdUp();
 
-  // Терминальные шаги (success/error) — одноразовые. Если они пережили
-  // навигацию (через persisted store), сбрасываем wizard на `cart` при
-  // следующем монтировании страницы корзины — иначе `/cart` навсегда показывает
-  // экран подтверждения предыдущего заказа.
+  // Terminal steps (success/error) are one-shot. If they survived
+  // navigation (via the persisted store), reset the wizard to `cart` on
+  // the next mount of the cart page — otherwise `/cart` would forever show
+  // the confirmation screen of the previous order.
   useEffect(() => {
     if (step === 'success' || step === 'error') {
       dispatch(resetCheckout());
@@ -98,7 +99,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const showInline = !isCartStep && isMdUp;
   const showPopup = !isCartStep && !isMdUp;
 
-  // Возврат с inline-шага (order/payment/…) на шаг корзины через breadcrumb.
+  // Return from an inline step (order/payment/…) back to the cart step via breadcrumb.
   const handleBackToCart = (): void => {
     const orderRows = document.querySelectorAll('.step-order-row');
 
@@ -132,13 +133,13 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
     });
   };
 
-  // Видимость обёртки корзины
+  // Cart wrapper visibility
   const cartWrapperClass = isCartStep ? 'contents' : 'hidden md:contents';
 
-  // Десктопные хлебные крошки
+  // Desktop breadcrumbs
   const showStepInBreadcrumb = !isCartStep;
 
-  // Переход по клику в хлебных крошках.
+  // Navigate by clicking in the breadcrumbs.
   const goToStep = (target: CheckoutStep): void => {
     if (target === step) return;
     if (target === 'cart') {
@@ -165,7 +166,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   return (
     <>
       <div className={cartWrapperClass}>
-        {/* Хедер только для мобилы */}
+        {/* Mobile-only header */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
           <Link href="/" className="group_white" aria-label="Back">
             <ArrowBackOrangeIcon />
@@ -176,7 +177,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           </div>
         </div>
 
-        {/* Хлебные крошки только для десктопа. */}
+        {/* Desktop-only breadcrumbs. */}
         <div className="hidden items-center gap-2.5 text-base text-muted-text md:flex">
           {showStepInBreadcrumb ? (
             <button
@@ -215,7 +216,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           </p>
         </div>
 
-        {/* Стак на мобиле, 2 колонки (50/50) на md+ */}
+        {/* Stacked on mobile, 2 columns (50/50) on md+ */}
         <div className="px-5 pt-10 pb-5 md:flex md:justify-between md:gap-15 md:px-0 md:pt-13">
           <div className="flex flex-col gap-4 md:w-1/2">
             <div className={isCartStep ? 'contents' : 'md:hidden'}>
@@ -230,7 +231,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
       {showPopup && (
         <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-[10px]">
           <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 min-h-140 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-[10px]">
-            {/* Хедер попапа — назад / заголовок / закрыть */}
+            {/* Popup header — back / title / close */}
             <div className="flex items-center justify-between md:mb-2">
               <button
                 type="button"
@@ -250,7 +251,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
               <span className="md:hidden w-9" aria-hidden="true" />
             </div>
 
-            {/* Панель контента шага. */}
+            {/* Step content panel. */}
             <div className="px-5 py-6.25 pb-25">{stepBody}</div>
           </div>
         </div>

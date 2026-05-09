@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Кнопка применения фильтра. */
+/** Filter apply button. */
 const ApplyButton = (): JSX.Element => {
   const t = useT();
   const { setTransition } = useContext(OpenDrawerContext);

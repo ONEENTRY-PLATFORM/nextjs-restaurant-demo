@@ -5,13 +5,13 @@ import { getBlockProducts } from '@/app/api';
 import HomeBlockSection from './HomeBlockSection';
 
 /**
- * HomeBlockServer — async-обёртка над {@link HomeBlockSection}: фетчит блок OneEntry по marker.
- * Возвращает `null`, если в блоке нет продуктов — чтобы не оставлять пустую секцию.
- * @param   {object}                    props             - Пропсы.
- * @param   {string}                    props.marker      - Идентификатор блока.
- * @param   {string}                    [props.className] - Переопределение className секции.
- * @param   {number}                    [props.limit]     - Ограничение по количеству продуктов.
- * @returns {Promise<JSX.Element|null>}                   JSX блока либо `null`.
+ * HomeBlockServer — async wrapper over {@link HomeBlockSection}: fetches a OneEntry block by marker.
+ * Returns `null` when the block has no products — to avoid leaving an empty section.
+ * @param   {object}                    props             - Props.
+ * @param   {string}                    props.marker      - Block marker.
+ * @param   {string}                    [props.className] - Override for the section className.
+ * @param   {number}                    [props.limit]     - Cap on the number of products.
+ * @returns {Promise<JSX.Element|null>}                   Block JSX or `null`.
  */
 const HomeBlockServer = async ({
   marker,

@@ -15,11 +15,11 @@ import PromoBannerAnimations from './animations/PromoBannerAnimations';
 const EXIT_DURATION = 0.4;
 
 /**
- * CartPromoSidebar — десктоп-сайдбар рядом с корзиной из `blog` страниц OneEntry.
- * Использует `attributeValues.banner` (portrait); exit-анимация по `stage='leaving'` — иначе leave соседей не срабатывает.
+ * CartPromoSidebar — desktop sidebar next to the cart, sourced from OneEntry `blog` pages.
+ * Uses `attributeValues.banner` (portrait); exit animation triggers on `stage='leaving'` — otherwise the neighbors' leave does not fire.
  *
- * @param   {object}        props         - Пропсы сайдбара.
- * @param   {BlogBanner[]}  props.banners - Список баннеров из CMS.
+ * @param   {object}        props         - Sidebar props.
+ * @param   {BlogBanner[]}  props.banners - List of banners from the CMS.
  */
 const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element | null => {
   const items = banners.filter(b => b.mobileImage);

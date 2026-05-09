@@ -24,11 +24,11 @@ import {
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 /**
- * Конвертирует `order.formData` в плоский набор initialValues для ReservationForm.
+ * Converts `order.formData` into a flat set of initialValues for ReservationForm.
  *
- * @param   {IOrdersFormData[]}  formData    - Сырые поля заказа.
- * @param   {RestaurantOption[]} restaurants - Доступные опции для маппинга entity → pageUrl.
- * @returns {Record<string, string>}         Плоский набор начальных значений.
+ * @param   {IOrdersFormData[]}  formData    - Raw order fields.
+ * @param   {RestaurantOption[]} restaurants - Available options for mapping entity → pageUrl.
+ * @returns {Record<string, string>}         Flat set of initial values.
  */
 const buildInitialValuesFromOrder = (
   formData: IOrdersFormData[],
@@ -67,7 +67,7 @@ const buildInitialValuesFromOrder = (
   return result;
 };
 
-/** ReservationPopup — попап бронирования столика. */
+/** ReservationPopup — table booking popup. */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -108,9 +108,9 @@ const ReservationPopup = (): JSX.Element => {
     [pages]
   );
 
-  // Edit-режим: pending-данные из reservationEditState → ReservationForm вызовет updateOrderByMarkerAndId.
+  // Edit mode: pending data from reservationEditState → ReservationForm will call updateOrderByMarkerAndId.
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
-  // Resume-режим: восстановление значений формы после OAuth-редиректа (sessionStorage).
+  // Resume mode: restore form values after the OAuth redirect (sessionStorage).
   const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
   useEffect(() => {
     if (isOpen) {
@@ -168,7 +168,7 @@ const ReservationPopup = (): JSX.Element => {
         ) : (
           <div className="mt-7.5">
             <ReservationForm
-              // `key` форсит remount формы при попадании edit/resume значений во второй рендер.
+              // `key` forces a form remount when edit/resume values arrive on the second render.
               key={editing?.orderId ?? (resume ? 'oauth-resume' : 'fresh')}
               form={form}
               restaurants={restaurants}

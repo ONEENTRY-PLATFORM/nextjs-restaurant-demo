@@ -18,10 +18,10 @@ type DishProduct = IProductsEntity & {
 };
 
 /**
- * ProductSingle — страница одного продукта (cover + details + reviews + related).
- * @param   {object}      props         - Пропсы компонента.
- * @param   {DishProduct} props.product - Сущность продукта OneEntry с blocks/productPages.
- * @returns {Promise<JSX.Element>}      JSX страницы продукта.
+ * ProductSingle — single product page (cover + details + reviews + related).
+ * @param   {object}      props         - Component props.
+ * @param   {DishProduct} props.product - OneEntry product entity with blocks/productPages.
+ * @returns {Promise<JSX.Element>}      Product page JSX.
  */
 const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages, attributeValues } = product;

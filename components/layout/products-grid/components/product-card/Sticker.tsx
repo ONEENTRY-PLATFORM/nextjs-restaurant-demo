@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { JSX } from 'react';
 
-/** Sticker — иконка-стикер на карточке продукта. */
+/** Sticker — sticker icon on a product card. */
 const Sticker = ({
   sticker,
 }: {

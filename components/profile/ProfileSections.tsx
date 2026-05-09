@@ -21,7 +21,7 @@ type SavedAddress = {
   selected?: boolean;
 };
 
-/** Парсит `user_address`: json (массив) или legacy-строку с JSON. Возвращает [] на любую ошибку. */
+/** Parses `user_address`: json (array) or legacy JSON string. Returns [] on any error. */
 const parseAddresses = (raw: unknown): SavedAddress[] => {
   if (!raw) return [];
   let arr: unknown = raw;
@@ -38,7 +38,7 @@ const parseAddresses = (raw: unknown): SavedAddress[] => {
   );
 };
 
-/** Атрибуты формы `user`, которые в секции "My Profile" не рендерим. */
+/** Attributes of the `user` form that are not rendered in the "My Profile" section. */
 const HIDDEN_PROFILE_MARKERS = new Set([
   'repeat_password',
   'email_notifications',
@@ -54,7 +54,7 @@ const resolveInputType = (attr: IFormAttribute): string => {
   return 'text';
 };
 
-/** ProfileSections — раскрывающиеся секции "My Profile" + "Address". */
+/** ProfileSections — collapsible "My Profile" + "Address" sections. */
 const ProfileSections = (): JSX.Element => {
   const t = useT();
   const { user, refreshUser } = useContext(AuthContext);
@@ -95,7 +95,7 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
-  // Raw value без кастa в string — для полей типа `json` (`user_address`), где SDK отдаёт массив/объект.
+  // Raw value without casting to string — for `json` fields (`user_address`), where the SDK returns an array/object.
   const userRawField = useCallback(
     (marker: string): unknown => {
       if (!user?.formData || !Array.isArray(user.formData)) return undefined;
@@ -146,10 +146,10 @@ const ProfileSections = (): JSX.Element => {
         formData.push({ marker: 'user_address', type: 'json', value: serialized });
       }
       try {
-        // phoneSMS опционален и валидируется сервером по /^\+[0-9]{10,15}$/ — мусорный телефон в formData не шлём, иначе он заблокирует сохранение адресов.
+        // phoneSMS is optional and validated server-side against /^\+[0-9]{10,15}$/ — do not send a malformed phone in formData, otherwise it blocks saving addresses.
         const phone = normalizePhoneE164(userField('phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
-        // authData обязателен для email-провайдера (иначе 400 «Login or password values are missed»). После авто-логина по refresh-token пароля в сессии нет — выходим.
+        // authData is required for the email provider (otherwise 400 "Login or password values are missed"). After auto-login via refresh-token there is no password in the session — bail out.
         if (!sessionPassword) {
           setAddressError('Address save requires entering your password in My Profile first.');
           return;
@@ -160,7 +160,7 @@ const ProfileSections = (): JSX.Element => {
           formData: formData as any,
           authData: [{ marker: 'password', value: sessionPassword }],
           notificationData: {
-            // Email для email-провайдера лежит в `user.identifier`, а не в `formData` — fallback на identifier.
+            // For the email provider the email lives in `user.identifier`, not in `formData` — fallback to identifier.
             email: userField('email') || user.identifier || '',
             phonePush: [],
             ...(phoneValid ? { phoneSMS: phone } : {}),
@@ -204,7 +204,7 @@ const ProfileSections = (): JSX.Element => {
           }
           return { marker: attr.marker, type: attr.type, value };
         })
-        // Скрытые поля без значения не шлём — сервер ругается на required даже на пустую строку.
+        // Do not send hidden fields without a value — the server rejects required even for an empty string.
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
@@ -240,7 +240,7 @@ const ProfileSections = (): JSX.Element => {
       street: newStreet.trim(),
       house: newHouse.trim(),
       floor: newFloor.trim(),
-      // Первый добавленный адрес авто-выбирается.
+      // The first added address is auto-selected.
       selected: addresses.length === 0,
     };
     const next = [...addresses, newEntry];
@@ -255,7 +255,7 @@ const ProfileSections = (): JSX.Element => {
 
   const onDeleteAddress = async (id: string) => {
     const next = addresses.filter(a => a.id !== id);
-    // Удалили выбранный — авто-выбираем первый из оставшихся.
+    // Deleted the selected one — auto-select the first remaining.
     if (next.length > 0 && !next.some(a => a.selected)) {
       next[0]!.selected = true;
     }
@@ -273,7 +273,7 @@ const ProfileSections = (): JSX.Element => {
 
   return (
     <>
-      {/* Мой профиль */}
+      {/* My Profile */}
       <div>
         <button
           type="button"
@@ -337,7 +337,7 @@ const ProfileSections = (): JSX.Element => {
         )}
       </div>
 
-      {/* Адрес */}
+      {/* Address */}
       <div>
         <button
           type="button"

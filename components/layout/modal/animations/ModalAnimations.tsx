@@ -7,7 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Анимации модалки: slide-up на mobile, центрированный fade+scale на md+, особый scale+blur для CalendarForm. */
+/** Modal animations: slide-up on mobile, centered fade+scale on md+, special scale+blur for CalendarForm. */
 const ModalAnimations = ({
   children,
   component,
@@ -26,8 +26,8 @@ const ModalAnimations = ({
     const modalBg = ref.current.querySelector('#modalBg');
     const modalBody = ref.current.querySelector('#modalBody');
 
-    // GSAP-transform перетирает CSS `md:-translate-x/y-1/2`, поэтому центрирование
-    // на десктопе задаём через `xPercent/yPercent` внутри timeline.
+    // The GSAP transform overrides the CSS `md:-translate-x/y-1/2`, so on desktop
+    // we set centering via `xPercent/yPercent` inside the timeline.
     const isDesktop =
       typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
 
@@ -42,7 +42,7 @@ const ModalAnimations = ({
       },
     });
 
-    // Календарь — резкий entrance scale + blur + opacity вместо slide-up.
+    // Calendar — snappy entrance scale + blur + opacity instead of slide-up.
     if (component === 'CalendarForm') {
       gsap.set(modalBg, { autoAlpha: 0, backdropFilter: 'blur(0px)' });
       gsap.set(modalBody, {
@@ -70,7 +70,7 @@ const ModalAnimations = ({
         '-=0.3'
       );
     } else if (isDesktop) {
-      // Desktop: fade + лёгкий scale с -50%/-50% сдвигом для центрирования.
+      // Desktop: fade + a slight scale with a -50%/-50% offset for centering.
       gsap.set(modalBg, { autoAlpha: 0 });
       gsap.set(modalBody, {
         autoAlpha: 0,

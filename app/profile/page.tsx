@@ -8,8 +8,8 @@ import ProfilePageClient from './ProfilePageClient';
 export const dynamic = 'force-dynamic';
 
 /**
- * ProfilePage — страница персональных данных профиля (2-колоночный layout).
- * @returns {Promise<JSX.Element>} JSX страницы персональных данных.
+ * ProfilePage — personal profile data page (2-column layout).
+ * @returns {Promise<JSX.Element>} JSX of the personal data page.
  */
 const ProfilePage = async (): Promise<JSX.Element> => {
   const banners = await getBlogBanners();

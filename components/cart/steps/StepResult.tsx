@@ -15,7 +15,7 @@ import {
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 
-/** Форматирует дату как `dd.MM.yy HH.mm` (для штампа «Get delivery by: …»). */
+/** Formats a date as `dd.MM.yy HH.mm` (for the "Get delivery by: …" stamp). */
 const formatDeliveryStamp = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(d.getFullYear()).slice(
@@ -24,9 +24,9 @@ const formatDeliveryStamp = (d: Date): string => {
 };
 
 /**
- * StepResult — финальный экран wizard'а: success или error.
- * @param {object}              props         - Пропсы.
- * @param {'success' | 'error'} props.variant - Какой экран рендерить.
+ * StepResult — final wizard screen: success or error.
+ * @param {object}              props         - Props.
+ * @param {'success' | 'error'} props.variant - Which screen to render.
  */
 const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -37,7 +37,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     quantity?: number;
     product?: IProductsEntity;
   }>;
-  // `Date.now()` захватываем в initial state — рендер чистый, штамп стабилен на всё время жизни компонента.
+  // Capture `Date.now()` in the initial state — render stays pure, the stamp is stable for the lifetime of the component.
   const orderNumber = lastOrderId ? '№' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000))
@@ -46,10 +46,10 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
   if (variant === 'success') {
     return (
       <div className="flex flex-col gap-6.25">
-        {/* Номер заказа */}
+        {/* Order number */}
         <div className="mx-auto font-medium text-[20px] text-brand">{orderNumber}</div>
 
-        {/* Товары */}
+        {/* Items */}
         {cartData
           .filter(entry => entry.product && entry.product.id)
           .slice(0, 5)
@@ -66,15 +66,15 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
             );
           })}
 
-        {/* Штамп доставки */}
+        {/* Delivery stamp */}
         <p className="mt-6.25 text-center font-normal text-[16px] text-brand">
           Get delivery by: {deliveryStamp}
         </p>
 
-        {/* Разделитель */}
+        {/* Divider */}
         <div className="mx-auto mt-6.25 h-px w-56.25 bg-brand" />
 
-        {/* Заголовки */}
+        {/* Headings */}
         <p className="text-center font-semibold text-[27px] text-brand">Order Confirmed</p>
         <p className="text-center font-light text-[18px] text-paper">
           Your order has been placed successfully

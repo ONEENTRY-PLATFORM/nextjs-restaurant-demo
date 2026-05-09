@@ -7,7 +7,7 @@ import { Fragment } from 'react';
 
 import HomeIcon from '@/components/icons/home';
 
-/** ProfilePageHeader — breadcrumbs + заголовок страниц `/profile/**`. */
+/** ProfilePageHeader — breadcrumbs + title for `/profile/**` pages. */
 type Crumb = { label: string; href: string };
 type Meta = { title: string; trail?: Crumb[] };
 

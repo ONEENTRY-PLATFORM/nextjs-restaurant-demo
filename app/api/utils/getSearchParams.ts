@@ -1,6 +1,6 @@
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
-/** getSearchParams — собирает массив `IFilterParams` для запроса продуктов. */
+/** getSearchParams — builds an `IFilterParams` array for a Products API request. */
 const getSearchParams = (
   searchParams?: {
     search?: string;
@@ -15,7 +15,7 @@ const getSearchParams = (
 ) => {
   const expandedFilters: Array<IFilterParams & { statusMarker?: string }> | undefined = [];
 
-  // Отсекаем сервисные продукты без SKU.
+  // Filter out service products that have no SKU.
   const servicesFilter: IFilterParams = {
     attributeMarker: 'sku',
     conditionMarker: 'nin',
@@ -58,9 +58,9 @@ const getSearchParams = (
   }
 
   if (searchParams?.preferences) {
-    // Multi-select preferences пробрасываются как `?preferences=Meat,Fish`.
-    // `IFilterParams.conditionValue` принимает только скаляр, поэтому каждое
-    // значение рендерится отдельным фильтром (AND-семантика на стороне OneEntry).
+    // Multi-select preferences arrive as `?preferences=Meat,Fish`.
+    // `IFilterParams.conditionValue` accepts only a scalar, so each value
+    // becomes its own filter (AND semantics on the OneEntry side).
     const values = searchParams.preferences
       .split(',')
       .map(v => v.trim())

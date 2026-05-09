@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getChildPagesByParentUrl — дочерние страницы по url родителя (React cache() дедуплицирует вызовы внутри рендера). */
+/** getChildPagesByParentUrl — child pages by parent url (React cache() deduplicates calls within a render). */
 export const getChildPagesByParentUrl = cache(
   async (
     url: string

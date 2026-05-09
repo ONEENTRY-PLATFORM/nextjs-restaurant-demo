@@ -10,7 +10,7 @@ import PaymentButton from '@/components/layout/cart/components/PaymentButton';
 import TotalAmount from '@/components/layout/cart/components/TotalAmount';
 import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable';
 
-/** Форма доставки. */
+/** Delivery form. */
 const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

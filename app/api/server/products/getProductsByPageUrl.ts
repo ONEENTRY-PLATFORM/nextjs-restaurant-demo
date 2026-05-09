@@ -6,7 +6,7 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
-/** getProductsByPageUrl — все продукты выбранной категории с пагинацией. */
+/** getProductsByPageUrl — paginated products of the selected category. */
 export const getProductsByPageUrl = cache(
   async (props: {
     limit: number;
@@ -37,8 +37,8 @@ export const getProductsByPageUrl = cache(
       .map(v => v.trim())
       .filter(Boolean);
 
-    // OR-семантика для multi-select preferences (см. getProducts.ts): SDK принимает только
-    // скаляр в `conditionValue` — фетчим каждое значение отдельным запросом и мерджим.
+    // OR semantics for multi-select preferences (see getProducts.ts): the SDK accepts only
+    // a scalar in `conditionValue` — fetch each value in a separate request and merge.
     if (prefList.length > 1) {
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {

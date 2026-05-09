@@ -8,7 +8,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { addReservationToCart, selectReservationId } from '@/app/store/reducers/CartSlice';
 
-/** Строка результатов поиска — ссылка на страницу продукта. */
+/** Search result row — link to the product page. */
 const ProductRow = ({
   pageData,
   product,

@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 
 import Spinner from '@/components/shared/Spinner';
 
-/** LoadMore — авто-подгрузка следующей страницы по ScrollTrigger. */
+/** LoadMore — auto-loads the next page via ScrollTrigger. */
 const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -59,8 +59,8 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
     return () => {
       trigger.kill();
     };
-    // searchParams в deps — иначе ScrollTrigger.onEnter держит stale closure на goToNextPage,
-    // и preferences вылетают из URL при первом срабатывании после клика по чипу.
+    // searchParams in deps — otherwise ScrollTrigger.onEnter holds a stale closure on goToNextPage,
+    // and preferences drop out of the URL on the first trigger after a chip click.
   }, [currentPage, searchParams]);
 
   return (

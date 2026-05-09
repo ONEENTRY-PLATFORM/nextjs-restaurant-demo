@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/** Анимации обёртки корзины: bottom-to-top leave-stagger при route-transition (entrance — в per-component хуках). */
+/** Cart wrapper animations: bottom-to-top leave-stagger on route transition (entrance is handled by per-component hooks). */
 const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');

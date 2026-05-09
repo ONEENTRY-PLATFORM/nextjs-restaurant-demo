@@ -8,10 +8,10 @@ import PriceDisplay from './PriceDisplay';
 import ProductImage from './ProductImage';
 
 /**
- * GroupCard — карточка пары продуктов из группы «купить вместе».
- * @param   {object}          props         - Пропсы компонента.
- * @param   {IProductsEntity} props.product - Продукт OneEntry с `more_pic` (массив картинок).
- * @returns {JSX.Element}                   JSX карточки группы.
+ * GroupCard — card for a pair of products from a "buy together" group.
+ * @param   {object}          props         - Component props.
+ * @param   {IProductsEntity} props.product - OneEntry product with `more_pic` (image array).
+ * @returns {JSX.Element}                   Group card JSX.
  */
 const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const attributeValues = product.attributeValues;

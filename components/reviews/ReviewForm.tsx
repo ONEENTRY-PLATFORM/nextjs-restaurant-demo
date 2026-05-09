@@ -18,7 +18,7 @@ const FORM_MODULE_CONFIG_ID = 2;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
-/** Резолвит отображаемое имя залогиненного пользователя. */
+/** Resolves the display name for the signed-in user. */
 const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): string => {
   const formData = Array.isArray(user.formData)
     ? (user.formData as Array<{ marker?: unknown; value?: unknown }>)
@@ -31,11 +31,11 @@ const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): s
 };
 
 /**
- * ReviewForm — форма отзыва на продукт (звёздный рейтинг + текст).
- * @param   {object}      props             - Пропсы.
- * @param   {number}      props.productId   - Product ID, к которому привязан отзыв.
- * @param   {boolean}     [props.hideTitle] - Не рендерить заголовок, если он уже есть в шапке родителя.
- * @returns {JSX.Element}                   JSX формы отзыва.
+ * ReviewForm — product review form (star rating + text).
+ * @param   {object}      props             - Props.
+ * @param   {number}      props.productId   - Product ID the review is attached to.
+ * @param   {boolean}     [props.hideTitle] - Do not render the heading if the parent already has one.
+ * @returns {JSX.Element}                   Review form JSX.
  */
 const ReviewForm = ({
   productId,

@@ -8,17 +8,17 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * Варианты анимации появления попапа:
- * - `bottom-sheet` — мобила: slide-up; десктоп: scale + fade (центрированные попапы).
- * - `slide-up`     — `yPercent: 100 → 0` всегда (Cart, Profile — якорятся через top/right).
- * - `slide-right`  — `xPercent: 100 → 0` всегда (Filter).
+ * Popup open-animation variants:
+ * - `bottom-sheet` — mobile: slide-up; desktop: scale + fade (centered popups).
+ * - `slide-up`     — `yPercent: 100 → 0` always (Cart, Profile — anchored via top/right).
+ * - `slide-right`  — `xPercent: 100 → 0` always (Filter).
  */
 export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right';
 
 /**
- * DrawerAnimations — универсальная GSAP-обёртка для попапов через {@link OpenDrawerContext}.
- * Дети должны содержать элементы с id `modalBg` (backdrop) и `modalBody` (тело).
- * Закрытие триггерится `setTransition('close')` — таймлайн играется в реверсе.
+ * DrawerAnimations — generic GSAP wrapper for popups driven by {@link OpenDrawerContext}.
+ * Children must include elements with id `modalBg` (backdrop) and `modalBody` (body).
+ * Close is triggered by `setTransition('close')` — the timeline plays in reverse.
  */
 const DrawerAnimations = ({
   children,
@@ -29,7 +29,7 @@ const DrawerAnimations = ({
   children: ReactNode;
   component: string;
   variant?: DrawerAnimationVariant;
-  /** Дополнительные классы на root-обёртку (например, `md:hidden` для мобильно-специфичных попапов). */
+  /** Additional classes on the root wrapper (e.g. `md:hidden` for mobile-specific popups). */
   wrapperClassName?: string;
 }): JSX.Element => {
   const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -53,7 +53,7 @@ const DrawerAnimations = ({
     const modalBg = ref.current?.querySelector('#modalBg') ?? null;
     const modalBody = ref.current?.querySelector('#modalBody') ?? null;
 
-    // На мобиле всегда slide-up снизу — единая идиома bottom-меню; на md+ зависит от варианта.
+    // On mobile always slide-up from the bottom — unified bottom-menu idiom; on md+ it depends on the variant.
     const isMobile =
       typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 

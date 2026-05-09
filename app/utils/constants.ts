@@ -1,17 +1,17 @@
 /**
- * Лимит карточек товаров на одну страницу каталога.
- * Применяется в `/shop`, `/shop/category/[handle]`, `/shop/[handle]`.
- * Берётся из `NEXT_PUBLIC_SHOP_PAGE_LIMIT` (.env / .env.local), по умолчанию 10.
+ * Product cards per catalog page limit.
+ * Applies on `/shop`, `/shop/category/[handle]`, `/shop/[handle]`.
+ * Read from `NEXT_PUBLIC_SHOP_PAGE_LIMIT` (.env / .env.local), defaults to 10.
  */
 export const SHOP_PAGE_LIMIT: number = Number(process.env.NEXT_PUBLIC_SHOP_PAGE_LIMIT) || 10;
 
 /**
- * id OneEntry-продукта, представляющего доставку.
+ * Id of the OneEntry product representing delivery.
  *
- * Используется как отдельная строка в итогах корзины (Delivery: $X), скрывается
- * из визуального списка товаров и добавляется в `orderProducts` при создании
- * заказа (см. `useCreateOrder`). Берётся из `NEXT_PUBLIC_DELIVERY_PRODUCT_ID`,
- * по умолчанию 33 — соответствует продукту "Delivery" в OneEntry-каталоге.
+ * Used as a separate row in the cart totals (Delivery: $X), hidden from the
+ * visual product list, and appended to `orderProducts` when creating an order
+ * (see `useCreateOrder`). Read from `NEXT_PUBLIC_DELIVERY_PRODUCT_ID`,
+ * defaults to 33 — matches the "Delivery" product in the OneEntry catalog.
  */
 export const DELIVERY_PRODUCT_ID: number =
   Number(process.env.NEXT_PUBLIC_DELIVERY_PRODUCT_ID) || 33;

@@ -9,11 +9,11 @@ import { useRef, useState } from 'react';
 const ORDERS_ROW_SELECTOR = '.orders-row';
 
 /**
- * OrdersAnimations — entrance/leave stagger для `.orders-row` на `/profile/orders`.
+ * OrdersAnimations — entrance/leave stagger for `.orders-row` on `/profile/orders`.
  *
- * @param   {object}    props          - Пропсы.
- * @param   {ReactNode} props.children - Контент OrdersList (включая sidebar).
- * @param   {number}    props.rowsKey  - Сигнал ре-маунта entrance-таймлайна.
+ * @param   {object}    props          - Props.
+ * @param   {ReactNode} props.children - OrdersList content (including the sidebar).
+ * @param   {number}    props.rowsKey  - Signal to remount the entrance timeline.
  */
 const OrdersAnimations = ({
   children,

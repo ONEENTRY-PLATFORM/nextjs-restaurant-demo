@@ -34,10 +34,10 @@ export const resetPasswordFormFields = [
 ];
 
 /**
- * ResetPasswordForm — форма сброса пароля через OTP.
+ * ResetPasswordForm — OTP-based password reset form.
  *
- * Намеренно статические `<input>`-поля (не `getFormByMarker` из CMS) — данные
- * напрямую идут в SDK `AuthProvider.changePassword(...)`. См. MISMATCH-LOG §C.8.2.
+ * Intentionally uses static `<input>` fields (not `getFormByMarker` from the CMS) —
+ * the data is sent straight to the SDK `AuthProvider.changePassword(...)`. See MISMATCH-LOG §C.8.2.
  */
 const ResetPasswordForm = (): JSX.Element => {
   const t = useT();

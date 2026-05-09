@@ -5,7 +5,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/** Строка таблицы доставки с превью даты; клик открывает попап `CalendarForm`. */
+/** Delivery table row with a date preview; clicking opens the `CalendarForm` popup. */
 const DeliveryTableRow = ({
   label,
   value,

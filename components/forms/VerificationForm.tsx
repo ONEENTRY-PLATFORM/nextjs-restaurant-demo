@@ -19,10 +19,11 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
 /**
- * VerificationForm — ввод 6-значного OTP-кода.
+ * VerificationForm — 6-digit OTP code entry.
  *
- * Намеренно статическая форма (не из CMS) — код идёт в SDK `AuthProvider.checkCode(...)`
- * или `activateUser(...)` при активации после регистрации. См. MISMATCH-LOG §C.8.2.
+ * Intentionally a static form (not from the CMS) — the code is sent to the SDK
+ * `AuthProvider.checkCode(...)` or `activateUser(...)` for post-signup activation.
+ * See MISMATCH-LOG §C.8.2.
  */
 const VerificationForm = (): JSX.Element => {
   const t = useT();
@@ -35,7 +36,7 @@ const VerificationForm = (): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  // Cooldown между отправками OTP.
+  // Cooldown between OTP resends.
   const { data: providers } = useGetAuthProvidersQuery('');
   const ttl =
     Number(providers?.find(p => p.identifier === 'email')?.config?.systemCodeTlsSec) || 60;
@@ -98,7 +99,7 @@ const VerificationForm = (): JSX.Element => {
           setError('Activation failed');
           return;
         }
-        // Активация успешна — логинимся и закрываем попап.
+        // Activation succeeded — sign the user in and close the popup.
         await logInUser({
           method: 'email',
           login: fields.email?.value || '',
@@ -127,7 +128,7 @@ const VerificationForm = (): JSX.Element => {
     [otp, handleVerification]
   );
 
-  // Переотправка OTP-кода.
+  // Resend the OTP code.
   const onResendHandle = useCallback(async () => {
     if (cooldown > 0) return;
     try {

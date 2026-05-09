@@ -16,10 +16,10 @@ type CategoriesScrollerProps = {
 };
 
 /**
- * CategoriesScroller — горизонтальный snap-scroll список filter-чипов `preferences`.
+ * CategoriesScroller — horizontal snap-scroll list of `preferences` filter chips.
  *
- * @param   {CategoriesScrollerProps} props - Пропсы компонента.
- * @returns {JSX.Element}                   JSX скроллера.
+ * @param   {CategoriesScrollerProps} props - Component props.
+ * @returns {JSX.Element}                   Scroller JSX.
  */
 const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Element => {
   const ref = useDragScroll<HTMLUListElement>();

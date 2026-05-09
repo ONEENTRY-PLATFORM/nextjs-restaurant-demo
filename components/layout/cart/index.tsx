@@ -27,11 +27,11 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * CartPage — список товаров в корзине + кнопка APPLY (переход к чекауту).
+ * CartPage — list of products in the cart + APPLY button (proceed to checkout).
  *
- * @param   {object}            props              - Пропсы.
- * @param   {IProductsEntity}   props.deliveryData - Сущность продукта-доставки.
- * @returns {JSX.Element}                          JSX страницы корзины.
+ * @param   {object}            props              - Props.
+ * @param   {IProductsEntity}   props.deliveryData - Delivery product entity.
+ * @returns {JSX.Element}                          Cart page JSX.
  */
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -39,17 +39,17 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
-  // Флаг «после signin продолжить в order» — иначе любой логин из шапки переключал бы cart → order.
+  // "Continue to order after sign-in" flag — otherwise any login from the header would switch cart → order.
   const [pendingCheckout, setPendingCheckout] = useState(false);
 
-  // Зеркалим delivery state в OrderSlice.formData, чтобы submit шага `payment` имел delivery_time/address.
+  // Mirror delivery state into OrderSlice.formData so the `payment` step submit has delivery_time/address.
   useEffect(() => {
     const date = cartDelivery.date;
     const time = cartDelivery.time;
     const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value ?? '';
     const address = (cartDelivery.address as string | undefined) || addressReg;
 
-    // OneEntry ждёт для timeInterval массив пар [[startISO, endISO]]; собираем 1-часовой слот [hour, hour+1).
+    // OneEntry expects timeInterval as an array of pairs [[startISO, endISO]]; build a 1-hour slot [hour, hour+1).
     const hourMatch = typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
     const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
     if (date && Number.isFinite(hour)) {
@@ -89,7 +89,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [deliveryData]);
 
-  // Чистим stale id из persist-корзины: продукты, удалённые из OneEntry, иначе шумят 404'ом на каждом маунте.
+  // Drop stale ids from the persisted cart: products removed in OneEntry would otherwise spam 404s on every mount.
   useEffect(() => {
     if (!data) return;
     const returnedIds = new Set(data.map((p: IProductsEntity) => p.id));
@@ -105,7 +105,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setProducts(data);
 
-      // Подписываемся на WS-уведомления об изменении цен/статусов товаров (только для авторизованных).
+      // Subscribe to WS notifications about product price/status changes (authenticated users only).
       if (isAuth) {
         const ws = getApi().WS.connect();
         if (ws) {
@@ -147,7 +147,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [products]);
 
-  // После завершения auth (через общую модалку) — авто-переход на шаг order, если чекаут начат отсюда.
+  // After auth completes (via the shared modal) — auto-advance to the order step if checkout was started here.
   useEffect(() => {
     if (pendingCheckout && isAuth) {
       dispatch(setStep('order'));
@@ -160,7 +160,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     return <Loader />;
   }
 
-  // Доставка не должна рендериться как карточка товара.
+  // Delivery must not be rendered as a product card.
   const visibleProducts = products.filter((p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID);
 
   if (visibleProducts.length < 1) {
@@ -174,7 +174,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       setOpen(true);
       return;
     }
-    // Reverse-анимация карточек перед переходом на order; по завершении сбрасываем стили для возврата по breadcrumb.
+    // Reverse animation of cards before transitioning to order; on completion reset styles so a breadcrumb back nav restores them.
     const cards = document.querySelectorAll('.product-in-cart');
     const button = document.querySelectorAll('.cart-apply-btn');
     if (cards.length === 0) {
@@ -199,7 +199,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {visibleProducts.map((product: IProductsEntity, i: number) => {
-          // Lookup по id (не по индексу) — порядок RTK-ответа не гарантирован, индексы рассинхронизируются.
+          // Lookup by id (not index) — RTK response order is not guaranteed, indexes drift out of sync.
           const cartEntry = productsCartData.find((p: { id: number }) => p.id === product.id);
           return (
             <ProductCard

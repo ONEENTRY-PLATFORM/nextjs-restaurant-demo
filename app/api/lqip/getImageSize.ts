@@ -3,13 +3,13 @@ import { imageSize } from 'image-size';
 import url from 'url';
 
 /**
- * getImageSize — определяет размеры удалённого изображения по URL без полной загрузки.
+ * getImageSize — determines the dimensions of a remote image by URL without downloading it fully.
  *
- * Парсит заголовок через image-size по мере поступления чанков и обрывает соединение, как только
- * width/height становятся известны.
- * @param   {string}                                     imgUrl - URL изображения.
- * @returns {Promise<{ width: number; height: number }>}        Размеры.
- * @throws {Error} Если изображение не удалось получить или определить размеры.
+ * Parses the header via image-size as chunks arrive and aborts the connection as soon as
+ * width/height are known.
+ * @param   {string}                                     imgUrl - Image URL.
+ * @returns {Promise<{ width: number; height: number }>}        Dimensions.
+ * @throws {Error} If the image cannot be fetched or its dimensions cannot be determined.
  */
 const getImageSize = async (imgUrl: string): Promise<{ width: number; height: number }> => {
   const options = url.parse(imgUrl);
@@ -41,7 +41,7 @@ const getImageSize = async (imgUrl: string): Promise<{ width: number; height: nu
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
               } catch (error) {
-                // image-size бросает при нехватке данных — продолжаем приём.
+                // image-size throws when there is not enough data — keep receiving.
               }
             }
           })

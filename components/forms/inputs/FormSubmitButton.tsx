@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import Spinner from '@/components/shared/Spinner';
 
-/** Кнопка сабмита формы. */
+/** Form submit button. */
 const FormSubmitButton = ({
   title = 'Submit',
   isLoading,

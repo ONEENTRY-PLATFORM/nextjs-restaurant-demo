@@ -5,11 +5,11 @@ import { getImageUrl } from '@/app/api/api/api';
 import { getChildPagesByParentUrl } from './getChildPagesByParentUrl';
 
 /**
- * BlogBanner — нормализованный промо-баннер (HomePromo, CartPromoSidebar, промо-сайдбар заказов).
+ * BlogBanner — normalised promo banner (HomePromo, CartPromoSidebar, orders promo sidebar).
  *
- * `desktopImage` = `attributeValues.bg_image` (2-колоночные сайдбары и hero-фон);
- * `mobileImage`  = `attributeValues.banner` (узкие горизонтальные карусели);
- * `pageUrl`      ссылается на `/promo/<pageUrl>`.
+ * `desktopImage` = `attributeValues.bg_image` (two-column sidebars and hero background);
+ * `mobileImage`  = `attributeValues.banner` (narrow horizontal carousels);
+ * `pageUrl`      links to `/promo/<pageUrl>`.
  */
 export type BlogBanner = {
   id: number;
@@ -20,12 +20,12 @@ export type BlogBanner = {
 };
 
 /**
- * getBlogBanners — дочерние страницы `blog` как промо-баннеры с десктоп/мобильным изображениями.
+ * getBlogBanners — child pages of `blog` rendered as promo banners with desktop/mobile images.
  *
- * Страницы без изображений тоже включаются — вызывающий решает, какой вариант рендерить.
- * Сортировка по `position` руками: SDK отдаёт детей в порядке `id` (создания), а не позиции —
- * иначе hero и соседние карточки промо рендерятся в случайном порядке.
- * @returns {Promise<BlogBanner[]>} Список баннеров (пустой при ошибке CMS).
+ * Pages without images are still included — the caller decides which variant to render.
+ * Manual sort by `position`: the SDK returns children in `id` (creation) order, not by position —
+ * otherwise the hero and adjacent promo cards would render in random order.
+ * @returns {Promise<BlogBanner[]>} Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
   const { isError, pages } = await getChildPagesByParentUrl('blog');

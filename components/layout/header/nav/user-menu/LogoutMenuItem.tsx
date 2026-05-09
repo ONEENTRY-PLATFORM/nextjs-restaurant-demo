@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { logOutUser } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
-/** Кнопка пункта меню Logout. */
+/** Logout menu item button. */
 const LogoutMenuItem = (): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();

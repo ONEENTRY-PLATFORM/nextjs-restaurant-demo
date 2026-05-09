@@ -22,24 +22,24 @@ import {
 } from './reservationOAuthResumeState';
 
 type ReservationAuthStepProps = {
-  /** Колбэк при успешной авторизации — переключит шаг визарда на `payment`. */
+  /** Callback fired on successful auth — switches the wizard step to `payment`. */
   onAuthSuccess: () => void;
   onBack: () => void;
-  /** Текущие значения формы бронирования; сохраняются в sessionStorage перед OAuth-редиректом. */
+  /** Current booking form values; persisted to sessionStorage before the OAuth redirect. */
   currentValues: Record<string, string>;
 };
 
 type SubStep = 'providers' | 'email';
 
 /**
- * ReservationAuthStep — шаг авторизации внутри попапа бронирования.
+ * ReservationAuthStep — auth step inside the booking popup.
  *
- * Реализован inline (без `OpenDrawerContext.setComponent`), чтобы не
- * уничтожать смонтированный `ReservationPopup` и не терять собранные
- * значения формы. Два под-шага: `providers` → `email`.
+ * Implemented inline (without `OpenDrawerContext.setComponent`) to avoid
+ * tearing down the mounted `ReservationPopup` and losing the collected
+ * form values. Two sub-steps: `providers` → `email`.
  *
- * @param   {ReservationAuthStepProps} props - Пропсы шага.
- * @returns {JSX.Element}                    JSX шага авторизации.
+ * @param   {ReservationAuthStepProps} props - Step props.
+ * @returns {JSX.Element}                    Auth step JSX.
  */
 const ReservationAuthStep = ({
   onAuthSuccess,
@@ -72,7 +72,7 @@ const ReservationAuthStep = ({
     if (p.identifier === 'google') {
       persistResumeBeforeOAuth();
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth не сконфигурирован (MISMATCH-LOG §C.8.1) — fallback на email-форму. Снимаем resume.
+        // Google OAuth is not configured (MISMATCH-LOG §C.8.1) — fall back to the email form. Clear resume.
         clearPendingReservationResume();
         setSubStep('email');
       }

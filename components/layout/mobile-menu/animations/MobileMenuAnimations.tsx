@@ -7,7 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Анимации открытия/закрытия мобильного меню. */
+/** Mobile menu open/close animations. */
 const MobileMenuAnimations = ({
   children,
   className,

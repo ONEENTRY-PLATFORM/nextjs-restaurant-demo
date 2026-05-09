@@ -7,12 +7,12 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
-/** NavItemFavorites — десктопный триггер избранного, открывает `FavoritesPopup`. */
+/** NavItemFavorites — desktop favorites trigger; opens `FavoritesPopup`. */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
-  // Persisted-слайс регидратится на клиенте — гейтим бейдж (см. NavItemCart).
+  // Persisted slice rehydrates on the client — gate the badge (see NavItemCart).
   const mounted = useSyncExternalStore(
     cb => {
       cb();

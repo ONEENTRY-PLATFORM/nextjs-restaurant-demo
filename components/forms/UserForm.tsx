@@ -24,7 +24,7 @@ export type InputValue = {
   [key: string]: unknown;
 };
 
-/** UserForm — форма редактирования профиля пользователя. */
+/** UserForm — user profile edit form. */
 const UserForm = (): JSX.Element => {
   const t = useT();
   const { isAuth, refreshUser, user } = useContext(AuthContext);

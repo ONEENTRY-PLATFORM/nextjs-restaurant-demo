@@ -19,12 +19,12 @@ const redirectToOAuth = (url: string) => {
 };
 
 /**
- * AuthProviderSelect — первый шаг авторизации (выбор провайдера).
+ * AuthProviderSelect — first auth step (provider picker).
  *
- * @param   {object}     props           - Пропсы.
- * @param   {string}     props.className - Класс-обёртка.
- * @param   {boolean}    props.isActive  - Активен ли шаг (для анимаций).
- * @returns {JSX.Element}                JSX списка провайдеров.
+ * @param   {object}     props           - Props.
+ * @param   {string}     props.className - Wrapper class.
+ * @param   {boolean}    props.isActive  - Whether the step is active (for animations).
+ * @returns {JSX.Element}                JSX of the provider list.
  */
 const AuthProviderSelect = ({
   className,
@@ -38,15 +38,15 @@ const AuthProviderSelect = ({
 
   const onProviderClick = (p: IAuthProvidersEntity) => {
     if (p.identifier === 'email' || p.identifier === 'phone') {
-      // Phone-провайдер пускаем тем же email/login flow в SignInForm
-      // (отдельная PhoneAuthForm не используется — см. MISMATCH-LOG.md §C.8.2).
+      // Route the phone provider through the same email/login flow in SignInForm
+      // (a dedicated PhoneAuthForm is not used — see MISMATCH-LOG.md §C.8.2).
       setComponent('SignInForm');
       return;
     }
     if (p.identifier === 'google') {
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth ещё не сконфигурирован (см. MISMATCH-LOG.md §C.8.1).
-        // Падаем в email, чтобы у пользователя был рабочий путь логина.
+        // Google OAuth is not configured yet (see MISMATCH-LOG.md §C.8.1).
+        // Fall back to email so the user still has a working sign-in path.
         setComponent('SignInForm');
       }
       return;

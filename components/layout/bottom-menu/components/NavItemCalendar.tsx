@@ -7,7 +7,7 @@ import type { JSX } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import HeartScriptIcon from '@/components/icons/heart-script';
 
-/** Кнопка nav-элемента календаря (бронирования). */
+/** Calendar (bookings) nav item button. */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
   const cartCount = useAppSelector(state => {
     return state.cartReducer.reservations?.length;

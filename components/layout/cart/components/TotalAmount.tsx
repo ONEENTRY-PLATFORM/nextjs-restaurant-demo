@@ -19,10 +19,10 @@ type CartEntry = {
 };
 
 /**
- * TotalAmount — итоговая сумма по выбранным записям корзины + доставка.
+ * TotalAmount — total amount for selected cart entries + delivery.
  *
- * Клиентское суммирование, т.к. `Orders.previewOrder()` требует auth (401 для гостей).
- * `sale.value` имеет приоритет над `price`.
+ * Client-side summation, because `Orders.previewOrder()` requires auth (401 for guests).
+ * `sale.value` takes precedence over `price`.
  */
 const TotalAmount = ({ className }: { className: string }): JSX.Element => {
   const t = useT();

@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 
 /**
- * PageMetadataOptions — опции генерации метаданных страницы.
+ * PageMetadataOptions — options for generating page metadata.
  *
- * @property {string}  handle        - Handle страницы.
- * @property {string}  title         - Заголовок страницы.
- * @property {string}  description   - Описание страницы.
- * @property {boolean} isVisible     - Видима ли страница.
- * @property {string}  [imageUrl]    - URL изображения.
- * @property {number}  [imageWidth]  - Ширина изображения (по умолчанию 300).
- * @property {number}  [imageHeight] - Высота изображения (по умолчанию 300).
- * @property {string}  [imageAlt]    - Alt-текст изображения (по умолчанию — title).
- * @property {string}  lang          - Код языка.
- * @property {string}  baseUrl       - Базовый URL.
+ * @property {string}  handle        - Page handle.
+ * @property {string}  title         - Page title.
+ * @property {string}  description   - Page description.
+ * @property {boolean} isVisible     - Whether the page is visible.
+ * @property {string}  [imageUrl]    - Image URL.
+ * @property {number}  [imageWidth]  - Image width (defaults to 300).
+ * @property {number}  [imageHeight] - Image height (defaults to 300).
+ * @property {string}  [imageAlt]    - Image alt text (defaults to title).
+ * @property {string}  lang          - Language code.
+ * @property {string}  baseUrl       - Base URL.
  */
 interface PageMetadataOptions {
   handle: string;
@@ -28,10 +28,10 @@ interface PageMetadataOptions {
 }
 
 /**
- * generatePageMetadata — генерирует стандартизированные метаданные страницы Next.js.
+ * generatePageMetadata — generates standardized Next.js page metadata.
  *
- * @param   {PageMetadataOptions} props - Опции генерации метаданных.
- * @returns {Metadata}                  Объект `Metadata` для Next.js.
+ * @param   {PageMetadataOptions} props - Metadata generation options.
+ * @returns {Metadata}                  `Metadata` object for Next.js.
  */
 export const generatePageMetadata = ({
   handle = '',

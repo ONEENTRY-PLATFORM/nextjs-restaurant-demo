@@ -35,8 +35,8 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
- * CartPopup — drawer корзины с полным wizard'ом (`cart` → `order` → `payment` → `success`/`error`).
- * APPLY на cart-шаге переключает Redux-step, не уводит на `/cart`. Параллельно работает `CartWizard` на `/cart` — общий Redux-step.
+ * CartPopup — cart drawer with the full wizard (`cart` → `order` → `payment` → `success`/`error`).
+ * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on `/cart` runs in parallel — they share the Redux step.
  */
 const CartPopup = (): JSX.Element => {
   const t = useT();
@@ -52,7 +52,7 @@ const CartPopup = (): JSX.Element => {
     { skip: !isOpen || productsCartData.length === 0 }
   );
 
-  // Доставка: на `/cart` её тянет server-component; здесь подгружаем сами, иначе total на шагах считается без неё.
+  // Delivery: on `/cart` the server component fetches it; here we load it ourselves, otherwise the total on the steps is computed without it.
   const { data: deliveryProduct } = useGetProductByIdQuery(
     { id: DELIVERY_PRODUCT_ID },
     { skip: !isOpen }
@@ -70,7 +70,7 @@ const CartPopup = (): JSX.Element => {
     }
   }, [deliveryProduct, dispatch]);
 
-  // Закрытие на не-cart шаге сбрасывает wizard на 'cart' — иначе следующее открытие приземлится на промежуточный экран без контекста.
+  // Closing on a non-cart step resets the wizard to 'cart' — otherwise the next open lands on an intermediate screen without context.
   const wasOpenRef = useRef(isOpen);
   useEffect(() => {
     if (wasOpenRef.current && !isOpen && step !== 'cart') {
@@ -81,7 +81,7 @@ const CartPopup = (): JSX.Element => {
 
   const close = (): void => setTransition('close');
 
-  // APPLY на cart: reverse-анимация карточек, потом setStep('order'). Сброс стилей в onComplete — чтобы при возврате карточки появились заново.
+  // APPLY on cart: reverse animation of the cards, then setStep('order'). Reset styles in onComplete so that on return the cards appear fresh.
   const handleCartApply = (): void => {
     const cards = document.querySelectorAll('.product-in-cart');
     const button = document.querySelectorAll('.cart_btn');
@@ -103,7 +103,7 @@ const CartPopup = (): JSX.Element => {
     }).to(button, { autoAlpha: 0, yPercent: 100, duration: 0.25 }, '-=0.15');
   };
 
-  // Back: на cart — закрыть попап, иначе подняться по стеку шагов.
+  // Back: on cart — close the popup, otherwise pop one step from the stack.
   const handleBack = (): void => {
     if (isCartStep) {
       close();
@@ -113,10 +113,10 @@ const CartPopup = (): JSX.Element => {
   };
 
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп закрывает напрямую, минуя GSAP-reverse, чтобы inline-transform не конфликтовал с `yPercent`-tween.
+  // Swipe closes directly, bypassing GSAP-reverse, so that the inline transform does not conflict with the `yPercent` tween.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  // Доставка идёт отдельной строкой в итогах, в списке товаров не показываем (как в CartPage).
+  // Delivery shows as a separate line in the totals; we do not display it in the product list (same as CartPage).
   const products = (data ?? []).filter(
     (p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID
   ) as IProductsEntity[];
@@ -137,7 +137,7 @@ const CartPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] overflow-y-auto bg-ink/80 backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
-          {/* Шапка: back / title / close. */}
+          {/* Header: back / title / close. */}
           <div className="z-10 flex items-center justify-between">
             <button
               type="button"

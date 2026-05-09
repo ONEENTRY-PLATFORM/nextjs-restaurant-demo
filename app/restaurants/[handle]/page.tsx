@@ -31,7 +31,7 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// `comforts` — list с `extended.type === 'image'`; нормализуем к `{ title, iconUrl? }[]`.
+// `comforts` — list with `extended.type === 'image'`; normalized to `{ title, iconUrl? }[]`.
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
   return (raw as ComfortItem[])
@@ -46,11 +46,11 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
     .filter((c): c is Comfort => c !== null);
 };
 
-// Google Maps embed без API-ключа; `&hl=en` фиксирует английские подписи.
+// Google Maps embed without an API key; `&hl=en` forces English labels.
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
-/** RestaurantPage — single-restaurant страница. */
+/** RestaurantPage — single-restaurant page. */
 const RestaurantPage = async ({
   params,
 }: {
@@ -78,7 +78,7 @@ const RestaurantPage = async ({
     | undefined;
   const descriptionHtmlRaw = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
-  // Rich-text иногда отдаёт `<p><br></p>` — считаем html значимым только если есть текст.
+  // Rich-text sometimes returns `<p><br></p>` — treat html as meaningful only if there is text.
   const descriptionHtml = /\S/.test(descriptionHtmlRaw.replace(/<[^>]*>/g, ''))
     ? descriptionHtmlRaw
     : '';
@@ -91,7 +91,7 @@ const RestaurantPage = async ({
         </Link>
       </div>
 
-      {/* Заголовок */}
+      {/* Title */}
       <h1 className="text-center md:text-left font-bold text-xl md:text-[20px] uppercase tracking-[0.02em] text-brand">
         {title}
       </h1>
@@ -111,7 +111,7 @@ const RestaurantPage = async ({
         </p>
       ) : null}
 
-      {/* Ряд comforts + BOOK A TABLE */}
+      {/* Comforts row + BOOK A TABLE */}
       <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-15">
         {comforts.length > 0 ? (
           <div className="flex flex-wrap items-center justify-between gap-5 md:justify-start md:gap-7.5">
@@ -146,7 +146,7 @@ const RestaurantPage = async ({
         </BookATableButton>
       </div>
 
-      {/* Контакты */}
+      {/* Contacts */}
       <div className="mt-12 grid grid-cols-1 gap-7.5 md:grid-cols-[338fr_953fr] md:gap-10">
         <div className="flex flex-col gap-2.5">
           <p className="font-bold text-xl uppercase text-brand">Contacts</p>
@@ -177,7 +177,7 @@ const RestaurantPage = async ({
         )}
       </div>
 
-      {/* Мобильный CTA — на десктопе кнопка уже в ряду с comforts. */}
+      {/* Mobile CTA — on desktop the button already sits in the comforts row. */}
       <div className="mt-10 md:hidden">
         <BookATableButton
           restaurantHandle={handle}

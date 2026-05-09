@@ -9,13 +9,13 @@ import StarPuffyIcon from '@/components/icons/star-puffy';
 import AddToCartButton from '../components/AddToCartButton';
 
 /**
- * ProductDetails — правая колонка страницы продукта (метрики, теги, CTA).
+ * ProductDetails — right column of the product page (metrics, tags, CTA).
  *
- * Читает из OneEntry set `dish`: `weight`, `calorrage`, `rating`, `cooking_time`,
+ * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `rating`, `cooking_time`,
  * `preferences`, `ingredients`, `price` + `currency`.
- * @param   {object}          props         - Пропсы компонента.
- * @param   {IProductsEntity} props.product - Сущность продукта OneEntry.
- * @returns {Promise<JSX.Element>}          JSX панели деталей.
+ * @param   {object}          props         - Component props.
+ * @param   {IProductsEntity} props.product - OneEntry product entity.
+ * @returns {Promise<JSX.Element>}          Details panel JSX.
  */
 const ProductDetails = async ({ product }: { product: IProductsEntity }): Promise<JSX.Element> => {
   const {
@@ -52,10 +52,10 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
 
   return (
     <div className="flex flex-col gap-3.75">
-      {/* Ряд метрик + price badge — одной строкой по static-html/details.html:130 */}
+      {/* Metrics row + price badge — single line per static-html/details.html:130 */}
       <div className="flex justify-between items-start gap-3.75 lg:flex-row-reverse">
         <div className="flex flex-col gap-3.75 mt-2.5">
-          {/* Вес / калорийность / рейтинг + cooking_time (на мобиле) */}
+          {/* Weight / calories / rating + cooking_time (on mobile) */}
           <div className="flex gap-1.25 md:gap-3.75 items-center">
             {weightVal != null ? (
               <>
@@ -81,7 +81,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
                 </p>
               </>
             ) : null}
-            {/* Cooking time — мобильный/планшетный вариант, в одном ряду с метриками */}
+            {/* Cooking time — mobile/tablet variant, in the same row as the metrics */}
             {cookingVal != null && cookingVal > 0 ? (
               <div className="flex gap-1.25 items-center lg:hidden">
                 <ClockCircleIcon variant="orange" />
@@ -100,7 +100,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
         ) : null}
       </div>
 
-      {/* Cooking time — десктопный вариант, отдельной строкой ниже (lg+) */}
+      {/* Cooking time — desktop variant, on a separate line below (lg+) */}
       {cookingVal != null && cookingVal > 0 ? (
         <div className="hidden lg:flex gap-3.75 items-center mt-7.5">
           <ClockCircleIcon variant="orange" />
@@ -110,14 +110,14 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
         </div>
       ) : null}
 
-      {/* Ингредиенты */}
+      {/* Ingredients */}
       {ingredientsText ? (
         <h3 className="font-normal text-[14px] tracking-[0.02em] text-white opacity-90">
           <span className="text-brand">Ingredients:</span> {ingredientsText}
         </h3>
       ) : null}
 
-      {/* Preferences / теги — пилюли, ведут на /shop?preferences=<value> (тот же контракт, что у CategoriesScroller) */}
+      {/* Preferences / tags — pills, link to /shop?preferences=<value> (same contract as CategoriesScroller) */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
           {prefs.map(p => (

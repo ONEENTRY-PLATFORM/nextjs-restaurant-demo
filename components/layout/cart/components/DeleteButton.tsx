@@ -4,7 +4,7 @@ import DeleteIcon from '@/components/icons/delete';
 
 import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
 
-/** Кнопка удаления продукта из корзины с undo-toast. */
+/** Cart product remove button with undo toast. */
 const DeleteButton = ({ productId, title }: { productId: number; title: string }): JSX.Element => {
   const removeWithUndo = useCartRemoveWithUndo(productId, title);
 

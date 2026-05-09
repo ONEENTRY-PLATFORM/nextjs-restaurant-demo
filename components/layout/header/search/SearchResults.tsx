@@ -12,7 +12,7 @@ import Spinner from '@/components/shared/Spinner';
 import CloseSearch from './CloseSearch';
 import ProductRow from './ProductRow';
 
-/** Результаты поиска. */
+/** Search results. */
 const SearchResults = ({
   searchValue,
   isPending = false,

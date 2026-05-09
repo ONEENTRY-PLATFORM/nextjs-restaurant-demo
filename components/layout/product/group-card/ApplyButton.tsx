@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
 
-/** ApplyButton — Apply/Cancel-тоггл добавления продукта группы в корзину. */
+/** ApplyButton — Apply/Cancel toggle for adding a group product to the cart. */
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

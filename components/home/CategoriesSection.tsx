@@ -15,9 +15,9 @@ type CategoriesSectionProps = {
 };
 
 /**
- * CategoriesSection — секция категории главной с заголовком, ссылкой "View all" и сеткой продуктов.
- * @param   {CategoriesSectionProps} props - Пропсы.
- * @returns {JSX.Element}                  JSX секции.
+ * CategoriesSection — homepage category section with title, "View all" link and product grid.
+ * @param   {CategoriesSectionProps} props - Props.
+ * @returns {JSX.Element}                  Section JSX.
  */
 const CategoriesSection = ({
   title,

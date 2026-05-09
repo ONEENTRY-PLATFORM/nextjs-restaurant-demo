@@ -33,7 +33,7 @@ type DayCell = {
   iso: string;
 };
 
-/** Строит прямоугольную сетку 6×7 дней для месяца, дополняя хвостами соседних месяцев. */
+/** Builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months. */
 const buildMonthGrid = (year: number, month: number): DayCell[] => {
   const first = new Date(year, month, 1);
   const firstDow = (first.getDay() + 6) % 7;
@@ -91,8 +91,8 @@ type DateTimePickerSheetProps = {
 };
 
 /**
- * DateTimePickerSheet — двухшаговый bottom-sheet/модал для выбора даты и времени.
- * Шаг 1 — календарь, Шаг 2 — сетка временных слотов; `Apply` вызывает `onApply(date, time)`.
+ * DateTimePickerSheet — two-step bottom-sheet/modal for selecting date and time.
+ * Step 1 — calendar, Step 2 — time-slot grid; `Apply` invokes `onApply(date, time)`.
  */
 const DateTimePickerSheet = ({
   date,
@@ -182,7 +182,7 @@ const DateTimePickerSheet = ({
     return out;
   }, [selectedDate, getSlots, range, step]);
 
-  // Намеренно НЕ сбрасываем выбранное время при смене даты — пользователь хочет, чтобы выбор сохранялся «пока я его не поменяю».
+  // Intentionally do NOT reset the selected time when the date changes — the user expects the selection to persist "until I change it".
 
   const goPrev = () => {
     if (month === 0) {

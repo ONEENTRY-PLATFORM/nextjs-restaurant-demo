@@ -6,7 +6,7 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
-/** getProducts — все продукты с пагинацией и фильтром. */
+/** getProducts — paginated products with filter. */
 export const getProducts = cache(
   async (props: {
     limit: number;
@@ -37,9 +37,9 @@ export const getProducts = cache(
       .map(v => v.trim())
       .filter(Boolean);
 
-    // OR-семантика для multi-select preferences: SDK принимает только скаляр в `conditionValue`,
-    // поэтому каждое значение фетчим отдельным запросом и мерджим уникальные. AND-вариант почти
-    // всегда пуст — в админке нет блюд со всеми выбранными preferences одновременно.
+    // OR semantics for multi-select preferences: the SDK accepts only a scalar in `conditionValue`,
+    // so each value is fetched in a separate request and unique items are merged. The AND variant is
+    // almost always empty — the admin has no dishes that satisfy all selected preferences at once.
     if (prefList.length > 1) {
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
@@ -82,7 +82,7 @@ export const getProducts = cache(
       const data = await getApi().Products.getProducts(
         expandedFilters,
         lang,
-        // sortKey/sortOrder опускаем — сервер применит выбранную в админке сортировку и position-локи.
+        // Omit sortKey/sortOrder — the server applies the sort chosen in the admin and the position locks.
         { offset, limit }
       );
       if (typeError(data)) {

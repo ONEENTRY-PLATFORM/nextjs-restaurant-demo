@@ -4,17 +4,17 @@ import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
 type Options = {
-  /** Расстояние в px, после которого жест приводит к закрытию. */
+  /** Distance in px past which the gesture triggers a close. */
   threshold?: number;
-  /** Скорость в px/ms, после которой flick приводит к закрытию даже до threshold. */
+  /** Velocity in px/ms past which a flick closes even before reaching `threshold`. */
   velocityThreshold?: number;
 };
 
 /**
- * useSwipeToClose — swipe-to-dismiss для bottom-sheet.
- * @param ref     - Элемент, который тащим (обычно `modalBody`).
- * @param onClose - Обработчик подтверждения; должен запускать тот же close-переход, что и X-кнопка.
- * @param options - Настройки.
+ * useSwipeToClose — swipe-to-dismiss for a bottom-sheet.
+ * @param ref     - The element being dragged (usually `modalBody`).
+ * @param onClose - Confirmation handler; must trigger the same close transition as the X button.
+ * @param options - Options.
  */
 export const useSwipeToClose = (
   ref: RefObject<HTMLElement | null>,
@@ -69,7 +69,7 @@ export const useSwipeToClose = (
         el.style.transform = '';
         return;
       }
-      // Глушим нативный скролл — иначе вместе со sheet-ом тянется фоновая страница.
+      // Suppress native scroll — otherwise the background page drags along with the sheet.
       if (e.cancelable) {
         e.preventDefault();
       }
@@ -84,7 +84,7 @@ export const useSwipeToClose = (
       const elapsed = Math.max(1, e.timeStamp - startTime);
       const velocity = dy / elapsed;
       if (dy > threshold || velocity > velocityThreshold) {
-        // Подгоняем длительность под скорость пальца, чтобы слайд продолжил жест без визуального рывка.
+        // Match the duration to the finger velocity so the slide continues the gesture without a visual jolt.
         const distance = window.innerHeight - el.getBoundingClientRect().top;
         const remaining = Math.max(0, distance - dy);
         const projected = velocity > 0 ? remaining / velocity : 250;
@@ -93,7 +93,7 @@ export const useSwipeToClose = (
         el.style.transform = `translateY(${distance}px)`;
         const onEnd = () => {
           el.removeEventListener('transitionend', onEnd);
-          // НЕ сбрасываем transform/transition: иначе sheet прыгнет обратно до того, как React размонтирует элемент.
+          // Do NOT reset transform/transition: otherwise the sheet would jump back before React unmounts the element.
           onClose();
         };
         el.addEventListener('transitionend', onEnd);
@@ -110,7 +110,7 @@ export const useSwipeToClose = (
     };
 
     el.addEventListener('touchstart', onTouchStart, { passive: true });
-    // touchmove НЕ passive — нужен `preventDefault` для гашения body-scroll во время swipe-down.
+    // touchmove must NOT be passive — we need `preventDefault` to suppress body-scroll during swipe-down.
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     el.addEventListener('touchend', onTouchEnd);
     el.addEventListener('touchcancel', onTouchCancel);

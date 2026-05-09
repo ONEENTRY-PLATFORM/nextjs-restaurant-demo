@@ -61,8 +61,8 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 64, 96, 128, 256],
     qualities: [50, 75],
     unoptimized: false,
-    // OneEntry CDN резолвится через NAT64 (64:ff9b::/96) — image optimizer считает
-    // это private IP и отказывается фетчить. Хост публичный, опт-ин безопасен.
+    // OneEntry CDN resolves via NAT64 (64:ff9b::/96) — the image optimizer treats
+    // this as a private IP and refuses to fetch. The host is public, opt-in is safe.
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {

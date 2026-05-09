@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 
 import { getApi } from '@/app/api';
 
-/** useSearchProducts — поиск продуктов через Products API. */
+/** useSearchProducts — product search via the Products API. */
 export const useSearchProducts = ({ name }: { name: string }) => {
-  // Стартуем в `loading` при непустом `name`, чтобы первый рендер не мигал "No products found"
-  // до отработки effect.
+  // Start in `loading` when `name` is non-empty so the first render does not flash "No products found"
+  // before the effect runs.
   const [loading, setLoading] = useState<boolean>(Boolean(name));
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const [refetch, setRefetch] = useState(false);

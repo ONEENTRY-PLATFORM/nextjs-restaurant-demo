@@ -6,8 +6,8 @@ import OrdersList from '@/components/profile/OrdersList';
 export const dynamic = 'force-dynamic';
 
 /**
- * ProfileOrdersPage — вкладка заказов в личном кабинете.
- * @returns {Promise<JSX.Element>} JSX страницы заказов.
+ * ProfileOrdersPage — orders tab in the personal account.
+ * @returns {Promise<JSX.Element>} JSX of the orders page.
  */
 const ProfileOrdersPage = async (): Promise<JSX.Element> => {
   const promoBanners = await getBlogBanners();

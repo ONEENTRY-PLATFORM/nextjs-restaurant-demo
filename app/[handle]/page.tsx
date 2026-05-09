@@ -50,7 +50,7 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * generateMetadata — генерирует метаданные страницы.
+ * generateMetadata — generates page metadata.
  * @returns {Promise<Metadata>} Page metadata.
  */
 export async function generateMetadata({

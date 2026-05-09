@@ -6,7 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/** ProductAnimations — fade-in/leaving обёртка для блоков страницы продукта. */
+/** ProductAnimations — fade-in/leaving wrapper for product page blocks. */
 const ProductAnimations = ({
   children,
   className,

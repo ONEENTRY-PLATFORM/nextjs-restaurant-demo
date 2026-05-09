@@ -3,8 +3,8 @@ import { Suspense } from 'react';
 
 import GoogleAuthCallbackInner from './GoogleAuthCallbackInner';
 
-// OAuth-callback dynamic: prerender бесполезен (только разбор `?code`) и
-// бейлится из-за `useSearchParams()` в клиентской части под Turbopack.
+// OAuth-callback dynamic: prerender is pointless (we only parse `?code`) and
+// bails out because of `useSearchParams()` in the client part under Turbopack.
 export const dynamic = 'force-dynamic';
 
 const GoogleAuthCallback = (): JSX.Element => (

@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 
 import Spinner from './Spinner';
 
-/** Loader — обёртка над `Spinner` с дефолтным размером блока загрузки. */
+/** Loader — wrapper around `Spinner` with a default loading-block size. */
 const Loader = (): JSX.Element => {
   return (
     <div className="relative aspect-square size-full max-h-62.5 overflow-hidden">

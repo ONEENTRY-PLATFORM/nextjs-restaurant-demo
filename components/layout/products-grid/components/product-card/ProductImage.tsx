@@ -5,11 +5,11 @@ import type { JSX } from 'react';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * ProductImage — картинка продукта в карточке грида.
- * @param   {object}           props            - Пропсы компонента.
- * @param   {IAttributeValues} props.attributes - `product.attributeValues` (читается `cover.value`, поддерживает объект и массив).
- * @param   {string}           props.alt        - Текст alt для accessibility.
- * @returns {JSX.Element}                       JSX картинки.
+ * ProductImage — product image inside a grid card.
+ * @param   {object}           props            - Component props.
+ * @param   {IAttributeValues} props.attributes - `product.attributeValues` (reads `cover.value`, supports object and array).
+ * @param   {string}           props.alt        - Alt text for accessibility.
+ * @returns {JSX.Element}                       Image JSX.
  */
 const ProductImage = ({
   attributes,
@@ -27,8 +27,8 @@ const ProductImage = ({
     : productImage?.downloadLink;
 
   if (!imageSrc) {
-    // pb-8 компенсирует info-полоску ("30-45 min · 50g · ★ 4") на нижнем краю карточки —
-    // иначе центрированный логотип-плейсхолдер выглядит смещённым.
+    // pb-8 compensates for the info strip ("30-45 min · 50g · ★ 4") at the bottom of the card —
+    // otherwise the centered logo placeholder looks shifted.
     return (
       <div className="relative aspect-square w-full">
         <Placeholder className="pb-8" />
@@ -36,7 +36,7 @@ const ProductImage = ({
     );
   }
 
-  // overflow-hidden — чтобы scale на hover не вылезал за границы карточки.
+  // overflow-hidden — so that scale on hover does not bleed past the card edges.
   return (
     <div className="relative aspect-square w-full overflow-hidden">
       <Image

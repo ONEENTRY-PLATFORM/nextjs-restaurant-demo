@@ -8,7 +8,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import EyeCircleIcon from '@/components/icons/eye-circle';
 
-/** Ссылка nav-элемента профиля / кнопка SignInForm. */
+/** Profile nav item link / SignInForm button. */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);

@@ -5,7 +5,7 @@ import { type JSX, useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CategoryBarsIcon from '@/components/icons/category-bars';
 
-/** CategoryButton — burger в десктопном nav-ряду, открывает `CategoryFilter`. */
+/** CategoryButton — burger in the desktop nav row; opens `CategoryFilter`. */
 const CategoryButton = (): JSX.Element => {
   const { setOpen, setComponent, setTransition } = useContext(OpenDrawerContext);
 

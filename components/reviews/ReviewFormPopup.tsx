@@ -14,8 +14,8 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import ReviewForm from './ReviewForm';
 
 /**
- * ReviewFormPopup — попап с формой отзыва. productId прокидывается через `OpenDrawerContext.action`,
- * чтобы попап оставался глобально зарегистрированным без знания о текущей странице.
+ * ReviewFormPopup — popup hosting the review form. productId is passed via `OpenDrawerContext.action`
+ * so the popup can stay globally registered without knowing about the current page.
  */
 const ReviewFormPopup = (): JSX.Element => {
   const t = useT();

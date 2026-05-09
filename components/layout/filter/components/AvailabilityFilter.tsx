@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-/** Фильтр наличия товара. */
+/** Product availability filter. */
 const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();

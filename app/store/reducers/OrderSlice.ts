@@ -20,13 +20,13 @@ type InitialStateType = {
     identifier: string;
   }>;
   step: CheckoutStep;
-  // Стек предыдущих шагов — пушится при каждом `setStep`, попается через
-  // `goBackStep`. Позволяет кнопке «назад» в попапе вернуться к
-  // фактическому предыдущему шагу, а не безусловно на `cart`.
+  // Stack of previous steps — pushed on every `setStep`, popped via
+  // `goBackStep`. Lets the popup "back" button return to the actual
+  // previous step instead of unconditionally going back to `cart`.
   stepHistory: CheckoutStep[];
   stepError?: string;
-  // Переживает `removeOrder()` (который сбрасывает `order` в initialState),
-  // чтобы success-экран мог отрендерить реальный id, присвоенный CMS.
+  // Survives `removeOrder()` (which resets `order` to initialState) so the
+  // success screen can render the real id assigned by the CMS.
   lastOrderId?: number;
   appliedCoupon?: AppliedCoupon;
 };
@@ -105,9 +105,9 @@ const orderReducer = createSlice({
       state.currency = action.payload;
     },
     setStep(state, action: PayloadAction<CheckoutStep>) {
-      // Игнорируем no-op переходы и не пушим историю при возврате на тот же шаг.
+      // Ignore no-op transitions and don't push history when returning to the same step.
       if (state.step !== action.payload) {
-        // Cap у стека — на случай длинных циклов вперёд/назад в одном попапе.
+        // Cap on the stack — guards against long forward/back loops in a single popup.
         state.stepHistory.push(state.step);
         if (state.stepHistory.length > 16) {
           state.stepHistory.shift();
@@ -119,8 +119,9 @@ const orderReducer = createSlice({
       }
     },
     /**
-     * Возврат к предыдущему шагу из `stepHistory`. Если стек пуст — фолбэк на
-     * `cart` (закрывает попап, т.к. при `step === 'cart'` `showPopup` = false).
+     * Go back to the previous step from `stepHistory`. If the stack is empty,
+     * fall back to `cart` (which closes the popup, because `showPopup` is false
+     * when `step === 'cart'`).
      */
     goBackStep(state) {
       const previous = state.stepHistory.pop();
@@ -128,9 +129,9 @@ const orderReducer = createSlice({
       delete state.stepError;
     },
     /**
-     * Полный сброс wizard-а в начальное состояние. Вызывается после терминальных
-     * шагов (`success`/`error`), иначе из-за персистентности Redux при следующем
-     * заходе на `/cart` рендерится `StepResult` поверх корзины.
+     * Full reset of the wizard to its initial state. Called after terminal
+     * steps (`success`/`error`); otherwise, due to Redux persistence, the next
+     * visit to `/cart` would render `StepResult` over the cart.
      */
     resetCheckout(state) {
       state.step = 'cart';

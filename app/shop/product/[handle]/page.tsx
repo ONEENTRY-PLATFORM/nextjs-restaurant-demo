@@ -7,9 +7,9 @@ import { getProductById } from '@/app/api';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * ProductPageLayout — layout страницы товара.
- * @param   {object} props - Пропсы страницы.
- * @returns {Promise<JSX.Element>} JSX layout-а страницы товара.
+ * ProductPageLayout — product page layout.
+ * @param   {object} props - Page props.
+ * @returns {Promise<JSX.Element>} JSX of the product page layout.
  */
 const ProductPageLayout = async ({
   params,
@@ -26,7 +26,7 @@ const ProductPageLayout = async ({
 
   const { attributeValues, localizeInfos, additional, statusIdentifier } = product;
 
-  // JSON-LD structured data товара (https://json-ld.org/) для SEO.
+  // JSON-LD structured data for the product (https://json-ld.org/) for SEO.
   const descriptionValue = attributeValues.description?.value as
     | Array<{ plainValue?: string }>
     | undefined;
@@ -66,7 +66,7 @@ const ProductPageLayout = async ({
 
 export default ProductPageLayout;
 
-/** generateMetadata — метаданные страницы товара. */
+/** generateMetadata — product page metadata. */
 export async function generateMetadata({
   params,
 }: {

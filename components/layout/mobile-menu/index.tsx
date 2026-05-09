@@ -15,7 +15,7 @@ import MobileMenuAnimations from './animations/MobileMenuAnimations';
 import CloseModal from './components/CloseModal';
 import MobileMenu from './components/MobileMenu';
 
-/** Offscreen-модалка мобильного меню. */
+/** Offscreen modal for the mobile menu. */
 const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();
   const { open, setOpen, component } = useContext(OpenDrawerContext);

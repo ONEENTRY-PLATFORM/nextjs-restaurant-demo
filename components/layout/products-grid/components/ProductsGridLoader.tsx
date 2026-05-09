@@ -6,7 +6,7 @@ import type { LoaderProps } from '@/app/types/global';
 
 import ProductsGridLoaderAnimations from '../animations/ProductsGridLoaderAnimations';
 
-/** ProductsGridLoader — скелетон сетки продуктов. */
+/** ProductsGridLoader — product grid skeleton. */
 const ProductsGridLoader = ({ productsLimit = 10 }: LoaderProps): JSX.Element => {
   return (
     <ProductsGridLoaderAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>

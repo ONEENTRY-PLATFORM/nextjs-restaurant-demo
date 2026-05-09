@@ -1,8 +1,8 @@
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-// Fallback на случай, если в OneEntry admin у провайдера `google` пуст
-// `config.oauthAuthUrl` — основной источник истины для URL это сам провайдер,
-// см. `startGoogleOAuth(authUrl)`.
+// Fallback for when the OneEntry admin leaves the `google` provider's
+// `config.oauthAuthUrl` empty — the provider itself is the source of truth
+// for the URL, see `startGoogleOAuth(authUrl)`.
 const GOOGLE_AUTH_URL_FALLBACK = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 export type ProviderMeta = {
@@ -58,13 +58,13 @@ export const sortActiveAuthProviders = (
 };
 
 /**
- * Запускает Google OAuth-редирект. `authUrl` берётся из
- * `provider.config.oauthAuthUrl` (OneEntry admin) — если он `null`/пуст,
- * падаем на `GOOGLE_AUTH_URL_FALLBACK`.
+ * Starts the Google OAuth redirect. `authUrl` is read from
+ * `provider.config.oauthAuthUrl` (OneEntry admin) — if it is `null`/empty,
+ * falls back to `GOOGLE_AUTH_URL_FALLBACK`.
  *
- * Возвращает `false`, если `NEXT_PUBLIC_GOOGLE_CLIENT_ID` не задан
- * (см. MISMATCH-LOG.md §C.8.1) — в этом случае вызывающая сторона должна
- * сделать fallback на email-логин.
+ * Returns `false` when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is not set
+ * (see MISMATCH-LOG.md §C.8.1) — in that case the caller must fall back
+ * to email login.
  */
 export const startGoogleOAuth = (authUrl?: string | null): boolean => {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;

@@ -3,11 +3,11 @@ import type { JSX } from 'react';
 import TableRowAnimations from '../animations/TableRowAnimations';
 
 /**
- * PaymentButton — submit-кнопка корзины (CTA `APPLY`).
+ * PaymentButton — cart submit button (CTA `APPLY`).
  *
- * @param   {object}      props      - Пропсы кнопки.
- * @param   {string}      props.text - Подпись кнопки (из CMS).
- * @returns {JSX.Element}            JSX кнопки.
+ * @param   {object}      props      - Button props.
+ * @param   {string}      props.text - Button label (from the CMS).
+ * @returns {JSX.Element}            Button JSX.
  */
 const PaymentButton = ({ text }: { text: string }): JSX.Element => {
   return (

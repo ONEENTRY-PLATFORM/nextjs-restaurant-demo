@@ -6,10 +6,10 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * BookATableButton — клиентская кнопка-триггер ReservationPopup.
+ * BookATableButton — client-side trigger button for ReservationPopup.
  *
- * Кладёт в `action` маркер ресторана (= `pageUrl`), чтобы попап
- * предзаполнил дропдаун выбора ресторана.
+ * Stores the restaurant marker (= `pageUrl`) in `action` so the popup
+ * can pre-fill the restaurant picker dropdown.
  */
 const BookATableButton = ({
   restaurantHandle,

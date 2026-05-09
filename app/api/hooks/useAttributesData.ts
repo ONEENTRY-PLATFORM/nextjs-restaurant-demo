@@ -4,11 +4,11 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
- * Извлекает строковое значение атрибута типа String.
+ * Extracts a string value from a String attribute.
  *
- * @param   {string}                  name            - Имя атрибута.
- * @param   {AttributeValuesInput}    attributeValues - Значения атрибутов.
- * @returns {string}                                  Строковое значение или пустая строка.
+ * @param   {string}                  name            - Attribute marker.
+ * @param   {AttributeValuesInput}    attributeValues - Attribute values map.
+ * @returns {string}                                  String value, or an empty string.
  */
 export const getString = (name: string, attributeValues: AttributeValuesInput): string => {
   const attr = attributeValues?.[name];
@@ -19,12 +19,12 @@ export const getString = (name: string, attributeValues: AttributeValuesInput): 
 };
 
 /**
- * Извлекает HTML/plain значение атрибута типа Text.
+ * Extracts an HTML or plain value from a Text attribute.
  *
- * @param   {string}                          name            - Имя атрибута.
- * @param   {AttributeValuesInput}            attributeValues - Значения атрибутов.
- * @param   {'html' | 'plain'}                type            - Формат вывода.
- * @returns {string | ReturnType<typeof parse>}               HTML-узлы или строка.
+ * @param   {string}                          name            - Attribute marker.
+ * @param   {AttributeValuesInput}            attributeValues - Attribute values map.
+ * @param   {'html' | 'plain'}                type            - Output format.
+ * @returns {string | ReturnType<typeof parse>}               Parsed HTML nodes or a plain string.
  */
 export const getText = (
   name: string,
@@ -52,12 +52,12 @@ export const getText = (
 };
 
 /**
- * Извлекает URL изображения из значений атрибута типа Image.
+ * Extracts the image URL from an Image attribute's value.
  *
- * @param   {string}                  name            - Имя атрибута.
- * @param   {AttributeValuesInput}    attributeValues - Значения атрибутов.
- * @param   {'image' | 'preview'}     type            - Полное изображение или превью.
- * @returns {string}                                  URL или пустая строка.
+ * @param   {string}                  name            - Attribute marker.
+ * @param   {AttributeValuesInput}    attributeValues - Attribute values map.
+ * @param   {'image' | 'preview'}     type            - Full image or preview.
+ * @returns {string}                                  URL, or an empty string.
  */
 export const getImageUrl = (
   name: string,

@@ -10,7 +10,7 @@ import DecreaseButton from './DecreaseButton';
 import IncreaseButton from './IncreaseButton';
 import QuantityInput from './QuantityInput';
 
-/** QuantitySelector — −/qty/+ контрол количества товара в корзине. */
+/** QuantitySelector — −/qty/+ control for the cart item quantity. */
 const QuantitySelector = ({
   id,
   units,

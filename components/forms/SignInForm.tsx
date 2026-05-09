@@ -20,12 +20,12 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 import ResetPasswordButton from './inputs/ResetPasswordButton';
 
 /**
- * SignInForm — форма входа по email/password.
+ * SignInForm — email/password sign-in form.
  *
- * @param   {object}     props           - Пропсы.
- * @param   {string}     props.className - Класс-обёртка.
- * @param   {boolean}    props.isActive  - Активна ли форма (для анимаций).
- * @returns {JSX.Element}                JSX формы.
+ * @param   {object}     props           - Props.
+ * @param   {string}     props.className - Wrapper class.
+ * @param   {boolean}    props.isActive  - Whether the form is active (for animations).
+ * @returns {JSX.Element}                Form JSX.
  */
 const SignInForm = ({
   className,

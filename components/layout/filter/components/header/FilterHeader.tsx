@@ -7,7 +7,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import CloseModal from './CloseModal';
 import HistoryBack from './HistoryBack';
 
-/** Хедер фильтр-модалки. */
+/** Filter modal header. */
 const FilterHeader = (): JSX.Element => {
   const t = useT();
 

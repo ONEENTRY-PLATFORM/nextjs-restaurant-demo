@@ -5,11 +5,11 @@ import type { JSX } from 'react';
 import { getImageUrl } from '@/app/api';
 
 /**
- * PromoCard — одиночная промо-карточка из дочерней страницы `blog` OneEntry (set: `blog_page`).
- * Атрибуты: `banner`/`bg_image` (image), `description` (text), `action_type` (list, CTA).
- * @param   {object}        props      - Пропсы.
- * @param   {IPagesEntity}  props.page - Сущность промо-страницы.
- * @returns {JSX.Element}              JSX промо-карточки.
+ * PromoCard — single promo card from a OneEntry `blog` child page (set: `blog_page`).
+ * Attributes: `banner`/`bg_image` (image), `description` (text), `action_type` (list, CTA).
+ * @param   {object}        props      - Props.
+ * @param   {IPagesEntity}  props.page - Promo page entity.
+ * @returns {JSX.Element}              Promo card JSX.
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};

@@ -6,9 +6,9 @@ import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 /**
- * BlockProducts — payload {@link getBlockProducts}: title, products (обрезанные до `block.quantity`)
- * и подсказка о количестве колонок. Скрывает асимметрию между `product_block` (`block.products`)
- * и `similar_products_block` (`block.similarProducts.items`).
+ * BlockProducts — payload of {@link getBlockProducts}: title, products (sliced to `block.quantity`)
+ * and a column-count hint. Hides the asymmetry between `product_block` (`block.products`)
+ * and `similar_products_block` (`block.similarProducts.items`).
  */
 export interface BlockProducts {
   isError: boolean;
@@ -20,12 +20,12 @@ export interface BlockProducts {
 }
 
 /**
- * getBlockProducts — блок по маркеру + продукты и layout-конфиг в нормализованной форме.
+ * getBlockProducts — block by marker plus products and layout config in normalised form.
  *
- * Порядок в `products` — заданный редактором (drag-and-drop в admin), не пересортируем.
- * При любой ошибке SDK возвращает пустой `products`, чтобы вызывающие рендерили условно без try/catch.
- * @param   {string}                marker - Идентификатор блока (например, `recommended`).
- * @returns {Promise<BlockProducts>}        Нормализованные данные блока.
+ * The order in `products` is the one set by the editor (drag-and-drop in admin) — do not re-sort.
+ * On any SDK error returns empty `products`, so callers can render conditionally without try/catch.
+ * @param   {string}                marker - Block marker (e.g. `recommended`).
+ * @returns {Promise<BlockProducts>}        Normalised block data.
  */
 export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
   try {

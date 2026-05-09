@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
-/** Отображение цены: brand-цена + перечёркнутая старая, либо только старая. */
+/** Price display: brand price + strikethrough old price, or just the old price. */
 const PriceDisplay = ({
   currentPrice,
   originalPrice,

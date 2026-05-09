@@ -6,11 +6,11 @@ import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Центральная выступающая кнопка корзины — открывает `CartPopup` drawer; crossfade с `CenterCloseButton`. */
+/** Central protruding cart button — opens the `CartPopup` drawer; crossfades with `CenterCloseButton`. */
 const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);
-  // Persisted Redux-слайс регидратится на клиенте — гейтим бейдж через mount-gate.
+  // Persisted Redux slice rehydrates on the client — gate the badge via a mount-gate.
   const mounted = useSyncExternalStore(
     cb => {
       cb();

@@ -8,11 +8,11 @@ import { persistStore } from 'redux-persist';
 import { setupStore } from '../store';
 
 /**
- * StoreProvider — Redux-провайдер store.
+ * StoreProvider — Redux store provider.
  *
- * @param   {object}      props          - Пропсы.
- * @param   {ReactNode}   props.children - Дочерний ReactNode.
- * @returns {JSX.Element}                JSX провайдер.
+ * @param   {object}      props          - Component props.
+ * @param   {ReactNode}   props.children - Child ReactNode.
+ * @returns {JSX.Element}                JSX provider.
  */
 export default function StoreProvider({ children }: { children: ReactNode }): JSX.Element {
   const [store] = useState(() => {

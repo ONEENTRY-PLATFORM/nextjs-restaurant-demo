@@ -11,12 +11,12 @@ import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 /**
- * CalendarForm — модальный попап для выбора delivery date + time.
+ * CalendarForm — modal popup for picking delivery date + time.
  *
- * @param   {object}  props           - Пропсы формы.
- * @param   {string}  props.className - Класс-обёртка.
- * @param   {boolean} props.isActive  - Открыта ли модалка.
- * @returns {JSX.Element}             JSX формы.
+ * @param   {object}  props           - Form props.
+ * @param   {string}  props.className - Wrapper class.
+ * @param   {boolean} props.isActive  - Whether the modal is open.
+ * @returns {JSX.Element}             Form JSX.
  */
 const CalendarForm = ({
   className,

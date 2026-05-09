@@ -36,7 +36,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 
 /**
  * BookingsContent — Active reservation + Reservation History.
- * Данные: `getAllOrdersByMarker({ marker: 'booking_order' })` (тот же storage-маркер, что в `ReservationForm`).
+ * Data: `getAllOrdersByMarker({ marker: 'booking_order' })` (same storage marker as in `ReservationForm`).
  */
 const BookingsContent = (): JSX.Element => {
   const { setComponent } = useContext(OpenDrawerContext);
@@ -46,7 +46,7 @@ const BookingsContent = (): JSX.Element => {
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Edit: pending → side-channel, открываем ReservationPopup; сабмит вызовет `Orders.updateOrderByMarkerAndId` вместо `createOrder`.
+  // Edit: pending → side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
   const onEdit = (order: IOrderByMarkerEntity) => {
     if (!order.formIdentifier) {
       toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
@@ -61,7 +61,7 @@ const BookingsContent = (): JSX.Element => {
     setComponent('ReservationPopup');
   };
 
-  // Cancel: SDK не даёт менять `statusIdentifier` клиентом (MISMATCH-LOG §C.10) — оптимистичное удаление + toast.
+  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG §C.10) — optimistic removal + toast.
   const onCancel = (order: IOrderByMarkerEntity) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(

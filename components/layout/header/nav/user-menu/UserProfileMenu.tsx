@@ -11,7 +11,7 @@ import ProfileMenuAnimations from '../../animations/ProfileMenuAnimations';
 import LogoutMenuItem from './LogoutMenuItem';
 import UserMenuItem from './UserMenuItem';
 
-/** Меню User Profile. */
+/** User profile menu. */
 const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 

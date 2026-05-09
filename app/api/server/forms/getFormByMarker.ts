@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getFormByMarker — форма по маркеру. */
+/** getFormByMarker — form by marker. */
 export const getFormByMarker = cache(
   async (
     marker: string

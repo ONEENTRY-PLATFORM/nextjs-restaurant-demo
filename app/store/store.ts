@@ -77,7 +77,7 @@ const rootReducer = combineReducers({
 });
 
 /**
- * Настраивает Redux store с persist-ом.
+ * Sets up the Redux store with redux-persist.
  *
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */

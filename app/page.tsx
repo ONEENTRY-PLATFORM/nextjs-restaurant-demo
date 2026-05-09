@@ -6,20 +6,20 @@ import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
 
-// Force-dynamic: цепочка layout-ов содержит `useSearchParams()`.
+// Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
 
-// Whitelisted block identifiers; неизвестные тихо пропускаются.
+// Whitelisted block identifiers; unknown ones are silently skipped.
 const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);
 
 /**
- * HomePage — главная страница, управляется блоками CMS-страницы `home_web`.
+ * HomePage — home page driven by blocks of the CMS `home_web` page.
  *
- * Грузит page + прикреплённые блоки (отсортированы по `block.position`) и для каждого
- * делает диспетч по `block.identifier`: `home_promo` → {@link HomePromo}, `recommended`
+ * Loads the page + attached blocks (sorted by `block.position`) and for each one
+ * dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended`
  * → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
- * Переупорядочивание блоков в админке меняет порядок секций без изменений в коде.
- * @returns {Promise<JSX.Element>} JSX главной страницы.
+ * Reordering blocks in the admin panel changes the section order without code changes.
+ * @returns {Promise<JSX.Element>} JSX of the home page.
  */
 const HomePage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('home_web');

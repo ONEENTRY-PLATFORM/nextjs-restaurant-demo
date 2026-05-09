@@ -25,7 +25,7 @@ type CartEntry = {
   selected?: boolean;
 };
 
-/** StepOrder — шаг checkout: товары + промо-код + сводка + APPLY → `payment`. */
+/** StepOrder — checkout step: items + promo code + summary + APPLY → `payment`. */
 const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -47,7 +47,7 @@ const StepOrder = (): JSX.Element => {
         row.product &&
         row.entry.selected &&
         row.product.statusIdentifier !== 'out_of_stock' &&
-        // Доставка идёт отдельной строкой в итогах — иначе задваивается в subtotal.
+        // Delivery shows as a separate line in the totals — otherwise it gets double-counted in the subtotal.
         row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{
     entry: CartEntry;
@@ -61,7 +61,7 @@ const StepOrder = (): JSX.Element => {
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
-  // Купон «To Entire Order»: `totalSumWithDiscount` уже включает delivery — не прибавляем повторно, иначе задваивается.
+  // "To Entire Order" coupon: `totalSumWithDiscount` already includes delivery — do not add it again, otherwise it gets double-counted.
   const total = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal + deliveryPrice;
 
   const handleApply = (): void => {
@@ -73,7 +73,7 @@ const StepOrder = (): JSX.Element => {
     void applyCoupon(promoCode);
   };
 
-  // Анимация строк ордера: slide-up + fade на маунте, обратная — на route transition (см. CartAnimations).
+  // Order row animation: slide-up + fade on mount, reverse on route transition (see CartAnimations).
   const containerRef = useRef<HTMLDivElement>(null);
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
@@ -97,7 +97,7 @@ const StepOrder = (): JSX.Element => {
     { scope: containerRef, dependencies: [items.length] }
   );
 
-  // Reverse-анимация на route leave: paused timeline + play() строго на переходе 'none' → 'leaving'.
+  // Reverse animation on route leave: paused timeline + play() strictly on the 'none' → 'leaving' transition.
   useGSAP(() => {
     const tl = gsap.timeline({ paused: true });
 
@@ -135,7 +135,7 @@ const StepOrder = (): JSX.Element => {
       stagger: { each: 0.07, from: 'end' },
       onComplete: () => {
         dispatch(setStep('payment'));
-        // Сброс — чтобы при возврате на шаг entrance-таймлайн стартовал чисто.
+        // Reset so that on returning to the step the entrance timeline starts cleanly.
         gsap.set(targets, { autoAlpha: 1, yPercent: 0 });
       },
     });
@@ -143,7 +143,7 @@ const StepOrder = (): JSX.Element => {
 
   return (
     <div ref={containerRef} className="flex flex-col gap-5">
-      {/* Товары */}
+      {/* Items */}
       <div className="flex flex-col gap-5">
         {items.map(({ entry, product }) => {
           const title = product.localizeInfos?.title ?? 'Item';
@@ -188,7 +188,7 @@ const StepOrder = (): JSX.Element => {
         })}
       </div>
 
-      {/* Промо-код */}
+      {/* Promo code */}
       <div className="step-order-row mt-5 flex w-full flex-col gap-1.5">
         <div className="flex w-full items-center justify-between gap-6.25">
           <input
@@ -224,7 +224,7 @@ const StepOrder = (): JSX.Element => {
         ) : null}
       </div>
 
-      {/* Итоги */}
+      {/* Totals */}
       <div className="step-order-row mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>{t('subtotal_text', 'Subtotal')}:</p>

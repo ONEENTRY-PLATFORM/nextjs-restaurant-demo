@@ -9,7 +9,7 @@ export type SavedAddress = {
 };
 
 /**
- * Достаёт сохранённые адреса из `user_address`. OneEntry хранит value как массив или JSON-строку — поддерживаем оба.
+ * Reads saved addresses from `user_address`. OneEntry stores the value as an array or a JSON string — both are supported.
  */
 export const parseSavedAddresses = (
   formData: ReadonlyArray<FormDataType> | undefined
@@ -38,7 +38,7 @@ export const pickSelectedAddress = (list: ReadonlyArray<SavedAddress>): SavedAdd
   return list.find(a => a.selected) ?? list[0] ?? null;
 };
 
-/** "Main str., 12, fl. 3" — пропускает пустые поля. */
+/** "Main str., 12, fl. 3" — skips empty fields. */
 export const formatAddressLine = (a: SavedAddress | null): string => {
   if (!a) return '';
   const parts = [a.street && `${a.street} str.`, a.house, a.floor && `fl. ${a.floor}`].filter(

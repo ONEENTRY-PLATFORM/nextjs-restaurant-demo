@@ -24,7 +24,7 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-/** FavoritesPopup — попап избранного: модалка по центру на md+, bottom-sheet на мобиле. */
+/** FavoritesPopup — favorites popup: centered modal on md+, bottom-sheet on mobile. */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -38,7 +38,7 @@ const FavoritesPopup = (): JSX.Element => {
 
   const close = () => setTransition('close');
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Свайп закрывает напрямую — минуем GSAP-reverse, чтобы inline-transform хука не конфликтовал с `yPercent`-tween.
+  // Swipe closes directly — bypass GSAP-reverse so the hook's inline transform does not conflict with the `yPercent` tween.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const favoriteIdSet = new Set(favoriteIds);
   const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
@@ -51,7 +51,7 @@ const FavoritesPopup = (): JSX.Element => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        {/* Мобильный хедер: back / title / burger; sticky чтобы не уезжал со списком. На md+ скрыт. */}
+        {/* Mobile header: back / title / burger; sticky so it does not scroll with the list. Hidden on md+. */}
         <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between px-5 pt-5 pb-2.5 md:hidden">
           <button
             type="button"
@@ -67,7 +67,7 @@ const FavoritesPopup = (): JSX.Element => {
           </button>
         </div>
 
-        {/* Десктоп-хедер: spacer / title / X — выравнивание заголовка по центру. */}
+        {/* Desktop header: spacer / title / X — keeps the title centered. */}
         <div className="hidden items-center justify-between md:flex">
           <span aria-hidden="true" className="h-11.5 w-11.5" />
           <p className="font-semibold text-[24px] text-brand">Favorites</p>
@@ -109,7 +109,7 @@ const FavoritesPopup = (): JSX.Element => {
   );
 };
 
-/** FavoriteCard — одиночная карточка избранного в попапе. */
+/** FavoriteCard — single favorite card inside the popup. */
 const FavoriteCard = ({
   product,
   addToCartLabel,

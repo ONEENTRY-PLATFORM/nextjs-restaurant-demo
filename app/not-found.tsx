@@ -3,10 +3,10 @@ import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 
-// Force-dynamic: цепочка layout-ов содержит `useSearchParams()`.
+// Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
 
-/** NotFound — layout страницы 404. */
+/** NotFound — 404 page layout. */
 const NotFound = async (): Promise<JSX.Element> => {
   const { page, isError } = await getPageByUrl('404');
 

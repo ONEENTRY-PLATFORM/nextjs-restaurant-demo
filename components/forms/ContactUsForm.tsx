@@ -18,11 +18,11 @@ type SpamCaptchaSettings = {
 };
 
 /**
- * ContactUsForm — форма обратной связи.
+ * ContactUsForm — contact form.
  *
- * @param   {object}     props           - Пропсы.
- * @param   {string}     props.className - Класс-обёртка.
- * @returns {JSX.Element}                JSX формы.
+ * @param   {object}     props           - Props.
+ * @param   {string}     props.className - Wrapper class.
+ * @returns {JSX.Element}                Form JSX.
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
     .slice()
     .sort((a: { position: number }, b: { position: number }) => a.position - b.position);
 
-  // captchaKey/action приходят из OneEntry в `settings.captcha.{key,action}`.
+  // captchaKey/action come from OneEntry in `settings.captcha.{key,action}`.
   const spamField = useMemo(() => formFields?.find(f => f.type === 'spam'), [formFields]);
   const spamSettings = spamField?.settings as SpamCaptchaSettings | undefined;
   const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
@@ -62,7 +62,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         case 'list':
           return { marker, type: 'list', value: [{ title: value, value }] };
         case 'text':
-          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
+          // OneEntry: "Only one of htmlValue, plainValue or mdValue can be provided".
           return {
             marker,
             type: 'text',

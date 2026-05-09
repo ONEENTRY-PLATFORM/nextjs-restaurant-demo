@@ -46,7 +46,7 @@ const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
   bookings: 'bookings',
 };
 
-/** ProfileNavMenu — список ссылок личного кабинета из CMS-меню `user_menu` (дети `profile`). */
+/** ProfileNavMenu — list of profile links from the CMS menu `user_menu` (children of `profile`). */
 const ProfileNavMenu = ({
   isMdUp,
   onNavigate,
@@ -92,7 +92,7 @@ const ProfileNavMenu = ({
         const label = page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
         const inlineScreen = page.pageUrl ? MOBILE_INLINE_SCREENS[page.pageUrl] : undefined;
 
-        // Мобильный inline-экран — кнопка переключает `screen` внутри попапа.
+        // Mobile inline screen — the button switches `screen` inside the popup.
         if (!isMdUp && inlineScreen) {
           return (
             <button
@@ -107,7 +107,7 @@ const ProfileNavMenu = ({
           );
         }
 
-        // По умолчанию (md+ или неизвестный pageUrl) — ссылка на standalone `/profile/{pageUrl}`, закрывающая попап.
+        // Default (md+ or unknown pageUrl) — link to standalone `/profile/{pageUrl}` that closes the popup.
         return (
           <Link
             key={page.id}
@@ -145,7 +145,7 @@ const SCREEN_TITLES: Record<Exclude<ProfileScreen, 'menu'>, string> = {
   personal: 'My Profile',
 };
 
-/** ScreenHeader — заголовок мобильного sub-экрана: back / title. */
+/** ScreenHeader — mobile sub-screen header: back / title. */
 const ScreenHeader = ({
   screen,
   onBack,
@@ -167,7 +167,7 @@ const ScreenHeader = ({
   </div>
 );
 
-/** ProfilePopup — drawer профиля. */
+/** ProfilePopup — profile drawer. */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
@@ -189,7 +189,7 @@ const ProfilePopup = (): JSX.Element => {
     return <></>;
   }
 
-  // На десктопе всегда показываем меню.
+  // On desktop always show the menu.
   const activeScreen = isMdUp ? 'menu' : screen;
 
   return (

@@ -11,17 +11,17 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { peekPendingReservationResume } from '@/components/reservation/reservationOAuthResumeState';
 
 /**
- * Google OAuth callback — обменивает `?code` на сессию OneEntry через
- * {@link oauthLogIn}, сохраняет refresh-токен, сигнализирует
- * {@link AuthContext} перезапросить данные пользователя, затем редиректит
- * туда, откуда начался флоу (`?return=/cart`, по умолчанию `/`).
+ * Google OAuth callback — exchanges `?code` for a OneEntry session via
+ * {@link oauthLogIn}, stores the refresh token, signals
+ * {@link AuthContext} to re-fetch the user, then redirects back to where
+ * the flow started (`?return=/cart`, defaults to `/`).
  *
- * Если редирект был запущен из попапа бронирования
- * ({@link ReservationAuthStep}), `sessionStorage` содержит resume-снэпшот:
- * `returnTo` берётся из него (если в URL нет `?return=`), а попап
- * программно переоткрывается через {@link OpenDrawerContext}, чтобы
- * пользователь увидел свои значения формы — независимо от того, успешен
- * был логин или отменён.
+ * If the redirect was launched from the reservation popup
+ * ({@link ReservationAuthStep}), `sessionStorage` holds a resume snapshot:
+ * `returnTo` is read from it (when the URL has no `?return=`) and the
+ * popup is programmatically reopened via {@link OpenDrawerContext} so the
+ * user sees their form values again — regardless of whether the login
+ * succeeded or was cancelled.
  */
 const GoogleAuthCallbackInner = (): JSX.Element => {
   const params = useSearchParams();

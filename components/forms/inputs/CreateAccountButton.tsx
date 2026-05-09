@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Кнопка `Create account` — открывает попап со SignUpForm. */
+/** `Create account` button — opens the popup with SignUpForm. */
 const CreateAccountButton = ({ title = 'Create account' }: { title: string }) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 

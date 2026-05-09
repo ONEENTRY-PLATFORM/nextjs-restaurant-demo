@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 
 import ProductCard from './product-card/ProductCard';
 
-/** ProductsGrid — сетка карточек продуктов. */
+/** ProductsGrid — product cards grid. */
 const ProductsGrid = ({
   products,
   productsLimit,
@@ -11,8 +11,8 @@ const ProductsGrid = ({
   productsLimit: number;
   products: IProductsEntity[];
 }): JSX.Element => {
-  // Дедуп по `id`: OneEntry возвращает дубли при совмещении фильтров (preferences+search),
-  // иначе React падает с "two children with the same key".
+  // Deduplicate by `id`: OneEntry returns duplicates when combining filters (preferences+search),
+  // otherwise React throws "two children with the same key".
   const seen = new Set<number>();
   const uniqueVisible = (products ?? []).filter(item => {
     if (!item.isVisible) return false;

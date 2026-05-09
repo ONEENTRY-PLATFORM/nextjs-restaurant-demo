@@ -10,9 +10,9 @@ import { useT } from '@/app/store/providers/DictProvider';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 /**
- * Категория визуального представления способа оплаты по Figma 120:1875.
- * `card` — Stripe (Visa/MC), `paypal` — PayPal, `wallet` — Apple/Google Pay (текст),
- * `other` — fallback (включая cash).
+ * Visual category for a payment method per Figma 120:1875.
+ * `card` — Stripe (Visa/MC), `paypal` — PayPal, `wallet` — Apple/Google Pay (text),
+ * `other` — fallback (including cash).
  */
 type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
 
@@ -35,15 +35,15 @@ type ReservationPaymentStepProps = {
 };
 
 /**
- * ReservationPaymentStep — шаг выбора способа оплаты для бронирования.
+ * ReservationPaymentStep — payment method selection step for the booking.
  *
- * Список аккаунтов = `Payments.getAccounts()` (фильтр isVisible && isUsed)
- * пересечённый с `storage.paymentAccountIdentifiers` из
- * `getOrderStorageByMarker('booking_order')`, иначе createOrder словит
+ * Account list = `Payments.getAccounts()` (filtered by isVisible && isUsed)
+ * intersected with `storage.paymentAccountIdentifiers` from
+ * `getOrderStorageByMarker('booking_order')`, otherwise createOrder hits
  * 400 "Your payment account is not connected".
  *
- * @param   {ReservationPaymentStepProps} props - Пропсы шага.
- * @returns {JSX.Element}                       JSX шага оплаты.
+ * @param   {ReservationPaymentStepProps} props - Step props.
+ * @returns {JSX.Element}                       Payment step JSX.
  */
 const ReservationPaymentStep = ({
   onApply,
@@ -70,7 +70,7 @@ const ReservationPaymentStep = ({
 
   const [selected, setSelected] = useState<string>('');
 
-  // По умолчанию выбираем Stripe (Credit & Debit) по Figma; если его нет — первый из списка.
+  // Default to Stripe (Credit & Debit) per Figma; if missing, pick the first one in the list.
   useEffect(() => {
     if (selected || accounts.length === 0) return;
     const stripe = accounts.find(a => resolveVisualKind(a) === 'card');
@@ -87,7 +87,7 @@ const ReservationPaymentStep = ({
         </p>
       </div>
 
-      {/* Радио-список способов оплаты */}
+      {/* Radio list of payment methods */}
       <div className="flex w-full flex-col gap-3.75">
         {isAccountsLoading || isStorageLoading ? (
           <p className="text-paper/70">{t('loading_text', 'Loading…')}</p>
@@ -109,7 +109,7 @@ const ReservationPaymentStep = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Apply button — Figma: 95×36, оранжевая обводка, текст #EC722B */}
+      {/* Apply button — Figma: 95×36, orange outline, text #EC722B */}
       <div className="mt-2.5 flex items-center justify-center gap-3.75">
         <button
           type="button"
@@ -132,13 +132,13 @@ const ReservationPaymentStep = ({
 };
 
 /**
- * PaymentRow — радио-строка одного payment-аккаунта.
+ * PaymentRow — radio row for a single payment account.
  *
- * @param   {object}          props          - Пропсы строки.
- * @param   {IAccountsEntity} props.account  - Платёжный аккаунт.
- * @param   {boolean}         props.checked  - Активна ли строка.
- * @param   {() => void}      props.onSelect - Колбэк выбора.
- * @returns {JSX.Element}                    JSX строки.
+ * @param   {object}          props          - Row props.
+ * @param   {IAccountsEntity} props.account  - Payment account.
+ * @param   {boolean}         props.checked  - Whether the row is selected.
+ * @param   {() => void}      props.onSelect - Selection callback.
+ * @returns {JSX.Element}                    Row JSX.
  */
 const PaymentRow = ({
   account,
@@ -153,7 +153,7 @@ const PaymentRow = ({
   const kind = resolveVisualKind(account);
   const id = `pay-${account.identifier}`;
 
-  // Лейбл по Figma: card → "Credit & Debit Cards", остальные → "Pay with".
+  // Label per Figma: card → "Credit & Debit Cards", others → "Pay with".
   const label =
     kind === 'card'
       ? t('booking_credit_cards', 'Credit & Debit Cards')
@@ -187,13 +187,13 @@ const PaymentRow = ({
 };
 
 /**
- * PaymentLogos — логотипы платёжной системы для строки выбора.
- * Для Apple/Google Pay нет ассетов — рендерим текстовый fallback.
+ * PaymentLogos — payment system logos for the selection row.
+ * No assets exist for Apple/Google Pay — render a text fallback.
  *
- * @param   {object}             props          - Пропсы.
- * @param   {PaymentVisualKind}  props.kind     - Категория способа оплаты.
- * @param   {string}             props.fallback - Текст для fallback-варианта.
- * @returns {JSX.Element}                       JSX логотипов.
+ * @param   {object}             props          - Props.
+ * @param   {PaymentVisualKind}  props.kind     - Payment method category.
+ * @param   {string}             props.fallback - Text used for the fallback variant.
+ * @returns {JSX.Element}                       Logos JSX.
  */
 const PaymentLogos = ({
   kind,

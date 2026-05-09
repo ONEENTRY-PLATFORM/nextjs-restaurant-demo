@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import { useTransitionState } from 'next-transition-router';
 import { useState } from 'react';
 
-/** useStage — возвращает глобальные данные стадии (`play` / `enter` / `leave`). */
+/** useStage — returns the global stage data (`play` / `enter` / `leave`). */
 const useStage = () => {
   const { stage } = useTransitionState();
 

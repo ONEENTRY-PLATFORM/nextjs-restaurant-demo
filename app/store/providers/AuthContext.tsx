@@ -20,7 +20,7 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-/** AuthContext — контекст аутентификации пользователя. */
+/** AuthContext — user authentication context. */
 export const AuthContext = createContext<{
   isAuth: boolean;
   isLoading: boolean;
@@ -36,11 +36,11 @@ export const AuthContext = createContext<{
 });
 
 /**
- * AuthProvider — провайдер аутентификации.
+ * AuthProvider — authentication provider.
  *
- * @param   {AuthProviderProps} props          - Свойства.
- * @param   {ReactNode}         props.children - Дочерний ReactNode.
- * @returns {JSX.Element}                      JSX провайдер AuthContext.
+ * @param   {AuthProviderProps} props          - Component props.
+ * @param   {ReactNode}         props.children - Child ReactNode.
+ * @returns {JSX.Element}                      AuthContext JSX provider.
  */
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -67,15 +67,15 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       setIsAuth(false);
       return;
     }
-    // hasActiveSession защищает от ре-маунтов: каждый reDefine идёт на /refresh
-    // и иначе сжигал бы текущий токен.
+    // hasActiveSession guards against re-mounts: every reDefine hits /refresh
+    // and would otherwise burn the current token.
     if (!hasActiveSession()) {
       await reDefine(refresh, getLang());
     }
     await checkToken();
   };
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang — стабильная функция уровня модуля
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang is a stable module-level function
   const checkToken = useCallback(async () => {
     trigger(getLang())
       .then(async res => {
@@ -115,8 +115,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     (user.state.cart as IProducts[] | undefined)?.forEach(product => {
       const productInCart = productsInCart?.find((p: { id: number }) => p.id === product.id);
       if (!productInCart) {
-        // Редьюсер ожидает `{ id, selected, quantity }`; без quantity здесь
-        // QuantitySelector в корзине скрывается, а тоталы остаются $0.
+        // The reducer expects `{ id, selected, quantity }`; without quantity here
+        // the QuantitySelector in the cart is hidden and totals stay at $0.
         dispatch(addProductToCart({ id: product.id, selected: true, quantity: 1 }));
       }
     });
@@ -126,8 +126,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   }, [isAuth, user, dispatch, productsInCart]);
 
   useEffect(() => {
-    // Синхронный setState в теле эффекта — помечаем «loading» до старта
-    // асинхронного onInit.
+    // Synchronous setState in the effect body — mark "loading" before the
+    // asynchronous onInit starts.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     onInit().then(() => {

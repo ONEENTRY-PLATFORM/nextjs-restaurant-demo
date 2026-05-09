@@ -8,14 +8,14 @@ import { getApi, isError, syncTokens } from '@/app/api';
 type LogInProps = { method: string; login: string; password: string };
 
 /**
- * logInUser — авторизация пользователя через API AuthProvider.
+ * logInUser — user sign-in via the AuthProvider API.
  *
- * Несмотря на путь `app/api/server/...`, файл НЕ `'use server'` — исполняется на клиенте
- * (вызывается из `'use client'`-форм). По MCP-правилу `AuthProvider.auth/signUp/generateCode/checkCode`
- * обязаны быть client-side, иначе fingerprint берётся серверный.
- * После `auth()` SDK не кладёт токены в state — обязателен `syncTokens`, иначе следующий
- * auth-protected POST уйдёт без `Authorization` и упадёт 400 (SDK ретраит только 401).
- * См. MCP-правило `tokens` (syncTokens — mandatory pattern).
+ * Despite living under `app/api/server/...`, this file is NOT `'use server'` — it runs on the client
+ * (called from `'use client'` forms). Per the MCP rule `AuthProvider.auth/signUp/generateCode/checkCode`
+ * must be client-side, otherwise the fingerprint is taken from the server.
+ * After `auth()` the SDK does not push the tokens into state — `syncTokens` is mandatory, otherwise the next
+ * auth-protected POST goes out without `Authorization` and fails with 400 (the SDK only retries on 401).
+ * See the MCP `tokens` rule (syncTokens — mandatory pattern).
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {

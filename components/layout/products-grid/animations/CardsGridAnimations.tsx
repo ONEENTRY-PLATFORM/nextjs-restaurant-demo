@@ -6,7 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/** CardsGridAnimations — leaving-анимация всех видимых карточек грида. */
+/** CardsGridAnimations — leaving animation for all visible grid cards. */
 const CardsGridAnimations = ({
   children,
   className,

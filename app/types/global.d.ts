@@ -2,10 +2,10 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
 /**
- * Локализованная информация.
- * @property {string} content   - Контент страницы.
- * @property {string} menuTitle - Заголовок страницы в меню.
- * @property {string} title     - Заголовок страницы.
+ * Localized info.
+ * @property {string} content   - Page content.
+ * @property {string} menuTitle - Page title shown in the menu.
+ * @property {string} title     - Page title.
  */
 declare type LocalizeInfo = {
   content: string;
@@ -14,9 +14,9 @@ declare type LocalizeInfo = {
 };
 
 /**
- * Пропсы страницы.
- * @property {object} params       - Параметры страницы.
- * @property {object} searchParams - Search-параметры.
+ * Page props.
+ * @property {object} params       - Page params.
+ * @property {object} searchParams - Search params.
  */
 declare type PageProps = {
   params: Promise<{ page?: string; handle: string; lang: string }>;
@@ -28,11 +28,11 @@ declare type PageProps = {
 };
 
 /**
- * Упрощённые пропсы страницы.
- * @property {IPagesEntity} page  - Объект страницы.
- * @property {string}       lang  - Код языка.
- * @property {object}       dict  - Объект словаря.
- * @property {object}       [key] - Дополнительная пара ключ-значение.
+ * Simplified page props.
+ * @property {IPagesEntity} page  - Page object.
+ * @property {string}       lang  - Language code.
+ * @property {object}       dict  - Dictionary object.
+ * @property {object}       [key] - Additional key-value pair.
  */
 declare type SimplePageProps = {
   page?: IPagesEntity;
@@ -42,10 +42,10 @@ declare type SimplePageProps = {
 };
 
 /**
- * Пропсы лоадера.
- * @property {object} data     - Объект данных.
- * @property {number} [limit]  - Лимит элементов.
- * @property {number} [offset] - Offset элементов.
+ * Loader props.
+ * @property {object} data     - Data object.
+ * @property {number} [limit]  - Item limit.
+ * @property {number} [offset] - Item offset.
  */
 declare type LoaderProps = {
   data?: Record<string, unknown>;
@@ -54,18 +54,18 @@ declare type LoaderProps = {
 };
 
 /**
- * Параметры метаданных.
- * @property {object} params - Параметры страницы.
+ * Metadata params.
+ * @property {object} params - Page params.
  */
 declare type MetadataParams = {
   params: Promise<{ handle: string; lang: string }>;
 };
 
 /**
- * Состояние корзины.
- * @property {number}      quantity     - Количество товаров в корзине.
- * @property {number}      id           - ID корзины.
- * @property {IProducts[]} productsData - Массив данных товаров.
+ * Cart state.
+ * @property {number}      quantity     - Number of products in the cart.
+ * @property {number}      id           - Cart ID.
+ * @property {IProducts[]} productsData - Array of product data.
  */
 export type CartState = {
   quantity: number;
@@ -74,10 +74,10 @@ export type CartState = {
 };
 
 /**
- * Пропсы анимаций.
- * @property {React.ReactNode} children  - Дочерние элементы компонента.
- * @property {string}          className - Имя класса компонента.
- * @property {number}          index     - Индекс компонента.
+ * Animation props.
+ * @property {React.ReactNode} children  - Component children.
+ * @property {string}          className - Component class name.
+ * @property {number}          index     - Component index.
  */
 export type AnimationsProps = {
   children: React.ReactNode;
@@ -86,10 +86,10 @@ export type AnimationsProps = {
 };
 
 /**
- * Данные товара.
- * @property {number}  id       - ID товара.
- * @property {boolean} selected - Выбран ли товар.
- * @property {number}  quantity - Количество товара.
+ * Product data.
+ * @property {number}  id       - Product ID.
+ * @property {boolean} selected - Whether the product is selected.
+ * @property {number}  quantity - Product quantity.
  */
 export type IProducts = {
   id: number;
@@ -98,13 +98,13 @@ export type IProducts = {
 };
 
 /**
- * Метаданные товара.
- * @property {string} title       - Название товара.
- * @property {string} description - Описание товара.
- * @property {string} url         - URL товара.
- * @property {number} width       - Ширина изображения товара.
- * @property {number} height      - Высота изображения товара.
- * @property {string} alt         - Alt-текст изображения товара.
+ * Product metadata.
+ * @property {string} title       - Product name.
+ * @property {string} description - Product description.
+ * @property {string} url         - Product URL.
+ * @property {number} width       - Product image width.
+ * @property {number} height      - Product image height.
+ * @property {string} alt         - Product image alt text.
  */
 interface IProductMetadata {
   title: string;
@@ -116,12 +116,12 @@ interface IProductMetadata {
 }
 
 /**
- * Метаданные страницы.
- * @property {string}           title           - Заголовок страницы.
- * @property {string}           description     - Описание страницы.
- * @property {boolean}          isVisible       - Видима ли страница.
- * @property {IAttributeValues} attributeValues - Значения атрибутов страницы.
- * @property {LocalizeInfo}     localizeInfos   - Локализованная информация страницы.
+ * Page metadata.
+ * @property {string}           title           - Page title.
+ * @property {string}           description     - Page description.
+ * @property {boolean}          isVisible       - Whether the page is visible.
+ * @property {IAttributeValues} attributeValues - Page attribute values.
+ * @property {LocalizeInfo}     localizeInfos   - Localized page info.
  */
 interface IPageMetadata {
   title: string;
@@ -139,13 +139,13 @@ interface IPageMetadata {
 }
 
 /**
- * Товар в заказе.
- * @property {number}        id           - ID товара.
- * @property {number}        quantity     - Количество товара.
- * @property {string}        title        - Название товара.
- * @property {string | null} sku          - SKU товара.
- * @property {string | null} previewImage - Превью-изображение товара.
- * @property {number}        price        - Цена товара.
+ * Product in an order.
+ * @property {number}        id           - Product ID.
+ * @property {number}        quantity     - Product quantity.
+ * @property {string}        title        - Product name.
+ * @property {string | null} sku          - Product SKU.
+ * @property {string | null} previewImage - Product preview image.
+ * @property {number}        price        - Product price.
  */
 export type IOrderProducts = {
   id: number;
@@ -156,7 +156,7 @@ export type IOrderProducts = {
   price: number;
 };
 
-/** ImageProps — пропсы обёртки `next/image`. */
+/** ImageProps — props for the `next/image` wrapper. */
 export type ImageProps = {
   src: string;
   alt?: string;

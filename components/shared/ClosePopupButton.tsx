@@ -5,12 +5,12 @@ import type { JSX } from 'react';
 import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 
 /**
- * ClosePopupButton — общая кнопка закрытия "X" в углу каждого попапа.
- * @param   {object}      props             - Пропсы.
- * @param   {() => void}  props.onClose     - Обработчик клика.
- * @param   {string}      [props.ariaLabel] - Доступная подпись, по умолчанию `'Close'`.
- * @param   {string}      [props.className] - Дополнительные утилитарные классы.
- * @returns {JSX.Element}                   JSX кнопки.
+ * ClosePopupButton — shared "X" close button in the corner of every popup.
+ * @param   {object}      props             - Props.
+ * @param   {() => void}  props.onClose     - Click handler.
+ * @param   {string}      [props.ariaLabel] - Accessible label, defaults to `'Close'`.
+ * @param   {string}      [props.className] - Additional utility classes.
+ * @returns {JSX.Element}                   Button JSX.
  */
 const ClosePopupButton = ({
   onClose,

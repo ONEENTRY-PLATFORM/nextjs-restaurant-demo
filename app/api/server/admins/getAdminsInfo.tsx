@@ -13,7 +13,7 @@ interface HandleProps {
   langCode?: string;
 }
 
-/** getAdminsInfo — список администраторов с пагинацией и фильтром. */
+/** getAdminsInfo — paginated list of admins with filter. */
 export const getAdminsInfo = cache(
   async ({
     body,

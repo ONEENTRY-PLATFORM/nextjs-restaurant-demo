@@ -6,11 +6,11 @@ import FavoritesButton from '@/components/layout/product/product-single/Favorite
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * ProductCover — главное изображение продукта (атрибут `cover`) + FavoritesButton.
- * @param   {object}          props         - Пропсы компонента.
- * @param   {IProductsEntity} props.product - Сущность продукта OneEntry.
- * @param   {string}          props.alt     - alt-атрибут картинки.
- * @returns {JSX.Element}                   JSX обложки продукта.
+ * ProductCover — main product image (`cover` attribute) + FavoritesButton.
+ * @param   {object}          props         - Component props.
+ * @param   {IProductsEntity} props.product - OneEntry product entity.
+ * @param   {string}          props.alt     - Image alt attribute.
+ * @returns {JSX.Element}                   Product cover JSX.
  */
 const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
   const coverRaw = product.attributeValues.cover?.value as

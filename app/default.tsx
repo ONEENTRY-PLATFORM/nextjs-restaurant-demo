@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
 /**
- * Компонент layout-а, рендерящий своих детей напрямую.
- * Это простой pass-through компонент, не добавляющий дополнительных оборачивающих элементов.
- * @param   {object}    props          - Свойства компонента.
- * @param   {ReactNode} props.children - Дочерние компоненты, рендерящиеся внутри этого layout-а.
- * @returns {ReactNode}                Дочерние компоненты, переданные в layout.
+ * Layout — pass-through that renders children as-is.
+ *
+ * @param   {object}    props          - Component props.
+ * @param   {ReactNode} props.children - Children rendered inside the layout.
+ * @returns {ReactNode}                Children passed in.
  */
 const Layout = ({ children }: { children: ReactNode }): ReactNode => children;
 

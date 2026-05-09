@@ -7,7 +7,7 @@ import { useRef } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/** Анимации строки таблицы. */
+/** Table row animations. */
 const TableRowAnimations = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
 

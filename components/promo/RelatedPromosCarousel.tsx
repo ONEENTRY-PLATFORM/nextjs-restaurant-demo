@@ -8,8 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { BlogBanner } from '@/app/api';
 
 /**
- * RelatedPromosCarousel — горизонтальная scroll-snap лента «похожих промо» с dot-индикаторами.
- * Используется, когда соседних промо-страниц минимум 3 (1-2 укладываются в обычный flex-ряд).
+ * RelatedPromosCarousel — horizontal scroll-snap rail of "related promos" with dot indicators.
+ * Used when there are at least 3 sibling promo pages (1–2 fit into a regular flex row).
  */
 const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Element => {
   const scrollerRef = useRef<HTMLDivElement>(null);

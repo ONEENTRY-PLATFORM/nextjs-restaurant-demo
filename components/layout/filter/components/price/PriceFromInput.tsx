@@ -1,7 +1,7 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
-/** Инпут PriceFrom. */
+/** PriceFrom input. */
 const PriceFromInput = ({
   price,
   setPrice,

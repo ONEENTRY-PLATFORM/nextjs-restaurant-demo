@@ -18,7 +18,7 @@ type GridSearchParams = {
   cooking_time_max?: string;
 };
 
-/** ProductsGridLayout — сетка продуктов с пагинацией. */
+/** ProductsGridLayout — paginated product grid. */
 const ProductsGridLayout = async ({
   params,
   searchParams: sp,

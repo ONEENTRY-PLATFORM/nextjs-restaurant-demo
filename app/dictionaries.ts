@@ -8,14 +8,14 @@ import { getAttributesByMarker } from './api/server/attributes/getAttributesByMa
 import getCachedData from './api/utils/getCachedData';
 
 /**
- * Загружает атрибут-сет `static_content` и нормализует его в
- * `Record<marker, IAttributeValue>`, чтобы шаблонное обращение
- * `dict?.MARKER?.value` отдавало строку (а не undefined по индексу массива).
+ * fetchDictionary — loads the `static_content` attribute set and normalizes it
+ * into `Record<marker, IAttributeValue>`, so that the templated lookup
+ * `dict?.MARKER?.value` returns a string (instead of undefined by array index).
  *
- * Поле `value` атрибут-сета — это локализационная мапа, в этом проекте
- * пока пустая `{}`, поэтому в нормализованной записи `value`
- * проставляется из `initialValue` (английский дефолт из админки).
- * @returns {Promise<IAttributeValues>} Map маркеров → атрибут с строковым `value`.
+ * The attribute set's `value` field is a localization map; in this project it
+ * is currently empty `{}`, so in the normalized record `value` is filled from
+ * `initialValue` (the English default from the admin panel).
+ * @returns {Promise<IAttributeValues>} Map of markers → attribute with a string `value`.
  */
 const fetchDictionary = async (): Promise<IAttributeValues> => {
   try {
@@ -50,18 +50,18 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
 };
 
 /**
- * Кешированный словарь `static_content` для использования в server-компонентах.
- * @returns {Promise<IAttributeValues>} Кешированный нормализованный словарь.
+ * getDictionary — cached `static_content` dictionary for use in server components.
+ * @returns {Promise<IAttributeValues>} Cached normalized dictionary.
  */
 export const getDictionary = async (): Promise<IAttributeValues> =>
   getCachedData('dictionary', fetchDictionary);
 
 /**
- * Server-side аналог `useT()` — берёт строку из словаря `static_content` по
- * маркеру с fallback'ом, без пробрасывания `dict` через пропсы. Внутри
- * вызывает кешированный `getDictionary`, поэтому повторные вызовы
- * дешёвые. Использовать в server-компонентах вместо
- * `dictText(dict, marker, fallback)` с предварительным `await getDictionary()`.
+ * t — server-side counterpart of `useT()`: reads a string from the
+ * `static_content` dictionary by marker with a fallback, without threading
+ * `dict` through props. Internally calls the cached `getDictionary`, so
+ * repeat calls are cheap. Use in server components instead of
+ * `dictText(dict, marker, fallback)` with an explicit `await getDictionary()`.
  *
  * @example
  *   const title = await t('featured_objects', 'Featured objects');

@@ -3,11 +3,11 @@ import type { JSX } from 'react';
 import { UsePrice } from '../../../utils';
 
 /**
- * PriceDisplay — цена продукта в карточке группы.
- * @param   {object} props               - Пропсы компонента.
- * @param   {number} props.currentPrice  - Текущая (sale) цена.
- * @param   {number} props.originalPrice - Оригинальная цена.
- * @returns {JSX.Element}                JSX блока цен.
+ * PriceDisplay — product price inside the group card.
+ * @param   {object} props               - Component props.
+ * @param   {number} props.currentPrice  - Current (sale) price.
+ * @param   {number} props.originalPrice - Original price.
+ * @returns {JSX.Element}                Price block JSX.
  */
 const PriceDisplay = ({
   currentPrice,

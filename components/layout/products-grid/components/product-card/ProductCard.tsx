@@ -12,12 +12,12 @@ import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
- * ProductCard — карточка продукта в сетке.
- * @param   {object}          props               - Пропсы компонента.
- * @param   {IProductsEntity} props.product       - Сущность продукта OneEntry.
- * @param   {number}          props.index         - Индекс в гриде (для stagger-анимации).
- * @param   {number}          props.productsLimit - productsLimit для анимации.
- * @returns {JSX.Element}                         JSX карточки.
+ * ProductCard — product card in the grid.
+ * @param   {object}          props               - Component props.
+ * @param   {IProductsEntity} props.product       - OneEntry product entity.
+ * @param   {number}          props.index         - Index in the grid (for stagger animation).
+ * @param   {number}          props.productsLimit - productsLimit for the animation.
+ * @returns {JSX.Element}                         Card JSX.
  */
 const ProductCard = ({
   product,

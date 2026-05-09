@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import LogoIcon from './LogoIcon';
 
-/** Placeholder — заглушка для отсутствующего изображения с лого. */
+/** Placeholder — fallback for a missing image, showing the logo. */
 const Placeholder = ({ className }: { className?: string }): JSX.Element => {
   return (
     <div

@@ -15,7 +15,7 @@ import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
 
-/** AddToCartButton — кнопка ADD TO CART, переключается в QuantitySelector после добавления. */
+/** AddToCartButton — ADD TO CART button, switches to QuantitySelector after adding. */
 const AddToCartButton = ({
   id,
   units,
@@ -33,8 +33,8 @@ const AddToCartButton = ({
 }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  // useSyncExternalStore (не useEffect+setState) — чтобы избежать cascading-render warning
-  // при гидрации persisted-корзины: SSR видит «add», клиент после маунта переключается.
+  // useSyncExternalStore (not useEffect+setState) — to avoid the cascading-render warning
+  // when hydrating the persisted cart: SSR sees "add", the client switches after mount.
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -47,7 +47,7 @@ const AddToCartButton = ({
     (state: { favoritesReducer: { products: number[] } }) => selectFavoritesItems(state)
   );
   const { user } = useContext(AuthContext);
-  // `null` = «статус не назначен» = доступен; блокируем только при явном out_of_stock.
+  // `null` = "no status assigned" = available; only block on an explicit out_of_stock.
   const notInStock = useMemo(() => statusIdentifier === 'out_of_stock', [statusIdentifier]);
 
   if (notInStock) {

@@ -7,7 +7,7 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Анимации обёртки фильтра. */
+/** Filter wrapper animations. */
 const FilterAnimations = ({
   children,
   className,

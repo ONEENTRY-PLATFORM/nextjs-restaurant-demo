@@ -15,9 +15,9 @@ import { getDictionary } from '../../dictionaries';
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * ShopCatalogPage — страница каталога магазина.
- * @param   {PageProps} props - Пропсы страницы.
- * @returns {Promise<JSX.Element>} JSX layout-а страницы.
+ * ShopCatalogPage — shop catalog page.
+ * @param   {PageProps} props - Page props.
+ * @returns {Promise<JSX.Element>} JSX of the page layout.
  */
 const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -50,7 +50,7 @@ const ShopCatalogPage = async (props: PageProps): Promise<JSX.Element> => {
 
 export default ShopCatalogPage;
 
-/** generateMetadata — метаданные страницы каталога. */
+/** generateMetadata — catalog page metadata. */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);

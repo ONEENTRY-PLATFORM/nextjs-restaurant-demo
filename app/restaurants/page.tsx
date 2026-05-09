@@ -25,7 +25,7 @@ type RestaurantCard = {
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
-  // `timeInterval` приходит объектом или массивом — берём первый интервал.
+  // `timeInterval` comes as an object or array — take the first interval.
   const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
   const first = arr ? arr[0] : (raw as ScheduleInterval);
   if (!first || (!first.from && !first.to)) return '';
@@ -49,7 +49,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   };
 };
 
-/** RestaurantsPage — index-страница сети ресторанов из OneEntry `restaurants` + child-pages. */
+/** RestaurantsPage — index page for the restaurant network from OneEntry `restaurants` + child-pages. */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
     getPageByUrl('restaurants'),

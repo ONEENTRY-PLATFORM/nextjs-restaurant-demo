@@ -1,8 +1,8 @@
 import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 
 /**
- * Сторонний канал передачи pending-edit между BookingsPopup и ReservationPopup.
- * Module-level переменная: данные нужны только на время одного перехода между попапами.
+ * Side channel for passing the pending-edit payload between BookingsPopup and ReservationPopup.
+ * Module-level variable: the data only needs to live across a single popup-to-popup transition.
  */
 type PendingReservationEdit = {
   orderId: number;
@@ -14,9 +14,9 @@ type PendingReservationEdit = {
 let pending: PendingReservationEdit | null = null;
 
 /**
- * Сохраняет pending-edit перед открытием ReservationPopup в режиме редактирования.
+ * Persists the pending edit before opening ReservationPopup in edit mode.
  *
- * @param   {PendingReservationEdit | null} next - Данные для редактирования или null.
+ * @param   {PendingReservationEdit | null} next - Edit payload or null.
  * @returns {void}
  */
 export const setPendingReservationEdit = (next: PendingReservationEdit | null): void => {
@@ -24,9 +24,9 @@ export const setPendingReservationEdit = (next: PendingReservationEdit | null): 
 };
 
 /**
- * Читает и затирает pending-edit (одноразово).
+ * Reads and clears the pending edit (one-shot).
  *
- * @returns {PendingReservationEdit | null} Текущие данные или null.
+ * @returns {PendingReservationEdit | null} Current payload or null.
  */
 export const consumePendingReservationEdit = (): PendingReservationEdit | null => {
   const value = pending;

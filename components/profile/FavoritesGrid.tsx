@@ -14,7 +14,7 @@ import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
-/** FavoritesGrid — сетка избранного в дашборде. */
+/** FavoritesGrid — favorites grid on the dashboard. */
 const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
@@ -46,7 +46,7 @@ const FavoritesGrid = (): JSX.Element => {
   );
 };
 
-/** FavoriteCard — одиночная карточка избранного в десктоп-сетке. */
+/** FavoriteCard — single favorite card in the desktop grid. */
 const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));

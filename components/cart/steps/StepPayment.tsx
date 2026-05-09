@@ -43,8 +43,8 @@ const parseScheduleAt = (raw: string): { date: string; time: string } => {
 const ASAP_INTERVAL_MIN = 45;
 
 /**
- * Значение `delivery_time` (тип `timeInterval`) — `[[startISO, endISO]]`.
- * asap: now → now+45 мин; scheduled (`DD.MM.YY HH.MM`): parsed → +1 ч. null если scheduled не парсится — поле не шлём.
+ * Value of `delivery_time` (type `timeInterval`) — `[[startISO, endISO]]`.
+ * asap: now → now+45 min; scheduled (`DD.MM.YY HH.MM`): parsed → +1 h. null if scheduled does not parse — the field is not sent.
  */
 const buildDeliveryTimeInterval = (
   mode: DeliveryMode,
@@ -82,7 +82,7 @@ const findUserField = (
 
 type DeliveryMode = 'asap' | 'scheduled';
 
-/** StepPayment — шаг checkout: адрес + время + оплата на одном экране. */
+/** StepPayment — checkout step: address + time + payment on a single screen. */
 const StepPayment = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -90,7 +90,7 @@ const StepPayment = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const delivery = useAppSelector(selectDeliveryData);
 
-  // Структурный `user_address` (street+house+floor) приоритетнее плоских маркеров — иначе в инпуте только улица.
+  // Structured `user_address` (street+house+floor) takes priority over flat markers — otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
   const initialPickedAddress = useMemo(() => pickSelectedAddress(savedAddresses), [savedAddresses]);
   const userAddressFlat = findUserField(user?.formData, ADDRESS_MARKERS);
@@ -98,7 +98,7 @@ const StepPayment = (): JSX.Element => {
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
 
   const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
-  // `user.formData` приходит async — на первый рендер пустой; если юзер не правил инпут руками, подтягиваем по готовности.
+  // `user.formData` arrives async — empty on the first render; if the user has not edited the input manually, pull it in once available.
   const [addressTouched, setAddressTouched] = useState<boolean>(
     Boolean(delivery?.address as string | undefined)
   );
@@ -128,7 +128,7 @@ const StepPayment = (): JSX.Element => {
     }
   }, [accounts, identifier]);
 
-  // Анимация блоков шага: slide-up + fade на маунте, reverse на route leave (см. StepOrder). `dependencies: []` — иначе toggle/accounts ре-анимируют уже видимые блоки.
+  // Step block animation: slide-up + fade on mount, reverse on route leave (see StepOrder). `dependencies: []` — otherwise toggle/accounts would re-animate already visible blocks.
   const containerRef = useRef<HTMLDivElement>(null);
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
@@ -371,7 +371,7 @@ const StepPayment = (): JSX.Element => {
   );
 };
 
-/** PaymentMethodOption — радио-карточка одного payment-аккаунта. */
+/** PaymentMethodOption — radio card for a single payment account. */
 const PaymentMethodOption = ({
   account,
   checked,

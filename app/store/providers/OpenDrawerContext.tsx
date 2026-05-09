@@ -3,7 +3,7 @@
 import type { Dispatch, JSX, ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
 
-/** OpenDrawerContext — контекст открытия drawer/попапов. */
+/** OpenDrawerContext — context for opening drawer/popups. */
 export const OpenDrawerContext = createContext<{
   component: string;
   open: boolean;
@@ -25,11 +25,11 @@ export const OpenDrawerContext = createContext<{
 });
 
 /**
- * OpenDrawerProvider — провайдер контекста drawer/попапов.
+ * OpenDrawerProvider — provider for the drawer/popup context.
  *
- * @param   {object}      props          - Пропсы.
- * @param   {ReactNode}   props.children - Дочерний ReactNode.
- * @returns {JSX.Element}                JSX провайдер.
+ * @param   {object}      props          - Component props.
+ * @param   {ReactNode}   props.children - Child ReactNode.
+ * @returns {JSX.Element}                JSX provider.
  */
 export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false);
@@ -37,11 +37,11 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
   const [action, setAction] = useState<string>('');
   const [transition, setTransition] = useState<string>('');
 
-  // Блокируем скролл фона при открытом попапе: запираем и `<html>`, и `<body>`
-  // (скролл-контейнер зависит от страницы), на iOS фиксируем `body` через
-  // `position: fixed` против body-rubber-band. Компенсируем ширину скроллбара
-  // через padding-right + CSS-переменную `--scrollbar-width`, чтобы контент
-  // не прыгал на ~15px на десктопе (на macOS/overlay-скроллбарах = 0).
+  // Lock background scroll while a popup is open: lock both `<html>` and `<body>`
+  // (the scroll container depends on the page); on iOS fix `body` with
+  // `position: fixed` to defeat body rubber-band. Compensate scrollbar width
+  // via padding-right + the `--scrollbar-width` CSS variable so content
+  // doesn't jump ~15px on desktop (0 on macOS / overlay scrollbars).
   useEffect(() => {
     if (!open) return;
     const html = document.documentElement;

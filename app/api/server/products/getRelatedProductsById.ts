@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getRelatedProductsById — все related-продукты по id. */
+/** getRelatedProductsById — all related products by id. */
 export const getRelatedProductsById = cache(
   async (
     id: number

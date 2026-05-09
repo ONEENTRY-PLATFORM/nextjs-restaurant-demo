@@ -18,8 +18,8 @@ import RestaurantPhotoSlider from './RestaurantPhotoSlider';
 type Photo = { downloadLink?: string };
 
 /**
- * RestaurantPhotoGallery — галерея single-restaurant с lightbox-ом.
- * Мобила: горизонтальный слайдер через {@link RestaurantPhotoSlider}; тап открывает lightbox.
+ * RestaurantPhotoGallery — single-restaurant gallery with a lightbox.
+ * Mobile: horizontal slider via {@link RestaurantPhotoSlider}; tap opens the lightbox.
  */
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);
@@ -28,7 +28,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
   const total = photos.length;
   const main = photos[active];
 
-  // Вертикальная карусель миниатюр.
+  // Vertical thumbnails carousel.
   const thumbsContainerRef = useRef<HTMLDivElement | null>(null);
   const thumbRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const dragState = useRef<{
@@ -53,7 +53,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     const node = thumbRefs.current[active];
     if (!container || !node) return;
 
-    // Скролл считаем вручную и применяем ТОЛЬКО к thumbs-контейнеру (чтобы страница не дёргалась).
+    // Compute scroll manually and apply it ONLY to the thumbs container (so the page doesn't jump).
     const cRect = container.getBoundingClientRect();
     const nRect = node.getBoundingClientRect();
 
@@ -62,13 +62,13 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     const viewTop = container.scrollTop;
     const viewBottom = viewTop + container.clientHeight;
 
-    // 1) Скрыт сверху — поднимаем на верх viewport'а.
+    // 1) Hidden above — scroll up to the top of the viewport.
     if (relTop < viewTop) {
       container.scrollTo({ top: relTop, behavior: 'smooth' });
       return;
     }
 
-    // 2) Скрыт снизу — опускаем на нижнюю границу.
+    // 2) Hidden below — scroll down to the bottom edge.
     if (relBottom > viewBottom) {
       container.scrollTo({
         top: relBottom - container.clientHeight,
@@ -77,7 +77,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       return;
     }
 
-    // 3) Виден, но крайний снизу — подкручиваем на один слайд вперёд, чтобы стал виден сосед.
+    // 3) Visible but at the bottom edge — nudge by one slide forward so the neighbor becomes visible.
     const next = thumbRefs.current[active + 1];
     if (next) {
       const nextRect = next.getBoundingClientRect();
@@ -91,7 +91,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
         return;
       }
     }
-    // 4) Симметрично — крайний сверху.
+    // 4) Symmetric case — at the top edge.
     const prev = thumbRefs.current[active - 1];
     if (prev) {
       const prevRect = prev.getBoundingClientRect();
@@ -151,7 +151,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     }
   };
 
-  // Drag-swipe для main-фото (левая колонка).
+  // Drag-swipe for the main photo (left column).
   const MAIN_DRAG_THRESHOLD_PX = 40;
   const mainDragState = useRef<{
     active: boolean;
@@ -186,7 +186,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       target.releasePointerCapture(e.pointerId);
     }
     if (s.moved > MAIN_DRAG_THRESHOLD_PX && total > 0) {
-      // Вверх → следующее, вниз → предыдущее. Циклически.
+      // Up → next, down → previous. Cyclic.
       const delta = s.direction === -1 ? 1 : -1;
       setActive(i => (i + delta + total) % total);
     }
@@ -194,7 +194,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
   };
 
   const onMainClickCapture = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // После swipe подавляем click, чтобы не открывать lightbox.
+    // After a swipe, suppress click so the lightbox doesn't open.
     if (mainDragState.current.moved > MAIN_DRAG_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();
@@ -211,7 +211,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
 
   return (
     <>
-      {/* Mobile / tablet — слайдер с точками. */}
+      {/* Mobile / tablet — slider with dots. */}
       <div className="md:hidden">
         <RestaurantPhotoSlider
           photos={photos}

@@ -1,20 +1,20 @@
 /**
- * Side-channel в `sessionStorage` для сохранения значений ReservationForm
- * перед OAuth-редиректом (full-page navigation уничтожает React-tree).
+ * `sessionStorage`-backed side channel for persisting ReservationForm values
+ * before an OAuth redirect (full-page navigation tears down the React tree).
  */
 export type ReservationOAuthResume = {
-  /** Значения формы бронирования на момент клика по OAuth-провайдеру. */
+  /** Booking form values at the moment the user clicked the OAuth provider. */
   values: Record<string, string>;
-  /** Pathname + search страницы, с которой стартовал OAuth, для возврата. */
+  /** Pathname + search of the page that started OAuth, used to return. */
   returnTo: string;
 };
 
 const STORAGE_KEY = 'reservation-oauth-resume';
 
 /**
- * Сохраняет состояние формы перед OAuth-редиректом.
+ * Persists the form state before the OAuth redirect.
  *
- * @param   {ReservationOAuthResume} next - Снэпшот для восстановления.
+ * @param   {ReservationOAuthResume} next - Snapshot to restore later.
  * @returns {void}
  */
 export const setPendingReservationResume = (next: ReservationOAuthResume): void => {
@@ -22,16 +22,16 @@ export const setPendingReservationResume = (next: ReservationOAuthResume): void 
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
-    // sessionStorage может быть недоступен (private mode / квота) — тихо пропускаем,
-    // потеря resume — не критично, OAuth всё равно отработает.
+    // sessionStorage may be unavailable (private mode / quota) — silently skip;
+    // losing the resume snapshot is not critical, OAuth still works.
   }
 };
 
 /**
- * Читает pending-resume без удаления — нужно в callback-странице, чтобы понять,
- * куда возвращаться, не «сжигая» снэпшот: его потребит сам попап.
+ * Reads the pending resume without removing it — used by the callback page to
+ * know where to return without consuming the snapshot: the popup will consume it itself.
  *
- * @returns {ReservationOAuthResume | null} Снэпшот или null.
+ * @returns {ReservationOAuthResume | null} Snapshot or null.
  */
 export const peekPendingReservationResume = (): ReservationOAuthResume | null => {
   if (typeof window === 'undefined') return null;
@@ -44,9 +44,9 @@ export const peekPendingReservationResume = (): ReservationOAuthResume | null =>
 };
 
 /**
- * Читает и удаляет pending-resume (одноразово).
+ * Reads and removes the pending resume (one-shot).
  *
- * @returns {ReservationOAuthResume | null} Снэпшот или null.
+ * @returns {ReservationOAuthResume | null} Snapshot or null.
  */
 export const consumePendingReservationResume = (): ReservationOAuthResume | null => {
   const value = peekPendingReservationResume();
@@ -61,8 +61,8 @@ export const consumePendingReservationResume = (): ReservationOAuthResume | null
 };
 
 /**
- * Удаляет pending-resume — например, когда OAuth-редирект сорвался до
- * `window.location.href` (нет client-id, no-op fallback на email-форму).
+ * Removes the pending resume — e.g. when the OAuth redirect aborted before
+ * `window.location.href` (no client-id, no-op fallback to the email form).
  *
  * @returns {void}
  */

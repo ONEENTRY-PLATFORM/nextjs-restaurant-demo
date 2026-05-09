@@ -9,7 +9,7 @@ import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { getTransition, removeProduct, setCartTransition } from '@/app/store/reducers/CartSlice';
 
-/** Анимации продукта в корзине. */
+/** Cart product animations. */
 const ProductAnimations = ({
   children,
   className,
@@ -48,7 +48,7 @@ const ProductAnimations = ({
     };
   }, []);
 
-  // Анимация удаления продукта из корзины.
+  // Cart product removal animation.
   useGSAP(() => {
     if (!ref.current || product.id !== transitionId) {
       return;

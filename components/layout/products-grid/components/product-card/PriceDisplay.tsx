@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
-/** PriceDisplay — цена продукта со скидкой/без для карточки грида. */
+/** PriceDisplay — product price with/without discount for the grid card. */
 const PriceDisplay = ({
   attributes: { sale, price },
 }: {

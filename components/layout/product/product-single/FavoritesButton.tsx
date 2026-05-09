@@ -17,7 +17,7 @@ import {
 import HeartIcon from '@/components/icons/heart';
 import HeartOpenIcon from '@/components/icons/heart-o';
 
-/** FavoritesButton — кнопка-сердце на странице продукта. */
+/** FavoritesButton — heart button on the product page. */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);

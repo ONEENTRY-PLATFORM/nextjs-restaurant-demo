@@ -4,12 +4,12 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
 
 /**
- * dictText — достаёт строковое значение из словаря `static_content` по маркеру с fallback-ом.
+ * dictText — pulls a string value from the `static_content` dictionary by marker with a fallback.
  * @example const title = dictText(dict, 'leave_review_button', 'Leave a review');
- * @param   {IAttributeValues|undefined} dict     - Словарь (атрибут-сет `static_content`).
- * @param   {string}                     marker   - Маркер атрибута.
- * @param   {string}                     fallback - Значение, если маркера/строкового value нет.
- * @returns {string}                              Локализованная строка либо `fallback`.
+ * @param   {IAttributeValues|undefined} dict     - Dictionary (attribute set `static_content`).
+ * @param   {string}                     marker   - Attribute marker.
+ * @param   {string}                     fallback - Value used when the marker or its string value is missing.
+ * @returns {string}                              Localized string or `fallback`.
  */
 export const dictText = (
   dict: IAttributeValues | undefined,
@@ -20,7 +20,7 @@ export const dictText = (
   return typeof raw === 'string' ? raw : fallback;
 };
 
-/** UsePrice — форматирует число в строку валюты. */
+/** UsePrice — formats a number as a currency string. */
 export const UsePrice = ({ amount }: { amount: number | string }): string => {
   const currency = CurrencyEnum['en' as keyof typeof CurrencyEnum];
   const intlEnum = IntlEnum['en' as keyof typeof IntlEnum];
@@ -32,7 +32,7 @@ export const UsePrice = ({ amount }: { amount: number | string }): string => {
   return formattedPrice;
 };
 
-/** UseDate — форматирует дату в строку `dd-MMM-yyyy`. */
+/** UseDate — formats a date as a `dd-MMM-yyyy` string. */
 export const UseDate = ({
   fullDate,
   format = 'en',
@@ -79,7 +79,7 @@ export const sortObjectFieldsByPosition = (
   return sortedObj;
 };
 
-/** flatMenuToNested — превращает плоский список меню в дерево по `parentId`. */
+/** flatMenuToNested — turns a flat menu list into a tree keyed by `parentId`. */
 export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | null) => {
   return data.reduce((r: IMenusPages[], element: IMenusPages) => {
     if (pid == element.parentId) {
@@ -94,7 +94,7 @@ export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | nu
   }, []);
 };
 
-/** typeError — type guard для `IError` (по наличию `statusCode`). */
+/** typeError — type guard for `IError` (based on the presence of `statusCode`). */
 export function typeError(res: IError | unknown): res is IError {
   if ((res as IError)?.statusCode) {
     return true;
@@ -103,10 +103,10 @@ export function typeError(res: IError | unknown): res is IError {
 }
 
 /**
- * normalizePhoneE164 — нормализует телефон к E.164 (`/^\+[0-9]{10,15}$/`) для OneEntry.
- * Пустую строку возвращает как `''` — вызывающая сторона решает, отдавать её или нет.
- * @param   {string|undefined|null} raw - сырое значение из инпута телефона.
- * @returns {string}                    `+<digits>` или `''`.
+ * normalizePhoneE164 — normalizes a phone to E.164 (`/^\+[0-9]{10,15}$/`) for OneEntry.
+ * Returns an empty string as `''` — the caller decides whether to send it.
+ * @param   {string|undefined|null} raw - Raw value from the phone input.
+ * @returns {string}                    `+<digits>` or `''`.
  */
 export const normalizePhoneE164 = (raw: string | undefined | null): string => {
   const digits = (raw ?? '').replace(/\D/g, '');

@@ -7,8 +7,8 @@ import FavoritesGrid from '@/components/profile/FavoritesGrid';
 export const dynamic = 'force-dynamic';
 
 /**
- * ProfileFavoritesPage — вкладка избранного в личном кабинете (2-колоночный layout).
- * @returns {Promise<JSX.Element>} JSX страницы избранного.
+ * ProfileFavoritesPage — favorites tab in the personal account (2-column layout).
+ * @returns {Promise<JSX.Element>} JSX of the favorites page.
  */
 const ProfileFavoritesPage = async (): Promise<JSX.Element> => {
   const banners = await getBlogBanners();

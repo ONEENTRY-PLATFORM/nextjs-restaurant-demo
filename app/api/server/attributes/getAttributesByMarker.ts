@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getAttributesByMarker — атрибуты по маркеру из attribute sets. */
+/** getAttributesByMarker — attributes from attribute sets by marker. */
 export const getAttributesByMarker = cache(
   async ({
     attributeMarker,

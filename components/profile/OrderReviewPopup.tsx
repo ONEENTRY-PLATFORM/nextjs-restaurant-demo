@@ -39,9 +39,9 @@ type ItemState = {
   rating: number;
   text: string;
   loading: boolean;
-  /** Id уже отправленной записи FormsData — null = ещё ничего не сохранено. */
+  /** Id of the already submitted FormsData record — null = nothing saved yet. */
   existingId: number | null;
-  /** True = строка в режиме редактирования. */
+  /** True = row is in edit mode. */
   isEditing: boolean;
   error: string;
 };
@@ -51,18 +51,18 @@ const initialItemState = (initial: ExistingReview | null): ItemState => ({
   text: initial?.text ?? '',
   loading: false,
   existingId: initial?.id ?? null,
-  // Уже отправленный отзыв — стартуем в read-only.
+  // Already submitted review — start in read-only.
   isEditing: initial === null,
   error: '',
 });
 
-/** Номер заказа `OE...` от SDK, иначе fallback на числовой id. */
+/** Order number `OE...` from the SDK, otherwise fallback to the numeric id. */
 const formatOrderNumber = (o: { id: number; orderId?: string }): string => {
   if (o.orderId) return o.orderId;
   return String(o.id);
 };
 
-/** Извлекает plain-текст из значения OneEntry-поля типа `text`. */
+/** Extracts plain text from an OneEntry field value of type `text`. */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
     const first = value[0] as { plainValue?: unknown } | undefined;
@@ -71,7 +71,7 @@ const readPlainText = (value: unknown): string => {
   return typeof value === 'string' ? value : '';
 };
 
-/** Кастит значение OneEntry-поля типа `integer` в число (0 на ошибку). */
+/** Casts an OneEntry field value of type `integer` to a number (0 on error). */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
@@ -81,7 +81,7 @@ const readNumber = (value: unknown): number => {
   return 0;
 };
 
-/** Подгружает уже отправленный отзыв пользователя на продукт. null = нет / ошибка SDK (graceful fallback). */
+/** Loads the user's already submitted review for a product. null = none / SDK error (graceful fallback). */
 const fetchUserReview = async (
   productId: number,
   userId: string
@@ -114,7 +114,7 @@ const fetchUserReview = async (
       }
     ).items;
     if (!items || items.length === 0) return null;
-    // Доп. фильтр клиентом (на случай если серверный userIdentifier не отработал) + берём свежую запись (max id).
+    // Extra client-side filter (in case the server userIdentifier did not apply) + take the latest record (max id).
     const mine = items
       .filter(i => i.parentId === null && i.userIdentifier === userId)
       .sort((a, b) => b.id - a.id)[0];
@@ -132,8 +132,8 @@ const fetchUserReview = async (
 };
 
 /**
- * ReviewableItem — строка попапа: продукт + звёзды + инпут + Apply/Edit.
- * Apply создаёт `postFormsData` или обновляет `updateFormsDataByid`. Если `initialReview` есть — стартуем в read-only.
+ * ReviewableItem — popup row: product + stars + input + Apply/Edit.
+ * Apply creates `postFormsData` or updates via `updateFormsDataByid`. If `initialReview` exists — start in read-only.
  */
 const ReviewableItem = ({
   product,
@@ -173,7 +173,7 @@ const ReviewableItem = ({
     ];
     try {
       if (state.existingId !== null) {
-        // Edit: PUT `/api/content/form-data/{id}` — тот же body, что в `postFormsData`, id в URL. Требует auth.
+        // Edit: PUT `/api/content/form-data/{id}` — same body as in `postFormsData`, id in the URL. Requires auth.
         const res = await getApi().FormData.updateFormsDataByid(state.existingId, {
           formIdentifier: FORM_MARKER,
           formModuleConfigId: FORM_MODULE_CONFIG_ID,
@@ -294,9 +294,9 @@ const ReviewableItem = ({
 };
 
 /**
- * OrderReviewPopup — попап «Leave a review» для заказа целиком (одна кнопка на заказ).
- * Сводка заказа + список позиций; на каждой строке звёзды + инпут + Apply/Edit.
- * Сущность заказа передаётся через `orderReviewStore`, т.к. `OpenDrawerContext` пробрасывает только строковый `action`.
+ * OrderReviewPopup — "Leave a review" popup for the entire order (one button per order).
+ * Order summary + line item list; each row has stars + input + Apply/Edit.
+ * The order entity is passed via `orderReviewStore`, because `OpenDrawerContext` only forwards a string `action`.
  */
 const OrderReviewPopup = (): JSX.Element => {
   const t = useT();
@@ -306,7 +306,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const isOpen = open && component === 'OrderReviewPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Map productId → existing review (null = нет, undefined-ключ = ещё грузится).
+  // Map productId → existing review (null = none, missing key = still loading).
   const [existingReviews, setExistingReviews] = useState<Map<number, ExistingReview | null>>(
     new Map()
   );
@@ -325,7 +325,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const orderId = order?.id ?? null;
   const userId = user?.identifier ?? '';
 
-  // Уникальные productId — отзыв ставится один раз на продукт, даже если позиция повторяется в заказе.
+  // Unique productIds — a review is left once per product, even if the line item repeats in the order.
   const productIds = useMemo(() => {
     if (!order) return [] as number[];
     const seen = new Set<number>();

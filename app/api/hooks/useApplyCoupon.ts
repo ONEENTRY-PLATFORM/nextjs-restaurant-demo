@@ -25,11 +25,11 @@ type UseApplyCouponApi = {
 };
 
 /**
- * useApplyCoupon — применяет промокод к корзине через `Orders.previewOrder`.
+ * useApplyCoupon — applies a promo code to the cart via `Orders.previewOrder`.
  *
- * Сервер сам валидирует код и считает скидку с учётом условий (`MIN_CART_AMOUNT`, `applicability`, `maxAmount`).
- * При успехе сохраняет `{ code, totalSum, totalSumWithDiscount }` в `OrderSlice.appliedCoupon` —
- * `StepOrder` берёт оттуда строку «Discount», `useCreateOrder` пробрасывает `couponCode` в `Orders.createOrder`.
+ * The server validates the code and computes the discount honouring `MIN_CART_AMOUNT`, `applicability`, and `maxAmount`.
+ * On success it stores `{ code, totalSum, totalSumWithDiscount }` in `OrderSlice.appliedCoupon` —
+ * `StepOrder` reads the "Discount" line from there, and `useCreateOrder` forwards `couponCode` into `Orders.createOrder`.
  * @returns {UseApplyCouponApi} apply/remove + loading/error.
  */
 export const useApplyCoupon = (): UseApplyCouponApi => {
@@ -76,8 +76,8 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
 
       const { totalSum, totalSumWithDiscount, currency } = preview as IOrderPreviewResponse;
 
-      // Сервер вернул успех, но скидка нулевая — код существует, но не
-      // применился к этой корзине (условия не выполнились).
+      // The server returned success, but the discount is zero — the code exists
+      // but did not apply to this cart (conditions were not met).
       if (totalSumWithDiscount >= totalSum) {
         const message = 'Coupon does not apply to this cart';
         setError(message);

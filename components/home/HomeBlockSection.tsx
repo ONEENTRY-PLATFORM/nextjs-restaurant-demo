@@ -12,9 +12,9 @@ type HomeBlockSectionProps = {
 };
 
 /**
- * HomeBlockSection — заголовок + сетка продуктов, конфигурируется через блок OneEntry.
- * @param   {HomeBlockSectionProps} props - Пропсы.
- * @returns {JSX.Element|null}            JSX секции либо `null`, если нечего рендерить.
+ * HomeBlockSection — title + product grid, configured via a OneEntry block.
+ * @param   {HomeBlockSectionProps} props - Props.
+ * @returns {JSX.Element|null}            Section JSX or `null` when there is nothing to render.
  */
 const HomeBlockSection = ({
   title,

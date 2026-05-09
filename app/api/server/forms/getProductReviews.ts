@@ -4,12 +4,12 @@ import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import { getApi, getLang, isError } from '@/app/api';
 
 const FORM_MARKER = 'review_form';
-// `moduleFormConfigs[0].id` формы `review_form` = 2 (проверено через SDK). При пересоздании
-// конфига первый id из `getFormByMarker` всегда побеждает над этим дефолтом.
+// `moduleFormConfigs[0].id` of the `review_form` form = 2 (verified via the SDK). When the
+// config is recreated, the first id from `getFormByMarker` always wins over this default.
 const DEFAULT_MODULE_CONFIG_ID = 2;
 const REVIEWS_LIMIT = 50;
 
-/** RawReviewItem — запись OneEntry FormsData из `getFormsDataByMarker` (слабо типизирована — SDK не экспортирует стабильный тип). */
+/** RawReviewItem — a OneEntry FormsData record from `getFormsDataByMarker` (loosely typed — the SDK does not export a stable type). */
 export interface RawReviewItem {
   id: number;
   parentId: number | null;
@@ -22,7 +22,7 @@ export interface RawReviewItem {
   }>;
 }
 
-/** ProductReview — нормализованная запись отзыва для `<ProductReviewsList />`. */
+/** ProductReview — normalised review record for `<ProductReviewsList />`. */
 export interface ProductReview {
   id: string;
   author: string;
@@ -32,9 +32,9 @@ export interface ProductReview {
 }
 
 /**
- * readPlainText — plain-текст из полиморфного `formData[].value` (SDK даёт `[{ plainValue }]` для `text`, строку для примитивов).
- * @param   {unknown} value - Сырое `formData[].value`.
- * @returns {string}        Plain-текст.
+ * readPlainText — plain text from the polymorphic `formData[].value` (SDK returns `[{ plainValue }]` for `text` and a string for primitives).
+ * @param   {unknown} value - Raw `formData[].value`.
+ * @returns {string}        Plain text.
  */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
@@ -45,9 +45,9 @@ const readPlainText = (value: unknown): string => {
 };
 
 /**
- * readNumber — приводит `formData[].value` к числу для рейтинга (`0` для нечисловых).
- * @param   {unknown} value - Сырое `formData[].value`.
- * @returns {number}        Числовой рейтинг.
+ * readNumber — coerces `formData[].value` to a number for the rating (`0` for non-numeric).
+ * @param   {unknown} value - Raw `formData[].value`.
+ * @returns {number}        Numeric rating.
  */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
@@ -59,14 +59,14 @@ const readNumber = (value: unknown): number => {
 };
 
 /**
- * getProductReviews — одобренные отзывы продукта из OneEntry FormsData по `entityIdentifier`.
+ * getProductReviews — approved product reviews from OneEntry FormsData by `entityIdentifier`.
  *
- * `unstable_noStore()` отключает route cache — свежие отзывы появляются без ручной revalidation.
- * Фильтр `status: ['approved']` совпадает с publish-статусом server action `submitReview`.
- * Возвращаются только верхнеуровневые (`parentId === null`) — вложенные ответы UI не рендерит.
- * Graceful fallback на пустой массив при любой ошибке SDK ("Resource is closed", см. MISMATCH-LOG §C).
- * @param   {number}                    productId - Id продукта (становится `entityIdentifier`).
- * @returns {Promise<ProductReview[]>}            Отзывы верхнего уровня, сначала новые.
+ * `unstable_noStore()` disables the route cache — fresh reviews appear without manual revalidation.
+ * The `status: ['approved']` filter matches the publish status from the `submitReview` server action.
+ * Only top-level entries (`parentId === null`) are returned — the UI does not render nested replies.
+ * Graceful fallback to an empty array on any SDK error ("Resource is closed", see MISMATCH-LOG §C).
+ * @param   {number}                    productId - Product id (becomes `entityIdentifier`).
+ * @returns {Promise<ProductReview[]>}            Top-level reviews, newest first.
  */
 export const getProductReviews = async (productId: number): Promise<ProductReview[]> => {
   unstable_noStore();

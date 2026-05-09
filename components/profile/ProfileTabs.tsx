@@ -10,7 +10,7 @@ const tabs: Array<{ href: string; label: string }> = [
   { href: '/profile/favorites', label: 'Favorites' },
 ];
 
-/** ProfileTabs — табы дашборда профиля с подсветкой активного по pathname. */
+/** ProfileTabs — profile dashboard tabs with active highlight based on pathname. */
 const ProfileTabs = (): JSX.Element => {
   const pathname = usePathname();
   return (

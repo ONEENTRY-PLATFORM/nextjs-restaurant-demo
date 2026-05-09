@@ -7,8 +7,8 @@ import BookingsContent from '@/components/profile/BookingsContent';
 export const dynamic = 'force-dynamic';
 
 /**
- * ProfileBookingsPage — вкладка бронирований в личном кабинете (2-колоночный layout).
- * @returns {Promise<JSX.Element>} JSX страницы бронирований.
+ * ProfileBookingsPage — bookings tab in the personal account (2-column layout).
+ * @returns {Promise<JSX.Element>} JSX of the bookings page.
  */
 const ProfileBookingsPage = async (): Promise<JSX.Element> => {
   const banners = await getBlogBanners();

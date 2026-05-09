@@ -16,7 +16,7 @@ import AddressRow from './AddressRow';
 import DeliveryRow from './DeliveryRow';
 import DeliveryTableRow from './DeliveryTableRow';
 
-/** Таблица доставки. */
+/** Delivery table. */
 const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -38,8 +38,8 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
     const time = deliveryData.time;
     const address = deliveryData.address || addressReg || '';
 
-    // OneEntry для `timeInterval` ждёт `[[startISO, endISO]]`;
-    // если час ещё не выбран — пропускаем dispatch.
+    // OneEntry expects `timeInterval` as `[[startISO, endISO]]`;
+    // if no hour has been picked yet, skip the dispatch.
     const hourMatch = typeof time === 'string' ? time.match(/^(\d{1,2})/) : null;
     const hour = hourMatch?.[1] ? parseInt(hourMatch[1], 10) : NaN;
     if (date && Number.isFinite(hour)) {

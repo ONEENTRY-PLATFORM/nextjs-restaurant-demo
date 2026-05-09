@@ -17,9 +17,9 @@ export const dynamic = 'force-dynamic';
 const BLOG_HANDLE = 'blog';
 
 /**
- * BlogPromoListPage — корневая промо-страница со списком дочерних страниц `blog`.
- * Перекрывает generic-рендер `app/[handle]/page.tsx` для `/blog` (статический сегмент > `[handle]`).
- * @returns {Promise<JSX.Element>} JSX корневой промо-страницы.
+ * BlogPromoListPage — root promo page listing child pages of `blog`.
+ * Overrides the generic render of `app/[handle]/page.tsx` for `/blog` (static segment > `[handle]`).
+ * @returns {Promise<JSX.Element>} JSX of the root promo page.
  */
 const BlogPromoListPage = async (): Promise<JSX.Element> => {
   const [{ page, isError }, banners] = await Promise.all([
@@ -111,7 +111,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
 
 export default BlogPromoListPage;
 
-/** generateMetadata — метаданные корневой промо-страницы. */
+/** generateMetadata — metadata for the root promo page. */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(BLOG_HANDLE);
   const title = page?.localizeInfos?.title ?? 'Promotions';

@@ -8,7 +8,7 @@ import { addData } from '@/app/store/reducers/OrderSlice';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/** Строка адреса. */
+/** Address row. */
 const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);

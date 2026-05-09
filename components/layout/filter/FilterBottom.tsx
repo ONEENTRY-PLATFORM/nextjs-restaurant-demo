@@ -43,9 +43,9 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
 };
 
 /**
- * FilterBottom — нижний sheet фильтра, переключается через `OpenDrawerContext`.
+ * FilterBottom — bottom filter sheet, toggled via `OpenDrawerContext`.
  *
- * @returns {JSX.Element} JSX панели фильтра.
+ * @returns {JSX.Element} Filter panel JSX.
  */
 const FilterBottom = ({
   preferences: preferenceOptions = [],
@@ -70,8 +70,8 @@ const FilterBottom = ({
 
   const isVisible = open && component === 'FilterForm';
 
-  // Гидратация локального стейта из URL только в момент перехода в visible,
-  // чтобы не затирать пользовательские правки при быстрых ре-рендерах роутера.
+  // Hydrate local state from the URL only on the transition to visible
+  // so that fast router re-renders don't overwrite user edits.
   useEffect(() => {
     if (!isVisible) return;
     const cookingMax = searchParams.get('cooking_time_max');
@@ -109,8 +109,8 @@ const FilterBottom = ({
   const sheetRef = useRef<HTMLDivElement | null>(null);
   useSwipeToClose(sheetRef, close);
 
-  // При повторном открытии чистим inline-стили после swipe-dismiss, иначе
-  // Tailwind-класс `translate-y-0` будет перебит inline-`transform`.
+  // On reopen, clear inline styles left over from swipe-dismiss, otherwise
+  // the Tailwind class `translate-y-0` is overridden by an inline `transform`.
   useEffect(() => {
     if (isVisible && sheetRef.current) {
       sheetRef.current.style.transform = '';
@@ -132,8 +132,8 @@ const FilterBottom = ({
     setPrice([]);
   };
 
-  // Сериализуем выбранные чипы в URL и обновляем маршрут;
-  // page-компоненты `/shop/...` уже `force-dynamic`.
+  // Serialize selected chips into the URL and update the route;
+  // `/shop/...` page components are already `force-dynamic`.
   const apply = (): void => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -164,8 +164,8 @@ const FilterBottom = ({
     }
 
     const qs = params.toString();
-    // Если пользователь применил фильтр вне `/shop` — отправляем его на `/shop`,
-    // иначе остаёмся на текущем маршруте через replace.
+    // If the user applied a filter outside `/shop`, send them to `/shop`,
+    // otherwise stay on the current route via replace.
     const isShopRoute = pathname.startsWith('/shop');
     const targetPath = isShopRoute ? pathname : '/shop';
     const url = qs ? `${targetPath}?${qs}` : targetPath;

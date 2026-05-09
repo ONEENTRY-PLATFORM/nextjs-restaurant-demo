@@ -16,7 +16,7 @@ type Category = {
   href: string;
 };
 
-// Завершающий CTA — захардкожен, т.к. живёт вне дерева страницы `menu`.
+// Trailing CTA — hardcoded since it lives outside the `menu` page tree.
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
@@ -24,11 +24,11 @@ const BOOKING_TILE: Category = {
 };
 
 /**
- * CategoryFilter — выезжающая слева панель со списком категорий меню + CTA "Booking Table".
+ * CategoryFilter — left-side slide-in panel with the menu category list + "Booking Table" CTA.
  *
- * @param   {object}          props       - Пропсы компонента.
- * @param   {IPagesEntity[]}  props.pages - Дочерние страницы страницы `menu`.
- * @returns {JSX.Element}                 JSX панели категорий.
+ * @param   {object}          props       - Component props.
+ * @param   {IPagesEntity[]}  props.pages - Child pages of the `menu` page.
+ * @returns {JSX.Element}                 Category panel JSX.
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
   const { open, component, transition, setOpen, setComponent, setTransition } =

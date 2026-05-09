@@ -11,9 +11,9 @@ import NavItemFavorites from './NavItemFavorites';
 import NavItemProfile from './NavItemProfile';
 
 /**
- * NavGroup — группа верхней навигации (Home/Cart/Favorites/Profile + generic-пункты CMS-меню `user_menu`).
+ * NavGroup — top navigation group (Home/Cart/Favorites/Profile + generic items from the `user_menu` CMS menu).
  *
- * Fallback: если меню не пришло — рисуем дефолтный набор иконок.
+ * Fallback: if the menu did not load, render the default icon set.
  */
 const NavGroup = async (): Promise<JSX.Element> => {
   const { menu } = await getMenuByMarker('user_menu');
@@ -25,7 +25,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
     <div className="flex justify-between relative self-end cursor-pointer">
       <div className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
         {topLevel.length === 0 ? (
-          // Фоллбек: меню не пришло — дефолтный набор иконок.
+          // Fallback: menu did not load — default icon set.
           <>
             <NavItemCart />
             <NavItemFavorites />
@@ -42,7 +42,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
 const renderItem = (page: IMenusPages): JSX.Element | null => {
   switch (page.pageUrl) {
     case 'home_web':
-      // У страницы Home нет `menu_icon` в CMS — используем встроенный `HouseIcon`.
+      // The Home page has no `menu_icon` in the CMS — fall back to the built-in `HouseIcon`.
       return (
         <Link
           key={page.id}
@@ -65,9 +65,9 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
   }
 };
 
-/** Generic-ссылка для верхнего меню — иконка из `attributeValues.menu_icon`. */
+/** Generic top-menu link — icon from `attributeValues.menu_icon`. */
 const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
-  // SDK типизирует `menu_icon.value` как `{}`, но для image приходит `{ downloadLink, ... }`.
+  // SDK types `menu_icon.value` as `{}`, but for an image it actually arrives as `{ downloadLink, ... }`.
   const icon = page.attributeValues?.menu_icon as
     | { type?: string; value?: { downloadLink?: string } }
     | undefined;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-// `Window.grecaptcha` declared globally в `app/types/global.d.ts`.
+// `Window.grecaptcha` declared globally in `app/types/global.d.ts`.
 
 export interface CaptchaValidationObject {
   event: {
@@ -10,21 +10,22 @@ export interface CaptchaValidationObject {
 }
 
 /**
- * Загружает Google reCAPTCHA Enterprise для указанного `siteKey` и
- * выполняет `grecaptcha.enterprise.execute(...)`, возвращая объект
- * валидации, который OneEntry ожидает в `value` поля типа `spam`:
+ * useEnterpriseCaptcha — loads Google reCAPTCHA Enterprise for the given
+ * `siteKey` and runs `grecaptcha.enterprise.execute(...)`, returning the
+ * validation object that OneEntry expects in the `value` of a `spam`-type
+ * field:
  *
  * ```json
  * { "event": { "token": "...", "siteKey": "..." } }
  * ```
  *
- * Hook сам инжектит `<script src="...enterprise.js?render=KEY">`,
- * подписывается на `load`, запускает `ready` → `execute` и снимает
- * подписку на размонтировании. Если `siteKey` пустой — ничего не
- * делает и возвращает `null`.
- * @param   {string} siteKey - Публичный ключ Google reCAPTCHA Enterprise (settings.captcha.key поля spam).
- * @param   {string} action  - Действие для скоринга (по умолчанию `'login'`, в OneEntry — settings.captcha.action).
- * @returns {CaptchaValidationObject | null} Объект `{ event: { token, siteKey } }` после успешного `execute`, иначе `null`.
+ * The hook injects `<script src="...enterprise.js?render=KEY">` itself,
+ * subscribes to `load`, fires `ready` → `execute`, and removes the
+ * subscription on unmount. If `siteKey` is empty it does nothing and
+ * returns `null`.
+ * @param   {string} siteKey - Public Google reCAPTCHA Enterprise key (settings.captcha.key on the spam field).
+ * @param   {string} action  - Action used for scoring (defaults to `'login'`; in OneEntry — settings.captcha.action).
+ * @returns {CaptchaValidationObject | null} `{ event: { token, siteKey } }` after a successful `execute`, otherwise `null`.
  */
 export function useEnterpriseCaptcha(
   siteKey: string | undefined,

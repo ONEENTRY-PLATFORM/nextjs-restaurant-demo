@@ -5,8 +5,8 @@ import { LanguageEnum } from '@/app/types/enum';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 /**
- * GET — health-check OneEntry: тянет `home_web` и возвращает время ответа.
- * @returns {Promise<NextResponse>} JSON с success/responseTime/data.
+ * GET — OneEntry health-check: fetches `home_web` and returns the response time.
+ * @returns {Promise<NextResponse>} JSON with success/responseTime/data.
  */
 export async function GET(): Promise<NextResponse> {
   try {

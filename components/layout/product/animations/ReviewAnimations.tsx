@@ -6,7 +6,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/** ReviewAnimations — toggle/leaving анимация блока отзыва. */
+/** ReviewAnimations — toggle/leaving animation for the review block. */
 const ReviewAnimations = ({
   children,
   className,

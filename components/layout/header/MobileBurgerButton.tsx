@@ -5,7 +5,7 @@ import { type JSX, useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import BurgerIcon from '@/components/icons/burger';
 
-/** MobileBurgerButton — burger в мобильной шапке, открывает `CategoryFilter`. */
+/** MobileBurgerButton — burger in the mobile header; opens `CategoryFilter`. */
 const MobileBurgerButton = (): JSX.Element => {
   const { setOpen, setComponent, setTransition } = useContext(OpenDrawerContext);
 

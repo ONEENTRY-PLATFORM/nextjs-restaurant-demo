@@ -9,10 +9,10 @@ import { dictText } from '@/components/utils';
 const DictContext = createContext<IAttributeValues | undefined>(undefined);
 
 /**
- * Провайдер словаря `static_content`. Кладёт нормализованную мапу
- * (см. [app/dictionaries.ts](app/dictionaries.ts)) в Context, чтобы
- * client-компоненты могли читать строки через {@link useT} без
- * прокидывания `dict` через пропсы.
+ * DictProvider — provider for the `static_content` dictionary. Puts the normalized
+ * map (see [app/dictionaries.ts](app/dictionaries.ts)) into Context so that
+ * client components can read strings through {@link useT} without
+ * threading `dict` through props.
  */
 export const DictProvider = ({
   value,
@@ -23,10 +23,10 @@ export const DictProvider = ({
 }): JSX.Element => <DictContext.Provider value={value}>{children}</DictContext.Provider>;
 
 /**
- * Возвращает функцию `t(marker, fallback)`, которая читает строку из
- * dict-контекста через {@link dictText}. Хук, поэтому используется
- * только в client-компонентах. Server-компоненты продолжают вызывать
- * `dictText(dict, marker, fallback)` напрямую с результатом
+ * useT — returns a `t(marker, fallback)` function that reads a string from
+ * the dict context via {@link dictText}. It's a hook, so it's only used
+ * in client components. Server components keep calling
+ * `dictText(dict, marker, fallback)` directly with the result of
  * `getDictionary()`.
  *
  * @example

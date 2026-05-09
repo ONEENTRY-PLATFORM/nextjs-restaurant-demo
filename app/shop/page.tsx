@@ -19,9 +19,9 @@ const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 export const dynamic = 'force-dynamic';
 
 /**
- * ShopPageLayout — страница магазина.
- * @param   {PageProps} props - Пропсы страницы с params и searchParams.
- * @returns {Promise<JSX.Element>} JSX layout-а страницы магазина.
+ * ShopPageLayout — shop page.
+ * @param   {PageProps} props - Page props with params and searchParams.
+ * @returns {Promise<JSX.Element>} JSX of the shop page layout.
  */
 const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -78,7 +78,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
 
 export default ShopPageLayout;
 
-/** generateMetadata — метаданные страницы магазина. */
+/** generateMetadata — shop page metadata. */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle, lang } = await params;
   const { isError, page } = await getPageByUrl('services');

@@ -5,11 +5,11 @@ import { cache } from 'react';
 const serverContext = cache(() => new Map());
 
 /**
- * ServerProvider — простой геттер/сеттер для server-компонентов через React `cache`.
+ * ServerProvider — simple getter/setter for server components via React `cache`.
  *
- * @param   {string} key          - Ключ.
- * @param   {T}      defaultValue - Значение по умолчанию.
- * @returns                       Кортеж `[value, setter]`.
+ * @param   {string} key          - Key.
+ * @param   {T}      defaultValue - Default value.
+ * @returns                       Tuple `[value, setter]`.
  */
 export const ServerProvider = <T,>(key: string, defaultValue?: T) => {
   const global = serverContext();

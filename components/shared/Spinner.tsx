@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-/** Spinner — крутящийся индикатор загрузки. */
+/** Spinner — spinning loading indicator. */
 const Spinner = (): JSX.Element => {
   return (
     <div className="absolute left-[calc(50%-12px)] top-[calc(50%-12px)] aspect-square size-full overflow-hidden">

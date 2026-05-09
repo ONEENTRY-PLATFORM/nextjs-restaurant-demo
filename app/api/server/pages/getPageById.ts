@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getPageById — страница с привязанными формами, блоками и меню. */
+/** getPageById — page with attached forms, blocks, and menus. */
 export const getPageById = cache(
   async (
     id: number

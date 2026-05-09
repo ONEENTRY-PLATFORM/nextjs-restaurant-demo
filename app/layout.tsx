@@ -42,7 +42,7 @@ const lato = Lato({
   variable: '--font-lato',
 });
 
-/** Статические метаданные главной страницы. */
+/** Static metadata for the home page. */
 export const metadata: Metadata = {
   title: 'Restaurant — Excellence taste in every bite',
   description: 'Restaurant ordering platform built with Next.js + OneEntry CMS',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
 };
 
-/** RootLayout — корневой layout приложения. */
+/** RootLayout — root application layout. */
 export default async function RootLayout({
   children,
 }: Readonly<{

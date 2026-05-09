@@ -20,7 +20,7 @@ type CartQuantityControlProps = {
 };
 
 /**
- * CartQuantityControl — компактный +/qty/- контрол; шаг `-` при qty===1 удаляет с undo-toast.
+ * CartQuantityControl — compact +/qty/- control; the `-` step at qty===1 removes the item with an undo toast.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
     dispatch(decreaseProductQty({ id, quantity: 1 }));
   };
 
-  /** Применяет введённое количество; невалидное / 0 — удаляет позицию с undo. */
+  /** Applies the entered quantity; invalid / 0 removes the item with undo. */
   const commit = () => {
     const parsed = parseInt(value, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {

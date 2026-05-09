@@ -10,11 +10,11 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 
 /**
- * SupportPopup — мобильный попап поддержки (call/WhatsApp).
- * @param   {object}      props               - Пропсы.
- * @param   {string}      [props.phone]       - Телефон для `tel:`-ссылки.
- * @param   {string}      [props.whatsappUrl] - Ссылка на WhatsApp-чат.
- * @returns {JSX.Element}                     JSX попапа.
+ * SupportPopup — mobile support popup (call/WhatsApp).
+ * @param   {object}      props               - Props.
+ * @param   {string}      [props.phone]       - Phone number for the `tel:` link.
+ * @param   {string}      [props.whatsappUrl] - WhatsApp chat URL.
+ * @returns {JSX.Element}                     Popup JSX.
  */
 const SupportPopup = ({
   phone,

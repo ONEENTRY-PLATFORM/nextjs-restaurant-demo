@@ -1,6 +1,6 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
-/** Кнопка закрытия результатов поиска. */
+/** Search results close button. */
 const CloseSearch = ({
   setState,
 }: {

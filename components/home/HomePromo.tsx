@@ -5,9 +5,9 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 
 /**
- * HomePromo — промо-полоса главной (hero для desktop + горизонтальный скролл для mobile).
- * Управляется дочерними `blog` из OneEntry.
- * @returns {Promise<JSX.Element | null>} JSX промо либо `null`, если баннеров нет.
+ * HomePromo — homepage promo strip (desktop hero + horizontal scroll for mobile).
+ * Driven by `blog` children from OneEntry.
+ * @returns {Promise<JSX.Element | null>} Promo JSX or `null` when there are no banners.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();

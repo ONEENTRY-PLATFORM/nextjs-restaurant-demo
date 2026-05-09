@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getMenuByMarker — страницы меню по маркеру (React cache() дедуплицирует вызовы внутри рендера). */
+/** getMenuByMarker — menu pages by marker (React cache() deduplicates calls within a render). */
 export const getMenuByMarker = cache(
   async (
     marker: string

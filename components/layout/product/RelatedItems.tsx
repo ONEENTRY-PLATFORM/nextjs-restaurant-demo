@@ -8,24 +8,24 @@ import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations
 import ProductCard from '../products-grid/components/product-card/ProductCard';
 import ProductAnimations from './animations/ProductAnimations';
 
-/** Markers handled elsewhere (e.g. ProductsGroup) — не пробуем как similar. */
+/** Markers handled elsewhere (e.g. ProductsGroup) — do not try them as similar. */
 const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
 
 /**
- * RelatedItems — секция «похожих товаров» внизу страницы одного блюда
- * (порт `Featured objects` из `static-html/details.html`).
+ * RelatedItems — "related products" section at the bottom of a single dish page
+ * (port of `Featured objects` from `static-html/details.html`).
  *
- * Поддерживает два источника данных OneEntry:
- * 1. Канонический `Products.getRelatedProductsById` (per-product `relatedIds`).
- * 2. Прикреплённый к продукту блок типа `similar_products_block`
- *    (например, `similar_dishes`) — резолвится через `getBlockProducts`,
- *    который умеет читать `block.similarProducts.items`.
+ * Supports two OneEntry data sources:
+ * 1. Canonical `Products.getRelatedProductsById` (per-product `relatedIds`).
+ * 2. A block of type `similar_products_block` attached to the product
+ *    (for example, `similar_dishes`) — resolved via `getBlockProducts`,
+ *    which knows how to read `block.similarProducts.items`.
  *
- * Используется первый непустой источник в указанном порядке.
- * @param   {object}                 props           - пропсы
- * @param   {number}                 props.productId - id текущего товара
- * @param   {string[]}               [props.blocks]  - markers блоков, прикреплённых к продукту (`product.blocks`)
- * @returns {Promise<JSX.Element>}                   секция или пустой фрагмент
+ * The first non-empty source in the listed order is used.
+ * @param   {object}                 props           - props
+ * @param   {number}                 props.productId - id of the current product
+ * @param   {string[]}               [props.blocks]  - markers of blocks attached to the product (`product.blocks`)
+ * @returns {Promise<JSX.Element>}                   section or empty fragment
  */
 const RelatedItems = async ({
   productId,

@@ -6,15 +6,15 @@ import { useEffect, useRef, useState } from 'react';
 
 type Photo = { downloadLink?: string };
 
-// Свайп считается жестом смены фото, если горизонтальное смещение превысило этот порог.
+// A swipe is treated as a photo-change gesture once horizontal displacement exceeds this threshold.
 const SWIPE_THRESHOLD_PX = 40;
-// Порог, после которого drag-жест перехватывается как горизонтальный (capture pointer).
+// Threshold past which the drag gesture is captured as horizontal (pointer capture).
 const DIRECTION_LOCK_PX = 8;
 
 /**
- * RestaurantPhotoSlider — слайдер фото ресторана с dot-индикаторами, свайпом и автопрокруткой.
- * Если задан `onImageClick`, dots выводятся sibling-ом, чтобы не было `<button>` внутри `<button>`.
- * Передать `autoplayMs={null}` чтобы выключить автопрокрутку.
+ * RestaurantPhotoSlider — restaurant photo slider with dot indicators, swipe and autoplay.
+ * If `onImageClick` is provided, dots are rendered as a sibling to avoid `<button>` inside `<button>`.
+ * Pass `autoplayMs={null}` to disable autoplay.
  */
 const RestaurantPhotoSlider = ({
   photos,
@@ -85,13 +85,13 @@ const RestaurantPhotoSlider = ({
     const dy = e.clientY - s.startY;
     s.moved = Math.abs(dx);
     s.direction = dx > 0 ? 1 : dx < 0 ? -1 : 0;
-    // Lock в горизонтальный жест только когда горизонтальная компонента доминирует — иначе пропускаем вертикальный скролл.
+    // Lock into a horizontal gesture only when the horizontal component dominates — otherwise let vertical scroll through.
     if (!s.locked && Math.abs(dx) > DIRECTION_LOCK_PX && Math.abs(dx) > Math.abs(dy)) {
       s.locked = true;
       try {
         e.currentTarget.setPointerCapture(s.pointerId);
       } catch {
-        // pointerId уже мог быть отпущен (быстрый flick).
+        // pointerId may already have been released (fast flick).
       }
     }
   };
@@ -103,7 +103,7 @@ const RestaurantPhotoSlider = ({
       target.releasePointerCapture(s.pointerId);
     }
     if (s.locked && s.moved > SWIPE_THRESHOLD_PX && total > 0) {
-      // Свайп вправо (direction = 1) → предыдущий слайд; влево → следующий.
+      // Swipe right (direction = 1) → previous slide; left → next.
       const delta = s.direction === 1 ? -1 : 1;
       setActive(i => (i + delta + total) % total);
     }
@@ -112,7 +112,7 @@ const RestaurantPhotoSlider = ({
   };
 
   const onClickCapture = (e: React.MouseEvent<HTMLElement>) => {
-    // Подавляем click после swipe-жеста — иначе lightbox откроется при отпускании пальца.
+    // Suppress click after a swipe gesture — otherwise the lightbox would open on finger release.
     if (dragState.current.moved > SWIPE_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();
@@ -133,7 +133,7 @@ const RestaurantPhotoSlider = ({
     onDragStart: (e: React.DragEvent) => e.preventDefault(),
   };
 
-  // Все слайды монтируем одновременно и переключаем `opacity` — плавный crossfade. `priority` только на первое, чтобы не утащить LCP.
+  // Mount all slides at once and toggle `opacity` for a smooth crossfade. `priority` only on the first to avoid hurting LCP.
   const frameContent =
     total > 0
       ? photos.map((p, i) =>

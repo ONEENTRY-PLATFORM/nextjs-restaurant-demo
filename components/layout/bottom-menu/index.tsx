@@ -24,7 +24,7 @@ const NAV_BY_URL: Record<string, NavConfig> = {
   bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
 };
 
-/** BottomMobileMenu — фиксированная нижняя навигация (мобильная) на основе меню `bottom_web` + центральная Cart/Close-пара. */
+/** BottomMobileMenu — fixed mobile bottom navigation built from the `bottom_web` menu + central Cart/Close pair. */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');
 
@@ -56,7 +56,7 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
         </div>
 
         <div className="relative w-1/3 flex justify-center items-start -mt-5 p-5 z-50">
-          {/* Стек cart/close, crossfade через opacity+rotate+scale по `OpenDrawerContext.open`. */}
+          {/* Cart/close stack — crossfade via opacity+rotate+scale driven by `OpenDrawerContext.open`. */}
           <div className="relative w-11.5 h-11.5 -mt-2.5">
             <CenterCartButton />
             <CenterCloseButton />

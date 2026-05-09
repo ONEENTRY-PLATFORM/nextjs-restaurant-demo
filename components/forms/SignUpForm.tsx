@@ -20,7 +20,7 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
 
-/** SignUpForm — форма регистрации пользователя. */
+/** SignUpForm — user sign-up form. */
 const SignUpForm = (): JSX.Element => {
   const t = useT();
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const SignUpForm = (): JSX.Element => {
 
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Поля формы по верстке pk_sing_up.html, в порядке верстки.
+  // Form fields per pk_sing_up.html markup, in the markup order.
   const formFields = useMemo(
     () => ['username', 'surname', 'password', 'repeat_password', 'email', 'phone'],
     []
@@ -60,7 +60,7 @@ const SignUpForm = (): JSX.Element => {
 
       if (!canSubmit) return;
 
-      // `formIdentifier` должен совпадать с `formIdentifier` auth-провайдера.
+      // `formIdentifier` must match the auth provider's `formIdentifier`.
       const data: ISignUpData = {
         formIdentifier: 'user',
         authData: [
@@ -90,7 +90,7 @@ const SignUpForm = (): JSX.Element => {
         const res = await getApi().AuthProvider.signUp('email', data);
 
         if (typeError(res)) {
-          // Ошибка sign-up — остаёмся в SignUpForm: пользователь не создан, на VerificationForm не переключаемся.
+          // Sign-up error — stay on SignUpForm: the user was not created, do not switch to VerificationForm.
           const err = res as { statusCode?: number; message?: string };
           setError(err.message || `Error ${err.statusCode ?? ''}`);
         } else {

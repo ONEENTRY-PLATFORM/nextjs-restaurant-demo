@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import ChevronDownIcon from '@/components/icons/chevron-down';
 
-/** Один интервал расписания ресторана из OneEntry (атрибут `schedule` типа `timeInterval`). */
+/** A single restaurant schedule interval from OneEntry (attribute `schedule`, type `timeInterval`). */
 export type ScheduleSlotEntry = {
   dates?: [string, string];
   times?: Array<[{ hours: number; minutes: number }, { hours: number; minutes: number }]>;
@@ -16,21 +16,21 @@ export type ScheduleSlotEntry = {
 export type RestaurantOption = {
   value: string;
   label: string;
-  // Числовой id страницы ресторана: поле `restaurant` имеет тип `entity` и ждёт `value: [<numericPageId>]`.
+  // Numeric restaurant page id: the `restaurant` field has type `entity` and expects `value: [<numericPageId>]`.
   id: number;
-  // Расписание — пробрасывается в TimePicker для показа только доступных слотов.
+  // Schedule — passed to the TimePicker so only available slots are shown.
   schedule?: ScheduleSlotEntry[];
 };
 
 /**
- * RestaurantSelect — кастомный dropdown по паттерну `.custom-select` из static-html.
+ * RestaurantSelect — custom dropdown following the `.custom-select` pattern from static-html.
  *
- * @param   {object}                  props               - Пропсы компонента.
- * @param   {RestaurantOption[]}      props.options       - Доступные опции ресторанов.
- * @param   {string}                  props.value         - Текущее выбранное значение.
- * @param   {(v: string) => void}     props.onChange      - Обработчик изменения.
- * @param   {string}                  [props.placeholder] - Текст-плейсхолдер триггера.
- * @returns {JSX.Element}                                 JSX дропдауна.
+ * @param   {object}                  props               - Component props.
+ * @param   {RestaurantOption[]}      props.options       - Available restaurant options.
+ * @param   {string}                  props.value         - Currently selected value.
+ * @param   {(v: string) => void}     props.onChange      - Change handler.
+ * @param   {string}                  [props.placeholder] - Trigger placeholder text.
+ * @returns {JSX.Element}                                 Dropdown JSX.
  */
 const RestaurantSelect = ({
   options,

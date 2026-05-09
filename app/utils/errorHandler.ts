@@ -3,10 +3,10 @@ import type { IError } from 'oneentry/dist/base/utils';
 import { toast } from 'react-toastify';
 
 /**
- * ApiError — стандартизированная ошибка API.
+ * ApiError — standardized API error.
  *
- * @property {number}  statusCode    - HTTP-статус ошибки.
- * @property {unknown} originalError - Исходный объект ошибки.
+ * @property {number}  statusCode    - HTTP error status.
+ * @property {unknown} originalError - Original error object.
  */
 export class ApiError extends Error {
   statusCode: number;
@@ -21,21 +21,21 @@ export class ApiError extends Error {
 }
 
 /**
- * isIError — type guard для `IError` SDK OneEntry.
+ * isIError — type guard for the OneEntry SDK `IError`.
  *
- * @param   {unknown} error - Объект для проверки.
- * @returns {boolean}       true, если объект — IError.
+ * @param   {unknown} error - Object to check.
+ * @returns {boolean}       true if the object is an IError.
  */
 export function isIError(error: unknown): error is IError {
   return typeof error === 'object' && error !== null && 'statusCode' in error && 'message' in error;
 }
 
 /**
- * handleApiError — централизованная обработка ошибок API.
+ * handleApiError — centralized API error handler.
  *
- * @param   {string}   handle - Имя вызывающего хендлера для лога.
- * @param   {unknown}  error  - Ошибка для обработки.
- * @returns {ApiError}        Стандартизированная `ApiError`.
+ * @param   {string}   handle - Name of the calling handler for logging.
+ * @param   {unknown}  error  - Error to handle.
+ * @returns {ApiError}        Standardized `ApiError`.
  */
 export function handleApiError(handle: string, error: unknown): ApiError {
   if (isIError(error)) {
@@ -68,9 +68,9 @@ export function handleApiError(handle: string, error: unknown): ApiError {
 }
 
 /**
- * useApiErrorHandler — хук для обработки ошибок API с toast-уведомлениями.
+ * useApiErrorHandler — hook for handling API errors with toast notifications.
  *
- * @returns {unknown} Функция-обработчик.
+ * @returns {unknown} Handler function.
  */
 export function useApiErrorHandler(): unknown {
   return function handleApiErrorWithNotification(error: unknown): ApiError {
@@ -82,11 +82,11 @@ export function useApiErrorHandler(): unknown {
 }
 
 /**
- * formatErrorMessage — форматирует сообщение об ошибке для пользователя.
+ * formatErrorMessage — formats an error message for the user.
  *
- * @param   {unknown} error          - Ошибка для форматирования.
- * @param   {string}  defaultMessage - Сообщение по умолчанию.
- * @returns {string}                 Отформатированное сообщение.
+ * @param   {unknown} error          - Error to format.
+ * @param   {string}  defaultMessage - Default message.
+ * @returns {string}                 Formatted message.
  */
 export function formatErrorMessage(
   error: unknown,

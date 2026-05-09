@@ -11,7 +11,7 @@ interface HandleProps {
   limit: number;
   langCode?: string;
 }
-/** getAllOrdersByMarker — все заказы из order-storage пользователя. */
+/** getAllOrdersByMarker — all orders from the user's order-storage. */
 export const getAllOrdersByMarker = cache(
   async ({
     marker,

@@ -7,6 +7,7 @@ import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
 import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -14,8 +15,6 @@ type CartEntry = {
   quantity?: number;
   selected?: boolean;
 };
-
-const DELIVERY_PRODUCT_ID = 33;
 
 export type ConfirmOrderResult =
   | { ok: true; orderId: number; paymentUrl?: string }

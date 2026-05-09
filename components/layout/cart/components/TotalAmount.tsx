@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
@@ -39,7 +40,7 @@ const TotalAmount = ({ className }: { className: string }): JSX.Element => {
     const productsById = new Map<number, IProductsEntity>(products.map(p => [p.id, p]));
 
     const subtotal = productsData
-      .filter(entry => entry.selected !== false)
+      .filter(entry => entry.selected !== false && entry.id !== DELIVERY_PRODUCT_ID)
       .reduce((sum, entry) => {
         const product = productsById.get(entry.id);
         if (!product) return sum;

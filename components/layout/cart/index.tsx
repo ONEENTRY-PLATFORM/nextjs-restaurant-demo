@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
+import { gsap } from 'gsap';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -18,6 +19,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 import { addData, setStep } from '@/app/store/reducers/OrderSlice';
 import type { IProducts } from '@/app/types/global';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
 import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
@@ -185,24 +187,48 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     return <Loader />;
   }
 
-  if (!products || products.length < 1) {
+  // Доставка — не должна показываться как карточка товара.
+  const visibleProducts = products.filter((p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID);
+
+  if (visibleProducts.length < 1) {
     return <EmptyCart />;
   }
 
   const onApply = () => {
-    if (isAuth) {
+    if (!isAuth) {
+      setPendingCheckout(true);
+      setComponent('AuthProviderSelect');
+      setOpen(true);
+      return;
+    }
+    // Обратная анимация карточек корзины (slide-down + fade) перед переходом
+    // на шаг ордера. Symmetric к entrance-таймлайну в `CartAnimations`/
+    // `ProductAnimations`. По завершении сбрасываем стили — иначе при возврате
+    // на шаг корзины (через breadcrumb) элементы остались бы скрытыми.
+    const cards = document.querySelectorAll('.product-in-cart');
+    const button = document.querySelectorAll('.cart-apply-btn');
+    if (cards.length === 0) {
       dispatch(setStep('order'));
       return;
     }
-    setPendingCheckout(true);
-    setComponent('AuthProviderSelect');
-    setOpen(true);
+    const tl = gsap.timeline({
+      onComplete: () => {
+        dispatch(setStep('order'));
+        gsap.set([cards, button], { autoAlpha: 1, yPercent: 0 });
+      },
+    });
+    tl.to(cards, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.35,
+      stagger: { each: 0.07, from: 'end' },
+    }).to(button, { autoAlpha: 0, yPercent: 100, duration: 0.25 }, '-=0.15');
   };
 
   return (
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
-        {products?.map((product: IProductsEntity, i: number) => {
+        {visibleProducts.map((product: IProductsEntity, i: number) => {
           // Ищем selection по id, а не по индексу — `productsCartData` может
           // быть в другом порядке, чем `products` (порядок ответа RTK query
           // не гарантирован), и изменение `selected` одной записи мутирует
@@ -222,7 +248,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         <button
           type="button"
           onClick={onApply}
-          className="flex h-15 w-full items-center justify-center rounded-[10px] bg-custom_btnorange text-center font-normal text-[16px] text-white hover_btn_transp md:h-11.25"
+          className="cart-apply-btn flex h-15 w-full items-center justify-center rounded-[10px] bg-custom_btnorange text-center font-normal text-[16px] text-white hover_btn_transp md:h-11.25"
         >
           APPLY
         </button>

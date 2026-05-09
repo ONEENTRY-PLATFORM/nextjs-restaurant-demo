@@ -1,5 +1,6 @@
 'use client';
 
+import { gsap } from 'gsap';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
@@ -20,6 +21,7 @@ import {
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 import type { IProducts } from '@/app/types/global';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import StepOrder from '@/components/cart/steps/StepOrder';
 import StepPayment from '@/components/cart/steps/StepPayment';
 import StepResult from '@/components/cart/steps/StepResult';
@@ -31,10 +33,6 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-
-// id продукта-доставки. Соответствует серверной выборке в `app/cart/page.tsx` —
-// нужен для StepPayment / StepOrder (delivery price в `total`).
-const DELIVERY_PRODUCT_ID = 83;
 
 /**
  * Попап-drawer корзины — порт `static-html/cart_cart.html`, открывается с
@@ -96,9 +94,29 @@ const CartPopup = (): JSX.Element => {
 
   const close = (): void => setTransition('close');
 
-  // APPLY на шаге cart — переход к step='order' внутри попапа.
+  // APPLY на шаге cart — обратная анимация карточек (slide-down + fade) и
+  // только потом переход на шаг ордера. Зеркальная entrance-анимации в
+  // `ProductAnimations`/`CartAnimations`. Сброс стилей в `onComplete` —
+  // чтобы при возврате на шаг корзины карточки появились заново.
   const handleCartApply = (): void => {
-    dispatch(setStep('order'));
+    const cards = document.querySelectorAll('.product-in-cart');
+    const button = document.querySelectorAll('.cart_btn');
+    if (cards.length === 0) {
+      dispatch(setStep('order'));
+      return;
+    }
+    const tl = gsap.timeline({
+      onComplete: () => {
+        dispatch(setStep('order'));
+        gsap.set([cards, button], { autoAlpha: 1, yPercent: 0 });
+      },
+    });
+    tl.to(cards, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.35,
+      stagger: { each: 0.07, from: 'end' },
+    }).to(button, { autoAlpha: 0, yPercent: 100, duration: 0.25 }, '-=0.15');
   };
 
   // Назад: на cart-шаге закрываем попап, на остальных — поднимаемся по стеку.
@@ -115,7 +133,11 @@ const CartPopup = (): JSX.Element => {
   // конфликта между inline-transform и `yPercent`-tween анимации.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
-  const products = (data ?? []) as IProductsEntity[];
+  // Доставка отображается отдельной строкой в итогах, а в каталог-списке
+  // корзины показывать её не нужно (та же логика, что и в `CartPage`).
+  const products = (data ?? []).filter(
+    (p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID
+  ) as IProductsEntity[];
 
   const stepTitles: Record<CheckoutStep, string> = {
     cart: 'Cart',

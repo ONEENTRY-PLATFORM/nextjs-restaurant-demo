@@ -62,8 +62,7 @@ const useIsMdUp = (): boolean =>
  * не рендерит — после успешного логина `CartPage` авто-переходит на `order`.
  *
  * Правила рендера (по десктоп-вариантам `pk_*.html` из static-html):
- * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа
- *   (`pk_cart.html`).
+ * - Шаг `cart`: товары корзины в левой колонке, промо-баннеры справа.
  * - Прочие шаги (`order`, `payment`, …):
  *   - Десктоп (md+): рендерятся ИНЛАЙН на странице корзины, замещая
  *     товары корзины в левой колонке (паттерн `pk_order.html`). Хлебные крошки
@@ -114,7 +113,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   return (
     <>
       <div className={cartWrapperClass}>
-        {/* Хедер только для мобилы — стрелка назад + "Cart" + бургер по cart_cart.html */}
+        {/* Хедер только для мобилы */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
           <Link href="/" className="group_white" aria-label="Back">
             <ArrowBackOrangeIcon />

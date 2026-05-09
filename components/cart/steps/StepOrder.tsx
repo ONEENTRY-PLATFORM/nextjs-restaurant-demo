@@ -1,17 +1,22 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
 import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useApplyCoupon } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import Placeholder from '@/components/shared/Placeholder';
 import { UsePrice } from '@/components/utils';
+
+const ORDER_ROW_SELECTOR = '.step-order-row';
 
 type CartEntry = {
   id: number;
@@ -43,7 +48,13 @@ const StepOrder = (): JSX.Element => {
       product: products.find(p => p.id === entry.id),
     }))
     .filter(
-      row => row.product && row.entry.selected && row.product.statusIdentifier !== 'out_of_stock'
+      row =>
+        row.product &&
+        row.entry.selected &&
+        row.product.statusIdentifier !== 'out_of_stock' &&
+        // Доставка показывается отдельной строкой в итогах (Delivery: …), поэтому
+        // исключаем её из списка товаров, иначе она задваивается и в subtotal.
+        row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{
     entry: CartEntry;
     product: IProductsEntity;
@@ -68,8 +79,52 @@ const StepOrder = (): JSX.Element => {
     void applyCoupon(promoCode);
   };
 
+  // Контейнер для анимации входа/выхода строк ордера. Тот же паттерн, что в
+  // `CartAnimations` — slide-up + fade на маунте, обратная анимация перед
+  // переходом на следующий шаг.
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (!containerRef.current) return undefined;
+      const targets = containerRef.current.querySelectorAll(ORDER_ROW_SELECTOR);
+      if (targets.length === 0) return undefined;
+      const tl = gsap.timeline();
+      tl.set(targets, { autoAlpha: 0, yPercent: 100 }).to(targets, {
+        autoAlpha: 1,
+        yPercent: 0,
+        duration: 0.4,
+        stagger: 0.08,
+      });
+      return () => {
+        tl.kill();
+      };
+    },
+    { scope: containerRef, dependencies: [items.length] }
+  );
+
+  const handleProceedToPayment = (): void => {
+    const root = containerRef.current;
+    const targets = root?.querySelectorAll(ORDER_ROW_SELECTOR);
+    if (!targets || targets.length === 0) {
+      dispatch(setStep('payment'));
+      return;
+    }
+    gsap.to(targets, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.35,
+      stagger: { each: 0.07, from: 'end' },
+      onComplete: () => {
+        dispatch(setStep('payment'));
+        // Сброс — чтобы при возврате на этот шаг entrance-таймлайн стартовал чисто.
+        gsap.set(targets, { autoAlpha: 1, yPercent: 0 });
+      },
+    });
+  };
+
   return (
-    <div className="flex flex-col gap-5">
+    <div ref={containerRef} className="flex flex-col gap-5">
       {/* Товары */}
       <div className="flex flex-col gap-5">
         {items.map(({ entry, product }) => {
@@ -81,7 +136,10 @@ const StepOrder = (): JSX.Element => {
             | undefined;
           const imgSrc = cover?.downloadLink;
           return (
-            <div key={entry.id} className="flex items-center justify-between gap-2.5">
+            <div
+              key={entry.id}
+              className="step-order-row flex items-center justify-between gap-2.5"
+            >
               <div className="relative size-17.25 shrink-0 overflow-hidden rounded">
                 {imgSrc ? (
                   <Image
@@ -111,7 +169,7 @@ const StepOrder = (): JSX.Element => {
       </div>
 
       {/* Промо-код — отдельный инпут + кнопка, по pk_order.html */}
-      <div className="mt-5 flex w-full flex-col gap-1.5">
+      <div className="step-order-row mt-5 flex w-full flex-col gap-1.5">
         <div className="flex w-full items-center justify-between gap-6.25">
           <input
             type="text"
@@ -147,7 +205,7 @@ const StepOrder = (): JSX.Element => {
       </div>
 
       {/* Итоги */}
-      <div className="mt-10 rounded-[5px] border border-brand p-2.5">
+      <div className="step-order-row mt-10 rounded-[5px] border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>{t('subtotal_text', 'Subtotal')}:</p>
           <p>{UsePrice({ amount: subtotal })}</p>
@@ -170,8 +228,8 @@ const StepOrder = (): JSX.Element => {
 
       <button
         type="button"
-        onClick={() => dispatch(setStep('payment'))}
-        className="mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-base text-white hover:bg-gradient-to-r-hover"
+        onClick={handleProceedToPayment}
+        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-base text-white hover:bg-gradient-to-r-hover"
       >
         APPLY
       </button>

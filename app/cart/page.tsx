@@ -2,6 +2,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import { getBlogBanners, getProductById } from '@/app/api';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';
 
@@ -31,7 +32,7 @@ type ProductResponse = {
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
   /** Получаем данные доставки (продукта) по id продукта */
-  const response = await getProductById(83);
+  const response = await getProductById(DELIVERY_PRODUCT_ID);
 
   /** Проверяем, есть ли в ответе ошибка */
   const deliveryData = response.isError ? undefined : (response as ProductResponse).product;

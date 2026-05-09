@@ -24,16 +24,12 @@ import {
 } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
-
-// Совпадает с константой в `app/api/hooks/useCreateOrder.ts` — сервис «Delivery»
-// записывается в заказ как обычный продукт с этим id, поэтому его нужно
-// отделять от настоящих позиций при подсчёте subtotal/delivery.
-const DELIVERY_PRODUCT_ID = 33;
 
 // Тот же паттерн, что и в `components/cart/CartWizard.tsx` — md+ открывает
 // корзину как страницу (`/cart`), а не как drawer. Repeat order на десктопе

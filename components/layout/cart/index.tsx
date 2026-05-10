@@ -27,11 +27,11 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * CartPage - list of products in the cart + APPLY button (proceed to checkout).
+ * CartPage — list of products in the cart + APPLY button (proceed to checkout).
  *
- * @param   {object}            props              - Props.
- * @param   {IProductsEntity}   props.deliveryData - Delivery product entity.
- * @returns {JSX.Element}                          Cart page JSX.
+ * @param   {object}            props              - Component props.
+ * @param   {IProductsEntity}   props.deliveryData - OneEntry product representing the delivery service line item.
+ * @returns {JSX.Element} JSX of the cart page (loader, empty state, or product list with APPLY).
  */
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
-  // "Continue to order after sign-in" flag - otherwise any login from the header would switch cart â†’ order.
+  // "Continue to order after sign-in" flag - otherwise any login from the header would switch cart -> order.
   const [pendingCheckout, setPendingCheckout] = useState(false);
 
   // Mirror delivery state into OrderSlice.formData so the `payment` step submit has delivery_time/address.

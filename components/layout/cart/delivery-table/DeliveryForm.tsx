@@ -10,7 +10,13 @@ import PaymentButton from '@/components/layout/cart/components/PaymentButton';
 import TotalAmount from '@/components/layout/cart/components/TotalAmount';
 import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable';
 
-/** Delivery form. */
+/**
+ * DeliveryForm — delivery wizard step: delivery table + total + "Go to payment" CTA.
+ *
+ * @param   {object}            props              - Component props.
+ * @param   {IProductsEntity}   props.deliveryData - OneEntry product representing the delivery service line item.
+ * @returns {JSX.Element} JSX of the delivery form.
+ */
 const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

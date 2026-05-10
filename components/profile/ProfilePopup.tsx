@@ -28,13 +28,34 @@ const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';
 
 const MD_QUERY = '(min-width: 768px)';
+/**
+ * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
+ *
+ * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
+ * @returns {() => void}        Unsubscribe function.
+ */
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
   mq.addEventListener('change', cb);
   return () => mq.removeEventListener('change', cb);
 };
+/**
+ * getMdSnapshot — current client snapshot of the `md` media query match state.
+ *
+ * @returns {boolean} `true` when the viewport currently matches `md` (>= 768px).
+ */
 const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
+/**
+ * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
+ *
+ * @returns {boolean} Always `false` so SSR renders the mobile layout deterministically.
+ */
 const getMdServerSnapshot = (): boolean => false;
+/**
+ * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
+ *
+ * @returns {boolean} `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
+ */
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
@@ -46,7 +67,15 @@ const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
   bookings: 'bookings',
 };
 
-/** ProfileNavMenu - list of profile links from the CMS menu `user_menu` (children of `profile`). */
+/**
+ * ProfileNavMenu — list of profile links from the CMS menu `user_menu` (children of `profile`).
+ *
+ * @param   {object}                                props                - Component props.
+ * @param   {boolean}                               props.isMdUp         - When `true`, links navigate to standalone routes; otherwise mobile inline screens are used.
+ * @param   {() => void}                            props.onNavigate     - Called after a navigation link is clicked (closes the popup).
+ * @param   {(screen: ProfileScreen) => void}       props.onSelectScreen - Switches the inline mobile screen.
+ * @returns {JSX.Element | null}                                           JSX of the navigation list, or `null` when no menu items are configured.
+ */
 const ProfileNavMenu = ({
   isMdUp,
   onNavigate,
@@ -145,7 +174,14 @@ const SCREEN_TITLES: Record<Exclude<ProfileScreen, 'menu'>, string> = {
   personal: 'My Profile',
 };
 
-/** ScreenHeader - mobile sub-screen header: back / title. */
+/**
+ * ScreenHeader — mobile sub-screen header (back arrow + screen title).
+ *
+ * @param   {object}                            props        - Component props.
+ * @param   {Exclude<ProfileScreen, 'menu'>}    props.screen - Active sub-screen identifier (`orders` | `favorites` | `bookings` | `personal`).
+ * @param   {() => void}                        props.onBack - Called when the back arrow is clicked.
+ * @returns {JSX.Element}                                     JSX of the sub-screen header.
+ */
 const ScreenHeader = ({
   screen,
   onBack,
@@ -167,7 +203,11 @@ const ScreenHeader = ({
   </div>
 );
 
-/** ProfilePopup - profile drawer. */
+/**
+ * ProfilePopup — profile drawer (slide-up on mobile, side panel on md+).
+ *
+ * @returns {JSX.Element} JSX of the profile drawer (or empty fragment when not active).
+ */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';

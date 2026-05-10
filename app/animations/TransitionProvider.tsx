@@ -10,6 +10,12 @@ const LEAVE_DURATION = 0.28;
 const ENTER_DURATION = 0.35;
 const CARD_LEAVE_HOLD = 0.8;
 
+/**
+ * hasCardLeave — checks whether the current pathname needs the extended card-leave hold before navigating.
+ *
+ * @param   {string}  pathname - Current `next/navigation` pathname.
+ * @returns {boolean}          `true` for routes that render product/order cards needing the longer leave hold.
+ */
 function hasCardLeave(pathname: string): boolean {
   return (
     pathname === '/' ||
@@ -25,8 +31,9 @@ function hasCardLeave(pathname: string): boolean {
  * TransitionProvider — wraps the app with a `next-transition-router` so route changes
  * play a GSAP-driven stage transition on the wrapped element.
  *
- * @param children - Tree rendered inside the transition stage.
- * @returns JSX of the transition root.
+ * @param   {object}      props          - Component props.
+ * @param   {ReactNode}   props.children - Tree rendered inside the transition stage.
+ * @returns {JSX.Element}                JSX of the transition root.
  */
 export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);

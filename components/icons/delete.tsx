@@ -1,3 +1,8 @@
+/**
+ * DeleteIcon — trash-bin icon (paper fill, hover-to-brand) for row delete actions.
+ *
+ * @returns {JSX.Element} JSX of the delete SVG.
+ */
 const DeleteIcon = () => {
   return (
     <svg

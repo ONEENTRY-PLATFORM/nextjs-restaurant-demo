@@ -6,7 +6,13 @@ import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/** Delivery form row. */
+/**
+ * DeliveryRow — table row showing the delivery service product (image + title + price).
+ *
+ * @param   {object}            props          - Component props.
+ * @param   {IProductsEntity}   props.delivery - OneEntry product representing the delivery service line item.
+ * @returns {JSX.Element} JSX of the delivery table row.
+ */
 const DeliveryRow = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   return (
     <TableRowAnimations

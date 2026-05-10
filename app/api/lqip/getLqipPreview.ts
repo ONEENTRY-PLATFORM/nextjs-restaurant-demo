@@ -8,8 +8,9 @@ const CACHE_DURATION = 10 * 60 * 1000;
 
 /**
  * getLqipPreview — generates a low-quality base64 image placeholder (LQIP) for the given image URL.
+ *
  * @param   {string}          imageUrl - Image URL.
- * @returns {Promise<string>}          Base64 data URI of the placeholder (or a default SVG on error).
+ * @returns {Promise<string>}            Promise resolving to a base64 data URI for the placeholder (or a default SVG on error).
  */
 const getLqipPreview = async (imageUrl: string): Promise<string> => {
   const cached = lqipCache.get(imageUrl);

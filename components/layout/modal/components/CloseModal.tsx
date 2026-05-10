@@ -6,14 +6,20 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 
-/** Close-modal button. */
-const CloseModal = (): JSX.Element => {
+/**
+ * Close-modal button.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      [props.className] - Extra utility classes merged onto the button (e.g. responsive visibility overrides).
+ * @returns {JSX.Element} Button JSX.
+ */
+const CloseModal = ({ className = '' }: { className?: string }): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);
 
   return (
     <button
       onClick={() => setTransition('close')}
-      className="flex size-12.5 items-center justify-center rounded-full border border-solid border-white transition-transform hover:rotate-180"
+      className={`flex size-12.5 items-center justify-center rounded-full border border-solid border-white transition-transform hover:rotate-180 ${className}`}
       aria-label="Close"
     >
       <CloseXBoldIcon />

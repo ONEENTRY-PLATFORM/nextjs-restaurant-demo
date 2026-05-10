@@ -15,6 +15,12 @@ type OauthLoginProps = {
  *
  * Server action only — `client_secret` must not end up in the browser bundle.
  * Analogous to {@link logInUser}, but via `AuthProvider.oauth(...)` (OAuth providers are not bound to a form).
+ *
+ * @param   {OauthLoginProps} props             - OAuth exchange arguments.
+ * @param   {string}          props.marker      - OAuth provider marker (currently `google`).
+ * @param   {string}          props.code        - Authorization code returned by the provider's redirect.
+ * @param   {string}          props.redirectUri - Redirect URI registered for the OAuth client.
+ * @returns {Promise<{ data?: IAuthEntity; error?: string }>}                    Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {

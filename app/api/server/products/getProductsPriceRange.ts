@@ -13,6 +13,10 @@ export type PriceRange = {
  *
  * Used to build the price chips in the filter dynamically, so the bounds match real products.
  * Graceful fallback `{ min: 0, max: 0 }` on an empty catalog or error — the UI then simply hides the chips.
+ *
+ * @param   {string}              [pageUrl]  - OneEntry `pageUrl` of the catalog page (default `'services'`).
+ * @param   {string}              [langCode] - Optional explicit locale (defaults to `getLang()`).
+ * @returns {Promise<PriceRange>}              Promise resolving to the catalog price range.
  */
 export const getProductsPriceRange = cache(
   async (pageUrl = 'services', langCode?: string): Promise<PriceRange> => {

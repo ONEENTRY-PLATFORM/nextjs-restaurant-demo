@@ -7,6 +7,13 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import LinesBulletsIcon from '@/components/icons/lines-bullets';
 
+/**
+ * NavItemCatalog — catalog nav-item button in the mobile bottom menu; opens the `CategoryFilter` drawer.
+ *
+ * @param   {object}      props      - Component props.
+ * @param   {IMenusPages} props.item - OneEntry menu page entity (only `localizeInfos.menuTitle` is used).
+ * @returns {JSX.Element} JSX of the catalog button.
+ */
 const NavItemCatalog = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 

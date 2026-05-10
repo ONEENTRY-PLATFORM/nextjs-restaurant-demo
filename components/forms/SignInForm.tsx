@@ -22,10 +22,10 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
 /**
  * SignInForm — email/password sign-in form.
  *
- * @param   {object}     props           - Props.
- * @param   {string}     props.className - Wrapper class.
- * @param   {boolean}    props.isActive  - Whether the form is active (for animations).
- * @returns {JSX.Element}                Form JSX.
+ * @param   {object}  props           - Component props.
+ * @param   {string}  props.className - Wrapper class merged onto the animated form root.
+ * @param   {boolean} props.isActive  - Whether the form is the active step in the auth wizard (drives animations).
+ * @returns {JSX.Element}               JSX of the sign-in form.
  */
 const SignInForm = ({
   className,

@@ -6,7 +6,15 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/** ProductAnimations — fade-in/leaving wrapper for product page blocks. */
+/**
+ * ProductAnimations — fade-in/leaving wrapper for product page blocks with per-block stagger.
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {ReactNode}   props.children  - Block content to animate.
+ * @param   {string}      props.className - Class merged onto the wrapping `<div>`.
+ * @param   {number}      props.index     - Block index used to compute the stagger delay.
+ * @returns {JSX.Element} JSX wrapper around the product block.
+ */
 const ProductAnimations = ({
   children,
   className,

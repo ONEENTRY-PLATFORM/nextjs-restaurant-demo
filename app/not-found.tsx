@@ -6,7 +6,11 @@ import { getPageByUrl } from '@/app/api';
 // Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
 
-/** NotFound - 404 page layout. */
+/**
+ * NotFound — 404 page layout, content driven by the OneEntry `404` page.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the 404 page (CMS title + `error_description` attribute, with a fallback shell).
+ */
 const NotFound = async (): Promise<JSX.Element> => {
   const { page, isError } = await getPageByUrl('404');
 

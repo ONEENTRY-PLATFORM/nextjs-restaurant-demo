@@ -8,7 +8,15 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { addReservationToCart, selectReservationId } from '@/app/store/reducers/CartSlice';
 
-/** Search result row — link to the product page. */
+/**
+ * ProductRow — single search-result row; navigates to the product page and adds it to the active reservation.
+ *
+ * @param   {object}                              props          - Component props.
+ * @param   {IPagesEntity | undefined}            props.pageData - Optional page entity used to enrich the reservation snapshot.
+ * @param   {IProductsEntity}                     props.product  - Product entity for the row.
+ * @param   {Dispatch<SetStateAction<boolean>>}   props.setState - Setter that closes the search results panel after navigation.
+ * @returns {JSX.Element} JSX of the search-result row link.
+ */
 const ProductRow = ({
   pageData,
   product,

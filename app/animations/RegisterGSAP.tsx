@@ -8,9 +8,9 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 
 /**
- * RegisterGSAP — registers GSAP plugins and custom effects.
+ * RegisterGSAP — registers GSAP plugins and custom effects (`cardAnimations`, `slideUp`, `fadeIn`).
  *
- * @returns {null} Renders nothing.
+ * @returns {null} `null` — the component has no DOM, only side effects.
  * @see {@link https://gsap.com/cheatsheet/#plugins- gsap cheatsheet}
  */
 const RegisterGSAP = () => {

@@ -7,7 +7,11 @@ import { useT } from '@/app/store/providers/DictProvider';
 import CloseModal from './CloseModal';
 import HistoryBack from './HistoryBack';
 
-/** Filter modal header. */
+/**
+ * FilterHeader — sticky header for the filter modal: back / title / close.
+ *
+ * @returns {JSX.Element} JSX of the filter header bar.
+ */
 const FilterHeader = (): JSX.Element => {
   const t = useT();
 

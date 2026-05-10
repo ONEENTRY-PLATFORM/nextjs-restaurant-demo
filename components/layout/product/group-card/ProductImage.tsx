@@ -3,9 +3,10 @@ import type { JSX } from 'react';
 
 /**
  * ProductImage — product image inside the group card.
- * @param   {object} props          - Component props.
- * @param   {string} props.imageSrc - Product image URL.
- * @returns {JSX.Element}           Image JSX.
+ *
+ * @param   {object}      props          - Component props.
+ * @param   {string}      props.imageSrc - Product image URL.
+ * @returns {JSX.Element} JSX of the image tile.
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (

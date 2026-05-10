@@ -7,8 +7,6 @@ import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'r
 
 import { getImageUrl } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
-import CloseXIcon from '@/components/icons/close-x';
 
 type Category = {
   label: string;
@@ -24,11 +22,11 @@ const BOOKING_TILE: Category = {
 };
 
 /**
- * CategoryFilter - left-side slide-in panel with the menu category list + "Booking Table" CTA.
+ * CategoryFilter — left-side slide-in panel with the menu category list + "Booking Table" CTA.
  *
  * @param   {object}          props       - Component props.
  * @param   {IPagesEntity[]}  props.pages - Child pages of the `menu` page.
- * @returns {JSX.Element}                 Category panel JSX.
+ * @returns {JSX.Element} JSX of the category panel (drawer + backdrop).
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
   const { open, component, transition, setOpen, setComponent, setTransition } =
@@ -98,14 +96,8 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex justify-between items-center pt-6">
-          <button type="button" onClick={close} aria-label="Back" className="group_white">
-            <ArrowBackOrangeIcon />
-          </button>
+        <div className="flex justify-center items-center pt-6">
           <p className="font-normal text-xl tracking-fine text-paper">Category</p>
-          <button type="button" onClick={close} aria-label="Close" className="group_white">
-            <CloseXIcon />
-          </button>
         </div>
         <div className="max-w-80 mx-auto pb-25 md:pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
           {categories.map(cat => (

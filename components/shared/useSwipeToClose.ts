@@ -11,10 +11,12 @@ type Options = {
 };
 
 /**
- * useSwipeToClose — swipe-to-dismiss for a bottom-sheet.
- * @param ref     - The element being dragged (usually `modalBody`).
- * @param onClose - Confirmation handler; must trigger the same close transition as the X button.
- * @param options - Options.
+ * useSwipeToClose — swipe-to-dismiss for a bottom-sheet (touch-only, suppresses native body scroll).
+ *
+ * @param   {RefObject<HTMLElement | null>} ref     - The element being dragged (usually `modalBody`).
+ * @param   {() => void}                    onClose - Confirmation handler; must trigger the same close transition as the X button.
+ * @param   {Options}                       options - Threshold/velocity tuning for the gesture.
+ * @returns {void}
  */
 export const useSwipeToClose = (
   ref: RefObject<HTMLElement | null>,

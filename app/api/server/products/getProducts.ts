@@ -6,7 +6,19 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
-/** getProducts — paginated products with filter. */
+/**
+ * getProducts — paginated products with filter.
+ *
+ * For multi-select `preferences` the SDK only accepts a scalar in `conditionValue` — each value
+ * is fetched in a separate request and unique items are merged (OR semantics).
+ *
+ * @param   {object} props            - Pagination, locale, and inbound `searchParams` filters.
+ * @param   {number} props.limit      - Page size.
+ * @param   {number} props.offset     - Page offset.
+ * @param   {string} [props.langCode] - Optional explicit locale (defaults to `getLang()`).
+ * @param   {object} [props.params]   - Optional category handle and inbound `searchParams` map.
+ * @returns {Promise<{ isError: boolean; error?: IError; products?: IProductsEntity[]; total: number }>}    Promise resolving to `{ isError, error?, products?, total }` (graceful fallback on SDK error).
+ */
 export const getProducts = cache(
   async (props: {
     limit: number;

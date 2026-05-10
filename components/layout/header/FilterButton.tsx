@@ -6,7 +6,11 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FilterIcon from '@/components/icons/filter';
 
-/** FilterButton — filter modal trigger; opens `FilterModal` via `OpenDrawerContext`. */
+/**
+ * FilterButton — header trigger that opens `FilterModal` via `OpenDrawerContext`.
+ *
+ * @returns {JSX.Element} JSX of the filter button.
+ */
 const FilterButton = (): JSX.Element => {
   const t = useT();
   const label = t('open_filters_button', 'Open filters');

@@ -5,9 +5,9 @@ import ProfilePageHeader from '@/components/profile/ProfilePageHeader';
 /**
  * ProfileLayout — wrapper for `/profile/**` routes with a shared header.
  *
- * @param   {object}      props          - Layout props.
+ * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - Nested route content.
- * @returns {JSX.Element}                JSX of the profile layout.
+ * @returns {JSX.Element}                JSX of the profile layout (header + slot).
  */
 const ProfileLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (

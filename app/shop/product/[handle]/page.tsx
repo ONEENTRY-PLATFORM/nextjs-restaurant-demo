@@ -7,9 +7,11 @@ import { getProductById } from '@/app/api';
 import ProductSingle from '@/components/layout/product';
 
 /**
- * ProductPageLayout — product page layout.
- * @param   {object} props - Page props.
- * @returns {Promise<JSX.Element>} JSX of the product page layout.
+ * ProductPageLayout — product page layout (Product JSON-LD + `<ProductSingle />`).
+ *
+ * @param   {object}                                              props        - Component props.
+ * @param   {Promise<{ handle: string; lang: string }>}           props.params - Async route params with the product id (`handle`) and locale.
+ * @returns {Promise<JSX.Element>}                                              Promise resolving to JSX of the product page layout.
  */
 const ProductPageLayout = async ({
   params,
@@ -66,7 +68,13 @@ const ProductPageLayout = async ({
 
 export default ProductPageLayout;
 
-/** generateMetadata — product page metadata. */
+/**
+ * generateMetadata — product page metadata (title, description, OG image, robots).
+ *
+ * @param   {object}                                              props        - Component props.
+ * @param   {Promise<{ handle: string; lang: string }>}           props.params - Async route params with the product id (`handle`) and locale.
+ * @returns {Promise<Metadata>}                                                 Promise resolving to the page metadata.
+ */
 export async function generateMetadata({
   params,
 }: {

@@ -21,7 +21,12 @@ type SavedAddress = {
   selected?: boolean;
 };
 
-/** Parses `user_address`: json (array) or legacy JSON string. Returns [] on any error. */
+/**
+ * parseAddresses — parses `user_address` JSON (array or legacy JSON string) into a typed list.
+ *
+ * @param   {unknown}        raw - Raw OneEntry attribute value.
+ * @returns {SavedAddress[]}        Array of `SavedAddress` items (empty on parse failure or unexpected shape).
+ */
 const parseAddresses = (raw: unknown): SavedAddress[] => {
   if (!raw) return [];
   let arr: unknown = raw;
@@ -48,13 +53,23 @@ const HIDDEN_PROFILE_MARKERS = new Set([
   'user_floor',
 ]);
 
+/**
+ * resolveInputType — picks the HTML input type for a OneEntry user-form attribute.
+ *
+ * @param   {IFormAttribute} attr - OneEntry form attribute.
+ * @returns {string}                 `'password'`, `'email'`, or `'text'` depending on the marker.
+ */
 const resolveInputType = (attr: IFormAttribute): string => {
   if (attr.marker.includes('password')) return 'password';
   if (attr.marker.includes('email')) return 'email';
   return 'text';
 };
 
-/** ProfileSections - collapsible "My Profile" + "Address" sections. */
+/**
+ * ProfileSections — collapsible "My Profile" + "Address" sections in the profile drawer.
+ *
+ * @returns {JSX.Element} JSX of the profile sections (form + saved addresses + add-address form).
+ */
 const ProfileSections = (): JSX.Element => {
   const t = useT();
   const { user, refreshUser } = useContext(AuthContext);
@@ -329,7 +344,7 @@ const ProfileSections = (): JSX.Element => {
                 disabled={saving || !user?.formIdentifier}
                 className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
               >
-                {saving ? 'â€¦' : 'Save'}
+                {saving ? '' : 'Save'}
               </button>
               {saveError && <p className="text-[13px] text-red-400">{saveError}</p>}
             </form>

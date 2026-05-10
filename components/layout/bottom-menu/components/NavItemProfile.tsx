@@ -8,7 +8,13 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import EyeCircleIcon from '@/components/icons/eye-circle';
 
-/** Profile nav item link / SignInForm button. */
+/**
+ * NavItemProfile — profile nav-item button; opens `ProfilePopup` when authenticated, otherwise the auth-provider picker.
+ *
+ * @param   {object}      props      - Component props.
+ * @param   {IMenusPages} props.item - OneEntry menu page entity (used for the accessible title only).
+ * @returns {JSX.Element} JSX of the profile button.
+ */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);

@@ -92,8 +92,8 @@ export const cartSlice = createSlice({
         state.productsData.push(action.payload);
         return;
       }
-      // Self-heal: запись была "осиротевшей" с quantity<=0 (битая
-      // персистнутая копия) — реанимируем до payload.quantity (≥1).
+      // Self-heal: the entry was "orphaned" with quantity<=0 (corrupted
+      // persisted copy) — revive it up to payload.quantity (>= 1).
       const entry = state.productsData[index];
       if (entry && entry.quantity <= 0) {
         state.productsData[index] = { ...entry, ...action.payload };
@@ -142,9 +142,10 @@ export const cartSlice = createSlice({
       const qty = action.payload.quantity;
       const cap = action.payload.units;
 
-      // qty=0 → удалить запись, иначе UI зависает: AddToCartButton видит товар
-      // в корзине (через selectIsInCart) и рендерит QuantitySelector, а тот
-      // при quantity=0 возвращает <></> — получается пустое место без кнопки.
+      // qty=0 -> delete the entry, otherwise the UI freezes: AddToCartButton
+      // sees the product in the cart (via selectIsInCart) and renders
+      // QuantitySelector, which returns <></> when quantity=0 — leaving an
+      // empty slot without a button.
       if (qty <= 0) {
         state.productsData.splice(index, 1);
         return;
@@ -214,13 +215,17 @@ export const {
 } = cartSlice.actions;
 
 /**
- * Checks whether a product is in the cart with a positive quantity.
+ * selectIsInCart — checks whether a product is in the cart with a positive quantity.
  *
- * Записи с `quantity <= 0` считаем "не в корзине" — такое случается,
- * если персистнутый стор содержит мусор (раньше `setProductQty(0)`
- * не удалял запись), либо при гонке. AddToCartButton тогда покажет
- * "ADD TO CART" вместо невидимого QuantitySelector, а добавление
- * через addProductToCart реанимирует запись (`quantity = 1`).
+ * Entries with `quantity <= 0` are treated as "not in cart" — this happens
+ * when the persisted store contains garbage (previously `setProductQty(0)`
+ * did not remove the entry), or due to a race. AddToCartButton then shows
+ * "ADD TO CART" instead of the invisible QuantitySelector, and adding via
+ * addProductToCart revives the entry (`quantity = 1`).
+ *
+ * @param   {{ cartReducer: { productsData: { id: number; quantity: number }[] } }} state - Redux root state.
+ * @param   {number}                                                                id    - Product id to look up.
+ * @returns {boolean}                                                                     `true` when the product has a positive quantity in the cart.
  */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number; quantity: number }[] } },
@@ -230,17 +235,32 @@ export const selectIsInCart = (
   return !!entry && entry.quantity > 0;
 };
 
-/** Cart products selector (record shape: `{ id, selected, quantity }`). */
+/**
+ * selectCartData — cart products selector (record shape: `{ id, selected, quantity }`).
+ *
+ * @param   {{ cartReducer: { productsData: ProductCartEntry[] } }} state - Redux root state.
+ * @returns {ProductCartEntry[]}                                          Array of cart entries.
+ */
 export const selectCartData = (state: {
   cartReducer: { productsData: ProductCartEntry[] };
 }): ProductCartEntry[] => state.cartReducer.productsData;
 
-/** Selector for the list of reservations (table bookings — separate from the products cart). */
+/**
+ * selectReservations — selector for the list of reservations (table bookings — separate from the products cart).
+ *
+ * @param   {{ cartReducer: { reservations: ReservationEntry[] } }} state - Redux root state.
+ * @returns {ReservationEntry[]}                                          Array of reservation entries.
+ */
 export const selectReservations = (state: {
   cartReducer: { reservations: ReservationEntry[] };
 }): ReservationEntry[] => state.cartReducer.reservations;
 
-/** Selector for delivery data. */
+/**
+ * selectDeliveryData — selector for delivery data (date, time, address).
+ *
+ * @param   {{ cartReducer: { deliveryData: { date: number; time: string; address: string } } }} state - Redux root state.
+ * @returns {{ date: number; time: string; address: string }}                                          Delivery slot for the current cart.
+ */
 export const selectDeliveryData = (state: {
   cartReducer: {
     deliveryData: {
@@ -251,7 +271,12 @@ export const selectDeliveryData = (state: {
   };
 }) => state.cartReducer.deliveryData;
 
-/** Selector for the cart total price. */
+/**
+ * selectCartTotal — selector for the cart total price (uses the active reservation's product).
+ *
+ * @param   {{ cartReducer: { reservationId: number; reservations: ReservationEntry[] } }} state - Redux root state.
+ * @returns {number | undefined}                                                                  Numeric price (regular or sale price) of the active reservation's product.
+ */
 export const selectCartTotal = (state: {
   cartReducer: {
     reservationId: number;
@@ -266,11 +291,22 @@ export const selectCartTotal = (state: {
   return price || salePrice;
 };
 
-/** Selector for the active reservation id. */
+/**
+ * selectReservationId — selector for the active reservation id.
+ *
+ * @param   {{ cartReducer: { reservationId: number } }} state - Redux root state.
+ * @returns {number}                                            Numeric id of the currently active reservation.
+ */
 export const selectReservationId = (state: { cartReducer: { reservationId: number } }) =>
   state.cartReducer.reservationId;
 
-/** Selector for a cart item by product id. */
+/**
+ * selectCartItemWithIdLength — selector for a cart item by product id.
+ *
+ * @param   {{ cartReducer: { productsData: ProductCartEntry[] } }} state - Redux root state.
+ * @param   {number}                                                id    - Product id to look up.
+ * @returns {ProductCartEntry | undefined}                                Cart entry for the product, or `undefined` if not present.
+ */
 export const selectCartItemWithIdLength = (
   state: {
     cartReducer: {
@@ -280,7 +316,12 @@ export const selectCartItemWithIdLength = (
   id: number
 ) => state.cartReducer.productsData.find((item: { id: number }) => item.id === id);
 
-/** Returns `{ transitionId }` — product id used for transition animations. */
+/**
+ * getTransition — returns `{ transitionId }` — product id used for transition animations.
+ *
+ * @param   {{ cartReducer: { transitionId: number } }} state - Redux root state.
+ * @returns {{ transitionId: number }}                        `{ transitionId }` wrapper for the currently transitioning product.
+ */
 export const getTransition = (state: {
   cartReducer: {
     transitionId: number;
@@ -289,7 +330,12 @@ export const getTransition = (state: {
   transitionId: state.cartReducer.transitionId,
 });
 
-/** Cart version selector (reads `cartReducer.version`, written by `setCartVersion`). */
+/**
+ * selectCartVersion — cart version selector (reads `cartReducer.version`, written by `setCartVersion`).
+ *
+ * @param   {{ cartReducer: { version: number } }} state - Redux root state.
+ * @returns {number}                                      Monotonic version counter that bumps when persisted cart changes are applied.
+ */
 export const selectCartVersion = (state: { cartReducer: { version: number } }) =>
   state.cartReducer.version;
 

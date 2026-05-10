@@ -6,7 +6,8 @@ import { handleApiError } from '@/app/utils/errorHandler';
 
 /**
  * GET — OneEntry health-check: fetches `home_web` and returns the response time.
- * @returns {Promise<NextResponse>} JSON with success/responseTime/data.
+ *
+ * @returns {Promise<NextResponse>} Promise resolving to JSON `{ success, responseTime, data }`, or `{ success: false, error }` on failure.
  */
 export async function GET(): Promise<NextResponse> {
   try {

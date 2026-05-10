@@ -11,10 +11,12 @@ type ReservationSuccessProps = {
 };
 
 /**
- * ReservationSuccess - booking confirmation screen shown after `Orders.createOrder`.
+ * ReservationSuccess — booking confirmation screen shown after `Orders.createOrder`.
  *
- * @param   {ReservationSuccessProps} props - Screen props.
- * @returns {JSX.Element}                   Confirmation screen JSX.
+ * @param   {ReservationSuccessProps} props         - Component props.
+ * @param   {number}                  props.orderId - Numeric id of the created order (rendered as `№ <id>`).
+ * @param   {string}                  props.summary - Pre-formatted booking summary line (`DD.MM.YY HH.MM N person`).
+ * @returns {JSX.Element}                             JSX of the confirmation screen.
  */
 const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.Element => {
   const t = useT();
@@ -26,7 +28,7 @@ const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.
   return (
     <div className="flex w-full flex-col items-center gap-5 px-5 md:px-19">
       <div className="flex flex-col items-center gap-0">
-        <p className="text-center font-light text-[32px] leading-10 text-brand">â„– {orderId}</p>
+        <p className="text-center font-light text-[32px] leading-10 text-brand">№ {orderId}</p>
         <p className="mt-2.5 text-center font-light text-[32px] leading-10 text-brand whitespace-pre-line">
           {confirmedText}
         </p>

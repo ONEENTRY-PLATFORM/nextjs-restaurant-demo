@@ -8,14 +8,13 @@ import { getAttributesByMarker } from './api/server/attributes/getAttributesByMa
 import getCachedData from './api/utils/getCachedData';
 
 /**
- * fetchDictionary — loads the `static_content` attribute set and normalizes it
- * into `Record<marker, IAttributeValue>`, so that the templated lookup
- * `dict?.MARKER?.value` returns a string (instead of undefined by array index).
+ * fetchDictionary — loads the `static_content` attribute set and normalizes it.
  *
  * The attribute set's `value` field is a localization map; in this project it
  * is currently empty `{}`, so in the normalized record `value` is filled from
  * `initialValue` (the English default from the admin panel).
- * @returns {Promise<IAttributeValues>} Map of markers → attribute with a string `value`.
+ *
+ * @returns {Promise<IAttributeValues>} Promise resolving to a map of markers → attribute with a string `value`.
  */
 const fetchDictionary = async (): Promise<IAttributeValues> => {
   try {
@@ -51,7 +50,8 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
 
 /**
  * getDictionary — cached `static_content` dictionary for use in server components.
- * @returns {Promise<IAttributeValues>} Cached normalized dictionary.
+ *
+ * @returns {Promise<IAttributeValues>} Promise resolving to the cached normalized dictionary map.
  */
 export const getDictionary = async (): Promise<IAttributeValues> =>
   getCachedData('dictionary', fetchDictionary);
@@ -65,6 +65,10 @@ export const getDictionary = async (): Promise<IAttributeValues> =>
  *
  * @example
  *   const title = await t('featured_objects', 'Featured objects');
+ *
+ * @param   {string}          marker   - Dictionary marker (attribute name).
+ * @param   {string}          fallback - Returned when the marker is missing.
+ * @returns {Promise<string>}            Promise resolving to the dictionary string for the marker, or the fallback.
  */
 export const t = async (marker: string, fallback: string): Promise<string> => {
   const dict = await getDictionary();

@@ -1,6 +1,15 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
-/** Color picker. */
+/**
+ * ColorPicker — single color chip; clicking toggles selection by writing into `setActiveColor`.
+ *
+ * @param   {object}                              props                 - Component props.
+ * @param   {string}                              props.code            - Color value (CSS color or marker).
+ * @param   {string}                              props.name            - Human-readable color label.
+ * @param   {string}                              props.activeColor     - Currently selected color code.
+ * @param   {Dispatch<SetStateAction<string>>}    props.setActiveColor  - State setter that owns the selected color.
+ * @returns {JSX.Element} JSX of the color chip button.
+ */
 const ColorPicker = ({
   code,
   name,

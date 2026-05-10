@@ -22,6 +22,12 @@ type RestaurantCard = {
   index: number;
 };
 
+/**
+ * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
+ *
+ * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
+ * @returns {string}      Formatted `from - to` string, or empty when no interval is present.
+ */
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
@@ -32,6 +38,13 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
+/**
+ * buildCard — maps a OneEntry restaurant page to a `RestaurantCard` view-model.
+ *
+ * @param   {IPagesEntity}    page  - OneEntry page entity for a restaurant child.
+ * @param   {number}          index - 1-based card index used by the numbered badge in the UI.
+ * @returns {RestaurantCard}        Normalised card data for `<RestaurantCardView />`.
+ */
 const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   const attrs = page.attributeValues ?? {};
   const photos = (attrs.photos?.value as RestaurantPhoto[] | undefined) ?? [];
@@ -49,7 +62,11 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   };
 };
 
-/** RestaurantsPage - index page for the restaurant network from OneEntry `restaurants` + child-pages. */
+/**
+ * RestaurantsPage — index page for the restaurant network from OneEntry `restaurants` + child-pages.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the restaurants index (parent page intro + grid of restaurant cards).
+ */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
     getPageByUrl('restaurants'),
@@ -102,6 +119,13 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   );
 };
 
+/**
+ * RestaurantCardView — single card on the restaurants index (photos + meta + CTA link).
+ *
+ * @param   {object}          props      - Component props.
+ * @param   {RestaurantCard}  props.card - View-model produced by {@link buildCard}.
+ * @returns {JSX.Element}                JSX of one restaurant card.
+ */
 const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => {
   return (
     <div className="flex flex-col items-stretch gap-5">
@@ -134,6 +158,11 @@ const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => 
 
 export default RestaurantsPage;
 
+/**
+ * generateMetadata — restaurants index metadata from the OneEntry `restaurants` page title.
+ *
+ * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('restaurants');
   const title = page?.localizeInfos?.title ?? 'Restaurants';

@@ -14,9 +14,9 @@ type PendingReservationEdit = {
 let pending: PendingReservationEdit | null = null;
 
 /**
- * Persists the pending edit before opening ReservationPopup in edit mode.
+ * setPendingReservationEdit — persists the pending edit before opening ReservationPopup in edit mode.
  *
- * @param   {PendingReservationEdit | null} next - Edit payload or null.
+ * @param   {PendingReservationEdit | null} next - Edit payload, or `null` to clear.
  * @returns {void}
  */
 export const setPendingReservationEdit = (next: PendingReservationEdit | null): void => {
@@ -24,9 +24,9 @@ export const setPendingReservationEdit = (next: PendingReservationEdit | null): 
 };
 
 /**
- * Reads and clears the pending edit (one-shot).
+ * consumePendingReservationEdit — reads and clears the pending edit (one-shot).
  *
- * @returns {PendingReservationEdit | null} Current payload or null.
+ * @returns {PendingReservationEdit | null} Current payload or `null` when nothing is pending.
  */
 export const consumePendingReservationEdit = (): PendingReservationEdit | null => {
   const value = pending;

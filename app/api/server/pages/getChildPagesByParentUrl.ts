@@ -5,7 +5,12 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getChildPagesByParentUrl — child pages by parent url (React cache() deduplicates calls within a render). */
+/**
+ * getChildPagesByParentUrl — child pages by parent url (React cache() deduplicates calls within a render).
+ *
+ * @param   {string} url - OneEntry `pageUrl` marker of the parent page.
+ * @returns {Promise<{ isError: boolean; error?: IError; pages?: IPagesEntity[] }>}     Promise resolving to `{ isError, error?, pages? }` (graceful fallback on SDK error).
+ */
 export const getChildPagesByParentUrl = cache(
   async (
     url: string

@@ -14,12 +14,14 @@ const HIDDEN_STYLE: CSSProperties = {
 };
 
 /**
- * Reveal-анимация карточки продукта.
+ * CardAnimations — wraps a product card in a reveal animation that fires when it enters the viewport.
  *
- * @param children - Содержимое карточки.
- * @param className - Класс на обёртку.
- * @param index - Индекс карточки для stagger-задержки.
- * @param productsLimit - Размер страницы пагинации.
+ * @param   {object}    props               - Component props.
+ * @param   {ReactNode} props.children      - Card content.
+ * @param   {string}    props.className     - Class merged onto the wrapping `<div>`.
+ * @param   {number}    props.index         - Absolute card index across all pages; drives the stagger.
+ * @param   {number}    props.productsLimit - Page size; resets the stagger on a new page.
+ * @returns {JSX.Element}                     JSX wrapper with the bound GSAP reveal animation.
  */
 const CardAnimations = ({
   children,
@@ -54,7 +56,7 @@ const CardAnimations = ({
         el.classList.add('in-view');
         tl = gsap.timeline().to(el, {
           autoAlpha: 1,
-          duration: 0.3,
+          duration: 0.43,
           delay,
         });
       },

@@ -13,7 +13,13 @@ import PriceToInput from './PriceToInput';
 
 export type PriceBounds = { min?: number; max?: number } | undefined;
 
-/** Price filter. */
+/**
+ * PriceFilter — price-range filter with two inputs and a draggable Range; syncs to `minPrice`/`maxPrice` URL params.
+ *
+ * @param   {object}        props        - Component props.
+ * @param   {PriceBounds}   props.prices - Catalog price bounds; defaults are 0 and 100 when missing.
+ * @returns {JSX.Element} JSX of the price filter section.
+ */
 const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const t = useT();
   const pathname = usePathname();

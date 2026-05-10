@@ -16,6 +16,12 @@ type LogInProps = { method: string; login: string; password: string };
  * After `auth()` the SDK does not push the tokens into state — `syncTokens` is mandatory, otherwise the next
  * auth-protected POST goes out without `Authorization` and fails with 400 (the SDK only retries on 401).
  * See the MCP `tokens` rule (syncTokens — mandatory pattern).
+ *
+ * @param   {LogInProps} props          - Sign-in arguments.
+ * @param   {string}     props.method   - Auth-provider marker (e.g. `email`).
+ * @param   {string}     props.login    - User identifier (email).
+ * @param   {string}     props.password - User password.
+ * @returns {Promise<{ data?: IAuthEntity; error?: string }>}                Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {

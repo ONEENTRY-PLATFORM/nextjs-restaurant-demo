@@ -10,13 +10,13 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import StarRating from './StarRating';
 
 /**
- * ReviewsSlideUpPanel - fixed slide-up review panel (mobile sheet).
- * Submits the review via the {@link submitReview} Server Action.
- * @param   {object} props               - Props.
- * @param   {number} props.productId     - Product ID the review is attached to.
+ * ReviewsSlideUpPanel — fixed slide-up review panel (mobile sheet) submitting via {@link submitReview}.
+ *
+ * @param   {object} props               - Component props.
+ * @param   {number} props.productId     - Product id the review is attached to.
  * @param   {string} [props.title]       - Override for the panel heading.
  * @param   {string} [props.description] - Override for the panel description.
- * @returns {JSX.Element}                Panel JSX.
+ * @returns {JSX.Element}                  JSX of the slide-up review panel.
  */
 const ReviewsSlideUpPanel = ({
   productId,

@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * ChevronDownFatIcon — heavy-stroke down chevron driven by `currentColor`.
+ *
+ * @returns {JSX.Element} JSX of the chevron-down SVG.
+ */
 const ChevronDownFatIcon = (): JSX.Element => {
   return (
     <svg

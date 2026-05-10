@@ -28,8 +28,11 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
- * CartPopup - cart drawer with the full wizard (`cart` â†’ `order` â†’ `payment` â†’ `success`/`error`).
- * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on `/cart` runs in parallel - they share the Redux step.
+ * CartPopup — cart drawer with the full wizard (`cart` → `order` → `payment` → `success`/`error`).
+ * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on
+ * `/cart` runs in parallel — they share the Redux step.
+ *
+ * @returns {JSX.Element} JSX of the cart drawer (rendered into the modal stack via `OpenDrawerContext`).
  */
 const CartPopup = (): JSX.Element => {
   const t = useT();
@@ -120,7 +123,7 @@ const CartPopup = (): JSX.Element => {
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
           {/* Header: back / title / close. */}
-          <div className="z-10 flex items-center justify-between">
+          <div className="z-10 flex items-center justify-center">
             <p className="font-normal text-2xl text-white">{stepTitles[step]}</p>
           </div>
 

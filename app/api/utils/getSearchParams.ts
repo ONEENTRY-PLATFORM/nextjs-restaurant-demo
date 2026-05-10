@@ -1,6 +1,12 @@
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
-/** getSearchParams — builds an `IFilterParams` array for a Products API request. */
+/**
+ * getSearchParams — builds an `IFilterParams` array for a Products API request from URL `searchParams`.
+ *
+ * @param   {object}  [searchParams] - Inbound URL `searchParams` map (search, in_stock, color, preferences, price range, cooking_time_max).
+ * @param   {string}  [handle]       - Optional category handle that becomes a `stickers` filter.
+ * @returns {Array<IFilterParams & { statusMarker?: string }>}                  Array of OneEntry `IFilterParams` (with optional `statusMarker`) suitable for `Products.getProducts*`.
+ */
 const getSearchParams = (
   searchParams?: {
     search?: string;

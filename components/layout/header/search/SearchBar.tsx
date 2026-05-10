@@ -9,7 +9,13 @@ import SearchIcon from '@/components/icons/search';
 
 import SearchResults from './SearchResults';
 
-/** Header search bar. */
+/**
+ * SearchBar — header search input with debounced query; submits to `/services` and shows a results dropdown.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      props.placeholder - Placeholder/aria-label for the input.
+ * @returns {JSX.Element} JSX of the search input with suspended results panel.
+ */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);

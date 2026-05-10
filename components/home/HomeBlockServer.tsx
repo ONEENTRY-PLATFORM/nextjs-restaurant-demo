@@ -6,12 +6,14 @@ import HomeBlockSection from './HomeBlockSection';
 
 /**
  * HomeBlockServer — async wrapper over {@link HomeBlockSection}: fetches a OneEntry block by marker.
+ *
  * Returns `null` when the block has no products — to avoid leaving an empty section.
- * @param   {object}                    props             - Props.
- * @param   {string}                    props.marker      - Block marker.
- * @param   {string}                    [props.className] - Override for the section className.
- * @param   {number}                    [props.limit]     - Cap on the number of products.
- * @returns {Promise<JSX.Element|null>}                   Block JSX or `null`.
+ *
+ * @param   {object} props             - Component props.
+ * @param   {string} props.marker      - Block marker.
+ * @param   {string} [props.className] - Override for the section className.
+ * @param   {number} [props.limit]     - Cap on the number of products.
+ * @returns {Promise<JSX.Element | null>} JSX of the block, or `null` when the block is empty / errored.
  */
 const HomeBlockServer = async ({
   marker,

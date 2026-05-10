@@ -1,3 +1,10 @@
+/**
+ * ArrowLeftIcon — pagination "previous" arrow with hover-to-brand fill.
+ *
+ * @param   {object}      [props]        - Component props.
+ * @param   {boolean}     [props.active] - When `true`, paint the icon in brand colour (otherwise muted).
+ * @returns {JSX.Element} JSX of the left-arrow SVG.
+ */
 const ArrowLeftIcon = (props?: { active?: boolean }) => {
   return (
     <svg

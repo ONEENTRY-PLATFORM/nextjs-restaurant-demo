@@ -13,6 +13,11 @@ const DictContext = createContext<IAttributeValues | undefined>(undefined);
  * map (see [app/dictionaries.ts](app/dictionaries.ts)) into Context so that
  * client components can read strings through {@link useT} without
  * threading `dict` through props.
+ *
+ * @param   {object}                          props          - Component props.
+ * @param   {IAttributeValues | undefined}    props.value    - Dictionary map keyed by attribute marker.
+ * @param   {ReactNode}                       props.children - Subtree that consumes the dictionary context.
+ * @returns {JSX.Element}                                    JSX provider wrapping children with the dictionary context value.
  */
 export const DictProvider = ({
   value,
@@ -32,6 +37,8 @@ export const DictProvider = ({
  * @example
  *   const t = useT();
  *   <p>{t('subtotal_text', 'Subtotal')}</p>
+ *
+ * @returns {(marker: string, fallback: string) => string} `t(marker, fallback)` reader bound to the current dictionary context.
  */
 export const useT = (): ((marker: string, fallback: string) => string) => {
   const dict = useContext(DictContext);

@@ -14,17 +14,23 @@ import {
   startGoogleOAuth,
 } from '@/components/forms/authProviders';
 
+/**
+ * redirectToOAuth — full-page redirect to an OAuth provider's authorization URL.
+ *
+ * @param   {string} url - Authorization URL to navigate to.
+ * @returns {void}
+ */
 const redirectToOAuth = (url: string) => {
   window.location.href = url;
 };
 
 /**
- * AuthProviderSelect - first auth step (provider picker).
+ * AuthProviderSelect — first auth step (provider picker).
  *
- * @param   {object}     props           - Props.
- * @param   {string}     props.className - Wrapper class.
- * @param   {boolean}    props.isActive  - Whether the step is active (for animations).
- * @returns {JSX.Element}                JSX of the provider list.
+ * @param   {object}  props           - Component props.
+ * @param   {string}  props.className - Wrapper class merged onto the animated form root.
+ * @param   {boolean} props.isActive  - Whether the step is the active step in the auth wizard (drives animations).
+ * @returns {JSX.Element}               JSX of the provider list (logo + buttons).
  */
 const AuthProviderSelect = ({
   className,
@@ -39,16 +45,12 @@ const AuthProviderSelect = ({
   const onProviderClick = (p: IAuthProvidersEntity) => {
     if (p.identifier === 'email' || p.identifier === 'phone') {
       // Route the phone provider through the same email/login flow in SignInForm
-      // (a dedicated PhoneAuthForm is not used - see MISMATCH-LOG.md Â§C.8.2).
+      // (a dedicated PhoneAuthForm is not used - see MISMATCH-LOG.md §C.8.2).
       setComponent('SignInForm');
       return;
     }
     if (p.identifier === 'google') {
-      if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth is not configured yet (see MISMATCH-LOG.md Â§C.8.1).
-        // Fall back to email so the user still has a working sign-in path.
-        setComponent('SignInForm');
-      }
+      startGoogleOAuth(p.config?.oauthAuthUrl);
       return;
     }
     if (p.type === 'oauth' && p.config?.oauthAuthUrl) {

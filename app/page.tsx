@@ -19,7 +19,8 @@ const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categ
  * dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended`
  * → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
  * Reordering blocks in the admin panel changes the section order without code changes.
- * @returns {Promise<JSX.Element>} JSX of the home page.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the home page.
  */
 const HomePage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('home_web');

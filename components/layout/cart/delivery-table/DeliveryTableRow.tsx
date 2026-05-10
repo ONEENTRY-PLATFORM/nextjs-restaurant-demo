@@ -5,7 +5,16 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/** Delivery table row with a date preview; clicking opens the `CalendarForm` popup. */
+/**
+ * DeliveryTableRow — delivery-table row with a value preview; clicking opens the `CalendarForm` popup.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      props.label       - Row label.
+ * @param   {string}      props.value       - Read-only value rendered inside the input.
+ * @param   {ReactNode}   [props.icon]      - Trailing icon shown next to the row.
+ * @param   {string}      props.placeholder - Placeholder text for the input.
+ * @returns {JSX.Element} JSX of the delivery table row.
+ */
 const DeliveryTableRow = ({
   label,
   value,

@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * CartOrangeIcon — orange shopping-cart icon for the bottom-menu center button.
+ *
+ * @returns {JSX.Element} JSX of the orange cart SVG.
+ */
 const CartOrangeIcon = (): JSX.Element => {
   return (
     <svg

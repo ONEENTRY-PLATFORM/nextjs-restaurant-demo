@@ -38,6 +38,8 @@ export const resetPasswordFormFields = [
  *
  * Intentionally uses static `<input>` fields (not `getFormByMarker` from the CMS) —
  * the data is sent straight to the SDK `AuthProvider.changePassword(...)`. See MISMATCH-LOG §C.8.2.
+ *
+ * @returns {JSX.Element} JSX of the OTP-based reset-password form.
  */
 const ResetPasswordForm = (): JSX.Element => {
   const t = useT();

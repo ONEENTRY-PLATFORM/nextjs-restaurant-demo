@@ -6,11 +6,12 @@ import StarCardIcon from '@/components/icons/star-card';
 
 /**
  * StarRating — renders filled stars for a value out of 5; interactive when `onChange` is provided.
- * @param   {object}              props            - Props.
- * @param   {number}              props.value      - Current rating (0–5).
- * @param   {(v: number) => void} [props.onChange] - Optional change handler.
- * @param   {number}              [props.size]     - Star size in px (default 16).
- * @returns {JSX.Element}                          Star row JSX.
+ *
+ * @param   {object}                 props            - Component props.
+ * @param   {number}                 props.value      - Current rating (0–5).
+ * @param   {(v: number) => void}    [props.onChange] - Optional change handler that receives the chosen rating.
+ * @param   {number}                 [props.size]     - Star size in px (defaults to 16).
+ * @returns {JSX.Element}                               JSX of the star row.
  */
 const StarRating = ({
   value,

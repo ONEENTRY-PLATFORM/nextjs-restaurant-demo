@@ -9,8 +9,11 @@ const SECTION_LIMIT = 4;
 
 /**
  * HomeCategoriesSection — list of category sections on the homepage (driven by `menu` child pages).
- * Product requests run sequentially: parallel fan-out over the shared SDK auth state sometimes returned empty responses.
- * @returns {Promise<JSX.Element|null>} List JSX or `null` when no category has products.
+ *
+ * Product requests run sequentially: parallel fan-out over the shared SDK auth state sometimes
+ * returned empty responses.
+ *
+ * @returns {Promise<JSX.Element | null>} JSX of the homepage category list, or `null` when no category has products.
  */
 const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
   const { pages = [] } = await getChildPagesByParentUrl('menu');

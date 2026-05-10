@@ -24,11 +24,11 @@ import {
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 /**
- * Converts `order.formData` into a flat set of initialValues for ReservationForm.
+ * buildInitialValuesFromOrder — converts `order.formData` into a flat set of initialValues for ReservationForm.
  *
- * @param   {IOrdersFormData[]}  formData    - Raw order fields.
- * @param   {RestaurantOption[]} restaurants - Available options for mapping entity â†’ pageUrl.
- * @returns {Record<string, string>}         Flat set of initial values.
+ * @param   {IOrdersFormData[]}    formData    - Raw order fields.
+ * @param   {RestaurantOption[]}   restaurants - Available options for mapping entity → pageUrl.
+ * @returns {Record<string, string>}             Flat map of initial values keyed by marker.
  */
 const buildInitialValuesFromOrder = (
   formData: IOrdersFormData[],
@@ -67,7 +67,11 @@ const buildInitialValuesFromOrder = (
   return result;
 };
 
-/** ReservationPopup - table booking popup. */
+/**
+ * ReservationPopup — table booking popup with form / edit / OAuth resume modes.
+ *
+ * @returns {JSX.Element} JSX of the reservation drawer.
+ */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -108,7 +112,7 @@ const ReservationPopup = (): JSX.Element => {
     [pages]
   );
 
-  // Edit mode: pending data from reservationEditState â†’ ReservationForm will call updateOrderByMarkerAndId.
+  // Edit mode: pending data from reservationEditState -> ReservationForm will call updateOrderByMarkerAndId.
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
   // Resume mode: restore form values after the OAuth redirect (sessionStorage).
   const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
@@ -154,7 +158,13 @@ const ReservationPopup = (): JSX.Element => {
           <p className="font-semibold text-2xl text-brand">
             {t('reservation_default_title', 'Reservation')}
           </p>
-          <ClosePopupButton onClose={close} ariaLabel="Close reservation" />
+          {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
+          <ClosePopupButton
+            onClose={close}
+            ariaLabel="Close reservation"
+            className="max-md:hidden"
+          />
+          <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>
 
         {isLoading ? (

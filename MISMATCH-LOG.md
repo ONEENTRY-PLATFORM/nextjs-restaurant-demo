@@ -638,24 +638,9 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 ### C.8. Auth Providers
 
-#### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины
+#### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины ✅
 
-Code-side всё подключено (см. ниже), осталась настройка снаружи. Маршрут callback'а — `/auth/callback/google` (см. [app/auth/callback/google/page.tsx](app/auth/callback/google/page.tsx) и [app/auth/callback/google/GoogleAuthCallbackInner.tsx](app/auth/callback/google/GoogleAuthCallbackInner.tsx)); инициатор — [components/forms/authProviders.ts](components/forms/authProviders.ts) `startGoogleOAuth()`. Оба URI выровнены, обмен `code → token` идёт через server-only [app/api/server/users/oauthLogIn.ts](app/api/server/users/oauthLogIn.ts).
-
-Что нужно настроить вручную:
-
-- **OneEntry admin → Auth Providers → `google`.** Убедиться, что провайдер `identifier: "google"`, `type: "oauth"`, `isActive: true`. `config.oauthAuthUrl` можно оставить `null` — клиент использует хардкод `https://accounts.google.com/o/oauth2/v2/auth` из [authProviders.ts](components/forms/authProviders.ts).
-- **Google Cloud Console → OAuth 2.0 Client IDs.** Создать клиента, добавить в Authorized redirect URIs:
-  - `http://localhost:3000/auth/callback/google` (dev)
-  - `https://<vercel-host>/auth/callback/google` (prod)
-- **`.env.local`** дописать:
-
-  ```env
-  NEXT_PUBLIC_GOOGLE_CLIENT_ID=<client_id из Google Cloud Console>
-  GOOGLE_CLIENT_SECRET=<client_secret>
-  ```
-
-  Без `NEXT_PUBLIC_GOOGLE_CLIENT_ID` кнопка «Login With Google» молча падает в email-fallback (открывает обычную email/phone-форму) — см. [AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx).
+Подтверждено клиентом 2026-05-10: Google OAuth настроен полностью (OneEntry admin provider `google` активен, Google Cloud Console OAuth 2.0 client заведён, `.env` содержит `NEXT_PUBLIC_GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`). Маршрут callback'а — `/auth/callback/google` (см. [app/auth/callback/google/page.tsx](app/auth/callback/google/page.tsx) и [app/auth/callback/google/GoogleAuthCallbackInner.tsx](app/auth/callback/google/GoogleAuthCallbackInner.tsx)); инициатор — [components/forms/authProviders.ts](components/forms/authProviders.ts) `startGoogleOAuth()`; обмен `code → token` идёт через server-only [app/api/server/users/oauthLogIn.ts](app/api/server/users/oauthLogIn.ts). Если `NEXT_PUBLIC_GOOGLE_CLIENT_ID` всё-таки окажется не задан — `sortActiveAuthProviders` отфильтровывает провайдер из списка, и кнопка просто не рендерится (вместо «дохлой» кнопки с email-fallback'ом).
 
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 

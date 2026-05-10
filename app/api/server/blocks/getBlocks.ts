@@ -5,7 +5,13 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getBlocks — blocks by type. */
+/**
+ * getBlocks — blocks by type.
+ *
+ * @param   {object}    props      - Fetch arguments.
+ * @param   {BlockType} props.type - OneEntry block type filter.
+ * @returns {Promise<{ isError: boolean; error?: IError; blocks?: IBlocksResponse }>}            Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
+ */
 export const getBlocks = cache(
   async ({
     type,

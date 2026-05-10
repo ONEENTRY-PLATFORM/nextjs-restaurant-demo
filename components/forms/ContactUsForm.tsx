@@ -18,11 +18,11 @@ type SpamCaptchaSettings = {
 };
 
 /**
- * ContactUsForm — contact form.
+ * ContactUsForm — contact form driven by the OneEntry `contact_us` form schema.
  *
- * @param   {object}     props           - Props.
- * @param   {string}     props.className - Wrapper class.
- * @returns {JSX.Element}                Form JSX.
+ * @param   {object} props           - Component props.
+ * @param   {string} props.className - Wrapper class merged onto the `<form>`.
+ * @returns {JSX.Element}              JSX of the contact form (loader while the schema is fetched).
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);

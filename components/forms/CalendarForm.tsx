@@ -13,10 +13,10 @@ import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 /**
  * CalendarForm — modal popup for picking delivery date + time.
  *
- * @param   {object}  props           - Form props.
- * @param   {string}  props.className - Wrapper class.
- * @param   {boolean} props.isActive  - Whether the modal is open.
- * @returns {JSX.Element}             Form JSX.
+ * @param   {object}  props           - Component props.
+ * @param   {string}  props.className - Wrapper class merged onto the animated form root.
+ * @param   {boolean} props.isActive  - Whether the modal is open (drives animations).
+ * @returns {JSX.Element}               JSX of the calendar form (date/time triggers + bottom-sheet picker).
  */
 const CalendarForm = ({
   className,

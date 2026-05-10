@@ -1,3 +1,8 @@
+/**
+ * HeartIcon — small filled-brand heart used inline (e.g. in promo badges).
+ *
+ * @returns {JSX.Element} JSX of the filled heart SVG.
+ */
 const HeartIcon = () => {
   return (
     <svg

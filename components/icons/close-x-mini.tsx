@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * CloseXMiniIcon — small "close" cross icon for chips and inline dismissals.
+ *
+ * @returns {JSX.Element} JSX of the mini close-cross SVG.
+ */
 const CloseXMiniIcon = (): JSX.Element => {
   return (
     <svg

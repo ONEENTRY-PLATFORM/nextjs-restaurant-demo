@@ -8,7 +8,14 @@ import { useRef, useState } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/** Cart wrapper animations: bottom-to-top leave-stagger on route transition (entrance is handled by per-component hooks). */
+/**
+ * CartAnimations — cart wrapper animations: bottom-to-top leave-stagger on route transition (entrance is handled by per-component hooks).
+ *
+ * @param   {AnimationsProps} props           - Component props.
+ * @param   {ReactNode}       props.children  - Cart subtree to animate on leave.
+ * @param   {string}          props.className - Class merged onto the wrapping `<div>`.
+ * @returns {JSX.Element} JSX wrapper that staggers the leave animation.
+ */
 const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');

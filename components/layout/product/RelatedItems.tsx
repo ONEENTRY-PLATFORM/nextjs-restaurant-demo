@@ -22,10 +22,11 @@ const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
  *    which knows how to read `block.similarProducts.items`.
  *
  * The first non-empty source in the listed order is used.
- * @param   {object}                 props           - props
- * @param   {number}                 props.productId - id of the current product
- * @param   {string[]}               [props.blocks]  - markers of blocks attached to the product (`product.blocks`)
- * @returns {Promise<JSX.Element>}                   section or empty fragment
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {number}      props.productId - Id of the current product (excluded from the result).
+ * @param   {string[]}    [props.blocks]  - Markers of blocks attached to the product (`product.blocks`), used as fallback source.
+ * @returns {Promise<JSX.Element>} JSX of the section, or empty fragment when no related items are available.
  */
 const RelatedItems = async ({
   productId,

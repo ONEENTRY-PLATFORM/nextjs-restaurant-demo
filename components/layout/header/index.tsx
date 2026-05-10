@@ -25,11 +25,12 @@ import SearchFallback from './search/SearchFallback';
 import SupportButton from './SupportButton';
 
 /**
- * Header — top-level site header. Fetches main-menu pages (`menu` parent) and the
- * `support` page to populate phone/whatsapp CTAs, then renders logo, search, nav
- * groups and mobile burger.
+ * Header — top-level site header.
  *
- * @returns JSX of the header section.
+ * Fetches main-menu pages (`menu` parent) and the `support` page to populate phone/WhatsApp CTAs,
+ * then renders the logo, search bar, nav groups, and mobile burger.
+ *
+ * @returns {Promise<JSX.Element>} JSX of the header section (includes mobile/desktop variants and attached drawers).
  */
 const Header = async (): Promise<JSX.Element> => {
   const { pages } = await getChildPagesByParentUrl('menu');

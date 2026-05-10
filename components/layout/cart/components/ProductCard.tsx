@@ -15,10 +15,11 @@ import PriceDisplay from './PriceDisplay';
 /**
  * ProductCard — cart-row card for a single product (image, title, price, qty controls, delete).
  *
- * @param product - OneEntry product entity rendered in the row.
- * @param selected - Whether the row is in the selection state (controls checkbox/visual highlight).
- * @param index - Zero-based row index, used by `ProductAnimations` for staggered reveal.
- * @returns JSX of the cart product row.
+ * @param   {object}            props          - Component props.
+ * @param   {IProductsEntity}   props.product  - OneEntry product entity rendered in the row.
+ * @param   {boolean}           props.selected - Whether the row is in the selection state (controls checkbox/visual highlight).
+ * @param   {number}            props.index    - Zero-based row index, used by `ProductAnimations` for staggered reveal.
+ * @returns {JSX.Element} JSX of the cart product row.
  */
 const ProductCard = ({
   product,

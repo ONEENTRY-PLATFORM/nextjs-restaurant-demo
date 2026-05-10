@@ -5,7 +5,12 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getRelatedProductsById — all related products by id. */
+/**
+ * getRelatedProductsById — all related products by id.
+ *
+ * @param   {number} id - OneEntry product id whose related items are requested.
+ * @returns {Promise<{ isError: boolean; error?: IError; products?: IProductsEntity[]; total: number }>}    Promise resolving to `{ isError, error?, products?, total }` (graceful fallback on SDK error).
+ */
 export const getRelatedProductsById = cache(
   async (
     id: number

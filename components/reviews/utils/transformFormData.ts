@@ -16,10 +16,16 @@ export interface TransformFieldParams {
 }
 
 /**
- * Converts a single UI value into a `FormDataType` payload record.
+ * transformFormField — converts a single UI value into a `FormDataType` payload record.
+ *
  * Dispatches first by marker (`spam`, `send`), then by field type.
- * @param   {TransformFieldParams} params - Field input parameters.
- * @returns {FormDataType}                FormData record for `postFormsData`.
+ *
+ * @param   {TransformFieldParams} params           - Transform arguments.
+ * @param   {string}               params.marker    - Field marker.
+ * @param   {string}               params.type      - OneEntry attribute type (`text`, `groupOfImages`, `string`/`integer`/etc.).
+ * @param   {unknown}              params.value     - Raw UI value to convert.
+ * @param   {number}               params.productId - Product id (used as `fileQuery.id` for `groupOfImages`).
+ * @returns {FormDataType}                            FormData record for `postFormsData`.
  */
 export const transformFormField = ({
   marker,
@@ -58,9 +64,10 @@ export const transformFormField = ({
 };
 
 /**
- * Validates that the payload contains at least one non-empty content field (spam/button are ignored).
- * @param   {FormDataType[]}                       data - Transformed form payload.
- * @returns {{ isValid: boolean; error?: string }}      Validation result.
+ * validateFormData — validates that the payload contains at least one non-empty content field (spam/button are ignored).
+ *
+ * @param   {FormDataType[]} data - Transformed form payload.
+ * @returns {{ isValid: boolean; error?: string }}        `{ isValid, error? }` validation result.
  */
 export const validateFormData = (data: FormDataType[]): { isValid: boolean; error?: string } => {
   if (data.length === 0) {

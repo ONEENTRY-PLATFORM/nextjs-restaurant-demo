@@ -5,7 +5,13 @@ import { useTransitionRouter } from 'next-transition-router';
 import type { JSX } from 'react';
 import { useCallback } from 'react';
 
-/** Pagination — page-by-page navigation for the product grid. */
+/**
+ * Pagination — page-by-page navigation for the product grid.
+ *
+ * @param   {object}      props            - Component props.
+ * @param   {number}      props.totalPages - Total number of pages used to render numbered buttons.
+ * @returns {JSX.Element} JSX of the page-number button row.
+ */
 const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();
   const searchParams = useSearchParams();

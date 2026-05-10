@@ -12,7 +12,16 @@ import Spinner from '@/components/shared/Spinner';
 import CloseSearch from './CloseSearch';
 import ProductRow from './ProductRow';
 
-/** Search results. */
+/**
+ * SearchResults — dropdown panel rendered under the search bar with product results from the SDK.
+ *
+ * @param   {object}                                          props             - Component props.
+ * @param   {string}                                          props.searchValue - Debounced search query.
+ * @param   {boolean}                                         [props.isPending] - When `true`, the input value differs from the debounced one — show a spinner.
+ * @param   {boolean}                                         props.state       - Whether the panel is currently visible.
+ * @param   {Dispatch<React.SetStateAction<boolean>>}         props.setState    - Setter that toggles the panel visibility.
+ * @returns {JSX.Element} JSX of the search results panel, or empty fragment when not shown.
+ */
 const SearchResults = ({
   searchValue,
   isPending = false,

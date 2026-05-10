@@ -13,9 +13,10 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
 /**
- * ShopCategoryLayout — shop category page layout.
- * @param   {PageProps} props - Page props.
- * @returns {Promise<JSX.Element>} JSX of the page layout.
+ * ShopCategoryLayout — shop category page layout under `/shop/category/<handle>`.
+ *
+ * @param   {PageProps}              props - Page props with `params` and `searchParams`.
+ * @returns {Promise<JSX.Element>}         Promise resolving to JSX of the page layout (breadcrumb JSON-LD + suspended products grid).
  */
 const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -80,7 +81,13 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
 
 export default ShopCategoryLayout;
 
-/** generateMetadata — category page metadata. */
+/**
+ * generateMetadata — category page metadata derived from the CMS page by `handle`.
+ *
+ * @param   {MetadataParams}                  props        - Component props.
+ * @param   {MetadataParams['params']}        props.params - Async route params with the category handle.
+ * @returns {Promise<Metadata>}                            Promise resolving to the page metadata.
+ */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const { isError, page } = await getPageByUrl(handle);

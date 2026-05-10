@@ -25,11 +25,13 @@ type DescriptionValue = Array<{
 }>;
 
 /**
- * PromoDetailPage - promo detail page (`/promo/<pageUrl>`).
+ * PromoDetailPage — promo detail page (`/promo/<pageUrl>`).
+ *
  * Attributes of a `blog` child page (set `blog_page`): `bg_image` (hero desktop),
  * `banner` (mobile fallback), `description` (md/html). Products are fetched like in a regular category.
- * @param   {PageProps} props - Dynamic route props.
- * @returns {Promise<JSX.Element>} JSX of the promo detail page.
+ *
+ * @param   {PageProps}              props - Dynamic route props (`params`, `searchParams`).
+ * @returns {Promise<JSX.Element>}         Promise resolving to JSX of the promo detail page.
  */
 const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -151,7 +153,13 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
 
 export default PromoDetailPage;
 
-/** generateMetadata - metadata for the promo detail page. */
+/**
+ * generateMetadata — metadata for the promo detail page (CMS title/description, OG article).
+ *
+ * @param   {MetadataParams}                  props        - Component props.
+ * @param   {MetadataParams['params']}        props.params - Async route params with the promo `pageUrl` handle.
+ * @returns {Promise<Metadata>}                            Promise resolving to the page metadata.
+ */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;
   const [{ page }, dict] = await Promise.all([getPageByUrl(handle), getDictionary()]);

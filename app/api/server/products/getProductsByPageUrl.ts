@@ -6,7 +6,19 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
-/** getProductsByPageUrl — paginated products of the selected category. */
+/**
+ * getProductsByPageUrl — paginated products of the selected category.
+ *
+ * For multi-select `preferences` the SDK only accepts a scalar in `conditionValue` — so we run
+ * one request per value and merge unique items (OR semantics), then slice to the requested page.
+ *
+ * @param   {object} props          - Pagination, locale, category handle, and search-param filters.
+ * @param   {number} props.limit    - Page size.
+ * @param   {number} props.offset   - Page offset.
+ * @param   {string} [props.langCode] - Optional explicit locale (defaults to `getLang()`).
+ * @param   {object} props.params   - Category handle and inbound `searchParams` map.
+ * @returns {Promise<{ isError: boolean; error?: IError; products?: IProductsEntity[]; total: number }>}    Promise resolving to `{ isError, error?, products?, total }` (graceful fallback on SDK error).
+ */
 export const getProductsByPageUrl = cache(
   async (props: {
     limit: number;

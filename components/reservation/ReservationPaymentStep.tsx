@@ -16,6 +16,12 @@ import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
  */
 type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
 
+/**
+ * resolveVisualKind — maps a OneEntry payment account to the visual category used in the UI.
+ *
+ * @param   {IAccountsEntity}   account - OneEntry payment account entity.
+ * @returns {PaymentVisualKind}           Visual kind (`card` | `paypal` | `wallet` | `other`).
+ */
 const resolveVisualKind = (account: IAccountsEntity): PaymentVisualKind => {
   const type = account.type?.toLowerCase();
   const id = account.identifier?.toLowerCase();
@@ -35,15 +41,18 @@ type ReservationPaymentStepProps = {
 };
 
 /**
- * ReservationPaymentStep - payment method selection step for the booking.
+ * ReservationPaymentStep — payment-method selection step for the booking.
  *
- * Account list = `Payments.getAccounts()` (filtered by isVisible && isUsed)
- * intersected with `storage.paymentAccountIdentifiers` from
- * `getOrderStorageByMarker('booking_order')`, otherwise createOrder hits
- * 400 "Your payment account is not connected".
+ * Account list = `Payments.getAccounts()` (filtered by `isVisible && isUsed`) intersected with
+ * `storage.paymentAccountIdentifiers` from `getOrderStorageByMarker('booking_order')`, otherwise
+ * `createOrder` fails with 400 "Your payment account is not connected".
  *
- * @param   {ReservationPaymentStepProps} props - Step props.
- * @returns {JSX.Element}                       Payment step JSX.
+ * @param   {ReservationPaymentStepProps}  props           - Component props.
+ * @param   {(id: string) => void}         props.onApply   - Called with the selected `paymentAccountIdentifier` when the user confirms.
+ * @param   {boolean}                      props.isLoading - When `true`, disables the apply button.
+ * @param   {string}                       props.error     - Error message displayed under the radio list.
+ * @param   {() => void}                   props.onBack    - Returns the wizard to the form step.
+ * @returns {JSX.Element}                                    JSX of the payment-method selection step.
  */
 const ReservationPaymentStep = ({
   onApply,
@@ -80,7 +89,7 @@ const ReservationPaymentStep = ({
 
   return (
     <div className="flex w-full flex-col items-center gap-6.25 px-5 md:px-19">
-      {/* 30% deposit notice - Figma: 368Ã—54, gray-50% bg, orange Lato 16/20 center */}
+      {/* 30% deposit notice - Figma: 368×54, gray-50% bg, orange Lato 16/20 center */}
       <div className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card">
         <p className="text-center font-normal text-base leading-5 text-brand">
           {t('booking_deposit_text', '30% deposit is required to confirm your booking')}
@@ -90,7 +99,7 @@ const ReservationPaymentStep = ({
       {/* Radio list of payment methods */}
       <div className="flex w-full flex-col gap-3.75">
         {isAccountsLoading || isStorageLoading ? (
-          <p className="text-paper/70">{t('loading_text', 'Loadingâ€¦')}</p>
+          <p className="text-paper/70">{t('loading_text', 'Loading')}</p>
         ) : accounts.length === 0 ? (
           <p className="text-paper/70">
             {t('no_payment_methods', 'No payment methods are configured. Please contact support.')}
@@ -109,7 +118,7 @@ const ReservationPaymentStep = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Apply button - Figma: 95Ã—36, orange outline, text #EC722B */}
+      {/* Apply button - Figma: 95×36, orange outline, text #EC722B */}
       <div className="mt-2.5 flex items-center justify-center gap-3.75">
         <button
           type="button"
@@ -132,13 +141,13 @@ const ReservationPaymentStep = ({
 };
 
 /**
- * PaymentRow - radio row for a single payment account.
+ * PaymentRow — radio row for a single payment account.
  *
- * @param   {object}          props          - Row props.
- * @param   {IAccountsEntity} props.account  - Payment account.
- * @param   {boolean}         props.checked  - Whether the row is selected.
- * @param   {() => void}      props.onSelect - Selection callback.
- * @returns {JSX.Element}                    Row JSX.
+ * @param   {object}            props          - Component props.
+ * @param   {IAccountsEntity}   props.account  - OneEntry payment account entity.
+ * @param   {boolean}           props.checked  - Whether the row is currently selected.
+ * @param   {() => void}        props.onSelect - Selection callback invoked on radio change.
+ * @returns {JSX.Element}                        JSX of the payment row.
  */
 const PaymentRow = ({
   account,
@@ -153,7 +162,7 @@ const PaymentRow = ({
   const kind = resolveVisualKind(account);
   const id = `pay-${account.identifier}`;
 
-  // Label per Figma: card â†’ "Credit & Debit Cards", others â†’ "Pay with".
+  // Label per Figma: card -> "Credit & Debit Cards", others -> "Pay with".
   const label =
     kind === 'card'
       ? t('booking_credit_cards', 'Credit & Debit Cards')
@@ -187,13 +196,14 @@ const PaymentRow = ({
 };
 
 /**
- * PaymentLogos - payment system logos for the selection row.
- * No assets exist for Apple/Google Pay - render a text fallback.
+ * PaymentLogos — payment-system logos for the selection row.
  *
- * @param   {object}             props          - Props.
+ * No assets exist for Apple/Google Pay — render a text fallback.
+ *
+ * @param   {object}             props          - Component props.
  * @param   {PaymentVisualKind}  props.kind     - Payment method category.
  * @param   {string}             props.fallback - Text used for the fallback variant.
- * @returns {JSX.Element}                       Logos JSX.
+ * @returns {JSX.Element}                         JSX of the logo group.
  */
 const PaymentLogos = ({
   kind,

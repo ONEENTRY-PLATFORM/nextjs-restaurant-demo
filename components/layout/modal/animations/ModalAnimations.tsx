@@ -7,7 +7,14 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Modal animations: slide-up on mobile, centered fade+scale on md+, special scale+blur for CalendarForm. */
+/**
+ * ModalAnimations — modal animations: slide-up on mobile, centered fade+scale on md+, special scale+blur for CalendarForm.
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {ReactNode}   props.children  - Modal content (must include `#modalBg` and `#modalBody`).
+ * @param   {string}      props.component - Active component identifier (used to pick the right entrance variant).
+ * @returns {JSX.Element} JSX wrapper that drives the entrance/leave timeline, or empty fragment when not open.
+ */
 const ModalAnimations = ({
   children,
   component,

@@ -15,7 +15,18 @@ import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
 
-/** AddToCartButton - ADD TO CART button, switches to QuantitySelector after adding. */
+/**
+ * AddToCartButton — "ADD TO CART" button that switches to `QuantitySelector` after adding.
+ *
+ * @param   {object}      props                  - Component props.
+ * @param   {number}      props.id               - Product id to add.
+ * @param   {number}      props.units            - Maximum allowed units (used by the quantity selector cap).
+ * @param   {string}      props.productTitle     - Product title used in the toast text.
+ * @param   {string}      props.statusIdentifier - Product status; `'out_of_stock'` renders an inert "Out of stock" pill.
+ * @param   {string}      props.className        - Class merged onto the button.
+ * @param   {number}      props.height           - Pixel height passed to the quantity selector.
+ * @returns {JSX.Element} JSX of either the add-to-cart button or the quantity selector.
+ */
 const AddToCartButton = ({
   id,
   units,

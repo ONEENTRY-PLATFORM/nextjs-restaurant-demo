@@ -21,7 +21,9 @@ import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
 
-/** Fields used for the two-column rows per `service_table.html` markup (form `booking_order`). */
+/**
+ * ROW_PAIRS — fields used for the two-column rows per `service_table.html` markup (form `booking_order`).
+ */
 const ROW_PAIRS: Array<[string, string]> = [
   ['name', 'surname'],
   ['phone', 'people_count'],
@@ -32,11 +34,11 @@ const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
 
 /**
- * Returns available `HH.MM` slot starts for a date, based on the restaurant schedule.
+ * getAvailableSlotsForDate — available `HH.MM` slot starts for a date, based on the restaurant schedule.
  *
- * @param   {ScheduleSlotEntry[]} schedule - Raw entries from `schedule.value`.
- * @param   {string}              dateIso  - Selected date `yyyy-MM-dd`.
- * @returns {string[]}                     List of slot labels.
+ * @param   {ScheduleSlotEntry[] | undefined} schedule - Raw entries from `schedule.value`.
+ * @param   {string}                          dateIso  - Selected date `yyyy-MM-dd`.
+ * @returns {string[]}                                   Sorted list of slot labels (`HH.MM`).
  */
 const getAvailableSlotsForDate = (
   schedule: ScheduleSlotEntry[] | undefined,
@@ -65,12 +67,12 @@ const getAvailableSlotsForDate = (
 };
 
 /**
- * Converts the selected slot (`yyyy-MM-dd HH.MM`) into the `timeInterval` shape.
+ * buildTimeIntervalValue — converts the selected slot (`yyyy-MM-dd HH.MM`) into the OneEntry `timeInterval` shape.
  *
  * @param   {string}              raw             - Value of the `time_slot` field.
- * @param   {string | undefined}  restaurantValue - Current `restaurant` value.
+ * @param   {string | undefined}  restaurantValue - Current `restaurant` value (page url).
  * @param   {RestaurantOption[]}  restaurants     - Available restaurant options.
- * @returns {Array<[string, string]>}             Intervals ready to submit.
+ * @returns {Array<[string, string]>}               Intervals ready to submit (one entry); empty array on invalid input.
  */
 const buildTimeIntervalValue = (
   raw: string,
@@ -114,11 +116,11 @@ const buildTimeIntervalValue = (
 };
 
 /**
- * Maps a OneEntry form attribute type + marker to a native HTML input `type`.
+ * resolveInputType — maps a OneEntry form attribute type + marker to a native HTML input `type`.
  *
  * @param   {string} type   - OneEntry attribute `type`.
  * @param   {string} marker - Attribute marker used as a heuristic.
- * @returns {string}        HTML input type.
+ * @returns {string}          HTML input type (`number` / `email` / `tel` / `password` / `text`).
  */
 const resolveInputType = (type: string, marker: string): string => {
   if (type === 'integer' || type === 'real' || type === 'float') return 'number';
@@ -150,10 +152,10 @@ type ReservationStep =
   | { kind: 'success'; orderId: number; summary: string };
 
 /**
- * Formats the booking summary as `DD.MM.YY HH.MM N person`.
+ * formatBookingSummary — formats the booking summary as `DD.MM.YY HH.MM N person`.
  *
- * @param   {Record<string, string>} values - Form field values.
- * @returns {string}                        Summary for the success screen.
+ * @param   {Record<string, string>} values - Form field values keyed by marker.
+ * @returns {string}                          Summary string for the success screen (parts may be omitted when missing).
  */
 const formatBookingSummary = (values: Record<string, string>): string => {
   const slot = values[TIME_SLOT_MARKER] ?? '';
@@ -170,6 +172,17 @@ const formatBookingSummary = (values: Record<string, string>): string => {
   return [datePart, timePart, peoplePart].filter(Boolean).join(' ');
 };
 
+/**
+ * ReservationForm — table-booking form (`booking_order`) with create/edit + auth + payment wizard.
+ *
+ * @param   {ReservationFormProps}                       props                - Component props.
+ * @param   {IFormsEntity}                               props.form           - OneEntry form entity that defines the field schema.
+ * @param   {RestaurantOption[]}                         [props.restaurants]  - Available restaurant options for the entity dropdown.
+ * @param   {Record<string, FieldValue>}                 [props.initialValues] - Optional pre-filled values (used for edit / OAuth resume).
+ * @param   {object | null}                              [props.editingOrder] - When set, the form updates this order instead of creating a new one.
+ * @param   {() => void}                                 [props.onClose]      - Callback invoked on successful update (closes the popup).
+ * @returns {JSX.Element}                                                       JSX of the form, auth step, payment step, or success screen depending on wizard state.
+ */
 const ReservationForm = ({
   form,
   restaurants = [],
@@ -326,7 +339,7 @@ const ReservationForm = ({
       }
       const { id } = res as { id: number };
 
-      // Online â†’ open a payment session and redirect. Cash accounts return paymentUrl=null
+      // Online -> open a payment session and redirect. Cash accounts return paymentUrl=null
       // and fall through to the success branch shown inside the popup.
       if (paymentAccountIdentifier !== 'cash') {
         try {
@@ -518,10 +531,14 @@ type FieldProps = {
 };
 
 /**
- * Field - a single field of the booking form.
+ * Field — single field of the booking form (input / textarea / time-slot picker trigger).
  *
- * @param   {FieldProps}  props - Field props.
- * @returns {JSX.Element}       Field JSX.
+ * @param   {FieldProps}                                       props              - Component props.
+ * @param   {IFormAttribute}                                   props.attr         - OneEntry form attribute.
+ * @param   {Record<string, FieldValue>}                       props.values       - Current form values keyed by marker.
+ * @param   {(marker: string, value: FieldValue) => void}      props.onChange     - Setter that updates a single field.
+ * @param   {() => void}                                       props.onOpenPicker - Opens the date/time picker (for `timeInterval`/`time_slot`).
+ * @returns {JSX.Element}                                                           JSX of the field.
  */
 const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;

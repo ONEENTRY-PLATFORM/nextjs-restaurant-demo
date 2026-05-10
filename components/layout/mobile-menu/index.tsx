@@ -15,7 +15,13 @@ import MobileMenuAnimations from './animations/MobileMenuAnimations';
 import CloseModal from './components/CloseModal';
 import MobileMenu from './components/MobileMenu';
 
-/** Offscreen modal for the mobile menu. */
+/**
+ * OffscreenModal — slide-in mobile menu drawer; closes on resize past lg and on route change.
+ *
+ * @param   {object}        props      - Component props.
+ * @param   {IMenusEntity}  props.menu - OneEntry menu entity used to render the nested mobile menu list.
+ * @returns {JSX.Element} JSX of the mobile menu drawer, or empty fragment when not active.
+ */
 const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();
   const { open, setOpen, component } = useContext(OpenDrawerContext);

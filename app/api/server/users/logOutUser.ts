@@ -2,7 +2,13 @@ import { getApi } from '@/app/api';
 
 type LogOutProps = { marker: string; token?: string };
 
-/** logOutUser — user sign-out via the AuthProvider API. */
+/**
+ * logOutUser — user sign-out via the AuthProvider API.
+ *
+ * @param   {LogOutProps} props        - Sign-out arguments.
+ * @param   {string}      props.marker - Auth-provider marker the session was created with (e.g. `email`).
+ * @returns {Promise<{ data?: unknown; error?: string }>}        Promise resolving to `{ data }` on success, `{ error }` on failure.
+ */
 export const logOutUser = async ({ marker }: LogOutProps) => {
   try {
     const token = localStorage.getItem('refresh-token');

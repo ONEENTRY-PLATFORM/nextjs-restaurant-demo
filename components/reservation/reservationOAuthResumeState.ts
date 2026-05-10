@@ -12,9 +12,9 @@ export type ReservationOAuthResume = {
 const STORAGE_KEY = 'reservation-oauth-resume';
 
 /**
- * Persists the form state before the OAuth redirect.
+ * setPendingReservationResume — persists the form state before the OAuth redirect.
  *
- * @param   {ReservationOAuthResume} next - Snapshot to restore later.
+ * @param   {ReservationOAuthResume} next - Snapshot to restore after the redirect.
  * @returns {void}
  */
 export const setPendingReservationResume = (next: ReservationOAuthResume): void => {
@@ -28,10 +28,11 @@ export const setPendingReservationResume = (next: ReservationOAuthResume): void 
 };
 
 /**
- * Reads the pending resume without removing it — used by the callback page to
- * know where to return without consuming the snapshot: the popup will consume it itself.
+ * peekPendingReservationResume — reads the pending resume without removing it.
  *
- * @returns {ReservationOAuthResume | null} Snapshot or null.
+ * Used by the callback page to know where to return without consuming the snapshot — the popup consumes it itself.
+ *
+ * @returns {ReservationOAuthResume | null} Snapshot or `null`.
  */
 export const peekPendingReservationResume = (): ReservationOAuthResume | null => {
   if (typeof window === 'undefined') return null;
@@ -44,9 +45,9 @@ export const peekPendingReservationResume = (): ReservationOAuthResume | null =>
 };
 
 /**
- * Reads and removes the pending resume (one-shot).
+ * consumePendingReservationResume — reads and removes the pending resume (one-shot).
  *
- * @returns {ReservationOAuthResume | null} Snapshot or null.
+ * @returns {ReservationOAuthResume | null} Snapshot or `null`.
  */
 export const consumePendingReservationResume = (): ReservationOAuthResume | null => {
   const value = peekPendingReservationResume();
@@ -61,8 +62,7 @@ export const consumePendingReservationResume = (): ReservationOAuthResume | null
 };
 
 /**
- * Removes the pending resume — e.g. when the OAuth redirect aborted before
- * `window.location.href` (no client-id, no-op fallback to the email form).
+ * clearPendingReservationResume — removes the pending resume (e.g. when the OAuth redirect aborts before `window.location.href`).
  *
  * @returns {void}
  */

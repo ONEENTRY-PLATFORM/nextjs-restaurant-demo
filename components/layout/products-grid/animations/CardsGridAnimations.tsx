@@ -9,18 +9,22 @@ import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react
 
 /**
  * CardsGridAnimations — wraps the products grid with two animations:
- * 1. Page-leave (`next-transition-router` stage transition): fades visible
- *    `.in-view` cards out, then the wrapper, while routing to another page.
- * 2. Filter-swap (search params change inside the same page): fades the
- *    current cards out, then re-mounts the subtree under a new key so each
- *    `CardAnimations` instance replays its per-card stagger reveal on the
- *    new product list.
  *
- * The displayed subtree is held in state and lags one beat behind the latest
- * server payload. Without this hold the parent server component re-renders
- * with new products as soon as the URL updates, React reconciles cards by
- * `product.id`, retained instances stay visible (no animation) and removed
- * ones disappear instantly — what looked like a silent swap to the user.
+ * 1. Page-leave (`next-transition-router` stage transition): fades visible `.in-view` cards out,
+ *    then the wrapper, while routing to another page.
+ * 2. Filter-swap (search params change inside the same page): fades the current cards out, then
+ *    re-mounts the subtree under a new key so each `CardAnimations` instance replays its per-card
+ *    stagger reveal on the new product list.
+ *
+ * The displayed subtree is held in state and lags one beat behind the latest server payload.
+ * Without this hold the parent server component re-renders with new products as soon as the URL
+ * updates, React reconciles cards by `product.id`, retained instances stay visible (no animation),
+ * and removed ones disappear instantly — what looked like a silent swap to the user.
+ *
+ * @param   {object}    props           - Component props.
+ * @param   {ReactNode} props.children  - Grid content (typically the products grid markup).
+ * @param   {string}    props.className - Class merged onto the wrapping `<div>`.
+ * @returns {JSX.Element}                 JSX wrapper that orchestrates the page-leave / filter-swap animations.
  */
 const CardsGridAnimations = ({
   children,
@@ -36,9 +40,6 @@ const CardsGridAnimations = ({
   const searchParams = useSearchParams();
   const paramsKey = searchParams.toString();
 
-  // Mirror the latest children prop into a ref so the swap callback always
-  // picks up the freshest server payload, even if it arrived after the exit
-  // animation started.
   const latestChildrenRef = useRef<ReactNode>(children);
   useEffect(() => {
     latestChildrenRef.current = children;

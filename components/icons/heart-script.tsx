@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * HeartScriptIcon — script-style filled heart icon for the desktop favorites nav item.
+ *
+ * @returns {JSX.Element} JSX of the script-heart SVG.
+ */
 const HeartScriptIcon = (): JSX.Element => {
   return (
     <svg

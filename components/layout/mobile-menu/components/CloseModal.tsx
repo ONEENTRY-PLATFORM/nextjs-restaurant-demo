@@ -2,7 +2,11 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Mobile menu modal close button. */
+/**
+ * CloseModal — mobile-menu close button (round X) that triggers the close transition.
+ *
+ * @returns {JSX.Element} JSX of the close button absolutely positioned in the drawer corner.
+ */
 const CloseModal = () => {
   const { setTransition } = useContext(OpenDrawerContext);
   return (

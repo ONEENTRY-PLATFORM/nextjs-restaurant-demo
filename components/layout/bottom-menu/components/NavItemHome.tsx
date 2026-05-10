@@ -6,7 +6,13 @@ import type { JSX } from 'react';
 
 import HouseIcon from '@/components/icons/house';
 
-/** "Home" navItem menu element. */
+/**
+ * NavItemHome — "Home" nav-item link rendered in the mobile bottom menu.
+ *
+ * @param   {object}      props      - Component props.
+ * @param   {IMenusPages} props.item - OneEntry menu page entity (only `localizeInfos.menuTitle` is used).
+ * @returns {JSX.Element} JSX of the home link with house icon.
+ */
 const NavItemHome = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.Element => {
   return (
     <Link

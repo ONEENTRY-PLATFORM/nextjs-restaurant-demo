@@ -12,7 +12,13 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import BookingsContent from './BookingsContent';
 
-/** BookingsPopup - "Bookings" popup (Active reservation + History). Body lives in {@link BookingsContent}. */
+/**
+ * BookingsPopup — «Bookings» popup (Active reservation + History). Body lives in
+ * {@link BookingsContent}; this wrapper handles the drawer chrome (close button,
+ * swipe-to-close, transition state from `OpenDrawerContext`).
+ *
+ * @returns {JSX.Element} JSX of the bookings drawer.
+ */
 const BookingsPopup = (): JSX.Element => {
   const { setOpen, setTransition } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +45,8 @@ const BookingsPopup = (): JSX.Element => {
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
           <p className="font-semibold text-2xl text-brand">Active reservation</p>
-          <ClosePopupButton onClose={close} ariaLabel="Close bookings" />
+          <ClosePopupButton onClose={close} ariaLabel="Close bookings" className="max-md:hidden" />
+          <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>
 
         <div className="mt-7.5">

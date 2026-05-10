@@ -1,6 +1,12 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
-/** Search results close button. */
+/**
+ * CloseSearch — close button for the search-results panel that flips the panel state to `false`.
+ *
+ * @param   {object}                              props          - Component props.
+ * @param   {Dispatch<SetStateAction<boolean>>}   props.setState - Setter that owns the panel visibility.
+ * @returns {JSX.Element} JSX of the close-X button.
+ */
 const CloseSearch = ({
   setState,
 }: {

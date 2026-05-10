@@ -16,10 +16,13 @@ const EXIT_DURATION = 0.4;
 
 /**
  * CartPromoSidebar — desktop sidebar next to the cart, sourced from OneEntry `blog` pages.
- * Uses `attributeValues.banner` (portrait); exit animation triggers on `stage='leaving'` — otherwise the neighbors' leave does not fire.
  *
- * @param   {object}        props         - Sidebar props.
+ * Uses `attributeValues.banner` (portrait); exit animation triggers on `stage='leaving'` — otherwise
+ * the neighbors' leave does not fire.
+ *
+ * @param   {object}        props         - Component props.
  * @param   {BlogBanner[]}  props.banners - List of banners from the CMS.
+ * @returns {JSX.Element | null}            JSX of the desktop promo sidebar, or `null` when no banner has a mobile image.
  */
 const CartPromoSidebar = ({ banners }: { banners: BlogBanner[] }): JSX.Element | null => {
   const items = banners.filter(b => b.mobileImage);

@@ -36,17 +36,43 @@ const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'complet
 
 // md+ opens the cart as the `/cart` page (see CartWizard) - Repeat order on desktop navigates there too, not into the drawer.
 const MD_QUERY = '(min-width: 768px)';
+/**
+ * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
+ *
+ * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
+ * @returns {() => void}        Unsubscribe function.
+ */
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
   mq.addEventListener('change', cb);
   return () => mq.removeEventListener('change', cb);
 };
+/**
+ * getMdSnapshot — current client snapshot of the `md` media query match state.
+ *
+ * @returns {boolean} `true` when the viewport currently matches `md` (>= 768px).
+ */
 const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
+/**
+ * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
+ *
+ * @returns {boolean} Always `false` so SSR renders the mobile layout deterministically.
+ */
 const getMdServerSnapshot = (): boolean => false;
+/**
+ * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
+ *
+ * @returns {boolean} `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
+ */
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
-/** Human-readable order status: localized from CMS, otherwise derived from identifier. */
+/**
+ * statusLabel — human-readable order status (localized from CMS, otherwise derived from the identifier).
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {string}                   Localized status title or a humanised identifier (`-` when nothing is set).
+ */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
@@ -55,15 +81,24 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
   return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
-/** Order belongs to "Orders History" (completed/cancelled), not "Active". */
+/**
+ * isHistoryOrder — whether the order belongs to "Orders History" (completed/cancelled), not "Active".
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {boolean}                  `true` when the order is completed or carries a history status.
+ */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
   return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
 };
 
 /**
- * Computes subtotal / delivery / discount / total for an order.
- * `discount` = (subtotal + delivery) âˆ’ serverTotal: if a coupon was applied, `totalSum` already includes the discount.
+ * computeTotals — subtotal / delivery / discount / total for an order.
+ *
+ * `discount` = (subtotal + delivery) − serverTotal: if a coupon was applied, `totalSum` already includes the discount.
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {{ subtotal: number; delivery: number; discount: number; total: number }} `{ subtotal, delivery, discount, total }` numbers.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
@@ -81,14 +116,29 @@ const computeTotals = (
   return { subtotal, delivery, discount, total };
 };
 
-/** Order number `OE...` from the SDK, otherwise fallback to the numeric id. */
+/**
+ * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {string}                   Display order number string.
+ */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
   if (fromSdk) return fromSdk;
   return String(o.id);
 };
 
-/** OrderCard - pill with the order summary + expandable body with line items, totals, and CTA. */
+/**
+ * OrderCard — pill with the order summary + expandable body with line items, totals, and CTA.
+ *
+ * @param   {object}                          props              - Component props.
+ * @param   {IOrderByMarkerEntity}            props.order        - OneEntry order entity.
+ * @param   {boolean}                         props.expanded     - Whether the body is currently expanded.
+ * @param   {() => void}                      props.onToggle     - Toggles the expanded state.
+ * @param   {boolean}                         props.isHistory    - Whether the order belongs to history (controls available actions).
+ * @param   {Map<number, IProductsEntity>}    props.productsById - Map of full product entities used to enrich line items.
+ * @returns {JSX.Element}                                          JSX of the order card.
+ */
 const OrderCard = ({
   order,
   expanded,
@@ -228,7 +278,7 @@ const OrderCard = ({
         aria-expanded={expanded}
         className="mt-2.75 flex w-full items-center justify-between gap-2 rounded-card bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base"
       >
-        <p className="font-bold">â„–{formatOrderNumber(order)}</p>
+        <p className="font-bold">№{formatOrderNumber(order)}</p>
         <p>{statusLabel(order)}</p>
         <p>{formatDate(created)}</p>
         <Image
@@ -273,7 +323,7 @@ const OrderCard = ({
                 {discount > 0 ? (
                   <div className="flex gap-1.25 text-brand">
                     <p>Discount:</p>
-                    <p>âˆ’{UsePrice({ amount: discount })}</p>
+                    <p>−{UsePrice({ amount: discount })}</p>
                   </div>
                 ) : null}
               </div>
@@ -311,7 +361,15 @@ const OrderCard = ({
   );
 };
 
-/** OrderLineItem - a single line item row inside the expanded order body. */
+/**
+ * OrderLineItem — single line-item row inside the expanded order body.
+ *
+ * @param   {object}                       props             - Component props.
+ * @param   {IOrderProducts}               props.product     - Order line-item entity.
+ * @param   {boolean}                      props.first       - Whether this is the first row (drops the top margin).
+ * @param   {IProductsEntity | undefined}  [props.fullProduct] - Optional full product entity used to resolve a fallback cover image.
+ * @returns {JSX.Element}                                      JSX of the line-item row.
+ */
 const OrderLineItem = ({
   product,
   first,
@@ -361,7 +419,13 @@ const OrderLineItem = ({
   );
 };
 
-/** OrdersList - orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+. */
+/**
+ * OrdersList — orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+.
+ *
+ * @param   {object}         [props]               - Component props.
+ * @param   {BlogBanner[]}   [props.promoBanners]  - Promo banners rendered in the right column on md+.
+ * @returns {JSX.Element}                            JSX of the orders dashboard section.
+ */
 const OrdersList = ({
   promoBanners = [],
 }: {

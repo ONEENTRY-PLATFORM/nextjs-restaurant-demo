@@ -32,14 +32,16 @@ type ReservationAuthStepProps = {
 type SubStep = 'providers' | 'email';
 
 /**
- * ReservationAuthStep - auth step inside the booking popup.
+ * ReservationAuthStep — inline auth step inside the booking popup.
  *
- * Implemented inline (without `OpenDrawerContext.setComponent`) to avoid
- * tearing down the mounted `ReservationPopup` and losing the collected
- * form values. Two sub-steps: `providers` â†’ `email`.
+ * Implemented inline (without `OpenDrawerContext.setComponent`) to avoid tearing down the mounted
+ * `ReservationPopup` and losing the collected form values. Two sub-steps: `providers` → `email`.
  *
- * @param   {ReservationAuthStepProps} props - Step props.
- * @returns {JSX.Element}                    Auth step JSX.
+ * @param   {ReservationAuthStepProps}    props                - Component props.
+ * @param   {() => void}                  props.onAuthSuccess  - Callback fired on successful auth (switches the wizard step to `payment`).
+ * @param   {() => void}                  props.onBack         - Callback that returns the wizard to the form step.
+ * @param   {Record<string, string>}      props.currentValues  - Current booking form values; persisted to sessionStorage before OAuth redirect.
+ * @returns {JSX.Element}                                        JSX of the providers list or inline email form.
  */
 const ReservationAuthStep = ({
   onAuthSuccess,
@@ -72,7 +74,7 @@ const ReservationAuthStep = ({
     if (p.identifier === 'google') {
       persistResumeBeforeOAuth();
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth is not configured (MISMATCH-LOG Â§C.8.1) - fall back to the email form. Clear resume.
+        // Google OAuth is not configured (MISMATCH-LOG §C.8.1) - fall back to the email form. Clear resume.
         clearPendingReservationResume();
         setSubStep('email');
       }

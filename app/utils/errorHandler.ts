@@ -23,8 +23,8 @@ export class ApiError extends Error {
 /**
  * isIError — type guard for the OneEntry SDK `IError`.
  *
- * @param   {unknown} error - Object to check.
- * @returns {boolean}       true if the object is an IError.
+ * @param   {unknown}           error - Object to check.
+ * @returns {error is IError}          `true` when the object has both `statusCode` and `message` (matching `IError`).
  */
 export function isIError(error: unknown): error is IError {
   return typeof error === 'object' && error !== null && 'statusCode' in error && 'message' in error;
@@ -33,9 +33,9 @@ export function isIError(error: unknown): error is IError {
 /**
  * handleApiError — centralized API error handler.
  *
- * @param   {string}   handle - Name of the calling handler for logging.
- * @param   {unknown}  error  - Error to handle.
- * @returns {ApiError}        Standardized `ApiError`.
+ * @param   {string}     handle - Name of the calling handler for logging.
+ * @param   {unknown}    error  - Error to normalise.
+ * @returns {ApiError}          Standardized `ApiError` instance with HTTP `statusCode`.
  */
 export function handleApiError(handle: string, error: unknown): ApiError {
   if (isIError(error)) {
@@ -70,7 +70,7 @@ export function handleApiError(handle: string, error: unknown): ApiError {
 /**
  * useApiErrorHandler — hook for handling API errors with toast notifications.
  *
- * @returns {unknown} Handler function.
+ * @returns {(error: unknown) => ApiError} Handler function `(error) => ApiError` that also surfaces the message via `react-toastify`.
  */
 export function useApiErrorHandler(): unknown {
   return function handleApiErrorWithNotification(error: unknown): ApiError {
@@ -82,11 +82,11 @@ export function useApiErrorHandler(): unknown {
 }
 
 /**
- * formatErrorMessage — formats an error message for the user.
+ * formatErrorMessage — formats an error message for the user (status-code aware).
  *
- * @param   {unknown} error          - Error to format.
- * @param   {string}  defaultMessage - Default message.
- * @returns {string}                 Formatted message.
+ * @param   {unknown}    error          - Error to format.
+ * @param   {string}     defaultMessage - Fallback message when no specific text is available.
+ * @returns {string}                    User-facing error string mapped from common HTTP status codes.
  */
 export function formatErrorMessage(
   error: unknown,

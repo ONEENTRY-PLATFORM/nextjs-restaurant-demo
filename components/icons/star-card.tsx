@@ -1,5 +1,13 @@
 import type { JSX } from 'react';
 
+/**
+ * StarCardIcon — star icon used inside product-card rating displays (size + filled variants).
+ *
+ * @param   {object}      props        - Component props.
+ * @param   {number}      props.size   - Render size in pixels (square).
+ * @param   {boolean}     props.filled - When `true`, fill the star with brand colour; otherwise show as outline.
+ * @returns {JSX.Element} JSX of the star SVG.
+ */
 const StarCardIcon = ({ size, filled }: { size: number; filled: boolean }): JSX.Element => {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">

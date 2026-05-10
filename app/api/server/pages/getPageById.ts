@@ -5,7 +5,12 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getPageById — page with attached forms, blocks, and menus. */
+/**
+ * getPageById — page with attached forms, blocks, and menus.
+ *
+ * @param   {number} id - OneEntry page id.
+ * @returns {Promise<{ isError: boolean; error?: IError; page?: IPagesEntity }>}    Promise resolving to `{ isError, error?, page? }` (graceful fallback on SDK error).
+ */
 export const getPageById = cache(
   async (
     id: number

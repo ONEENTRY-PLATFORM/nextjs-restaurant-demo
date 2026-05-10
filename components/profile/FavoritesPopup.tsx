@@ -13,8 +13,6 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
-import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
-import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -24,7 +22,11 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-/** FavoritesPopup - favorites popup: centered modal on md+, bottom-sheet on mobile. */
+/**
+ * FavoritesPopup — favorites popup: centered modal on md+, bottom-sheet on mobile.
+ *
+ * @returns {JSX.Element} JSX of the favorites drawer.
+ */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -51,20 +53,9 @@ const FavoritesPopup = (): JSX.Element => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
-        {/* Mobile header: back / title / burger; sticky so it does not scroll with the list. Hidden on md+. */}
-        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-between px-5 pt-5 pb-2.5 md:hidden">
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close favorites"
-            className="group_white"
-          >
-            <ArrowBackOrangeIcon />
-          </button>
+        {/* sticky so it does not scroll with the list. Hidden on md+. */}
+        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
           <p className="font-normal text-2xl text-white">Favorites</p>
-          <button type="button" onClick={close} aria-label="Menu" className="group_white">
-            <BurgerOrangeIcon />
-          </button>
         </div>
 
         {/* Desktop header: spacer / title / X - keeps the title centered. */}
@@ -92,7 +83,7 @@ const FavoritesPopup = (): JSX.Element => {
             </div>
           </div>
         ) : (
-          <div className="mt-15 flex w-full flex-wrap justify-center gap-7.5">
+          <div className="mt-8 md:mt-15 flex w-full flex-wrap justify-center gap-7.5">
             {products.map(product => (
               <FavoriteCard
                 key={product.id}
@@ -109,7 +100,15 @@ const FavoritesPopup = (): JSX.Element => {
   );
 };
 
-/** FavoriteCard - single favorite card inside the popup. */
+/**
+ * FavoriteCard — single favorite card inside the popup.
+ *
+ * @param   {object}          props                - Component props.
+ * @param   {IProductsEntity} props.product        - Product entity to render.
+ * @param   {string}          props.addToCartLabel - Localized label for the add-to-cart aria-label.
+ * @param   {() => void}      props.onNavigate     - Callback fired when a card link is followed (closes the popup).
+ * @returns {JSX.Element}                            JSX of the favorite card row.
+ */
 const FavoriteCard = ({
   product,
   addToCartLabel,

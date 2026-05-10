@@ -6,15 +6,16 @@ import type { JSX, ReactNode } from 'react';
 import { useRef } from 'react';
 
 /**
- * Stagger fade-in for the cart / orders promo sidebar — mirrors
- * the first-load effect of `ProductAnimations` on cart items, so that
- * the sidebar banners slide in together with the product list.
+ * PromoBannerAnimations — stagger fade-in wrapper for the cart / orders promo sidebar banners.
  *
- * @param   {object}   props           - Component props.
- * @param   {ReactNode} props.children - Banner element to animate.
- * @param   {number}   props.index     - Position in the list (drives the stagger delay).
- * @param   {string}   [props.className] - Wrapper class.
- * @returns {JSX.Element}              JSX of the wrapped banner.
+ * Mirrors the first-load effect of `ProductAnimations` on cart items so that the sidebar banners
+ * slide in together with the product list.
+ *
+ * @param   {object}    props           - Component props.
+ * @param   {ReactNode} props.children  - Banner element to animate.
+ * @param   {number}    props.index     - Position in the list (drives the stagger delay).
+ * @param   {string}    [props.className] - Wrapper class merged onto the animated container.
+ * @returns {JSX.Element}                  JSX of the wrapped banner.
  */
 const PromoBannerAnimations = ({
   children,

@@ -7,7 +7,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
-/** NavItemFavorites — desktop favorites trigger; opens `FavoritesPopup`. */
+/**
+ * NavItemFavorites — desktop favorites trigger; opens `FavoritesPopup` and shows a count badge.
+ *
+ * @returns {JSX.Element} JSX of the favorites button with rehydrated count badge.
+ */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);

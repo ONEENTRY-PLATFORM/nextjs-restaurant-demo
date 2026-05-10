@@ -6,11 +6,12 @@ import FavoritesButton from '@/components/layout/product/product-single/Favorite
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * ProductCover - main product image (`cover` attribute) + FavoritesButton.
- * @param   {object}          props         - Component props.
- * @param   {IProductsEntity} props.product - OneEntry product entity.
- * @param   {string}          props.alt     - Image alt attribute.
- * @returns {JSX.Element}                   Product cover JSX.
+ * ProductCover — main product image (`cover` attribute) with a favourites button overlay.
+ *
+ * @param   {object}            props         - Component props.
+ * @param   {IProductsEntity}   props.product - OneEntry product entity.
+ * @param   {string}            props.alt     - Image alt attribute.
+ * @returns {JSX.Element} JSX of the product cover image.
  */
 const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
   const coverRaw = product.attributeValues.cover?.value as

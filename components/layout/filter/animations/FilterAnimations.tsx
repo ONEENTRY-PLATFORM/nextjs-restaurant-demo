@@ -7,7 +7,15 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Filter wrapper animations. */
+/**
+ * FilterAnimations — GSAP enter/leave animation wrapper for individual filter sections with per-row stagger.
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {ReactNode}   props.children  - Filter section content.
+ * @param   {string}      props.className - Wrapper class merged onto the animated container.
+ * @param   {number}      props.index     - Section index used to compute the stagger delay.
+ * @returns {JSX.Element} JSX wrapper that animates the section in/out.
+ */
 const FilterAnimations = ({
   children,
   className,

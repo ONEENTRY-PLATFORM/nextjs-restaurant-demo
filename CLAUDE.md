@@ -132,33 +132,62 @@
 
 **Tailwind-классы внутри `components/icons/*.svg`:** content-glob уже включает `*.svg`, так что `class="fill-[#EC722B] hover-target"` внутри SVG-файла будет отсканирован и сгенерирован. Если классы вдруг не применяются — первое, что проверить: что путь файла попадает под `content` в [tailwind.config.js](tailwind.config.js). Для `public/images/icons/*.svg` Tailwind-классы внутри **не работают** (файл не проходит через бандлер).
 
-## 3.4. JSDoc обязателен для функций
+## 3.4. JSDoc обязателен для функций — с типами и chain-нотацией
 
-Каждая **объявленная функция** в проекте — React-компонент, кастомный хук, утилита, серверный action, обработчик, экспортируемая или нет — должна сопровождаться JSDoc-блоком над объявлением.
+Каждая **объявленная функция** в проекте — React-компонент, кастомный хук, утилита, серверный action, обработчик, экспортируемая или нет — должна сопровождаться JSDoc-блоком над объявлением. **Все `@param` и `@returns` обязательно с типом в фигурных скобках** — даже если этот тип уже есть в TypeScript-сигнатуре. Это **сознательное дублирование**: помогает читать код в IDE-тултипах, в hover-предпросмотре, и в diff-ах без переключения на сигнатуру.
 
+- **Язык — английский.** Все JSDoc-комментарии и инлайн-комментарии в коде пишутся на английском, в тон существующих описаний в проекте. Русские комментарии (наследие из ранних коммитов) при правке файла переводить на английский.
 - **Структура:**
-  1. Первая строка — короткое описание, что делает функция (на английском, в тон существующих комментариев в проекте).
+  1. Первая строка — короткое описание через em-dash: `Имя — что делает.` (английский).
   2. Пустая строка.
-  3. `@param имя - описание` для каждого аргумента. Для деструктурированных props — каждое поле отдельным `@param`.
-  4. `@returns ...` — если возвращаемое значение нетривиально (для очевидных React-компонентов, возвращающих JSX, можно опускать; но если уже пишешь — пиши).
-- **Не дублировать TypeScript-типы** в JSDoc (`@param {string}` и т.п.) — типы уже даёт TS, в JSDoc — только семантика.
-- **Внутренние коллбэки** в `useEffect`/`useGSAP`/`map`/`filter`/`onClick={() => ...}` — **без** JSDoc, если у них нет отдельного именованного объявления. Документируем только функции, которые видны как самостоятельные единицы.
-- При правке файла, где у функции уже есть однострочный JSDoc без `@param` — **расширить** до полной формы, а не оставлять как было.
+  3. Если нужен расширенный контекст (почему так, а не иначе; нюансы поведения) — следующий абзац, потом ещё одна пустая строка.
+  4. `@param   {Type}   name           - Description.` для каждого аргумента.
+  5. Для деструктурированных props — **chain-нотация**: сначала сам объект `props` (тип `{object}` или именованный type), затем каждое поле `props.fieldName` с собственным типом.
+  6. `@returns {Type}   Description.` — **всегда** при наличии return-значения. Для React-компонентов: `@returns {JSX.Element} JSX of the <thing>.` Для async-серверных функций: `@returns {Promise<T>} Promise resolving to <thing>.`
+- **Выравнивание.** Колонки `{Type}`, `name`, `- Description` — выравниваем пробелами по вертикали внутри одного JSDoc-блока, чтобы читать как таблицу. Если типы сильно разной длины — допускаем единичный пробел; главное, чтобы в одном блоке стиль был консистентным.
+- **Внутренние коллбэки** в `useEffect`/`useGSAP`/`map`/`filter`/`onClick={() => ...}` — **без** JSDoc, если у них нет отдельного именованного объявления.
+- При правке файла, где у функции уже есть однострочный JSDoc без `@param`/`@returns` — **расширить** до полной формы.
 - Это правило **переопределяет** дефолтное «no comments» из системного промпта Claude: для этого проекта JSDoc — часть контракта функции, а не комментарий «на всякий случай».
 
-**Пример:**
+**Каноничный пример (React-компонент с деструктурированными props):**
 
 ```tsx
 /**
- * Оборачивает карточку продукта в reveal-анимацию, срабатывающую при входе в вьюпорт.
+ * CardAnimations — wraps a product card in a reveal animation that fires when it enters the viewport.
  *
- * @param children - Содержимое карточки.
- * @param className - Класс на оборачивающий `<div>`.
- * @param index - Абсолютный индекс карточки по всем страницам; задаёт stagger.
- * @param productsLimit - Сколько продуктов на странице; сбрасывает каскад на новой.
- * @returns JSX-обёртка с привязанной GSAP-анимацией появления.
+ * @param   {object}    props               - Component props.
+ * @param   {ReactNode} props.children      - Card content.
+ * @param   {string}    props.className     - Class merged onto the wrapping `<div>`.
+ * @param   {number}    props.index         - Absolute card index across all pages; drives the stagger.
+ * @param   {number}    props.productsLimit - Page size; resets the stagger on a new page.
+ * @returns {JSX.Element}                     JSX wrapper with the bound GSAP reveal animation.
  */
 const CardAnimations = ({ children, className, index, productsLimit }: Props): JSX.Element => { ... }
+```
+
+**Каноничный пример (async server fetcher):**
+
+```tsx
+/**
+ * fetchDictionary — loads the `static_content` attribute set and normalizes it into
+ * `Record<marker, IAttributeValue>`, so that `dict?.MARKER?.value` returns a string.
+ *
+ * @returns {Promise<IAttributeValues>} Promise resolving to a map of markers → attribute with a string `value`.
+ */
+const fetchDictionary = async (): Promise<IAttributeValues> => { ... }
+```
+
+**Каноничный пример (утилита с примитивными аргументами):**
+
+```tsx
+/**
+ * t — server-side counterpart of `useT()`: reads a string from the dictionary by marker.
+ *
+ * @param   {string}          marker   - Dictionary marker (attribute name).
+ * @param   {string}          fallback - Returned when the marker is missing.
+ * @returns {Promise<string>}            Promise resolving to the dictionary string, or the fallback.
+ */
+export const t = async (marker: string, fallback: string): Promise<string> => { ... }
 ```
 
 ## 4. Итеративное обновление этих правил

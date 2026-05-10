@@ -23,6 +23,12 @@ export const animationsSlice = createSlice({
 
 export const { setReadyState } = animationsSlice.actions;
 
+/**
+ * getReadyState — selector for the animations slice (currently exposes the `readyState` flag).
+ *
+ * @param   {{ animationsReducer: { readyState: boolean } }} state - Redux root state.
+ * @returns {{ readyState: boolean }}                                Animations slice value.
+ */
 export const getReadyState = (state: {
   animationsReducer: {
     readyState: boolean;

@@ -7,7 +7,11 @@ import { useContext } from 'react';
 import { logOutUser } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
-/** Logout menu item button. */
+/**
+ * LogoutMenuItem — "Logout" menu button: clears the session and navigates to home.
+ *
+ * @returns {JSX.Element} JSX of the logout menu button.
+ */
 const LogoutMenuItem = (): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();

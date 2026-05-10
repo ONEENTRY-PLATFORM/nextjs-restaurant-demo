@@ -24,6 +24,8 @@ import FormSubmitButton from './inputs/FormSubmitButton';
  * Intentionally a static form (not from the CMS) — the code is sent to the SDK
  * `AuthProvider.checkCode(...)` or `activateUser(...)` for post-signup activation.
  * See MISMATCH-LOG §C.8.2.
+ *
+ * @returns {JSX.Element} JSX of the 6-digit OTP entry form.
  */
 const VerificationForm = (): JSX.Element => {
   const t = useT();

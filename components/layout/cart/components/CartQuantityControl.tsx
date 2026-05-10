@@ -20,7 +20,13 @@ type CartQuantityControlProps = {
 };
 
 /**
- * CartQuantityControl - compact +/qty/- control; the `-` step at qty===1 removes the item with an undo toast.
+ * CartQuantityControl — compact +/qty/− control; the `−` step at `qty === 1` removes the item with an undo toast.
+ *
+ * @param   {CartQuantityControlProps} props       - Component props.
+ * @param   {number}                   props.id    - Cart product id.
+ * @param   {number}                   props.units - Maximum allowed units (cap forwarded to the increment handler).
+ * @param   {string}                   props.title - Product title used in the removal toast text.
+ * @returns {JSX.Element} JSX of the vertical +/qty/− control.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -42,7 +48,11 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
     dispatch(decreaseProductQty({ id, quantity: 1 }));
   };
 
-  /** Applies the entered quantity; invalid / 0 removes the item with undo. */
+  /**
+   * commit — applies the entered quantity; invalid or zero removes the item with undo.
+   *
+   * @returns {void}
+   */
   const commit = () => {
     const parsed = parseInt(value, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {

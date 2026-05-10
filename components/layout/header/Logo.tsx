@@ -3,7 +3,11 @@ import type { JSX } from 'react';
 
 import LogoIcon from '../../shared/LogoIcon';
 
-/** Header logo. */
+/**
+ * Logo — header logo linking to the home page.
+ *
+ * @returns {JSX.Element} JSX of the header logo link.
+ */
 const Logo = (): JSX.Element => {
   return (
     <Link

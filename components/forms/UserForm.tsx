@@ -28,7 +28,7 @@ export type InputValue = {
  * UserForm — user profile edit form. Pulls the form schema by marker `user_form`,
  * pre-fills fields from the current authenticated user, and submits updated state.
  *
- * @returns JSX of the profile edit form (or auth gate when unauthenticated).
+ * @returns {JSX.Element} JSX of the profile edit form (or auth gate when unauthenticated).
  */
 const UserForm = (): JSX.Element => {
   const t = useT();

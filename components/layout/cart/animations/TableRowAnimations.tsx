@@ -7,7 +7,15 @@ import { useRef } from 'react';
 
 import type { AnimationsProps } from '@/app/types/global';
 
-/** Table row animations. */
+/**
+ * TableRowAnimations — slide-up reveal for cart table rows (per-row stagger driven by `index`).
+ *
+ * @param   {AnimationsProps} props           - Component props.
+ * @param   {ReactNode}       props.children  - Row content.
+ * @param   {string}          props.className - Class merged onto the wrapping `<div>`.
+ * @param   {number}          props.index     - Row index used to compute the stagger delay.
+ * @returns {JSX.Element} JSX wrapper around the row content.
+ */
 const TableRowAnimations = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);
 

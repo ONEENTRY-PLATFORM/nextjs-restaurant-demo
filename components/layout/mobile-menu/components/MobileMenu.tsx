@@ -2,7 +2,15 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import MobileMenuItem from './MobileMenuItem';
 
-/** Mobile menu list. */
+/**
+ * MobileMenu — recursive mobile-menu list (renders nothing for trivially short lists).
+ *
+ * @param   {object}        props             - Component props.
+ * @param   {IMenusPages[]} props.menu        - Nested menu items.
+ * @param   {string}        [props.className] - Wrapper class merged onto the `<ul>`.
+ * @param   {string}        [props.parentUrl] - Optional parent URL prepended to child links.
+ * @returns {JSX.Element | null} JSX of the menu list, or `null` when there is at most one item.
+ */
 function MobileMenu({
   menu,
   className = '',

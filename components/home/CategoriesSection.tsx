@@ -16,8 +16,15 @@ type CategoriesSectionProps = {
 
 /**
  * CategoriesSection — homepage category section with title, "View all" link and product grid.
- * @param   {CategoriesSectionProps} props - Props.
- * @returns {JSX.Element}                  Section JSX.
+ *
+ * @param   {CategoriesSectionProps} props                - Component props.
+ * @param   {string}                 props.title          - Section heading.
+ * @param   {string}                 props.categoryMarker - Category page handle used for the "View all" link.
+ * @param   {IProductsEntity[]}      props.products       - Products to render in the section grid.
+ * @param   {number}                 props.total          - Total number of products in the category (rendered next to "View all").
+ * @param   {number}                 [props.limit]        - Page-size hint passed to the inner products grid (defaults to 8).
+ * @param   {string}                 [props.className]    - Optional class merged onto the wrapping `<section>` (currently unused).
+ * @returns {JSX.Element} JSX of the homepage category section.
  */
 const CategoriesSection = ({
   title,

@@ -7,12 +7,13 @@ type Phase = 'show' | 'fading' | 'gone';
 
 /**
  * ProductsGridReveal — cross-fades the skeleton overlay into the real grid content.
- * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - The real grid content.
- * @param   {ReactNode}   props.skeleton - Skeleton/loader for the overlay.
- * @param   {number}      [props.holdMs] - Time before fade starts. Defaults to 0.
- * @param   {number}      [props.fadeMs] - Cross-fade duration. Defaults to 700.
- * @returns {JSX.Element}                Wrapper JSX.
+ *
+ * @param   {object}      props            - Component props.
+ * @param   {ReactNode}   props.children   - The real grid content underneath the overlay.
+ * @param   {ReactNode}   props.skeleton   - Skeleton/loader rendered as the overlay.
+ * @param   {number}      [props.holdMs]   - Time before the fade starts (defaults to 40).
+ * @param   {number}      [props.fadeMs]   - Cross-fade duration (defaults to 500).
+ * @returns {JSX.Element} JSX wrapper that orchestrates the overlay opacity transition.
  */
 const ProductsGridReveal = ({
   children,

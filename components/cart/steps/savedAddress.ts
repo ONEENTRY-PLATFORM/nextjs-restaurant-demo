@@ -9,7 +9,12 @@ export type SavedAddress = {
 };
 
 /**
- * Reads saved addresses from `user_address`. OneEntry stores the value as an array or a JSON string — both are supported.
+ * parseSavedAddresses — reads saved addresses from `user_address`.
+ *
+ * OneEntry stores the value as an array or a JSON string — both are supported.
+ *
+ * @param   {ReadonlyArray<FormDataType> | undefined} formData - User formData array.
+ * @returns {SavedAddress[]}                                     Parsed list of `SavedAddress` items (empty on parse failure or unexpected shape).
  */
 export const parseSavedAddresses = (
   formData: ReadonlyArray<FormDataType> | undefined
@@ -33,12 +38,23 @@ export const parseSavedAddresses = (
   );
 };
 
+/**
+ * pickSelectedAddress — picks the address marked `selected`, falling back to the first item.
+ *
+ * @param   {ReadonlyArray<SavedAddress>} list - Saved address list.
+ * @returns {SavedAddress | null}                Selected `SavedAddress`, or `null` when the list is empty.
+ */
 export const pickSelectedAddress = (list: ReadonlyArray<SavedAddress>): SavedAddress | null => {
   if (list.length === 0) return null;
   return list.find(a => a.selected) ?? list[0] ?? null;
 };
 
-/** "Main str., 12, fl. 3" — skips empty fields. */
+/**
+ * formatAddressLine — formats a `SavedAddress` as "Main str., 12, fl. 3" (empty fields are skipped).
+ *
+ * @param   {SavedAddress | null} a - Saved address (or `null`).
+ * @returns {string}                  One-line display string (empty when `a` is `null`).
+ */
 export const formatAddressLine = (a: SavedAddress | null): string => {
   if (!a) return '';
   const parts = [a.street && `${a.street} str.`, a.house, a.floor && `fl. ${a.floor}`].filter(

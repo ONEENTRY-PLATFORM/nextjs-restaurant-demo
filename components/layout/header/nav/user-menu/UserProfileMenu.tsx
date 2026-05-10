@@ -11,7 +11,13 @@ import ProfileMenuAnimations from '../../animations/ProfileMenuAnimations';
 import LogoutMenuItem from './LogoutMenuItem';
 import UserMenuItem from './UserMenuItem';
 
-/** User profile menu. */
+/**
+ * UserProfileMenu — desktop profile dropdown with hover-reveal animation; renders `UserMenuItem` rows + `LogoutMenuItem`.
+ *
+ * @param   {object}        props          - Component props.
+ * @param   {IMenusEntity}  props.userMenu - OneEntry menu entity that supplies the dropdown items.
+ * @returns {JSX.Element} JSX of the profile button with attached dropdown menu.
+ */
 const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 

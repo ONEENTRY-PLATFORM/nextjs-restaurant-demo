@@ -34,7 +34,13 @@ type DayCell = {
   iso: string;
 };
 
-/** Builds a rectangular 6Ã—7 day grid for the month, padded with tails of neighboring months. */
+/**
+ * buildMonthGrid — builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months.
+ *
+ * @param   {number} year  - Calendar year.
+ * @param   {number} month - Zero-based month index.
+ * @returns {DayCell[]} Array of 42 day cells (previous-month tail + current month + next-month head).
+ */
 const buildMonthGrid = (year: number, month: number): DayCell[] => {
   const first = new Date(year, month, 1);
   const firstDow = (first.getDay() + 6) % 7;
@@ -73,6 +79,12 @@ const buildMonthGrid = (year: number, month: number): DayCell[] => {
   return cells;
 };
 
+/**
+ * formatHour — formats a 24h hour as `HH.00`.
+ *
+ * @param   {number} h - Hour (0–23).
+ * @returns {string} Slot label string.
+ */
 const formatHour = (h: number): string => `${String(h).padStart(2, '0')}.00`;
 
 type DateTimePickerSheetProps = {
@@ -92,8 +104,25 @@ type DateTimePickerSheetProps = {
 };
 
 /**
- * DateTimePickerSheet - two-step bottom-sheet/modal for selecting date and time.
- * Step 1 - calendar, Step 2 - time-slot grid; `Apply` invokes `onApply(date, time)`.
+ * DateTimePickerSheet — two-step bottom-sheet / modal for selecting date and time.
+ *
+ * Step 1 — calendar, Step 2 — time-slot grid. `Apply` invokes `onApply(date, time)`.
+ *
+ * @param   {DateTimePickerSheetProps}             props                - Component props.
+ * @param   {string}                               [props.date]         - Initially selected date in `yyyy-MM-dd`.
+ * @param   {string}                               [props.time]         - Initially selected time in `HH.MM`.
+ * @param   {(date: string, time: string) => void} props.onApply        - Apply handler called with the chosen `(date, time)`.
+ * @param   {() => void}                           [props.onClose]      - Optional close handler (no close button when omitted).
+ * @param   {string}                               [props.minDate]      - Optional minimum allowed date in `yyyy-MM-dd`.
+ * @param   {(dateIso: string) => string[]}        [props.getSlots]     - Optional function returning available slot labels for a given date.
+ * @param   {[number, number]}                     [props.range]        - Hour range used when `getSlots` is not provided.
+ * @param   {1 | 2}                                [props.step]         - Hour step used when `getSlots` is not provided.
+ * @param   {string}                               [props.dateTitle]    - Title shown on the date step.
+ * @param   {string}                               [props.timeTitle]    - Title shown on the time step.
+ * @param   {string}                               [props.applyText]    - Apply button label.
+ * @param   {string}                               [props.continueText] - Continue button label.
+ * @param   {string}                               [props.noTimeText]   - Empty-state text shown when no slots are available.
+ * @returns {JSX.Element | null} Portal JSX rendered into `document.body`, or `null` until mounted.
  */
 const DateTimePickerSheet = ({
   date,
@@ -244,7 +273,15 @@ const DateTimePickerSheet = ({
             {isDateStep ? dateTitle : timeTitle}
           </h2>
           {onClose ? (
-            <ClosePopupButton onClose={handleClose} ariaLabel="Close date and time picker" />
+            <>
+              {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
+              <ClosePopupButton
+                onClose={handleClose}
+                ariaLabel="Close date and time picker"
+                className="max-md:hidden"
+              />
+              <span aria-hidden="true" className="size-11.5 md:hidden" />
+            </>
           ) : (
             <span className="h-5 w-5" aria-hidden="true" />
           )}

@@ -12,9 +12,20 @@ const SWIPE_THRESHOLD_PX = 40;
 const DIRECTION_LOCK_PX = 8;
 
 /**
- * RestaurantPhotoSlider - restaurant photo slider with dot indicators, swipe and autoplay.
+ * RestaurantPhotoSlider — restaurant photo slider with dot indicators, swipe, and autoplay.
+ *
  * If `onImageClick` is provided, dots are rendered as a sibling to avoid `<button>` inside `<button>`.
  * Pass `autoplayMs={null}` to disable autoplay.
+ *
+ * @param   {object}        props                    - Component props.
+ * @param   {Photo[]}       props.photos             - List of photos with `downloadLink` URLs.
+ * @param   {string}        props.alt                - Accessible alt text used for the active slide.
+ * @param   {string}        [props.frameClassName]   - Aspect-ratio class applied to the slider frame.
+ * @param   {string}        [props.sizes]            - `<Image sizes>` directive for the slides.
+ * @param   {boolean}       [props.priority]         - When `true`, the first slide is loaded with `priority`.
+ * @param   {() => void}    [props.onImageClick]     - When provided, the frame becomes a `<button>` opening the lightbox.
+ * @param   {number | null} [props.autoplayMs]       - Autoplay interval in ms (`null` disables autoplay).
+ * @returns {JSX.Element} JSX of the slider with optional dot tablist.
  */
 const RestaurantPhotoSlider = ({
   photos,
@@ -103,7 +114,7 @@ const RestaurantPhotoSlider = ({
       target.releasePointerCapture(s.pointerId);
     }
     if (s.locked && s.moved > SWIPE_THRESHOLD_PX && total > 0) {
-      // Swipe right (direction = 1) â†’ previous slide; left â†’ next.
+      // Swipe right (direction = 1) -> previous slide; left -> next.
       const delta = s.direction === 1 ? -1 : 1;
       setActive(i => (i + delta + total) % total);
     }

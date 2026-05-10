@@ -13,7 +13,12 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import CloseModal from './components/CloseModal';
 import ModalBackdrop from './components/ModalBackdrop';
 
-/** Modal title resolved by form component name. */
+/**
+ * useTitleData — resolves the modal title from the active form component name.
+ *
+ * @param   {string} component - Active form component identifier (e.g. `SignInForm`, `CalendarForm`).
+ * @returns {string} Localized title string for the modal header.
+ */
 const useTitleData = (component: string): string => {
   const t = useT();
   const titlesData: Record<string, string> = {
@@ -37,7 +42,11 @@ const AUTH_FLOW_SUB_STEPS = new Set([
   'VerificationForm',
 ]);
 
-/** Modal - popup for auth / calendar forms. */
+/**
+ * Modal — popup container for auth / calendar forms driven by {@link OpenDrawerContext}.
+ *
+ * @returns {JSX.Element} JSX of the centered modal (with mobile bottom-sheet behaviour) rendering the active form.
+ */
 const Modal = (): JSX.Element => {
   const { component, setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);
 
@@ -87,7 +96,9 @@ const Modal = (): JSX.Element => {
             <div className="size-7" />
           )}
           <p className="font-semibold text-2xl text-brand">{title}</p>
-          <CloseModal />
+          {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
+          <CloseModal className="max-md:hidden" />
+          <span aria-hidden="true" className="size-12.5 md:hidden" />
         </header>
         <Form className={''} isActive={true} />
       </div>

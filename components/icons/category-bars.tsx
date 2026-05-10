@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * CategoryBarsIcon — orange "category list" bars icon used in the categories scroller.
+ *
+ * @returns {JSX.Element} JSX of the category-bars SVG.
+ */
 const CategoryBarsIcon = (): JSX.Element => {
   return (
     <svg

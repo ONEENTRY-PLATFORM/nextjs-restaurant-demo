@@ -18,8 +18,14 @@ import RestaurantPhotoSlider from './RestaurantPhotoSlider';
 type Photo = { downloadLink?: string };
 
 /**
- * RestaurantPhotoGallery - single-restaurant gallery with a lightbox.
+ * RestaurantPhotoGallery — single-restaurant gallery with a lightbox.
+ *
  * Mobile: horizontal slider via {@link RestaurantPhotoSlider}; tap opens the lightbox.
+ *
+ * @param   {object}      props        - Component props.
+ * @param   {Photo[]}     props.photos - List of photos with `downloadLink` URLs.
+ * @param   {string}      props.alt    - Accessible alt text used for the main image and slides.
+ * @returns {JSX.Element} JSX of the gallery (mobile slider + desktop main+thumbnails + lightbox).
  */
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);
@@ -186,7 +192,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       target.releasePointerCapture(e.pointerId);
     }
     if (s.moved > MAIN_DRAG_THRESHOLD_PX && total > 0) {
-      // Up â†’ next, down â†’ previous. Cyclic.
+      // Up -> next, down -> previous. Cyclic.
       const delta = s.direction === -1 ? 1 : -1;
       setActive(i => (i + delta + total) % total);
     }

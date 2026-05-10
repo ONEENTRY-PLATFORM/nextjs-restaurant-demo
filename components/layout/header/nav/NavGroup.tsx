@@ -14,6 +14,8 @@ import NavItemProfile from './NavItemProfile';
  * NavGroup — top navigation group (Home/Cart/Favorites/Profile + generic items from the `user_menu` CMS menu).
  *
  * Fallback: if the menu did not load, render the default icon set.
+ *
+ * @returns {Promise<JSX.Element>} JSX of the top navigation icon row.
  */
 const NavGroup = async (): Promise<JSX.Element> => {
   const { menu } = await getMenuByMarker('user_menu');
@@ -39,6 +41,12 @@ const NavGroup = async (): Promise<JSX.Element> => {
   );
 };
 
+/**
+ * renderItem — dispatches a single menu page to the right nav-item component.
+ *
+ * @param   {IMenusPages} page - OneEntry menu page entity.
+ * @returns {JSX.Element | null} JSX for the matching nav item, or `null` when the page is unknown.
+ */
 const renderItem = (page: IMenusPages): JSX.Element | null => {
   switch (page.pageUrl) {
     case 'home_web':
@@ -65,7 +73,13 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
   }
 };
 
-/** Generic top-menu link — icon from `attributeValues.menu_icon`. */
+/**
+ * NavGenericIcon — generic top-menu link rendering the icon from `attributeValues.menu_icon`.
+ *
+ * @param   {object}      props      - Component props.
+ * @param   {IMenusPages} props.page - OneEntry menu page entity (only `menu_icon` and `pageUrl` are read).
+ * @returns {JSX.Element | null} JSX of the generic nav link, or `null` when no icon is configured.
+ */
 const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
   // SDK types `menu_icon.value` as `{}`, but for an image it actually arrives as `{ downloadLink, ... }`.
   const icon = page.attributeValues?.menu_icon as

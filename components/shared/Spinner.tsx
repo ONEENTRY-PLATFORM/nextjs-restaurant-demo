@@ -1,6 +1,10 @@
 import type { JSX } from 'react';
 
-/** Spinner — spinning loading indicator. */
+/**
+ * Spinner — spinning loading indicator (24×24 brand-coloured dot ring).
+ *
+ * @returns {JSX.Element} JSX of the spinner SVG centred over its parent.
+ */
 const Spinner = (): JSX.Element => {
   return (
     <div className="absolute left-[calc(50%-12px)] top-[calc(50%-12px)] aspect-square size-full overflow-hidden">

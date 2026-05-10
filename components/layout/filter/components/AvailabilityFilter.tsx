@@ -4,7 +4,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-/** Product availability filter. */
+/**
+ * AvailabilityFilter — toggle that adds/removes the `in_stock` URL search param.
+ *
+ * @param   {object}      props         - Component props.
+ * @param   {string}      [props.title] - Label displayed next to the toggle.
+ * @returns {JSX.Element} JSX of the availability toggle row.
+ */
 const AvailabilityFilter = ({ title }: { title?: string }): JSX.Element => {
   const pathname = usePathname();
   const { replace } = useRouter();

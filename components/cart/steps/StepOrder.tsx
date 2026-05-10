@@ -25,7 +25,11 @@ type CartEntry = {
   selected?: boolean;
 };
 
-/** StepOrder - checkout step: items + promo code + summary + APPLY â†’ `payment`. */
+/**
+ * StepOrder — checkout step: items + promo code + summary + APPLY → `payment`.
+ *
+ * @returns {JSX.Element} JSX of the order step body.
+ */
 const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -97,7 +101,7 @@ const StepOrder = (): JSX.Element => {
     { scope: containerRef, dependencies: [items.length] }
   );
 
-  // Reverse animation on route leave: paused timeline + play() strictly on the 'none' â†’ 'leaving' transition.
+  // Reverse animation on route leave: paused timeline + play() strictly on the 'none' -> 'leaving' transition.
   useGSAP(() => {
     const tl = gsap.timeline({ paused: true });
 
@@ -206,7 +210,7 @@ const StepOrder = (): JSX.Element => {
             className="h-8 w-1/3 rounded-card border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
           >
             {isLoading
-              ? 'Applyingâ€¦'
+              ? 'Applying'
               : appliedCoupon && appliedCoupon.code === promoCode.trim()
                 ? 'Remove'
                 : 'Apply Code'}
@@ -237,7 +241,7 @@ const StepOrder = (): JSX.Element => {
         {discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
-            <p>âˆ’{UsePrice({ amount: discount })}</p>
+            <p>{UsePrice({ amount: discount })}</p>
           </div>
         ) : null}
         <div className="flex gap-1.25 text-white">

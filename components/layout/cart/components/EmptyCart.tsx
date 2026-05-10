@@ -4,7 +4,11 @@ import type { JSX } from 'react';
 
 import FadeTransition from '@/app/animations/FadeTransition';
 
-/** Empty cart state. */
+/**
+ * EmptyCart — empty-state shown when the cart has no products (icon + heading + go-to-shop link).
+ *
+ * @returns {JSX.Element} JSX of the empty cart fade-in card.
+ */
 const EmptyCart = (): JSX.Element => {
   return (
     <FadeTransition

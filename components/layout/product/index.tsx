@@ -18,15 +18,16 @@ type DishProduct = IProductsEntity & {
 };
 
 /**
- * ProductSingle - single product page (cover + details + reviews + related).
- * @param   {object}      props         - Component props.
- * @param   {DishProduct} props.product - OneEntry product entity with blocks/productPages.
- * @returns {Promise<JSX.Element>}      Product page JSX.
+ * ProductSingle — single product page (cover + details + reviews + related).
+ *
+ * @param   {object}        props         - Component props.
+ * @param   {DishProduct}   props.product - OneEntry product entity with `blocks` / `productPages`.
+ * @returns {Promise<JSX.Element>} JSX of the product page.
  */
 const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages, attributeValues } = product;
 
-  // Parse "menu/desserts" â†’ "desserts"
+  // Parse "menu/desserts" -> "desserts"
   const categoryPath = productPages?.[0]?.categoryPath ?? '';
   const categorySlug = categoryPath.split('/').pop() ?? '';
   const categoryLabel = categorySlug
@@ -91,7 +92,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
         </ProductAnimations>
       </div>
 
-      {/* blocks â†’ bulk-purchase offer ("multiply_items_offer") */}
+      {/* blocks -> bulk-purchase offer ("multiply_items_offer") */}
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {

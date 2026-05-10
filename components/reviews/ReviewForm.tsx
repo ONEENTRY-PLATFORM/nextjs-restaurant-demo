@@ -18,7 +18,12 @@ const FORM_MODULE_CONFIG_ID = 2;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
-/** Resolves the display name for the signed-in user. */
+/**
+ * resolveAuthorName — resolves the display name for the signed-in user (name → email → identifier).
+ *
+ * @param   {{ identifier?: string; formData?: unknown }} user - OneEntry user entity (only `identifier` and `formData` are read).
+ * @returns {string}                                              Display name string (empty when nothing is available).
+ */
 const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): string => {
   const formData = Array.isArray(user.formData)
     ? (user.formData as Array<{ marker?: unknown; value?: unknown }>)
@@ -31,11 +36,12 @@ const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): s
 };
 
 /**
- * ReviewForm - product review form (star rating + text).
- * @param   {object}      props             - Props.
- * @param   {number}      props.productId   - Product ID the review is attached to.
- * @param   {boolean}     [props.hideTitle] - Do not render the heading if the parent already has one.
- * @returns {JSX.Element}                   Review form JSX.
+ * ReviewForm — product review form (star rating + text).
+ *
+ * @param   {object}  props             - Component props.
+ * @param   {number}  props.productId   - Product id the review is attached to.
+ * @param   {boolean} [props.hideTitle] - When `true`, suppress the heading (the parent already has one).
+ * @returns {JSX.Element}                 JSX of the review form (or sign-in gate when unauthenticated).
  */
 const ReviewForm = ({
   productId,
@@ -98,7 +104,7 @@ const ReviewForm = ({
         {
           marker: TEXT_MARKER,
           type: 'text',
-          // OneEntry: Â«Only one of htmlValue, plainValue or mdValue can be providedÂ».
+          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
           value: [{ plainValue: text.trim() }],
         },
       ];

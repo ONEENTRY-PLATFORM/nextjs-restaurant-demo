@@ -5,7 +5,16 @@ import { gsap } from 'gsap';
 import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
 import { useRef } from 'react';
 
-/** Profile menu animations driven by state changes. */
+/**
+ * ProfileMenuAnimations — open/close animation wrapper for the desktop profile dropdown.
+ *
+ * @param   {object}                          props           - Component props.
+ * @param   {ReactNode}                       props.children  - Menu content to reveal.
+ * @param   {string}                          props.className - Class merged onto the animated wrapper.
+ * @param   {boolean}                         props.state     - Whether the menu should be open.
+ * @param   {Dispatch<SetStateAction<boolean>>} props.setState  - Setter used by `onMouseLeave` to close the menu.
+ * @returns {JSX.Element} JSX wrapper that animates open/close based on `state`.
+ */
 const ProfileMenuAnimations = ({
   children,
   className,

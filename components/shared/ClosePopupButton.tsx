@@ -6,11 +6,12 @@ import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
 
 /**
  * ClosePopupButton — shared "X" close button in the corner of every popup.
- * @param   {object}      props             - Props.
- * @param   {() => void}  props.onClose     - Click handler.
- * @param   {string}      [props.ariaLabel] - Accessible label, defaults to `'Close'`.
- * @param   {string}      [props.className] - Additional utility classes.
- * @returns {JSX.Element}                   Button JSX.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {() => void}  props.onClose     - Click handler that closes the popup.
+ * @param   {string}      [props.ariaLabel] - Accessible label (defaults to `'Close'`).
+ * @param   {string}      [props.className] - Additional utility classes merged onto the button.
+ * @returns {JSX.Element} JSX of the rounded close button with hover-to-brand border.
  */
 const ClosePopupButton = ({
   onClose,

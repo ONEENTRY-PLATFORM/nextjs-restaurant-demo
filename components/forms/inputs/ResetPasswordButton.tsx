@@ -5,7 +5,13 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Password reset button. */
+/**
+ * ResetPasswordButton — text-style button that opens the popup with `ForgotPasswordForm`.
+ *
+ * @param   {object} props       - Component props.
+ * @param   {string} props.title - Button label.
+ * @returns {JSX.Element}          JSX of the underlined reset-password button.
+ */
 const ResetPasswordButton = ({ title }: { title: string }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
 

@@ -8,7 +8,13 @@ import { addData } from '@/app/store/reducers/OrderSlice';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 
-/** Address row. */
+/**
+ * AddressRow — delivery-table row for the address text input; mirrors changes into the order draft.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      props.placeholder - Placeholder/label text for the address input.
+ * @returns {JSX.Element} JSX of the address row.
+ */
 const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);

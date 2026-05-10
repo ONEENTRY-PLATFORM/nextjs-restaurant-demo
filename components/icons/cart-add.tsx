@@ -1,5 +1,12 @@
 import type { JSX } from 'react';
 
+/**
+ * CartAddIcon — "add to cart" icon used inside product-card add buttons.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      [props.className] - Additional className merged onto the SVG.
+ * @returns {JSX.Element} JSX of the add-to-cart SVG.
+ */
 const CartAddIcon = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg

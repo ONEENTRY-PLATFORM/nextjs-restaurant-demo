@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * CloseXIcon — orange "close" cross icon used in modal/drawer close buttons.
+ *
+ * @returns {JSX.Element} JSX of the close-cross SVG.
+ */
 const CloseXIcon = (): JSX.Element => {
   return (
     <svg

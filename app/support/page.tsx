@@ -10,7 +10,8 @@ export const dynamic = 'force-dynamic';
 
 /**
  * SupportPage — support page (CMS title/description/contacts + Contact-Us form).
- * @returns {Promise<JSX.Element>} JSX of the support page.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the support page (heading, contact CTA cards, contact form).
  */
 const SupportPage = async (): Promise<JSX.Element> => {
   const [{ page }, formRes, dict] = await Promise.all([
@@ -93,7 +94,11 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
 export default SupportPage;
 
-/** generateMetadata - support page metadata. */
+/**
+ * generateMetadata — support page metadata (CMS title with dictionary fallbacks).
+ *
+ * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ */
 export async function generateMetadata(): Promise<Metadata> {
   const [{ page }, dict] = await Promise.all([getPageByUrl('support'), getDictionary()]);
   const title =

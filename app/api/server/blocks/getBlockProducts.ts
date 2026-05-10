@@ -24,8 +24,9 @@ export interface BlockProducts {
  *
  * The order in `products` is the one set by the editor (drag-and-drop in admin) — do not re-sort.
  * On any SDK error returns empty `products`, so callers can render conditionally without try/catch.
+ *
  * @param   {string}                marker - Block marker (e.g. `recommended`).
- * @returns {Promise<BlockProducts>}        Normalised block data.
+ * @returns {Promise<BlockProducts>}          Normalised block data.
  */
 export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
   try {

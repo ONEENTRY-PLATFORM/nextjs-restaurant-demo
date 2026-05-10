@@ -15,7 +15,12 @@ import {
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 
-/** Formats a date as `dd.MM.yy HH.mm` (for the "Get delivery by: â€¦" stamp). */
+/**
+ * formatDeliveryStamp — formats a date as `dd.MM.yy HH.mm` (for the "Get delivery by: …" stamp).
+ *
+ * @param   {Date}   d - Date to format.
+ * @returns {string}     Formatted stamp string.
+ */
 const formatDeliveryStamp = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(d.getFullYear()).slice(
@@ -24,9 +29,11 @@ const formatDeliveryStamp = (d: Date): string => {
 };
 
 /**
- * StepResult - final wizard screen: success or error.
- * @param {object}              props         - Props.
- * @param {'success' | 'error'} props.variant - Which screen to render.
+ * StepResult — final wizard screen: success or error.
+ *
+ * @param   {object}                   props         - Component props.
+ * @param   {'success' | 'error'}      props.variant - Which screen to render.
+ * @returns {JSX.Element}                              JSX of the success or error screen.
  */
 const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -38,7 +45,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     product?: IProductsEntity;
   }>;
   // Capture `Date.now()` in the initial state - render stays pure, the stamp is stable for the lifetime of the component.
-  const orderNumber = lastOrderId ? 'â„–' + lastOrderId : '';
+  const orderNumber = lastOrderId ? '–' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000))
   );

@@ -27,12 +27,25 @@ const PAYMENT_ROW_SELECTOR = '.step-payment-row';
 const ADDRESS_MARKERS = ['address_reg', 'address', 'delivery_address'] as const;
 const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
 
+/**
+ * formatScheduleAt — formats a `yyyy-MM-dd` + `HH.MM` pair as `DD.MM.YY HH.MM`.
+ *
+ * @param   {string} dateIso - Date in `yyyy-MM-dd`.
+ * @param   {string} time    - Time in `HH.MM`.
+ * @returns {string}           Formatted display string (empty when inputs are missing).
+ */
 const formatScheduleAt = (dateIso: string, time: string): string => {
   const [yyyy, mm, dd] = dateIso.split('-');
   if (!yyyy || !mm || !dd || !time) return '';
   return `${dd}.${mm}.${yyyy.slice(2)} ${time}`;
 };
 
+/**
+ * parseScheduleAt — parses a `DD.MM.YY HH.MM` string back into `{ date, time }`.
+ *
+ * @param   {string} raw - Input string.
+ * @returns {{ date: string; time: string }}      `{ date, time }` (`{ '', '' }` on parse failure).
+ */
 const parseScheduleAt = (raw: string): { date: string; time: string } => {
   const m = raw.match(/^(\d{2})\.(\d{2})\.(\d{2})\s+(\d{2}\.\d{2})$/);
   if (!m) return { date: '', time: '' };
@@ -43,8 +56,14 @@ const parseScheduleAt = (raw: string): { date: string; time: string } => {
 const ASAP_INTERVAL_MIN = 45;
 
 /**
- * Value of `delivery_time` (type `timeInterval`) - `[[startISO, endISO]]`.
- * asap: now â†’ now+45 min; scheduled (`DD.MM.YY HH.MM`): parsed â†’ +1 h. null if scheduled does not parse - the field is not sent.
+ * buildDeliveryTimeInterval — value of `delivery_time` (type `timeInterval`) as `[[startISO, endISO]]`.
+ *
+ * `asap`: now → now+45 min; `scheduled` (`DD.MM.YY HH.MM`): parsed → +1 h. Returns `null` when the
+ * scheduled string does not parse — the caller skips dispatching the field.
+ *
+ * @param   {DeliveryMode} mode         - Delivery mode (`asap` | `scheduled`).
+ * @param   {string}       scheduledRaw - Raw `DD.MM.YY HH.MM` schedule string when `mode === 'scheduled'`.
+ * @returns {[[string, string]] | null}                  `[[startISO, endISO]]` interval, or `null` when the input cannot be parsed.
  */
 const buildDeliveryTimeInterval = (
   mode: DeliveryMode,
@@ -66,6 +85,13 @@ const buildDeliveryTimeInterval = (
   return [[start.toISOString(), end.toISOString()]];
 };
 
+/**
+ * findUserField — finds the first non-empty string value among the candidate markers in `user.formData`.
+ *
+ * @param   {ReadonlyArray<FormDataType> | undefined} formData - User formData array.
+ * @param   {readonly string[]}                       markers  - Candidate markers to probe in order.
+ * @returns {string}                                             First matching string value, or empty string when nothing is found.
+ */
 const findUserField = (
   formData: ReadonlyArray<FormDataType> | undefined,
   markers: readonly string[]
@@ -82,7 +108,11 @@ const findUserField = (
 
 type DeliveryMode = 'asap' | 'scheduled';
 
-/** StepPayment - checkout step: address + time + payment on a single screen. */
+/**
+ * StepPayment — checkout step: address + time + payment on a single screen.
+ *
+ * @returns {JSX.Element} JSX of the payment step body.
+ */
 const StepPayment = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -290,7 +320,7 @@ const StepPayment = (): JSX.Element => {
         </div>
 
         {isAccountsLoading ? (
-          <p className="text-paper/70">Loading payment methodsâ€¦</p>
+          <p className="text-paper/70">Loading payment methods</p>
         ) : accounts.length === 0 ? (
           <p className="text-paper/70">
             No payment methods are configured. Please contact support.
@@ -369,7 +399,15 @@ const StepPayment = (): JSX.Element => {
   );
 };
 
-/** PaymentMethodOption - radio card for a single payment account. */
+/**
+ * PaymentMethodOption — radio card for a single payment account.
+ *
+ * @param   {object}          props          - Component props.
+ * @param   {IAccountsEntity} props.account  - OneEntry payment account entity.
+ * @param   {boolean}         props.checked  - Whether the row is currently selected.
+ * @param   {() => void}      props.onSelect - Selection callback invoked on radio change.
+ * @returns {JSX.Element}                      JSX of the payment method radio row.
+ */
 const PaymentMethodOption = ({
   account,
   checked,

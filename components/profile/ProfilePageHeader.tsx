@@ -20,6 +20,11 @@ const PAGE_META: Record<string, Meta> = {
   '/profile/bookings': { title: 'Active reservation', trail: [PROFILE_CRUMB] },
 };
 
+/**
+ * ProfilePageHeader — breadcrumbs + title for `/profile/**` pages, route-aware via `usePathname`.
+ *
+ * @returns {JSX.Element} JSX of the profile page header.
+ */
 const ProfilePageHeader = (): JSX.Element => {
   const pathname = usePathname();
   const meta: Meta = PAGE_META[pathname] ?? { title: 'My Account' };

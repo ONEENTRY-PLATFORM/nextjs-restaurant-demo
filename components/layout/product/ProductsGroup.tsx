@@ -6,7 +6,13 @@ import { getBlockByMarker } from '@/app/api';
 import ProductAnimations from './animations/ProductAnimations';
 import GroupCard from './group-card/GroupCard';
 
-/** ProductsGroup — "buy together" section based on a OneEntry block. */
+/**
+ * ProductsGroup — "buy together" section rendered from a OneEntry block by marker.
+ *
+ * @param   {object}      props        - Component props.
+ * @param   {string}      props.marker - Block marker that supplies the title and product list.
+ * @returns {Promise<JSX.Element>} JSX of the section, or empty fragment on SDK error.
+ */
 const ProductsGroup = async ({ marker }: { marker: string }): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);
 

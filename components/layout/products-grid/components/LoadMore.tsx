@@ -10,7 +10,13 @@ import { useCallback } from 'react';
 
 import Spinner from '@/components/shared/Spinner';
 
-/** LoadMore — auto-loads the next page via ScrollTrigger. */
+/**
+ * LoadMore — auto-loads the next page via ScrollTrigger (also clickable as a manual trigger).
+ *
+ * @param   {object}      props            - Component props.
+ * @param   {number}      props.totalPages - Total number of pages; the component stops loading when reached.
+ * @returns {JSX.Element} JSX of the spinner/button that drives the next-page navigation.
+ */
 const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();
   const searchParams = useSearchParams();

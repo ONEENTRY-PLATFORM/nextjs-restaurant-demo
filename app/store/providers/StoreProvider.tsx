@@ -8,11 +8,11 @@ import { persistStore } from 'redux-persist';
 import { setupStore } from '../store';
 
 /**
- * StoreProvider — Redux store provider.
+ * StoreProvider — Redux store provider with a per-render `setupStore()` and `persistStore` rehydration.
  *
  * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Child ReactNode.
- * @returns {JSX.Element}                JSX provider.
+ * @param   {ReactNode}   props.children - Subtree that consumes the Redux store.
+ * @returns {JSX.Element}                JSX `<Provider>` wrapping children with the Redux store.
  */
 export default function StoreProvider({ children }: { children: ReactNode }): JSX.Element {
   const [store] = useState(() => {

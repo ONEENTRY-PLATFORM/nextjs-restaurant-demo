@@ -7,6 +7,11 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import ProfileSections from '@/components/profile/ProfileSections';
 
+/**
+ * ProfilePageClient — client-side renderer for the profile data section (auth-gated).
+ *
+ * @returns {JSX.Element} JSX of the loading state, sign-in prompt, or the authenticated profile sections.
+ */
 const ProfilePageClient = (): JSX.Element => {
   const t = useT();
   const { isAuth, isLoading } = useContext(AuthContext);

@@ -7,6 +7,11 @@ import { useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import CartIcon from '@/components/icons/cart';
 
+/**
+ * NavItemCart — desktop header cart link with a count badge that hydrates only on the client.
+ *
+ * @returns {JSX.Element} JSX of the cart link.
+ */
 const NavItemCart = (): JSX.Element => {
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;
   const count = items?.length ?? 0;

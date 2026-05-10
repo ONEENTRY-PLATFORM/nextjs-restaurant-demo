@@ -4,7 +4,11 @@ import { useGSAP } from '@gsap/react';
 import { useTransitionState } from 'next-transition-router';
 import { useState } from 'react';
 
-/** useStage — returns the global stage data (`play` / `enter` / `leave`). */
+/**
+ * useStage — returns the global stage data (`play` / `enter` / `leave`) derived from `next-transition-router`.
+ *
+ * @returns {{ stage: string; stageData: { stage: string; prevStage: string } }} Current normalized stage plus the raw stage/prevStage for diagnostics.
+ */
 const useStage = () => {
   const { stage } = useTransitionState();
 

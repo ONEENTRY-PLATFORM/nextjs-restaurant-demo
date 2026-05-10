@@ -3,7 +3,15 @@ import type { JSX } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
-/** IncreaseButton — "+" button for QuantitySelector. */
+/**
+ * IncreaseButton — "+" button for `QuantitySelector` capped at `units`.
+ *
+ * @param   {object}      props       - Component props.
+ * @param   {number}      props.id    - Cart product id to increment.
+ * @param   {number}      props.qty   - Current quantity (renders empty when below 1).
+ * @param   {number}      props.units - Maximum allowed units (cap respected by the reducer).
+ * @returns {JSX.Element} JSX of the round increment button.
+ */
 const IncreaseButton = ({
   id,
   qty,

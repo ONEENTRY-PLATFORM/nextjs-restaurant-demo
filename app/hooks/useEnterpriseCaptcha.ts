@@ -23,9 +23,10 @@ export interface CaptchaValidationObject {
  * subscribes to `load`, fires `ready` → `execute`, and removes the
  * subscription on unmount. If `siteKey` is empty it does nothing and
  * returns `null`.
- * @param   {string} siteKey - Public Google reCAPTCHA Enterprise key (settings.captcha.key on the spam field).
- * @param   {string} action  - Action used for scoring (defaults to `'login'`; in OneEntry — settings.captcha.action).
- * @returns {CaptchaValidationObject | null} `{ event: { token, siteKey } }` after a successful `execute`, otherwise `null`.
+ *
+ * @param   {string | undefined}                 siteKey - Public Google reCAPTCHA Enterprise key (settings.captcha.key on the spam field).
+ * @param   {string}                             action  - Action used for scoring (defaults to `'login'`; in OneEntry — settings.captcha.action).
+ * @returns {CaptchaValidationObject | null}             `{ event: { token, siteKey } }` after a successful `execute`, otherwise `null`.
  */
 export function useEnterpriseCaptcha(
   siteKey: string | undefined,

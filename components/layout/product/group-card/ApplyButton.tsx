@@ -8,7 +8,13 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
 
-/** ApplyButton - Apply/Cancel toggle for adding a group product to the cart. */
+/**
+ * ApplyButton — Apply/Cancel toggle for adding a "buy together" group product to the cart.
+ *
+ * @param   {object}            props         - Component props.
+ * @param   {IProductsEntity}   props.product - Product entity rendered in the group card.
+ * @returns {JSX.Element} JSX of the Apply/Cancel button.
+ */
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();

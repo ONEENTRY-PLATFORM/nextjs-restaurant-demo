@@ -9,7 +9,16 @@ import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { getTransition, removeProduct, setCartTransition } from '@/app/store/reducers/CartSlice';
 
-/** Cart product animations. */
+/**
+ * ProductAnimations — cart product enter animation + delete animation tied to `transitionId`.
+ *
+ * @param   {object}            props           - Component props.
+ * @param   {ReactNode}         props.children  - Product card content.
+ * @param   {string}            props.className - Class merged onto the wrapping `<div>`.
+ * @param   {IProductsEntity}   props.product   - Product entity (used to match `transitionId` for the delete tween).
+ * @param   {number}            props.index     - Card index used to compute the per-row stagger delay.
+ * @returns {JSX.Element} JSX wrapper around the cart product card.
+ */
 const ProductAnimations = ({
   children,
   className,

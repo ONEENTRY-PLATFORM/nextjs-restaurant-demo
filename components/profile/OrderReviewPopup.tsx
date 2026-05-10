@@ -46,6 +46,12 @@ type ItemState = {
   error: string;
 };
 
+/**
+ * initialItemState — derives the per-row local state from an optional existing review.
+ *
+ * @param   {ExistingReview | null} initial - Existing review for the product, or `null` when none was found.
+ * @returns {ItemState}                       Initial `ItemState` for the row (read-only when an existing review is provided).
+ */
 const initialItemState = (initial: ExistingReview | null): ItemState => ({
   rating: initial?.rating ?? 0,
   text: initial?.text ?? '',
@@ -56,13 +62,23 @@ const initialItemState = (initial: ExistingReview | null): ItemState => ({
   error: '',
 });
 
-/** Order number `OE...` from the SDK, otherwise fallback to the numeric id. */
+/**
+ * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
+ *
+ * @param   {{ id: number; orderId?: string }} o - Order entity with `id` and optional `orderId` string.
+ * @returns {string}                                Display order number.
+ */
 const formatOrderNumber = (o: { id: number; orderId?: string }): string => {
   if (o.orderId) return o.orderId;
   return String(o.id);
 };
 
-/** Extracts plain text from an OneEntry field value of type `text`. */
+/**
+ * readPlainText — extracts plain text from an OneEntry field value of type `text`.
+ *
+ * @param   {unknown} value - Raw `formData[].value`.
+ * @returns {string}          Plain text string (empty on unexpected shape).
+ */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
     const first = value[0] as { plainValue?: unknown } | undefined;
@@ -71,7 +87,12 @@ const readPlainText = (value: unknown): string => {
   return typeof value === 'string' ? value : '';
 };
 
-/** Casts an OneEntry field value of type `integer` to a number (0 on error). */
+/**
+ * readNumber — casts an OneEntry field value of type `integer` to a number (0 on error).
+ *
+ * @param   {unknown} value - Raw `formData[].value`.
+ * @returns {number}          Numeric rating (`0` for non-numeric values).
+ */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
@@ -81,7 +102,13 @@ const readNumber = (value: unknown): number => {
   return 0;
 };
 
-/** Loads the user's already submitted review for a product. null = none / SDK error (graceful fallback). */
+/**
+ * fetchUserReview — loads the user's already submitted review for a product.
+ *
+ * @param   {number} productId - OneEntry product id (used as `entityIdentifier`).
+ * @param   {string} userId    - OneEntry user identifier.
+ * @returns {Promise<ExistingReview | null>}      Promise resolving to the existing review, or `null` when none / on SDK error (graceful fallback).
+ */
 const fetchUserReview = async (
   productId: number,
   userId: string
@@ -132,8 +159,16 @@ const fetchUserReview = async (
 };
 
 /**
- * ReviewableItem - popup row: product + stars + input + Apply/Edit.
- * Apply creates `postFormsData` or updates via `updateFormsDataByid`. If `initialReview` exists - start in read-only.
+ * ReviewableItem — popup row: product + stars + input + Apply/Edit.
+ *
+ * Apply creates `postFormsData` or updates via `updateFormsDataByid`. When `initialReview` is provided,
+ * the row starts in read-only mode and switches to edit on demand.
+ *
+ * @param   {object}                     props               - Component props.
+ * @param   {IOrderProducts}             props.product       - Order line-item entity.
+ * @param   {IProductsEntity | undefined} props.fullProduct  - Full product entity used to resolve a fallback cover image.
+ * @param   {ExistingReview | null}      props.initialReview - Existing review to prefill (or `null` when none).
+ * @returns {JSX.Element}                                      JSX of the reviewable row.
  */
 const ReviewableItem = ({
   product,
@@ -270,7 +305,7 @@ const ReviewableItem = ({
               disabled={isLocked}
               className="hover_btn_transp flex h-7.5 w-20 items-center justify-center rounded-card border border-brand text-base text-brand disabled:opacity-60"
             >
-              {state.loading ? 'â€¦' : t('apply_text', 'Apply')}
+              {state.loading ? '' : t('apply_text', 'Apply')}
             </button>
             <button
               type="button"
@@ -294,9 +329,12 @@ const ReviewableItem = ({
 };
 
 /**
- * OrderReviewPopup - "Leave a review" popup for the entire order (one button per order).
- * Order summary + line item list; each row has stars + input + Apply/Edit.
- * The order entity is passed via `orderReviewStore`, because `OpenDrawerContext` only forwards a string `action`.
+ * OrderReviewPopup — "Leave a review" popup for the entire order (one button per order).
+ *
+ * Order summary + line-item list; each row has stars + input + Apply/Edit.
+ * The order entity is passed via `orderReviewStore` because `OpenDrawerContext` only forwards a string `action`.
+ *
+ * @returns {JSX.Element} JSX of the order-review popup, or empty fragment when no order is targeted.
  */
 const OrderReviewPopup = (): JSX.Element => {
   const t = useT();
@@ -306,7 +344,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const isOpen = open && component === 'OrderReviewPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Map productId â†’ existing review (null = none, missing key = still loading).
+  // Map productId -> existing review (null = none, missing key = still loading).
   const [existingReviews, setExistingReviews] = useState<Map<number, ExistingReview | null>>(
     new Map()
   );
@@ -385,7 +423,13 @@ const OrderReviewPopup = (): JSX.Element => {
           <p className="font-bold text-2xl leading-7.5 text-brand">
             {t('leave_review', 'Leave a review')}
           </p>
-          <ClosePopupButton onClose={close} ariaLabel="Close review form" />
+          {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
+          <ClosePopupButton
+            onClose={close}
+            ariaLabel="Close review form"
+            className="max-md:hidden"
+          />
+          <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>
 
         {!isAuth ? (
@@ -399,7 +443,7 @@ const OrderReviewPopup = (): JSX.Element => {
             </p>
 
             <div className="mt-3.75 flex w-full items-center justify-between gap-2 rounded-card bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base">
-              <p className="font-bold">â„–{formatOrderNumber(order)}</p>
+              <p className="font-bold">№{formatOrderNumber(order)}</p>
               <p className="capitalize">{statusLabel}</p>
               <p>{formatDate(created)}</p>
             </div>

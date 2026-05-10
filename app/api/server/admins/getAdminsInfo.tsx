@@ -13,7 +13,16 @@ interface HandleProps {
   langCode?: string;
 }
 
-/** getAdminsInfo — paginated list of admins with filter. */
+/**
+ * getAdminsInfo — paginated list of admins with filter.
+ *
+ * @param   {HandleProps}     props          - Fetch arguments.
+ * @param   {IFilterParams[]} props.body     - Filter parameters accepted by `Admins.getAdminsInfo`.
+ * @param   {number}          props.offset   - Page offset.
+ * @param   {number}          props.limit    - Page size.
+ * @param   {string}          [props.langCode] - Optional explicit locale (defaults to `getLang()`).
+ * @returns {Promise<{ isError: boolean; error?: IError; admins?: IAdminEntity[] }>}                  Promise resolving to `{ isError, error?, admins? }` (graceful fallback on SDK error).
+ */
 export const getAdminsInfo = cache(
   async ({
     body,

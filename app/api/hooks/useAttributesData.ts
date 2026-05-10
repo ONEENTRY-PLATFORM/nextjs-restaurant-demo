@@ -4,11 +4,11 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
- * Extracts a string value from a String attribute.
+ * getString — extracts a string value from a String attribute.
  *
- * @param   {string}                  name            - Attribute marker.
- * @param   {AttributeValuesInput}    attributeValues - Attribute values map.
- * @returns {string}                                  String value, or an empty string.
+ * @param   {string}                name            - Attribute marker.
+ * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
+ * @returns {string}                                  String value, or an empty string when absent.
  */
 export const getString = (name: string, attributeValues: AttributeValuesInput): string => {
   const attr = attributeValues?.[name];
@@ -19,12 +19,12 @@ export const getString = (name: string, attributeValues: AttributeValuesInput): 
 };
 
 /**
- * Extracts an HTML or plain value from a Text attribute.
+ * getText — extracts an HTML or plain value from a Text attribute.
  *
- * @param   {string}                          name            - Attribute marker.
- * @param   {AttributeValuesInput}            attributeValues - Attribute values map.
- * @param   {'html' | 'plain'}                type            - Output format.
- * @returns {string | ReturnType<typeof parse>}               Parsed HTML nodes or a plain string.
+ * @param   {string}                name            - Attribute marker.
+ * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
+ * @param   {'html' | 'plain'}      [type]          - Output format (`html` returns parsed nodes, `plain` returns a string).
+ * @returns {string | ReturnType<typeof parse>}      Parsed HTML nodes or a plain string.
  */
 export const getText = (
   name: string,
@@ -52,12 +52,12 @@ export const getText = (
 };
 
 /**
- * Extracts the image URL from an Image attribute's value.
+ * getImageUrl — extracts the image URL from an Image attribute's value.
  *
- * @param   {string}                  name            - Attribute marker.
- * @param   {AttributeValuesInput}    attributeValues - Attribute values map.
- * @param   {'image' | 'preview'}     type            - Full image or preview.
- * @returns {string}                                  URL, or an empty string.
+ * @param   {string}                name            - Attribute marker.
+ * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
+ * @param   {'image' | 'preview'}   [type]          - `image` for the full asset, `preview` for the previewLink.
+ * @returns {string}                                  URL, or an empty string when no image is set.
  */
 export const getImageUrl = (
   name: string,

@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { type JSX } from 'react';
 
 /**
- * Empty state for the product grid - shown when `getProducts` returns
- * nothing (search/filter without results or no products in the category).
+ * ProductsNotFound — empty state for the product grid.
+ *
+ * Shown when `getProducts` returns nothing (search/filter without results, or no products in the category).
+ *
+ * @returns {JSX.Element} JSX of the empty-state card with a "Reset & browse all" link.
  */
 const ProductsNotFound = (): JSX.Element => {
   return (

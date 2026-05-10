@@ -17,7 +17,14 @@ type Color = {
   selected?: boolean;
 };
 
-/** Color filter. */
+/**
+ * ColorFilter — chip-row color filter sourced from a OneEntry attribute set, syncs to the `color` URL param.
+ *
+ * @param   {object}                              props            - Component props.
+ * @param   {string}                              [props.title]    - Section title displayed above the chips.
+ * @param   {IAttributesSetsEntity | IError}      props.attributes - Attribute set entity (or SDK error placeholder).
+ * @returns {JSX.Element} JSX of the color chip row.
+ */
 const ColorFilter = ({
   title,
   attributes,

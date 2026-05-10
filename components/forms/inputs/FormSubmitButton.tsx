@@ -3,7 +3,15 @@ import type { JSX } from 'react';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import Spinner from '@/components/shared/Spinner';
 
-/** Form submit button. */
+/**
+ * FormSubmitButton — primary submit button for forms with a loading-state spinner.
+ *
+ * @param   {object}  props           - Component props.
+ * @param   {string}  props.title     - Button label (defaults to `'Submit'`).
+ * @param   {boolean} props.isLoading - When `true`, replaces the label with a spinner and disables the button.
+ * @param   {number}  props.index     - Animation index used by `FormFieldAnimations` for staggered reveal.
+ * @returns {JSX.Element}               JSX of the submit button wrapped in form-field animations.
+ */
 const FormSubmitButton = ({
   title = 'Submit',
   isLoading,

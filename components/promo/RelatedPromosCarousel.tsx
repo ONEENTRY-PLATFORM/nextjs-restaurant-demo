@@ -9,7 +9,12 @@ import type { BlogBanner } from '@/app/api';
 
 /**
  * RelatedPromosCarousel — horizontal scroll-snap rail of "related promos" with dot indicators.
+ *
  * Used when there are at least 3 sibling promo pages (1–2 fit into a regular flex row).
+ *
+ * @param   {object}        props        - Component props.
+ * @param   {BlogBanner[]}  props.promos - Promo banners to render in the rail.
+ * @returns {JSX.Element} JSX of the carousel with sibling dot tablist.
  */
 const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Element => {
   const scrollerRef = useRef<HTMLDivElement>(null);

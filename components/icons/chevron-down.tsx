@@ -1,5 +1,12 @@
 import type { JSX } from 'react';
 
+/**
+ * ChevronDownIcon — orange down-chevron used in expand/collapse controls.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      [props.className] - Additional className merged onto the SVG.
+ * @returns {JSX.Element} JSX of the chevron-down SVG.
+ */
 const ChevronDownIcon = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg

@@ -1,6 +1,12 @@
 import type { JSX } from 'react';
 
-/** ProductUnits — remaining product units indicator as a progress bar. */
+/**
+ * ProductUnits — remaining product units indicator rendered as a brand-coloured progress bar.
+ *
+ * @param   {object}      props       - Component props.
+ * @param   {number}      props.units - Remaining units count (drives both the label and the bar fill).
+ * @returns {JSX.Element} JSX of the units progress bar.
+ */
 const ProductUnits = ({ units }: { units: number }): JSX.Element => {
   const maxUnits = units < 50 ? 50 : units * 1.2;
   const width = (units / maxUnits) * 100;

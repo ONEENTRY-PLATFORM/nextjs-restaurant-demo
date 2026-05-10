@@ -14,7 +14,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 const WAITING_TIME: Array<{ label: string; max: number | null }> = [
   { label: 'Under 30 mins', max: 30 },
   { label: 'Under 60 mins', max: 60 },
-  { label: 'doesnâ€™t matter', max: null },
+  { label: 'doesn’t matter', max: null },
 ];
 type PriceChip = {
   label: string;
@@ -22,6 +22,12 @@ type PriceChip = {
   value: number;
 };
 
+/**
+ * buildPriceChips — builds the catalog price filter chips from the `{ min, max }` range.
+ *
+ * @param   {PriceRange | undefined} priceRange - Catalog price bounds.
+ * @returns {PriceChip[]} Array of `PriceChip` items (empty when the range is missing or trivial).
+ */
 const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
   if (!priceRange || priceRange.max <= 0) return [];
   const chips: PriceChip[] = [];
@@ -43,9 +49,12 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
 };
 
 /**
- * FilterBottom - bottom filter sheet, toggled via `OpenDrawerContext`.
+ * FilterBottom — bottom filter sheet (mobile) / right-side panel (md+), toggled via `OpenDrawerContext`.
  *
- * @returns {JSX.Element} Filter panel JSX.
+ * @param   {object}                  props               - Component props.
+ * @param   {PreferenceOption[]}      [props.preferences] - Available preference filter options sourced from OneEntry.
+ * @param   {PriceRange}              [props.priceRange]  - Optional catalog price range used to seed the price chips.
+ * @returns {JSX.Element} JSX of the filter panel.
  */
 const FilterBottom = ({
   preferences: preferenceOptions = [],

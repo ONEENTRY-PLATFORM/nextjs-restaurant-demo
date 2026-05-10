@@ -16,7 +16,12 @@ const initialState: InitialStateType = {
   fields: {},
 };
 
-/** Returns the first key of an object or `undefined`. */
+/**
+ * getFirstKey — returns the first key of an object or `undefined`.
+ *
+ * @param   {Record<string, FieldType>}    obj - Map of form fields keyed by marker.
+ * @returns {string | undefined}                First key in iteration order, or `undefined` when the object is empty.
+ */
 function getFirstKey(obj: Record<string, FieldType>): string | undefined {
   const keys = Object.keys(obj);
   return keys.length > 0 ? keys[0] : undefined;

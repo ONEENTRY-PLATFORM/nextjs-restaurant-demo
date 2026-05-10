@@ -2,7 +2,14 @@ import type { JSX } from 'react';
 
 import { UsePrice } from '@/components/utils';
 
-/** Price display: brand price + strikethrough old price, or just the old price. */
+/**
+ * PriceDisplay — cart-row price (brand current price with strikethrough old price, or just the old price).
+ *
+ * @param   {object}      props               - Component props.
+ * @param   {number}      props.currentPrice  - Current (sale) price.
+ * @param   {number}      props.originalPrice - Original (pre-sale) price.
+ * @returns {JSX.Element} JSX of the price block (or empty when both are zero/missing).
+ */
 const PriceDisplay = ({
   currentPrice,
   originalPrice,

@@ -14,7 +14,11 @@ import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
-/** FavoritesGrid - favorites grid on the dashboard. */
+/**
+ * FavoritesGrid — favorites grid on the profile dashboard.
+ *
+ * @returns {JSX.Element} JSX of the favorites grid (loader, empty state, or list of `FavoriteCard` entries).
+ */
 const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
@@ -46,7 +50,13 @@ const FavoritesGrid = (): JSX.Element => {
   );
 };
 
-/** FavoriteCard - single favorite card in the desktop grid. */
+/**
+ * FavoriteCard — single favorite card in the desktop grid.
+ *
+ * @param   {object}          props         - Component props.
+ * @param   {IProductsEntity} props.product - Product entity to render.
+ * @returns {JSX.Element}                     JSX of the favorite card with add-to-cart and remove buttons.
+ */
 const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));

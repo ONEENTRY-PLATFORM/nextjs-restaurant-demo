@@ -46,8 +46,9 @@ export type ReviewPayload = {
  *   with a project-wide fallback;
  * - `status: 'approved'` matches the reference shop — switch in OneEntry if
  *   moderation should hold reviews before publication.
- * @param   {ReviewPayload}                                        payload - Review data.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}        Submission result.
+ *
+ * @param   {ReviewPayload}                                          payload - Review data.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}         Submission result.
  */
 export async function submitReview(
   payload: ReviewPayload

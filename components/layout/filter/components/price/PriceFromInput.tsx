@@ -1,7 +1,14 @@
 import type { Dispatch, JSX, SetStateAction } from 'react';
 import { memo } from 'react';
 
-/** PriceFrom input. */
+/**
+ * PriceFromInput — numeric input for the lower price bound; mirrors local state into `setPrice`.
+ *
+ * @param   {object}                              props          - Component props.
+ * @param   {number}                              props.price    - Current value of the lower bound.
+ * @param   {Dispatch<SetStateAction<number>>}    props.setPrice - State setter that owns the lower bound.
+ * @returns {JSX.Element} JSX of the price-from input.
+ */
 const PriceFromInput = ({
   price,
   setPrice,

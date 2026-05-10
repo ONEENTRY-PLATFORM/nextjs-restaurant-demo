@@ -10,11 +10,11 @@ import type { AnimationsProps } from '../types/global';
 /**
  * FadeTransition — fade-in animation with stagger driven by `index`.
  *
- * @param   {AnimationsProps} props           - Animation props.
- * @param   {ReactNode}       props.children  - Child ReactNode.
- * @param   {string}          props.className - CSS className for the ref element.
- * @param   {number}          props.index     - Element index for stagger animations.
- * @returns {JSX.Element}                     JSX with the animated ref.
+ * @param   {AnimationsProps} props           - Component props.
+ * @param   {ReactNode}       props.children  - Subtree to fade in.
+ * @param   {string}          props.className - CSS className for the wrapper `<div>` (always merged with `opacity-0`).
+ * @param   {number}          props.index     - Element index used to compute the per-card stagger delay.
+ * @returns {JSX.Element}                       JSX wrapper that animates `autoAlpha` from 0 → 1 on mount.
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
 const FadeTransition = ({ children, className, index }: AnimationsProps): JSX.Element => {

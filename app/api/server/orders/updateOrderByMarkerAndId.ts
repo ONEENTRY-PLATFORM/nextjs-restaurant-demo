@@ -10,7 +10,15 @@ interface HandleProps {
   data: IOrderData;
 }
 
-/** updateOrderByMarkerAndId — updates an order in the user's order-storage. */
+/**
+ * updateOrderByMarkerAndId — updates an order in the user's order-storage.
+ *
+ * @param   {HandleProps} props        - Update arguments.
+ * @param   {string}      props.marker - Order-storage marker (e.g. `cart`, `booking_order`).
+ * @param   {number}      props.id     - Numeric order id inside that storage.
+ * @param   {IOrderData}  props.data   - Partial order payload accepted by `Orders.updateOrderByMarkerAndId`.
+ * @returns {Promise<{ isError: boolean; error?: IError; order?: IBaseOrdersEntity }>}              Promise resolving to `{ isError, error?, order? }` (graceful fallback on SDK error).
+ */
 export const updateOrderByMarkerAndId = async ({
   marker,
   id,

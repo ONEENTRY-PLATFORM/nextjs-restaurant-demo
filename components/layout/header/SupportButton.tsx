@@ -6,11 +6,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import PhoneIcon from '@/components/icons/phone.svg';
 
 /**
- * SupportButton — phone icon in the mobile header.
+ * SupportButton — phone icon in the mobile header that opens the `SupportPopup`.
  *
- * @param   {object}      props          - Button props.
- * @param   {boolean}     props.disabled - Neither phone nor WhatsApp is available.
- * @returns {JSX.Element}                Popup trigger JSX.
+ * @param   {object}      props          - Component props.
+ * @param   {boolean}     props.disabled - When `true`, neither phone nor WhatsApp is available — render a non-interactive icon.
+ * @returns {JSX.Element} JSX of the popup trigger button (or a disabled span fallback).
  */
 const SupportButton = ({ disabled }: { disabled: boolean }): JSX.Element => {
   const { setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);

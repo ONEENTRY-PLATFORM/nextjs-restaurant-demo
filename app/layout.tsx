@@ -30,7 +30,7 @@ const OrderReviewPopup = dynamic(() => import('@/components/profile/OrderReviewP
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ToastContainer } from 'react-toastify';
+import ResponsiveToastContainer from '@/components/shared/ResponsiveToastContainer';
 
 const lato = Lato({
   subsets: ['latin'],
@@ -51,7 +51,13 @@ export const metadata: Metadata = {
   },
 };
 
-/** RootLayout — root application layout. */
+/**
+ * RootLayout — root application layout.
+ *
+ * @param   {object}            props          - Component props.
+ * @param   {React.ReactNode}   props.children - Page tree rendered inside the layout.
+ * @returns {Promise<JSX.Element>}             Promise resolving to JSX of the `<html>` shell with global providers, header, footer, and modals.
+ */
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -90,12 +96,7 @@ export default async function RootLayout({
             </AuthProvider>
           </DictProvider>
         </StoreProvider>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={2000}
-          theme="dark"
-          pauseOnFocusLoss={false}
-        />
+        <ResponsiveToastContainer />
       </body>
     </html>
   );

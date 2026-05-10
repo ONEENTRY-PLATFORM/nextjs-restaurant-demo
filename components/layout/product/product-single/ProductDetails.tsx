@@ -9,13 +9,14 @@ import StarPuffyIcon from '@/components/icons/star-puffy';
 import AddToCartButton from '../components/AddToCartButton';
 
 /**
- * ProductDetails - right column of the product page (metrics, tags, CTA).
+ * ProductDetails — right column of the product page (metrics, tags, CTA).
  *
  * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `rating`, `cooking_time`,
  * `preferences`, `ingredients`, `price` + `currency`.
- * @param   {object}          props         - Component props.
- * @param   {IProductsEntity} props.product - OneEntry product entity.
- * @returns {Promise<JSX.Element>}          Details panel JSX.
+ *
+ * @param   {object}            props         - Component props.
+ * @param   {IProductsEntity}   props.product - OneEntry product entity.
+ * @returns {Promise<JSX.Element>} JSX of the details panel.
  */
 const ProductDetails = async ({ product }: { product: IProductsEntity }): Promise<JSX.Element> => {
   const {

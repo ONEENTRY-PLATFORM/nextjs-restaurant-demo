@@ -1,3 +1,8 @@
+/**
+ * EyeOpenIcon — open-eye toggle icon for password-visible state.
+ *
+ * @returns {JSX.Element} JSX of the open-eye SVG.
+ */
 const EyeOpenIcon = () => {
   return (
     <svg

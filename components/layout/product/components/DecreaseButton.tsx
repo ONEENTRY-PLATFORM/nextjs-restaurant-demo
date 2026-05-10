@@ -6,7 +6,15 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlice';
 
-/** DecreaseButton — "−" button for QuantitySelector; removes the item when qty<=1. */
+/**
+ * DecreaseButton — "−" button for `QuantitySelector`; removes the item when `qty<=1`.
+ *
+ * @param   {object}      props       - Component props.
+ * @param   {number}      props.id    - Cart product id to decrement.
+ * @param   {number}      props.qty   - Current quantity (renders empty when below 1).
+ * @param   {string}      props.title - Product title used in the removal toast text.
+ * @returns {JSX.Element} JSX of the round decrement button.
+ */
 const DecreaseButton = ({
   id,
   qty,

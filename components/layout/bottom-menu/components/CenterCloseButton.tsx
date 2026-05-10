@@ -6,7 +6,11 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 
-/** Central outlined close button — visible while a drawer is open; calls `setTransition('close')` to trigger the reverse animation. */
+/**
+ * CenterCloseButton — central outlined close button visible while a drawer is open; calls `setTransition('close')` to trigger the reverse animation.
+ *
+ * @returns {JSX.Element} JSX of the centered close button.
+ */
 const CenterCloseButton = (): JSX.Element => {
   const { open, setTransition } = useContext(OpenDrawerContext);
   const hidden = !open;

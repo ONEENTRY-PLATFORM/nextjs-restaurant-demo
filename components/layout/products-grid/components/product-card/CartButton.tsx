@@ -13,11 +13,26 @@ import {
   selectCartItemWithIdLength,
 } from '@/app/store/reducers/CartSlice';
 
+/**
+ * stop — convenience helper that suppresses the wrapping `<Link>` navigation when a button inside the card is clicked.
+ *
+ * @param   {MouseEvent<HTMLButtonElement>} e - React mouse event from the button click.
+ * @returns {void}
+ */
 const stop = (e: MouseEvent<HTMLButtonElement>) => {
   e.preventDefault();
   e.stopPropagation();
 };
 
+/**
+ * CartButton — grid-card cart toggle: switches between "add" and an inline +/qty/− control once the item is in the cart.
+ *
+ * @param   {object}      props          - Component props.
+ * @param   {number}      props.id       - Cart product id.
+ * @param   {string}      props.title    - Product title used in toast messages.
+ * @param   {ReactNode}   props.children - Add-to-cart label content (rendered while the product is not yet in the cart).
+ * @returns {JSX.Element} JSX of the cart toggle button or quantity control.
+ */
 const CartButton = ({
   id,
   title,

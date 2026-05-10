@@ -15,17 +15,35 @@ import Loader from '@/components/shared/Spinner';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
+/**
+ * isHistoryOrder — whether the booking order is in history (completed/cancelled).
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {boolean}                  `true` when the booking belongs to history.
+ */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
   return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
 };
 
+/**
+ * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {string}                   Display order number string.
+ */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
   if (fromSdk) return fromSdk;
   return String(o.id);
 };
 
+/**
+ * statusLabel — human-readable booking status (localized from CMS, otherwise derived from the identifier).
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns {string}                   Localized status title or a humanised identifier (`-` when nothing is set).
+ */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
@@ -35,8 +53,11 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * BookingsContent - Active reservation + Reservation History.
+ * BookingsContent — Active reservation + Reservation History.
+ *
  * Data: `getAllOrdersByMarker({ marker: 'booking_order' })` (same storage marker as in `ReservationForm`).
+ *
+ * @returns {JSX.Element} JSX of the bookings dashboard section.
  */
 const BookingsContent = (): JSX.Element => {
   const { setComponent } = useContext(OpenDrawerContext);
@@ -46,7 +67,7 @@ const BookingsContent = (): JSX.Element => {
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Edit: pending â†’ side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
+  // Edit: pending -> side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
   const onEdit = (order: IOrderByMarkerEntity) => {
     if (!order.formIdentifier) {
       toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
@@ -61,7 +82,7 @@ const BookingsContent = (): JSX.Element => {
     setComponent('ReservationPopup');
   };
 
-  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG Â§C.10) - optimistic removal + toast.
+  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG §C.10) - optimistic removal + toast.
   const onCancel = (order: IOrderByMarkerEntity) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
@@ -141,6 +162,15 @@ const BookingsContent = (): JSX.Element => {
   );
 };
 
+/**
+ * ActiveBookingCard — active booking row with Cancel / Edit actions.
+ *
+ * @param   {object}                 props          - Component props.
+ * @param   {IOrderByMarkerEntity}   props.order    - OneEntry booking order entity.
+ * @param   {() => void}             props.onCancel - Cancellation handler.
+ * @param   {() => void}             props.onEdit   - Edit handler that opens the reservation popup.
+ * @returns {JSX.Element}                             JSX of the active booking row.
+ */
 const ActiveBookingCard = ({
   order,
   onCancel,
@@ -158,7 +188,7 @@ const ActiveBookingCard = ({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between rounded-card border border-brand px-3.75 py-1.25">
-        <p className="font-bold text-base text-paper">â„–{formatOrderNumber(order)}</p>
+        <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
         <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
         <p className="font-normal text-base text-paper">{date}</p>
       </div>
@@ -182,6 +212,13 @@ const ActiveBookingCard = ({
   );
 };
 
+/**
+ * HistoryBookingCard — read-only past booking row (number / status / date).
+ *
+ * @param   {object}                 props       - Component props.
+ * @param   {IOrderByMarkerEntity}   props.order - OneEntry booking order entity.
+ * @returns {JSX.Element}                          JSX of the history booking row.
+ */
 const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Element => {
   const dateRaw = (order.createdDate ??
     (order as unknown as { formattedCreated?: string }).formattedCreated ??
@@ -189,7 +226,7 @@ const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Ele
   const date = dateRaw ? formatDate(dateRaw) : '';
   return (
     <div className="flex items-center justify-between rounded-card border border-paper px-3.75 py-1.25">
-      <p className="font-bold text-base text-paper">â„–{formatOrderNumber(order)}</p>
+      <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
       <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
       <p className="font-normal text-base text-paper">{date}</p>
     </div>

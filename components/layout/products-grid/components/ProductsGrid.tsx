@@ -3,7 +3,14 @@ import { type JSX } from 'react';
 
 import ProductCard from './product-card/ProductCard';
 
-/** ProductsGrid — product cards grid. */
+/**
+ * ProductsGrid — product cards grid (deduplicates by id and skips invisible items).
+ *
+ * @param   {object}            props               - Component props.
+ * @param   {IProductsEntity[]} props.products      - Source product list from the SDK.
+ * @param   {number}            props.productsLimit - Page size, forwarded to `<ProductCard>` for stagger calculations.
+ * @returns {JSX.Element} JSX of the responsive product card grid.
+ */
 const ProductsGrid = ({
   products,
   productsLimit,

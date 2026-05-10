@@ -1,7 +1,14 @@
 import Image from 'next/image';
 import type { JSX } from 'react';
 
-/** Social sign-in button with the provider icon. */
+/**
+ * SocialSignInButton — square button rendering a single provider icon (image-only CTA).
+ *
+ * @param   {object} props          - Component props.
+ * @param   {string} props.imageSrc - Provider icon URL.
+ * @param   {string} props.alt      - Accessible alt text for the icon.
+ * @returns {JSX.Element}             JSX of the social sign-in button.
+ */
 const SocialSignInButton = ({ imageSrc, alt }: { imageSrc: string; alt: string }): JSX.Element => {
   return (
     <button type="button" className="relative box-border flex shrink-0 flex-col">

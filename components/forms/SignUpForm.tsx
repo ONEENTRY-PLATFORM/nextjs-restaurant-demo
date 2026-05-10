@@ -20,7 +20,11 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
 
-/** SignUpForm — user sign-up form. */
+/**
+ * SignUpForm — user sign-up form (email/phone + password) driven by the OneEntry `user` form schema.
+ *
+ * @returns {JSX.Element} JSX of the sign-up form, including transition into VerificationForm on inactive users.
+ */
 const SignUpForm = (): JSX.Element => {
   const t = useT();
   const [loading, setLoading] = useState(false);

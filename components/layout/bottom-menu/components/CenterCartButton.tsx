@@ -6,7 +6,11 @@ import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Central protruding cart button — opens the `CartPopup` drawer; crossfades with `CenterCloseButton`. */
+/**
+ * CenterCartButton — central protruding cart button; opens the `CartPopup` drawer, crossfades with `CenterCloseButton`.
+ *
+ * @returns {JSX.Element} JSX of the centered cart button with rehydrated count badge.
+ */
 const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);

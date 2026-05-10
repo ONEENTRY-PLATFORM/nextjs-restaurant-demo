@@ -25,12 +25,12 @@ export type RestaurantOption = {
 /**
  * RestaurantSelect — custom dropdown following the `.custom-select` pattern from static-html.
  *
- * @param   {object}                  props               - Component props.
- * @param   {RestaurantOption[]}      props.options       - Available restaurant options.
- * @param   {string}                  props.value         - Currently selected value.
- * @param   {(v: string) => void}     props.onChange      - Change handler.
+ * @param   {object}                  props             - Component props.
+ * @param   {RestaurantOption[]}      props.options     - Available restaurant options.
+ * @param   {string}                  props.value       - Currently selected value.
+ * @param   {(v: string) => void}     props.onChange    - Change handler that receives the new value.
  * @param   {string}                  [props.placeholder] - Trigger placeholder text.
- * @returns {JSX.Element}                                 Dropdown JSX.
+ * @returns {JSX.Element}                                  JSX of the dropdown.
  */
 const RestaurantSelect = ({
   options,

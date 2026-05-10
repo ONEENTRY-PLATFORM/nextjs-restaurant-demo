@@ -6,7 +6,16 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
-/** ReviewAnimations — toggle/leaving animation for the review block. */
+/**
+ * ReviewAnimations — open/close + leave animation wrapper for the product review block.
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {ReactNode}   props.children  - Review content to animate.
+ * @param   {string}      props.className - Class merged onto the wrapping `<div>`.
+ * @param   {number}      props.index     - Index used to compute the per-block stagger delay.
+ * @param   {boolean}     props.state     - Whether the block should be open (true) or collapsed (false).
+ * @returns {JSX.Element} JSX wrapper around the review block.
+ */
 const ReviewAnimations = ({
   children,
   className,

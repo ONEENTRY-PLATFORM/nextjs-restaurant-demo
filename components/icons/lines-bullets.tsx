@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * LinesBulletsIcon — bulleted-list icon used as an alternate categories-view toggle.
+ *
+ * @returns {JSX.Element} JSX of the bulleted-list SVG.
+ */
 const LinesBulletsIcon = (): JSX.Element => {
   return (
     <svg

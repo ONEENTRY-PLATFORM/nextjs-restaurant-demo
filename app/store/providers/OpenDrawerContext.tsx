@@ -25,11 +25,11 @@ export const OpenDrawerContext = createContext<{
 });
 
 /**
- * OpenDrawerProvider — provider for the drawer/popup context.
+ * OpenDrawerProvider — provider for the drawer/popup context that also locks background scroll while a drawer is open.
  *
  * @param   {object}      props          - Component props.
- * @param   {ReactNode}   props.children - Child ReactNode.
- * @returns {JSX.Element}                JSX provider.
+ * @param   {ReactNode}   props.children - Subtree that consumes `OpenDrawerContext`.
+ * @returns {JSX.Element}                JSX provider wrapping children with the drawer/popup context value.
  */
 export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false);

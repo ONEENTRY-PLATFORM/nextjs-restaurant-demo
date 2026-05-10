@@ -20,8 +20,9 @@ type ProductResponse = {
 };
 
 /**
- * CartPageLayout — server-rendered `/cart` page; loads deliveryData/banners and renders the wizard.
- * @returns {Promise<JSX.Element>} JSX of the cart page layout.
+ * CartPageLayout — server-rendered `/cart` page; loads delivery product, promo banners, and renders `<CartWizard />`.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the cart page layout (wizard with promo sidebar).
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
   const response = await getProductById(DELIVERY_PRODUCT_ID);

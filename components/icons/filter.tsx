@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * FilterIcon — three-slider "filter" icon for the catalog filter button.
+ *
+ * @returns {JSX.Element} JSX of the filter-sliders SVG.
+ */
 const FilterIcon = (): JSX.Element => {
   return (
     <svg

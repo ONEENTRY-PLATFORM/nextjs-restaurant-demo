@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * ArrowBackOrangeIcon — orange "back" arrow used in modal headers and breadcrumb back-links.
+ *
+ * @returns {JSX.Element} JSX of the orange back-arrow SVG.
+ */
 const ArrowBackOrangeIcon = (): JSX.Element => {
   return (
     <svg

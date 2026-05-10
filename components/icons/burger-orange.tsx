@@ -1,5 +1,10 @@
 import type { JSX } from 'react';
 
+/**
+ * BurgerOrangeIcon — orange three-line "burger" menu icon (active mobile state).
+ *
+ * @returns {JSX.Element} JSX of the orange burger-menu SVG.
+ */
 const BurgerOrangeIcon = (): JSX.Element => {
   return (
     <svg

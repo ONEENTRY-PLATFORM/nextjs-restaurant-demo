@@ -1,3 +1,10 @@
+/**
+ * HomeIcon — bottom-menu "home" tile with hover-to-brand fill.
+ *
+ * @param   {object}      [props]        - Component props.
+ * @param   {boolean}     [props.active] - When `true`, paint the icon in brand colour (otherwise paper).
+ * @returns {JSX.Element} JSX of the home SVG.
+ */
 const HomeIcon = (props?: { active?: boolean }) => {
   return (
     <svg

@@ -5,7 +5,12 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/** getBlockByMarker — block by marker. */
+/**
+ * getBlockByMarker — block by marker.
+ *
+ * @param   {string} marker - OneEntry block marker.
+ * @returns {Promise<{ isError: boolean; error?: IError; block?: IBlockEntity }>}        Promise resolving to `{ isError, error?, block? }` (graceful fallback on SDK error).
+ */
 export const getBlockByMarker = cache(
   async (
     marker: string

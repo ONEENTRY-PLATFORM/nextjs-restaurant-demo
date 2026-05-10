@@ -3,11 +3,12 @@ import type { JSX } from 'react';
 import { UsePrice } from '../../../utils';
 
 /**
- * PriceDisplay — product price inside the group card.
- * @param   {object} props               - Component props.
- * @param   {number} props.currentPrice  - Current (sale) price.
- * @param   {number} props.originalPrice - Original price.
- * @returns {JSX.Element}                Price block JSX.
+ * PriceDisplay — product price inside the group card (brand current + strikethrough old).
+ *
+ * @param   {object}      props               - Component props.
+ * @param   {number}      props.currentPrice  - Current (sale) price.
+ * @param   {number}      props.originalPrice - Original (pre-sale) price.
+ * @returns {JSX.Element} JSX of the price block (or empty when both are zero/missing).
  */
 const PriceDisplay = ({
   currentPrice,

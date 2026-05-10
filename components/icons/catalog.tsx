@@ -1,3 +1,10 @@
+/**
+ * CatalogIcon — bottom-menu catalog tile-grid icon with hover-to-brand fill.
+ *
+ * @param   {object}      [props]        - Component props.
+ * @param   {boolean}     [props.active] - When `true`, paint the icon in brand colour (otherwise paper).
+ * @returns {JSX.Element} JSX of the catalog SVG.
+ */
 const CatalogIcon = (props?: { active?: boolean }) => {
   return (
     <svg

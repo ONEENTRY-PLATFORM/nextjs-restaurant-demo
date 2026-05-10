@@ -9,7 +9,14 @@ import ChevronDownFatIcon from '@/components/icons/chevron-down-fat';
 
 import MobileMenu from './MobileMenu';
 
-/** Mobile menu list item. */
+/**
+ * MobileMenuItem — single mobile-menu item with an optional collapsible sub-list.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {IMenusPages} props.item        - Menu page entity.
+ * @param   {string}      [props.parentUrl] - Optional parent URL prepended to the item's link.
+ * @returns {JSX.Element} JSX of the menu list item, including a chevron toggle when there are children.
+ */
 function MobileMenuItem({ item, parentUrl }: { item: IMenusPages; parentUrl?: string }) {
   const { setOpen } = useContext(OpenDrawerContext);
   const hasChild = Array.isArray(item.children) && item.children.length > 0;

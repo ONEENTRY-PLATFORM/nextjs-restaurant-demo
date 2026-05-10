@@ -31,6 +31,12 @@ type CartWizardProps = {
   promoSidebar?: ReactNode;
 };
 
+/**
+ * buildStepTitles — builds the localized title map for the checkout wizard steps.
+ *
+ * @param   {(marker: string, fallback: string) => string} t - Dictionary translator function.
+ * @returns {Record<CheckoutStep, string>}                    Map from `CheckoutStep` to display title.
+ */
 const buildStepTitles = (
   t: (marker: string, fallback: string) => string
 ): Record<CheckoutStep, string> => ({
@@ -44,6 +50,12 @@ const buildStepTitles = (
 // Canonical order of checkout steps
 const CHECKOUT_FLOW: CheckoutStep[] = ['cart', 'order', 'payment'];
 
+/**
+ * buildBreadcrumbPath — derives the breadcrumb trail leading to the current checkout step.
+ *
+ * @param   {CheckoutStep}   current - Active checkout step.
+ * @returns {CheckoutStep[]}           Ordered list of steps from `cart` to (and including) `current`.
+ */
 const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
   const idx = CHECKOUT_FLOW.indexOf(current);
   if (idx >= 0) return CHECKOUT_FLOW.slice(0, idx + 1);
@@ -52,29 +64,51 @@ const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
 
 // Tracks the md+ (768px) breakpoint on the client to render the step body in exactly one place
 const MD_QUERY = '(min-width: 768px)';
+/**
+ * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
+ *
+ * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
+ * @returns {() => void}        Unsubscribe function.
+ */
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
   mq.addEventListener('change', cb);
   return () => mq.removeEventListener('change', cb);
 };
+/**
+ * getMdSnapshot — current client snapshot of the `md` media query match state.
+ *
+ * @returns {boolean} `true` when the viewport currently matches `md` (>= 768px).
+ */
 const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
+/**
+ * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
+ *
+ * @returns {boolean} Always `false` so SSR renders the mobile layout deterministically.
+ */
 const getMdServerSnapshot = (): boolean => false;
+/**
+ * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
+ *
+ * @returns {boolean} `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
+ */
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
- * CartWizard - multi-step checkout driven by `orderReducer.step`.
+ * CartWizard — multi-step checkout driven by `orderReducer.step`.
  *
- * Flow: `cart` â†’ `order` (review + promo) â†’ `payment` (address + time + payment
- * in one step) â†’ `success` | `error`.
+ * Flow: `cart` → `order` (review + promo) → `payment` (address + time + payment in one step) →
+ * `success` | `error`.
  *
- * Authorization runs through the canonical `Modal` + `AuthProviderSelect`
- * (`OpenDrawerContext`) launched from `CartPage.onApply`. The wizard itself
- * does not render signin - after a successful login, `CartPage` auto-advances
- * to `order`.
+ * Authorization runs through the canonical `Modal` + `AuthProviderSelect` (`OpenDrawerContext`)
+ * launched from `CartPage.onApply`. The wizard itself does not render sign-in — after a successful
+ * login, `CartPage` auto-advances to `order`.
  *
- * @param   {CartWizardProps} props - Wizard props.
- * @returns {JSX.Element}           Wizard JSX for the current step.
+ * @param   {CartWizardProps}  props              - Component props.
+ * @param   {IProductsEntity}  props.deliveryData - OneEntry product representing the delivery service line item.
+ * @param   {ReactNode}        [props.promoSidebar] - Optional promo sidebar rendered next to the cart on md+.
+ * @returns {JSX.Element}                          JSX of the wizard for the current step.
  */
 const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Element => {
   const t = useT();
@@ -83,10 +117,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const STEP_TITLES = buildStepTitles(t);
   const isMdUp = useIsMdUp();
 
-  // Terminal steps (success/error) are one-shot. If they survived
-  // navigation (via the persisted store), reset the wizard to `cart` on
-  // the next mount of the cart page - otherwise `/cart` would forever show
-  // the confirmation screen of the previous order.
+  // Terminal steps (success/error) are one-shot.
   useEffect(() => {
     if (step === 'success' || step === 'error') {
       dispatch(resetCheckout());
@@ -99,7 +130,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const showInline = !isCartStep && isMdUp;
   const showPopup = !isCartStep && !isMdUp;
 
-  // Return from an inline step (order/payment/â€¦) back to the cart step via breadcrumb.
+  // Return from an inline step (order/payment/¦) back to the cart step via breadcrumb.
   const handleBackToCart = (): void => {
     const orderRows = document.querySelectorAll('.step-order-row');
 

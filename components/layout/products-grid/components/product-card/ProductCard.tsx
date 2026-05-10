@@ -12,12 +12,13 @@ import CartButton from './CartButton';
 import ProductImage from './ProductImage';
 
 /**
- * ProductCard — product card in the grid.
- * @param   {object}          props               - Component props.
- * @param   {IProductsEntity} props.product       - OneEntry product entity.
- * @param   {number}          props.index         - Index in the grid (for stagger animation).
- * @param   {number}          props.productsLimit - productsLimit for the animation.
- * @returns {JSX.Element}                         Card JSX.
+ * ProductCard — product card in the catalog grid.
+ *
+ * @param   {object}            props               - Component props.
+ * @param   {IProductsEntity}   props.product       - OneEntry product entity.
+ * @param   {number}            props.index         - Card index in the grid (drives the stagger animation).
+ * @param   {number}            props.productsLimit - Page size used by the stagger to reset on a new page.
+ * @returns {JSX.Element} JSX of the product card with image, meta, cart button, and link overlay.
  */
 const ProductCard = ({
   product,

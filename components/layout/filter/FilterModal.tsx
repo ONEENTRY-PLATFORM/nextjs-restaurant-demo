@@ -13,7 +13,13 @@ import FilterHeader from './components/header/FilterHeader';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import FiltersForm from './FiltersForm';
 
-/** FilterModal - filters modal with slide-right animation. */
+/**
+ * FilterModal — filters modal with slide-right animation, swipe-to-close on mobile.
+ *
+ * @param   {object}        props        - Component props.
+ * @param   {PriceBounds}   props.prices - Catalog price bounds passed to `PricePickerFilter`.
+ * @returns {JSX.Element} JSX of the filter modal drawer (header + suspended `<FiltersForm />`).
+ */
 const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);

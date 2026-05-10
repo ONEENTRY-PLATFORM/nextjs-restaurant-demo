@@ -1,5 +1,12 @@
 import type { JSX } from 'react';
 
+/**
+ * PencilIcon — orange pencil/edit icon used in profile edit affordances.
+ *
+ * @param   {object}      props             - Component props.
+ * @param   {string}      [props.className] - Additional className merged onto the SVG.
+ * @returns {JSX.Element} JSX of the pencil SVG.
+ */
 const PencilIcon = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg

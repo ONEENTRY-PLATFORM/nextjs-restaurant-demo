@@ -7,7 +7,13 @@ import type { JSX } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import HeartScriptIcon from '@/components/icons/heart-script';
 
-/** Calendar (bookings) nav item button. */
+/**
+ * NavItemCalendar — calendar (bookings) nav-item link in the bottom menu with reservation count badge.
+ *
+ * @param   {object}      props      - Component props.
+ * @param   {IMenusPages} props.item - OneEntry menu page entity used for href and accessible title.
+ * @returns {JSX.Element} JSX of the calendar link.
+ */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
   const cartCount = useAppSelector(state => {
     return state.cartReducer.reservations?.length;

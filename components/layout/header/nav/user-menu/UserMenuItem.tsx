@@ -4,7 +4,14 @@ import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 
-/** User menu item link. */
+/**
+ * UserMenuItem — single user-menu link; closes the menu via `setState(false)` after navigation.
+ *
+ * @param   {object}                       props          - Component props.
+ * @param   {IMenusPages}                  props.page     - OneEntry menu page entity (uses `pageUrl` and `localizeInfos.menuTitle`).
+ * @param   {(state: boolean) => void}     props.setState - Setter that closes the parent menu on click.
+ * @returns {JSX.Element} JSX of the user-menu link.
+ */
 const UserMenuItem = ({
   page,
   setState,

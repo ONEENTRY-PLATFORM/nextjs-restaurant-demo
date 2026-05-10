@@ -5,7 +5,15 @@ import type { ChangeEvent, JSX } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { setProductQty } from '@/app/store/reducers/CartSlice';
 
-/** QuantityInput — numeric quantity input for QuantitySelector. */
+/**
+ * QuantityInput — numeric quantity input for `QuantitySelector`; mirrors changes into the cart slice.
+ *
+ * @param   {object}      props       - Component props.
+ * @param   {number}      props.id    - Cart product id whose quantity is being edited.
+ * @param   {number}      props.qty   - Current quantity value.
+ * @param   {number}      props.units - Maximum allowed units (passed through for cap enforcement in the reducer).
+ * @returns {JSX.Element} JSX of the round quantity input.
+ */
 const QuantityInput = ({
   id,
   qty,

@@ -15,7 +15,11 @@ import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
 
-/** ForgotPasswordForm — form for requesting an OTP code to reset the password. */
+/**
+ * ForgotPasswordForm — form for requesting an OTP code to reset the password.
+ *
+ * @returns {JSX.Element} JSX of the forgot-password form (loader while the form schema is fetched).
+ */
 export const ForgotPasswordForm = (): JSX.Element => {
   const t = useT();
   const { setComponent, setAction } = useContext(OpenDrawerContext);

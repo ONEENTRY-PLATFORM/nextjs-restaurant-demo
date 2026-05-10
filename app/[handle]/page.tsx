@@ -5,9 +5,11 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * PageLayout - generic renderer for CMS pages without a dedicated route.
- * @param   {object} props - Page properties.
- * @returns {Promise<JSX.Element>} JSX of the generic page.
+ * PageLayout — generic renderer for CMS pages without a dedicated route.
+ *
+ * @param   {object}                              props        - Component props.
+ * @param   {Promise<{ handle: string }>}         props.params - Async route params with the OneEntry `pageUrl` handle.
+ * @returns {Promise<JSX.Element>}                              Promise resolving to JSX of the generic page (title + description HTML, with empty-state fallback).
  */
 const PageLayout = async ({
   params,
@@ -50,8 +52,11 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * generateMetadata - generates page metadata.
- * @returns {Promise<Metadata>} Page metadata.
+ * generateMetadata — generic page metadata derived from the OneEntry page title.
+ *
+ * @param   {object}                       props        - Component props.
+ * @param   {Promise<{ handle: string }>}  props.params - Async route params with the OneEntry `pageUrl` handle.
+ * @returns {Promise<Metadata>}                          Promise resolving to the page metadata.
  */
 export async function generateMetadata({
   params,

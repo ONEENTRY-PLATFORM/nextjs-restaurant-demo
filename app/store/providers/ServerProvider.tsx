@@ -7,9 +7,9 @@ const serverContext = cache(() => new Map());
 /**
  * ServerProvider — simple getter/setter for server components via React `cache`.
  *
- * @param   {string} key          - Key.
- * @param   {T}      defaultValue - Default value.
- * @returns                       Tuple `[value, setter]`.
+ * @param   {string}                              key          - Storage key.
+ * @param   {T | undefined}                       defaultValue - Optional initial value to seed under `key`.
+ * @returns {[T | undefined, (value: T) => Map<string, unknown>]}                      Tuple `[value, setter]` — current value at `key` and a setter that writes a new one.
  */
 export const ServerProvider = <T,>(key: string, defaultValue?: T) => {
   const global = serverContext();

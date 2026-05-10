@@ -22,6 +22,12 @@ type ComfortItem = {
 };
 type Comfort = { title: string; iconUrl?: string };
 
+/**
+ * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
+ *
+ * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
+ * @returns {string}      Formatted `from - to` string, or empty when no interval is present.
+ */
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
@@ -31,7 +37,12 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// `comforts` - list with `extended.type === 'image'`; normalized to `{ title, iconUrl? }[]`.
+/**
+ * normalizeComforts — flattens the `comforts` attribute (with optional image extension) to `{ title, iconUrl? }[]`.
+ *
+ * @param   {unknown}    raw - Raw OneEntry attribute value.
+ * @returns {Comfort[]}      Cleaned list of comfort items (drops entries without a title).
+ */
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
   return (raw as ComfortItem[])
@@ -46,11 +57,23 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
     .filter((c): c is Comfort => c !== null);
 };
 
-// Google Maps embed without an API key; `&hl=en` forces English labels.
+/**
+ * buildMapEmbed — Google Maps embed URL without an API key (`&hl=en` forces English labels).
+ *
+ * @param   {number} lat - Latitude.
+ * @param   {number} lng - Longitude.
+ * @returns {string}     Embed URL suitable for an `<iframe src>`.
+ */
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
-/** RestaurantPage - single-restaurant page. */
+/**
+ * RestaurantPage — single-restaurant page (photos, comforts, contacts, map, BOOK A TABLE CTA).
+ *
+ * @param   {object}                              props        - Component props.
+ * @param   {Promise<{ handle: string }>}         props.params - Async route params with the OneEntry restaurant `pageUrl` handle.
+ * @returns {Promise<JSX.Element>}                              Promise resolving to JSX of the restaurant detail page.
+ */
 const RestaurantPage = async ({
   params,
 }: {
@@ -87,7 +110,7 @@ const RestaurantPage = async ({
     <section className="section_layout pt-0">
       <div className="mb-5 flex items-center justify-between gap-4 text-sm text-paper/70">
         <Link href="/restaurants" className="hover:text-brand">
-          â† All restaurants
+          ← All restaurants
         </Link>
       </div>
 
@@ -192,6 +215,13 @@ const RestaurantPage = async ({
 
 export default RestaurantPage;
 
+/**
+ * generateMetadata — restaurant page metadata from the OneEntry page title.
+ *
+ * @param   {object}                              props        - Component props.
+ * @param   {Promise<{ handle: string }>}         props.params - Async route params with the restaurant `pageUrl` handle.
+ * @returns {Promise<Metadata>}                                 Promise resolving to the page metadata.
+ */
 export async function generateMetadata({
   params,
 }: {

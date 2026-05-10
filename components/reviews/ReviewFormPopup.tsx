@@ -14,8 +14,12 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import ReviewForm from './ReviewForm';
 
 /**
- * ReviewFormPopup - popup hosting the review form. productId is passed via `OpenDrawerContext.action`
- * so the popup can stay globally registered without knowing about the current page.
+ * ReviewFormPopup — popup hosting the review form.
+ *
+ * `productId` is passed via `OpenDrawerContext.action` so the popup can stay globally registered
+ * without knowing about the current page.
+ *
+ * @returns {JSX.Element} JSX of the review-form drawer, or empty fragment when no product id is provided.
  */
 const ReviewFormPopup = (): JSX.Element => {
   const t = useT();
@@ -46,7 +50,13 @@ const ReviewFormPopup = (): JSX.Element => {
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
           <p className="font-semibold text-2xl text-brand">{t('leave_review', 'Leave a review')}</p>
-          <ClosePopupButton onClose={close} ariaLabel="Close review form" />
+          {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
+          <ClosePopupButton
+            onClose={close}
+            ariaLabel="Close review form"
+            className="max-md:hidden"
+          />
+          <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>
 
         <div className="mt-7.5">

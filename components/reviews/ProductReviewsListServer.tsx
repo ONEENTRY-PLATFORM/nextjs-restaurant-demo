@@ -6,9 +6,10 @@ import ProductReviewsList from './ProductReviewsList';
 
 /**
  * ProductReviewsListServer — server wrapper over {@link ProductReviewsList}: fetches approved reviews.
- * @param   {object}               props           - Props.
- * @param   {number}               props.productId - Product id (becomes `entityIdentifier`).
- * @returns {Promise<JSX.Element>}                 Review list JSX.
+ *
+ * @param   {object} props           - Component props.
+ * @param   {number} props.productId - Product id (becomes `entityIdentifier`).
+ * @returns {Promise<JSX.Element>}     JSX of the rendered review list.
  */
 const ProductReviewsListServer = async ({
   productId,

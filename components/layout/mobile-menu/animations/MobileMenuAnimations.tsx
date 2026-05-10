@@ -7,7 +7,15 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/** Mobile menu open/close animations. */
+/**
+ * MobileMenuAnimations — slide-from-left enter/leave animation for the mobile menu drawer.
+ *
+ * @param   {object}      props           - Component props.
+ * @param   {ReactNode}   props.children  - Drawer content (must include `#modalBg` and `#modalBody`).
+ * @param   {string}      props.className - Wrapper class merged onto the animated container.
+ * @param   {string}      props.id        - DOM id assigned to the wrapper.
+ * @returns {JSX.Element} JSX of the animated wrapper, or empty fragment when not open.
+ */
 const MobileMenuAnimations = ({
   children,
   className,

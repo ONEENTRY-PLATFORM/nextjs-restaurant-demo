@@ -36,11 +36,11 @@ export const AuthContext = createContext<{
 });
 
 /**
- * AuthProvider — authentication provider.
+ * AuthProvider — authentication provider that hydrates the OneEntry session and exposes it via {@link AuthContext}.
  *
  * @param   {AuthProviderProps} props          - Component props.
- * @param   {ReactNode}         props.children - Child ReactNode.
- * @returns {JSX.Element}                      AuthContext JSX provider.
+ * @param   {ReactNode}         props.children - Subtree that consumes `AuthContext`.
+ * @returns {JSX.Element}                      JSX provider wrapping children with the auth context value.
  */
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();

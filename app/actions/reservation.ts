@@ -21,8 +21,9 @@ const ORDER_STORAGE_MARKER = 'booking_order';
  *
  * `booking_order` in OneEntry is a form of type `order`, so it goes through
  * `Orders.createOrder`.
- * @param   {ReservationPayload}                                   payload - Reservation fields prepared on the client.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}       Result of the server action.
+ *
+ * @param   {ReservationPayload}                                     payload - Reservation fields prepared on the client.
+ * @returns {Promise<{ ok: true } | { ok: false; message: string }>}         Result of the server action.
  */
 export async function submitReservation(
   payload: ReservationPayload

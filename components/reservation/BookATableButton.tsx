@@ -6,10 +6,15 @@ import { useContext } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * BookATableButton — client-side trigger button for ReservationPopup.
+ * BookATableButton — client-side trigger button for `ReservationPopup`.
  *
- * Stores the restaurant marker (= `pageUrl`) in `action` so the popup
- * can pre-fill the restaurant picker dropdown.
+ * Stores the restaurant marker (= `pageUrl`) in `action` so the popup can pre-fill the restaurant picker.
+ *
+ * @param   {object}    props                  - Component props.
+ * @param   {string}    props.restaurantHandle - OneEntry restaurant `pageUrl` (used as the picker pre-fill).
+ * @param   {string}    [props.className]      - Class merged onto the button element.
+ * @param   {ReactNode} props.children         - Button label content.
+ * @returns {JSX.Element}                        JSX of the trigger button.
  */
 const BookATableButton = ({
   restaurantHandle,

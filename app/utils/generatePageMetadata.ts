@@ -30,8 +30,17 @@ interface PageMetadataOptions {
 /**
  * generatePageMetadata — generates standardized Next.js page metadata.
  *
- * @param   {PageMetadataOptions} props - Metadata generation options.
- * @returns {Metadata}                  `Metadata` object for Next.js.
+ * @param   {PageMetadataOptions} options             - Component options.
+ * @param   {string}              options.handle      - Page handle appended to the canonical URL.
+ * @param   {string}              options.title       - Page title (also used as fallback `imageAlt`).
+ * @param   {string}              options.description - Page description.
+ * @param   {boolean}             options.isVisible   - Whether the page should be indexable/followable.
+ * @param   {string}              [options.imageUrl]  - Optional OG image URL.
+ * @param   {number}              [options.imageWidth]  - OG image width (defaults to 300).
+ * @param   {number}              [options.imageHeight] - OG image height (defaults to 300).
+ * @param   {string}              [options.imageAlt]    - OG image alt text (defaults to `title`).
+ * @param   {string}              options.baseUrl       - Optional base URL segment prepended to the canonical URL.
+ * @returns {Metadata}                                  Next.js `Metadata` object with title, description, robots, alternates, and OG image.
  */
 export const generatePageMetadata = ({
   handle = '',

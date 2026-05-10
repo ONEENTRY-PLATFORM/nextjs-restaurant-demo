@@ -10,8 +10,9 @@ export const dynamic = 'force-dynamic';
 type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
- * ServicePage - service landing page with logo and CTAs from attributes of the CMS `services` page.
- * @returns {Promise<JSX.Element>} JSX of the service entry page.
+ * ServicePage — service landing page with logo and CTAs from attributes of the CMS `services` page.
+ *
+ * @returns {Promise<JSX.Element>} Promise resolving to JSX of the service entry page (logo, primary/secondary CTA buttons over background image).
  */
 const ServicePage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('services');
@@ -65,7 +66,11 @@ const ServicePage = async (): Promise<JSX.Element> => {
 
 export default ServicePage;
 
-/** generateMetadata - service entry page metadata. */
+/**
+ * generateMetadata — service entry page metadata from the CMS `services` page title.
+ *
+ * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('services');
   return { title: page?.localizeInfos?.title };

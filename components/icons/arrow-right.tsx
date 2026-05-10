@@ -1,3 +1,10 @@
+/**
+ * ArrowRightIcon — pagination "next" arrow with hover-to-brand fill.
+ *
+ * @param   {object}      [props]        - Component props.
+ * @param   {boolean}     [props.active] - When `true`, paint the icon in brand colour (otherwise muted).
+ * @returns {JSX.Element} JSX of the right-arrow SVG.
+ */
 const ArrowRightIcon = (props?: { active?: boolean }) => {
   return (
     <svg

@@ -4,7 +4,7 @@ const HouseIcon = ({ size = 'md' }: { size?: 'md' | 'lg' }): JSX.Element => {
   if (size === 'lg') {
     return (
       <svg
-        className="fill-[#DFE9F9] hover-target"
+        className="fill-paper hover-target"
         width="29"
         height="25"
         viewBox="0 0 29 25"
@@ -28,7 +28,7 @@ const HouseIcon = ({ size = 'md' }: { size?: 'md' | 'lg' }): JSX.Element => {
   }
   return (
     <svg
-      className="fill-[#DFE9F9] hover-target"
+      className="fill-paper hover-target"
       width="23"
       height="20"
       viewBox="0 0 23 20"

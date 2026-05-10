@@ -70,7 +70,7 @@ const Modal = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] min-h-140 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 backdrop-blur-card p-6 px-16 pt-24 pb-25 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:w-182.5 md:max-w-[95vw] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:p-10 lg:px-33.5 lg:pt-24"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] max-xs:max-h-full min-h-140 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 backdrop-blur-card p-6 px-16 pt-24 pb-25 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:w-182.5 md:max-w-[95vw] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:p-10 lg:px-33.5 lg:pt-24"
       >
         {/* Popup header: back / title / close. */}
         <header className="absolute left-0 top-0 flex w-full items-center justify-between gap-5 px-8 py-6 max-sm:px-8 lg:px-12">

@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 const FilterIcon = (): JSX.Element => {
   return (
     <svg
-      className="fill-[#DFE9F9] hover-target"
+      className="fill-paper hover-target"
       width="21"
       height="20"
       viewBox="0 0 21 20"

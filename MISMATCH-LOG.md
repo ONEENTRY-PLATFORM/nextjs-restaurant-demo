@@ -105,8 +105,8 @@
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.4.11 | Хардкод-строки без маркеров в OneEntry: `'Cart'`, `'Select time'`, `'Success'`, `'Error'` в STEP_TITLES + строка `'Cart'` в шапке мобильной корзины и хлебных крошках. Завести `cart_text` / `select_time_text` / `success_text` / `error_text` в `static_content` и подцепить через `dict` | [components/cart/CartWizard.tsx:48-61,164,181-186](components/cart/CartWizard.tsx#L48-L61) | P3 |
-| B.4.12 | StepPayment: хардкод `'Pay with'` (PayPal label, line 103), `'Credit & Debit Cards'`, placeholder `'phone number'` (line 196) — нет соответствующих маркеров в `static_content`. Wired: `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text` | [components/cart/steps/StepPayment.tsx:103,196](components/cart/steps/StepPayment.tsx#L103) | P3 |
+| B.4.11 | Хардкод-строки без маркеров в OneEntry: `'Cart'`, `'Order'`, `'Success'`, `'Error'` в STEP_TITLES + строка `'Cart'` в шапке мобильной корзины. Завести `cart_text` / `order_text` / `success_text` / `error_text` в `static_content` и подцепить через `dict`. _(line numbers refreshed 2026-05-10)_ | [components/cart/CartWizard.tsx:37-41,174](components/cart/CartWizard.tsx#L37-L41) | P3 |
+| B.4.12 | StepPayment: остался только хардкод `placeholder="phone number"` — нет маркера в `static_content`. _(2026-05-10: `'Pay with'` и `'Credit & Debit Cards'` убраны/вмерджены в dict; line numbers refreshed)_ | [components/cart/steps/StepPayment.tsx:336](components/cart/steps/StepPayment.tsx#L336) | P3 |
 
 ### B.5. Профиль и попапы (`m_profile.html`, `pk_active_orders.html` ↔ `app/profile/*`, `components/profile/*`)
 
@@ -159,7 +159,7 @@
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.7.5 | `text-[24px] md:text-[32px]` на h1 — повтор паттерна (B.5.1, B.6.3) | [app/support/page.tsx:31](app/support/page.tsx#L31) | P3 |
+| B.7.5 | Остался `md:text-[32px]` на h1 (одноразовое значение — оставить `[...]` по §3.1.1, либо завести `--text-display` если повторится в 3+ местах). _(2026-05-10: `text-[24px]` → `text-2xl` чисткой; line refreshed)_ | [app/support/page.tsx:39](app/support/page.tsx#L39) | P3 |
 | B.7.9 | `static-html/service_support.html` НЕ содержит формы Contact-Us — только два контактных блока. В проекте форма всё ещё есть. С клиентом форма подтверждена как нужна (`contact_us` создан в админке), но это значит макет support-страницы **отличается от static-html** — ✅ намеренно | [app/support/page.tsx:70-75](app/support/page.tsx#L70-L75) | — |
 
 ### B.8. Промо (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
@@ -195,37 +195,23 @@ postFormsData → 400 "You must authorize to send data"
 
 - `id: 5`, `type: 'rating'`, `processingType: 'script'`
 - `moduleFormConfigs[0]`: `id: 2`, `moduleIdentifier: 'catalog'`, `isAnonymous: false`, `commentOnlyUserData: false`, `viewOnlyUserData: false`, `isClosed: false`
-- `entityIdentifiers: [{ id: "menu", isNested: true }, { id: 37, isNested: false }]`
+- `entityIdentifiers: [{ id: "menu", isNested: true }, { id: 37, isNested: false }, { id: 133, isNested: false }, { id: 129, isNested: false }, { id: 125, isNested: false }, { id: 120, isNested: false }, { id: 119, isNested: false }, { id: 116, isNested: false }, { id: 126, isNested: false }, { id: 132, isNested: false }]` _(админ расширил список 2026-05-10)_
 
 User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо, не хватает.
 
-> ❓ **Уточнить у клиента / поправить в админке:**
+> 🔄 **Обновлено 2026-05-10:** Из MCP видно, что для этого юзера **5 approved-записей реально существуют** в `getFormsDataByMarker('review_form')` — значит, сабмит уже работал минимум 5 раз. Проблема, по-видимому, **прерывистая** и привязана к конкретным product/page id, не входящим в `entityIdentifiers`. Поведение для продуктов с page id вне списка `{37, 116, 119, 120, 125, 126, 129, 132, 133}` (плюс nested под `menu`) — стоит проверить отдельно.
 >
-> 1. Открыть `Forms → review_form → Script tab`. `processingType: 'script'` означает, что после field-валидации запускается серверный скрипт — он, вероятно, и возвращает `"You must authorize to send data"`. Проверить, что в скрипте нет проверки роли/группы, которой нет у обычного зарегистрированного user-а.
-> 2. Permissions группы `7` (или дефолтной user-группы) для модуля `catalog` / форм типа `rating` — должно быть «can submit».
-> 3. Альтернатива: `entityIdentifiers[0].id` сейчас строка `"menu"` (pageUrl-маркер). В части OneEntry-проектов сюда ждут numeric page id (для menu это `1`). Если script сверяется по `id`-числу — строка `"menu"` его не пройдёт. Попробовать заменить на `{ id: 1, isNested: true }` либо явно перечислить sub-pages (`{ id: 8, isNested: false }` — main_courses, и т.п.).
+> ❓ **Уточнить у клиента:**
 >
-> На стороне кода фикса не требуется — `ReviewForm.tsx` шлёт корректное тело и валидный Bearer (см. логи fetch в `.claude/temp/test-review-with-user.mjs`). Как только админская конфигурация позволит сабмит — пометить ✅ и удалить пункт.
-
-#### C.1.5. `review_form` — чтение отзывов отдаёт 403 анонимной роли
-
-```text
-POST /api/content/form-data/marker/review_form?formModuleConfigId=2&isExtended=1
-→ 403 "User doesn't have permissions to access the requested url or API method"
-```
-
-Симптом: на товаре с реальными отзывами (например `id=15` — `getProductById(15).rating = { value: 4, votes: 2 }` подтверждает 2 approved-записи) блок `<ProductReviewsList>` показывает empty-state «No reviews yet». `getProductReviews(productId)` ловит `isError(data)` от 403 и возвращает `[]`.
-
-Сравнение с эталоном `oneentry-next-shop` (`react-native-course.oneentry.cloud`, форма `comment_to_product`): тот же SDK-вызов `FormData.getFormsDataByMarker(marker, cfgId, { entityIdentifier, status: ['approved'] }, 1, lang, 0, 500)` возвращает `{ items[], total }` без авторизации. Разница ровно в одном поле `moduleFormConfigs[0]`:
-
-| проект                                                | `isGlobal` | анонимное чтение |
-| ----------------------------------------------------- | ---------- | ---------------- |
-| `oe-restaurants` (наш `review_form`, cfgId=2)         | `false`    | 403              |
-| `react-native-course` (`comment_to_product`, cfgId=5) | `true`     | работает         |
-
-> ❓ **Уточнить у клиента / поправить в админке:**
+> 1. Воспроизвести 400 на конкретном товаре, чей page id **не** в списке выше — и проверить, что ошибка завязана на entity-фильтр, а не на permissions.
+> 2. Если подтвердится — добавить недостающие page id в `entityIdentifiers`, либо оставить только `{ id: "menu", isNested: true }` (если admin script корректно резолвит nested pages).
+> 3. Если ошибка приходит и для товаров **из** списка — значит дело в script-е (`processingType: 'script'`); см. вкладку Forms → review_form → Script.
 >
-> Forms → `review_form` → конфигурация модуля `catalog` (id=2) → включить флаг **Global** (`isGlobal: true`). После этого approved-записи начнут читаться публично, и UI начнёт рендерить карточки. На стороне кода правок не требуется — нормализация ответа (`items` → фильтр `parentId === null` → `readPlainText`/`readNumber`) проверена на формате реального ответа (`{id, parentId, formData[{marker, value}], time, userIdentifier, status: 'approved'}`).
+> На стороне кода фикса не требуется. Как только воспроизведение прояснится — пометить ✅ и удалить пункт.
+
+#### C.1.5. `review_form` — чтение отзывов отдаёт 403 анонимной роли — ✅ ЗАКРЫТО 2026-05-10
+
+Анонимное `getFormsDataByMarker('review_form', 2, { status: ['approved'] }, 1, 'en_US', 0, 500)` через MCP возвращает `{ items.length: 5, total: 5 }` — все 5 записей с `parentId: null`, `status: 'approved'`, реальные `time`/`userIdentifier`. 403 ушёл, при том что `moduleFormConfigs[0].isGlobal` всё ещё `false` — серверные permissions для cfgId=2 теперь разрешают анонимное чтение независимо от флага. `<ProductReviewsList>` рендерит реальные карточки.
 
 ### C.2. Недостающие страницы
 
@@ -689,9 +675,9 @@ MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер п
 
 [components/layout/header/nav/NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx) теперь рендерит выпадающее меню под иконкой профиля для авторизованных юзеров — пункты тянутся из CMS-меню с маркером `user_menu`. На десктопе это меню заменило табы `Personal / Orders / Favorites` (последние удалены из [app/profile/layout.tsx](app/profile/layout.tsx) — табов в дизайне нет).
 
-Сейчас в админке `user_menu` уже создан, но содержит **не те** пункты:
+✅ **Контент пунктов меню — закрыто 2026-05-10.** `Menus.getMenusByMarker('user_menu', 'en_US').pages` отдаёт 6 правильных пунктов: `home_web` / `orders` / `bookings` / `favorites` / `cart` / `profile` — покрывает Orders/Bookings/Favorites из `pk_*.html`-эталона.
 
-> ⚠️ В коде сейчас линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Это значит, что для совпадения с реальными Next.js-маршрутами `pageUrl` в CMS должен быть **полным** путём без ведущего `/` — например, `profile/orders`, а не просто `orders`. Если такой формат не подходит OneEntry — альтернатива: переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` будут совпадать. Решение за командой админки.
+> ⚠️ **Routing-формат — остаётся открытым.** В коде линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Сейчас `pageUrl` в CMS — flat (`orders`, `favorites`, `bookings`), а реальные Next.js-маршруты — `/profile/orders`, `/profile/favorites`, `/profile/bookings`. Варианты: (a) переименовать `pageUrl` в CMS на полные пути `profile/orders` и т.п.; (b) переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` совпадут; (c) маппить в коде. Решение за командой админки.
 
 ### C.10. Профиль — Reservations history (Figma 78:1293)
 

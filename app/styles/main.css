@@ -555,7 +555,6 @@ html {
   .cart_btn {
     @apply 
       cursor-pointer 
-      bg-custom_transparent 
       rounded-panel 
       border-none 
       w-full 
@@ -563,15 +562,17 @@ html {
       mt-6.5 
       font-semibold 
       text-[17px] 
-      text-paper/60 
+      text-white 
       hover:text-white 
       text-center 
       flex 
       justify-center 
       items-center 
       gap-6.25 
-      hover:bg-custom_btnorange 
-      active:bg-custom_btnorange 
+      bg-brand 
+      hover:bg-brand-hover 
+      focus:bg-brand-hover 
+      active:bg-brand-hover
       transition-all 
       duration-700;
   }

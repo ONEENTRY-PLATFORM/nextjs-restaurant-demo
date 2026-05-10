@@ -12,8 +12,11 @@ import CloseXMiniIcon from '@/components/icons/close-x-mini';
  * @returns JSX of the centered close button.
  */
 const CenterCloseButton = (): JSX.Element => {
-  const { open, setTransition } = useContext(OpenDrawerContext);
-  const hidden = !open;
+  const { open, transition, setTransition } = useContext(OpenDrawerContext);
+  // Hide as soon as a close is requested, so the icon crossfade runs
+  // alongside the drawer's reverse animation rather than waiting for
+  // `open` to flip on `onReverseComplete`.
+  const hidden = !open || transition === 'close';
 
   return (
     <button

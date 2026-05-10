@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { type JSX, useSyncExternalStore } from 'react';
 
-import { useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
+import { resetCheckout } from '@/app/store/reducers/OrderSlice';
 import CartIcon from '@/components/icons/cart';
 
 /**
@@ -13,6 +14,7 @@ import CartIcon from '@/components/icons/cart';
  * @returns JSX of the cart link.
  */
 const NavItemCart = (): JSX.Element => {
+  const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;
   const count = items?.length ?? 0;
   // Redux store is hydrated from localStorage only on the client — gate the
@@ -30,6 +32,9 @@ const NavItemCart = (): JSX.Element => {
     <Link
       prefetch={false}
       href="/cart"
+      // Snap the wizard back to the cart step — otherwise the persisted
+      // `step` from a prior visit (e.g. `payment`) would render instead.
+      onClick={() => dispatch(resetCheckout())}
       className="group relative my-auto box-border flex shrink-0"
       aria-label="Cart"
     >

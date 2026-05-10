@@ -3,8 +3,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 
-import { useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { resetCheckout } from '@/app/store/reducers/OrderSlice';
 
 /**
  * CenterCartButton — central protruding cart button; opens the `CartPopup` drawer, crossfades with `CenterCloseButton`.
@@ -12,7 +13,8 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @returns JSX of the centered cart button with rehydrated count badge.
  */
 const CenterCartButton = (): JSX.Element => {
-  const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
+  const { open, transition, setOpen, setComponent } = useContext(OpenDrawerContext);
+  const dispatch = useAppDispatch();
   const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);
   // Persisted Redux slice rehydrates on the client — gate the badge via a mount-gate.
   const mounted = useSyncExternalStore(
@@ -24,12 +26,18 @@ const CenterCartButton = (): JSX.Element => {
     () => false
   );
 
-  const hidden = open;
+  // Flip back to the cart icon as soon as a close is requested, so the icon
+  // crossfade runs in parallel with the drawer's reverse animation rather
+  // than waiting for `open` to flip on `onReverseComplete`.
+  const hidden = open && transition !== 'close';
 
   return (
     <button
       type="button"
       onClick={() => {
+        // Snap the wizard back to the cart step — otherwise the persisted
+        // `step` from a prior visit (e.g. `payment`) would render instead.
+        dispatch(resetCheckout());
         setComponent('CartPopup');
         setOpen(true);
       }}

@@ -196,14 +196,14 @@ const ActiveBookingCard = ({
         <button
           type="button"
           onClick={onCancel}
-          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-base text-paper"
+          className="hover_btn_paper flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-base text-paper"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={onEdit}
-          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-base text-brand"
+          className="hover_btn_brand flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-base text-brand"
         >
           Edit
         </button>

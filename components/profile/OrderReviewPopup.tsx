@@ -311,7 +311,7 @@ const ReviewableItem = ({
               type="button"
               onClick={onEdit}
               disabled={state.existingId === null || state.isEditing || state.loading}
-              className="hover_btn_white flex h-7.5 w-20 items-center justify-center rounded-card border border-paper text-base text-paper disabled:opacity-50"
+              className="hover_btn_paper flex h-7.5 w-20 items-center justify-center rounded-card border border-paper text-base text-paper disabled:opacity-50"
             >
               {t('edit_button', 'Edit')}
             </button>

@@ -400,7 +400,7 @@ const ProfileSections = (): JSX.Element => {
             <button
               type="button"
               onClick={() => setAddAddressOpen(v => !v)}
-              className="hover_btn_white mt-7.5 rounded-card border border-white px-5 py-1.25 font-semibold text-base text-paper"
+              className="hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
             >
               + Add Address
             </button>

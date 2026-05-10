@@ -163,9 +163,9 @@ const RestaurantPage = async ({
 
         <BookATableButton
           restaurantHandle={handle}
-          className="cart_btn hidden md:flex bg-custom_btnorange hover:bg-brand-hover md:max-w-114.5"
+          className="cart_btn text-uppercase hidden md:flex md:max-w-114.5"
         >
-          BOOK A TABLE
+          Book a table
         </BookATableButton>
       </div>
 
@@ -202,11 +202,8 @@ const RestaurantPage = async ({
 
       {/* Mobile CTA - on desktop the button already sits in the comforts row. */}
       <div className="mt-10 md:hidden">
-        <BookATableButton
-          restaurantHandle={handle}
-          className="cart_btn bg-custom_btnorange hover:bg-brand-hover"
-        >
-          BOOK A TABLE
+        <BookATableButton restaurantHandle={handle} className="cart_btn">
+          Book a table
         </BookATableButton>
       </div>
     </section>

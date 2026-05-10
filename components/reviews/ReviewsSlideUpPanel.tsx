@@ -90,7 +90,7 @@ const ReviewsSlideUpPanel = ({
             type="button"
             onClick={onApply}
             disabled={loading || success}
-            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-brand hover_btn_white disabled:opacity-60"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-brand hover_btn_brand disabled:opacity-60"
           >
             {!isAuth ? 'Sign in' : success ? 'Sent' : loading ? '...' : 'Apply'}
           </button>
@@ -102,7 +102,7 @@ const ReviewsSlideUpPanel = ({
               setSuccess(false);
               setError('');
             }}
-            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-paper hover_btn_white"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-paper hover_btn_paper"
           >
             Edit
           </button>

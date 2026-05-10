@@ -49,6 +49,29 @@
 
 ---
 
+### A.5. Состояния кнопок vs Figma `BUTTONS_DESKTOP` / `BUTTONS` (mobile)
+
+**Severity: P2 (остаток).** Аудит 2026-05-10 от макетов Figma `node-id=2489-460` (desktop) и `node-id=2489-96` (mobile) — 4 состояния (default / hover / disabled / active) для 7 семейств кнопок (SIGN UP, ADD TO CART, LOGIN PHONE, CREATE ACCOUNT, Tertiary x1, + Add Address, Apply).
+
+**Закрыто в этом проходе (2026-05-10):**
+
+| Что | Где | Что сделано |
+| --- | --- | --- |
+| Hover-цвет filled-primary смешивал hover + active в один `#EB4B0E` | `--color-brand-hover` в [app/globals.css](app/globals.css) | Перевёл на Figma `#F15B22`; добавил `--color-brand-active: #E44306` для отдельного active. |
+| Не было токенов для outlined-fill hover/active | [app/globals.css](app/globals.css) | Добавил `--color-brand-soft-hover` (0.2) и `--color-brand-soft-active` (0.5, переименован из misleading `--color-btn_hover`). |
+| Не было disabled-токенов | [app/globals.css](app/globals.css) | Добавил `--color-disabled-bg` (Gray_50%), `--color-disabled-bg-soft` (Gray_20%), `--color-disabled-text` (#A8A9B5). |
+| `.cart_btn` хардкодил `bg-brand-hover` на hover/focus/**active** одинаково | [app/styles/main.css](app/styles/main.css#L555) | `active:bg-brand-active` отделён; добавлены `disabled:bg-disabled-bg disabled:text-disabled-text disabled:backdrop-blur-card disabled:cursor-not-allowed`. |
+| `.menu_items_btn` имел `border-custom_white` | [app/styles/main.css](app/styles/main.css#L400) | `border-ink` (`#4C4D56`, как Figma Tertiary default). |
+| `PaymentButton` использовал arbitrary `[#e44306]` и `bg-custom_btnorange` | [components/layout/cart/components/PaymentButton.tsx](components/layout/cart/components/PaymentButton.tsx#L17) | `bg-brand hover:bg-brand-hover active:bg-brand-active` + disabled-комплект. |
+| `AuthProviderSelect` / `ReservationAuthStep` показывали первого провайдера сплошным оранжевым (default), Figma показывает default = серый+blur, оранжевый — только hover | [components/forms/AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx) · [components/reservation/ReservationAuthStep.tsx](components/reservation/ReservationAuthStep.tsx) | Все провайдеры теперь рендерятся в едином LOGIN PHONE state-machine: `bg-disabled-bg backdrop-blur-card hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`. Удалена ветка `isPrimary` (визуально не подтверждалась макетом). |
+| `+ Add Address` имел `border-white` (`#FFF`), а Figma — `#DFE9F9` (`paper`) | [components/profile/ProfileSections.tsx](components/profile/ProfileSections.tsx#L403) · [components/cart/steps/step-payment/AddressRow.tsx](components/cart/steps/step-payment/AddressRow.tsx#L126) | `border-paper`. |
+| Дублирующий override `cart_btn bg-custom_btnorange hover:bg-brand-hover` поверх `.cart_btn` | [app/restaurants/page.tsx](app/restaurants/page.tsx#L152) · [app/restaurants/[handle]/page.tsx](app/restaurants/[handle]/page.tsx) | Оставлен только `cart_btn`. После фикса самого класса (`bg-brand` сплошной + правильный hover/active) override не нужен. |
+| `.hover_btn_white` (`hover:text-white`) применялся как универсальный outlined-hover, но Figma даёт две разные семантики hover: для outlined-brand (CREATE ACCOUNT) — текст остаётся бренд + bg `brand-soft-hover`; для outlined-paper (`+ Add Address`) — текст остаётся paper + border меняется на бренд | [app/styles/main.css:186](app/styles/main.css#L186) → 13 callers | Класс удалён. Заменён на два узких: `.hover_btn_brand` (`hover:bg-brand-soft-hover`) и `.hover_btn_paper` (`hover:border-brand`). Все 11 outlined-brand/paper callers (CreateAccountButton, DateTimePickerSheet ×2, not-found, EmptyCart, FilterBottom, ResetButton, BookingsContent ×2, ReviewsSlideUpPanel ×2, OrderReviewPopup, ProfileSections, AddressRow) мигрированы. У [group-card/ApplyButton](components/layout/product/group-card/ApplyButton.tsx) Figma даёт особый hover (text → paper, без fill) — реализовано инлайн `hover:text-paper`. У [CreateAccountButton](components/forms/inputs/CreateAccountButton.tsx) дополнительно добавлен active-state (`active:bg-brand-soft-active active:text-white`) и disabled (`disabled:border-ink disabled:text-ink`) — это полная state-машина CREATE ACCOUNT из Figma. |
+| Filter `ApplyButton` был gradient-кнопкой, а Figma `Apply` — outlined 1px brand с hover `text → paper` | [components/layout/filter/components/buttons/ApplyButton.tsx](components/layout/filter/components/buttons/ApplyButton.tsx#L21) | Перевёл на outlined: `border border-brand text-brand ... hover:text-paper disabled:border-ink disabled:text-ink`. Gradient-токены `bg-custom-gradient` / `bg-gradient-to-r-hover` остаются для ADD TO CART (это там, где Figma действительно показывает gradient). |
+| `AddToCartButton` для `out_of_stock` подменял всю кнопку на pill (`border-muted text-muted`), Figma же показывает ту же кнопку в disabled-визуале (`Gray_50%` + `blur(10)`, label "Out of stock", cart-icon скрыта) | [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx) | Pill убрана. Теперь рендерится та же `<button>` с `disabled={notInStock}` и комбинированным className: при `notInStock` дописывается `bg-none bg-disabled-bg backdrop-blur-card cursor-not-allowed` (Tailwind v4 `bg-none` сбрасывает background-image gradient, `bg-disabled-bg` ставит solid Gray_50%). Лейбл переключается на `out_of_stock_button` из словаря, иконка корзины скрыта. JSDoc обновлён под новую семантику. |
+
+---
+
 ## Раздел B. Ручная сверка по экранам
 
 ### B.1. Главная (`static-html/index.html` ↔ `app/page.tsx` + components)

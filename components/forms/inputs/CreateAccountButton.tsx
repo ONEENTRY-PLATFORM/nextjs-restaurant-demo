@@ -21,7 +21,7 @@ const CreateAccountButton = ({ title = 'Create account' }: { title: string }) =>
         setComponent('SignUpForm');
       }}
       type="button"
-      className="rounded-panel w-full h-14 font-semibold text-[17px] text-center flex justify-center items-center gap-6.25 text-brand bg-transparent border border-brand hover_btn_white"
+      className="rounded-panel w-full h-14 font-semibold text-[17px] text-center flex justify-center items-center gap-6.25 text-brand bg-transparent border border-brand hover_btn_brand active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
     >
       {title}
     </button>

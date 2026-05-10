@@ -18,14 +18,18 @@ import QuantitySelector from './QuantitySelector';
 /**
  * AddToCartButton — "ADD TO CART" button that switches to `QuantitySelector` after adding.
  *
+ * When `statusIdentifier === 'out_of_stock'` the same button is rendered in the Figma
+ * disabled-state (`Gray_50%` + `backdrop-blur(10)`, label swapped for "Out of stock",
+ * cart icon hidden) — the DOM shape stays the same as the active button.
+ *
  * @param   {object}      props                  - Component props.
  * @param   {number}      props.id               - Product id to add.
  * @param   {number}      props.units            - Maximum allowed units (used by the quantity selector cap).
  * @param   {string}      props.productTitle     - Product title used in the toast text.
- * @param   {string}      props.statusIdentifier - Product status; `'out_of_stock'` renders an inert "Out of stock" pill.
+ * @param   {string}      props.statusIdentifier - Product status; `'out_of_stock'` renders the disabled visual.
  * @param   {string}      props.className        - Class merged onto the button.
  * @param   {number}      props.height           - Pixel height passed to the quantity selector.
- * @returns JSX of either the add-to-cart button or the quantity selector.
+ * @returns JSX of the add-to-cart button (active or disabled), or the quantity selector once in cart.
  */
 const AddToCartButton = ({
   id,
@@ -61,14 +65,6 @@ const AddToCartButton = ({
   // `null` = "no status assigned" = available; only block on an explicit out_of_stock.
   const notInStock = useMemo(() => statusIdentifier === 'out_of_stock', [statusIdentifier]);
 
-  if (notInStock) {
-    return (
-      <div className={'rounded-card border border-muted text-muted px-4 py-2 ' + className}>
-        {t('out_of_stock_button', 'Out of stock')}
-      </div>
-    );
-  }
-
   const updateUserCartState = async () => {
     const updatedItems = items.some(product => product.id === id)
       ? items.map(product => ({
@@ -95,19 +91,25 @@ const AddToCartButton = ({
   };
 
   const addToCartLabel = t('add_to_cart', 'ADD TO CART');
+  const outOfStockLabel = t('out_of_stock_button', 'Out of stock');
 
-  return !inCart ? (
-    <button
-      onClick={() => addToCartHandle()}
-      type="button"
-      className={className}
-      aria-label={`Add ${productTitle} to cart`}
-    >
-      {addToCartLabel}
-      <CartAddIcon className="w-5 h-4.5" />
-    </button>
-  ) : (
+  return inCart ? (
     <QuantitySelector height={height} id={id} units={units} title={productTitle} />
+  ) : (
+    <button
+      onClick={notInStock ? undefined : () => addToCartHandle()}
+      type="button"
+      disabled={notInStock}
+      className={
+        notInStock
+          ? `${className} bg-none bg-disabled-bg backdrop-blur-card cursor-not-allowed`
+          : className
+      }
+      aria-label={notInStock ? `${productTitle} is out of stock` : `Add ${productTitle} to cart`}
+    >
+      {notInStock ? outOfStockLabel : addToCartLabel}
+      {!notInStock && <CartAddIcon className="w-5 h-4.5" />}
+    </button>
   );
 };
 

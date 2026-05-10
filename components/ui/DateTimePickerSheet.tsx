@@ -368,7 +368,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canContinue}
               onClick={() => setStepName('time')}
-              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_white disabled:opacity-60"
+              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_brand disabled:opacity-60"
             >
               {continueText}
             </button>
@@ -377,7 +377,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canApply}
               onClick={handleApply}
-              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_white disabled:opacity-60"
+              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_brand disabled:opacity-60"
             >
               {applyText}
             </button>

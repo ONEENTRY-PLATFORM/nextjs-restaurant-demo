@@ -2,12 +2,13 @@
 
 import Image from 'next/image';
 import type { JSX } from 'react';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
+import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
  * SupportPopup — mobile support popup (call / WhatsApp).
@@ -25,7 +26,10 @@ const SupportPopup = ({
   whatsappUrl: string | undefined;
 }): JSX.Element => {
   const t = useT();
-  const { setTransition } = useContext(OpenDrawerContext);
+  const { setOpen, setTransition } = useContext(OpenDrawerContext);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+
+  useSwipeToClose(sheetRef, () => setOpen(false));
 
   const callPrompt = t('support_call_prompt', 'Would you like to call?');
   const questionPrompt = t('support_question_prompt', 'Would you like to ask a question?');
@@ -36,6 +40,7 @@ const SupportPopup = ({
     <DrawerAnimations component="SupportPopup" wrapperClassName="md:hidden">
       <div
         id="modalBody"
+        ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-ink/80 backdrop-blur-card pt-5 px-5 pb-25 shadow-xl"
       >
         <div className="mx-auto max-w-88.75">

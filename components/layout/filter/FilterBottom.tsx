@@ -240,7 +240,7 @@ const FilterBottom = ({
           <button
             type="button"
             onClick={apply}
-            className="filter_btn text-brand border border-brand rounded-card px-5 hover_btn_white"
+            className="filter_btn text-brand border border-brand rounded-card px-5 hover_btn_brand"
           >
             Apply
           </button>

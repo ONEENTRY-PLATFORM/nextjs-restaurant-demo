@@ -29,7 +29,7 @@ const ResetButton = (): JSX.Element => {
   return (
     <button
       onClick={onResetHandle}
-      className="rounded-panel border border-brand text-brand font-bold text-base uppercase h-12.5 hover_btn_white w-full"
+      className="rounded-panel border border-brand text-brand font-bold text-base uppercase h-12.5 hover_btn_brand w-full"
     >
       {t('clear_all_filters_text', 'Clear all filters')}
     </button>

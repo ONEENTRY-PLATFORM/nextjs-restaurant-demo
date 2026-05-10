@@ -123,7 +123,7 @@ const AddressRow = ({
             <button
               type="button"
               onClick={handleAdd}
-              className="hover_btn_white mt-2.5 self-start rounded-card border border-white px-5 py-1.25 font-semibold text-base text-paper"
+              className="hover_btn_paper mt-2.5 self-start rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
             >
               + {t('add_address_text', 'Add Address')}
             </button>

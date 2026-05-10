@@ -149,8 +149,8 @@ const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => 
           {card.schedule ? <p className="text-base text-brand">{card.schedule}</p> : null}
         </div>
       </div>
-      <Link href={card.href} className="cart_btn bg-custom_btnorange hover:bg-brand-hover">
-        MORE ABOUT RESTORANT
+      <Link href={card.href} className="cart_btn text-uppercase">
+        More about restaurant
       </Link>
     </div>
   );

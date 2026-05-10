@@ -178,15 +178,23 @@ html {
 }
  
 .hover_btn_transp {
-  @apply 
-    hover:bg-btn_hover 
+  @apply
+    hover:bg-brand-soft-active
     hover:text-white;
 }
 
-.hover_btn_white {
-  @apply 
-    hover:border-brand 
-    hover:text-white;
+/* Outlined-brand hover (Figma CREATE ACCOUNT): default text-brand stays brand,
+   bg gains the soft-hover fill (rgba 0.2). Border was already brand. */
+.hover_btn_brand {
+  @apply
+    hover:bg-brand-soft-hover;
+}
+
+/* Outlined-paper hover (Figma + Add Address): default border/text are paper,
+   on hover only the border switches to brand; text stays paper. */
+.hover_btn_paper {
+  @apply
+    hover:border-brand;
 }
 
 .list_item {
@@ -398,21 +406,21 @@ html {
     md:mr-2.5;
 }
 .menu_items_btn {
-  @apply 
-    flex 
-    items-center 
-    justify-center 
-    text-white 
-    border 
-    border-custom_white 
-    rounded-[7px] 
-    px-4.75 
-    py-0.75 
-    md:py-1.5 
-    gap-2.5 
-    md:gap-3.25 
-    cursor-pointer 
-    hover:border-custom_orange;
+  @apply
+    flex
+    items-center
+    justify-center
+    text-white
+    border
+    border-ink
+    rounded-[7px]
+    px-4.75
+    py-0.75
+    md:py-1.5
+    gap-2.5
+    md:gap-3.25
+    cursor-pointer
+    hover:border-brand;
 }
 .heart_card {
   @apply 
@@ -553,27 +561,31 @@ html {
 }
 @layer components {
   .cart_btn {
-    @apply 
-      cursor-pointer 
-      rounded-panel 
-      border-none 
-      w-full 
-      h-14 
-      mt-6.5 
-      font-semibold 
-      text-[17px] 
-      text-white 
-      hover:text-white 
-      text-center 
-      flex 
-      justify-center 
-      items-center 
-      gap-6.25 
-      bg-brand 
-      hover:bg-brand-hover 
-      focus:bg-brand-hover 
-      active:bg-brand-hover
-      transition-all 
+    @apply
+      cursor-pointer
+      rounded-panel
+      border-none
+      w-full
+      h-14
+      mt-6.5
+      font-semibold
+      text-[17px]
+      text-white
+      hover:text-white
+      text-center
+      flex
+      justify-center
+      items-center
+      gap-6.25
+      bg-brand
+      hover:bg-brand-hover
+      focus:bg-brand-hover
+      active:bg-brand-active
+      disabled:bg-disabled-bg
+      disabled:text-disabled-text
+      disabled:backdrop-blur-card
+      disabled:cursor-not-allowed
+      transition-all
       duration-700;
   }
 }

@@ -123,20 +123,15 @@ const ReservationAuthStep = ({
           {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
         </p>
         <div className="mt-2.5 flex w-full flex-col">
-          {active.map((p, idx) => {
+          {active.map(p => {
             const meta = getProviderMeta(p);
-            const isPrimary = idx === 0;
             return (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => onProviderClick(p)}
                 disabled={isProvidersLoading}
-                className={
-                  isPrimary
-                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover disabled:opacity-60'
-                    : 'cart_btn disabled:opacity-60'
-                }
+                className="mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-disabled-bg backdrop-blur-card text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink"
               >
                 <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
                   <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />

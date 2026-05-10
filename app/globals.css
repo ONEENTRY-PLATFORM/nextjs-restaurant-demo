@@ -15,9 +15,21 @@
   --font-lato: var(--font-lato), Lato, Arial, Helvetica, sans-serif;
   --font-main: var(--font-lato), Lato, sans-serif;
 
-  /* Brand design tokens */
+  /* Brand design tokens — Figma BUTTONS state machine
+     (filled-primary states: SIGN UP / cart_btn / PaymentButton / ADD TO CART solid). */
   --color-brand: #ec722b;
-  --color-brand-hover: #eb4b0e;
+  --color-brand-hover: #f15b22;
+  --color-brand-active: #e44306;
+
+  /* Outlined-button state-fills (CREATE ACCOUNT / Tertiary x1 hover & active overlay). */
+  --color-brand-soft-hover: rgba(236, 114, 43, 0.2);
+  --color-brand-soft-active: rgba(236, 114, 43, 0.5);
+
+  /* Disabled-state colors (Figma Gray_50% + Gray_20% + disabled-text #A8A9B5). */
+  --color-disabled-bg: rgba(106, 108, 122, 0.5);
+  --color-disabled-bg-soft: rgba(106, 108, 122, 0.2);
+  --color-disabled-text: #a8a9b5;
+
   --color-ink: #4c4d56;
   --color-paper: #dfe9f9;
   --color-muted: #b0bcce;
@@ -32,7 +44,6 @@
   --color-custom_header: rgba(106, 108, 122, 0.5);
   --color-custom_black: rgba(0, 0, 0, 0.6);
   --color-custom_white: rgba(255, 255, 255, 0.9);
-  --color-btn_hover: rgba(236, 114, 43, 0.5);
 
   /* Gradients */
   --background-image-custom-gradient:

@@ -24,7 +24,7 @@ import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react
  * @param   {object}    props           - Component props.
  * @param   {ReactNode} props.children  - Grid content (typically the products grid markup).
  * @param   {string}    props.className - Class merged onto the wrapping `<div>`.
- * @returns {JSX.Element}                 JSX wrapper that orchestrates the page-leave / filter-swap animations.
+ * @returns JSX wrapper that orchestrates the page-leave / filter-swap animations.
  */
 const CardsGridAnimations = ({
   children,

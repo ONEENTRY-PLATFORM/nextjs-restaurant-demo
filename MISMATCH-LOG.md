@@ -209,10 +209,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 >
 > На стороне кода фикса не требуется. Как только воспроизведение прояснится — пометить ✅ и удалить пункт.
 
-#### C.1.5. `review_form` — чтение отзывов отдаёт 403 анонимной роли — ✅ ЗАКРЫТО 2026-05-10
-
-Анонимное `getFormsDataByMarker('review_form', 2, { status: ['approved'] }, 1, 'en_US', 0, 500)` через MCP возвращает `{ items.length: 5, total: 5 }` — все 5 записей с `parentId: null`, `status: 'approved'`, реальные `time`/`userIdentifier`. 403 ушёл, при том что `moduleFormConfigs[0].isGlobal` всё ещё `false` — серверные permissions для cfgId=2 теперь разрешают анонимное чтение независимо от флага. `<ProductReviewsList>` рендерит реальные карточки.
-
 ### C.2. Недостающие страницы
 
 #### C.2.3. Дочерние страницы под `blog` (акции)
@@ -632,10 +628,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
-#### C.7.5. Form `user` — атрибут `user_address` (json) ✅
-
-Атрибут переведён в `type: json` (изначально был `string`). Код в [components/profile/ProfileSections.tsx](components/profile/ProfileSections.tsx) и [components/cart/steps/StepAddress.tsx](components/cart/steps/StepAddress.tsx) пишет/читает массив `[{ id, street, house, floor, selected }]` напрямую (без JSON.stringify). Парсер `parseAddresses` совместим с legacy-string-форматом — старые юзеры с stringified-JSON продолжат работать.
-
 ### C.8. Auth Providers
 
 #### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины ✅
@@ -689,21 +681,15 @@ MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер п
 
 | marker                       | type   | title                                                       |
 |------------------------------|--------|-------------------------------------------------------------|
-| `active_reservation_title`   | string | Active reservation                                          |
-| `reservation_history_title`  | string | Reservation History                                         |
-| `cancel_reservation_button`  | string | Cancel                                                      |
-| `edit_reservation_button`    | string | Edit                                                        |
-| `reservation_status_reserved`| string | Reserved                                                    |
-| `reservation_status_canceled`| string | Canceled                                                    |
-| `no_active_reservations`     | string | You have no active reservations.                            |
-| `no_reservation_history`     | string | You have no past reservations yet.                          |
-| `booking_cancel_confirm`     | string | Cancel reservation #{id}?                                   |
+| `active_reservation_title`   | string | Active reservation |
+| `reservation_history_title`  | string | Reservation History |
+| `cancel_reservation_button`  | string | Cancel |
+| `edit_reservation_button`    | string | Edit |
+| `reservation_status_reserved`| string | Reserved |
+| `reservation_status_canceled`| string | Canceled |
+| `no_active_reservations`     | string | You have no active reservations. |
+| `no_reservation_history`     | string | You have no past reservations yet. |
+| `booking_cancel_confirm`     | string | Cancel reservation #{id}? |
 | `booking_cancel_toast`       | string | Cancellation request received. We will contact you shortly. |
-| `booking_edit_unavailable`   | string | This booking cannot be edited.                              |
-| `booking_updated_toast`      | string | Reservation updated.                                        |
-
-### C.11. App-token data length cap = 10 (Products API) ✅
-
-Раньше `NEXT_PUBLIC_ONEENTRY_TOKEN` имел permission-level cap `maximum allowed data length = 10`: `Products.getProducts(...)` возвращал максимум 10 items, `offset >= 10` валился 400-й. Из-за этого `/shop?page=N` при N>=2 показывал только первые 10 карточек, а LoadMore не работал.
-
-**Закрыто 2026-05-10:** клиент поднял лимит токена. Проверено через SDK — `limit=200` отдаёт все 118, `offset=10/50/100 + limit=10` работают. `/shop?page=15` рендерит все 118 dish'ей.
+| `booking_edit_unavailable`   | string | This booking cannot be edited. |
+| `booking_updated_toast`      | string | Reservation updated. |

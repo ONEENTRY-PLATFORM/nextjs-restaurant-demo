@@ -10,7 +10,7 @@ import PhoneIcon from '@/components/icons/phone.svg';
  *
  * @param   {object}      props          - Component props.
  * @param   {boolean}     props.disabled - When `true`, neither phone nor WhatsApp is available — render a non-interactive icon.
- * @returns {JSX.Element} JSX of the popup trigger button (or a disabled span fallback).
+ * @returns JSX of the popup trigger button (or a disabled span fallback).
  */
 const SupportButton = ({ disabled }: { disabled: boolean }): JSX.Element => {
   const { setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);

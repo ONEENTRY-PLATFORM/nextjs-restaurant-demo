@@ -21,7 +21,7 @@ type LogInProps = { method: string; login: string; password: string };
  * @param   {string}     props.method   - Auth-provider marker (e.g. `email`).
  * @param   {string}     props.login    - User identifier (email).
  * @param   {string}     props.password - User password.
- * @returns {Promise<{ data?: IAuthEntity; error?: string }>}                Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
+ * @returns Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
  */
 export const logInUser = async ({ method, login, password }: LogInProps) => {
   try {

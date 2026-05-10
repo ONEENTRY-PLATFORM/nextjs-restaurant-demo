@@ -15,7 +15,7 @@ import MobileMenu from './MobileMenu';
  * @param   {object}      props             - Component props.
  * @param   {IMenusPages} props.item        - Menu page entity.
  * @param   {string}      [props.parentUrl] - Optional parent URL prepended to the item's link.
- * @returns {JSX.Element} JSX of the menu list item, including a chevron toggle when there are children.
+ * @returns JSX of the menu list item, including a chevron toggle when there are children.
  */
 function MobileMenuItem({ item, parentUrl }: { item: IMenusPages; parentUrl?: string }) {
   const { setOpen } = useContext(OpenDrawerContext);

@@ -7,7 +7,7 @@ import LogoIcon from './LogoIcon';
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      [props.className] - Additional className merged onto the wrapper.
- * @returns {JSX.Element} JSX of the placeholder card.
+ * @returns JSX of the placeholder card.
  */
 const Placeholder = ({ className }: { className?: string }): JSX.Element => {
   return (

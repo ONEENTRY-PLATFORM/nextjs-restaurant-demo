@@ -25,7 +25,7 @@ export interface TransformFieldParams {
  * @param   {string}               params.type      - OneEntry attribute type (`text`, `groupOfImages`, `string`/`integer`/etc.).
  * @param   {unknown}              params.value     - Raw UI value to convert.
  * @param   {number}               params.productId - Product id (used as `fileQuery.id` for `groupOfImages`).
- * @returns {FormDataType}                            FormData record for `postFormsData`.
+ * @returns FormData record for `postFormsData`.
  */
 export const transformFormField = ({
   marker,
@@ -67,7 +67,7 @@ export const transformFormField = ({
  * validateFormData — validates that the payload contains at least one non-empty content field (spam/button are ignored).
  *
  * @param   {FormDataType[]} data - Transformed form payload.
- * @returns {{ isValid: boolean; error?: string }}        `{ isValid, error? }` validation result.
+ * @returns `{ isValid, error? }` validation result.
  */
 export const validateFormData = (data: FormDataType[]): { isValid: boolean; error?: string } => {
   if (data.length === 0) {

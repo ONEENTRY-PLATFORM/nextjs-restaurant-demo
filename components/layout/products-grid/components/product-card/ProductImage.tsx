@@ -10,7 +10,7 @@ import Placeholder from '@/components/shared/Placeholder';
  * @param   {object}            props            - Component props.
  * @param   {IAttributeValues}  props.attributes - `product.attributeValues` (reads `cover.value`, supports object and array).
  * @param   {string}            props.alt        - Alt text for accessibility.
- * @returns {JSX.Element} JSX of the cover image (or `<Placeholder />` when no image is configured).
+ * @returns JSX of the cover image (or `<Placeholder />` when no image is configured).
  */
 const ProductImage = ({
   attributes,

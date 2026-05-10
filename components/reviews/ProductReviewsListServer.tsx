@@ -9,7 +9,7 @@ import ProductReviewsList from './ProductReviewsList';
  *
  * @param   {object} props           - Component props.
  * @param   {number} props.productId - Product id (becomes `entityIdentifier`).
- * @returns {Promise<JSX.Element>}     JSX of the rendered review list.
+ * @returns JSX of the rendered review list.
  */
 const ProductReviewsListServer = async ({
   productId,

@@ -10,7 +10,7 @@ import { increaseProductQty } from '@/app/store/reducers/CartSlice';
  * @param   {number}      props.id    - Cart product id to increment.
  * @param   {number}      props.qty   - Current quantity (renders empty when below 1).
  * @param   {number}      props.units - Maximum allowed units (cap respected by the reducer).
- * @returns {JSX.Element} JSX of the round increment button.
+ * @returns JSX of the round increment button.
  */
 const IncreaseButton = ({
   id,

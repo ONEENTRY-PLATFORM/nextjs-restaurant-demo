@@ -21,7 +21,7 @@ const HIDDEN_STYLE: CSSProperties = {
  * @param   {string}    props.className     - Class merged onto the wrapping `<div>`.
  * @param   {number}    props.index         - Absolute card index across all pages; drives the stagger.
  * @param   {number}    props.productsLimit - Page size; resets the stagger on a new page.
- * @returns {JSX.Element}                     JSX wrapper with the bound GSAP reveal animation.
+ * @returns JSX wrapper with the bound GSAP reveal animation.
  */
 const CardAnimations = ({
   children,

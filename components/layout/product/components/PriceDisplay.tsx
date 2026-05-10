@@ -8,7 +8,7 @@ import { UsePrice } from '@/components/utils';
  * @param   {object}      props               - Component props.
  * @param   {number}      props.currentPrice  - Current (sale) price.
  * @param   {number}      props.originalPrice - Original (pre-sale) price.
- * @returns {JSX.Element} JSX of the price block (or empty when both are zero/missing).
+ * @returns JSX of the price block (or empty when both are zero/missing).
  */
 const PriceDisplay = ({
   currentPrice,

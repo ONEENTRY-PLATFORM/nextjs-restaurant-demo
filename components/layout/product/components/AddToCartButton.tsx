@@ -25,7 +25,7 @@ import QuantitySelector from './QuantitySelector';
  * @param   {string}      props.statusIdentifier - Product status; `'out_of_stock'` renders an inert "Out of stock" pill.
  * @param   {string}      props.className        - Class merged onto the button.
  * @param   {number}      props.height           - Pixel height passed to the quantity selector.
- * @returns {JSX.Element} JSX of either the add-to-cart button or the quantity selector.
+ * @returns JSX of either the add-to-cart button or the quantity selector.
  */
 const AddToCartButton = ({
   id,

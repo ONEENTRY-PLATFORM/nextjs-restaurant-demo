@@ -10,7 +10,7 @@ import type { JSX } from 'react';
  * @param   {object}                       props          - Component props.
  * @param   {IMenusPages}                  props.page     - OneEntry menu page entity (uses `pageUrl` and `localizeInfos.menuTitle`).
  * @param   {(state: boolean) => void}     props.setState - Setter that closes the parent menu on click.
- * @returns {JSX.Element} JSX of the user-menu link.
+ * @returns JSX of the user-menu link.
  */
 const UserMenuItem = ({
   page,

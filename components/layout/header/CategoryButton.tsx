@@ -8,7 +8,7 @@ import CategoryBarsIcon from '@/components/icons/category-bars';
 /**
  * CategoryButton — burger in the desktop nav row that opens `CategoryFilter`.
  *
- * @returns {JSX.Element} JSX of the desktop category button (hidden below md).
+ * @returns JSX of the desktop category button (hidden below md).
  */
 const CategoryButton = (): JSX.Element => {
   const { setOpen, setComponent, setTransition } = useContext(OpenDrawerContext);

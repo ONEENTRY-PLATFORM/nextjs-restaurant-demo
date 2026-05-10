@@ -13,7 +13,7 @@ type Phase = 'show' | 'fading' | 'gone';
  * @param   {ReactNode}   props.skeleton   - Skeleton/loader rendered as the overlay.
  * @param   {number}      [props.holdMs]   - Time before the fade starts (defaults to 40).
  * @param   {number}      [props.fadeMs]   - Cross-fade duration (defaults to 500).
- * @returns {JSX.Element} JSX wrapper that orchestrates the overlay opacity transition.
+ * @returns JSX wrapper that orchestrates the overlay opacity transition.
  */
 const ProductsGridReveal = ({
   children,

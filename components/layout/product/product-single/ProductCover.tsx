@@ -11,7 +11,7 @@ import Placeholder from '@/components/shared/Placeholder';
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.
  * @param   {string}            props.alt     - Image alt attribute.
- * @returns {JSX.Element} JSX of the product cover image.
+ * @returns JSX of the product cover image.
  */
 const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
   const coverRaw = product.attributeValues.cover?.value as

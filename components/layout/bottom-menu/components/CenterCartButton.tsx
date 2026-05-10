@@ -9,7 +9,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * CenterCartButton — central protruding cart button; opens the `CartPopup` drawer, crossfades with `CenterCloseButton`.
  *
- * @returns {JSX.Element} JSX of the centered cart button with rehydrated count badge.
+ * @returns JSX of the centered cart button with rehydrated count badge.
  */
 const CenterCartButton = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);

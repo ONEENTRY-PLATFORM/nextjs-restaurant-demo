@@ -6,7 +6,7 @@ import LogoIcon from '../../shared/LogoIcon';
 /**
  * Logo — header logo linking to the home page.
  *
- * @returns {JSX.Element} JSX of the header logo link.
+ * @returns JSX of the header logo link.
  */
 const Logo = (): JSX.Element => {
   return (

@@ -11,7 +11,7 @@ import ProductSingle from '@/components/layout/product';
  *
  * @param   {object}                                              props        - Component props.
  * @param   {Promise<{ handle: string; lang: string }>}           props.params - Async route params with the product id (`handle`) and locale.
- * @returns {Promise<JSX.Element>}                                              Promise resolving to JSX of the product page layout.
+ * @returns Promise resolving to JSX of the product page layout.
  */
 const ProductPageLayout = async ({
   params,
@@ -73,7 +73,7 @@ export default ProductPageLayout;
  *
  * @param   {object}                                              props        - Component props.
  * @param   {Promise<{ handle: string; lang: string }>}           props.params - Async route params with the product id (`handle`) and locale.
- * @returns {Promise<Metadata>}                                                 Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata({
   params,

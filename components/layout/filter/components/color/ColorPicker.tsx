@@ -8,7 +8,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
  * @param   {string}                              props.name            - Human-readable color label.
  * @param   {string}                              props.activeColor     - Currently selected color code.
  * @param   {Dispatch<SetStateAction<string>>}    props.setActiveColor  - State setter that owns the selected color.
- * @returns {JSX.Element} JSX of the color chip button.
+ * @returns JSX of the color chip button.
  */
 const ColorPicker = ({
   code,

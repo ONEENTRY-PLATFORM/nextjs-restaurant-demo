@@ -15,7 +15,7 @@ import { addReservationToCart, selectReservationId } from '@/app/store/reducers/
  * @param   {IPagesEntity | undefined}            props.pageData - Optional page entity used to enrich the reservation snapshot.
  * @param   {IProductsEntity}                     props.product  - Product entity for the row.
  * @param   {Dispatch<SetStateAction<boolean>>}   props.setState - Setter that closes the search results panel after navigation.
- * @returns {JSX.Element} JSX of the search-result row link.
+ * @returns JSX of the search-result row link.
  */
 const ProductRow = ({
   pageData,

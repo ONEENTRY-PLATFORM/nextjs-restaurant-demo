@@ -10,7 +10,7 @@ import { getApi } from '@/app/api';
  *
  * @param   {object} props      - Hook arguments.
  * @param   {string} props.name - Search query (when empty the hook resets to no products and stops loading).
- * @returns {{ loading: boolean; products: IProductsEntity[]; refetch: () => void }}              Object `{ loading, products, refetch }` for the current search.
+ * @returns Object `{ loading, products, refetch }` for the current search.
  */
 export const useSearchProducts = ({ name }: { name: string }) => {
   // Start in `loading` when `name` is non-empty so the first render does not flash "No products found"

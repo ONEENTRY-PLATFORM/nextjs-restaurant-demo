@@ -20,7 +20,7 @@ type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
  * resolveVisualKind — maps a OneEntry payment account to the visual category used in the UI.
  *
  * @param   {IAccountsEntity}   account - OneEntry payment account entity.
- * @returns {PaymentVisualKind}           Visual kind (`card` | `paypal` | `wallet` | `other`).
+ * @returns Visual kind (`card` | `paypal` | `wallet` | `other`).
  */
 const resolveVisualKind = (account: IAccountsEntity): PaymentVisualKind => {
   const type = account.type?.toLowerCase();
@@ -52,7 +52,7 @@ type ReservationPaymentStepProps = {
  * @param   {boolean}                      props.isLoading - When `true`, disables the apply button.
  * @param   {string}                       props.error     - Error message displayed under the radio list.
  * @param   {() => void}                   props.onBack    - Returns the wizard to the form step.
- * @returns {JSX.Element}                                    JSX of the payment-method selection step.
+ * @returns JSX of the payment-method selection step.
  */
 const ReservationPaymentStep = ({
   onApply,
@@ -147,7 +147,7 @@ const ReservationPaymentStep = ({
  * @param   {IAccountsEntity}   props.account  - OneEntry payment account entity.
  * @param   {boolean}           props.checked  - Whether the row is currently selected.
  * @param   {() => void}        props.onSelect - Selection callback invoked on radio change.
- * @returns {JSX.Element}                        JSX of the payment row.
+ * @returns JSX of the payment row.
  */
 const PaymentRow = ({
   account,
@@ -203,7 +203,7 @@ const PaymentRow = ({
  * @param   {object}             props          - Component props.
  * @param   {PaymentVisualKind}  props.kind     - Payment method category.
  * @param   {string}             props.fallback - Text used for the fallback variant.
- * @returns {JSX.Element}                         JSX of the logo group.
+ * @returns JSX of the logo group.
  */
 const PaymentLogos = ({
   kind,

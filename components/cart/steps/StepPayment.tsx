@@ -32,7 +32,7 @@ const PHONE_MARKERS = ['phone', 'phone_reg', 'contact_phone'] as const;
  *
  * @param   {string} dateIso - Date in `yyyy-MM-dd`.
  * @param   {string} time    - Time in `HH.MM`.
- * @returns {string}           Formatted display string (empty when inputs are missing).
+ * @returns Formatted display string (empty when inputs are missing).
  */
 const formatScheduleAt = (dateIso: string, time: string): string => {
   const [yyyy, mm, dd] = dateIso.split('-');
@@ -44,7 +44,7 @@ const formatScheduleAt = (dateIso: string, time: string): string => {
  * parseScheduleAt — parses a `DD.MM.YY HH.MM` string back into `{ date, time }`.
  *
  * @param   {string} raw - Input string.
- * @returns {{ date: string; time: string }}      `{ date, time }` (`{ '', '' }` on parse failure).
+ * @returns `{ date, time }` (`{ '', '' }` on parse failure).
  */
 const parseScheduleAt = (raw: string): { date: string; time: string } => {
   const m = raw.match(/^(\d{2})\.(\d{2})\.(\d{2})\s+(\d{2}\.\d{2})$/);
@@ -63,7 +63,7 @@ const ASAP_INTERVAL_MIN = 45;
  *
  * @param   {DeliveryMode} mode         - Delivery mode (`asap` | `scheduled`).
  * @param   {string}       scheduledRaw - Raw `DD.MM.YY HH.MM` schedule string when `mode === 'scheduled'`.
- * @returns {[[string, string]] | null}                  `[[startISO, endISO]]` interval, or `null` when the input cannot be parsed.
+ * @returns `[[startISO, endISO]]` interval, or `null` when the input cannot be parsed.
  */
 const buildDeliveryTimeInterval = (
   mode: DeliveryMode,
@@ -90,7 +90,7 @@ const buildDeliveryTimeInterval = (
  *
  * @param   {ReadonlyArray<FormDataType> | undefined} formData - User formData array.
  * @param   {readonly string[]}                       markers  - Candidate markers to probe in order.
- * @returns {string}                                             First matching string value, or empty string when nothing is found.
+ * @returns First matching string value, or empty string when nothing is found.
  */
 const findUserField = (
   formData: ReadonlyArray<FormDataType> | undefined,
@@ -111,7 +111,7 @@ type DeliveryMode = 'asap' | 'scheduled';
 /**
  * StepPayment — checkout step: address + time + payment on a single screen.
  *
- * @returns {JSX.Element} JSX of the payment step body.
+ * @returns JSX of the payment step body.
  */
 const StepPayment = (): JSX.Element => {
   const t = useT();
@@ -406,7 +406,7 @@ const StepPayment = (): JSX.Element => {
  * @param   {IAccountsEntity} props.account  - OneEntry payment account entity.
  * @param   {boolean}         props.checked  - Whether the row is currently selected.
  * @param   {() => void}      props.onSelect - Selection callback invoked on radio change.
- * @returns {JSX.Element}                      JSX of the payment method radio row.
+ * @returns JSX of the payment method radio row.
  */
 const PaymentMethodOption = ({
   account,

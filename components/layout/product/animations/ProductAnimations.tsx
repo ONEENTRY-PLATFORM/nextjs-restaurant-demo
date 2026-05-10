@@ -13,7 +13,7 @@ import { useRef, useState } from 'react';
  * @param   {ReactNode}   props.children  - Block content to animate.
  * @param   {string}      props.className - Class merged onto the wrapping `<div>`.
  * @param   {number}      props.index     - Block index used to compute the stagger delay.
- * @returns {JSX.Element} JSX wrapper around the product block.
+ * @returns JSX wrapper around the product block.
  */
 const ProductAnimations = ({
   children,

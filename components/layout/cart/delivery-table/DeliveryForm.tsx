@@ -15,7 +15,7 @@ import DeliveryTable from '@/components/layout/cart/delivery-table/DeliveryTable
  *
  * @param   {object}            props              - Component props.
  * @param   {IProductsEntity}   props.deliveryData - OneEntry product representing the delivery service line item.
- * @returns {JSX.Element} JSX of the delivery form.
+ * @returns JSX of the delivery form.
  */
 const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const t = useT();

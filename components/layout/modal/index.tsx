@@ -17,7 +17,7 @@ import ModalBackdrop from './components/ModalBackdrop';
  * useTitleData — resolves the modal title from the active form component name.
  *
  * @param   {string} component - Active form component identifier (e.g. `SignInForm`, `CalendarForm`).
- * @returns {string} Localized title string for the modal header.
+ * @returns Localized title string for the modal header.
  */
 const useTitleData = (component: string): string => {
   const t = useT();
@@ -45,7 +45,7 @@ const AUTH_FLOW_SUB_STEPS = new Set([
 /**
  * Modal — popup container for auth / calendar forms driven by {@link OpenDrawerContext}.
  *
- * @returns {JSX.Element} JSX of the centered modal (with mobile bottom-sheet behaviour) rendering the active form.
+ * @returns JSX of the centered modal (with mobile bottom-sheet behaviour) rendering the active form.
  */
 const Modal = (): JSX.Element => {
   const { component, setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);

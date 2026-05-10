@@ -9,7 +9,7 @@ import { getPageByUrl } from '@/app/api';
  *
  * @param   {object}                              props        - Component props.
  * @param   {Promise<{ handle: string }>}         props.params - Async route params with the OneEntry `pageUrl` handle.
- * @returns {Promise<JSX.Element>}                              Promise resolving to JSX of the generic page (title + description HTML, with empty-state fallback).
+ * @returns Promise resolving to JSX of the generic page (title + description HTML, with empty-state fallback).
  */
 const PageLayout = async ({
   params,
@@ -56,7 +56,7 @@ export default PageLayout;
  *
  * @param   {object}                       props        - Component props.
  * @param   {Promise<{ handle: string }>}  props.params - Async route params with the OneEntry `pageUrl` handle.
- * @returns {Promise<Metadata>}                          Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata({
   params,

@@ -9,7 +9,7 @@ import { useRef } from 'react';
  * @param   {object}      props           - Component props.
  * @param   {ReactNode}   props.children  - Menu items to render.
  * @param   {string}      props.className - Class merged onto the wrapping `<ul>`.
- * @returns {JSX.Element} JSX of the menu list.
+ * @returns JSX of the menu list.
  */
 const MenuAnimations = ({
   children,

@@ -5,7 +5,7 @@ import type { JSX } from 'react';
  *
  * @param   {object}            props        - Component props.
  * @param   {'md' | 'lg'}       [props.size] - Render size; `'lg'` returns the 29×25 SVG, otherwise the default 23×20.
- * @returns {JSX.Element} JSX of the house SVG.
+ * @returns JSX of the house SVG.
  */
 const HouseIcon = ({ size = 'md' }: { size?: 'md' | 'lg' }): JSX.Element => {
   if (size === 'lg') {

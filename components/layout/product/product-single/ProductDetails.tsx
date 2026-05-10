@@ -16,7 +16,7 @@ import AddToCartButton from '../components/AddToCartButton';
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.
- * @returns {Promise<JSX.Element>} JSX of the details panel.
+ * @returns JSX of the details panel.
  */
 const ProductDetails = async ({ product }: { product: IProductsEntity }): Promise<JSX.Element> => {
   const {

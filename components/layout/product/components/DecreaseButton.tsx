@@ -13,7 +13,7 @@ import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlic
  * @param   {number}      props.id    - Cart product id to decrement.
  * @param   {number}      props.qty   - Current quantity (renders empty when below 1).
  * @param   {string}      props.title - Product title used in the removal toast text.
- * @returns {JSX.Element} JSX of the round decrement button.
+ * @returns JSX of the round decrement button.
  */
 const DecreaseButton = ({
   id,

@@ -8,7 +8,7 @@ import ArrowBackIcon from '@/components/icons/arrow-back';
 /**
  * HistoryBack — round back button that calls `router.back()` (used in modal headers).
  *
- * @returns {JSX.Element} JSX of the history-back button.
+ * @returns JSX of the history-back button.
  */
 const HistoryBack = (): JSX.Element => {
   const router = useRouter();

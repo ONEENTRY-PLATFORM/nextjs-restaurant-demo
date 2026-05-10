@@ -41,7 +41,7 @@ export const { addFavorites, removeFavorites, removeAllFavorites, setFavoritesVe
  * selectFavoritesItems — selector for the list of favorite product ids.
  *
  * @param   {{ favoritesReducer: { products: number[] } }} state - Redux root state.
- * @returns {number[]}                                            Array of favorite product ids.
+ * @returns Array of favorite product ids.
  */
 export const selectFavoritesItems = (state: { favoritesReducer: { products: number[] } }) =>
   state.favoritesReducer.products;
@@ -51,7 +51,7 @@ export const selectFavoritesItems = (state: { favoritesReducer: { products: numb
  *
  * @param   {{ favoritesReducer: { products: number[] } }} state - Redux root state.
  * @param   {number}                                       id    - Product id to look up.
- * @returns {boolean}                                            `true` when the product id is currently in the favorites list.
+ * @returns `true` when the product id is currently in the favorites list.
  */
 export const selectIsFavorites = (
   state: { favoritesReducer: { products: number[] } },
@@ -68,7 +68,7 @@ export const selectIsFavorites = (
  * selectFavoritesVersion — selector for the favorites version (bumps on persisted-state replays).
  *
  * @param   {{ favoritesReducer: { version: number } }} state - Redux root state.
- * @returns {number}                                           Monotonic version counter for the favorites slice.
+ * @returns Monotonic version counter for the favorites slice.
  */
 export const selectFavoritesVersion = (state: { favoritesReducer: { version: number } }) =>
   state.favoritesReducer.version;

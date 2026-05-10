@@ -25,7 +25,7 @@ const DIRECTION_LOCK_PX = 8;
  * @param   {boolean}       [props.priority]         - When `true`, the first slide is loaded with `priority`.
  * @param   {() => void}    [props.onImageClick]     - When provided, the frame becomes a `<button>` opening the lightbox.
  * @param   {number | null} [props.autoplayMs]       - Autoplay interval in ms (`null` disables autoplay).
- * @returns {JSX.Element} JSX of the slider with optional dot tablist.
+ * @returns JSX of the slider with optional dot tablist.
  */
 const RestaurantPhotoSlider = ({
   photos,

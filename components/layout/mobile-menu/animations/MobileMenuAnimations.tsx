@@ -14,7 +14,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {ReactNode}   props.children  - Drawer content (must include `#modalBg` and `#modalBody`).
  * @param   {string}      props.className - Wrapper class merged onto the animated container.
  * @param   {string}      props.id        - DOM id assigned to the wrapper.
- * @returns {JSX.Element} JSX of the animated wrapper, or empty fragment when not open.
+ * @returns JSX of the animated wrapper, or empty fragment when not open.
  */
 const MobileMenuAnimations = ({
   children,

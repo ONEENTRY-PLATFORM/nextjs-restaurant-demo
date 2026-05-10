@@ -3,7 +3,7 @@ import SearchIcon from '@/components/icons/search';
 /**
  * SearchFallback — non-interactive search-input placeholder rendered while `SearchBar` lazy-loads.
  *
- * @returns {JSX.Element} JSX of the static fallback search form.
+ * @returns JSX of the static fallback search form.
  */
 const SearchFallback = () => (
   <form className="relative">

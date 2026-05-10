@@ -18,7 +18,7 @@ import ProductImage from './ProductImage';
  * @param   {IProductsEntity}   props.product       - OneEntry product entity.
  * @param   {number}            props.index         - Card index in the grid (drives the stagger animation).
  * @param   {number}            props.productsLimit - Page size used by the stagger to reset on a new page.
- * @returns {JSX.Element} JSX of the product card with image, meta, cart button, and link overlay.
+ * @returns JSX of the product card with image, meta, cart button, and link overlay.
  */
 const ProductCard = ({
   product,

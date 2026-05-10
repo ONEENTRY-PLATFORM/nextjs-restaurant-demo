@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * EyeCircleIcon — eye-in-circle profile/preview icon for empty-states and cards.
  *
- * @returns {JSX.Element} JSX of the eye-circle SVG.
+ * @returns JSX of the eye-circle SVG.
  */
 const EyeCircleIcon = (): JSX.Element => {
   return (

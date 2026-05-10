@@ -25,7 +25,7 @@ type SavedAddress = {
  * parseAddresses — parses `user_address` JSON (array or legacy JSON string) into a typed list.
  *
  * @param   {unknown}        raw - Raw OneEntry attribute value.
- * @returns {SavedAddress[]}        Array of `SavedAddress` items (empty on parse failure or unexpected shape).
+ * @returns Array of `SavedAddress` items (empty on parse failure or unexpected shape).
  */
 const parseAddresses = (raw: unknown): SavedAddress[] => {
   if (!raw) return [];
@@ -57,7 +57,7 @@ const HIDDEN_PROFILE_MARKERS = new Set([
  * resolveInputType — picks the HTML input type for a OneEntry user-form attribute.
  *
  * @param   {IFormAttribute} attr - OneEntry form attribute.
- * @returns {string}                 `'password'`, `'email'`, or `'text'` depending on the marker.
+ * @returns `'password'`, `'email'`, or `'text'` depending on the marker.
  */
 const resolveInputType = (attr: IFormAttribute): string => {
   if (attr.marker.includes('password')) return 'password';
@@ -68,7 +68,7 @@ const resolveInputType = (attr: IFormAttribute): string => {
 /**
  * ProfileSections — collapsible "My Profile" + "Address" sections in the profile drawer.
  *
- * @returns {JSX.Element} JSX of the profile sections (form + saved addresses + add-address form).
+ * @returns JSX of the profile sections (form + saved addresses + add-address form).
  */
 const ProfileSections = (): JSX.Element => {
   const t = useT();

@@ -15,7 +15,7 @@ import Spinner from '@/components/shared/Spinner';
  *
  * @param   {object}      props            - Component props.
  * @param   {number}      props.totalPages - Total number of pages; the component stops loading when reached.
- * @returns {JSX.Element} JSX of the spinner/button that drives the next-page navigation.
+ * @returns JSX of the spinner/button that drives the next-page navigation.
  */
 const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();

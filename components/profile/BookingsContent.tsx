@@ -19,7 +19,7 @@ const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'complet
  * isHistoryOrder — whether the booking order is in history (completed/cancelled).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {boolean}                  `true` when the booking belongs to history.
+ * @returns `true` when the booking belongs to history.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
@@ -30,7 +30,7 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
  * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {string}                   Display order number string.
+ * @returns Display order number string.
  */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
@@ -42,7 +42,7 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
  * statusLabel — human-readable booking status (localized from CMS, otherwise derived from the identifier).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {string}                   Localized status title or a humanised identifier (`-` when nothing is set).
+ * @returns Localized status title or a humanised identifier (`-` when nothing is set).
  */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
@@ -57,7 +57,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
  *
  * Data: `getAllOrdersByMarker({ marker: 'booking_order' })` (same storage marker as in `ReservationForm`).
  *
- * @returns {JSX.Element} JSX of the bookings dashboard section.
+ * @returns JSX of the bookings dashboard section.
  */
 const BookingsContent = (): JSX.Element => {
   const { setComponent } = useContext(OpenDrawerContext);
@@ -169,7 +169,7 @@ const BookingsContent = (): JSX.Element => {
  * @param   {IOrderByMarkerEntity}   props.order    - OneEntry booking order entity.
  * @param   {() => void}             props.onCancel - Cancellation handler.
  * @param   {() => void}             props.onEdit   - Edit handler that opens the reservation popup.
- * @returns {JSX.Element}                             JSX of the active booking row.
+ * @returns JSX of the active booking row.
  */
 const ActiveBookingCard = ({
   order,
@@ -217,7 +217,7 @@ const ActiveBookingCard = ({
  *
  * @param   {object}                 props       - Component props.
  * @param   {IOrderByMarkerEntity}   props.order - OneEntry booking order entity.
- * @returns {JSX.Element}                          JSX of the history booking row.
+ * @returns JSX of the history booking row.
  */
 const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Element => {
   const dateRaw = (order.createdDate ??

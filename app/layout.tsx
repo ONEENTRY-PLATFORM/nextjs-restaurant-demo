@@ -56,7 +56,7 @@ export const metadata: Metadata = {
  *
  * @param   {object}            props          - Component props.
  * @param   {React.ReactNode}   props.children - Page tree rendered inside the layout.
- * @returns {Promise<JSX.Element>}             Promise resolving to JSX of the `<html>` shell with global providers, header, footer, and modals.
+ * @returns Promise resolving to JSX of the `<html>` shell with global providers, header, footer, and modals.
  */
 export default async function RootLayout({
   children,

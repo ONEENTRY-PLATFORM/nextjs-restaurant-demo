@@ -13,7 +13,7 @@ const tabs: Array<{ href: string; label: string }> = [
 /**
  * ProfileTabs — profile dashboard tabs with active highlight based on pathname.
  *
- * @returns {JSX.Element} JSX of the horizontal tab list (Personal / Orders / Favorites).
+ * @returns JSX of the horizontal tab list (Personal / Orders / Favorites).
  */
 const ProfileTabs = (): JSX.Element => {
   const pathname = usePathname();

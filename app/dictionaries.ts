@@ -14,7 +14,7 @@ import getCachedData from './api/utils/getCachedData';
  * is currently empty `{}`, so in the normalized record `value` is filled from
  * `initialValue` (the English default from the admin panel).
  *
- * @returns {Promise<IAttributeValues>} Promise resolving to a map of markers → attribute with a string `value`.
+ * @returns Promise resolving to a map of markers → attribute with a string `value`.
  */
 const fetchDictionary = async (): Promise<IAttributeValues> => {
   try {
@@ -51,7 +51,7 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
 /**
  * getDictionary — cached `static_content` dictionary for use in server components.
  *
- * @returns {Promise<IAttributeValues>} Promise resolving to the cached normalized dictionary map.
+ * @returns Promise resolving to the cached normalized dictionary map.
  */
 export const getDictionary = async (): Promise<IAttributeValues> =>
   getCachedData('dictionary', fetchDictionary);
@@ -68,7 +68,7 @@ export const getDictionary = async (): Promise<IAttributeValues> =>
  *
  * @param   {string}          marker   - Dictionary marker (attribute name).
  * @param   {string}          fallback - Returned when the marker is missing.
- * @returns {Promise<string>}            Promise resolving to the dictionary string for the marker, or the fallback.
+ * @returns Promise resolving to the dictionary string for the marker, or the fallback.
  */
 export const t = async (marker: string, fallback: string): Promise<string> => {
   const dict = await getDictionary();

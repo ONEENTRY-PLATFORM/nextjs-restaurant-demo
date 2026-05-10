@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GoogleAuthCallback — Suspense wrapper for the Google OAuth callback inner component.
  *
- * @returns {JSX.Element} JSX of the OAuth callback page (loading fallback + inner exchange logic).
+ * @returns JSX of the OAuth callback page (loading fallback + inner exchange logic).
  */
 const GoogleAuthCallback = (): JSX.Element => (
   <Suspense

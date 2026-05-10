@@ -17,7 +17,7 @@ import { typeError } from '@/components/utils';
  * @param   {number} props.offset     - Page offset.
  * @param   {string} [props.langCode] - Optional explicit locale (defaults to `getLang()`).
  * @param   {object} [props.params]   - Optional category handle and inbound `searchParams` map.
- * @returns {Promise<{ isError: boolean; error?: IError; products?: IProductsEntity[]; total: number }>}    Promise resolving to `{ isError, error?, products?, total }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, products?, total }` (graceful fallback on SDK error).
  */
 export const getProducts = cache(
   async (props: {

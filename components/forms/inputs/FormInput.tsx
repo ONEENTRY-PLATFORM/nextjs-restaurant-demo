@@ -13,7 +13,7 @@ import EyeOpenIcon from '@/components/icons/eye-o';
  * FormInput — generic input for OneEntry form fields (string, password, email, list, textarea).
  *
  * @param   {IFormAttribute & { value?: string; index: number }} field - OneEntry form attribute, optionally pre-filled `value` and an `index` for staggered animations.
- * @returns {JSX.Element}                                                JSX of the labelled input field with field-type-specific renderer.
+ * @returns JSX of the labelled input field with field-type-specific renderer.
  */
 const FormInput = (field: IFormAttribute & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;

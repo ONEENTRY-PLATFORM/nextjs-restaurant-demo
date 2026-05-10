@@ -21,7 +21,7 @@ const BLOG_HANDLE = 'blog';
  *
  * Overrides the generic render of `app/[handle]/page.tsx` for `/blog` (static segment > `[handle]`).
  *
- * @returns {Promise<JSX.Element>} Promise resolving to JSX of the root promo page (intro + vertical list of promo banners).
+ * @returns Promise resolving to JSX of the root promo page (intro + vertical list of promo banners).
  */
 const BlogPromoListPage = async (): Promise<JSX.Element> => {
   const [{ page, isError }, banners] = await Promise.all([
@@ -116,7 +116,7 @@ export default BlogPromoListPage;
 /**
  * generateMetadata — metadata for the root promo page from the CMS `blog` page title/description.
  *
- * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(BLOG_HANDLE);

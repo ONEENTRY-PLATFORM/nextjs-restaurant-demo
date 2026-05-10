@@ -25,7 +25,7 @@ import FormSubmitButton from './inputs/FormSubmitButton';
  * `AuthProvider.checkCode(...)` or `activateUser(...)` for post-signup activation.
  * See MISMATCH-LOG §C.8.2.
  *
- * @returns {JSX.Element} JSX of the 6-digit OTP entry form.
+ * @returns JSX of the 6-digit OTP entry form.
  */
 const VerificationForm = (): JSX.Element => {
   const t = useT();

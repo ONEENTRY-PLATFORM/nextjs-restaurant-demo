@@ -7,7 +7,7 @@ import TableRowAnimations from '../animations/TableRowAnimations';
  *
  * @param   {object}      props      - Component props.
  * @param   {string}      props.text - Button label (from the CMS).
- * @returns {JSX.Element} JSX of the submit button wrapped in row animations.
+ * @returns JSX of the submit button wrapped in row animations.
  */
 const PaymentButton = ({ text }: { text: string }): JSX.Element => {
   return (

@@ -1,7 +1,7 @@
 /**
  * SearchIcon — orange magnifying-glass icon for the search input affordance.
  *
- * @returns {JSX.Element} JSX of the search SVG.
+ * @returns JSX of the search SVG.
  */
 const SearchIcon = () => {
   return (

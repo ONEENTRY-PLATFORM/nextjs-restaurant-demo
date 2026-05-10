@@ -9,7 +9,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * ApplyButton — primary "Apply" button at the bottom of the filter modal; closes the drawer.
  *
- * @returns {JSX.Element} JSX of the apply button.
+ * @returns JSX of the apply button.
  */
 const ApplyButton = (): JSX.Element => {
   const t = useT();

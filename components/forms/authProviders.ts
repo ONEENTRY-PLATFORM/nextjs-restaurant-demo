@@ -41,7 +41,7 @@ const ORDER_RANK: Record<string, number> = {
  * getProviderMeta — resolves UI metadata (label, icon) for an auth provider, with email fallback.
  *
  * @param   {IAuthProvidersEntity} p - OneEntry auth-provider entity.
- * @returns {ProviderMeta}             Display metadata for the provider button.
+ * @returns Display metadata for the provider button.
  */
 export const getProviderMeta = (p: IAuthProvidersEntity): ProviderMeta => {
   return (
@@ -62,7 +62,7 @@ export const getProviderMeta = (p: IAuthProvidersEntity): ProviderMeta => {
  * showing a button that cannot complete the OAuth flow would be a dead-end for the user.
  *
  * @param   {IAuthProvidersEntity[]} providers - Auth providers from the OneEntry SDK.
- * @returns {IAuthProvidersEntity[]}             Active providers sorted with email first, google second, others after.
+ * @returns Active providers sorted with email first, google second, others after.
  */
 export const sortActiveAuthProviders = (
   providers: IAuthProvidersEntity[]
@@ -88,7 +88,7 @@ export const sortActiveAuthProviders = (
  * in normal operation the Google button is filtered out upstream by `sortActiveAuthProviders`.
  *
  * @param   {string | null} [authUrl] - Optional OAuth authorization URL from the OneEntry admin.
- * @returns {boolean}                    `true` when the redirect was initiated, `false` when the OAuth client id is missing.
+ * @returns `true` when the redirect was initiated, `false` when the OAuth client id is missing.
  */
 export const startGoogleOAuth = (authUrl?: string | null): boolean => {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;

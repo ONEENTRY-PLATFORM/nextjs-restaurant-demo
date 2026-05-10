@@ -7,7 +7,7 @@ type LogOutProps = { marker: string; token?: string };
  *
  * @param   {LogOutProps} props        - Sign-out arguments.
  * @param   {string}      props.marker - Auth-provider marker the session was created with (e.g. `email`).
- * @returns {Promise<{ data?: unknown; error?: string }>}        Promise resolving to `{ data }` on success, `{ error }` on failure.
+ * @returns Promise resolving to `{ data }` on success, `{ error }` on failure.
  */
 export const logOutUser = async ({ marker }: LogOutProps) => {
   try {

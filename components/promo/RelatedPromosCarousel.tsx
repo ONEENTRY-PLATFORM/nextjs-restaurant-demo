@@ -14,7 +14,7 @@ import type { BlogBanner } from '@/app/api';
  *
  * @param   {object}        props        - Component props.
  * @param   {BlogBanner[]}  props.promos - Promo banners to render in the rail.
- * @returns {JSX.Element} JSX of the carousel with sibling dot tablist.
+ * @returns JSX of the carousel with sibling dot tablist.
  */
 const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Element => {
   const scrollerRef = useRef<HTMLDivElement>(null);

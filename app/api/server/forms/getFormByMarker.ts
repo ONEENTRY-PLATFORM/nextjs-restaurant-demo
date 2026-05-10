@@ -9,7 +9,7 @@ import { typeError } from '@/components/utils';
  * getFormByMarker — form by marker.
  *
  * @param   {string} marker - OneEntry form marker (e.g. `review_form`, `contact_us`).
- * @returns {Promise<{ isError: boolean; error?: IError; form?: IFormsEntity }>}        Promise resolving to `{ isError, error?, form? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, form? }` (graceful fallback on SDK error).
  */
 export const getFormByMarker = cache(
   async (

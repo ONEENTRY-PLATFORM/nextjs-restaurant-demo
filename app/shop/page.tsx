@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
  * ShopPageLayout — shop page (root catalog backed by the OneEntry `services` page).
  *
  * @param   {PageProps}            props - Page props with `params` and `searchParams`.
- * @returns {Promise<JSX.Element>}       Promise resolving to JSX of the shop page layout (breadcrumb JSON-LD + suspended products grid).
+ * @returns Promise resolving to JSX of the shop page layout (breadcrumb JSON-LD + suspended products grid).
  */
 const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -84,7 +84,7 @@ export default ShopPageLayout;
  *
  * @param   {MetadataParams}                  props        - Component props.
  * @param   {MetadataParams['params']}        props.params - Async route params (handle, locale).
- * @returns {Promise<Metadata>}                            Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle, lang } = await params;

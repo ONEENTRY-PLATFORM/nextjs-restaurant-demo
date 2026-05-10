@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 /**
  * ProfilePage — personal profile data page (2-column layout with promo sidebar).
  *
- * @returns {Promise<JSX.Element>} Promise resolving to JSX of the personal data page.
+ * @returns Promise resolving to JSX of the personal data page.
  */
 const ProfilePage = async (): Promise<JSX.Element> => {
   const banners = await getBlogBanners();

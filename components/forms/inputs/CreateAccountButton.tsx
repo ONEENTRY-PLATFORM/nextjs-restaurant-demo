@@ -9,7 +9,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  *
  * @param   {object} props       - Component props.
  * @param   {string} props.title - Button label (defaults to `'Create account'`).
- * @returns {JSX.Element}          JSX of the outlined create-account button.
+ * @returns JSX of the outlined create-account button.
  */
 const CreateAccountButton = ({ title = 'Create account' }: { title: string }) => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

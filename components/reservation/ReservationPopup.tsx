@@ -28,7 +28,7 @@ import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
  *
  * @param   {IOrdersFormData[]}    formData    - Raw order fields.
  * @param   {RestaurantOption[]}   restaurants - Available options for mapping entity → pageUrl.
- * @returns {Record<string, string>}             Flat map of initial values keyed by marker.
+ * @returns Flat map of initial values keyed by marker.
  */
 const buildInitialValuesFromOrder = (
   formData: IOrdersFormData[],
@@ -70,7 +70,7 @@ const buildInitialValuesFromOrder = (
 /**
  * ReservationPopup — table booking popup with form / edit / OAuth resume modes.
  *
- * @returns {JSX.Element} JSX of the reservation drawer.
+ * @returns JSX of the reservation drawer.
  */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();

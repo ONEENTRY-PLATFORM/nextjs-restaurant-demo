@@ -11,7 +11,7 @@ import TableRowAnimations from '../animations/TableRowAnimations';
  *
  * @param   {object}            props          - Component props.
  * @param   {IProductsEntity}   props.delivery - OneEntry product representing the delivery service line item.
- * @returns {JSX.Element} JSX of the delivery table row.
+ * @returns JSX of the delivery table row.
  */
 const DeliveryRow = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   return (

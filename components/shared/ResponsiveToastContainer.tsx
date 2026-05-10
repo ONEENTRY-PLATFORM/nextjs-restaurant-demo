@@ -21,7 +21,7 @@ const getMdServerSnapshot = (): boolean => true;
  * On mobile the bottom-menu sits at the bottom of the viewport (`md:hidden`, h-19),
  * so a `bottom-right` toast would overlap it. Above md we keep the desktop position.
  *
- * @returns {JSX.Element} JSX of a single `<ToastContainer>` whose position adapts to the viewport.
+ * @returns JSX of a single `<ToastContainer>` whose position adapts to the viewport.
  */
 const ResponsiveToastContainer = (): JSX.Element => {
   const isMdUp = useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);

@@ -35,7 +35,7 @@ type CartWizardProps = {
  * buildStepTitles — builds the localized title map for the checkout wizard steps.
  *
  * @param   {(marker: string, fallback: string) => string} t - Dictionary translator function.
- * @returns {Record<CheckoutStep, string>}                    Map from `CheckoutStep` to display title.
+ * @returns Map from `CheckoutStep` to display title.
  */
 const buildStepTitles = (
   t: (marker: string, fallback: string) => string
@@ -54,7 +54,7 @@ const CHECKOUT_FLOW: CheckoutStep[] = ['cart', 'order', 'payment'];
  * buildBreadcrumbPath — derives the breadcrumb trail leading to the current checkout step.
  *
  * @param   {CheckoutStep}   current - Active checkout step.
- * @returns {CheckoutStep[]}           Ordered list of steps from `cart` to (and including) `current`.
+ * @returns Ordered list of steps from `cart` to (and including) `current`.
  */
 const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
   const idx = CHECKOUT_FLOW.indexOf(current);
@@ -68,7 +68,7 @@ const MD_QUERY = '(min-width: 768px)';
  * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
  *
  * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
- * @returns {() => void}        Unsubscribe function.
+ * @returns Unsubscribe function.
  */
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -78,19 +78,19 @@ const subscribeMd = (cb: () => void): (() => void) => {
 /**
  * getMdSnapshot — current client snapshot of the `md` media query match state.
  *
- * @returns {boolean} `true` when the viewport currently matches `md` (>= 768px).
+ * @returns `true` when the viewport currently matches `md` (>= 768px).
  */
 const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
 /**
  * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
  *
- * @returns {boolean} Always `false` so SSR renders the mobile layout deterministically.
+ * @returns Always `false` so SSR renders the mobile layout deterministically.
  */
 const getMdServerSnapshot = (): boolean => false;
 /**
  * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
  *
- * @returns {boolean} `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
+ * @returns `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
  */
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
@@ -108,7 +108,7 @@ const useIsMdUp = (): boolean =>
  * @param   {CartWizardProps}  props              - Component props.
  * @param   {IProductsEntity}  props.deliveryData - OneEntry product representing the delivery service line item.
  * @param   {ReactNode}        [props.promoSidebar] - Optional promo sidebar rendered next to the cart on md+.
- * @returns {JSX.Element}                          JSX of the wizard for the current step.
+ * @returns JSX of the wizard for the current step.
  */
 const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Element => {
   const t = useT();

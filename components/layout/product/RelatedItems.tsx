@@ -26,7 +26,7 @@ const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
  * @param   {object}      props           - Component props.
  * @param   {number}      props.productId - Id of the current product (excluded from the result).
  * @param   {string[]}    [props.blocks]  - Markers of blocks attached to the product (`product.blocks`), used as fallback source.
- * @returns {Promise<JSX.Element>} JSX of the section, or empty fragment when no related items are available.
+ * @returns JSX of the section, or empty fragment when no related items are available.
  */
 const RelatedItems = async ({
   productId,

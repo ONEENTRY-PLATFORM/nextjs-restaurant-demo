@@ -31,7 +31,7 @@ type DescriptionValue = Array<{
  * `banner` (mobile fallback), `description` (md/html). Products are fetched like in a regular category.
  *
  * @param   {PageProps}              props - Dynamic route props (`params`, `searchParams`).
- * @returns {Promise<JSX.Element>}         Promise resolving to JSX of the promo detail page.
+ * @returns Promise resolving to JSX of the promo detail page.
  */
 const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
@@ -158,7 +158,7 @@ export default PromoDetailPage;
  *
  * @param   {MetadataParams}                  props        - Component props.
  * @param   {MetadataParams['params']}        props.params - Async route params with the promo `pageUrl` handle.
- * @returns {Promise<Metadata>}                            Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle } = await params;

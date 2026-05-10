@@ -19,7 +19,7 @@ interface HandleProps {
  * @param   {number}      props.offset   - Page offset.
  * @param   {number}      props.limit    - Page size.
  * @param   {string}      [props.langCode] - Optional explicit locale (defaults to `getLang()`).
- * @returns {Promise<{ isError: boolean; error?: IError; orders?: IOrderByMarkerEntity[]; total: number }>}              Promise resolving to `{ isError, error?, orders?, total }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, orders?, total }` (graceful fallback on SDK error).
  */
 export const getAllOrdersByMarker = cache(
   async ({

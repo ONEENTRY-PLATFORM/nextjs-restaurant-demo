@@ -14,7 +14,7 @@ import type { AnimationsProps } from '../types/global';
  * @param   {ReactNode}       props.children  - Subtree to fade in.
  * @param   {string}          props.className - CSS className for the wrapper `<div>` (always merged with `opacity-0`).
  * @param   {number}          props.index     - Element index used to compute the per-card stagger delay.
- * @returns {JSX.Element}                       JSX wrapper that animates `autoAlpha` from 0 → 1 on mount.
+ * @returns JSX wrapper that animates `autoAlpha` from 0 → 1 on mount.
  * @see {@link https://gsap.com/cheatsheet/ gsap cheatsheet}
  */
 const FadeTransition = ({ children, className, index }: AnimationsProps): JSX.Element => {

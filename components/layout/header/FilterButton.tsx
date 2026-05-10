@@ -9,7 +9,7 @@ import FilterIcon from '@/components/icons/filter';
 /**
  * FilterButton — header trigger that opens `FilterModal` via `OpenDrawerContext`.
  *
- * @returns {JSX.Element} JSX of the filter button.
+ * @returns JSX of the filter button.
  */
 const FilterButton = (): JSX.Element => {
   const t = useT();

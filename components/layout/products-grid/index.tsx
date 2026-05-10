@@ -28,7 +28,7 @@ type GridSearchParams = {
  * @param   {GridSearchParams}    [props.searchParams] - Inbound URL `searchParams` map (search/page/filters).
  * @param   {number}              props.productsLimit  - Page size used to compute `offset`/`limit` and total page count.
  * @param   {boolean}             [props.isCategory]   - When `true`, fetches via `getProductsByPageUrl(handle)` instead of the global catalog.
- * @returns {Promise<JSX.Element>} JSX of the products grid (with reveal animation), or `<ProductsNotFound />` when empty.
+ * @returns JSX of the products grid (with reveal animation), or `<ProductsNotFound />` when empty.
  */
 const ProductsGridLayout = async ({
   params,

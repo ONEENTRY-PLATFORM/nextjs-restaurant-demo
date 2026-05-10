@@ -26,7 +26,7 @@ type PriceChip = {
  * buildPriceChips — builds the catalog price filter chips from the `{ min, max }` range.
  *
  * @param   {PriceRange | undefined} priceRange - Catalog price bounds.
- * @returns {PriceChip[]} Array of `PriceChip` items (empty when the range is missing or trivial).
+ * @returns Array of `PriceChip` items (empty when the range is missing or trivial).
  */
 const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
   if (!priceRange || priceRange.max <= 0) return [];
@@ -54,7 +54,7 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
  * @param   {object}                  props               - Component props.
  * @param   {PreferenceOption[]}      [props.preferences] - Available preference filter options sourced from OneEntry.
  * @param   {PriceRange}              [props.priceRange]  - Optional catalog price range used to seed the price chips.
- * @returns {JSX.Element} JSX of the filter panel.
+ * @returns JSX of the filter panel.
  */
 const FilterBottom = ({
   preferences: preferenceOptions = [],

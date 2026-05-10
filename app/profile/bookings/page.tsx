@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 /**
  * ProfileBookingsPage — bookings tab in the personal account (2-column layout with promo sidebar).
  *
- * @returns {Promise<JSX.Element>} Promise resolving to JSX of the bookings page.
+ * @returns Promise resolving to JSX of the bookings page.
  */
 const ProfileBookingsPage = async (): Promise<JSX.Element> => {
   const banners = await getBlogBanners();

@@ -26,7 +26,7 @@ type CartEntry = {
  *
  * @param   {object}      props           - Component props.
  * @param   {string}      props.className - Class merged onto the row wrapper.
- * @returns {JSX.Element} JSX of the total-amount line.
+ * @returns JSX of the total-amount line.
  */
 const TotalAmount = ({ className }: { className: string }): JSX.Element => {
   const t = useT();

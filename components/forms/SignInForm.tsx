@@ -25,7 +25,7 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
  * @param   {object}  props           - Component props.
  * @param   {string}  props.className - Wrapper class merged onto the animated form root.
  * @param   {boolean} props.isActive  - Whether the form is the active step in the auth wizard (drives animations).
- * @returns {JSX.Element}               JSX of the sign-in form.
+ * @returns JSX of the sign-in form.
  */
 const SignInForm = ({
   className,

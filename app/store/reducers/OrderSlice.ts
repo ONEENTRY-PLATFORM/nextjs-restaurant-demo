@@ -172,7 +172,7 @@ export const {
  * selectCheckoutStep — selector for the active checkout step.
  *
  * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
- * @returns {CheckoutStep}                              Current checkout step.
+ * @returns Current checkout step.
  */
 export const selectCheckoutStep = (state: { orderReducer: InitialStateType }): CheckoutStep =>
   state.orderReducer.step;
@@ -181,7 +181,7 @@ export const selectCheckoutStep = (state: { orderReducer: InitialStateType }): C
  * selectCheckoutStepError — selector for the error message attached to the `error` step (if any).
  *
  * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
- * @returns {string | undefined}                        Error message, or `undefined` when no error is set.
+ * @returns Error message, or `undefined` when no error is set.
  */
 export const selectCheckoutStepError = (state: {
   orderReducer: InitialStateType;
@@ -191,7 +191,7 @@ export const selectCheckoutStepError = (state: {
  * selectLastOrderId — selector for the id of the last successfully created order.
  *
  * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
- * @returns {number | undefined}                        Last order id, or `undefined` when no order has been completed yet.
+ * @returns Last order id, or `undefined` when no order has been completed yet.
  */
 export const selectLastOrderId = (state: { orderReducer: InitialStateType }): number | undefined =>
   state.orderReducer.lastOrderId;
@@ -200,7 +200,7 @@ export const selectLastOrderId = (state: { orderReducer: InitialStateType }): nu
  * selectAppliedCoupon — selector for the coupon applied to the current cart (if any).
  *
  * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
- * @returns {AppliedCoupon | undefined}                 Applied coupon descriptor, or `undefined` when no coupon is applied.
+ * @returns Applied coupon descriptor, or `undefined` when no coupon is applied.
  */
 export const selectAppliedCoupon = (state: {
   orderReducer: InitialStateType;

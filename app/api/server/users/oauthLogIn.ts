@@ -20,7 +20,7 @@ type OauthLoginProps = {
  * @param   {string}          props.marker      - OAuth provider marker (currently `google`).
  * @param   {string}          props.code        - Authorization code returned by the provider's redirect.
  * @param   {string}          props.redirectUri - Redirect URI registered for the OAuth client.
- * @returns {Promise<{ data?: IAuthEntity; error?: string }>}                    Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
+ * @returns Promise resolving to `{ data }` with the auth entity on success or `{ error }` on failure.
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {

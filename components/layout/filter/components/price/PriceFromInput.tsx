@@ -7,7 +7,7 @@ import { memo } from 'react';
  * @param   {object}                              props          - Component props.
  * @param   {number}                              props.price    - Current value of the lower bound.
  * @param   {Dispatch<SetStateAction<number>>}    props.setPrice - State setter that owns the lower bound.
- * @returns {JSX.Element} JSX of the price-from input.
+ * @returns JSX of the price-from input.
  */
 const PriceFromInput = ({
   price,

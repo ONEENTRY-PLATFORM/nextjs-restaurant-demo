@@ -12,7 +12,7 @@ type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> |
 /**
  * ServicePage — service landing page with logo and CTAs from attributes of the CMS `services` page.
  *
- * @returns {Promise<JSX.Element>} Promise resolving to JSX of the service entry page (logo, primary/secondary CTA buttons over background image).
+ * @returns Promise resolving to JSX of the service entry page (logo, primary/secondary CTA buttons over background image).
  */
 const ServicePage = async (): Promise<JSX.Element> => {
   const { page } = await getPageByUrl('services');
@@ -69,7 +69,7 @@ export default ServicePage;
 /**
  * generateMetadata — service entry page metadata from the CMS `services` page title.
  *
- * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('services');

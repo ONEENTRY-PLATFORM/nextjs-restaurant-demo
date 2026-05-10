@@ -12,7 +12,7 @@ import ProductImage from './ProductImage';
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product with `more_pic` (image array).
- * @returns {JSX.Element} JSX of the group card.
+ * @returns JSX of the group card.
  */
 const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const attributeValues = product.attributeValues;

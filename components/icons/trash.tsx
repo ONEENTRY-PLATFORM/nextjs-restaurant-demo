@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * TrashIcon — paper-fill trash-can icon used in delete affordances.
  *
- * @returns {JSX.Element} JSX of the trash SVG.
+ * @returns JSX of the trash SVG.
  */
 const TrashIcon = (): JSX.Element => {
   return (

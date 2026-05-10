@@ -21,7 +21,7 @@ import HeartOpenIcon from '@/components/icons/heart-o';
  * FavoritesButton — heart button on the product page; toggles favorites locally and on the server when authenticated.
  *
  * @param   {IProductsEntity} product - OneEntry product entity (component is called with the product as props).
- * @returns {JSX.Element} JSX of the heart toggle button.
+ * @returns JSX of the heart toggle button.
  */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const dispatch = useAppDispatch();

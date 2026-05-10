@@ -16,7 +16,7 @@ type ReservationSuccessProps = {
  * @param   {ReservationSuccessProps} props         - Component props.
  * @param   {number}                  props.orderId - Numeric id of the created order (rendered as `№ <id>`).
  * @param   {string}                  props.summary - Pre-formatted booking summary line (`DD.MM.YY HH.MM N person`).
- * @returns {JSX.Element}                             JSX of the confirmation screen.
+ * @returns JSX of the confirmation screen.
  */
 const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.Element => {
   const t = useT();

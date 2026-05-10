@@ -15,7 +15,7 @@ interface HandleProps {
  * @param   {HandleProps} props                 - Fetch arguments.
  * @param   {string}      props.attributeMarker - Marker of the attribute inside the set.
  * @param   {string}      props.setMarker       - Marker of the attribute set.
- * @returns {Promise<{ isError: boolean; error?: IError; attribute?: IAttributesSetsEntity }>}                Promise resolving to `{ isError, error?, attribute? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, attribute? }` (graceful fallback on SDK error).
  */
 export const getSingleAttributeByMarkerSet = cache(
   async ({

@@ -23,7 +23,7 @@ import HeartCardIcon from '@/components/icons/heart-card';
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - Product entity to toggle in favorites.
- * @returns {JSX.Element} JSX of the heart toggle button.
+ * @returns JSX of the heart toggle button.
  */
 const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();

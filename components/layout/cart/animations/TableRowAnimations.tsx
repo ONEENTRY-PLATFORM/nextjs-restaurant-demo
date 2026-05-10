@@ -14,7 +14,7 @@ import type { AnimationsProps } from '@/app/types/global';
  * @param   {ReactNode}       props.children  - Row content.
  * @param   {string}          props.className - Class merged onto the wrapping `<div>`.
  * @param   {number}          props.index     - Row index used to compute the stagger delay.
- * @returns {JSX.Element} JSX wrapper around the row content.
+ * @returns JSX wrapper around the row content.
  */
 const TableRowAnimations = ({ children, className, index }: AnimationsProps): JSX.Element => {
   const ref = useRef(null);

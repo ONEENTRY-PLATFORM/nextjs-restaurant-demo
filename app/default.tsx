@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
  *
  * @param   {object}    props          - Component props.
  * @param   {ReactNode} props.children - Children rendered inside the layout.
- * @returns {ReactNode}                Children passed in.
+ * @returns Children passed in.
  */
 const Layout = ({ children }: { children: ReactNode }): ReactNode => children;
 

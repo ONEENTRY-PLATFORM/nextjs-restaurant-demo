@@ -10,7 +10,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  *
  * @param   {object} props       - Component props.
  * @param   {string} props.title - Button label.
- * @returns {JSX.Element}          JSX of the underlined reset-password button.
+ * @returns JSX of the underlined reset-password button.
  */
 const ResetPasswordButton = ({ title }: { title: string }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

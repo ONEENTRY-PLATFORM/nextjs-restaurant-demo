@@ -26,7 +26,7 @@ type Comfort = { title: string; iconUrl?: string };
  * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
  *
  * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
- * @returns {string}      Formatted `from - to` string, or empty when no interval is present.
+ * @returns Formatted `from - to` string, or empty when no interval is present.
  */
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
@@ -41,7 +41,7 @@ const formatSchedule = (raw: unknown): string => {
  * normalizeComforts — flattens the `comforts` attribute (with optional image extension) to `{ title, iconUrl? }[]`.
  *
  * @param   {unknown}    raw - Raw OneEntry attribute value.
- * @returns {Comfort[]}      Cleaned list of comfort items (drops entries without a title).
+ * @returns Cleaned list of comfort items (drops entries without a title).
  */
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
@@ -62,7 +62,7 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
  *
  * @param   {number} lat - Latitude.
  * @param   {number} lng - Longitude.
- * @returns {string}     Embed URL suitable for an `<iframe src>`.
+ * @returns Embed URL suitable for an `<iframe src>`.
  */
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
@@ -72,7 +72,7 @@ const buildMapEmbed = (lat: number, lng: number): string =>
  *
  * @param   {object}                              props        - Component props.
  * @param   {Promise<{ handle: string }>}         props.params - Async route params with the OneEntry restaurant `pageUrl` handle.
- * @returns {Promise<JSX.Element>}                              Promise resolving to JSX of the restaurant detail page.
+ * @returns Promise resolving to JSX of the restaurant detail page.
  */
 const RestaurantPage = async ({
   params,
@@ -220,7 +220,7 @@ export default RestaurantPage;
  *
  * @param   {object}                              props        - Component props.
  * @param   {Promise<{ handle: string }>}         props.params - Async route params with the restaurant `pageUrl` handle.
- * @returns {Promise<Metadata>}                                 Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata({
   params,

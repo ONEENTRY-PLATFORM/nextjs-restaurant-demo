@@ -14,7 +14,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {ReactNode}   props.children  - Filter section content.
  * @param   {string}      props.className - Wrapper class merged onto the animated container.
  * @param   {number}      props.index     - Section index used to compute the stagger delay.
- * @returns {JSX.Element} JSX wrapper that animates the section in/out.
+ * @returns JSX wrapper that animates the section in/out.
  */
 const FilterAnimations = ({
   children,

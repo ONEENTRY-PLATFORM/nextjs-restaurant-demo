@@ -7,7 +7,7 @@ import { UsePrice } from '@/components/utils';
  *
  * @param   {object}      props            - Component props.
  * @param   {object}      props.attributes - Product attribute values (`sale`, `price`).
- * @returns {JSX.Element} JSX of the price (brand new price + strikethrough old price), or empty when no price set.
+ * @returns JSX of the price (brand new price + strikethrough old price), or empty when no price set.
  */
 const PriceDisplay = ({
   attributes: { sale, price },

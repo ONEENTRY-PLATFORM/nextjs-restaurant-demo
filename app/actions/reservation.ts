@@ -23,7 +23,7 @@ const ORDER_STORAGE_MARKER = 'booking_order';
  * `Orders.createOrder`.
  *
  * @param   {ReservationPayload}                                     payload - Reservation fields prepared on the client.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}         Result of the server action.
+ * @returns Result of the server action.
  */
 export async function submitReservation(
   payload: ReservationPayload

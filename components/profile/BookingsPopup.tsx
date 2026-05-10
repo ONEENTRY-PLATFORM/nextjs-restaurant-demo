@@ -17,7 +17,7 @@ import BookingsContent from './BookingsContent';
  * {@link BookingsContent}; this wrapper handles the drawer chrome (close button,
  * swipe-to-close, transition state from `OpenDrawerContext`).
  *
- * @returns {JSX.Element} JSX of the bookings drawer.
+ * @returns JSX of the bookings drawer.
  */
 const BookingsPopup = (): JSX.Element => {
   const { setOpen, setTransition } = useContext(OpenDrawerContext);

@@ -14,7 +14,7 @@ type Props = LoaderProps & {
 /**
  * SkeletonBody — pulsing placeholder rows that mirror the inner layout of `ProductCard`.
  *
- * @returns {ReactNode} JSX of the skeleton inner content.
+ * @returns JSX of the skeleton inner content.
  */
 const SkeletonBody = (): ReactNode => (
   <>
@@ -43,7 +43,7 @@ const SkeletonBody = (): ReactNode => (
  * @param   {Props}   props                 - Component props.
  * @param   {number}  [props.productsLimit] - Number of skeleton cards to render (defaults to 10).
  * @param   {boolean} [props.scaleOnly]     - When `true`, only animate scale (used as overlay in `ProductsGridReveal`).
- * @returns {JSX.Element} JSX of the skeleton grid.
+ * @returns JSX of the skeleton grid.
  */
 const ProductsGridLoader = ({ productsLimit = 10 }: Props): JSX.Element => {
   return (

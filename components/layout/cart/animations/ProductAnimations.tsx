@@ -17,7 +17,7 @@ import { getTransition, removeProduct, setCartTransition } from '@/app/store/red
  * @param   {string}            props.className - Class merged onto the wrapping `<div>`.
  * @param   {IProductsEntity}   props.product   - Product entity (used to match `transitionId` for the delete tween).
  * @param   {number}            props.index     - Card index used to compute the per-row stagger delay.
- * @returns {JSX.Element} JSX wrapper around the cart product card.
+ * @returns JSX wrapper around the cart product card.
  */
 const ProductAnimations = ({
   children,

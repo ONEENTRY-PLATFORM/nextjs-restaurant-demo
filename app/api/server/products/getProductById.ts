@@ -9,7 +9,7 @@ import { typeError } from '@/components/utils';
  * getProductById — product by id.
  *
  * @param   {number} id - OneEntry product id.
- * @returns {Promise<{ isError: boolean; error?: IError; product?: IProductsEntity }>}    Promise resolving to `{ isError, error?, product? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, product? }` (graceful fallback on SDK error).
  */
 export const getProductById = cache(
   async (

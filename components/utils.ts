@@ -11,7 +11,7 @@ import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
  * @param   {IAttributeValues | undefined} dict     - Dictionary (attribute set `static_content`).
  * @param   {string}                       marker   - Attribute marker.
  * @param   {string}                       fallback - Value used when the marker or its string value is missing.
- * @returns {string} Localized string or `fallback`.
+ * @returns Localized string or `fallback`.
  */
 export const dictText = (
   dict: IAttributeValues | undefined,
@@ -27,7 +27,7 @@ export const dictText = (
  *
  * @param   {object}            props        - Function props.
  * @param   {number | string}   props.amount - Numeric (or numeric-string) amount to format.
- * @returns {string} Locale-formatted currency string.
+ * @returns Locale-formatted currency string.
  */
 export const UsePrice = ({ amount }: { amount: number | string }): string => {
   const currency = CurrencyEnum['en' as keyof typeof CurrencyEnum];
@@ -46,7 +46,7 @@ export const UsePrice = ({ amount }: { amount: number | string }): string => {
  * @param   {object}                       props          - Function props.
  * @param   {number | string | Date}       props.fullDate - Date to format (ms timestamp, ISO string, or `Date`).
  * @param   {string}                       props.format   - Locale identifier passed to `Intl.DateTimeFormat` (defaults to `'en'`).
- * @returns {string} Formatted `dd-MMM-yyyy` string.
+ * @returns Formatted `dd-MMM-yyyy` string.
  */
 export const UseDate = ({
   fullDate,
@@ -75,7 +75,7 @@ export const UseDate = ({
  * sortArrayByPosition — in-place ascending sort by the `position` field.
  *
  * @param   {Record<any, any>} array - Array of items, each carrying a numeric `position`.
- * @returns {Record<any, any>} The same array sorted in ascending `position` order.
+ * @returns The same array sorted in ascending `position` order.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sortArrayByPosition = (array: Record<any, any>) => {
@@ -86,7 +86,7 @@ export const sortArrayByPosition = (array: Record<any, any>) => {
  * sortObjectFieldsByPosition — returns a copy of the object with keys ordered by each value's `position`.
  *
  * @param   {Record<any, any> | null | undefined} obj - Map whose values carry a numeric `position` (missing → `0`).
- * @returns {object} New object with the same keys/values ordered by ascending `position`.
+ * @returns New object with the same keys/values ordered by ascending `position`.
  */
 export const sortObjectFieldsByPosition = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,7 +111,7 @@ export const sortObjectFieldsByPosition = (
  *
  * @param   {[] | Array<IMenusPages>} data - Flat array of menu pages from the OneEntry SDK.
  * @param   {number | null}           pid  - Parent id to root the tree at (`null` for top-level).
- * @returns {IMenusPages[]} Array of nested menu pages with populated `children`.
+ * @returns Array of nested menu pages with populated `children`.
  */
 export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | null) => {
   return data.reduce((r: IMenusPages[], element: IMenusPages) => {
@@ -131,7 +131,7 @@ export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | nu
  * typeError — type guard for `IError` (based on the presence of `statusCode`).
  *
  * @param   {IError | unknown} res - Value returned by an SDK call.
- * @returns {boolean} `true` when `res` looks like a OneEntry SDK error envelope.
+ * @returns `true` when `res` looks like a OneEntry SDK error envelope.
  */
 export function typeError(res: IError | unknown): res is IError {
   if ((res as IError)?.statusCode) {
@@ -146,7 +146,7 @@ export function typeError(res: IError | unknown): res is IError {
  * Returns an empty string as `''` — the caller decides whether to send it.
  *
  * @param   {string | undefined | null} raw - Raw value from the phone input.
- * @returns {string} `+<digits>` string, or empty string when no digits are present.
+ * @returns `+<digits>` string, or empty string when no digits are present.
  */
 export const normalizePhoneE164 = (raw: string | undefined | null): string => {
   const digits = (raw ?? '').replace(/\D/g, '');
@@ -157,7 +157,7 @@ export const normalizePhoneE164 = (raw: string | undefined | null): string => {
  * shuffleArray — returns a new array with the elements of `array` in random order.
  *
  * @param   {T[]} array - Source array (left untouched).
- * @returns {T[]} New array containing the same elements shuffled.
+ * @returns New array containing the same elements shuffled.
  */
 export const shuffleArray = <T>(array: T[]): T[] => {
   return array

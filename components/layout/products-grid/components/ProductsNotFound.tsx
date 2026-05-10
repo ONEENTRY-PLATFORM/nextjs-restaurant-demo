@@ -7,7 +7,7 @@ import { type JSX } from 'react';
  *
  * Shown when `getProducts` returns nothing (search/filter without results, or no products in the category).
  *
- * @returns {JSX.Element} JSX of the empty-state card with a "Reset & browse all" link.
+ * @returns JSX of the empty-state card with a "Reset & browse all" link.
  */
 const ProductsNotFound = (): JSX.Element => {
   return (

@@ -5,7 +5,7 @@ import type { JSX } from 'react';
  *
  * @param   {object}                  props           - Component props.
  * @param   {'paper' | 'orange'}      [props.variant] - `'paper'` paints both fill and stroke in paper; `'orange'` strokes brand without fill.
- * @returns {JSX.Element} JSX of the clock-circle SVG.
+ * @returns JSX of the clock-circle SVG.
  */
 const ClockCircleIcon = ({ variant = 'paper' }: { variant?: 'paper' | 'orange' }): JSX.Element => {
   const color = variant === 'paper' ? '#DFE9F9' : '#EC722B';

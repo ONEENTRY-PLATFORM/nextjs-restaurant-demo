@@ -14,7 +14,7 @@ import SearchResults from './SearchResults';
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      props.placeholder - Placeholder/aria-label for the input.
- * @returns {JSX.Element} JSX of the search input with suspended results panel.
+ * @returns JSX of the search input with suspended results panel.
  */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const searchParams = useSearchParams();

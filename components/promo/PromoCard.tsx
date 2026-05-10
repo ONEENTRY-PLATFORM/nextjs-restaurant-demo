@@ -11,7 +11,7 @@ import { getImageUrl } from '@/app/api';
  *
  * @param   {object}        props      - Component props.
  * @param   {IPagesEntity}  props.page - Promo page entity from OneEntry.
- * @returns {JSX.Element} JSX of the promo card.
+ * @returns JSX of the promo card.
  */
 const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const attrs = page.attributeValues ?? {};

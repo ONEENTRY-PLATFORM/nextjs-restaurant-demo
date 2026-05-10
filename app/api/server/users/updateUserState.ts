@@ -13,7 +13,7 @@ import { normalizePhoneE164 } from '@/components/utils';
  * @param   {number[]}                props.favorites - Favorite product ids to persist into `user.state.favorites`.
  * @param   {IProducts[]}             props.cart      - Cart line items to persist into `user.state.cart`.
  * @param   {IUserEntity | undefined} props.user      - Current user entity (no-op when undefined).
- * @returns {Promise<boolean | undefined>}                    Promise resolving to `true` on success, `false` on failure, or `undefined` when called without a user.
+ * @returns Promise resolving to `true` on success, `false` on failure, or `undefined` when called without a user.
  */
 export const updateUserState = async ({
   favorites,
@@ -73,7 +73,7 @@ export const updateUserState = async ({
  * clearUserState — resets the user's `favorites` and `cart` state to empty.
  *
  * @param   {IUserEntity} user - Current user entity whose state should be cleared.
- * @returns {Promise<void>}      Promise that resolves once the empty state is persisted.
+ * @returns Promise that resolves once the empty state is persisted.
  */
 export const clearUserState = async (user: IUserEntity) => {
   updateUserState({ favorites: [], cart: [], user: user });

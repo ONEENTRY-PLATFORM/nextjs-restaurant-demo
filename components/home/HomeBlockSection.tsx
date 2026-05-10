@@ -19,7 +19,7 @@ type HomeBlockSectionProps = {
  * @param   {IProductsEntity[]}     props.products              - Products to render in the grid.
  * @param   {number}                [props.countElementsPerRow] - Layout hint from the CMS (currently unused but accepted for parity).
  * @param   {string}                [props.className]           - Override for the section className.
- * @returns {JSX.Element | null} JSX of the section, or `null` when there is nothing visible to render.
+ * @returns JSX of the section, or `null` when there is nothing visible to render.
  */
 const HomeBlockSection = ({
   title,

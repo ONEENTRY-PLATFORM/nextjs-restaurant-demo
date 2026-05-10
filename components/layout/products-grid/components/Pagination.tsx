@@ -10,7 +10,7 @@ import { useCallback } from 'react';
  *
  * @param   {object}      props            - Component props.
  * @param   {number}      props.totalPages - Total number of pages used to render numbered buttons.
- * @returns {JSX.Element} JSX of the page-number button row.
+ * @returns JSX of the page-number button row.
  */
 const Pagination = ({ totalPages }: { totalPages: number }): JSX.Element => {
   const pathname = usePathname();

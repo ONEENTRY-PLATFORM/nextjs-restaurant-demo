@@ -13,7 +13,7 @@ import EyeCircleIcon from '@/components/icons/eye-circle';
  *
  * @param   {object}      props      - Component props.
  * @param   {IMenusPages} props.item - OneEntry menu page entity (used for the accessible title only).
- * @returns {JSX.Element} JSX of the profile button.
+ * @returns JSX of the profile button.
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

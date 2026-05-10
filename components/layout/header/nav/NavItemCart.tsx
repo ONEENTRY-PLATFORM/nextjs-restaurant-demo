@@ -10,7 +10,7 @@ import CartIcon from '@/components/icons/cart';
 /**
  * NavItemCart — desktop header cart link with a count badge that hydrates only on the client.
  *
- * @returns {JSX.Element} JSX of the cart link.
+ * @returns JSX of the cart link.
  */
 const NavItemCart = (): JSX.Element => {
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;

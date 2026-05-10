@@ -19,7 +19,7 @@ import QuantityInput from './QuantityInput';
  * @param   {string}      props.title       - Product title used in toast text by the decrement handler.
  * @param   {number}      props.height      - Pixel height applied as inline style.
  * @param   {string}      [props.className] - Additional class merged onto the wrapper.
- * @returns {JSX.Element} JSX of the quantity selector or empty fragment when the item is not in the cart.
+ * @returns JSX of the quantity selector or empty fragment when the item is not in the cart.
  */
 const QuantitySelector = ({
   id,

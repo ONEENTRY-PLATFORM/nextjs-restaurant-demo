@@ -9,7 +9,7 @@ import CloseXMiniIcon from '@/components/icons/close-x-mini';
 /**
  * CenterCloseButton — central outlined close button visible while a drawer is open; calls `setTransition('close')` to trigger the reverse animation.
  *
- * @returns {JSX.Element} JSX of the centered close button.
+ * @returns JSX of the centered close button.
  */
 const CenterCloseButton = (): JSX.Element => {
   const { open, setTransition } = useContext(OpenDrawerContext);

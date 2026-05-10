@@ -31,7 +31,7 @@ type UseApplyCouponApi = {
  * On success it stores `{ code, totalSum, totalSumWithDiscount }` in `OrderSlice.appliedCoupon` —
  * `StepOrder` reads the "Discount" line from there, and `useCreateOrder` forwards `couponCode` into `Orders.createOrder`.
  *
- * @returns {UseApplyCouponApi} `{ applyCoupon, removeCoupon, isLoading, error }` — apply/remove handlers plus loading/error state.
+ * @returns `{ applyCoupon, removeCoupon, isLoading, error }` — apply/remove handlers plus loading/error state.
  */
 export const useApplyCoupon = (): UseApplyCouponApi => {
   const dispatch = useAppDispatch();

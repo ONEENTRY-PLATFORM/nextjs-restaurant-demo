@@ -12,7 +12,7 @@ import HeartScriptIcon from '@/components/icons/heart-script';
  *
  * @param   {object}      props      - Component props.
  * @param   {IMenusPages} props.item - OneEntry menu page entity used for href and accessible title.
- * @returns {JSX.Element} JSX of the calendar link.
+ * @returns JSX of the calendar link.
  */
 const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
   const cartCount = useAppSelector(state => {

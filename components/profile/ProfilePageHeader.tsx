@@ -23,7 +23,7 @@ const PAGE_META: Record<string, Meta> = {
 /**
  * ProfilePageHeader — breadcrumbs + title for `/profile/**` pages, route-aware via `usePathname`.
  *
- * @returns {JSX.Element} JSX of the profile page header.
+ * @returns JSX of the profile page header.
  */
 const ProfilePageHeader = (): JSX.Element => {
   const pathname = usePathname();

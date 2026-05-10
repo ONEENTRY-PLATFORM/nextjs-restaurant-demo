@@ -9,7 +9,7 @@ import { typeError } from '@/components/utils';
  * getBlocksByPageUrl — all blocks for the given page url (React cache() deduplicates calls within a render).
  *
  * @param   {string} pageUrl - OneEntry `pageUrl` marker (NOT the Next.js route path).
- * @returns {Promise<{ isError: boolean; error?: IError; blocks?: IPositionBlock[] }>}         Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
  */
 export const getBlocksByPageUrl = cache(
   async (

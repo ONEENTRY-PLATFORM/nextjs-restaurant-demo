@@ -9,7 +9,7 @@ import { getBlogBanners } from '@/app/api';
  *
  * Driven by `blog` children from OneEntry.
  *
- * @returns {Promise<JSX.Element | null>} JSX of the promo strip, or `null` when no banners are configured.
+ * @returns JSX of the promo strip, or `null` when no banners are configured.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
   const banners = await getBlogBanners();

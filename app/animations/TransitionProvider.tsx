@@ -14,7 +14,7 @@ const CARD_LEAVE_HOLD = 0.8;
  * hasCardLeave — checks whether the current pathname needs the extended card-leave hold before navigating.
  *
  * @param   {string}  pathname - Current `next/navigation` pathname.
- * @returns {boolean}          `true` for routes that render product/order cards needing the longer leave hold.
+ * @returns `true` for routes that render product/order cards needing the longer leave hold.
  */
 function hasCardLeave(pathname: string): boolean {
   return (
@@ -33,7 +33,7 @@ function hasCardLeave(pathname: string): boolean {
  *
  * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - Tree rendered inside the transition stage.
- * @returns {JSX.Element}                JSX of the transition root.
+ * @returns JSX of the transition root.
  */
 export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);

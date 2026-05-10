@@ -1,7 +1,7 @@
 /**
  * EyeIcon — closed-eye (slashed) toggle icon for password-hidden state.
  *
- * @returns {JSX.Element} JSX of the closed-eye SVG.
+ * @returns JSX of the closed-eye SVG.
  */
 const EyeIcon = () => {
   return (

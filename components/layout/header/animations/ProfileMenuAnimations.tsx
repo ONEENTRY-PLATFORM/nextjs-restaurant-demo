@@ -13,7 +13,7 @@ import { useRef } from 'react';
  * @param   {string}                          props.className - Class merged onto the animated wrapper.
  * @param   {boolean}                         props.state     - Whether the menu should be open.
  * @param   {Dispatch<SetStateAction<boolean>>} props.setState  - Setter used by `onMouseLeave` to close the menu.
- * @returns {JSX.Element} JSX wrapper that animates open/close based on `state`.
+ * @returns JSX wrapper that animates open/close based on `state`.
  */
 const ProfileMenuAnimations = ({
   children,

@@ -14,7 +14,7 @@ import { useEffect, useRef } from 'react';
  * return <ul ref={ref} className="overflow-x-auto">...</ul>;
  * ```
  *
- * @returns {RefObject<T | null>} Ref to attach to the scrollable element (mouse handlers are wired on mount).
+ * @returns Ref to attach to the scrollable element (mouse handlers are wired on mount).
  */
 export const useDragScroll = <T extends HTMLElement = HTMLElement>(): RefObject<T | null> => {
   const ref = useRef<T | null>(null);

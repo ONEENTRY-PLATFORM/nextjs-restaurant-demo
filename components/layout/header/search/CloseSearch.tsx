@@ -5,7 +5,7 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
  *
  * @param   {object}                              props          - Component props.
  * @param   {Dispatch<SetStateAction<boolean>>}   props.setState - Setter that owns the panel visibility.
- * @returns {JSX.Element} JSX of the close-X button.
+ * @returns JSX of the close-X button.
  */
 const CloseSearch = ({
   setState,

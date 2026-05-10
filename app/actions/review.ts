@@ -48,7 +48,7 @@ export type ReviewPayload = {
  *   moderation should hold reviews before publication.
  *
  * @param   {ReviewPayload}                                          payload - Review data.
- * @returns {Promise<{ ok: true } | { ok: false; message: string }>}         Submission result.
+ * @returns Submission result.
  */
 export async function submitReview(
   payload: ReviewPayload

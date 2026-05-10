@@ -22,7 +22,7 @@ const UNDO_TIMEOUT_MS = 5000;
  *
  * @param   {number} productId - Cart product id to remove.
  * @param   {string} title     - Product title used in the toast message.
- * @returns {() => void} Imperative remove function that displays the undo toast when invoked.
+ * @returns Imperative remove function that displays the undo toast when invoked.
  */
 export const useCartRemoveWithUndo = (productId: number, title: string): (() => void) => {
   const dispatch = useAppDispatch();

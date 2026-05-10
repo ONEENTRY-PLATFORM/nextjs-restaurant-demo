@@ -39,7 +39,7 @@ type DayCell = {
  *
  * @param   {number} year  - Calendar year.
  * @param   {number} month - Zero-based month index.
- * @returns {DayCell[]} Array of 42 day cells (previous-month tail + current month + next-month head).
+ * @returns Array of 42 day cells (previous-month tail + current month + next-month head).
  */
 const buildMonthGrid = (year: number, month: number): DayCell[] => {
   const first = new Date(year, month, 1);
@@ -83,7 +83,7 @@ const buildMonthGrid = (year: number, month: number): DayCell[] => {
  * formatHour — formats a 24h hour as `HH.00`.
  *
  * @param   {number} h - Hour (0–23).
- * @returns {string} Slot label string.
+ * @returns Slot label string.
  */
 const formatHour = (h: number): string => `${String(h).padStart(2, '0')}.00`;
 
@@ -122,7 +122,7 @@ type DateTimePickerSheetProps = {
  * @param   {string}                               [props.applyText]    - Apply button label.
  * @param   {string}                               [props.continueText] - Continue button label.
  * @param   {string}                               [props.noTimeText]   - Empty-state text shown when no slots are available.
- * @returns {JSX.Element | null} Portal JSX rendered into `document.body`, or `null` until mounted.
+ * @returns Portal JSX rendered into `document.body`, or `null` until mounted.
  */
 const DateTimePickerSheet = ({
   date,

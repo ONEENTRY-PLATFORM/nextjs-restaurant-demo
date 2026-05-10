@@ -22,7 +22,7 @@ const listeners = new Set<() => void>();
  * subscribe — `useSyncExternalStore` subscriber: registers the callback and returns an unsubscribe function.
  *
  * @param   {() => void}   cb - Listener invoked on every state change.
- * @returns {() => void}        Unsubscribe function.
+ * @returns Unsubscribe function.
  */
 const subscribe = (cb: () => void): (() => void) => {
   listeners.add(cb);
@@ -34,14 +34,14 @@ const subscribe = (cb: () => void): (() => void) => {
 /**
  * getSnapshot — current `OrderReviewTarget` for `useSyncExternalStore`.
  *
- * @returns {OrderReviewTarget} Current target.
+ * @returns Current target.
  */
 const getSnapshot = (): OrderReviewTarget => state;
 
 /**
  * getServerSnapshot — SSR fallback (the popup is client-side, but `useSyncExternalStore` requires a server snapshot).
  *
- * @returns {OrderReviewTarget} Empty target.
+ * @returns Empty target.
  */
 const getServerSnapshot = (): OrderReviewTarget => EMPTY;
 
@@ -49,7 +49,7 @@ const getServerSnapshot = (): OrderReviewTarget => EMPTY;
  * setOrderReviewTarget — publishes a new target and notifies subscribers.
  *
  * @param   {OrderReviewTarget} target - Order + product map to expose to the popup.
- * @returns {void}
+ * @returns
  */
 export const setOrderReviewTarget = (target: OrderReviewTarget): void => {
   state = target;
@@ -59,7 +59,7 @@ export const setOrderReviewTarget = (target: OrderReviewTarget): void => {
 /**
  * clearOrderReviewTarget — resets the target to empty and notifies subscribers.
  *
- * @returns {void}
+ * @returns
  */
 export const clearOrderReviewTarget = (): void => {
   state = EMPTY;
@@ -69,7 +69,7 @@ export const clearOrderReviewTarget = (): void => {
 /**
  * useOrderReviewTarget — React hook that subscribes a component to the current `OrderReviewTarget`.
  *
- * @returns {OrderReviewTarget} Current `OrderReviewTarget` value.
+ * @returns Current `OrderReviewTarget` value.
  */
 export const useOrderReviewTarget = (): OrderReviewTarget =>
   useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

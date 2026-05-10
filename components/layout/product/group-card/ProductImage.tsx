@@ -6,7 +6,7 @@ import type { JSX } from 'react';
  *
  * @param   {object}      props          - Component props.
  * @param   {string}      props.imageSrc - Product image URL.
- * @returns {JSX.Element} JSX of the image tile.
+ * @returns JSX of the image tile.
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
   return (

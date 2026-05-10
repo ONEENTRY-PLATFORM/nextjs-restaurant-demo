@@ -21,7 +21,7 @@ interface HandleProps {
  * @param   {number}          props.offset   - Page offset.
  * @param   {number}          props.limit    - Page size.
  * @param   {string}          [props.langCode] - Optional explicit locale (defaults to `getLang()`).
- * @returns {Promise<{ isError: boolean; error?: IError; admins?: IAdminEntity[] }>}                  Promise resolving to `{ isError, error?, admins? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, admins? }` (graceful fallback on SDK error).
  */
 export const getAdminsInfo = cache(
   async ({

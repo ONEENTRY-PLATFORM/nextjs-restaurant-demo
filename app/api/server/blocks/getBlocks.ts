@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  *
  * @param   {object}    props      - Fetch arguments.
  * @param   {BlockType} props.type - OneEntry block type filter.
- * @returns {Promise<{ isError: boolean; error?: IError; blocks?: IBlocksResponse }>}            Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
  */
 export const getBlocks = cache(
   async ({

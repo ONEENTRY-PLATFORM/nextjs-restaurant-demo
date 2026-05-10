@@ -24,7 +24,7 @@ type CategoriesSectionProps = {
  * @param   {number}                 props.total          - Total number of products in the category (rendered next to "View all").
  * @param   {number}                 [props.limit]        - Page-size hint passed to the inner products grid (defaults to 8).
  * @param   {string}                 [props.className]    - Optional class merged onto the wrapping `<section>` (currently unused).
- * @returns {JSX.Element} JSX of the homepage category section.
+ * @returns JSX of the homepage category section.
  */
 const CategoriesSection = ({
   title,

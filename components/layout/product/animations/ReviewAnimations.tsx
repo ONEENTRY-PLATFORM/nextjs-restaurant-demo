@@ -14,7 +14,7 @@ import { useRef, useState } from 'react';
  * @param   {string}      props.className - Class merged onto the wrapping `<div>`.
  * @param   {number}      props.index     - Index used to compute the per-block stagger delay.
  * @param   {boolean}     props.state     - Whether the block should be open (true) or collapsed (false).
- * @returns {JSX.Element} JSX wrapper around the review block.
+ * @returns JSX wrapper around the review block.
  */
 const ReviewAnimations = ({
   children,

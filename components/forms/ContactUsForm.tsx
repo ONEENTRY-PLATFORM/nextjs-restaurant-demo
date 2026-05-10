@@ -22,7 +22,7 @@ type SpamCaptchaSettings = {
  *
  * @param   {object} props           - Component props.
  * @param   {string} props.className - Wrapper class merged onto the `<form>`.
- * @returns {JSX.Element}              JSX of the contact form (loader while the schema is fetched).
+ * @returns JSX of the contact form (loader while the schema is fetched).
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);

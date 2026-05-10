@@ -13,7 +13,7 @@ import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/red
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - Product entity rendered in the group card.
- * @returns {JSX.Element} JSX of the Apply/Cancel button.
+ * @returns JSX of the Apply/Cancel button.
  */
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();

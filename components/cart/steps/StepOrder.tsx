@@ -28,7 +28,7 @@ type CartEntry = {
 /**
  * StepOrder — checkout step: items + promo code + summary + APPLY → `payment`.
  *
- * @returns {JSX.Element} JSX of the order step body.
+ * @returns JSX of the order step body.
  */
 const StepOrder = (): JSX.Element => {
   const t = useT();

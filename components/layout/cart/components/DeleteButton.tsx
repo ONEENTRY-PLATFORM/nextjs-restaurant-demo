@@ -10,7 +10,7 @@ import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
  * @param   {object}      props           - Component props.
  * @param   {number}      props.productId - Cart product id to remove.
  * @param   {string}      props.title     - Product title used in the undo toast text.
- * @returns {JSX.Element} JSX of the trash button.
+ * @returns JSX of the trash button.
  */
 const DeleteButton = ({ productId, title }: { productId: number; title: string }): JSX.Element => {
   const removeWithUndo = useCartRemoveWithUndo(productId, title);

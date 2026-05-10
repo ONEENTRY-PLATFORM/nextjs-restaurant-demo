@@ -31,7 +31,7 @@ import Loader from '@/components/shared/Spinner';
  *
  * @param   {object}            props              - Component props.
  * @param   {IProductsEntity}   props.deliveryData - OneEntry product representing the delivery service line item.
- * @returns {JSX.Element} JSX of the cart page (loader, empty state, or product list with APPLY).
+ * @returns JSX of the cart page (loader, empty state, or product list with APPLY).
  */
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();

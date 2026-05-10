@@ -13,7 +13,7 @@ import orderSlice from './reducers/OrderSlice';
 /**
  * createNoopStorage — SSR-safe stub for `redux-persist` storage when `window` is undefined.
  *
- * @returns {{ getItem: () => Promise<null>; setItem: (key: string, value: number) => Promise<number>; removeItem: () => Promise<void> }} No-op storage implementation matching the `redux-persist` storage interface.
+ * @returns No-op storage implementation matching the `redux-persist` storage interface.
  */
 const createNoopStorage = () => {
   return {
@@ -86,7 +86,7 @@ const rootReducer = combineReducers({
  * (favorites, cart, animations, RTK Query slice). Used by `StoreProvider` to mount
  * a per-request store on the server and a singleton store on the client.
  *
- * @returns {AppStore} Configured Redux store (`AppStore`) ready to be passed to `<Provider>`.
+ * @returns Configured Redux store (`AppStore`) ready to be passed to `<Provider>`.
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */
 export const setupStore = () => {

@@ -10,7 +10,7 @@ import { typeError } from '@/components/utils';
  *
  * @param   {object} props                 - Fetch arguments.
  * @param   {string} props.attributeMarker - Marker of the attribute set whose attributes are returned.
- * @returns {Promise<{ isError: boolean; error?: IError; attributes?: IAttributeSetsEntity[] }>}                Promise resolving to `{ isError, error?, attributes? }` (graceful fallback on SDK error).
+ * @returns Promise resolving to `{ isError, error?, attributes? }` (graceful fallback on SDK error).
  */
 export const getAttributesByMarker = cache(
   async ({

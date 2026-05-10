@@ -20,7 +20,7 @@ import ProductRow from './ProductRow';
  * @param   {boolean}                                         [props.isPending] - When `true`, the input value differs from the debounced one — show a spinner.
  * @param   {boolean}                                         props.state       - Whether the panel is currently visible.
  * @param   {Dispatch<React.SetStateAction<boolean>>}         props.setState    - Setter that toggles the panel visibility.
- * @returns {JSX.Element} JSX of the search results panel, or empty fragment when not shown.
+ * @returns JSX of the search results panel, or empty fragment when not shown.
  */
 const SearchResults = ({
   searchValue,

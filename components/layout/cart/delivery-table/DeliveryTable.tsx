@@ -21,7 +21,7 @@ import DeliveryTableRow from './DeliveryTableRow';
  *
  * @param   {object}            props          - Component props.
  * @param   {IProductsEntity}   props.delivery - OneEntry product representing the delivery service line item.
- * @returns {JSX.Element} JSX of the delivery table.
+ * @returns JSX of the delivery table.
  */
 const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element => {
   const t = useT();

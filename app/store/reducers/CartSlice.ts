@@ -225,7 +225,7 @@ export const {
  *
  * @param   {{ cartReducer: { productsData: { id: number; quantity: number }[] } }} state - Redux root state.
  * @param   {number}                                                                id    - Product id to look up.
- * @returns {boolean}                                                                     `true` when the product has a positive quantity in the cart.
+ * @returns `true` when the product has a positive quantity in the cart.
  */
 export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number; quantity: number }[] } },
@@ -239,7 +239,7 @@ export const selectIsInCart = (
  * selectCartData — cart products selector (record shape: `{ id, selected, quantity }`).
  *
  * @param   {{ cartReducer: { productsData: ProductCartEntry[] } }} state - Redux root state.
- * @returns {ProductCartEntry[]}                                          Array of cart entries.
+ * @returns Array of cart entries.
  */
 export const selectCartData = (state: {
   cartReducer: { productsData: ProductCartEntry[] };
@@ -249,7 +249,7 @@ export const selectCartData = (state: {
  * selectReservations — selector for the list of reservations (table bookings — separate from the products cart).
  *
  * @param   {{ cartReducer: { reservations: ReservationEntry[] } }} state - Redux root state.
- * @returns {ReservationEntry[]}                                          Array of reservation entries.
+ * @returns Array of reservation entries.
  */
 export const selectReservations = (state: {
   cartReducer: { reservations: ReservationEntry[] };
@@ -259,7 +259,7 @@ export const selectReservations = (state: {
  * selectDeliveryData — selector for delivery data (date, time, address).
  *
  * @param   {{ cartReducer: { deliveryData: { date: number; time: string; address: string } } }} state - Redux root state.
- * @returns {{ date: number; time: string; address: string }}                                          Delivery slot for the current cart.
+ * @returns Delivery slot for the current cart.
  */
 export const selectDeliveryData = (state: {
   cartReducer: {
@@ -275,7 +275,7 @@ export const selectDeliveryData = (state: {
  * selectCartTotal — selector for the cart total price (uses the active reservation's product).
  *
  * @param   {{ cartReducer: { reservationId: number; reservations: ReservationEntry[] } }} state - Redux root state.
- * @returns {number | undefined}                                                                  Numeric price (regular or sale price) of the active reservation's product.
+ * @returns Numeric price (regular or sale price) of the active reservation's product.
  */
 export const selectCartTotal = (state: {
   cartReducer: {
@@ -295,7 +295,7 @@ export const selectCartTotal = (state: {
  * selectReservationId — selector for the active reservation id.
  *
  * @param   {{ cartReducer: { reservationId: number } }} state - Redux root state.
- * @returns {number}                                            Numeric id of the currently active reservation.
+ * @returns Numeric id of the currently active reservation.
  */
 export const selectReservationId = (state: { cartReducer: { reservationId: number } }) =>
   state.cartReducer.reservationId;
@@ -305,7 +305,7 @@ export const selectReservationId = (state: { cartReducer: { reservationId: numbe
  *
  * @param   {{ cartReducer: { productsData: ProductCartEntry[] } }} state - Redux root state.
  * @param   {number}                                                id    - Product id to look up.
- * @returns {ProductCartEntry | undefined}                                Cart entry for the product, or `undefined` if not present.
+ * @returns Cart entry for the product, or `undefined` if not present.
  */
 export const selectCartItemWithIdLength = (
   state: {
@@ -320,7 +320,7 @@ export const selectCartItemWithIdLength = (
  * getTransition — returns `{ transitionId }` — product id used for transition animations.
  *
  * @param   {{ cartReducer: { transitionId: number } }} state - Redux root state.
- * @returns {{ transitionId: number }}                        `{ transitionId }` wrapper for the currently transitioning product.
+ * @returns `{ transitionId }` wrapper for the currently transitioning product.
  */
 export const getTransition = (state: {
   cartReducer: {
@@ -334,7 +334,7 @@ export const getTransition = (state: {
  * selectCartVersion — cart version selector (reads `cartReducer.version`, written by `setCartVersion`).
  *
  * @param   {{ cartReducer: { version: number } }} state - Redux root state.
- * @returns {number}                                      Monotonic version counter that bumps when persisted cart changes are applied.
+ * @returns Monotonic version counter that bumps when persisted cart changes are applied.
  */
 export const selectCartVersion = (state: { cartReducer: { version: number } }) =>
   state.cartReducer.version;

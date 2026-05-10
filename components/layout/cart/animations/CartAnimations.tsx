@@ -14,7 +14,7 @@ import type { AnimationsProps } from '@/app/types/global';
  * @param   {AnimationsProps} props           - Component props.
  * @param   {ReactNode}       props.children  - Cart subtree to animate on leave.
  * @param   {string}          props.className - Class merged onto the wrapping `<div>`.
- * @returns {JSX.Element} JSX wrapper that staggers the leave animation.
+ * @returns JSX wrapper that staggers the leave animation.
  */
 const CartAnimations = ({ children, className }: AnimationsProps): JSX.Element => {
   const { stage } = useTransitionState();

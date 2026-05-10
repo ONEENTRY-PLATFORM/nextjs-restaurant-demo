@@ -9,7 +9,7 @@ import ProductCard from './product-card/ProductCard';
  * @param   {object}            props               - Component props.
  * @param   {IProductsEntity[]} props.products      - Source product list from the SDK.
  * @param   {number}            props.productsLimit - Page size, forwarded to `<ProductCard>` for stagger calculations.
- * @returns {JSX.Element} JSX of the responsive product card grid.
+ * @returns JSX of the responsive product card grid.
  */
 const ProductsGrid = ({
   products,

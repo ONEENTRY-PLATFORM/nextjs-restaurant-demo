@@ -3,7 +3,7 @@
  *
  * @param   {object}      [props]        - Component props.
  * @param   {boolean}     [props.active] - When `true`, paint the icon in brand colour (otherwise paper).
- * @returns {JSX.Element} JSX of the favorites heart SVG.
+ * @returns JSX of the favorites heart SVG.
  */
 const FavoritesIcon = (props?: { active?: boolean }) => {
   return (

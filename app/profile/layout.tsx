@@ -7,7 +7,7 @@ import ProfilePageHeader from '@/components/profile/ProfilePageHeader';
  *
  * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - Nested route content.
- * @returns {JSX.Element}                JSX of the profile layout (header + slot).
+ * @returns JSX of the profile layout (header + slot).
  */
 const ProfileLayout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (

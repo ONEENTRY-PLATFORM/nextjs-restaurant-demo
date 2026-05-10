@@ -19,7 +19,7 @@ import PriceDisplay from './PriceDisplay';
  * @param   {IProductsEntity}   props.product  - OneEntry product entity rendered in the row.
  * @param   {boolean}           props.selected - Whether the row is in the selection state (controls checkbox/visual highlight).
  * @param   {number}            props.index    - Zero-based row index, used by `ProductAnimations` for staggered reveal.
- * @returns {JSX.Element} JSX of the cart product row.
+ * @returns JSX of the cart product row.
  */
 const ProductCard = ({
   product,

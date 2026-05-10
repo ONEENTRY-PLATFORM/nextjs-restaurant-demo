@@ -5,7 +5,7 @@ import { getApi } from '@/app/api';
  * onSubscribeEvents — subscribes to product-related events via the Events API (catalog, stock, price).
  *
  * @param   {number}        id - Product id to subscribe to.
- * @returns {Promise<void>}      Promise that resolves once all subscription requests have settled.
+ * @returns Promise that resolves once all subscription requests have settled.
  */
 export const onSubscribeEvents = async (id: number) => {
   try {
@@ -21,7 +21,7 @@ export const onSubscribeEvents = async (id: number) => {
  * onUnsubscribeEvents — unsubscribes from product-related events via the Events API.
  *
  * @param   {number}        id - Product id to unsubscribe from.
- * @returns {Promise<void>}      Promise that resolves once all unsubscription requests have settled.
+ * @returns Promise that resolves once all unsubscription requests have settled.
  */
 export const onUnsubscribeEvents = async (id: number) => {
   try {

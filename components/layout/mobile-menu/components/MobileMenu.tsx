@@ -9,7 +9,7 @@ import MobileMenuItem from './MobileMenuItem';
  * @param   {IMenusPages[]} props.menu        - Nested menu items.
  * @param   {string}        [props.className] - Wrapper class merged onto the `<ul>`.
  * @param   {string}        [props.parentUrl] - Optional parent URL prepended to child links.
- * @returns {JSX.Element | null} JSX of the menu list, or `null` when there is at most one item.
+ * @returns JSX of the menu list, or `null` when there is at most one item.
  */
 function MobileMenu({
   menu,

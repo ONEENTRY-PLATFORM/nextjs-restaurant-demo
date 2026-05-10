@@ -26,7 +26,7 @@ export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right'
  * @param   {string}                  props.component          - Drawer component identifier matched against the active drawer in context.
  * @param   {DrawerAnimationVariant}  [props.variant]          - Open animation variant: `bottom-sheet`, `slide-up`, or `slide-right`.
  * @param   {string}                  [props.wrapperClassName] - Additional classes on the root wrapper (e.g. `md:hidden`).
- * @returns {JSX.Element} JSX of the animated drawer wrapper, or an empty fragment when not active.
+ * @returns JSX of the animated drawer wrapper, or an empty fragment when not active.
  */
 const DrawerAnimations = ({
   children,

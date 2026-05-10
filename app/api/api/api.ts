@@ -12,7 +12,7 @@ const DEFAULT_LANG = 'en_US';
  * saveFunction — persists the refreshToken to localStorage on every SDK rotation.
  *
  * @param   {string}        refreshToken - Fresh refreshToken issued by the SDK.
- * @returns {Promise<void>}                Promise that resolves once the token has been written (no-op on the server).
+ * @returns Promise that resolves once the token has been written (no-op on the server).
  */
 const saveFunction = async (refreshToken: string): Promise<void> => {
   if (!refreshToken) {
@@ -37,7 +37,7 @@ export let api = defineOneEntry(PROJECT_URL, {
  * getApi — getter for the current SDK instance. Preferred over `api`: always
  * returns the fresh instance after {@link reDefine}.
  *
- * @returns {ReturnType<typeof defineOneEntry>} Current OneEntry SDK instance.
+ * @returns Current OneEntry SDK instance.
  */
 export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 
@@ -48,7 +48,7 @@ export const getApi = (): ReturnType<typeof defineOneEntry> => api;
  *
  * @param   {string}        refreshToken - Refresh token from localStorage.
  * @param   {string}        [langCode]   - Current language (defaults to `en_US`).
- * @returns {Promise<void>}                Promise that resolves after the SDK instance has been recreated.
+ * @returns Promise that resolves after the SDK instance has been recreated.
  */
 export async function reDefine(refreshToken: string, langCode?: string): Promise<void> {
   if (!refreshToken) {
@@ -67,7 +67,7 @@ export async function reDefine(refreshToken: string, langCode?: string): Promise
 /**
  * hasActiveSession — whether the current SDK instance carries a valid accessToken.
  *
- * @returns {boolean} `true` when an accessToken is currently held by the SDK auth provider.
+ * @returns `true` when an accessToken is currently held by the SDK auth provider.
  */
 export const hasActiveSession = (): boolean => {
   const provider = api.AuthProvider as unknown as {
@@ -87,7 +87,7 @@ export const hasActiveSession = (): boolean => {
  *
  * @param   {string} accessToken  - Access JWT from `auth()`.
  * @param   {string} refreshToken - Refresh token from `auth()`.
- * @returns {void}
+ * @returns
  */
 export const syncTokens = (accessToken: string, refreshToken: string): void => {
   const provider = api.AuthProvider as unknown as {
@@ -101,7 +101,7 @@ export const syncTokens = (accessToken: string, refreshToken: string): void => {
 /**
  * getLang — current langCode of the SDK instance.
  *
- * @returns {string} Language code currently configured on the SDK (e.g. `en_US`).
+ * @returns Language code currently configured on the SDK (e.g. `en_US`).
  */
 export const getLang = (): string => {
   const cfg = (api as unknown as { config?: { langCode?: string } }).config;
@@ -112,7 +112,7 @@ export const getLang = (): string => {
  * isError — type guard for SDK responses: `true` when the value is an `IError`.
  *
  * @param   {unknown}            result - SDK response to check.
- * @returns {result is IError}             `true` when `result` is an SDK error envelope (`{ statusCode, message }`).
+ * @returns `true` when `result` is an SDK error envelope (`{ statusCode, message }`).
  */
 export const isError = (result: unknown): result is IError => {
   if (!result || typeof result !== 'object') {
@@ -130,7 +130,7 @@ type ImageField = { downloadLink?: string } | Array<{ downloadLink?: string }> |
  * The SDK returns an object for Products and an array for Pages/Blocks — this helper handles both shapes.
  *
  * @param   {ImageField} value - `attributeValues.<marker>.value` from the SDK.
- * @returns {string}             Download URL, or an empty string when no image is present.
+ * @returns Download URL, or an empty string when no image is present.
  */
 export const getImageUrl = (value: ImageField): string => {
   if (!value) {

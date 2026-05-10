@@ -20,7 +20,7 @@ import MobileMenu from './components/MobileMenu';
  *
  * @param   {object}        props      - Component props.
  * @param   {IMenusEntity}  props.menu - OneEntry menu entity used to render the nested mobile menu list.
- * @returns {JSX.Element} JSX of the mobile menu drawer, or empty fragment when not active.
+ * @returns JSX of the mobile menu drawer, or empty fragment when not active.
  */
 const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
   const pathname = usePathname();

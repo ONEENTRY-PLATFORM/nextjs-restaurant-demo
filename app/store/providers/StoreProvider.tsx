@@ -12,7 +12,7 @@ import { setupStore } from '../store';
  *
  * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - Subtree that consumes the Redux store.
- * @returns {JSX.Element}                JSX `<Provider>` wrapping children with the Redux store.
+ * @returns JSX `<Provider>` wrapping children with the Redux store.
  */
 export default function StoreProvider({ children }: { children: ReactNode }): JSX.Element {
   const [store] = useState(() => {

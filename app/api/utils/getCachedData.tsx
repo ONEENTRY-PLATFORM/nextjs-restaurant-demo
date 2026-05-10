@@ -7,7 +7,7 @@ const cache = new Map<string, unknown>();
  *
  * @param   {string}          key     - Cache key.
  * @param   {() => Promise<T>} fetchFn - Async fetcher invoked once per missing key.
- * @returns {Promise<T>}                Promise resolving to the cached or freshly fetched value.
+ * @returns Promise resolving to the cached or freshly fetched value.
  */
 const getCachedData = async <T,>(key: string, fetchFn: () => Promise<T>): Promise<T> => {
   if (cache.has(key)) {

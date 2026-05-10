@@ -15,7 +15,7 @@ import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
  * @param   {object}              props             - Component props.
  * @param   {string | undefined}  props.phone       - Phone number for the `tel:` link.
  * @param   {string | undefined}  props.whatsappUrl - WhatsApp chat URL.
- * @returns {JSX.Element} JSX of the support drawer (mobile-only).
+ * @returns JSX of the support drawer (mobile-only).
  */
 const SupportPopup = ({
   phone,

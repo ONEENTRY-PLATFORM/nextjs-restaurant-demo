@@ -19,7 +19,7 @@ import ReviewForm from './ReviewForm';
  * `productId` is passed via `OpenDrawerContext.action` so the popup can stay globally registered
  * without knowing about the current page.
  *
- * @returns {JSX.Element} JSX of the review-form drawer, or empty fragment when no product id is provided.
+ * @returns JSX of the review-form drawer, or empty fragment when no product id is provided.
  */
 const ReviewFormPopup = (): JSX.Element => {
   const t = useT();

@@ -38,7 +38,7 @@ const TIME_SLOT_MARKER = 'time_slot';
  *
  * @param   {ScheduleSlotEntry[] | undefined} schedule - Raw entries from `schedule.value`.
  * @param   {string}                          dateIso  - Selected date `yyyy-MM-dd`.
- * @returns {string[]}                                   Sorted list of slot labels (`HH.MM`).
+ * @returns Sorted list of slot labels (`HH.MM`).
  */
 const getAvailableSlotsForDate = (
   schedule: ScheduleSlotEntry[] | undefined,
@@ -72,7 +72,7 @@ const getAvailableSlotsForDate = (
  * @param   {string}              raw             - Value of the `time_slot` field.
  * @param   {string | undefined}  restaurantValue - Current `restaurant` value (page url).
  * @param   {RestaurantOption[]}  restaurants     - Available restaurant options.
- * @returns {Array<[string, string]>}               Intervals ready to submit (one entry); empty array on invalid input.
+ * @returns Intervals ready to submit (one entry); empty array on invalid input.
  */
 const buildTimeIntervalValue = (
   raw: string,
@@ -120,7 +120,7 @@ const buildTimeIntervalValue = (
  *
  * @param   {string} type   - OneEntry attribute `type`.
  * @param   {string} marker - Attribute marker used as a heuristic.
- * @returns {string}          HTML input type (`number` / `email` / `tel` / `password` / `text`).
+ * @returns HTML input type (`number` / `email` / `tel` / `password` / `text`).
  */
 const resolveInputType = (type: string, marker: string): string => {
   if (type === 'integer' || type === 'real' || type === 'float') return 'number';
@@ -155,7 +155,7 @@ type ReservationStep =
  * formatBookingSummary — formats the booking summary as `DD.MM.YY HH.MM N person`.
  *
  * @param   {Record<string, string>} values - Form field values keyed by marker.
- * @returns {string}                          Summary string for the success screen (parts may be omitted when missing).
+ * @returns Summary string for the success screen (parts may be omitted when missing).
  */
 const formatBookingSummary = (values: Record<string, string>): string => {
   const slot = values[TIME_SLOT_MARKER] ?? '';
@@ -181,7 +181,7 @@ const formatBookingSummary = (values: Record<string, string>): string => {
  * @param   {Record<string, FieldValue>}                 [props.initialValues] - Optional pre-filled values (used for edit / OAuth resume).
  * @param   {object | null}                              [props.editingOrder] - When set, the form updates this order instead of creating a new one.
  * @param   {() => void}                                 [props.onClose]      - Callback invoked on successful update (closes the popup).
- * @returns {JSX.Element}                                                       JSX of the form, auth step, payment step, or success screen depending on wizard state.
+ * @returns JSX of the form, auth step, payment step, or success screen depending on wizard state.
  */
 const ReservationForm = ({
   form,
@@ -538,7 +538,7 @@ type FieldProps = {
  * @param   {Record<string, FieldValue>}                       props.values       - Current form values keyed by marker.
  * @param   {(marker: string, value: FieldValue) => void}      props.onChange     - Setter that updates a single field.
  * @param   {() => void}                                       props.onOpenPicker - Opens the date/time picker (for `timeInterval`/`time_slot`).
- * @returns {JSX.Element}                                                           JSX of the field.
+ * @returns JSX of the field.
  */
 const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;

@@ -13,7 +13,7 @@ import TableRowAnimations from '../animations/TableRowAnimations';
  * @param   {string}      props.value       - Read-only value rendered inside the input.
  * @param   {ReactNode}   [props.icon]      - Trailing icon shown next to the row.
  * @param   {string}      props.placeholder - Placeholder text for the input.
- * @returns {JSX.Element} JSX of the delivery table row.
+ * @returns JSX of the delivery table row.
  */
 const DeliveryTableRow = ({
   label,

@@ -18,7 +18,7 @@ import {
  * redirectToOAuth — full-page redirect to an OAuth provider's authorization URL.
  *
  * @param   {string} url - Authorization URL to navigate to.
- * @returns {void}
+ * @returns
  */
 const redirectToOAuth = (url: string) => {
   window.location.href = url;
@@ -30,7 +30,7 @@ const redirectToOAuth = (url: string) => {
  * @param   {object}  props           - Component props.
  * @param   {string}  props.className - Wrapper class merged onto the animated form root.
  * @param   {boolean} props.isActive  - Whether the step is the active step in the auth wizard (drives animations).
- * @returns {JSX.Element}               JSX of the provider list (logo + buttons).
+ * @returns JSX of the provider list (logo + buttons).
  */
 const AuthProviderSelect = ({
   className,

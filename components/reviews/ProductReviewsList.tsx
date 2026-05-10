@@ -15,7 +15,7 @@ const SWIPE_THRESHOLD_PX = 40;
  *
  * @param   {object}          props         - Component props.
  * @param   {ProductReview[]} props.reviews - Top-level reviews.
- * @returns {JSX.Element}                     JSX of the reviews block (empty-state when none).
+ * @returns JSX of the reviews block (empty-state when none).
  */
 const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Element => {
   const [index, setIndex] = useState(0);

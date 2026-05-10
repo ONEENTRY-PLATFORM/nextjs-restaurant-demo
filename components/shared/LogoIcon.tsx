@@ -6,7 +6,7 @@ import type { JSX } from 'react';
  * @param   {object}      props             - Component props.
  * @param   {string}      [props.fill]      - Fill colour for every path (defaults to `currentColor`).
  * @param   {string}      [props.className] - Additional className merged onto the SVG.
- * @returns {JSX.Element} JSX of the project logo SVG.
+ * @returns JSX of the project logo SVG.
  */
 const LogoIcon = ({
   fill = 'currentColor',

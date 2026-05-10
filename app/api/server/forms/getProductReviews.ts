@@ -34,7 +34,7 @@ export interface ProductReview {
 /**
  * readPlainText — plain text from the polymorphic `formData[].value` (SDK returns `[{ plainValue }]` for `text` and a string for primitives).
  * @param   {unknown} value - Raw `formData[].value`.
- * @returns {string}        Plain text.
+ * @returns Plain text.
  */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
@@ -47,7 +47,7 @@ const readPlainText = (value: unknown): string => {
 /**
  * readNumber — coerces `formData[].value` to a number for the rating (`0` for non-numeric).
  * @param   {unknown} value - Raw `formData[].value`.
- * @returns {number}        Numeric rating.
+ * @returns Numeric rating.
  */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
@@ -66,7 +66,7 @@ const readNumber = (value: unknown): number => {
  * Only top-level entries (`parentId === null`) are returned — the UI does not render nested replies.
  * Graceful fallback to an empty array on any SDK error ("Resource is closed", see MISMATCH-LOG §C).
  * @param   {number}                    productId - Product id (becomes `entityIdentifier`).
- * @returns {Promise<ProductReview[]>}            Top-level reviews, newest first.
+ * @returns Top-level reviews, newest first.
  */
 export const getProductReviews = async (productId: number): Promise<ProductReview[]> => {
   unstable_noStore();

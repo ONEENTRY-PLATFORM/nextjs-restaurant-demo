@@ -11,7 +11,7 @@ import HouseIcon from '@/components/icons/house';
  *
  * @param   {object}      props      - Component props.
  * @param   {IMenusPages} props.item - OneEntry menu page entity (only `localizeInfos.menuTitle` is used).
- * @returns {JSX.Element} JSX of the home link with house icon.
+ * @returns JSX of the home link with house icon.
  */
 const NavItemHome = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.Element => {
   return (

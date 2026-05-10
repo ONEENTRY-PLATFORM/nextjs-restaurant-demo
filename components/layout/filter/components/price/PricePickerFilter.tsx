@@ -18,7 +18,7 @@ export type PriceBounds = { min?: number; max?: number } | undefined;
  *
  * @param   {object}        props        - Component props.
  * @param   {PriceBounds}   props.prices - Catalog price bounds; defaults are 0 and 100 when missing.
- * @returns {JSX.Element} JSX of the price filter section.
+ * @returns JSX of the price filter section.
  */
 const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const t = useT();

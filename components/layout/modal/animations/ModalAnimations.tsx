@@ -13,7 +13,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {object}      props           - Component props.
  * @param   {ReactNode}   props.children  - Modal content (must include `#modalBg` and `#modalBody`).
  * @param   {string}      props.component - Active component identifier (used to pick the right entrance variant).
- * @returns {JSX.Element} JSX wrapper that drives the entrance/leave timeline, or empty fragment when not open.
+ * @returns JSX wrapper that drives the entrance/leave timeline, or empty fragment when not open.
  */
 const ModalAnimations = ({
   children,

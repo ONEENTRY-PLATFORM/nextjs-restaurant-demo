@@ -8,7 +8,7 @@ type AttributeValuesInput = IAttributeValues | undefined;
  *
  * @param   {string}                name            - Attribute marker.
  * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
- * @returns {string}                                  String value, or an empty string when absent.
+ * @returns String value, or an empty string when absent.
  */
 export const getString = (name: string, attributeValues: AttributeValuesInput): string => {
   const attr = attributeValues?.[name];
@@ -24,7 +24,7 @@ export const getString = (name: string, attributeValues: AttributeValuesInput): 
  * @param   {string}                name            - Attribute marker.
  * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
  * @param   {'html' | 'plain'}      [type]          - Output format (`html` returns parsed nodes, `plain` returns a string).
- * @returns {string | ReturnType<typeof parse>}      Parsed HTML nodes or a plain string.
+ * @returns Parsed HTML nodes or a plain string.
  */
 export const getText = (
   name: string,
@@ -57,7 +57,7 @@ export const getText = (
  * @param   {string}                name            - Attribute marker.
  * @param   {AttributeValuesInput}  attributeValues - OneEntry `attributeValues` map.
  * @param   {'image' | 'preview'}   [type]          - `image` for the full asset, `preview` for the previewLink.
- * @returns {string}                                  URL, or an empty string when no image is set.
+ * @returns URL, or an empty string when no image is set.
  */
 export const getImageUrl = (
   name: string,

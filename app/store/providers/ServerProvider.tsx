@@ -9,7 +9,7 @@ const serverContext = cache(() => new Map());
  *
  * @param   {string}                              key          - Storage key.
  * @param   {T | undefined}                       defaultValue - Optional initial value to seed under `key`.
- * @returns {[T | undefined, (value: T) => Map<string, unknown>]}                      Tuple `[value, setter]` — current value at `key` and a setter that writes a new one.
+ * @returns Tuple `[value, setter]` — current value at `key` and a setter that writes a new one.
  */
 export const ServerProvider = <T,>(key: string, defaultValue?: T) => {
   const global = serverContext();

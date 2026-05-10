@@ -22,7 +22,7 @@ import PricePickerFilter from './components/price/PricePickerFilter';
  *
  * @param   {object}        props        - Component props.
  * @param   {PriceBounds}   props.prices - Min/max price bounds used to seed the price slider range.
- * @returns {Promise<JSX.Element>} JSX of the filters form, or the OneEntry error message when the attribute fetch fails.
+ * @returns JSX of the filters form, or the OneEntry error message when the attribute fetch fails.
  */
 const FiltersForm = async ({ prices }: { prices: PriceBounds }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');

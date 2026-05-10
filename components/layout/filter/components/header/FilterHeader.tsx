@@ -10,7 +10,7 @@ import HistoryBack from './HistoryBack';
 /**
  * FilterHeader — sticky header for the filter modal: back / title / close.
  *
- * @returns {JSX.Element} JSX of the filter header bar.
+ * @returns JSX of the filter header bar.
  */
 const FilterHeader = (): JSX.Element => {
   const t = useT();

@@ -9,7 +9,7 @@ import url from 'url';
  * width/height are known.
  *
  * @param   {string} imgUrl - Image URL.
- * @returns {Promise<{ width: number; height: number }>}    Promise resolving to `{ width, height }` in pixels.
+ * @returns Promise resolving to `{ width, height }` in pixels.
  * @throws  {Error}         If the image cannot be fetched or its dimensions cannot be determined.
  */
 const getImageSize = async (imgUrl: string): Promise<{ width: number; height: number }> => {

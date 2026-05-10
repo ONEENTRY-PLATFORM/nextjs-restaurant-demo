@@ -40,7 +40,7 @@ interface PageMetadataOptions {
  * @param   {number}              [options.imageHeight] - OG image height (defaults to 300).
  * @param   {string}              [options.imageAlt]    - OG image alt text (defaults to `title`).
  * @param   {string}              options.baseUrl       - Optional base URL segment prepended to the canonical URL.
- * @returns {Metadata}                                  Next.js `Metadata` object with title, description, robots, alternates, and OG image.
+ * @returns Next.js `Metadata` object with title, description, robots, alternates, and OG image.
  */
 export const generatePageMetadata = ({
   handle = '',

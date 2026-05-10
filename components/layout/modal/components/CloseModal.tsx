@@ -11,7 +11,7 @@ import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      [props.className] - Extra utility classes merged onto the button (e.g. responsive visibility overrides).
- * @returns {JSX.Element} Button JSX.
+ * @returns Button JSX.
  */
 const CloseModal = ({ className = '' }: { className?: string }): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);

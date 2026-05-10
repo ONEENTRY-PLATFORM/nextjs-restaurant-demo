@@ -16,7 +16,7 @@ const FONT_TYPES: Record<string, string> = {
  * GET — serves font files with in-memory caching.
  *
  * @param   {Request}               request - Incoming HTTP request (the font file is the last segment of the URL).
- * @returns {Promise<NextResponse>}            Promise resolving to the font response (with immutable cache headers) or 404.
+ * @returns Promise resolving to the font response (with immutable cache headers) or 404.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const { pathname } = new URL(request.url);
@@ -61,7 +61,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 /**
  * OPTIONS — CORS preflight for fonts.
  *
- * @returns {Promise<NextResponse>} Promise resolving to a 204-style response with permissive CORS headers.
+ * @returns Promise resolving to a 204-style response with permissive CORS headers.
  */
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {

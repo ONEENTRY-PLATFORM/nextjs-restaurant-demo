@@ -15,7 +15,7 @@ import { useRef } from 'react';
  * @param   {ReactNode} props.children  - Banner element to animate.
  * @param   {number}    props.index     - Position in the list (drives the stagger delay).
  * @param   {string}    [props.className] - Wrapper class merged onto the animated container.
- * @returns {JSX.Element}                  JSX of the wrapped banner.
+ * @returns JSX of the wrapped banner.
  */
 const PromoBannerAnimations = ({
   children,

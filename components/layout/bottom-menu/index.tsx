@@ -27,7 +27,7 @@ const NAV_BY_URL: Record<string, NavConfig> = {
 /**
  * BottomMobileMenu — fixed mobile bottom navigation built from the `bottom_web` menu + central Cart/Close pair.
  *
- * @returns {Promise<JSX.Element>} JSX of the fixed bottom navigation bar (rendered only below md).
+ * @returns JSX of the fixed bottom navigation bar (rendered only below md).
  */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');

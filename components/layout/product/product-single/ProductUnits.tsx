@@ -5,7 +5,7 @@ import type { JSX } from 'react';
  *
  * @param   {object}      props       - Component props.
  * @param   {number}      props.units - Remaining units count (drives both the label and the bar fill).
- * @returns {JSX.Element} JSX of the units progress bar.
+ * @returns JSX of the units progress bar.
  */
 const ProductUnits = ({ units }: { units: number }): JSX.Element => {
   const maxUnits = units < 50 ? 50 : units * 1.2;

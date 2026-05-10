@@ -50,7 +50,7 @@ type ItemState = {
  * initialItemState — derives the per-row local state from an optional existing review.
  *
  * @param   {ExistingReview | null} initial - Existing review for the product, or `null` when none was found.
- * @returns {ItemState}                       Initial `ItemState` for the row (read-only when an existing review is provided).
+ * @returns Initial `ItemState` for the row (read-only when an existing review is provided).
  */
 const initialItemState = (initial: ExistingReview | null): ItemState => ({
   rating: initial?.rating ?? 0,
@@ -66,7 +66,7 @@ const initialItemState = (initial: ExistingReview | null): ItemState => ({
  * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
  *
  * @param   {{ id: number; orderId?: string }} o - Order entity with `id` and optional `orderId` string.
- * @returns {string}                                Display order number.
+ * @returns Display order number.
  */
 const formatOrderNumber = (o: { id: number; orderId?: string }): string => {
   if (o.orderId) return o.orderId;
@@ -77,7 +77,7 @@ const formatOrderNumber = (o: { id: number; orderId?: string }): string => {
  * readPlainText — extracts plain text from an OneEntry field value of type `text`.
  *
  * @param   {unknown} value - Raw `formData[].value`.
- * @returns {string}          Plain text string (empty on unexpected shape).
+ * @returns Plain text string (empty on unexpected shape).
  */
 const readPlainText = (value: unknown): string => {
   if (Array.isArray(value)) {
@@ -91,7 +91,7 @@ const readPlainText = (value: unknown): string => {
  * readNumber — casts an OneEntry field value of type `integer` to a number (0 on error).
  *
  * @param   {unknown} value - Raw `formData[].value`.
- * @returns {number}          Numeric rating (`0` for non-numeric values).
+ * @returns Numeric rating (`0` for non-numeric values).
  */
 const readNumber = (value: unknown): number => {
   if (typeof value === 'number') return value;
@@ -107,7 +107,7 @@ const readNumber = (value: unknown): number => {
  *
  * @param   {number} productId - OneEntry product id (used as `entityIdentifier`).
  * @param   {string} userId    - OneEntry user identifier.
- * @returns {Promise<ExistingReview | null>}      Promise resolving to the existing review, or `null` when none / on SDK error (graceful fallback).
+ * @returns Promise resolving to the existing review, or `null` when none / on SDK error (graceful fallback).
  */
 const fetchUserReview = async (
   productId: number,
@@ -168,7 +168,7 @@ const fetchUserReview = async (
  * @param   {IOrderProducts}             props.product       - Order line-item entity.
  * @param   {IProductsEntity | undefined} props.fullProduct  - Full product entity used to resolve a fallback cover image.
  * @param   {ExistingReview | null}      props.initialReview - Existing review to prefill (or `null` when none).
- * @returns {JSX.Element}                                      JSX of the reviewable row.
+ * @returns JSX of the reviewable row.
  */
 const ReviewableItem = ({
   product,
@@ -334,7 +334,7 @@ const ReviewableItem = ({
  * Order summary + line-item list; each row has stars + input + Apply/Edit.
  * The order entity is passed via `orderReviewStore` because `OpenDrawerContext` only forwards a string `action`.
  *
- * @returns {JSX.Element} JSX of the order-review popup, or empty fragment when no order is targeted.
+ * @returns JSX of the order-review popup, or empty fragment when no order is targeted.
  */
 const OrderReviewPopup = (): JSX.Element => {
   const t = useT();

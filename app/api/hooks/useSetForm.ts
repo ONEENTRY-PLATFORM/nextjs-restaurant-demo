@@ -8,7 +8,7 @@ import { getApi } from '@/app/api';
 /**
  * useSetForm — submit form data via the FormData API.
  *
- * @returns {{ loading: boolean; sendData: (data: IBodyPostFormData) => () => Promise<unknown> }} Object `{ loading, sendData }` — `sendData(payload)` returns an async result thunk.
+ * @returns Object `{ loading, sendData }` — `sendData(payload)` returns an async result thunk.
  */
 export const useSetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);

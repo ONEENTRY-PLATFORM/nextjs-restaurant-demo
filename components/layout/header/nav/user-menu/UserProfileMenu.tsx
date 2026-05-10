@@ -16,7 +16,7 @@ import UserMenuItem from './UserMenuItem';
  *
  * @param   {object}        props          - Component props.
  * @param   {IMenusEntity}  props.userMenu - OneEntry menu entity that supplies the dropdown items.
- * @returns {JSX.Element} JSX of the profile button with attached dropdown menu.
+ * @returns JSX of the profile button with attached dropdown menu.
  */
 const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);

@@ -10,7 +10,7 @@ import FavoritesIcon from '@/components/icons/favorites';
 /**
  * NavItemFavorites — favorites button in the bottom menu; opens `FavoritesPopup` and shows a count badge.
  *
- * @returns {JSX.Element} JSX of the favorites button with count badge (only after mount).
+ * @returns JSX of the favorites button with count badge (only after mount).
  */
 const NavItemFavorites = (): JSX.Element => {
   const { setOpen, setComponent } = useContext(OpenDrawerContext);

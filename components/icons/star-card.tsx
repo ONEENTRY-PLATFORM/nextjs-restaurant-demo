@@ -6,7 +6,7 @@ import type { JSX } from 'react';
  * @param   {object}      props        - Component props.
  * @param   {number}      props.size   - Render size in pixels (square).
  * @param   {boolean}     props.filled - When `true`, fill the star with brand colour; otherwise show as outline.
- * @returns {JSX.Element} JSX of the star SVG.
+ * @returns JSX of the star SVG.
  */
 const StarCardIcon = ({ size, filled }: { size: number; filled: boolean }): JSX.Element => {
   return (

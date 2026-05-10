@@ -40,7 +40,7 @@ export const AuthContext = createContext<{
  *
  * @param   {AuthProviderProps} props          - Component props.
  * @param   {ReactNode}         props.children - Subtree that consumes `AuthContext`.
- * @returns {JSX.Element}                      JSX provider wrapping children with the auth context value.
+ * @returns JSX provider wrapping children with the auth context value.
  */
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();

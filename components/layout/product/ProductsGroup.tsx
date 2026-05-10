@@ -11,7 +11,7 @@ import GroupCard from './group-card/GroupCard';
  *
  * @param   {object}      props        - Component props.
  * @param   {string}      props.marker - Block marker that supplies the title and product list.
- * @returns {Promise<JSX.Element>} JSX of the section, or empty fragment on SDK error.
+ * @returns JSX of the section, or empty fragment on SDK error.
  */
 const ProductsGroup = async ({ marker }: { marker: string }): Promise<JSX.Element> => {
   const { isError, block } = await getBlockByMarker(marker);

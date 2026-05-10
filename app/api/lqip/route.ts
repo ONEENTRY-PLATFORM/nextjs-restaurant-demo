@@ -6,7 +6,7 @@ import getLqipPreview from '@/app/api/lqip/getLqipPreview';
  * GET — API endpoint that generates an LQIP placeholder for the given image URL.
  *
  * @param   {Request}               request - Request with `?url=...` in the query string.
- * @returns {Promise<NextResponse>}            Promise resolving to JSON `{ preview }` (base64 data URI) or `{ error }` with 400/500.
+ * @returns Promise resolving to JSON `{ preview }` (base64 data URI) or `{ error }` with 400/500.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);

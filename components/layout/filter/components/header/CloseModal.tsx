@@ -8,7 +8,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 /**
  * CloseModal — round close button for the filter modal; triggers the reverse close animation.
  *
- * @returns {JSX.Element} JSX of the close button.
+ * @returns JSX of the close button.
  */
 const CloseModal = (): JSX.Element => {
   const { setTransition } = useContext(OpenDrawerContext);

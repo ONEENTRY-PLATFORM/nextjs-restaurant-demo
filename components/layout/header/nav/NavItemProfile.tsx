@@ -21,7 +21,7 @@ const PROFILE_PAGE_URL = 'profile';
  * Unauthenticated → opens SignInForm; authenticated → links to `/profile`,
  * hover reveals the sub-menu of children of the `profile` item from the `user_menu` CMS menu.
  *
- * @returns {JSX.Element} JSX of the profile icon button (with hover sub-menu when authenticated).
+ * @returns JSX of the profile icon button (with hover sub-menu when authenticated).
  */
 const NavItemProfile = (): JSX.Element => {
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);

@@ -26,7 +26,7 @@ export interface BlockProducts {
  * On any SDK error returns empty `products`, so callers can render conditionally without try/catch.
  *
  * @param   {string}                marker - Block marker (e.g. `recommended`).
- * @returns {Promise<BlockProducts>}          Normalised block data.
+ * @returns Normalised block data.
  */
 export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
   try {

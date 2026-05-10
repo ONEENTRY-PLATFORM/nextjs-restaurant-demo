@@ -36,7 +36,7 @@ type UseCreateOrderApi = {
  * Does not navigate or clear state itself — returns a result so the caller decides what to do next.
  * On success it persists the order id via `setLastOrderId`, clears the cart, and resets the order draft in Redux.
  *
- * @returns {UseCreateOrderApi} `{ onConfirmOrder, isLoading, error }` — confirm callback plus loading/error state.
+ * @returns `{ onConfirmOrder, isLoading, error }` — confirm callback plus loading/error state.
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
   const dispatch = useAppDispatch();

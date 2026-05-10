@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * StarPuffyIcon — chunky filled-brand star for promo highlights.
  *
- * @returns {JSX.Element} JSX of the puffy-star SVG.
+ * @returns JSX of the puffy-star SVG.
  */
 const StarPuffyIcon = (): JSX.Element => {
   return (

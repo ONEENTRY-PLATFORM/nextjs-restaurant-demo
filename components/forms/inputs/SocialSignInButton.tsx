@@ -7,7 +7,7 @@ import type { JSX } from 'react';
  * @param   {object} props          - Component props.
  * @param   {string} props.imageSrc - Provider icon URL.
  * @param   {string} props.alt      - Accessible alt text for the icon.
- * @returns {JSX.Element}             JSX of the social sign-in button.
+ * @returns JSX of the social sign-in button.
  */
 const SocialSignInButton = ({ imageSrc, alt }: { imageSrc: string; alt: string }): JSX.Element => {
   return (

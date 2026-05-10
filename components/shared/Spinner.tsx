@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * Spinner — spinning loading indicator (24×24 brand-coloured dot ring).
  *
- * @returns {JSX.Element} JSX of the spinner SVG centred over its parent.
+ * @returns JSX of the spinner SVG centred over its parent.
  */
 const Spinner = (): JSX.Element => {
   return (

@@ -5,7 +5,7 @@ import Loader from '@/components/shared/Loader';
 /**
  * Loading — spinner shown while the page is loading.
  *
- * @returns {JSX.Element} JSX of the loader fallback.
+ * @returns JSX of the loader fallback.
  */
 export default function Loading(): JSX.Element {
   return <Loader />;

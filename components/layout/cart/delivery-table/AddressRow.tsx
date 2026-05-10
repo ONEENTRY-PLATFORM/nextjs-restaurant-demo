@@ -13,7 +13,7 @@ import TableRowAnimations from '../animations/TableRowAnimations';
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      props.placeholder - Placeholder/label text for the address input.
- * @returns {JSX.Element} JSX of the address row.
+ * @returns JSX of the address row.
  */
 const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const dispatch = useAppDispatch();

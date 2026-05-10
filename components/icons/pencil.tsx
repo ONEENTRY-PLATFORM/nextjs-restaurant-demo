@@ -5,7 +5,7 @@ import type { JSX } from 'react';
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      [props.className] - Additional className merged onto the SVG.
- * @returns {JSX.Element} JSX of the pencil SVG.
+ * @returns JSX of the pencil SVG.
  */
 const PencilIcon = ({ className }: { className?: string }): JSX.Element => {
   return (

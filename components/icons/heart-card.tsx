@@ -6,7 +6,7 @@ import type { JSX } from 'react';
  * @param   {object}      props           - Component props.
  * @param   {boolean}     [props.filled]  - When `true`, render the heart with a filled paper interior.
  * @param   {string}      [props.className] - Additional className merged onto the SVG.
- * @returns {JSX.Element} JSX of the heart SVG.
+ * @returns JSX of the heart SVG.
  */
 const HeartCardIcon = ({
   filled,

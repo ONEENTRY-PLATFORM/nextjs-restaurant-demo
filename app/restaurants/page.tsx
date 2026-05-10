@@ -26,7 +26,7 @@ type RestaurantCard = {
  * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
  *
  * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
- * @returns {string}      Formatted `from - to` string, or empty when no interval is present.
+ * @returns Formatted `from - to` string, or empty when no interval is present.
  */
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
@@ -43,7 +43,7 @@ const formatSchedule = (raw: unknown): string => {
  *
  * @param   {IPagesEntity}    page  - OneEntry page entity for a restaurant child.
  * @param   {number}          index - 1-based card index used by the numbered badge in the UI.
- * @returns {RestaurantCard}        Normalised card data for `<RestaurantCardView />`.
+ * @returns Normalised card data for `<RestaurantCardView />`.
  */
 const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   const attrs = page.attributeValues ?? {};
@@ -65,7 +65,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
 /**
  * RestaurantsPage — index page for the restaurant network from OneEntry `restaurants` + child-pages.
  *
- * @returns {Promise<JSX.Element>} Promise resolving to JSX of the restaurants index (parent page intro + grid of restaurant cards).
+ * @returns Promise resolving to JSX of the restaurants index (parent page intro + grid of restaurant cards).
  */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
@@ -124,7 +124,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
  *
  * @param   {object}          props      - Component props.
  * @param   {RestaurantCard}  props.card - View-model produced by {@link buildCard}.
- * @returns {JSX.Element}                JSX of one restaurant card.
+ * @returns JSX of one restaurant card.
  */
 const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => {
   return (
@@ -161,7 +161,7 @@ export default RestaurantsPage;
 /**
  * generateMetadata — restaurants index metadata from the OneEntry `restaurants` page title.
  *
- * @returns {Promise<Metadata>} Promise resolving to the page metadata.
+ * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('restaurants');

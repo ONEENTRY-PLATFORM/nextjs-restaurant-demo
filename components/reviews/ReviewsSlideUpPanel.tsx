@@ -16,7 +16,7 @@ import StarRating from './StarRating';
  * @param   {number} props.productId     - Product id the review is attached to.
  * @param   {string} [props.title]       - Override for the panel heading.
  * @param   {string} [props.description] - Override for the panel description.
- * @returns {JSX.Element}                  JSX of the slide-up review panel.
+ * @returns JSX of the slide-up review panel.
  */
 const ReviewsSlideUpPanel = ({
   productId,

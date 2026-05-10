@@ -22,7 +22,7 @@ type DishProduct = IProductsEntity & {
  *
  * @param   {object}        props         - Component props.
  * @param   {DishProduct}   props.product - OneEntry product entity with `blocks` / `productPages`.
- * @returns {Promise<JSX.Element>} JSX of the product page.
+ * @returns JSX of the product page.
  */
 const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages, attributeValues } = product;

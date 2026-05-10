@@ -7,7 +7,7 @@ import Spinner from './Spinner';
 /**
  * SpinnerLoader — client-side wrapper around `Spinner` with a default loading-block size.
  *
- * @returns {JSX.Element} JSX of the spinner loader (square aspect with a centred spinner).
+ * @returns JSX of the spinner loader (square aspect with a centred spinner).
  */
 const SpinnerLoader = (): JSX.Element => {
   return (

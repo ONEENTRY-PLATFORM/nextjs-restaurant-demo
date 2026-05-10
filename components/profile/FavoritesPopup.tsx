@@ -25,7 +25,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 /**
  * FavoritesPopup — favorites popup: centered modal on md+, bottom-sheet on mobile.
  *
- * @returns {JSX.Element} JSX of the favorites drawer.
+ * @returns JSX of the favorites drawer.
  */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
@@ -107,7 +107,7 @@ const FavoritesPopup = (): JSX.Element => {
  * @param   {IProductsEntity} props.product        - Product entity to render.
  * @param   {string}          props.addToCartLabel - Localized label for the add-to-cart aria-label.
  * @param   {() => void}      props.onNavigate     - Callback fired when a card link is followed (closes the popup).
- * @returns {JSX.Element}                            JSX of the favorite card row.
+ * @returns JSX of the favorite card row.
  */
 const FavoriteCard = ({
   product,
@@ -135,8 +135,14 @@ const FavoriteCard = ({
   const productHref = `/shop/product/${product.id}`;
 
   return (
-    <div className="flex w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap">
-      <Link href={productHref} onClick={onNavigate} aria-label={title} className="mr-2.5 shrink-0">
+    <div className="flex relative hover:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap">
+      <Link
+        href={productHref}
+        onClick={onNavigate}
+        aria-label={title}
+        className="flex gap-4 w-full shrink-0"
+        title={title}
+      >
         {imageSrc ? (
           <Image
             src={imageSrc}
@@ -151,17 +157,16 @@ const FavoriteCard = ({
             <Placeholder />
           </div>
         )}
-      </Link>
-
-      <Link href={productHref} onClick={onNavigate} className="flex w-1/2 flex-col">
-        <p className="favorites_title">{title}</p>
-        <div className="flex items-center justify-start gap-2.5">
-          {weight ? <p className="favorites_weight">{weight} g</p> : null}
-          {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
+        <div className="flex flex-col items-start justify-center">
+          <p className="favorites_title">{title}</p>
+          <div className="flex items-center justify-start gap-2.5">
+            {weight ? <p className="favorites_weight">{weight} g</p> : null}
+            {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
+          </div>
         </div>
       </Link>
 
-      <div className="flex h-30.5 shrink-0 flex-col justify-between">
+      <div className="flex right-2 absolute h-30.5 shrink-0 flex-col justify-between">
         <button
           type="button"
           onClick={() => {
@@ -177,6 +182,7 @@ const FavoriteCard = ({
           aria-label={inCart ? 'In cart' : addToCartLabel}
           className="group_white"
           disabled={inCart}
+          title={inCart ? 'In cart' : addToCartLabel}
         >
           <CartOrangeIcon />
         </button>
@@ -185,6 +191,7 @@ const FavoriteCard = ({
           onClick={() => dispatch(removeFavorites(product.id))}
           aria-label="Remove from favorites"
           className="group"
+          title="Remove from favorites"
         >
           <TrashIcon />
         </button>

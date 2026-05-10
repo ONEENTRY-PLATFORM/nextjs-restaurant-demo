@@ -25,7 +25,7 @@ type Photo = { downloadLink?: string };
  * @param   {object}      props        - Component props.
  * @param   {Photo[]}     props.photos - List of photos with `downloadLink` URLs.
  * @param   {string}      props.alt    - Accessible alt text used for the main image and slides.
- * @returns {JSX.Element} JSX of the gallery (mobile slider + desktop main+thumbnails + lightbox).
+ * @returns JSX of the gallery (mobile slider + desktop main+thumbnails + lightbox).
  */
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);

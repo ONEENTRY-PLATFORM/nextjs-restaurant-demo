@@ -15,7 +15,7 @@ import NavItemProfile from './NavItemProfile';
  *
  * Fallback: if the menu did not load, render the default icon set.
  *
- * @returns {Promise<JSX.Element>} JSX of the top navigation icon row.
+ * @returns JSX of the top navigation icon row.
  */
 const NavGroup = async (): Promise<JSX.Element> => {
   const { menu } = await getMenuByMarker('user_menu');
@@ -45,7 +45,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
  * renderItem — dispatches a single menu page to the right nav-item component.
  *
  * @param   {IMenusPages} page - OneEntry menu page entity.
- * @returns {JSX.Element | null} JSX for the matching nav item, or `null` when the page is unknown.
+ * @returns JSX for the matching nav item, or `null` when the page is unknown.
  */
 const renderItem = (page: IMenusPages): JSX.Element | null => {
   switch (page.pageUrl) {
@@ -78,7 +78,7 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
  *
  * @param   {object}      props      - Component props.
  * @param   {IMenusPages} props.page - OneEntry menu page entity (only `menu_icon` and `pageUrl` are read).
- * @returns {JSX.Element | null} JSX of the generic nav link, or `null` when no icon is configured.
+ * @returns JSX of the generic nav link, or `null` when no icon is configured.
  */
 const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
   // SDK types `menu_icon.value` as `{}`, but for an image it actually arrives as `{ downloadLink, ... }`.

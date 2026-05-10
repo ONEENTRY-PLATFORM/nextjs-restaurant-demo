@@ -26,7 +26,7 @@ type CartQuantityControlProps = {
  * @param   {number}                   props.id    - Cart product id.
  * @param   {number}                   props.units - Maximum allowed units (cap forwarded to the increment handler).
  * @param   {string}                   props.title - Product title used in the removal toast text.
- * @returns {JSX.Element} JSX of the vertical +/qty/− control.
+ * @returns JSX of the vertical +/qty/− control.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -51,7 +51,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
   /**
    * commit — applies the entered quantity; invalid or zero removes the item with undo.
    *
-   * @returns {void}
+   * @returns
    */
   const commit = () => {
     const parsed = parseInt(value, 10);

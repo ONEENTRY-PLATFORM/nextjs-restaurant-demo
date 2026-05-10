@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * BurgerIcon — three-line "burger" menu icon used by the mobile burger button.
  *
- * @returns {JSX.Element} JSX of the burger-menu SVG.
+ * @returns JSX of the burger-menu SVG.
  */
 const BurgerIcon = (): JSX.Element => {
   return (

@@ -22,7 +22,7 @@ const TEXT_MARKER = 'review_text';
  * resolveAuthorName — resolves the display name for the signed-in user (name → email → identifier).
  *
  * @param   {{ identifier?: string; formData?: unknown }} user - OneEntry user entity (only `identifier` and `formData` are read).
- * @returns {string}                                              Display name string (empty when nothing is available).
+ * @returns Display name string (empty when nothing is available).
  */
 const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): string => {
   const formData = Array.isArray(user.formData)
@@ -41,7 +41,7 @@ const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): s
  * @param   {object}  props             - Component props.
  * @param   {number}  props.productId   - Product id the review is attached to.
  * @param   {boolean} [props.hideTitle] - When `true`, suppress the heading (the parent already has one).
- * @returns {JSX.Element}                 JSX of the review form (or sign-in gate when unauthenticated).
+ * @returns JSX of the review form (or sign-in gate when unauthenticated).
  */
 const ReviewForm = ({
   productId,

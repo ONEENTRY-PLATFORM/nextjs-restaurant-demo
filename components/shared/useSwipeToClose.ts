@@ -16,7 +16,7 @@ type Options = {
  * @param   {RefObject<HTMLElement | null>} ref     - The element being dragged (usually `modalBody`).
  * @param   {() => void}                    onClose - Confirmation handler; must trigger the same close transition as the X button.
  * @param   {Options}                       options - Threshold/velocity tuning for the gesture.
- * @returns {void}
+ * @returns
  */
 export const useSwipeToClose = (
   ref: RefObject<HTMLElement | null>,

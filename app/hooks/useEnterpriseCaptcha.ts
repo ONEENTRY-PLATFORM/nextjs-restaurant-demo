@@ -26,7 +26,7 @@ export interface CaptchaValidationObject {
  *
  * @param   {string | undefined}                 siteKey - Public Google reCAPTCHA Enterprise key (settings.captcha.key on the spam field).
  * @param   {string}                             action  - Action used for scoring (defaults to `'login'`; in OneEntry — settings.captcha.action).
- * @returns {CaptchaValidationObject | null}             `{ event: { token, siteKey } }` after a successful `execute`, otherwise `null`.
+ * @returns `{ event: { token, siteKey } }` after a successful `execute`, otherwise `null`.
  */
 export function useEnterpriseCaptcha(
   siteKey: string | undefined,

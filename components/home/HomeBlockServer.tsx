@@ -13,7 +13,7 @@ import HomeBlockSection from './HomeBlockSection';
  * @param   {string} props.marker      - Block marker.
  * @param   {string} [props.className] - Override for the section className.
  * @param   {number} [props.limit]     - Cap on the number of products.
- * @returns {Promise<JSX.Element | null>} JSX of the block, or `null` when the block is empty / errored.
+ * @returns JSX of the block, or `null` when the block is empty / errored.
  */
 const HomeBlockServer = async ({
   marker,

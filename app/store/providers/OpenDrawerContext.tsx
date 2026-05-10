@@ -29,7 +29,7 @@ export const OpenDrawerContext = createContext<{
  *
  * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - Subtree that consumes `OpenDrawerContext`.
- * @returns {JSX.Element}                JSX provider wrapping children with the drawer/popup context value.
+ * @returns JSX provider wrapping children with the drawer/popup context value.
  */
 export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false);

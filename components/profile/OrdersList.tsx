@@ -40,7 +40,7 @@ const MD_QUERY = '(min-width: 768px)';
  * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
  *
  * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
- * @returns {() => void}        Unsubscribe function.
+ * @returns Unsubscribe function.
  */
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -50,19 +50,19 @@ const subscribeMd = (cb: () => void): (() => void) => {
 /**
  * getMdSnapshot — current client snapshot of the `md` media query match state.
  *
- * @returns {boolean} `true` when the viewport currently matches `md` (>= 768px).
+ * @returns `true` when the viewport currently matches `md` (>= 768px).
  */
 const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
 /**
  * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
  *
- * @returns {boolean} Always `false` so SSR renders the mobile layout deterministically.
+ * @returns Always `false` so SSR renders the mobile layout deterministically.
  */
 const getMdServerSnapshot = (): boolean => false;
 /**
  * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
  *
- * @returns {boolean} `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
+ * @returns `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
  */
 const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
@@ -71,7 +71,7 @@ const useIsMdUp = (): boolean =>
  * statusLabel — human-readable order status (localized from CMS, otherwise derived from the identifier).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {string}                   Localized status title or a humanised identifier (`-` when nothing is set).
+ * @returns Localized status title or a humanised identifier (`-` when nothing is set).
  */
 const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
@@ -85,7 +85,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
  * isHistoryOrder — whether the order belongs to "Orders History" (completed/cancelled), not "Active".
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {boolean}                  `true` when the order is completed or carries a history status.
+ * @returns `true` when the order is completed or carries a history status.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
@@ -98,7 +98,7 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
  * `discount` = (subtotal + delivery) − serverTotal: if a coupon was applied, `totalSum` already includes the discount.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {{ subtotal: number; delivery: number; discount: number; total: number }} `{ subtotal, delivery, discount, total }` numbers.
+ * @returns `{ subtotal, delivery, discount, total }` numbers.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
@@ -120,7 +120,7 @@ const computeTotals = (
  * formatOrderNumber — order number `OE…` from the SDK, otherwise fallback to the numeric id.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns {string}                   Display order number string.
+ * @returns Display order number string.
  */
 const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   const fromSdk = (o as unknown as { orderId?: string }).orderId;
@@ -137,7 +137,7 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
  * @param   {() => void}                      props.onToggle     - Toggles the expanded state.
  * @param   {boolean}                         props.isHistory    - Whether the order belongs to history (controls available actions).
  * @param   {Map<number, IProductsEntity>}    props.productsById - Map of full product entities used to enrich line items.
- * @returns {JSX.Element}                                          JSX of the order card.
+ * @returns JSX of the order card.
  */
 const OrderCard = ({
   order,
@@ -368,7 +368,7 @@ const OrderCard = ({
  * @param   {IOrderProducts}               props.product     - Order line-item entity.
  * @param   {boolean}                      props.first       - Whether this is the first row (drops the top margin).
  * @param   {IProductsEntity | undefined}  [props.fullProduct] - Optional full product entity used to resolve a fallback cover image.
- * @returns {JSX.Element}                                      JSX of the line-item row.
+ * @returns JSX of the line-item row.
  */
 const OrderLineItem = ({
   product,
@@ -424,7 +424,7 @@ const OrderLineItem = ({
  *
  * @param   {object}         [props]               - Component props.
  * @param   {BlogBanner[]}   [props.promoBanners]  - Promo banners rendered in the right column on md+.
- * @returns {JSX.Element}                            JSX of the orders dashboard section.
+ * @returns JSX of the orders dashboard section.
  */
 const OrdersList = ({
   promoBanners = [],

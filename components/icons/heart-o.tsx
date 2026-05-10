@@ -1,7 +1,7 @@
 /**
  * HeartOpenIcon — outlined heart icon (white fill, hover-to-brand) for favorites.
  *
- * @returns {JSX.Element} JSX of the open-heart SVG.
+ * @returns JSX of the open-heart SVG.
  */
 const HeartOpenIcon = () => {
   return (

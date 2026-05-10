@@ -8,7 +8,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 /**
  * ResetButton — clears all filter URL search params and replaces the route.
  *
- * @returns {JSX.Element} JSX of the reset button.
+ * @returns JSX of the reset button.
  */
 const ResetButton = (): JSX.Element => {
   const t = useT();

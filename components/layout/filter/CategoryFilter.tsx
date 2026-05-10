@@ -26,7 +26,7 @@ const BOOKING_TILE: Category = {
  *
  * @param   {object}          props       - Component props.
  * @param   {IPagesEntity[]}  props.pages - Child pages of the `menu` page.
- * @returns {JSX.Element} JSX of the category panel (drawer + backdrop).
+ * @returns JSX of the category panel (drawer + backdrop).
  */
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
   const { open, component, transition, setOpen, setComponent, setTransition } =

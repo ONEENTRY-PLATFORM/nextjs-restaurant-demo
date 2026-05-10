@@ -14,7 +14,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {ReactNode} props.children  - Field markup to reveal.
  * @param   {string}    props.className - Wrapper class merged onto the animated container.
  * @param   {number}    props.index     - Field index used to compute the stagger delay.
- * @returns {JSX.Element}                 JSX wrapper that animates the field width from 0 → 100%.
+ * @returns JSX wrapper that animates the field width from 0 → 100%.
  */
 const FormFieldAnimations = ({
   children,

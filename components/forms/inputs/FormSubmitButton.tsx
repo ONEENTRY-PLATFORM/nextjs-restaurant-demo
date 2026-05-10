@@ -10,7 +10,7 @@ import Spinner from '@/components/shared/Spinner';
  * @param   {string}  props.title     - Button label (defaults to `'Submit'`).
  * @param   {boolean} props.isLoading - When `true`, replaces the label with a spinner and disables the button.
  * @param   {number}  props.index     - Animation index used by `FormFieldAnimations` for staggered reveal.
- * @returns {JSX.Element}               JSX of the submit button wrapped in form-field animations.
+ * @returns JSX of the submit button wrapped in form-field animations.
  */
 const FormSubmitButton = ({
   title = 'Submit',

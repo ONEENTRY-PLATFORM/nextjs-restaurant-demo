@@ -16,7 +16,7 @@ export type PriceRange = {
  *
  * @param   {string}              [pageUrl]  - OneEntry `pageUrl` of the catalog page (default `'services'`).
  * @param   {string}              [langCode] - Optional explicit locale (defaults to `getLang()`).
- * @returns {Promise<PriceRange>}              Promise resolving to the catalog price range.
+ * @returns Promise resolving to the catalog price range.
  */
 export const getProductsPriceRange = cache(
   async (pageUrl = 'services', langCode?: string): Promise<PriceRange> => {

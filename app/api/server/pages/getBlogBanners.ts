@@ -25,7 +25,7 @@ export type BlogBanner = {
  * Pages without images are still included — the caller decides which variant to render.
  * Manual sort by `position`: the SDK returns children in `id` (creation) order, not by position —
  * otherwise the hero and adjacent promo cards would render in random order.
- * @returns {Promise<BlogBanner[]>} Banner list (empty on CMS error).
+ * @returns Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
   const { isError, pages } = await getChildPagesByParentUrl('blog');

@@ -23,7 +23,7 @@ type Color = {
  * @param   {object}                              props            - Component props.
  * @param   {string}                              [props.title]    - Section title displayed above the chips.
  * @param   {IAttributesSetsEntity | IError}      props.attributes - Attribute set entity (or SDK error placeholder).
- * @returns {JSX.Element} JSX of the color chip row.
+ * @returns JSX of the color chip row.
  */
 const ColorFilter = ({
   title,

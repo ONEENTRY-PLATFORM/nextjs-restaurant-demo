@@ -14,7 +14,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @param   {string}    props.restaurantHandle - OneEntry restaurant `pageUrl` (used as the picker pre-fill).
  * @param   {string}    [props.className]      - Class merged onto the button element.
  * @param   {ReactNode} props.children         - Button label content.
- * @returns {JSX.Element}                        JSX of the trigger button.
+ * @returns JSX of the trigger button.
  */
 const BookATableButton = ({
   restaurantHandle,

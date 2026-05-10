@@ -18,7 +18,7 @@ import FiltersForm from './FiltersForm';
  *
  * @param   {object}        props        - Component props.
  * @param   {PriceBounds}   props.prices - Catalog price bounds passed to `PricePickerFilter`.
- * @returns {JSX.Element} JSX of the filter modal drawer (header + suspended `<FiltersForm />`).
+ * @returns JSX of the filter modal drawer (header + suspended `<FiltersForm />`).
  */
 const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);

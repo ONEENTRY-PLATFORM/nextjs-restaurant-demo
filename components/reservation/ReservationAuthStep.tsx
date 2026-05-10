@@ -41,7 +41,7 @@ type SubStep = 'providers' | 'email';
  * @param   {() => void}                  props.onAuthSuccess  - Callback fired on successful auth (switches the wizard step to `payment`).
  * @param   {() => void}                  props.onBack         - Callback that returns the wizard to the form step.
  * @param   {Record<string, string>}      props.currentValues  - Current booking form values; persisted to sessionStorage before OAuth redirect.
- * @returns {JSX.Element}                                        JSX of the providers list or inline email form.
+ * @returns JSX of the providers list or inline email form.
  */
 const ReservationAuthStep = ({
   onAuthSuccess,

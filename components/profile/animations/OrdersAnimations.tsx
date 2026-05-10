@@ -14,7 +14,7 @@ const ORDERS_ROW_SELECTOR = '.orders-row';
  * @param   {object}    props          - Component props.
  * @param   {ReactNode} props.children - OrdersList content (including the sidebar).
  * @param   {number}    props.rowsKey  - Signal to remount the entrance timeline (e.g. number of rows).
- * @returns {JSX.Element}                JSX wrapper around the orders content.
+ * @returns JSX wrapper around the orders content.
  */
 const OrdersAnimations = ({
   children,

@@ -20,7 +20,7 @@ import { peekPendingReservationResume } from '@/components/reservation/reservati
  * `?return=`) and the popup is programmatically reopened via {@link OpenDrawerContext} so the user
  * sees their form values again — regardless of whether the login succeeded or was cancelled.
  *
- * @returns {JSX.Element} JSX of the OAuth callback page (a "Signing you in…" placeholder while exchange runs).
+ * @returns JSX of the OAuth callback page (a "Signing you in…" placeholder while exchange runs).
  */
 const GoogleAuthCallbackInner = (): JSX.Element => {
   const params = useSearchParams();

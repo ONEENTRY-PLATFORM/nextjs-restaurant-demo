@@ -21,38 +21,43 @@ import {
   setPendingReservationResume,
 } from './reservationOAuthResumeState';
 
+type SubStep = 'providers' | 'email';
+
 type ReservationAuthStepProps = {
   /** Callback fired on successful auth - switches the wizard step to `payment`. */
   onAuthSuccess: () => void;
-  onBack: () => void;
   /** Current booking form values; persisted to sessionStorage before the OAuth redirect. */
   currentValues: Record<string, string>;
+  /** Auth sub-step controlled by the popup so its header arrow can navigate `email` → `providers`. */
+  subStep: SubStep;
+  setSubStep: (s: SubStep) => void;
 };
-
-type SubStep = 'providers' | 'email';
 
 /**
  * ReservationAuthStep — inline auth step inside the booking popup.
  *
  * Implemented inline (without `OpenDrawerContext.setComponent`) to avoid tearing down the mounted
  * `ReservationPopup` and losing the collected form values. Two sub-steps: `providers` → `email`.
+ * The popup owns the sub-step (lifted) so its header back arrow navigates `email` → `providers` and
+ * `providers` → form.
  *
  * @param   {ReservationAuthStepProps}    props                - Component props.
  * @param   {() => void}                  props.onAuthSuccess  - Callback fired on successful auth (switches the wizard step to `payment`).
- * @param   {() => void}                  props.onBack         - Callback that returns the wizard to the form step.
  * @param   {Record<string, string>}      props.currentValues  - Current booking form values; persisted to sessionStorage before OAuth redirect.
+ * @param   {SubStep}                     props.subStep        - Active inner sub-step (controlled by the popup).
+ * @param   {(s: SubStep) => void}        props.setSubStep     - Setter for the inner sub-step (controlled by the popup).
  * @returns JSX of the providers list or inline email form.
  */
 const ReservationAuthStep = ({
   onAuthSuccess,
-  onBack,
   currentValues,
+  subStep,
+  setSubStep,
 }: ReservationAuthStepProps): JSX.Element => {
   const t = useT();
   const { authenticate } = useContext(AuthContext);
   const { data: providers, isLoading: isProvidersLoading } = useGetAuthProvidersQuery('');
 
-  const [subStep, setSubStep] = useState<SubStep>('providers');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -141,13 +146,6 @@ const ReservationAuthStep = ({
             );
           })}
         </div>
-        <button
-          type="button"
-          onClick={onBack}
-          className="mt-7.5 flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
-        >
-          {t('back_text', 'Back')}
-        </button>
       </div>
     );
   }
@@ -192,14 +190,7 @@ const ReservationAuthStep = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      <div className="mt-2.5 flex items-center justify-center gap-3.75">
-        <button
-          type="button"
-          onClick={() => setSubStep('providers')}
-          className="flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
-        >
-          {t('back_text', 'Back')}
-        </button>
+      <div className="mt-2.5 flex items-center justify-center">
         <button
           type="submit"
           disabled={loading || !email || !password}

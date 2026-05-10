@@ -37,11 +37,7 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
   const [action, setAction] = useState<string>('');
   const [transition, setTransition] = useState<string>('');
 
-  // Lock background scroll while a popup is open: lock both `<html>` and `<body>`
-  // (the scroll container depends on the page); on iOS fix `body` with
-  // `position: fixed` to defeat body rubber-band. Compensate scrollbar width
-  // via padding-right + the `--scrollbar-width` CSS variable so content
-  // doesn't jump ~15px on desktop (0 on macOS / overlay scrollbars).
+  // Lock background scroll while a popup is open
   useEffect(() => {
     if (!open) return;
     const html = document.documentElement;

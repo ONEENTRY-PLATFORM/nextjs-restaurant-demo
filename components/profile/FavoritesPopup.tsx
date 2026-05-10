@@ -1,10 +1,11 @@
 'use client';
 
+import { gsap } from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
@@ -22,6 +23,8 @@ import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
+const FAVORITE_CARD_SELECTOR = '.favorite-card';
+
 /**
  * FavoritesPopup — favorites popup: centered modal on md+, bottom-sheet on mobile.
  *
@@ -29,7 +32,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
  */
 const FavoritesPopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'FavoritesPopup';
 
   const favoriteIds = useAppSelector(selectFavoritesItems);
@@ -38,13 +41,51 @@ const FavoritesPopup = (): JSX.Element => {
     { skip: !isOpen || !favoriteIds || favoriteIds.length === 0 }
   );
 
-  const close = () => setTransition('close');
   const sheetRef = useRef<HTMLDivElement | null>(null);
   // Swipe closes directly - bypass GSAP-reverse so the hook's inline transform does not conflict with the `yPercent` tween.
   useSwipeToClose(sheetRef, () => setOpen(false));
   const favoriteIdSet = new Set(favoriteIds);
   const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
   const addToCartLabel = t('add_to_cart', 'Add to cart');
+
+  // Click-driven leave: animate cards out first, then trigger DrawerAnimations close (cart APPLY idiom).
+  // Backdrop click goes straight to `setTransition('close')` via `ModalBackdrop`, which is also caught
+  // by the parallel `useEffect` watcher below for a stagger in that path.
+  const close = (): void => {
+    const root = sheetRef.current;
+    if (!root) {
+      setTransition('close');
+      return;
+    }
+    const targets = root.querySelectorAll(FAVORITE_CARD_SELECTOR);
+    if (targets.length === 0) {
+      setTransition('close');
+      return;
+    }
+    gsap.to(targets, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.3,
+      stagger: { each: 0.05, from: 'end' },
+      onComplete: () => setTransition('close'),
+    });
+  };
+
+  // Backdrop-click fallback: when transition flips to 'close' without going through `close()`, run the
+  // stagger in parallel with the popup body reverse so the cards visibly fly out instead of dropping
+  // statically with the sheet.
+  useEffect(() => {
+    if (transition !== 'close' || !sheetRef.current) return;
+    const targets = sheetRef.current.querySelectorAll(FAVORITE_CARD_SELECTOR);
+    if (targets.length === 0) return;
+    gsap.to(targets, {
+      autoAlpha: 0,
+      yPercent: 100,
+      duration: 0.3,
+      stagger: { each: 0.05, from: 'end' },
+      overwrite: 'auto',
+    });
+  }, [transition]);
 
   return (
     <DrawerAnimations component="FavoritesPopup">
@@ -84,10 +125,11 @@ const FavoritesPopup = (): JSX.Element => {
           </div>
         ) : (
           <div className="mt-8 md:mt-15 flex w-full flex-wrap justify-center gap-7.5">
-            {products.map(product => (
+            {products.map((product, index) => (
               <FavoriteCard
                 key={product.id}
                 product={product}
+                index={index}
                 addToCartLabel={addToCartLabel}
                 onNavigate={close}
               />
@@ -105,21 +147,25 @@ const FavoritesPopup = (): JSX.Element => {
  *
  * @param   {object}          props                - Component props.
  * @param   {IProductsEntity} props.product        - Product entity to render.
+ * @param   {number}          props.index          - Position in the list; drives the per-card stagger delay on mount.
  * @param   {string}          props.addToCartLabel - Localized label for the add-to-cart aria-label.
  * @param   {() => void}      props.onNavigate     - Callback fired when a card link is followed (closes the popup).
  * @returns JSX of the favorite card row.
  */
 const FavoriteCard = ({
   product,
+  index,
   addToCartLabel,
   onNavigate,
 }: {
   product: IProductsEntity;
+  index: number;
   addToCartLabel: string;
   onNavigate: () => void;
 }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const attrs = product.attributeValues ?? {};
   const imageSrc = getImageUrl(
     attrs.cover?.value as
@@ -134,8 +180,27 @@ const FavoriteCard = ({
 
   const productHref = `/shop/product/${product.id}`;
 
+  // Mount-based entry stagger — DrawerAnimations unmounts the subtree on close (`<></>`), so each
+  // reopen mounts fresh cards and re-runs this effect. Plain `useEffect` + `gsap.fromTo` avoids
+  // `useGSAP`'s `gsap.context().revert()` cleanup, which has been observed to skip on remount.
+  useEffect(() => {
+    const node = cardRef.current;
+    if (!node) return;
+    const tween = gsap.fromTo(
+      node,
+      { autoAlpha: 0, yPercent: 100 },
+      { autoAlpha: 1, yPercent: 0, duration: 0.4, delay: index / 14, overwrite: 'auto' }
+    );
+    return () => {
+      tween.kill();
+    };
+  }, [index]);
+
   return (
-    <div className="flex relative hover:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap">
+    <div
+      ref={cardRef}
+      className="favorite-card flex relative hover:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap"
+    >
       <Link
         href={productHref}
         onClick={onNavigate}

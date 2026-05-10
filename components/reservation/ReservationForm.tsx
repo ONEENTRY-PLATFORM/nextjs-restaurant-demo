@@ -143,13 +143,19 @@ type ReservationFormProps = {
     | null
     | undefined;
   onClose?: () => void;
+  step: ReservationStep;
+  setStep: (step: ReservationStep) => void;
+  authSubStep: AuthSubStep;
+  setAuthSubStep: (s: AuthSubStep) => void;
 };
 
-type ReservationStep =
+export type ReservationStep =
   | { kind: 'form' }
   | { kind: 'auth'; formData: IOrdersFormData[]; summary: string }
   | { kind: 'payment'; formData: IOrdersFormData[]; summary: string }
   | { kind: 'success'; orderId: number; summary: string };
+
+export type AuthSubStep = 'providers' | 'email';
 
 /**
  * formatBookingSummary — formats the booking summary as `DD.MM.YY HH.MM N person`.
@@ -175,12 +181,16 @@ const formatBookingSummary = (values: Record<string, string>): string => {
 /**
  * ReservationForm — table-booking form (`booking_order`) with create/edit + auth + payment wizard.
  *
- * @param   {ReservationFormProps}                       props                - Component props.
- * @param   {IFormsEntity}                               props.form           - OneEntry form entity that defines the field schema.
- * @param   {RestaurantOption[]}                         [props.restaurants]  - Available restaurant options for the entity dropdown.
- * @param   {Record<string, FieldValue>}                 [props.initialValues] - Optional pre-filled values (used for edit / OAuth resume).
- * @param   {object | null}                              [props.editingOrder] - When set, the form updates this order instead of creating a new one.
- * @param   {() => void}                                 [props.onClose]      - Callback invoked on successful update (closes the popup).
+ * @param   {ReservationFormProps}                       props                  - Component props.
+ * @param   {IFormsEntity}                               props.form             - OneEntry form entity that defines the field schema.
+ * @param   {RestaurantOption[]}                         [props.restaurants]    - Available restaurant options for the entity dropdown.
+ * @param   {Record<string, FieldValue>}                 [props.initialValues]  - Optional pre-filled values (used for edit / OAuth resume).
+ * @param   {object | null}                              [props.editingOrder]   - When set, the form updates this order instead of creating a new one.
+ * @param   {() => void}                                 [props.onClose]        - Callback invoked on successful update (closes the popup).
+ * @param   {ReservationStep}                            props.step             - Current wizard step (controlled by parent).
+ * @param   {(step: ReservationStep) => void}            props.setStep          - Setter for the wizard step (controlled by parent).
+ * @param   {AuthSubStep}                                props.authSubStep      - Current auth sub-step (controlled by parent).
+ * @param   {(s: AuthSubStep) => void}                   props.setAuthSubStep   - Setter for the auth sub-step (controlled by parent).
  * @returns JSX of the form, auth step, payment step, or success screen depending on wizard state.
  */
 const ReservationForm = ({
@@ -189,13 +199,16 @@ const ReservationForm = ({
   initialValues,
   editingOrder,
   onClose,
+  step,
+  setStep,
+  authSubStep,
+  setAuthSubStep,
 }: ReservationFormProps): JSX.Element => {
   const t = useT();
   const { isAuth } = useContext(AuthContext);
   const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<ReservationStep>({ kind: 'form' });
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
@@ -377,26 +390,14 @@ const ReservationForm = ({
           setError('');
           setStep({ kind: 'payment', formData: step.formData, summary: step.summary });
         }}
-        onBack={() => {
-          setError('');
-          setStep({ kind: 'form' });
-        }}
+        subStep={authSubStep}
+        setSubStep={setAuthSubStep}
       />
     );
   }
 
   if (step.kind === 'payment') {
-    return (
-      <ReservationPaymentStep
-        onApply={onApplyPayment}
-        isLoading={loading}
-        error={error}
-        onBack={() => {
-          setError('');
-          setStep({ kind: 'form' });
-        }}
-      />
-    );
+    return <ReservationPaymentStep onApply={onApplyPayment} isLoading={loading} error={error} />;
   }
 
   const hasNotes = attrByMarker.has(TEXT_MARKER);

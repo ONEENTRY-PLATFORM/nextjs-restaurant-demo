@@ -211,11 +211,21 @@ const FilterBottom = ({
         }
       >
         <div className="max-w-89 mx-auto flex justify-between items-center mb-5">
-          <button type="button" onClick={close} aria-label="Back" className="group_white">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Back"
+            className="group_white max-md:hidden"
+          >
             <ArrowBackOrangeIcon />
           </button>
           <p className="font-normal text-2xl text-white">Filter</p>
-          <button type="button" onClick={close} aria-label="Close" className="group_white">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close"
+            className="group_white max-md:hidden"
+          >
             <CloseXIcon />
           </button>
         </div>

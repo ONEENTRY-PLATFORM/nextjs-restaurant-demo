@@ -37,7 +37,6 @@ type ReservationPaymentStepProps = {
   onApply: (paymentAccountIdentifier: string) => void;
   isLoading: boolean;
   error: string;
-  onBack: () => void;
 };
 
 /**
@@ -45,20 +44,19 @@ type ReservationPaymentStepProps = {
  *
  * Account list = `Payments.getAccounts()` (filtered by `isVisible && isUsed`) intersected with
  * `storage.paymentAccountIdentifiers` from `getOrderStorageByMarker('booking_order')`, otherwise
- * `createOrder` fails with 400 "Your payment account is not connected".
+ * `createOrder` fails with 400 "Your payment account is not connected". Back navigation is handled
+ * by the popup header arrow (parent owns the wizard step).
  *
  * @param   {ReservationPaymentStepProps}  props           - Component props.
  * @param   {(id: string) => void}         props.onApply   - Called with the selected `paymentAccountIdentifier` when the user confirms.
  * @param   {boolean}                      props.isLoading - When `true`, disables the apply button.
  * @param   {string}                       props.error     - Error message displayed under the radio list.
- * @param   {() => void}                   props.onBack    - Returns the wizard to the form step.
  * @returns JSX of the payment-method selection step.
  */
 const ReservationPaymentStep = ({
   onApply,
   isLoading,
   error,
-  onBack,
 }: ReservationPaymentStepProps): JSX.Element => {
   const t = useT();
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
@@ -119,14 +117,7 @@ const ReservationPaymentStep = ({
       {error ? <ErrorMessage error={error} /> : null}
 
       {/* Apply button - Figma: 95×36, orange outline, text #EC722B */}
-      <div className="mt-2.5 flex items-center justify-center gap-3.75">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
-        >
-          {t('back_text', 'Back')}
-        </button>
+      <div className="mt-2.5 flex items-center justify-center">
         <button
           type="button"
           onClick={() => selected && onApply(selected)}

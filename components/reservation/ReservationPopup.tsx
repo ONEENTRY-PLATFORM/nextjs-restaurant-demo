@@ -16,7 +16,7 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
-import ReservationForm from './ReservationForm';
+import ReservationForm, { type AuthSubStep, type ReservationStep } from './ReservationForm';
 import {
   consumePendingReservationResume,
   type ReservationOAuthResume,
@@ -116,6 +116,10 @@ const ReservationPopup = (): JSX.Element => {
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
   // Resume mode: restore form values after the OAuth redirect (sessionStorage).
   const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
+  // Wizard step lifted from ReservationForm so the popup header arrow can navigate back
+  // (auth/payment -> form, email -> providers); reset on close.
+  const [step, setStep] = useState<ReservationStep>({ kind: 'form' });
+  const [authSubStep, setAuthSubStep] = useState<AuthSubStep>('providers');
   useEffect(() => {
     if (isOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -124,8 +128,33 @@ const ReservationPopup = (): JSX.Element => {
     } else {
       setEditing(null);
       setResume(null);
+      setStep({ kind: 'form' });
+      setAuthSubStep('providers');
     }
   }, [isOpen]);
+
+  /**
+   * handleHeaderBack — header arrow navigation: walks the wizard back one step,
+   * or closes the popup when on the first step / a terminal step.
+   *
+   * @returns
+   */
+  const handleHeaderBack = (): void => {
+    if (step.kind === 'auth') {
+      if (authSubStep === 'email') {
+        setAuthSubStep('providers');
+        return;
+      }
+      setStep({ kind: 'form' });
+      return;
+    }
+    if (step.kind === 'payment') {
+      setStep({ kind: 'form' });
+      setAuthSubStep('providers');
+      return;
+    }
+    close();
+  };
 
   const initialValues = useMemo(() => {
     if (editing) {
@@ -149,7 +178,7 @@ const ReservationPopup = (): JSX.Element => {
         <div className="flex items-center justify-between gap-5">
           <button
             type="button"
-            onClick={close}
+            onClick={handleHeaderBack}
             aria-label="Back"
             className="group flex items-center justify-center"
           >
@@ -185,6 +214,10 @@ const ReservationPopup = (): JSX.Element => {
               initialValues={initialValues}
               editingOrder={editing}
               onClose={close}
+              step={step}
+              setStep={setStep}
+              authSubStep={authSubStep}
+              setAuthSubStep={setAuthSubStep}
             />
           </div>
         )}

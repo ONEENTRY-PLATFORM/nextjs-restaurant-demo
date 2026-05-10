@@ -14,12 +14,18 @@ import {
   addProductsToCart,
   selectCartData,
 } from '@/app/store/reducers/CartSlice';
-import { type CheckoutStep, selectCheckoutStep, setStep } from '@/app/store/reducers/OrderSlice';
+import {
+  type CheckoutStep,
+  goBackStep,
+  selectCheckoutStep,
+  setStep,
+} from '@/app/store/reducers/OrderSlice';
 import type { IProducts } from '@/app/types/global';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import StepOrder from '@/components/cart/steps/StepOrder';
 import StepPayment from '@/components/cart/steps/StepPayment';
 import StepResult from '@/components/cart/steps/StepResult';
+import ArrowBackIcon from '@/components/icons/arrow-back';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -114,6 +120,9 @@ const CartPopup = (): JSX.Element => {
     error: 'Error',
   };
 
+  // Back arrow only on intermediate steps (`order`/`payment`); terminal `success`/`error` are one-shot.
+  const canGoBack = step === 'order' || step === 'payment';
+
   return (
     <DrawerAnimations component="CartPopup" variant="slide-up">
       <div
@@ -122,9 +131,22 @@ const CartPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] overflow-y-auto bg-ink/80 backdrop-blur-card rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
-          {/* Header: back / title / close. */}
-          <div className="z-10 flex items-center justify-center">
+          {/* Header: back / title / spacer (close is via swipe / backdrop). */}
+          <div className="z-10 flex items-center justify-between">
+            {canGoBack ? (
+              <button
+                type="button"
+                onClick={() => dispatch(goBackStep())}
+                aria-label="Back"
+                className="group flex h-9 w-9 items-center justify-center"
+              >
+                <ArrowBackIcon className="hover-target" />
+              </button>
+            ) : (
+              <span aria-hidden="true" className="h-9 w-9" />
+            )}
             <p className="font-normal text-2xl text-white">{stepTitles[step]}</p>
+            <span aria-hidden="true" className="h-9 w-9" />
           </div>
 
           {isCartStep ? (

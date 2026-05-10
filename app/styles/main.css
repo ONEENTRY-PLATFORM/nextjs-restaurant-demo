@@ -233,6 +233,7 @@ html {
     font-bold 
     md:text-xl 
     uppercase 
+    max-xs:max-w-87
     text-brand;
 }
 

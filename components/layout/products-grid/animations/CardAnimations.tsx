@@ -14,14 +14,12 @@ const HIDDEN_STYLE: CSSProperties = {
 };
 
 /**
- * Card reveal animation. Each card fades in when it scrolls into view, with a
- * per-row stagger via `delay`. Cards already in or near the viewport on mount
- * are revealed immediately because `ScrollTrigger.create` evaluates the start
- * position synchronously and fires `onEnter` for triggers that are already
- * past their threshold — single code path covers both the in-viewport and
- * scroll-into-view cases (was a branched `isInViewport / create` pair, which
- * left invisible cards stranded on deep `?page=N` URLs when they fell just
- * outside the strict 45% viewport check).
+ * Reveal-анимация карточки продукта.
+ *
+ * @param children - Содержимое карточки.
+ * @param className - Класс на обёртку.
+ * @param index - Индекс карточки для stagger-задержки.
+ * @param productsLimit - Размер страницы пагинации.
  */
 const CardAnimations = ({
   children,

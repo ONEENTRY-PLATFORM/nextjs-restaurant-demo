@@ -3,7 +3,8 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import type { JSX } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
@@ -108,7 +109,7 @@ const DateTimePickerSheet = ({
   applyText = 'Apply',
   continueText = 'Continue',
   noTimeText = 'No available time slots for the selected date.',
-}: DateTimePickerSheetProps): JSX.Element => {
+}: DateTimePickerSheetProps): JSX.Element | null => {
   const today = useMemo(() => new Date(), []);
   const initial = date ? new Date(date) : today;
   const [year, setYear] = useState(initial.getFullYear());
@@ -116,6 +117,12 @@ const DateTimePickerSheet = ({
   const [selectedDate, setSelectedDate] = useState<string>(date ?? '');
   const [selectedTime, setSelectedTime] = useState<string>(time ?? '');
   const [stepName, setStepName] = useState<'date' | 'time'>('date');
+
+  // Portal to document.body so the fixed-positioned overlay escapes any ancestor that creates a containing block (transform / filter / backdrop-filter — e.g. CartPopup, ReservationPopup).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
@@ -205,7 +212,9 @@ const DateTimePickerSheet = ({
   const canContinue = !!selectedDate;
   const canApply = !!selectedDate && !!selectedTime;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div ref={wrapperRef} className="z-500 fixed inset-0 flex h-screen w-full">
       <div
         id="modalBg"
@@ -337,7 +346,8 @@ const DateTimePickerSheet = ({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -59,8 +59,6 @@ const LoadMore = ({ totalPages }: { totalPages: number }): JSX.Element => {
     return () => {
       trigger.kill();
     };
-    // searchParams in deps — otherwise ScrollTrigger.onEnter holds a stale closure on goToNextPage,
-    // and preferences drop out of the URL on the first trigger after a chip click.
   }, [currentPage, searchParams]);
 
   return (

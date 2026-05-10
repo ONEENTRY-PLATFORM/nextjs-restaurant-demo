@@ -11,8 +11,7 @@ const ProductsGrid = ({
   productsLimit: number;
   products: IProductsEntity[];
 }): JSX.Element => {
-  // Deduplicate by `id`: OneEntry returns duplicates when combining filters (preferences+search),
-  // otherwise React throws "two children with the same key".
+  // Deduplicate by `id`
   const seen = new Set<number>();
   const uniqueVisible = (products ?? []).filter(item => {
     if (!item.isVisible) return false;

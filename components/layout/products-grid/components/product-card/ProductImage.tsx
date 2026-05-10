@@ -27,10 +27,8 @@ const ProductImage = ({
     : productImage?.downloadLink;
 
   if (!imageSrc) {
-    // pb-8 compensates for the info strip ("30-45 min · 50g · ★ 4") at the bottom of the card —
-    // otherwise the centered logo placeholder looks shifted.
     return (
-      <div className="relative aspect-square w-full">
+      <div className="relative aspect-square w-full overflow-hidden">
         <Placeholder className="pb-8" />
       </div>
     );

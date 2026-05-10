@@ -33,8 +33,6 @@ const CartButton = ({
     | undefined;
   const qty = item?.quantity ?? 0;
 
-  // redux-persist rehydrates the cart on the client — qty may differ from SSR (0).
-  // On the first paint render the "add" button (matching the server), switch after mount.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

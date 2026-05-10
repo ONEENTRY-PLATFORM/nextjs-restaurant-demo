@@ -14,19 +14,12 @@ import {
   addProductsToCart,
   selectCartData,
 } from '@/app/store/reducers/CartSlice';
-import {
-  type CheckoutStep,
-  goBackStep,
-  selectCheckoutStep,
-  setStep,
-} from '@/app/store/reducers/OrderSlice';
+import { type CheckoutStep, selectCheckoutStep, setStep } from '@/app/store/reducers/OrderSlice';
 import type { IProducts } from '@/app/types/global';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import StepOrder from '@/components/cart/steps/StepOrder';
 import StepPayment from '@/components/cart/steps/StepPayment';
 import StepResult from '@/components/cart/steps/StepResult';
-import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
-import BurgerOrangeIcon from '@/components/icons/burger-orange';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -41,7 +34,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 const CartPopup = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, setOpen } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'CartPopup';
   const step = useAppSelector(selectCheckoutStep);
   const isCartStep = step === 'cart';
@@ -79,8 +72,6 @@ const CartPopup = (): JSX.Element => {
     wasOpenRef.current = isOpen;
   }, [isOpen, step, dispatch]);
 
-  const close = (): void => setTransition('close');
-
   // APPLY on cart: reverse animation of the cards, then setStep('order'). Reset styles in onComplete so that on return the cards appear fresh.
   const handleCartApply = (): void => {
     const cards = document.querySelectorAll('.product-in-cart');
@@ -101,15 +92,6 @@ const CartPopup = (): JSX.Element => {
       duration: 0.35,
       stagger: { each: 0.07, from: 'end' },
     }).to(button, { autoAlpha: 0, yPercent: 100, duration: 0.25 }, '-=0.15');
-  };
-
-  // Back: on cart — close the popup, otherwise pop one step from the stack.
-  const handleBack = (): void => {
-    if (isCartStep) {
-      close();
-    } else {
-      dispatch(goBackStep());
-    }
   };
 
   const sheetRef = useRef<HTMLDivElement | null>(null);

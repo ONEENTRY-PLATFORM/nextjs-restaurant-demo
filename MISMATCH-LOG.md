@@ -734,3 +734,9 @@ MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер п
 | `booking_cancel_toast`       | string | Cancellation request received. We will contact you shortly. |
 | `booking_edit_unavailable`   | string | This booking cannot be edited.                              |
 | `booking_updated_toast`      | string | Reservation updated.                                        |
+
+### C.11. App-token data length cap = 10 (Products API) ✅
+
+Раньше `NEXT_PUBLIC_ONEENTRY_TOKEN` имел permission-level cap `maximum allowed data length = 10`: `Products.getProducts(...)` возвращал максимум 10 items, `offset >= 10` валился 400-й. Из-за этого `/shop?page=N` при N>=2 показывал только первые 10 карточек, а LoadMore не работал.
+
+**Закрыто 2026-05-10:** клиент поднял лимит токена. Проверено через SDK — `limit=200` отдаёт все 118, `offset=10/50/100 + limit=10` работают. `/shop?page=15` рендерит все 118 dish'ей.

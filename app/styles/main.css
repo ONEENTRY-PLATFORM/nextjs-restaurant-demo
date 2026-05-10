@@ -7,10 +7,6 @@
   }
 }
 
-/* Drill-down переходы между экранами в `ProfilePopup` (паттерн CartWizard).
-   Forward (menu → orders/etc) — новый экран въезжает справа; back — меню
-   въезжает слева. Лёгкая opacity-fade сглаживает мгновенный размонтаж
-   предыдущего экрана (без AnimatePresence). */
 @keyframes profile-slide-in-right {
   0% {
     opacity: 0;
@@ -44,8 +40,6 @@
 input[type="radio"] {
   display: none;
 }
-
-/* Скрыть нативные спиннеры у input[type="number"] во всех движках. */
 
 .radio-custom::before {
   content: "";
@@ -132,10 +126,6 @@ input[type="radio"]:checked + .radio-custom::before {
   input:focus {
     @apply outline-none ring-0;
   }
-  /* Скрыть нативные спиннеры у input[type="number"] во всех движках,
-     сохранив type="number" (нужны inputmode/keyboard на мобиле + валидация).
-     Правила в @layer base — иначе при некоторых порядках слоёв Tailwind v4
-     User-Agent стили могли возвращать стрелки на :focus. */
   input[type="number"] {
     appearance: textfield;
     -moz-appearance: textfield;
@@ -265,6 +255,7 @@ html {
       md:max-w-175
       lg:max-w-250
       xl:max-w-323
+      overflow-hidden 
       gap-3 
       px-4
       pt-6
@@ -561,7 +552,27 @@ html {
 }
 @layer components {
   .cart_btn {
-    @apply bg-custom_transparent rounded-[10px] border-none w-full h-14 mt-6.5 font-semibold text-[17px] text-paper/60 hover:text-white text-center flex justify-center items-center gap-6.25 hover:bg-custom_btnorange active:bg-custom_btnorange transition-all duration-700;
+    @apply 
+      cursor-pointer 
+      bg-custom_transparent 
+      rounded-[10px] 
+      border-none 
+      w-full 
+      h-14 
+      mt-6.5 
+      font-semibold 
+      text-[17px] 
+      text-paper/60 
+      hover:text-white 
+      text-center 
+      flex 
+      justify-center 
+      items-center 
+      gap-6.25 
+      hover:bg-custom_btnorange 
+      active:bg-custom_btnorange 
+      transition-all 
+      duration-700;
   }
 }
 .cart_input {
@@ -578,11 +589,6 @@ html {
     focus:outline-muted;
 }
 
-/* Сбрасываем светлый фон браузерного autofill (Chrome/Safari/Edge), чтобы
-   поля логина/регистрации не отличались по цвету от тёмной темы попапа.
-   `box-shadow inset` перекрывает автозаполненный фон цветом, совпадающим
-   с фоном попапа (`--color-ink/80` ~ #4c4d56), а `transition: 5000s`
-   откладывает повторную перерисовку браузером — стандартный приём. */
 .cart_input:-webkit-autofill,
 .cart_input:-webkit-autofill:hover,
 .cart_input:-webkit-autofill:focus,
@@ -629,10 +635,10 @@ html {
     text-[16px] 
     text-paper 
     hover:bg-brand 
-    hover:text-white 
     active:bg-brand 
-    active:text-white 
     focus:bg-brand 
+    hover:text-white 
+    active:text-white 
     focus:text-white;
 }
 .calend_mon {
@@ -653,21 +659,20 @@ html {
     text-[15px] 
     text-paper 
     hover:border-brand 
-    hover:text-brand 
-    hover:font-extrabold 
     active:border-brand 
+    focus:border-brand 
+    hover:text-brand 
     active:text-brand 
+    focus:text-brand 
+    hover:font-extrabold 
     active:font-extrabold 
-    focus:border-brand focus:text-brand focus:font-extrabold ;
+    focus:font-extrabold;
 }
+
 .no-blur {
   backdrop-filter: none !important;
 }
 
-/* react-toastify — project skin: ink/80 фон + blur (как у review_sheet),
-   brand-оранжевый прогресс/иконки, paper текст, radius 10px (как у cart_btn).
-   Тосты в проекте используются как `toast(...)` (default — без иконки) и
-   `toast.error(...)` — для последнего сохраняем красный прогресс. */
 .Toastify {
   --toastify-color-dark: rgba(76, 77, 86, 0.8);
   --toastify-text-color-dark: var(--color-paper);

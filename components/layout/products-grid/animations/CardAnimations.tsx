@@ -10,15 +10,18 @@ import { useRef } from 'react';
 const HIDDEN_STYLE: CSSProperties = {
   opacity: 0,
   visibility: 'hidden',
-  transform: 'scale(0)',
+  transform: 'translate3d(0, 0, 0)',
 };
 
 /**
- * Card reveal animation. Cards start hidden via inline style (no flash before
- * GSAP boots), then either animate immediately (if already in the viewport on
- * mount, with a small stagger by `index`), or wait for the `ScrollTrigger` to
- * fire on scroll-in. Toggle `.in-view` so that {@link CardsGridAnimations} can
- * target only visible cards in the leaving animation.
+ * Card reveal animation. Each card fades in when it scrolls into view, with a
+ * per-row stagger via `delay`. Cards already in or near the viewport on mount
+ * are revealed immediately because `ScrollTrigger.create` evaluates the start
+ * position synchronously and fires `onEnter` for triggers that are already
+ * past their threshold — single code path covers both the in-viewport and
+ * scroll-into-view cases (was a branched `isInViewport / create` pair, which
+ * left invisible cards stranded on deep `?page=N` URLs when they fell just
+ * outside the strict 45% viewport check).
  */
 const CardAnimations = ({
   children,
@@ -35,52 +38,33 @@ const CardAnimations = ({
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 25);
+  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 10);
 
   useGSAP(() => {
     const el = ref.current;
     if (!el) {
       return;
     }
-    const img = el.getElementsByTagName('img');
-
-    const reveal = () => {
-      el.classList.add('in-view');
-      const tl = gsap.timeline();
-      tl.to(el, {
-        autoAlpha: 1,
-        scale: 1,
-        duration: 0.25,
-        delay,
-      }).to(img, {
-        autoAlpha: 1,
-        duration: 0.25,
-        stagger: 0.03,
-      });
-      return tl;
-    };
-
-    gsap.set(img, { autoAlpha: 0 });
 
     let tl: gsap.core.Timeline | null = null;
-    let trigger: ScrollTrigger | null = null;
 
-    if (ScrollTrigger.isInViewport(el, 0.5)) {
-      tl = reveal();
-    } else {
-      trigger = ScrollTrigger.create({
-        trigger: el,
-        start: 'center 95%',
-        once: true,
-        onEnter: () => {
-          tl = reveal();
-        },
-      });
-    }
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 95%',
+      once: true,
+      onEnter: () => {
+        el.classList.add('in-view');
+        tl = gsap.timeline().to(el, {
+          autoAlpha: 1,
+          duration: 0.3,
+          delay,
+        });
+      },
+    });
 
     return () => {
       tl?.kill();
-      trigger?.kill();
+      trigger.kill();
     };
   }, [delay]);
 

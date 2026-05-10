@@ -62,9 +62,7 @@ const ProductsGridLayout = async ({
   const totalPages = Math.ceil(total / productsLimit);
 
   return (
-    <ProductsGridReveal
-      skeleton={<ProductsGridLoader productsLimit={productsLimit} animated={false} />}
-    >
+    <ProductsGridReveal skeleton={<ProductsGridLoader productsLimit={productsLimit} scaleOnly />}>
       <CardsGridAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
         <section className="products_grid_layout">
           <ProductsGrid productsLimit={productsLimit} products={products} />

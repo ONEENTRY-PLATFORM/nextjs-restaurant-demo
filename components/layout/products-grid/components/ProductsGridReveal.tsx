@@ -7,22 +7,18 @@ type Phase = 'show' | 'fading' | 'gone';
 
 /**
  * ProductsGridReveal — cross-fades the skeleton overlay into the real grid content.
- *
- * Bridges the gap between Suspense resolution (when the fallback skeleton unmounts) and
- * the completion of the reveal animation in {@link CardAnimations} — without this, users
- * see a brief empty state while cards are still hidden by their initial `opacity:0`.
  * @param   {object}      props          - Component props.
  * @param   {ReactNode}   props.children - The real grid content.
  * @param   {ReactNode}   props.skeleton - Skeleton/loader for the overlay.
- * @param   {number}      [props.holdMs] - Time before fade starts. Defaults to 700.
- * @param   {number}      [props.fadeMs] - Cross-fade duration. Defaults to 350.
+ * @param   {number}      [props.holdMs] - Time before fade starts. Defaults to 0.
+ * @param   {number}      [props.fadeMs] - Cross-fade duration. Defaults to 700.
  * @returns {JSX.Element}                Wrapper JSX.
  */
 const ProductsGridReveal = ({
   children,
   skeleton,
-  holdMs = 700,
-  fadeMs = 350,
+  holdMs = 40,
+  fadeMs = 500,
 }: {
   children: ReactNode;
   skeleton: ReactNode;

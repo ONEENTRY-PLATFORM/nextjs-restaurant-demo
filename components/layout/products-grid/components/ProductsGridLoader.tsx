@@ -7,8 +7,8 @@ import type { LoaderProps } from '@/app/types/global';
 import CardAnimations from '../animations/CardAnimations';
 
 type Props = LoaderProps & {
-  /** When true (default), reveal each skeleton card with the same stagger/scale-in as `ProductCard`. Pass false for the static overlay used by `ProductsGridReveal`. */
-  animated?: boolean;
+  /** When true, animate scale only (no fade). Use for the overlay skeleton in `ProductsGridReveal` — the parent handles the opacity fade-out, and the skeleton's scale must track the card underneath in lockstep. */
+  scaleOnly?: boolean;
 };
 
 const SkeletonBody = (): ReactNode => (
@@ -33,26 +33,20 @@ const SkeletonBody = (): ReactNode => (
 );
 
 /** ProductsGridLoader — product card grid skeleton (mirrors `ProductCard` layout). */
-const ProductsGridLoader = ({ productsLimit = 10, animated = true }: Props): JSX.Element => {
+const ProductsGridLoader = ({ productsLimit = 10 }: Props): JSX.Element => {
   return (
     <section aria-hidden="true" className="products_grid_layout">
       <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
-        {Array.from(Array(productsLimit).keys()).map(item =>
-          animated ? (
-            <CardAnimations
-              key={item}
-              className="menu_item relative flex flex-col"
-              index={item}
-              productsLimit={productsLimit}
-            >
-              <SkeletonBody />
-            </CardAnimations>
-          ) : (
-            <div key={item} className="menu_item relative flex flex-col">
-              <SkeletonBody />
-            </div>
-          )
-        )}
+        {Array.from(Array(productsLimit).keys()).map(item => (
+          <CardAnimations
+            key={item}
+            className="menu_item relative flex flex-col"
+            index={item}
+            productsLimit={productsLimit}
+          >
+            <SkeletonBody />
+          </CardAnimations>
+        ))}
       </div>
       <div className="mt-5 flex h-8 w-full" />
     </section>

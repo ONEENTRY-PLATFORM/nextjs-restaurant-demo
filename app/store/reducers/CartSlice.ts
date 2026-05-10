@@ -226,9 +226,7 @@ export const selectIsInCart = (
   state: { cartReducer: { productsData: { id: number; quantity: number }[] } },
   id: number
 ): boolean => {
-  const entry = state.cartReducer.productsData.find(
-    (product: { id: number }) => product.id === id
-  );
+  const entry = state.cartReducer.productsData.find((product: { id: number }) => product.id === id);
   return !!entry && entry.quantity > 0;
 };
 

@@ -16,7 +16,13 @@ import ColorFilter from './components/color/ColorFilter';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import PricePickerFilter from './components/price/PricePickerFilter';
 
-/** Product filters form. */
+/**
+ * FiltersForm — server-side filters form (price slider + color/preference checkboxes)
+ * sourced from the `filters` page and the `product.color` attribute set in OneEntry.
+ *
+ * @param prices - Min/max price bounds used to seed the price slider range.
+ * @returns JSX of the filters form, or the OneEntry error message when the attribute fetch fails.
+ */
 const FiltersForm = async ({ prices }: { prices: PriceBounds }): Promise<JSX.Element> => {
   const pageInfo = await getPageByUrl('filters');
   const data = await getSingleAttributeByMarkerSet({

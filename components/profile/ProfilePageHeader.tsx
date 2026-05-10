@@ -7,7 +7,7 @@ import { Fragment } from 'react';
 
 import HomeIcon from '@/components/icons/home';
 
-/** ProfilePageHeader — breadcrumbs + title for `/profile/**` pages. */
+/** ProfilePageHeader - breadcrumbs + title for `/profile/**` pages. */
 type Crumb = { label: string; href: string };
 type Meta = { title: string; trail?: Crumb[] };
 
@@ -48,7 +48,7 @@ const ProfilePageHeader = (): JSX.Element => {
           <span className="text-paper">{meta.title}</span>
         </p>
       </div>
-      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
+      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-fine text-brand">
         {meta.title}
       </h1>
     </div>

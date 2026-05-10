@@ -18,7 +18,7 @@ type DishProduct = IProductsEntity & {
 };
 
 /**
- * ProductSingle — single product page (cover + details + reviews + related).
+ * ProductSingle - single product page (cover + details + reviews + related).
  * @param   {object}      props         - Component props.
  * @param   {DishProduct} props.product - OneEntry product entity with blocks/productPages.
  * @returns {Promise<JSX.Element>}      Product page JSX.
@@ -26,7 +26,7 @@ type DishProduct = IProductsEntity & {
 const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX.Element> => {
   const { id, localizeInfos, blocks, productPages, attributeValues } = product;
 
-  // Parse "menu/desserts" → "desserts"
+  // Parse "menu/desserts" â†’ "desserts"
   const categoryPath = productPages?.[0]?.categoryPath ?? '';
   const categorySlug = categoryPath.split('/').pop() ?? '';
   const categoryLabel = categorySlug
@@ -43,17 +43,17 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
 
   return (
     <section className="shop_section">
-      {/* Breadcrumb + title — md+ above the columns */}
+      {/* Breadcrumb + title - md+ above the columns */}
       <div className="hidden md:block">
         {categoryLabel ? (
           <Link
             href={'/shop/category/' + categorySlug}
-            className="font-normal text-[16px] text-muted-text hover:text-brand"
+            className="font-normal text-base text-muted-text hover:text-brand"
           >
             Category / {categoryLabel}
           </Link>
         ) : null}
-        <p className="font-bold text-[20px] tracking-[0.02em] text-paper">{localizeInfos.title}</p>
+        <p className="font-bold text-xl tracking-fine text-paper">{localizeInfos.title}</p>
       </div>
 
       <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-15">
@@ -64,24 +64,22 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
           <ProductCover alt={localizeInfos.title} product={product} />
         </ProductAnimations>
 
-        {/* Details + reviews — col-2 */}
+        {/* Details + reviews - col-2 */}
         <ProductAnimations className="flex w-full flex-col lg:min-w-0 lg:flex-1" index={1}>
           <div className="flex items-start justify-between gap-3.75 md:hidden">
             <div className="flex flex-col gap-2.5">
               {categoryLabel ? (
                 <Link
                   href={'/shop/category/' + categorySlug}
-                  className="font-normal text-[16px] text-muted-text"
+                  className="font-normal text-base text-muted-text"
                 >
                   Category / {categoryLabel}
                 </Link>
               ) : null}
-              <p className="font-bold text-[20px] tracking-[0.02em] text-paper">
-                {localizeInfos.title}
-              </p>
+              <p className="font-bold text-xl tracking-fine text-paper">{localizeInfos.title}</p>
             </div>
             {priceFormatted ? (
-              <div className="flex h-13 w-18 shrink-0 items-center justify-center rounded-[10px] bg-custom-gradient font-bold text-[20px] text-white">
+              <div className="flex h-13 w-18 shrink-0 items-center justify-center rounded-panel bg-custom-gradient font-bold text-xl text-white">
                 {priceFormatted}
               </div>
             ) : null}
@@ -93,7 +91,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
         </ProductAnimations>
       </div>
 
-      {/* blocks → bulk-purchase offer ("multiply_items_offer") */}
+      {/* blocks â†’ bulk-purchase offer ("multiply_items_offer") */}
       {Array.isArray(blocks) &&
         blocks.map((block: string) => {
           if (block === 'multiply_items_offer') {

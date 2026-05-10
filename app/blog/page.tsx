@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 const BLOG_HANDLE = 'blog';
 
 /**
- * BlogPromoListPage — root promo page listing child pages of `blog`.
+ * BlogPromoListPage - root promo page listing child pages of `blog`.
  * Overrides the generic render of `app/[handle]/page.tsx` for `/blog` (static segment > `[handle]`).
  * @returns {Promise<JSX.Element>} JSX of the root promo page.
  */
@@ -72,7 +72,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
                 key={b.id}
                 href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
                 title={b.title}
-                className="block overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.01]"
+                className="block overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]"
               >
                 {b.desktopImage ? (
                   <Image
@@ -111,7 +111,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
 
 export default BlogPromoListPage;
 
-/** generateMetadata — metadata for the root promo page. */
+/** generateMetadata - metadata for the root promo page. */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(BLOG_HANDLE);
   const title = page?.localizeInfos?.title ?? 'Promotions';

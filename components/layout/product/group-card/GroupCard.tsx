@@ -8,7 +8,7 @@ import PriceDisplay from './PriceDisplay';
 import ProductImage from './ProductImage';
 
 /**
- * GroupCard — card for a pair of products from a "buy together" group.
+ * GroupCard - card for a pair of products from a "buy together" group.
  * @param   {object}          props         - Component props.
  * @param   {IProductsEntity} props.product - OneEntry product with `more_pic` (image array).
  * @returns {JSX.Element}                   Group card JSX.
@@ -21,7 +21,7 @@ const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const pic2 = images?.[1]?.downloadLink;
 
   return (
-    <div className="flex min-h-42.5 flex-row justify-between rounded-[5px] bg-ink/80 p-4 transition-shadow hover:shadow-lg max-md:flex-col">
+    <div className="flex min-h-42.5 flex-row justify-between rounded-card bg-ink/80 p-4 transition-shadow hover:shadow-lg max-md:flex-col">
       <div className="flex min-w-full gap-2.5">
         <div className="flex w-[37%] flex-col">
           <h3 className="mb-5 text-sm leading-4 text-white/90">{title}</h3>

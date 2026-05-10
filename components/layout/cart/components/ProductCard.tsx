@@ -12,6 +12,14 @@ import CartQuantityControl from './CartQuantityControl';
 import DeleteButton from './DeleteButton';
 import PriceDisplay from './PriceDisplay';
 
+/**
+ * ProductCard — cart-row card for a single product (image, title, price, qty controls, delete).
+ *
+ * @param product - OneEntry product entity rendered in the row.
+ * @param selected - Whether the row is in the selection state (controls checkbox/visual highlight).
+ * @param index - Zero-based row index, used by `ProductAnimations` for staggered reveal.
+ * @returns JSX of the cart product row.
+ */
 const ProductCard = ({
   product,
   selected,
@@ -36,7 +44,7 @@ const ProductCard = ({
 
   return (
     <ProductAnimations
-      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-[5px] border border-transparent hover:border-brand"
+      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-card border border-transparent hover:border-brand"
       product={product}
       index={index}
     >
@@ -44,7 +52,7 @@ const ProductCard = ({
         prefetch={true}
         href={'/shop/product/' + id}
         aria-label={title}
-        className="absolute inset-0 z-0 rounded-[5px]"
+        className="absolute inset-0 z-0 rounded-card"
       />
 
       <div className="pointer-events-none relative z-10 flex items-center gap-2.5">
@@ -55,7 +63,7 @@ const ProductCard = ({
           id={'deselectProduct-' + id}
           checked={checkboxChecked}
           disabled={outOfStock}
-          aria-label={outOfStock ? `${title} — out of stock` : `Select ${title}`}
+          aria-label={outOfStock ? `${title} - out of stock` : `Select ${title}`}
           className="pointer-events-auto size-5 shrink-0 accent-brand disabled:cursor-not-allowed disabled:opacity-50"
         />
 

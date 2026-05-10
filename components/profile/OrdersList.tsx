@@ -34,7 +34,7 @@ import { UsePrice } from '@/components/utils';
 
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
-// md+ opens the cart as the `/cart` page (see CartWizard) — Repeat order on desktop navigates there too, not into the drawer.
+// md+ opens the cart as the `/cart` page (see CartWizard) - Repeat order on desktop navigates there too, not into the drawer.
 const MD_QUERY = '(min-width: 768px)';
 const subscribeMd = (cb: () => void): (() => void) => {
   const mq = window.matchMedia(MD_QUERY);
@@ -51,7 +51,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
   const id = o.statusIdentifier;
-  if (!id) return '—';
+  if (!id) return '-';
   return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
@@ -63,7 +63,7 @@ const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
 
 /**
  * Computes subtotal / delivery / discount / total for an order.
- * `discount` = (subtotal + delivery) − serverTotal: if a coupon was applied, `totalSum` already includes the discount.
+ * `discount` = (subtotal + delivery) âˆ’ serverTotal: if a coupon was applied, `totalSum` already includes the discount.
  */
 const computeTotals = (
   o: IOrderByMarkerEntity
@@ -88,7 +88,7 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   return String(o.id);
 };
 
-/** OrderCard — pill with the order summary + expandable body with line items, totals, and CTA. */
+/** OrderCard - pill with the order summary + expandable body with line items, totals, and CTA. */
 const OrderCard = ({
   order,
   expanded,
@@ -226,9 +226,9 @@ const OrderCard = ({
         type="button"
         onClick={onToggle}
         aria-expanded={expanded}
-        className="mt-2.75 flex w-full items-center justify-between gap-2 rounded-[5px] bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base"
+        className="mt-2.75 flex w-full items-center justify-between gap-2 rounded-card bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base"
       >
-        <p className="font-bold">№{formatOrderNumber(order)}</p>
+        <p className="font-bold">â„–{formatOrderNumber(order)}</p>
         <p>{statusLabel(order)}</p>
         <p>{formatDate(created)}</p>
         <Image
@@ -244,7 +244,7 @@ const OrderCard = ({
           {!isHistory && (
             <button
               type="button"
-              className="order-body-row mt-5 block w-52.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+              className="order-body-row mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
               {t('contact_courier_button', 'Contact with the courier')}
             </button>
@@ -260,7 +260,7 @@ const OrderCard = ({
                   fullProduct={productsById.get(p.id)}
                 />
               ))}
-            <div className="order-body-row mt-5 flex items-center justify-between rounded-[5px] border border-brand p-2.5">
+            <div className="order-body-row mt-5 flex items-center justify-between rounded-card border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
                   <p>{t('subtotal_text', 'Subtotal:')}</p>
@@ -273,7 +273,7 @@ const OrderCard = ({
                 {discount > 0 ? (
                   <div className="flex gap-1.25 text-brand">
                     <p>Discount:</p>
-                    <p>−{UsePrice({ amount: discount })}</p>
+                    <p>âˆ’{UsePrice({ amount: discount })}</p>
                   </div>
                 ) : null}
               </div>
@@ -288,7 +288,7 @@ const OrderCard = ({
                   <button
                     type="button"
                     onClick={repeatOrder}
-                    className="block w-32.5 rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+                    className="block w-32.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
                   >
                     {t('repeat_order_button', 'Repeat order')}
                   </button>
@@ -297,7 +297,7 @@ const OrderCard = ({
                   <button
                     type="button"
                     onClick={openReviewPopup}
-                    className="hover_btn_transp block rounded-[5px] border border-brand px-3.75 py-1.5 text-base text-brand"
+                    className="hover_btn_transp block rounded-card border border-brand px-3.75 py-1.5 text-base text-brand"
                   >
                     {t('leave_review_button', 'Leave a review')}
                   </button>
@@ -311,7 +311,7 @@ const OrderCard = ({
   );
 };
 
-/** OrderLineItem — a single line item row inside the expanded order body. */
+/** OrderLineItem - a single line item row inside the expanded order body. */
 const OrderLineItem = ({
   product,
   first,
@@ -353,7 +353,7 @@ const OrderLineItem = ({
             <p className="text-xl font-bold text-brand">{UsePrice({ amount: product.price })}</p>
           </div>
         </div>
-        <div className="flex h-11.25 w-8.75 items-center justify-center rounded-[5px] border border-white text-base font-normal text-white">
+        <div className="flex h-11.25 w-8.75 items-center justify-center rounded-card border border-white text-base font-normal text-white">
           x{product.quantity}
         </div>
       </div>
@@ -361,7 +361,7 @@ const OrderLineItem = ({
   );
 };
 
-/** OrdersList — orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+. */
+/** OrdersList - orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+. */
 const OrdersList = ({
   promoBanners = [],
 }: {
@@ -444,14 +444,14 @@ const OrdersList = ({
     });
   };
 
-  // The left column depends on state; the right one (promo) always renders on md+ — same 2-column layout as the cart.
+  // The left column depends on state; the right one (promo) always renders on md+ - same 2-column layout as the cart.
   let leftColumn: JSX.Element;
   if (authLoading || loading) {
     leftColumn = (
       <div className="text-paper/80">{t('loading_orders_text', 'Loading orders...')}</div>
     );
   } else if (!isAuth) {
-    // Inline "sign in" button inside the dictionary phrase: search for the substring (case-insensitive); if not found — render the button after the text.
+    // Inline "sign in" button inside the dictionary phrase: search for the substring (case-insensitive); if not found - render the button after the text.
     const prompt = t('orders_signin_prompt', 'Please sign in to view your orders.');
     const signInLabel = t('sign_in_text', 'sign in');
     const idx = prompt.toLowerCase().indexOf(signInLabel.toLowerCase());
@@ -485,7 +485,7 @@ const OrdersList = ({
         <p>{t('no_orders_text', 'You have no orders yet.')}</p>
         <Link
           href="/shop"
-          className="inline-flex items-center justify-center rounded-[5px] bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+          className="inline-flex items-center justify-center rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
         >
           {t('go_shopping_button', 'Go to shopping')}
         </Link>
@@ -540,7 +540,7 @@ const OrdersList = ({
     <section>
       <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
         <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-          {/* `min-w-0` + `shrink-0` lock the 50/50 split — without them, flex children of an expanded item inflate the left column. */}
+          {/* `min-w-0` + `shrink-0` lock the 50/50 split - without them, flex children of an expanded item inflate the left column. */}
           <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
           <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
             {promoBanners

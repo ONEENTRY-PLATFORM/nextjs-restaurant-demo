@@ -25,7 +25,7 @@ type RestaurantCard = {
 const formatSchedule = (raw: unknown): string => {
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
-  // `timeInterval` comes as an object or array — take the first interval.
+  // `timeInterval` comes as an object or array - take the first interval.
   const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
   const first = arr ? arr[0] : (raw as ScheduleInterval);
   if (!first || (!first.from && !first.to)) return '';
@@ -49,7 +49,7 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
   };
 };
 
-/** RestaurantsPage — index page for the restaurant network from OneEntry `restaurants` + child-pages. */
+/** RestaurantsPage - index page for the restaurant network from OneEntry `restaurants` + child-pages. */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
     getPageByUrl('restaurants'),
@@ -76,9 +76,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
 
   return (
     <section className="section_layout pt-0">
-      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-[0.02em] text-brand">
-        {title}
-      </h1>
+      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-fine text-brand">{title}</h1>
       {descriptionHtml ? (
         <div
           className="mt-3.75 text-base text-paper/90"

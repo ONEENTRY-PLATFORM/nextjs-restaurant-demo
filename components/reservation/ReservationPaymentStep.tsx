@@ -11,8 +11,8 @@ import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 /**
  * Visual category for a payment method per Figma 120:1875.
- * `card` — Stripe (Visa/MC), `paypal` — PayPal, `wallet` — Apple/Google Pay (text),
- * `other` — fallback (including cash).
+ * `card` - Stripe (Visa/MC), `paypal` - PayPal, `wallet` - Apple/Google Pay (text),
+ * `other` - fallback (including cash).
  */
 type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
 
@@ -35,7 +35,7 @@ type ReservationPaymentStepProps = {
 };
 
 /**
- * ReservationPaymentStep — payment method selection step for the booking.
+ * ReservationPaymentStep - payment method selection step for the booking.
  *
  * Account list = `Payments.getAccounts()` (filtered by isVisible && isUsed)
  * intersected with `storage.paymentAccountIdentifiers` from
@@ -80,9 +80,9 @@ const ReservationPaymentStep = ({
 
   return (
     <div className="flex w-full flex-col items-center gap-6.25 px-5 md:px-19">
-      {/* 30% deposit notice — Figma: 368×54, gray-50% bg, orange Lato 16/20 center */}
-      <div className="flex w-full items-center justify-center rounded-[5px] bg-ink/50 px-2.5 py-2.5 backdrop-blur-[10px]">
-        <p className="text-center font-normal text-[16px] leading-5 text-brand">
+      {/* 30% deposit notice - Figma: 368Ã—54, gray-50% bg, orange Lato 16/20 center */}
+      <div className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card">
+        <p className="text-center font-normal text-base leading-5 text-brand">
           {t('booking_deposit_text', '30% deposit is required to confirm your booking')}
         </p>
       </div>
@@ -90,7 +90,7 @@ const ReservationPaymentStep = ({
       {/* Radio list of payment methods */}
       <div className="flex w-full flex-col gap-3.75">
         {isAccountsLoading || isStorageLoading ? (
-          <p className="text-paper/70">{t('loading_text', 'Loading…')}</p>
+          <p className="text-paper/70">{t('loading_text', 'Loadingâ€¦')}</p>
         ) : accounts.length === 0 ? (
           <p className="text-paper/70">
             {t('no_payment_methods', 'No payment methods are configured. Please contact support.')}
@@ -109,12 +109,12 @@ const ReservationPaymentStep = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Apply button — Figma: 95×36, orange outline, text #EC722B */}
+      {/* Apply button - Figma: 95Ã—36, orange outline, text #EC722B */}
       <div className="mt-2.5 flex items-center justify-center gap-3.75">
         <button
           type="button"
           onClick={onBack}
-          className="flex h-9 items-center justify-center rounded-[5px] border border-paper px-5 font-normal text-[16px] text-paper hover:opacity-80"
+          className="flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
         >
           {t('back_text', 'Back')}
         </button>
@@ -122,7 +122,7 @@ const ReservationPaymentStep = ({
           type="button"
           onClick={() => selected && onApply(selected)}
           disabled={isLoading || !selected}
-          className="flex h-9 w-23.75 items-center justify-center rounded-[5px] border border-brand font-normal text-[16px] text-brand hover:bg-brand/10 disabled:opacity-60"
+          className="flex h-9 w-23.75 items-center justify-center rounded-card border border-brand font-normal text-base text-brand hover:bg-brand/10 disabled:opacity-60"
         >
           {isLoading ? '...' : t('apply_text', 'Apply')}
         </button>
@@ -132,7 +132,7 @@ const ReservationPaymentStep = ({
 };
 
 /**
- * PaymentRow — radio row for a single payment account.
+ * PaymentRow - radio row for a single payment account.
  *
  * @param   {object}          props          - Row props.
  * @param   {IAccountsEntity} props.account  - Payment account.
@@ -153,7 +153,7 @@ const PaymentRow = ({
   const kind = resolveVisualKind(account);
   const id = `pay-${account.identifier}`;
 
-  // Label per Figma: card → "Credit & Debit Cards", others → "Pay with".
+  // Label per Figma: card â†’ "Credit & Debit Cards", others â†’ "Pay with".
   const label =
     kind === 'card'
       ? t('booking_credit_cards', 'Credit & Debit Cards')
@@ -180,15 +180,15 @@ const PaymentRow = ({
       >
         {checked ? <span className="h-2.5 w-2.5 rounded-full bg-brand" /> : null}
       </span>
-      <span className="font-normal text-[16px] text-paper">{label}</span>
+      <span className="font-normal text-base text-paper">{label}</span>
       <PaymentLogos kind={kind} fallback={account.localizeInfos?.title || account.identifier} />
     </label>
   );
 };
 
 /**
- * PaymentLogos — payment system logos for the selection row.
- * No assets exist for Apple/Google Pay — render a text fallback.
+ * PaymentLogos - payment system logos for the selection row.
+ * No assets exist for Apple/Google Pay - render a text fallback.
  *
  * @param   {object}             props          - Props.
  * @param   {PaymentVisualKind}  props.kind     - Payment method category.
@@ -209,7 +209,7 @@ const PaymentLogos = ({
     return (
       <span className="flex items-center gap-1.5">
         <Image src="/images/icons/visa.png" alt="Visa" width={36} height={12} unoptimized />
-        <span className="flex h-7 w-11.5 items-center justify-center rounded-[5px] bg-paper">
+        <span className="flex h-7 w-11.5 items-center justify-center rounded-card bg-paper">
           <Image
             src="/images/icons/mastercart.png"
             alt="Mastercard"
@@ -221,7 +221,7 @@ const PaymentLogos = ({
       </span>
     );
   }
-  return <span className="text-[16px] text-paper/80 capitalize">{fallback}</span>;
+  return <span className="text-base text-paper/80 capitalize">{fallback}</span>;
 };
 
 export default ReservationPaymentStep;

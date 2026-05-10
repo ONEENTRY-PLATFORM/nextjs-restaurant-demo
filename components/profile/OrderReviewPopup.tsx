@@ -39,7 +39,7 @@ type ItemState = {
   rating: number;
   text: string;
   loading: boolean;
-  /** Id of the already submitted FormsData record — null = nothing saved yet. */
+  /** Id of the already submitted FormsData record - null = nothing saved yet. */
   existingId: number | null;
   /** True = row is in edit mode. */
   isEditing: boolean;
@@ -51,7 +51,7 @@ const initialItemState = (initial: ExistingReview | null): ItemState => ({
   text: initial?.text ?? '',
   loading: false,
   existingId: initial?.id ?? null,
-  // Already submitted review — start in read-only.
+  // Already submitted review - start in read-only.
   isEditing: initial === null,
   error: '',
 });
@@ -132,8 +132,8 @@ const fetchUserReview = async (
 };
 
 /**
- * ReviewableItem — popup row: product + stars + input + Apply/Edit.
- * Apply creates `postFormsData` or updates via `updateFormsDataByid`. If `initialReview` exists — start in read-only.
+ * ReviewableItem - popup row: product + stars + input + Apply/Edit.
+ * Apply creates `postFormsData` or updates via `updateFormsDataByid`. If `initialReview` exists - start in read-only.
  */
 const ReviewableItem = ({
   product,
@@ -173,7 +173,7 @@ const ReviewableItem = ({
     ];
     try {
       if (state.existingId !== null) {
-        // Edit: PUT `/api/content/form-data/{id}` — same body as in `postFormsData`, id in the URL. Requires auth.
+        // Edit: PUT `/api/content/form-data/{id}` - same body as in `postFormsData`, id in the URL. Requires auth.
         const res = await getApi().FormData.updateFormsDataByid(state.existingId, {
           formIdentifier: FORM_MARKER,
           formModuleConfigId: FORM_MODULE_CONFIG_ID,
@@ -241,12 +241,12 @@ const ReviewableItem = ({
             alt={product.title}
             width={69}
             height={69}
-            className="h-17.25 w-17.25 shrink-0 rounded-[5px] object-cover"
+            className="h-17.25 w-17.25 shrink-0 rounded-card object-cover"
           />
         ) : (
           <div
             aria-hidden="true"
-            className="h-17.25 w-17.25 shrink-0 rounded-[5px] bg-custom_gray_pk"
+            className="h-17.25 w-17.25 shrink-0 rounded-card bg-custom_gray_pk"
           />
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-3.75">
@@ -261,22 +261,22 @@ const ReviewableItem = ({
             onChange={e => setState(s => ({ ...s, text: e.target.value }))}
             disabled={isLocked}
             placeholder={t('review_placeholder', 'Review')}
-            className="h-7.5 w-full rounded-[5px] border border-brand bg-transparent px-3.5 text-sm text-paper placeholder:text-paper/50 focus:outline-none disabled:opacity-70"
+            className="h-7.5 w-full rounded-card border border-brand bg-transparent px-3.5 text-sm text-paper placeholder:text-paper/50 focus:outline-none disabled:opacity-70"
           />
           <div className="flex gap-5">
             <button
               type="button"
               onClick={onApply}
               disabled={isLocked}
-              className="hover_btn_transp flex h-7.5 w-20 items-center justify-center rounded-[5px] border border-brand text-base text-brand disabled:opacity-60"
+              className="hover_btn_transp flex h-7.5 w-20 items-center justify-center rounded-card border border-brand text-base text-brand disabled:opacity-60"
             >
-              {state.loading ? '…' : t('apply_text', 'Apply')}
+              {state.loading ? 'â€¦' : t('apply_text', 'Apply')}
             </button>
             <button
               type="button"
               onClick={onEdit}
               disabled={state.existingId === null || state.isEditing || state.loading}
-              className="hover_btn_white flex h-7.5 w-20 items-center justify-center rounded-[5px] border border-paper text-base text-paper disabled:opacity-50"
+              className="hover_btn_white flex h-7.5 w-20 items-center justify-center rounded-card border border-paper text-base text-paper disabled:opacity-50"
             >
               {t('edit_button', 'Edit')}
             </button>
@@ -294,7 +294,7 @@ const ReviewableItem = ({
 };
 
 /**
- * OrderReviewPopup — "Leave a review" popup for the entire order (one button per order).
+ * OrderReviewPopup - "Leave a review" popup for the entire order (one button per order).
  * Order summary + line item list; each row has stars + input + Apply/Edit.
  * The order entity is passed via `orderReviewStore`, because `OpenDrawerContext` only forwards a string `action`.
  */
@@ -306,7 +306,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const isOpen = open && component === 'OrderReviewPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  // Map productId → existing review (null = none, missing key = still loading).
+  // Map productId â†’ existing review (null = none, missing key = still loading).
   const [existingReviews, setExistingReviews] = useState<Map<number, ExistingReview | null>>(
     new Map()
   );
@@ -325,7 +325,7 @@ const OrderReviewPopup = (): JSX.Element => {
   const orderId = order?.id ?? null;
   const userId = user?.identifier ?? '';
 
-  // Unique productIds — a review is left once per product, even if the line item repeats in the order.
+  // Unique productIds - a review is left once per product, even if the line item repeats in the order.
   const productIds = useMemo(() => {
     if (!order) return [] as number[];
     const seen = new Set<number>();
@@ -371,7 +371,7 @@ const OrderReviewPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-182 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-182 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
           <button
@@ -382,7 +382,7 @@ const OrderReviewPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-bold text-[24px] leading-7.5 text-brand">
+          <p className="font-bold text-2xl leading-7.5 text-brand">
             {t('leave_review', 'Leave a review')}
           </p>
           <ClosePopupButton onClose={close} ariaLabel="Close review form" />
@@ -398,8 +398,8 @@ const OrderReviewPopup = (): JSX.Element => {
               {t('please_leave_review_text', 'Please, leave a review!')}
             </p>
 
-            <div className="mt-3.75 flex w-full items-center justify-between gap-2 rounded-[5px] bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base">
-              <p className="font-bold">№{formatOrderNumber(order)}</p>
+            <div className="mt-3.75 flex w-full items-center justify-between gap-2 rounded-card bg-custom_gray_pk px-3.75 py-1.5 text-sm text-white lg:text-base">
+              <p className="font-bold">â„–{formatOrderNumber(order)}</p>
               <p className="capitalize">{statusLabel}</p>
               <p>{formatDate(created)}</p>
             </div>

@@ -6,7 +6,7 @@ import FavoritesButton from '@/components/layout/product/product-single/Favorite
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * ProductCover — main product image (`cover` attribute) + FavoritesButton.
+ * ProductCover - main product image (`cover` attribute) + FavoritesButton.
  * @param   {object}          props         - Component props.
  * @param   {IProductsEntity} props.product - OneEntry product entity.
  * @param   {string}          props.alt     - Image alt attribute.
@@ -36,7 +36,7 @@ const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string 
           <Placeholder />
         </div>
       )}
-      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-[10px]">
+      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-card">
         <FavoritesButton {...product} />
       </div>
     </div>

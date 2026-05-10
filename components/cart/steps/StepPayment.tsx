@@ -43,8 +43,8 @@ const parseScheduleAt = (raw: string): { date: string; time: string } => {
 const ASAP_INTERVAL_MIN = 45;
 
 /**
- * Value of `delivery_time` (type `timeInterval`) — `[[startISO, endISO]]`.
- * asap: now → now+45 min; scheduled (`DD.MM.YY HH.MM`): parsed → +1 h. null if scheduled does not parse — the field is not sent.
+ * Value of `delivery_time` (type `timeInterval`) - `[[startISO, endISO]]`.
+ * asap: now â†’ now+45 min; scheduled (`DD.MM.YY HH.MM`): parsed â†’ +1 h. null if scheduled does not parse - the field is not sent.
  */
 const buildDeliveryTimeInterval = (
   mode: DeliveryMode,
@@ -82,7 +82,7 @@ const findUserField = (
 
 type DeliveryMode = 'asap' | 'scheduled';
 
-/** StepPayment — checkout step: address + time + payment on a single screen. */
+/** StepPayment - checkout step: address + time + payment on a single screen. */
 const StepPayment = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -90,7 +90,7 @@ const StepPayment = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const delivery = useAppSelector(selectDeliveryData);
 
-  // Structured `user_address` (street+house+floor) takes priority over flat markers — otherwise the input only contains the street.
+  // Structured `user_address` (street+house+floor) takes priority over flat markers - otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
   const initialPickedAddress = useMemo(() => pickSelectedAddress(savedAddresses), [savedAddresses]);
   const userAddressFlat = findUserField(user?.formData, ADDRESS_MARKERS);
@@ -98,7 +98,7 @@ const StepPayment = (): JSX.Element => {
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
 
   const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
-  // `user.formData` arrives async — empty on the first render; if the user has not edited the input manually, pull it in once available.
+  // `user.formData` arrives async - empty on the first render; if the user has not edited the input manually, pull it in once available.
   const [addressTouched, setAddressTouched] = useState<boolean>(
     Boolean(delivery?.address as string | undefined)
   );
@@ -128,7 +128,7 @@ const StepPayment = (): JSX.Element => {
     }
   }, [accounts, identifier]);
 
-  // Step block animation: slide-up + fade on mount, reverse on route leave (see StepOrder). `dependencies: []` — otherwise toggle/accounts would re-animate already visible blocks.
+  // Step block animation: slide-up + fade on mount, reverse on route leave (see StepOrder). `dependencies: []` - otherwise toggle/accounts would re-animate already visible blocks.
   const containerRef = useRef<HTMLDivElement>(null);
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState<string>('');
@@ -214,7 +214,7 @@ const StepPayment = (): JSX.Element => {
       <div className="step-payment-row flex flex-col gap-5">
         <div className="flex items-center gap-2.5 text-paper">
           <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
-          <p className="font-normal text-[20px] text-paper">{t('address_text', 'Address')}</p>
+          <p className="font-normal text-xl text-paper">{t('address_text', 'Address')}</p>
         </div>
         <div className="relative flex items-center text-paper">
           <input
@@ -225,7 +225,7 @@ const StepPayment = (): JSX.Element => {
               setAddressTouched(true);
             }}
             placeholder="OneEntry str."
-            className="w-full rounded-[5px] border border-paper bg-transparent p-1.25 text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
+            className="w-full rounded-card border border-paper bg-transparent p-1.25 text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
           />
           <PencilIcon className="absolute right-1.75 top-1.75 pointer-events-none" />
         </div>
@@ -235,7 +235,7 @@ const StepPayment = (): JSX.Element => {
       <div className="step-payment-row mt-5 flex flex-col gap-5">
         <div className="flex items-center gap-2.5 text-paper">
           <ClockCircleIcon variant="paper" />
-          <p className="font-normal text-[20px] text-paper">{t('time_text', 'Time')}</p>
+          <p className="font-normal text-xl text-paper">{t('time_text', 'Time')}</p>
         </div>
         <div className="flex items-center gap-2.5 text-paper">
           <input
@@ -277,7 +277,7 @@ const StepPayment = (): JSX.Element => {
               setPickerOpen(true);
             }}
             placeholder="18.06.24  10.00"
-            className="cursor-pointer rounded-[5px] border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
+            className="cursor-pointer rounded-card border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
           />
         </div>
       </div>
@@ -286,13 +286,11 @@ const StepPayment = (): JSX.Element => {
       <div className="step-payment-row mt-5 flex flex-col gap-5">
         <div className="flex items-center gap-2.5">
           <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
-          <p className="font-normal text-[20px] text-paper">
-            {t('select_payment_text', 'Payment')}
-          </p>
+          <p className="font-normal text-xl text-paper">{t('select_payment_text', 'Payment')}</p>
         </div>
 
         {isAccountsLoading ? (
-          <p className="text-paper/70">Loading payment methods…</p>
+          <p className="text-paper/70">Loading payment methodsâ€¦</p>
         ) : accounts.length === 0 ? (
           <p className="text-paper/70">
             No payment methods are configured. Please contact support.
@@ -314,7 +312,7 @@ const StepPayment = (): JSX.Element => {
         value={comment}
         onChange={e => setComment(e.currentTarget.value)}
         placeholder={t('comment_order', 'Comments to the order')}
-        className="step-payment-row text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+        className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
       />
 
       <label className="step-payment-row custom-checkbox text-[14px] text-paper">
@@ -336,7 +334,7 @@ const StepPayment = (): JSX.Element => {
           value={altPhone}
           onChange={e => setAltPhone(e.currentTarget.value)}
           placeholder="phone number"
-          className="step-payment-row text-[16px] text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-[5px] bg-transparent focus:outline-none"
+          className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
         />
       )}
 
@@ -371,7 +369,7 @@ const StepPayment = (): JSX.Element => {
   );
 };
 
-/** PaymentMethodOption — radio card for a single payment account. */
+/** PaymentMethodOption - radio card for a single payment account. */
 const PaymentMethodOption = ({
   account,
   checked,

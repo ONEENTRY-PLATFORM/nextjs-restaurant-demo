@@ -61,6 +61,16 @@
      прямо в className. CSS-вариант `w-30%-gap` оставлен для @apply в main.css. */
   --spacing-half-gap: calc(50% - 30px);
   --spacing-30\%-gap: calc(32% - 5px);
+
+  /* Border-radius scale (custom) — не пересекается с дефолтами sm/md/lg/xl. */
+  --radius-card: 5px;
+  --radius-panel: 10px;
+
+  /* Backdrop-blur (custom) — frosted-glass эффект на карточках/поповерах. */
+  --blur-card: 10px;
+
+  /* Letter-spacing (custom) — фирменный fine-tracking, не коллизит с tight/wide. */
+  --tracking-fine: 0.02em;
 }
 
 body {

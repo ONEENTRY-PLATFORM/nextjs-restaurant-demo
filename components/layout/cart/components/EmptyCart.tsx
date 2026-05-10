@@ -22,7 +22,7 @@ const EmptyCart = (): JSX.Element => {
       <Link
         prefetch={true}
         href={'/shop/'}
-        className="rounded-[5px] border border-brand text-brand font-normal px-4 py-2 hover_btn_white"
+        className="rounded-card border border-brand text-brand font-normal px-4 py-2 hover_btn_white"
       >
         Go to shop
       </Link>

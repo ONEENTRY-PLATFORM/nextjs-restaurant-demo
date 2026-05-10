@@ -2,12 +2,12 @@ import type { JSX } from 'react';
 
 import LogoIcon from './LogoIcon';
 
-/** Placeholder — fallback for a missing image, showing the logo. */
+/** Placeholder - fallback for a missing image, showing the logo. */
 const Placeholder = ({ className }: { className?: string }): JSX.Element => {
   return (
     <div
       className={
-        'relative flex size-full flex-col items-center justify-center overflow-hidden rounded-[5px] bg-ink/30 text-paper/40 ' +
+        'relative flex size-full flex-col items-center justify-center overflow-hidden rounded-card bg-ink/30 text-paper/40 ' +
         (className ?? '')
       }
     >

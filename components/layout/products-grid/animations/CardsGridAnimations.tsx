@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { useSearchParams } from 'next/navigation';
 import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactElement, ReactNode } from 'react';
-import { cloneElement, isValidElement, useRef, useState } from 'react';
+import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
 
 /**
  * CardsGridAnimations — wraps the products grid with two animations:
@@ -40,7 +40,9 @@ const CardsGridAnimations = ({
   // picks up the freshest server payload, even if it arrived after the exit
   // animation started.
   const latestChildrenRef = useRef<ReactNode>(children);
-  latestChildrenRef.current = children;
+  useEffect(() => {
+    latestChildrenRef.current = children;
+  });
 
   const [displayed, setDisplayed] = useState<{ key: string; node: ReactNode }>(() => ({
     key: paramsKey,

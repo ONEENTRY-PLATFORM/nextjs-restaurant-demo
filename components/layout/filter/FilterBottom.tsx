@@ -14,7 +14,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 const WAITING_TIME: Array<{ label: string; max: number | null }> = [
   { label: 'Under 30 mins', max: 30 },
   { label: 'Under 60 mins', max: 60 },
-  { label: 'doesn’t matter', max: null },
+  { label: 'doesnâ€™t matter', max: null },
 ];
 type PriceChip = {
   label: string;
@@ -43,7 +43,7 @@ const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
 };
 
 /**
- * FilterBottom — bottom filter sheet, toggled via `OpenDrawerContext`.
+ * FilterBottom - bottom filter sheet, toggled via `OpenDrawerContext`.
  *
  * @returns {JSX.Element} Filter panel JSX.
  */
@@ -194,7 +194,7 @@ const FilterBottom = ({
         id="side-menu"
         ref={sheetRef}
         className={
-          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-ink/80 backdrop-blur-[10px] z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
           'md:left-auto md:right-0 md:bottom-0 md:top-0 md:h-screen md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'
@@ -205,7 +205,7 @@ const FilterBottom = ({
           <button type="button" onClick={close} aria-label="Back" className="group_white">
             <ArrowBackOrangeIcon />
           </button>
-          <p className="font-normal text-[24px] text-white">Filter</p>
+          <p className="font-normal text-2xl text-white">Filter</p>
           <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>
@@ -214,14 +214,14 @@ const FilterBottom = ({
           <button
             type="button"
             onClick={reset}
-            className="filter_btn text-[16px] border-b border-white pb-0.75 hover:text-brand hover:border-brand"
+            className="filter_btn text-base border-b border-white pb-0.75 hover:text-brand hover:border-brand"
           >
             {clearAllLabel}
           </button>
           <button
             type="button"
             onClick={apply}
-            className="filter_btn text-brand border border-brand rounded-[5px] px-5 hover_btn_white"
+            className="filter_btn text-brand border border-brand rounded-card px-5 hover_btn_white"
           >
             Apply
           </button>

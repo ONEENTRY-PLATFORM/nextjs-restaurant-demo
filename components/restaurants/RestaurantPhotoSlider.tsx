@@ -12,7 +12,7 @@ const SWIPE_THRESHOLD_PX = 40;
 const DIRECTION_LOCK_PX = 8;
 
 /**
- * RestaurantPhotoSlider — restaurant photo slider with dot indicators, swipe and autoplay.
+ * RestaurantPhotoSlider - restaurant photo slider with dot indicators, swipe and autoplay.
  * If `onImageClick` is provided, dots are rendered as a sibling to avoid `<button>` inside `<button>`.
  * Pass `autoplayMs={null}` to disable autoplay.
  */
@@ -85,7 +85,7 @@ const RestaurantPhotoSlider = ({
     const dy = e.clientY - s.startY;
     s.moved = Math.abs(dx);
     s.direction = dx > 0 ? 1 : dx < 0 ? -1 : 0;
-    // Lock into a horizontal gesture only when the horizontal component dominates — otherwise let vertical scroll through.
+    // Lock into a horizontal gesture only when the horizontal component dominates - otherwise let vertical scroll through.
     if (!s.locked && Math.abs(dx) > DIRECTION_LOCK_PX && Math.abs(dx) > Math.abs(dy)) {
       s.locked = true;
       try {
@@ -103,7 +103,7 @@ const RestaurantPhotoSlider = ({
       target.releasePointerCapture(s.pointerId);
     }
     if (s.locked && s.moved > SWIPE_THRESHOLD_PX && total > 0) {
-      // Swipe right (direction = 1) → previous slide; left → next.
+      // Swipe right (direction = 1) â†’ previous slide; left â†’ next.
       const delta = s.direction === 1 ? -1 : 1;
       setActive(i => (i + delta + total) % total);
     }
@@ -112,7 +112,7 @@ const RestaurantPhotoSlider = ({
   };
 
   const onClickCapture = (e: React.MouseEvent<HTMLElement>) => {
-    // Suppress click after a swipe gesture — otherwise the lightbox would open on finger release.
+    // Suppress click after a swipe gesture - otherwise the lightbox would open on finger release.
     if (dragState.current.moved > SWIPE_THRESHOLD_PX) {
       e.preventDefault();
       e.stopPropagation();
@@ -120,7 +120,7 @@ const RestaurantPhotoSlider = ({
   };
 
   const frameClasses =
-    'relative w-full overflow-hidden rounded-[10px] bg-ink/40 select-none touch-pan-y ' +
+    'relative w-full overflow-hidden rounded-panel bg-ink/40 select-none touch-pan-y ' +
     frameClassName;
 
   const dragHandlers = {

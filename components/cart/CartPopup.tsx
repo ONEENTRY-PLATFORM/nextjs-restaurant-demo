@@ -28,8 +28,8 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
- * CartPopup — cart drawer with the full wizard (`cart` → `order` → `payment` → `success`/`error`).
- * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on `/cart` runs in parallel — they share the Redux step.
+ * CartPopup - cart drawer with the full wizard (`cart` â†’ `order` â†’ `payment` â†’ `success`/`error`).
+ * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on `/cart` runs in parallel - they share the Redux step.
  */
 const CartPopup = (): JSX.Element => {
   const t = useT();
@@ -63,7 +63,7 @@ const CartPopup = (): JSX.Element => {
     }
   }, [deliveryProduct, dispatch]);
 
-  // Closing on a non-cart step resets the wizard to 'cart' — otherwise the next open lands on an intermediate screen without context.
+  // Closing on a non-cart step resets the wizard to 'cart' - otherwise the next open lands on an intermediate screen without context.
   const wasOpenRef = useRef(isOpen);
   useEffect(() => {
     if (wasOpenRef.current && !isOpen && step !== 'cart') {
@@ -116,12 +116,12 @@ const CartPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] overflow-y-auto bg-ink/80 backdrop-blur-[10px] rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
+        className="fixed bottom-0 left-0 right-0 z-20 max-h-[90vh] overflow-y-auto bg-ink/80 backdrop-blur-card rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
       >
         <div className="max-w-97.5 mx-auto p-5 pb-24">
           {/* Header: back / title / close. */}
           <div className="z-10 flex items-center justify-between">
-            <p className="font-normal text-[24px] text-white">{stepTitles[step]}</p>
+            <p className="font-normal text-2xl text-white">{stepTitles[step]}</p>
           </div>
 
           {isCartStep ? (

@@ -27,7 +27,7 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import Loader from '@/components/shared/Spinner';
 
 /**
- * CartPage — list of products in the cart + APPLY button (proceed to checkout).
+ * CartPage - list of products in the cart + APPLY button (proceed to checkout).
  *
  * @param   {object}            props              - Props.
  * @param   {IProductsEntity}   props.deliveryData - Delivery product entity.
@@ -39,7 +39,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const cartDelivery = useAppSelector(selectDeliveryData);
-  // "Continue to order after sign-in" flag — otherwise any login from the header would switch cart → order.
+  // "Continue to order after sign-in" flag - otherwise any login from the header would switch cart â†’ order.
   const [pendingCheckout, setPendingCheckout] = useState(false);
 
   // Mirror delivery state into OrderSlice.formData so the `payment` step submit has delivery_time/address.
@@ -147,7 +147,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [products]);
 
-  // After auth completes (via the shared modal) — auto-advance to the order step if checkout was started here.
+  // After auth completes (via the shared modal) - auto-advance to the order step if checkout was started here.
   useEffect(() => {
     if (pendingCheckout && isAuth) {
       dispatch(setStep('order'));
@@ -199,7 +199,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     <div className="flex w-full flex-col overflow-hidden pb-5 lg:max-w-182.5">
       <CartAnimations className={'mb-4 flex w-full flex-col gap-4'} index={1}>
         {visibleProducts.map((product: IProductsEntity, i: number) => {
-          // Lookup by id (not index) — RTK response order is not guaranteed, indexes drift out of sync.
+          // Lookup by id (not index) - RTK response order is not guaranteed, indexes drift out of sync.
           const cartEntry = productsCartData.find((p: { id: number }) => p.id === product.id);
           return (
             <ProductCard
@@ -215,7 +215,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         <button
           type="button"
           onClick={onApply}
-          className="cart-apply-btn flex h-15 w-full items-center justify-center rounded-[10px] bg-custom_btnorange text-center font-normal text-[16px] text-white hover_btn_transp md:h-11.25"
+          className="cart-apply-btn flex h-15 w-full items-center justify-center rounded-panel bg-custom_btnorange text-center font-normal text-base text-white hover_btn_transp md:h-11.25"
         >
           APPLY
         </button>

@@ -18,32 +18,34 @@
 
 ---
 
-### A.3. Закомментированный код (правило 3.2 — удалить)
+## Сводка
 
-| Файл | Строки | Что |
-|---|---|---|
-| [app/store/providers/StoreProvider.tsx](app/store/providers/StoreProvider.tsx) | 8 | `// import type { AppStore }` |
-| [app/store/providers/AuthContext.tsx](app/store/providers/AuthContext.tsx) | 15, 24, 80 | `// import updateUserState`, `// addFavorites,`, `// const favoritesVersion` |
-| [components/forms/UserForm.tsx](components/forms/UserForm.tsx) | 17, 105 | `// import AuthError`, `// return <AuthError ... />` |
-| [components/layout/mobile-menu/components/MobileMenu.tsx](components/layout/mobile-menu/components/MobileMenu.tsx) | 1 | `// 'use client';` |
-| [components/layout/cart/components/DeleteButton.tsx](components/layout/cart/components/DeleteButton.tsx) | 8, 26 | `// removeProduct`, `// dispatch(removeProduct(...))` |
+| Раздел | Открыто | P0 | P1 | P2 | P3 |
+| --- | --- | --- | --- | --- | --- |
+| A. Автоматические находки | 1 | 0 | 0 | 1 | 0 |
+| B. Ручная сверка по экранам | см. ниже | — | — | — | — |
+| C. OneEntry Admin Setup | см. ниже | — | — | — | — |
+
+> Раздел A почти пуст: A.3 (закомментированный код, 5 файлов) — закрыт 2026-05-10 при ручной проверке (грепы по `^\s*//\s*(import|const|return|removeProduct|dispatch)` в указанных файлах ничего не возвращают). A.4 (arbitrary `[Npx]`) — массовая чистка 2026-05-10: 240 замен в 70 файлах для 7 топ-паттернов (`text-[16px]`, `text-[20px]`, `text-[24px]`, `rounded-[5px]`, `rounded-[10px]`, `backdrop-blur-[10px]`, `tracking-[0.02em]`), остаток 64 в 39 файлах — это уже одноразовые значения (`[18px]`, `[17px]`, `[14px]` и т.п.).
+
+---
 
 ### A.4. Arbitrary px-значения `[Npx]` (правило 3.1.1 — переводить в шкалу)
 
-**Severity: P2/P3.** 176 вхождений в 63 файлах. Топ-кандидаты на чистку:
+**Severity: P2.** Текущее состояние после массовой чистки 2026-05-10: **64 вхождения в 39 файлах** (было 176 в 63). Большинство оставшихся — одноразовые значения, которые по §3.1.1 допускается оставлять `[...]`. Топ остатков:
 
 | Файл | Кол-во |
 |---|---|
-| [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) | 13 |
-| [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx) | 9 |
-| [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx) | 8 |
-| [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) | 8 |
-| [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx) | 6 |
-| [components/reviews/ReviewsSlideUpPanel.tsx](components/reviews/ReviewsSlideUpPanel.tsx) | 6 |
-| [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) | 6 |
-| [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) | 6 |
+| [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) | 6 |
+| [components/reviews/ProductReviewsList.tsx](components/reviews/ProductReviewsList.tsx) | 5 |
+| [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx) | 5 |
+| [app/support/page.tsx](app/support/page.tsx) | 4 |
+| [components/support/SupportPopup.tsx](components/support/SupportPopup.tsx) | 3 |
+| [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) | 3 |
 
-> Действие: проходом по компоненту смотреть `value_px / 4 = N` → `*-N` или `*-N.MM`. Если значение часто повторяется (в 3+ местах) — добавлять токен в `@theme inline`.
+Промоутированы в `@theme inline` ([app/globals.css](app/globals.css)): `--radius-card` (5px), `--radius-panel` (10px), `--blur-card` (10px), `--tracking-fine` (0.02em). Размеры текста 16/20/24 покрыты дефолтами Tailwind v4 (`text-base`/`text-xl`/`text-2xl`).
+
+> Действие при дальнейших правках: для остатка следить за §3.1.1 — если какое-то arbitrary-значение начнёт встречаться в 3+ местах (например, `text-[18px]`, `text-[17px]`, `[8px]`), добавить токен.
 
 ---
 
@@ -60,8 +62,6 @@
 [components/home/HomeCategoriesSection.tsx](components/home/HomeCategoriesSection.tsx)
 [components/layout/header/index.tsx](components/layout/header/index.tsx)
 
-- **B.1.1** — `.subtitle` + `.title` (ссылка `View all (N)` в каждой категории главной): в `static-html/public/styles.css:2729-2742` намеренно `display: none` ниже `md` (768px), и `.title` использует `md:justify-between`. По решению клиента (2026-05-07) — отойти от макета: показывать кнопку на всех брейкпоинтах и прижимать её к правому краю. В [app/styles/main.css:215](app/styles/main.css#L215) `md:justify-between` → `justify-between`, в [app/styles/main.css:232](app/styles/main.css#L232) убраны `hidden md:block`. Severity: — (осознанное отступление).
-
 ### B.2. Карточка товара (`pk_product_details.html` ↔ `app/shop/product/[handle]`)
 
 - 🌐 Live: <http://localhost:3000/shop/product/13> _(заменить `13` на любой реальный product id, например через `/shop`)_
@@ -72,8 +72,6 @@
 [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx)
 [components/layout/product/product-single/ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx)
 [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx)
-
-- **B.2.1** — Reviews-карусель в карточке товара: в `static-html/pk_product_details.html:293` стрелки-пейджеры `<svg class="hidden md:block">` намеренно скрыты на мобильном (там просто статичный первый отзыв). По решению клиента (2026-05-07) — отойти от макета: на мобильном включить touch-свайп между отзывами и показать стрелки. В [components/reviews/ProductReviewsList.tsx](components/reviews/ProductReviewsList.tsx) добавлены `onTouchStart`/`onTouchEnd` со SWIPE_THRESHOLD=40px, у обеих кнопок убран `hidden md:flex`, у контейнера `md:px-8` → `px-8`, чтобы стрелки не накрывали текст отзыва. Severity: — (осознанное отступление).
 
 ### B.3. Каталог / категория (`index_category.html` ↔ `app/shop/...`)
 
@@ -107,8 +105,6 @@
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.4.9 | `auth-попап` в `CartWizard` рендерит `signin`/`verification` шаги поверх корзины как центрированный popup. Проверить, что `pk_login.html` / `pk_verif.html` подтверждают этот паттерн (на десктопе — popup поверх cart, на мобиле — fullscreen popup, корзина скрыта) | [components/cart/CartWizard.tsx:36-43,80-104](components/cart/CartWizard.tsx#L80-L104) | — (требует визуала) |
-| B.4.10 | `<BurgerOrangeIcon />` в шапке корзины-мобильной — это иконка из набора в `components/icons/`. В `static-html/cart_cart.html` справа должен быть бургер-меню или иконка переключения между mobile/desktop макетами. Сверить, что иконка совпадает | [components/cart/CartWizard.tsx:166](components/cart/CartWizard.tsx#L166) | — (требует визуала) |
 | B.4.11 | Хардкод-строки без маркеров в OneEntry: `'Cart'`, `'Select time'`, `'Success'`, `'Error'` в STEP_TITLES + строка `'Cart'` в шапке мобильной корзины и хлебных крошках. Завести `cart_text` / `select_time_text` / `success_text` / `error_text` в `static_content` и подцепить через `dict` | [components/cart/CartWizard.tsx:48-61,164,181-186](components/cart/CartWizard.tsx#L48-L61) | P3 |
 | B.4.12 | StepPayment: хардкод `'Pay with'` (PayPal label, line 103), `'Credit & Debit Cards'`, placeholder `'phone number'` (line 196) — нет соответствующих маркеров в `static_content`. Wired: `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text` | [components/cart/steps/StepPayment.tsx:103,196](components/cart/steps/StepPayment.tsx#L103) | P3 |
 

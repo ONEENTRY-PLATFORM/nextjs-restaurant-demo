@@ -15,7 +15,7 @@ import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
 
-/** AddToCartButton — ADD TO CART button, switches to QuantitySelector after adding. */
+/** AddToCartButton - ADD TO CART button, switches to QuantitySelector after adding. */
 const AddToCartButton = ({
   id,
   units,
@@ -33,7 +33,7 @@ const AddToCartButton = ({
 }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  // useSyncExternalStore (not useEffect+setState) — to avoid the cascading-render warning
+  // useSyncExternalStore (not useEffect+setState) - to avoid the cascading-render warning
   // when hydrating the persisted cart: SSR sees "add", the client switches after mount.
   const mounted = useSyncExternalStore(
     () => () => undefined,
@@ -52,7 +52,7 @@ const AddToCartButton = ({
 
   if (notInStock) {
     return (
-      <div className={'rounded-[5px] border border-muted text-muted px-4 py-2 ' + className}>
+      <div className={'rounded-card border border-muted text-muted px-4 py-2 ' + className}>
         {t('out_of_stock_button', 'Out of stock')}
       </div>
     );

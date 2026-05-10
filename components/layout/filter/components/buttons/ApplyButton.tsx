@@ -14,7 +14,7 @@ const ApplyButton = (): JSX.Element => {
   return (
     <button
       onClick={() => setTransition('close')}
-      className="rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white h-12.5 hover:bg-gradient-to-r-hover w-full"
+      className="rounded-panel bg-custom-gradient font-bold text-base uppercase text-white h-12.5 hover:bg-gradient-to-r-hover w-full"
     >
       {t('apply_text', 'Apply')}
     </button>

@@ -31,7 +31,7 @@ const formatSchedule = (raw: unknown): string => {
   return `${first.from ?? ''} - ${first.to ?? ''}`;
 };
 
-// `comforts` — list with `extended.type === 'image'`; normalized to `{ title, iconUrl? }[]`.
+// `comforts` - list with `extended.type === 'image'`; normalized to `{ title, iconUrl? }[]`.
 const normalizeComforts = (raw: unknown): Comfort[] => {
   if (!Array.isArray(raw)) return [];
   return (raw as ComfortItem[])
@@ -50,7 +50,7 @@ const normalizeComforts = (raw: unknown): Comfort[] => {
 const buildMapEmbed = (lat: number, lng: number): string =>
   `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`;
 
-/** RestaurantPage — single-restaurant page. */
+/** RestaurantPage - single-restaurant page. */
 const RestaurantPage = async ({
   params,
 }: {
@@ -78,7 +78,7 @@ const RestaurantPage = async ({
     | undefined;
   const descriptionHtmlRaw = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
-  // Rich-text sometimes returns `<p><br></p>` — treat html as meaningful only if there is text.
+  // Rich-text sometimes returns `<p><br></p>` - treat html as meaningful only if there is text.
   const descriptionHtml = /\S/.test(descriptionHtmlRaw.replace(/<[^>]*>/g, ''))
     ? descriptionHtmlRaw
     : '';
@@ -87,12 +87,12 @@ const RestaurantPage = async ({
     <section className="section_layout pt-0">
       <div className="mb-5 flex items-center justify-between gap-4 text-sm text-paper/70">
         <Link href="/restaurants" className="hover:text-brand">
-          ← All restaurants
+          â† All restaurants
         </Link>
       </div>
 
       {/* Title */}
-      <h1 className="text-center md:text-left font-bold text-xl md:text-[20px] uppercase tracking-[0.02em] text-brand">
+      <h1 className="text-center md:text-left font-bold text-xl md:text-xl uppercase tracking-fine text-brand">
         {title}
       </h1>
 
@@ -167,17 +167,17 @@ const RestaurantPage = async ({
           <iframe
             title={`Map for ${title}`}
             src={buildMapEmbed(lat, lng)}
-            className="h-45 w-full rounded-[5px] border-0 md:h-78"
+            className="h-45 w-full rounded-card border-0 md:h-78"
             loading="lazy"
           />
         ) : (
-          <div className="flex h-45 w-full items-center justify-center rounded-[5px] bg-ink/40 text-paper/60 md:h-78">
+          <div className="flex h-45 w-full items-center justify-center rounded-card bg-ink/40 text-paper/60 md:h-78">
             Map unavailable
           </div>
         )}
       </div>
 
-      {/* Mobile CTA — on desktop the button already sits in the comforts row. */}
+      {/* Mobile CTA - on desktop the button already sits in the comforts row. */}
       <div className="mt-10 md:hidden">
         <BookATableButton
           restaurantHandle={handle}

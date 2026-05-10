@@ -24,13 +24,13 @@ const NAV_BY_URL: Record<string, NavConfig> = {
   bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
 };
 
-/** BottomMobileMenu — fixed mobile bottom navigation built from the `bottom_web` menu + central Cart/Close pair. */
+/** BottomMobileMenu - fixed mobile bottom navigation built from the `bottom_web` menu + central Cart/Close pair. */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const { menu, isError, error } = await getMenuByMarker('bottom_web');
 
   if (isError || !menu) {
     // eslint-disable-next-line no-console
-    console.warn('[BottomMenu] Menu "bottom_web" unavailable — rendering empty bar.', error);
+    console.warn('[BottomMenu] Menu "bottom_web" unavailable - rendering empty bar.', error);
   }
 
   const pages: IMenusPages[] = menu && Array.isArray(menu.pages) ? menu.pages : [];
@@ -56,7 +56,7 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
         </div>
 
         <div className="relative w-1/3 flex justify-center items-start -mt-5 p-5 z-50">
-          {/* Cart/close stack — crossfade via opacity+rotate+scale driven by `OpenDrawerContext.open`. */}
+          {/* Cart/close stack - crossfade via opacity+rotate+scale driven by `OpenDrawerContext.open`. */}
           <div className="relative w-11.5 h-11.5 -mt-2.5">
             <CenterCartButton />
             <CenterCloseButton />
@@ -71,7 +71,7 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
           ))}
         </div>
       </div>
-      <div className="clipped-div fixed -bottom-0.5 left-0 z-40 backdrop-blur-[10px]" />
+      <div className="clipped-div fixed -bottom-0.5 left-0 z-40 backdrop-blur-card" />
     </div>
   );
 };

@@ -13,11 +13,11 @@ import FilterHeader from './components/header/FilterHeader';
 import type { PriceBounds } from './components/price/PricePickerFilter';
 import FiltersForm from './FiltersForm';
 
-/** FilterModal — filters modal with slide-right animation. */
+/** FilterModal - filters modal with slide-right animation. */
 const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
   const { setOpen } = useContext(OpenDrawerContext);
   const sheetRef = useRef<HTMLDivElement | null>(null);
-  // Swipe closes directly, bypassing GSAP reverse — otherwise the inline
+  // Swipe closes directly, bypassing GSAP reverse - otherwise the inline
   // transform conflicts with the `yPercent` tween of the close animation.
   useSwipeToClose(sheetRef, () => setOpen(false));
 
@@ -26,7 +26,7 @@ const FilterModal = ({ prices }: { prices: PriceBounds }): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed right-0 top-0 z-20 flex size-full max-h-[90vh] min-h-[90vh] flex-col overflow-auto bg-ink/80 backdrop-blur-[10px] shadow-xl md:top-[5vh] md:overflow-hidden md:rounded-l-[20px] lg:h-auto lg:w-95"
+        className="fixed right-0 top-0 z-20 flex size-full max-h-[90vh] min-h-[90vh] flex-col overflow-auto bg-ink/80 backdrop-blur-card shadow-xl md:top-[5vh] md:overflow-hidden md:rounded-l-[20px] lg:h-auto lg:w-95"
       >
         <FilterHeader />
         <Suspense fallback={<Loader />}>

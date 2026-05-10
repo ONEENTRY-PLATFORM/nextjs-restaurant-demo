@@ -14,7 +14,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import ReviewForm from './ReviewForm';
 
 /**
- * ReviewFormPopup — popup hosting the review form. productId is passed via `OpenDrawerContext.action`
+ * ReviewFormPopup - popup hosting the review form. productId is passed via `OpenDrawerContext.action`
  * so the popup can stay globally registered without knowing about the current page.
  */
 const ReviewFormPopup = (): JSX.Element => {
@@ -34,7 +34,7 @@ const ReviewFormPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-137.5 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-137.5 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
           <button
@@ -45,9 +45,7 @@ const ReviewFormPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-semibold text-[24px] text-brand">
-            {t('leave_review', 'Leave a review')}
-          </p>
+          <p className="font-semibold text-2xl text-brand">{t('leave_review', 'Leave a review')}</p>
           <ClosePopupButton onClose={close} ariaLabel="Close review form" />
         </div>
 

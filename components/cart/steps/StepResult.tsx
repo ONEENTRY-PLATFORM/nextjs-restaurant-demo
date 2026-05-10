@@ -15,7 +15,7 @@ import {
   setStep,
 } from '@/app/store/reducers/OrderSlice';
 
-/** Formats a date as `dd.MM.yy HH.mm` (for the "Get delivery by: …" stamp). */
+/** Formats a date as `dd.MM.yy HH.mm` (for the "Get delivery by: â€¦" stamp). */
 const formatDeliveryStamp = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${String(d.getFullYear()).slice(
@@ -24,7 +24,7 @@ const formatDeliveryStamp = (d: Date): string => {
 };
 
 /**
- * StepResult — final wizard screen: success or error.
+ * StepResult - final wizard screen: success or error.
  * @param {object}              props         - Props.
  * @param {'success' | 'error'} props.variant - Which screen to render.
  */
@@ -37,8 +37,8 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     quantity?: number;
     product?: IProductsEntity;
   }>;
-  // Capture `Date.now()` in the initial state — render stays pure, the stamp is stable for the lifetime of the component.
-  const orderNumber = lastOrderId ? '№' + lastOrderId : '';
+  // Capture `Date.now()` in the initial state - render stays pure, the stamp is stable for the lifetime of the component.
+  const orderNumber = lastOrderId ? 'â„–' + lastOrderId : '';
   const [deliveryStamp] = useState(() =>
     formatDeliveryStamp(new Date(Date.now() + 45 * 60 * 1000))
   );
@@ -47,7 +47,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     return (
       <div className="flex flex-col gap-6.25">
         {/* Order number */}
-        <div className="mx-auto font-medium text-[20px] text-brand">{orderNumber}</div>
+        <div className="mx-auto font-medium text-xl text-brand">{orderNumber}</div>
 
         {/* Items */}
         {cartData
@@ -58,8 +58,8 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
             const qty = entry.quantity ?? 1;
             return (
               <div key={entry.id} className="flex items-center justify-between gap-3">
-                <p className="max-w-42.5 font-normal text-[16px] text-white opacity-90">{title}</p>
-                <div className="rounded-[5px] border border-white px-2 py-1.5 text-[16px] text-brand">
+                <p className="max-w-42.5 font-normal text-base text-white opacity-90">{title}</p>
+                <div className="rounded-card border border-white px-2 py-1.5 text-base text-brand">
                   x{qty}
                 </div>
               </div>
@@ -67,7 +67,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
           })}
 
         {/* Delivery stamp */}
-        <p className="mt-6.25 text-center font-normal text-[16px] text-brand">
+        <p className="mt-6.25 text-center font-normal text-base text-brand">
           Get delivery by: {deliveryStamp}
         </p>
 

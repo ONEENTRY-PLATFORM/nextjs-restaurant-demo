@@ -10,7 +10,7 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 
 /**
- * SupportPopup — mobile support popup (call/WhatsApp).
+ * SupportPopup - mobile support popup (call/WhatsApp).
  * @param   {object}      props               - Props.
  * @param   {string}      [props.phone]       - Phone number for the `tel:` link.
  * @param   {string}      [props.whatsappUrl] - WhatsApp chat URL.
@@ -35,7 +35,7 @@ const SupportPopup = ({
     <DrawerAnimations component="SupportPopup" wrapperClassName="md:hidden">
       <div
         id="modalBody"
-        className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-ink/80 backdrop-blur-[10px] pt-5 px-5 pb-25 shadow-xl"
+        className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-ink/80 backdrop-blur-card pt-5 px-5 pb-25 shadow-xl"
       >
         <div className="mx-auto max-w-88.75">
           <div className="flex justify-center">

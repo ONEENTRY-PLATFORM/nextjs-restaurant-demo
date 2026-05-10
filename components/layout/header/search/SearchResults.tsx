@@ -64,7 +64,7 @@ const SearchResults = ({
   const isBusy = loading || isPending;
 
   return (
-    <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-[10px] bg-ink/80 p-5 shadow-lg backdrop-blur-[10px]">
+    <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-panel bg-ink/80 p-5 shadow-lg backdrop-blur-card">
       <CloseSearch setState={setState} />
       {isBusy ? (
         <Spinner />

@@ -25,7 +25,7 @@ type CartEntry = {
   selected?: boolean;
 };
 
-/** StepOrder — checkout step: items + promo code + summary + APPLY → `payment`. */
+/** StepOrder - checkout step: items + promo code + summary + APPLY â†’ `payment`. */
 const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -47,7 +47,7 @@ const StepOrder = (): JSX.Element => {
         row.product &&
         row.entry.selected &&
         row.product.statusIdentifier !== 'out_of_stock' &&
-        // Delivery shows as a separate line in the totals — otherwise it gets double-counted in the subtotal.
+        // Delivery shows as a separate line in the totals - otherwise it gets double-counted in the subtotal.
         row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{
     entry: CartEntry;
@@ -61,7 +61,7 @@ const StepOrder = (): JSX.Element => {
   const discount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
-  // "To Entire Order" coupon: `totalSumWithDiscount` already includes delivery — do not add it again, otherwise it gets double-counted.
+  // "To Entire Order" coupon: `totalSumWithDiscount` already includes delivery - do not add it again, otherwise it gets double-counted.
   const total = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal + deliveryPrice;
 
   const handleApply = (): void => {
@@ -97,7 +97,7 @@ const StepOrder = (): JSX.Element => {
     { scope: containerRef, dependencies: [items.length] }
   );
 
-  // Reverse animation on route leave: paused timeline + play() strictly on the 'none' → 'leaving' transition.
+  // Reverse animation on route leave: paused timeline + play() strictly on the 'none' â†’ 'leaving' transition.
   useGSAP(() => {
     const tl = gsap.timeline({ paused: true });
 
@@ -180,7 +180,7 @@ const StepOrder = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className="flex h-11.25 w-8.75 shrink-0 items-center justify-center rounded-[5px] border border-white text-base font-normal text-brand">
+              <div className="flex h-11.25 w-8.75 shrink-0 items-center justify-center rounded-card border border-white text-base font-normal text-brand">
                 x{entry.quantity ?? 1}
               </div>
             </div>
@@ -197,16 +197,16 @@ const StepOrder = (): JSX.Element => {
             onChange={e => setPromoCode(e.currentTarget.value)}
             disabled={isLoading}
             placeholder="Promo Code"
-            className="h-8 w-2/3 rounded-[5px] border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none disabled:opacity-60"
+            className="h-8 w-2/3 rounded-card border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none disabled:opacity-60"
           />
           <button
             type="button"
             onClick={handleApply}
             disabled={isLoading || (!appliedCoupon && !promoCode.trim())}
-            className="h-8 w-1/3 rounded-[5px] border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
+            className="h-8 w-1/3 rounded-card border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
           >
             {isLoading
-              ? 'Applying…'
+              ? 'Applyingâ€¦'
               : appliedCoupon && appliedCoupon.code === promoCode.trim()
                 ? 'Remove'
                 : 'Apply Code'}
@@ -225,7 +225,7 @@ const StepOrder = (): JSX.Element => {
       </div>
 
       {/* Totals */}
-      <div className="step-order-row mt-10 rounded-[5px] border border-brand p-2.5">
+      <div className="step-order-row mt-10 rounded-card border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>{t('subtotal_text', 'Subtotal')}:</p>
           <p>{UsePrice({ amount: subtotal })}</p>
@@ -237,7 +237,7 @@ const StepOrder = (): JSX.Element => {
         {discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
-            <p>−{UsePrice({ amount: discount })}</p>
+            <p>âˆ’{UsePrice({ amount: discount })}</p>
           </div>
         ) : null}
         <div className="flex gap-1.25 text-white">
@@ -249,7 +249,7 @@ const StepOrder = (): JSX.Element => {
       <button
         type="button"
         onClick={handleProceedToPayment}
-        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-[10px] bg-custom-gradient py-2.5 text-center font-normal text-base text-white hover:bg-gradient-to-r-hover"
+        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-custom-gradient py-2.5 text-center font-normal text-base text-white hover:bg-gradient-to-r-hover"
       >
         APPLY
       </button>

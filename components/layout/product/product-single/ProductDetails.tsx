@@ -9,7 +9,7 @@ import StarPuffyIcon from '@/components/icons/star-puffy';
 import AddToCartButton from '../components/AddToCartButton';
 
 /**
- * ProductDetails — right column of the product page (metrics, tags, CTA).
+ * ProductDetails - right column of the product page (metrics, tags, CTA).
  *
  * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `rating`, `cooking_time`,
  * `preferences`, `ingredients`, `price` + `currency`.
@@ -52,7 +52,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
 
   return (
     <div className="flex flex-col gap-3.75">
-      {/* Metrics row + price badge — single line per static-html/details.html:130 */}
+      {/* Metrics row + price badge - single line per static-html/details.html:130 */}
       <div className="flex justify-between items-start gap-3.75 lg:flex-row-reverse">
         <div className="flex flex-col gap-3.75 mt-2.5">
           {/* Weight / calories / rating + cooking_time (on mobile) */}
@@ -60,7 +60,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
             {weightVal != null ? (
               <>
                 <Image src="/images/icons/weight.svg" alt="weight" width={27} height={20} />
-                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
                   {weightVal} g
                 </p>
               </>
@@ -68,7 +68,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
             {calorrageVal != null ? (
               <>
                 <Image src="/images/icons/flame.svg" alt="flame" width={15} height={20} />
-                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
                   {calorrageVal} ccal
                 </p>
               </>
@@ -76,16 +76,16 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
             {ratingVal != null ? (
               <>
                 <StarPuffyIcon />
-                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
                   {ratingVal}
                 </p>
               </>
             ) : null}
-            {/* Cooking time — mobile/tablet variant, in the same row as the metrics */}
+            {/* Cooking time - mobile/tablet variant, in the same row as the metrics */}
             {cookingVal != null && cookingVal > 0 ? (
               <div className="flex gap-1.25 items-center lg:hidden">
                 <ClockCircleIcon variant="orange" />
-                <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+                <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
                   {cookingVal} min
                 </p>
               </div>
@@ -94,17 +94,17 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
         </div>
 
         {priceFormatted ? (
-          <div className="rounded-[10px] w-18 h-13 bg-custom-gradient hidden md:flex justify-center items-center font-bold text-white text-[20px] shrink-0 md:mt-0">
+          <div className="rounded-panel w-18 h-13 bg-custom-gradient hidden md:flex justify-center items-center font-bold text-white text-xl shrink-0 md:mt-0">
             {priceFormatted}
           </div>
         ) : null}
       </div>
 
-      {/* Cooking time — desktop variant, on a separate line below (lg+) */}
+      {/* Cooking time - desktop variant, on a separate line below (lg+) */}
       {cookingVal != null && cookingVal > 0 ? (
         <div className="hidden lg:flex gap-3.75 items-center mt-7.5">
           <ClockCircleIcon variant="orange" />
-          <p className="font-bold text-[12px] tracking-[0.02em] text-white opacity-90">
+          <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
             {cookingVal} min
           </p>
         </div>
@@ -112,12 +112,12 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
 
       {/* Ingredients */}
       {ingredientsText ? (
-        <h3 className="font-normal text-[14px] tracking-[0.02em] text-white opacity-90">
+        <h3 className="font-normal text-[14px] tracking-fine text-white opacity-90">
           <span className="text-brand">Ingredients:</span> {ingredientsText}
         </h3>
       ) : null}
 
-      {/* Preferences / tags — pills, link to /shop?preferences=<value> (same contract as CategoriesScroller) */}
+      {/* Preferences / tags - pills, link to /shop?preferences=<value> (same contract as CategoriesScroller) */}
       {prefs.length > 0 ? (
         <div className="flex flex-wrap gap-3.75">
           {prefs.map(p => (
@@ -140,7 +140,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
           statusIdentifier={statusIdentifier || ''}
           productTitle={title || ''}
           height={50}
-          className="min-h-16.5 w-full flex justify-center items-center gap-2.5 font-bold text-[20px] text-white uppercase py-4.5 bg-custom-gradient rounded-[10px] hover:bg-gradient-to-r-hover"
+          className="min-h-16.5 w-full flex justify-center items-center gap-2.5 font-bold text-xl text-white uppercase py-4.5 bg-custom-gradient rounded-panel hover:bg-gradient-to-r-hover"
         />
       </div>
     </div>

@@ -6,7 +6,7 @@ import { getPageByUrl } from '@/app/api';
 // Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
 
-/** NotFound — 404 page layout. */
+/** NotFound - 404 page layout. */
 const NotFound = async (): Promise<JSX.Element> => {
   const { page, isError } = await getPageByUrl('404');
 
@@ -33,7 +33,7 @@ const NotFound = async (): Promise<JSX.Element> => {
       </p>
       <Link
         href="/"
-        className="rounded-[5px] border border-brand text-brand font-normal px-4 py-2 hover_btn_white"
+        className="rounded-card border border-brand text-brand font-normal px-4 py-2 hover_btn_white"
       >
         Return home
       </Link>

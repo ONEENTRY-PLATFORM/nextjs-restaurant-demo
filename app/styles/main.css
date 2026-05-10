@@ -209,7 +209,7 @@ html {
     md:py-0.5 
     font-normal 
     text-base 
-    tracking-[0.02em] 
+    tracking-fine 
     text-paper 
     no-underline 
     transition-colors 
@@ -229,9 +229,9 @@ html {
 
 .title_name {
   @apply 
-    text-[16px] 
+    text-base 
     font-bold 
-    md:text-[20px] 
+    md:text-xl 
     uppercase 
     text-brand;
 }
@@ -310,7 +310,7 @@ html {
       bg-ink/80
       px-5
       pt-5.5
-      backdrop-blur-[10px]
+      backdrop-blur-card
       md:hidden;
     animation: slide-up 1s ease-in-out forwards;
   }
@@ -360,7 +360,7 @@ html {
     font-normal 
     text-xs 
     md:text-base 
-    tracking-[0.02em] 
+    tracking-fine 
     text-white 
     px-1.25 
     md:px-2.5;
@@ -372,7 +372,7 @@ html {
       grow 
       font-normal 
       text-[15px] 
-      tracking-[0.02em] 
+      tracking-fine 
       text-paper 
       mt-3 
       mb-2 
@@ -432,7 +432,7 @@ html {
     font-normal 
     text-base 
     md:text-[22px] 
-    tracking-[0.02em] 
+    tracking-fine 
     text-brand;
 }
 .category_item {
@@ -462,8 +462,8 @@ html {
   .filter_btn {
     @apply 
       font-normal 
-      text-[20px] 
-      tracking-[0.02em] 
+      text-xl 
+      tracking-fine 
       text-paper;
   }
 }
@@ -472,14 +472,14 @@ html {
   @apply 
     border 
     border-paper 
-    rounded-[5px] 
+    rounded-card 
     px-3.75 
     py-1.5 
     h-7.75 
-    text-[16px] 
+    text-base 
     leading-4.25 
     font-normal 
-    tracking-[0.02em] 
+    tracking-fine 
     text-paper 
     hover:bg-brand 
     transition-colors 
@@ -491,16 +491,16 @@ html {
   @apply 
     w-full 
     font-bold 
-    text-[16px] 
-    tracking-[0.02em] 
+    text-base 
+    tracking-fine 
     text-brand;
 }
 
 .favorites_title {
   @apply 
     font-normal 
-    text-[16px] 
-    tracking-[0.02em] 
+    text-base 
+    tracking-fine 
     text-paper w-35;
 }
 
@@ -508,13 +508,13 @@ html {
   @apply 
     font-normal 
     text-[14px] 
-    tracking-[0.02em] 
+    tracking-fine 
     text-paper;
 }
 .favorites_price {
   @apply 
     font-bold 
-    text-[20px] 
+    text-xl 
     text-brand;
 }
 
@@ -532,7 +532,7 @@ html {
 .label {
   @apply 
     font-normal 
-    text-[16px] 
+    text-base 
     text-paper 
     w-27.5;
 }
@@ -555,7 +555,7 @@ html {
     @apply 
       cursor-pointer 
       bg-custom_transparent 
-      rounded-[10px] 
+      rounded-panel 
       border-none 
       w-full 
       h-14 
@@ -580,7 +580,7 @@ html {
     bg-transparent
     border-none
     text-white
-    text-[20px]
+    text-xl
     font-normal
     h-10
     w-full
@@ -601,7 +601,7 @@ html {
 .cart_label {
   @apply 
     font-normal 
-    text-[16px] 
+    text-base 
     text-white;
 }
 @layer components {
@@ -610,13 +610,13 @@ html {
       bg-custom_transparent 
       w-30%-gap 
       h-10 
-      rounded-[5px] 
+      rounded-card 
       flex 
       justify-center 
       items-center 
       text-white 
       font-semibold 
-      text-[24px] 
+      text-2xl 
       cursor-pointer 
       hover:bg-custom_btnorange 
       active:bg-custom_btnorange 
@@ -630,9 +630,9 @@ html {
   @apply 
     text-center 
     p-2 
-    rounded-[5px] 
+    rounded-card 
     font-light 
-    text-[16px] 
+    text-base 
     text-paper 
     hover:bg-brand 
     active:bg-brand 
@@ -644,7 +644,7 @@ html {
 .calend_mon {
   @apply 
     font-medium 
-    text-[16px] 
+    text-base 
     text-brand 
     text-center;
 }
@@ -652,7 +652,7 @@ html {
   @apply 
     border 
     border-paper 
-    rounded-[5px] 
+    rounded-card 
     py-2 
     px-3.5 
     font-light 

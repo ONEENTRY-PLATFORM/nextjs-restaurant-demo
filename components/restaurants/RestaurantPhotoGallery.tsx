@@ -18,7 +18,7 @@ import RestaurantPhotoSlider from './RestaurantPhotoSlider';
 type Photo = { downloadLink?: string };
 
 /**
- * RestaurantPhotoGallery — single-restaurant gallery with a lightbox.
+ * RestaurantPhotoGallery - single-restaurant gallery with a lightbox.
  * Mobile: horizontal slider via {@link RestaurantPhotoSlider}; tap opens the lightbox.
  */
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
@@ -62,13 +62,13 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     const viewTop = container.scrollTop;
     const viewBottom = viewTop + container.clientHeight;
 
-    // 1) Hidden above — scroll up to the top of the viewport.
+    // 1) Hidden above - scroll up to the top of the viewport.
     if (relTop < viewTop) {
       container.scrollTo({ top: relTop, behavior: 'smooth' });
       return;
     }
 
-    // 2) Hidden below — scroll down to the bottom edge.
+    // 2) Hidden below - scroll down to the bottom edge.
     if (relBottom > viewBottom) {
       container.scrollTo({
         top: relBottom - container.clientHeight,
@@ -77,7 +77,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       return;
     }
 
-    // 3) Visible but at the bottom edge — nudge by one slide forward so the neighbor becomes visible.
+    // 3) Visible but at the bottom edge - nudge by one slide forward so the neighbor becomes visible.
     const next = thumbRefs.current[active + 1];
     if (next) {
       const nextRect = next.getBoundingClientRect();
@@ -91,7 +91,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
         return;
       }
     }
-    // 4) Symmetric case — at the top edge.
+    // 4) Symmetric case - at the top edge.
     const prev = thumbRefs.current[active - 1];
     if (prev) {
       const prevRect = prev.getBoundingClientRect();
@@ -186,7 +186,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
       target.releasePointerCapture(e.pointerId);
     }
     if (s.moved > MAIN_DRAG_THRESHOLD_PX && total > 0) {
-      // Up → next, down → previous. Cyclic.
+      // Up â†’ next, down â†’ previous. Cyclic.
       const delta = s.direction === -1 ? 1 : -1;
       setActive(i => (i + delta + total) % total);
     }
@@ -211,7 +211,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
 
   return (
     <>
-      {/* Mobile / tablet — slider with dots. */}
+      {/* Mobile / tablet - slider with dots. */}
       <div className="md:hidden">
         <RestaurantPhotoSlider
           photos={photos}
@@ -235,7 +235,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
           onPointerLeave={onMainPointerEnd}
           onDragStart={e => e.preventDefault()}
           aria-label={`Open ${alt} photos fullscreen`}
-          className="relative h-full w-full overflow-hidden rounded-[10px] bg-ink/40 transition-opacity hover:opacity-95 disabled:cursor-default cursor-grab active:cursor-grabbing select-none touch-pan-y"
+          className="relative h-full w-full overflow-hidden rounded-panel bg-ink/40 transition-opacity hover:opacity-95 disabled:cursor-default cursor-grab active:cursor-grabbing select-none touch-pan-y"
           disabled={total === 0}
         >
           {main?.downloadLink ? (
@@ -273,7 +273,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
                 aria-label={`Show photo ${index + 1}`}
                 aria-pressed={isActive}
                 className={
-                  'relative aspect-278/197 w-full shrink-0 overflow-hidden rounded-[10px] bg-ink/40 transition-all ' +
+                  'relative aspect-278/197 w-full shrink-0 overflow-hidden rounded-panel bg-ink/40 transition-all ' +
                   (isActive ? 'ring-2 ring-brand opacity-100' : 'opacity-70 hover:opacity-100')
                 }
               >

@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 
 /**
- * HomePromo — homepage promo strip (desktop hero + horizontal scroll for mobile).
+ * HomePromo - homepage promo strip (desktop hero + horizontal scroll for mobile).
  * Driven by `blog` children from OneEntry.
  * @returns {Promise<JSX.Element | null>} Promo JSX or `null` when there are no banners.
  */
@@ -23,7 +23,7 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
           <Link
             href={heroBanner.pageUrl ? `/promo/${heroBanner.pageUrl}` : '#'}
             title={heroBanner.title}
-            className="block w-full overflow-hidden rounded-[10px] transition-transform duration-500 hover:scale-[1.01]"
+            className="block w-full overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]"
           >
             <Image
               src={heroBanner.desktopImage as string}

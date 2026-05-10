@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
 
-/** ApplyButton — Apply/Cancel toggle for adding a group product to the cart. */
+/** ApplyButton - Apply/Cancel toggle for adding a group product to the cart. */
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
@@ -31,14 +31,14 @@ const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => 
   return !productInCart || !inCart ? (
     <button
       onClick={() => addToCartHandle()}
-      className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
+      className="rounded-card border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
       {t('apply_text', 'Apply')}
     </button>
   ) : (
     <button
       onClick={() => removeFromCartHandle()}
-      className="rounded-[5px] border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
+      className="rounded-card border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold hover_btn_white"
     >
       {t('cancel_text', '')}
     </button>

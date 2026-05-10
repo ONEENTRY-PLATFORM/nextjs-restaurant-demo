@@ -69,13 +69,13 @@ const PriceFilter = ({ prices }: { prices: PriceBounds }): JSX.Element => {
       <div className="filter_title mb-5 self-start">{t('filter_price_title', 'Price')}</div>
 
       <div className="mb-6 flex w-full gap-5 self-center">
-        <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
+        <div className="flex flex-1 gap-2.5 rounded-card border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="text-base leading-8 text-paper/60">{t('from', 'From')}</span>
           <span className="text-lg leading-8 text-white/90">
             <PriceFromInput price={priceFrom} setPrice={setPriceFrom} />
           </span>
         </div>
-        <div className="flex flex-1 gap-2.5 rounded-[5px] border border-paper/40 bg-transparent px-3 py-1.5">
+        <div className="flex flex-1 gap-2.5 rounded-card border border-paper/40 bg-transparent px-3 py-1.5">
           <span className="self-start text-base leading-8 text-paper/60">{t('to_text', 'To')}</span>
           <span className="text-lg leading-8 text-white/90">
             <PriceToInput price={priceTo} setPrice={setPriceTo} />

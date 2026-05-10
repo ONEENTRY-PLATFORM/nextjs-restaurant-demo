@@ -34,7 +34,7 @@ type DayCell = {
   iso: string;
 };
 
-/** Builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months. */
+/** Builds a rectangular 6Ã—7 day grid for the month, padded with tails of neighboring months. */
 const buildMonthGrid = (year: number, month: number): DayCell[] => {
   const first = new Date(year, month, 1);
   const firstDow = (first.getDay() + 6) % 7;
@@ -92,8 +92,8 @@ type DateTimePickerSheetProps = {
 };
 
 /**
- * DateTimePickerSheet — two-step bottom-sheet/modal for selecting date and time.
- * Step 1 — calendar, Step 2 — time-slot grid; `Apply` invokes `onApply(date, time)`.
+ * DateTimePickerSheet - two-step bottom-sheet/modal for selecting date and time.
+ * Step 1 - calendar, Step 2 - time-slot grid; `Apply` invokes `onApply(date, time)`.
  */
 const DateTimePickerSheet = ({
   date,
@@ -118,9 +118,10 @@ const DateTimePickerSheet = ({
   const [selectedTime, setSelectedTime] = useState<string>(time ?? '');
   const [stepName, setStepName] = useState<'date' | 'time'>('date');
 
-  // Portal to document.body so the fixed-positioned overlay escapes any ancestor that creates a containing block (transform / filter / backdrop-filter — e.g. CartPopup, ReservationPopup).
+  // Portal to document.body so the fixed-positioned overlay escapes any ancestor that creates a containing block (transform / filter / backdrop-filter - e.g. CartPopup, ReservationPopup).
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -189,7 +190,7 @@ const DateTimePickerSheet = ({
     return out;
   }, [selectedDate, getSlots, range, step]);
 
-  // Intentionally do NOT reset the selected time when the date changes — the user expects the selection to persist "until I change it".
+  // Intentionally do NOT reset the selected time when the date changes - the user expects the selection to persist "until I change it".
 
   const goPrev = () => {
     if (month === 0) {
@@ -224,7 +225,7 @@ const DateTimePickerSheet = ({
       />
       <div
         id="modalBody"
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-[90vh] w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="mb-5 flex items-center justify-between gap-5">
           {isDateStep ? (
@@ -239,7 +240,7 @@ const DateTimePickerSheet = ({
               <ArrowBackIcon className="hover-target text-paper" />
             </button>
           )}
-          <h2 className="flex-1 text-center font-bold text-[20px] uppercase text-brand">
+          <h2 className="flex-1 text-center font-bold text-xl uppercase text-brand">
             {isDateStep ? dateTitle : timeTitle}
           </h2>
           {onClose ? (
@@ -288,8 +289,8 @@ const DateTimePickerSheet = ({
                   <ChevronMiniLeftIcon />
                 </button>
                 <div className="flex gap-3.75">
-                  <h2 className="font-semibold text-[20px] text-brand">{MONTH_NAMES[month]}</h2>
-                  <h3 className="font-light text-[20px] text-brand">{year}</h3>
+                  <h2 className="font-semibold text-xl text-brand">{MONTH_NAMES[month]}</h2>
+                  <h3 className="font-light text-xl text-brand">{year}</h3>
                 </div>
                 <button type="button" onClick={goNext} aria-label="Next month" className="group">
                   <ChevronMiniRightIcon />
@@ -330,7 +331,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canContinue}
               onClick={() => setStepName('time')}
-              className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
+              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_white disabled:opacity-60"
             >
               {continueText}
             </button>
@@ -339,7 +340,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canApply}
               onClick={handleApply}
-              className="block rounded-[5px] border border-brand px-3.75 py-1.25 font-bold text-[20px] text-brand hover_btn_white disabled:opacity-60"
+              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_white disabled:opacity-60"
             >
               {applyText}
             </button>

@@ -27,7 +27,7 @@ import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
  * Converts `order.formData` into a flat set of initialValues for ReservationForm.
  *
  * @param   {IOrdersFormData[]}  formData    - Raw order fields.
- * @param   {RestaurantOption[]} restaurants - Available options for mapping entity → pageUrl.
+ * @param   {RestaurantOption[]} restaurants - Available options for mapping entity â†’ pageUrl.
  * @returns {Record<string, string>}         Flat set of initial values.
  */
 const buildInitialValuesFromOrder = (
@@ -67,7 +67,7 @@ const buildInitialValuesFromOrder = (
   return result;
 };
 
-/** ReservationPopup — table booking popup. */
+/** ReservationPopup - table booking popup. */
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
@@ -108,7 +108,7 @@ const ReservationPopup = (): JSX.Element => {
     [pages]
   );
 
-  // Edit mode: pending data from reservationEditState → ReservationForm will call updateOrderByMarkerAndId.
+  // Edit mode: pending data from reservationEditState â†’ ReservationForm will call updateOrderByMarkerAndId.
   const [editing, setEditing] = useState<PendingReservationEdit | null>(null);
   // Resume mode: restore form values after the OAuth redirect (sessionStorage).
   const [resume, setResume] = useState<ReservationOAuthResume | null>(null);
@@ -140,7 +140,7 @@ const ReservationPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
           <button
@@ -151,7 +151,7 @@ const ReservationPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-semibold text-[24px] text-brand">
+          <p className="font-semibold text-2xl text-brand">
             {t('reservation_default_title', 'Reservation')}
           </p>
           <ClosePopupButton onClose={close} ariaLabel="Close reservation" />

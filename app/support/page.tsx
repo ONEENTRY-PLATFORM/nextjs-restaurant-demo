@@ -36,7 +36,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
   return (
     <section className="section_layout">
-      <h1 className="mb-5 font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
+      <h1 className="mb-5 font-bold text-2xl md:text-[32px] uppercase tracking-fine text-brand">
         {title}
       </h1>
       {descriptionHtml ? (
@@ -93,7 +93,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
 export default SupportPage;
 
-/** generateMetadata — support page metadata. */
+/** generateMetadata - support page metadata. */
 export async function generateMetadata(): Promise<Metadata> {
   const [{ page }, dict] = await Promise.all([getPageByUrl('support'), getDictionary()]);
   const title =

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { type JSX } from 'react';
 
 /**
- * Empty state for the product grid — shown when `getProducts` returns
+ * Empty state for the product grid - shown when `getProducts` returns
  * nothing (search/filter without results or no products in the category).
  */
 const ProductsNotFound = (): JSX.Element => {
@@ -20,11 +20,11 @@ const ProductsNotFound = (): JSX.Element => {
       </div>
       <h2 className="font-semibold text-2xl text-paper">Products not found</h2>
       <p className="text-base text-muted-text">
-        Try adjusting your filters or search query — nothing matched this combination.
+        Try adjusting your filters or search query - nothing matched this combination.
       </p>
       <Link
         href="/shop"
-        className="mt-2 rounded-[10px] bg-custom-gradient py-2.5 font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover px-5"
+        className="mt-2 rounded-panel bg-custom-gradient py-2.5 font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover px-5"
       >
         Reset & browse all
       </Link>

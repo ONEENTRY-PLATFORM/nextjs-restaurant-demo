@@ -19,7 +19,7 @@ const redirectToOAuth = (url: string) => {
 };
 
 /**
- * AuthProviderSelect — first auth step (provider picker).
+ * AuthProviderSelect - first auth step (provider picker).
  *
  * @param   {object}     props           - Props.
  * @param   {string}     props.className - Wrapper class.
@@ -39,13 +39,13 @@ const AuthProviderSelect = ({
   const onProviderClick = (p: IAuthProvidersEntity) => {
     if (p.identifier === 'email' || p.identifier === 'phone') {
       // Route the phone provider through the same email/login flow in SignInForm
-      // (a dedicated PhoneAuthForm is not used — see MISMATCH-LOG.md §C.8.2).
+      // (a dedicated PhoneAuthForm is not used - see MISMATCH-LOG.md Â§C.8.2).
       setComponent('SignInForm');
       return;
     }
     if (p.identifier === 'google') {
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth is not configured yet (see MISMATCH-LOG.md §C.8.1).
+        // Google OAuth is not configured yet (see MISMATCH-LOG.md Â§C.8.1).
         // Fall back to email so the user still has a working sign-in path.
         setComponent('SignInForm');
       }
@@ -82,7 +82,7 @@ const AuthProviderSelect = ({
                 onClick={() => onProviderClick(p)}
                 className={
                   isPrimary
-                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover'
+                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover'
                     : 'cart_btn'
                 }
               >

@@ -307,7 +307,7 @@ const ReservationForm = ({
     );
   };
 
-  // Step 2: the user picked a payment method — create the order.
+  // Step 2: the user picked a payment method - create the order.
   const onApplyPayment = async (paymentAccountIdentifier: string) => {
     if (step.kind !== 'payment') return;
     setLoading(true);
@@ -326,7 +326,7 @@ const ReservationForm = ({
       }
       const { id } = res as { id: number };
 
-      // Online → open a payment session and redirect. Cash accounts return paymentUrl=null
+      // Online â†’ open a payment session and redirect. Cash accounts return paymentUrl=null
       // and fall through to the success branch shown inside the popup.
       if (paymentAccountIdentifier !== 'cash') {
         try {
@@ -339,7 +339,7 @@ const ReservationForm = ({
             }
           }
         } catch {
-          // Swallow — the order is already created, we still proceed to success.
+          // Swallow - the order is already created, we still proceed to success.
         }
       }
 
@@ -435,7 +435,7 @@ const ReservationForm = ({
       {/* Preferences textarea (full width) */}
       {hasNotes ? (
         <div className="flex flex-col border-b border-b-muted">
-          <label htmlFor={TEXT_MARKER} className="font-normal text-[16px] text-paper">
+          <label htmlFor={TEXT_MARKER} className="font-normal text-base text-paper">
             {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
               t('preferences_text', 'Preferences')}
           </label>
@@ -475,7 +475,7 @@ const ReservationForm = ({
         <button
           type="submit"
           disabled={loading}
-          className="flex h-9.25 w-31.25 items-center justify-center rounded-[5px] bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-[10px] hover_btn_transp disabled:opacity-60"
+          className="flex h-9.25 w-31.25 items-center justify-center rounded-card bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-card hover_btn_transp disabled:opacity-60"
         >
           {t('continue_text', 'Continue')}
         </button>
@@ -518,7 +518,7 @@ type FieldProps = {
 };
 
 /**
- * Field — a single field of the booking form.
+ * Field - a single field of the booking form.
  *
  * @param   {FieldProps}  props - Field props.
  * @returns {JSX.Element}       Field JSX.
@@ -535,7 +535,7 @@ const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Elemen
         onClick={() => onOpenPicker()}
         className="flex flex-1 flex-col border-b border-b-muted text-left"
       >
-        <span className="font-normal text-[16px] text-paper">{label}</span>
+        <span className="font-normal text-base text-paper">{label}</span>
         <span className="cart_input block">{v || 'Select date & time'}</span>
       </button>
     );
@@ -544,7 +544,7 @@ const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Elemen
   if (attr.type === 'text') {
     return (
       <div className="flex flex-1 flex-col border-b border-b-muted">
-        <label htmlFor={attr.marker} className="font-normal text-[16px] text-paper">
+        <label htmlFor={attr.marker} className="font-normal text-base text-paper">
           {label}
         </label>
         <textarea
@@ -561,7 +561,7 @@ const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Elemen
 
   return (
     <div className="flex flex-1 flex-col border-b border-b-muted">
-      <label htmlFor={attr.marker} className="font-normal text-[16px] text-paper">
+      <label htmlFor={attr.marker} className="font-normal text-base text-paper">
         {label}
       </label>
       <input

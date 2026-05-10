@@ -10,7 +10,7 @@ import DecreaseButton from './DecreaseButton';
 import IncreaseButton from './IncreaseButton';
 import QuantityInput from './QuantityInput';
 
-/** QuantitySelector — −/qty/+ control for the cart item quantity. */
+/** QuantitySelector - âˆ’/qty/+ control for the cart item quantity. */
 const QuantitySelector = ({
   id,
   units,
@@ -44,7 +44,7 @@ const QuantitySelector = ({
   return (
     <div
       className={
-        'flex items-center min-h-16.5 justify-between rounded-[10px] border border-white px-2 text-white/90 ' +
+        'flex items-center min-h-16.5 justify-between rounded-panel border border-white px-2 text-white/90 ' +
         className
       }
       style={{ height: height }}

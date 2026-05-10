@@ -46,7 +46,7 @@ const MOBILE_INLINE_SCREENS: Record<string, ProfileScreen> = {
   bookings: 'bookings',
 };
 
-/** ProfileNavMenu — list of profile links from the CMS menu `user_menu` (children of `profile`). */
+/** ProfileNavMenu - list of profile links from the CMS menu `user_menu` (children of `profile`). */
 const ProfileNavMenu = ({
   isMdUp,
   onNavigate,
@@ -92,7 +92,7 @@ const ProfileNavMenu = ({
         const label = page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;
         const inlineScreen = page.pageUrl ? MOBILE_INLINE_SCREENS[page.pageUrl] : undefined;
 
-        // Mobile inline screen — the button switches `screen` inside the popup.
+        // Mobile inline screen - the button switches `screen` inside the popup.
         if (!isMdUp && inlineScreen) {
           return (
             <button
@@ -107,7 +107,7 @@ const ProfileNavMenu = ({
           );
         }
 
-        // Default (md+ or unknown pageUrl) — link to standalone `/profile/{pageUrl}` that closes the popup.
+        // Default (md+ or unknown pageUrl) - link to standalone `/profile/{pageUrl}` that closes the popup.
         return (
           <Link
             key={page.id}
@@ -145,7 +145,7 @@ const SCREEN_TITLES: Record<Exclude<ProfileScreen, 'menu'>, string> = {
   personal: 'My Profile',
 };
 
-/** ScreenHeader — mobile sub-screen header: back / title. */
+/** ScreenHeader - mobile sub-screen header: back / title. */
 const ScreenHeader = ({
   screen,
   onBack,
@@ -162,12 +162,12 @@ const ScreenHeader = ({
     >
       <ArrowBackIcon className="hover-target text-paper" />
     </button>
-    <p className="font-semibold text-[24px] text-brand">{SCREEN_TITLES[screen]}</p>
+    <p className="font-semibold text-2xl text-brand">{SCREEN_TITLES[screen]}</p>
     <span className="size-7" aria-hidden="true" />
   </div>
 );
 
-/** ProfilePopup — profile drawer. */
+/** ProfilePopup - profile drawer. */
 const ProfilePopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
@@ -197,7 +197,7 @@ const ProfilePopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-[10px] shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
+        className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-card shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
         <div className="hidden w-full md:flex justify-end">
           <ClosePopupButton

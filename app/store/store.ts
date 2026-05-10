@@ -77,8 +77,11 @@ const rootReducer = combineReducers({
 });
 
 /**
- * Sets up the Redux store with redux-persist.
+ * Sets up the Redux store with `RTKApi` middleware and the combined root reducer
+ * (favorites, cart, animations, RTK Query slice). Used by `StoreProvider` to mount
+ * a per-request store on the server and a singleton store on the client.
  *
+ * @returns Configured Redux store (`AppStore`) ready to be passed to `<Provider>`.
  * @see {@link https://github.com/rt2zz/redux-persist?tab=readme-ov-file#nested-persists}
  */
 export const setupStore = () => {

@@ -10,7 +10,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import StarRating from './StarRating';
 
 /**
- * ReviewsSlideUpPanel — fixed slide-up review panel (mobile sheet).
+ * ReviewsSlideUpPanel - fixed slide-up review panel (mobile sheet).
  * Submits the review via the {@link submitReview} Server Action.
  * @param   {object} props               - Props.
  * @param   {number} props.productId     - Product ID the review is attached to.
@@ -67,9 +67,9 @@ const ReviewsSlideUpPanel = ({
     <div className="review_sheet">
       <div className="mx-auto max-w-88.75">
         <div className="flex items-center justify-center gap-1.25">
-          <p className="text-center font-bold text-[20px] text-brand">{title}</p>
+          <p className="text-center font-bold text-xl text-brand">{title}</p>
         </div>
-        <p className="mt-5 font-normal text-[16px] text-paper">
+        <p className="mt-5 font-normal text-base text-paper">
           {isAuth ? description : 'Sign in to leave a review.'}
         </p>
 
@@ -81,7 +81,7 @@ const ReviewsSlideUpPanel = ({
           value={text}
           onChange={e => setText(e.currentTarget.value)}
           disabled={!isAuth}
-          className="mt-5 w-full resize-none rounded-[5px] border border-brand bg-transparent p-2 text-paper disabled:opacity-60"
+          className="mt-5 w-full resize-none rounded-card border border-brand bg-transparent p-2 text-paper disabled:opacity-60"
           rows={4}
         />
 
@@ -90,7 +90,7 @@ const ReviewsSlideUpPanel = ({
             type="button"
             onClick={onApply}
             disabled={loading || success}
-            className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-brand hover_btn_white disabled:opacity-60"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-brand hover_btn_white disabled:opacity-60"
           >
             {!isAuth ? 'Sign in' : success ? 'Sent' : loading ? '...' : 'Apply'}
           </button>
@@ -102,7 +102,7 @@ const ReviewsSlideUpPanel = ({
               setSuccess(false);
               setError('');
             }}
-            className="flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-paper text-paper hover_btn_white"
+            className="flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-paper hover_btn_white"
           >
             Edit
           </button>

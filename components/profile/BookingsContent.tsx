@@ -30,12 +30,12 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
   const localized = (o.statusLocalizeInfos as { title?: string } | undefined)?.title;
   if (localized) return localized;
   const id = o.statusIdentifier;
-  if (!id) return '—';
+  if (!id) return '-';
   return id.replace(/_/g, ' ').replace(/(^|\s)\S/g, c => c.toUpperCase());
 };
 
 /**
- * BookingsContent — Active reservation + Reservation History.
+ * BookingsContent - Active reservation + Reservation History.
  * Data: `getAllOrdersByMarker({ marker: 'booking_order' })` (same storage marker as in `ReservationForm`).
  */
 const BookingsContent = (): JSX.Element => {
@@ -46,7 +46,7 @@ const BookingsContent = (): JSX.Element => {
   const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Edit: pending → side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
+  // Edit: pending â†’ side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
   const onEdit = (order: IOrderByMarkerEntity) => {
     if (!order.formIdentifier) {
       toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
@@ -61,7 +61,7 @@ const BookingsContent = (): JSX.Element => {
     setComponent('ReservationPopup');
   };
 
-  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG §C.10) — optimistic removal + toast.
+  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG Â§C.10) - optimistic removal + toast.
   const onCancel = (order: IOrderByMarkerEntity) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
@@ -124,7 +124,7 @@ const BookingsContent = (): JSX.Element => {
         ))
       )}
 
-      <p className="mt-2.5 text-center font-bold text-[20px] tracking-[0.02em] text-brand">
+      <p className="mt-2.5 text-center font-bold text-xl tracking-fine text-brand">
         Reservation History
       </p>
 
@@ -157,8 +157,8 @@ const ActiveBookingCard = ({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between rounded-[5px] border border-brand px-3.75 py-1.25">
-        <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
+      <div className="flex items-center justify-between rounded-card border border-brand px-3.75 py-1.25">
+        <p className="font-bold text-base text-paper">â„–{formatOrderNumber(order)}</p>
         <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
         <p className="font-normal text-base text-paper">{date}</p>
       </div>
@@ -166,14 +166,14 @@ const ActiveBookingCard = ({
         <button
           type="button"
           onClick={onCancel}
-          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-paper text-base text-paper"
+          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-card border border-paper text-base text-paper"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={onEdit}
-          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-[5px] border border-brand text-base text-brand"
+          className="hover_btn_white flex h-8.75 w-23.75 items-center justify-center rounded-card border border-brand text-base text-brand"
         >
           Edit
         </button>
@@ -188,8 +188,8 @@ const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Ele
     '') as string;
   const date = dateRaw ? formatDate(dateRaw) : '';
   return (
-    <div className="flex items-center justify-between rounded-[5px] border border-paper px-3.75 py-1.25">
-      <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
+    <div className="flex items-center justify-between rounded-card border border-paper px-3.75 py-1.25">
+      <p className="font-bold text-base text-paper">â„–{formatOrderNumber(order)}</p>
       <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
       <p className="font-normal text-base text-paper">{date}</p>
     </div>

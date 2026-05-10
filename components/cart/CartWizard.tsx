@@ -63,14 +63,14 @@ const useIsMdUp = (): boolean =>
   useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
- * CartWizard — multi-step checkout driven by `orderReducer.step`.
+ * CartWizard - multi-step checkout driven by `orderReducer.step`.
  *
- * Flow: `cart` → `order` (review + promo) → `payment` (address + time + payment
- * in one step) → `success` | `error`.
+ * Flow: `cart` â†’ `order` (review + promo) â†’ `payment` (address + time + payment
+ * in one step) â†’ `success` | `error`.
  *
  * Authorization runs through the canonical `Modal` + `AuthProviderSelect`
  * (`OpenDrawerContext`) launched from `CartPage.onApply`. The wizard itself
- * does not render signin — after a successful login, `CartPage` auto-advances
+ * does not render signin - after a successful login, `CartPage` auto-advances
  * to `order`.
  *
  * @param   {CartWizardProps} props - Wizard props.
@@ -85,7 +85,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
 
   // Terminal steps (success/error) are one-shot. If they survived
   // navigation (via the persisted store), reset the wizard to `cart` on
-  // the next mount of the cart page — otherwise `/cart` would forever show
+  // the next mount of the cart page - otherwise `/cart` would forever show
   // the confirmation screen of the previous order.
   useEffect(() => {
     if (step === 'success' || step === 'error') {
@@ -99,7 +99,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
   const showInline = !isCartStep && isMdUp;
   const showPopup = !isCartStep && !isMdUp;
 
-  // Return from an inline step (order/payment/…) back to the cart step via breadcrumb.
+  // Return from an inline step (order/payment/â€¦) back to the cart step via breadcrumb.
   const handleBackToCart = (): void => {
     const orderRows = document.querySelectorAll('.step-order-row');
 
@@ -229,9 +229,9 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
       </div>
 
       {showPopup && (
-        <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-[10px]">
-          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 min-h-140 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-[10px]">
-            {/* Popup header — back / title / close */}
+        <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-card">
+          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 min-h-140 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-card">
+            {/* Popup header - back / title / close */}
             <div className="flex items-center justify-between md:mb-2">
               <button
                 type="button"
@@ -241,7 +241,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
               >
                 <ArrowBackIcon className="hover-target" />
               </button>
-              <p className="font-normal text-[24px] text-paper md:font-semibold md:uppercase md:text-brand">
+              <p className="font-normal text-2xl text-paper md:font-semibold md:uppercase md:text-brand">
                 {STEP_TITLES[step]}
               </p>
               <ClosePopupButton

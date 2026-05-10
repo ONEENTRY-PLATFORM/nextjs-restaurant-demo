@@ -21,7 +21,13 @@ function hasCardLeave(pathname: string): boolean {
   );
 }
 
-/** TransitionProvider — main provider for 'stage' transitions. */
+/**
+ * TransitionProvider — wraps the app with a `next-transition-router` so route changes
+ * play a GSAP-driven stage transition on the wrapped element.
+ *
+ * @param children - Tree rendered inside the transition stage.
+ * @returns JSX of the transition root.
+ */
 export default function TransitionProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();

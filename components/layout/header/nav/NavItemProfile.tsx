@@ -13,9 +13,9 @@ import ProfileIcon from '@/components/icons/profile';
 import LogoutMenuItem from './user-menu/LogoutMenuItem';
 
 /**
- * NavItemProfile — profile icon in the top menu.
+ * NavItemProfile - profile icon in the top menu.
  *
- * Unauthenticated → opens SignInForm; authenticated → links to `/profile`,
+ * Unauthenticated â†’ opens SignInForm; authenticated â†’ links to `/profile`,
  * hover reveals the sub-menu of children of the `profile` item from the `user_menu` CMS menu.
  */
 const PROFILE_MENU_MARKER = 'user_menu';
@@ -32,7 +32,7 @@ const NavItemProfile = (): JSX.Element => {
     { skip: !isAuth }
   );
 
-  // Children of the `profile` item in `user_menu` — sub-menu contents.
+  // Children of the `profile` item in `user_menu` - sub-menu contents.
   const profileChildren = useMemo<IMenusPages[]>(() => {
     const pages = menu?.pages ?? [];
     const profileEntry = pages.find(p => p.pageUrl === PROFILE_PAGE_URL);
@@ -76,10 +76,10 @@ const NavItemProfile = (): JSX.Element => {
       {hoverOpen && (profileChildren.length > 0 || isAuth) ? (
         <ul
           role="menu"
-          // `pt-2` — gap so the hover zone doesn't break when the cursor moves from the icon to the sub-menu.
+          // `pt-2` - gap so the hover zone doesn't break when the cursor moves from the icon to the sub-menu.
           className="absolute right-0 top-6 z-30 w-48 pt-2"
         >
-          <div className="rounded-[10px] bg-ink/80 px-4 py-2 text-paper shadow-lg backdrop-blur-[10px]">
+          <div className="rounded-panel bg-ink/80 px-4 py-2 text-paper shadow-lg backdrop-blur-card">
             {profileChildren.map(page => {
               const label =
                 page.localizeInfos?.menuTitle || page.localizeInfos?.title || page.pageUrl;

@@ -22,7 +22,7 @@ import {
 } from './reservationOAuthResumeState';
 
 type ReservationAuthStepProps = {
-  /** Callback fired on successful auth — switches the wizard step to `payment`. */
+  /** Callback fired on successful auth - switches the wizard step to `payment`. */
   onAuthSuccess: () => void;
   onBack: () => void;
   /** Current booking form values; persisted to sessionStorage before the OAuth redirect. */
@@ -32,11 +32,11 @@ type ReservationAuthStepProps = {
 type SubStep = 'providers' | 'email';
 
 /**
- * ReservationAuthStep — auth step inside the booking popup.
+ * ReservationAuthStep - auth step inside the booking popup.
  *
  * Implemented inline (without `OpenDrawerContext.setComponent`) to avoid
  * tearing down the mounted `ReservationPopup` and losing the collected
- * form values. Two sub-steps: `providers` → `email`.
+ * form values. Two sub-steps: `providers` â†’ `email`.
  *
  * @param   {ReservationAuthStepProps} props - Step props.
  * @returns {JSX.Element}                    Auth step JSX.
@@ -72,7 +72,7 @@ const ReservationAuthStep = ({
     if (p.identifier === 'google') {
       persistResumeBeforeOAuth();
       if (!startGoogleOAuth(p.config?.oauthAuthUrl)) {
-        // Google OAuth is not configured (MISMATCH-LOG §C.8.1) — fall back to the email form. Clear resume.
+        // Google OAuth is not configured (MISMATCH-LOG Â§C.8.1) - fall back to the email form. Clear resume.
         clearPendingReservationResume();
         setSubStep('email');
       }
@@ -112,7 +112,7 @@ const ReservationAuthStep = ({
     const active = sortActiveAuthProviders(providers ?? []);
     return (
       <div className="flex w-full flex-col items-center px-5 md:px-19">
-        <p className="text-center font-normal text-[16px] leading-5 text-paper">
+        <p className="text-center font-normal text-base leading-5 text-paper">
           {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
         </p>
         <div className="mt-2.5 flex w-full flex-col">
@@ -127,7 +127,7 @@ const ReservationAuthStep = ({
                 disabled={isProvidersLoading}
                 className={
                   isPrimary
-                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-[10px] border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover disabled:opacity-60'
+                    ? 'mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-custom_btnorange text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand-hover disabled:opacity-60'
                     : 'cart_btn disabled:opacity-60'
                 }
               >
@@ -142,7 +142,7 @@ const ReservationAuthStep = ({
         <button
           type="button"
           onClick={onBack}
-          className="mt-7.5 flex h-9 items-center justify-center rounded-[5px] border border-paper px-5 font-normal text-[16px] text-paper hover:opacity-80"
+          className="mt-7.5 flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
         >
           {t('back_text', 'Back')}
         </button>
@@ -152,12 +152,12 @@ const ReservationAuthStep = ({
 
   return (
     <form onSubmit={onSubmit} className="flex w-full flex-col gap-5 px-5 md:px-19">
-      <p className="text-center font-normal text-[16px] leading-5 text-paper">
+      <p className="text-center font-normal text-base leading-5 text-paper">
         {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
       </p>
 
       <div className="flex flex-col border-b border-b-muted">
-        <label htmlFor="reservation-auth-email" className="font-normal text-[16px] text-paper">
+        <label htmlFor="reservation-auth-email" className="font-normal text-base text-paper">
           {t('email_label', 'Email')}
         </label>
         <input
@@ -173,7 +173,7 @@ const ReservationAuthStep = ({
       </div>
 
       <div className="flex flex-col border-b border-b-muted">
-        <label htmlFor="reservation-auth-password" className="font-normal text-[16px] text-paper">
+        <label htmlFor="reservation-auth-password" className="font-normal text-base text-paper">
           {t('password_label', 'Password')}
         </label>
         <input
@@ -194,14 +194,14 @@ const ReservationAuthStep = ({
         <button
           type="button"
           onClick={() => setSubStep('providers')}
-          className="flex h-9 items-center justify-center rounded-[5px] border border-paper px-5 font-normal text-[16px] text-paper hover:opacity-80"
+          className="flex h-9 items-center justify-center rounded-card border border-paper px-5 font-normal text-base text-paper hover:opacity-80"
         >
           {t('back_text', 'Back')}
         </button>
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="flex h-9 min-w-25 items-center justify-center rounded-[5px] border border-brand px-5 font-normal text-[16px] text-brand hover:bg-brand/10 disabled:opacity-60"
+          className="flex h-9 min-w-25 items-center justify-center rounded-card border border-brand px-5 font-normal text-base text-brand hover:bg-brand/10 disabled:opacity-60"
         >
           {loading ? '...' : t('sign_in_text', 'Sign in')}
         </button>

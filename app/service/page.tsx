@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
- * ServicePage — service landing page with logo and CTAs from attributes of the CMS `services` page.
+ * ServicePage - service landing page with logo and CTAs from attributes of the CMS `services` page.
  * @returns {Promise<JSX.Element>} JSX of the service entry page.
  */
 const ServicePage = async (): Promise<JSX.Element> => {
@@ -45,7 +45,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         {primaryHref && primaryCta ? (
           <Link
             href={primaryHref}
-            className="mt-42.5 flex h-15 w-full items-center justify-center rounded-[5px] bg-custom_transparent backdrop-blur-[10px] font-bold text-[17px] uppercase text-brand hover_btn_transp"
+            className="mt-42.5 flex h-15 w-full items-center justify-center rounded-card bg-custom_transparent backdrop-blur-card font-bold text-[17px] uppercase text-brand hover_btn_transp"
           >
             {primaryCta}
           </Link>
@@ -53,7 +53,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         {secondaryHref && secondaryCta ? (
           <Link
             href={secondaryHref}
-            className="mt-5 flex h-15 w-full items-center justify-center rounded-[5px] bg-custom_btnorange backdrop-blur-[10px] font-bold text-[18px] uppercase text-custom_white hover_btn_transp"
+            className="mt-5 flex h-15 w-full items-center justify-center rounded-card bg-custom_btnorange backdrop-blur-card font-bold text-[18px] uppercase text-custom_white hover_btn_transp"
           >
             {secondaryCta}
           </Link>
@@ -65,7 +65,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
 
 export default ServicePage;
 
-/** generateMetadata — service entry page metadata. */
+/** generateMetadata - service entry page metadata. */
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl('services');
   return { title: page?.localizeInfos?.title };

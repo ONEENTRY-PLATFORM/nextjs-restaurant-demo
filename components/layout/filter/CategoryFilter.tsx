@@ -16,7 +16,7 @@ type Category = {
   href: string;
 };
 
-// Trailing CTA — hardcoded since it lives outside the `menu` page tree.
+// Trailing CTA - hardcoded since it lives outside the `menu` page tree.
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
@@ -24,7 +24,7 @@ const BOOKING_TILE: Category = {
 };
 
 /**
- * CategoryFilter — left-side slide-in panel with the menu category list + "Booking Table" CTA.
+ * CategoryFilter - left-side slide-in panel with the menu category list + "Booking Table" CTA.
  *
  * @param   {object}          props       - Component props.
  * @param   {IPagesEntity[]}  props.pages - Child pages of the `menu` page.
@@ -90,7 +90,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       />
       <aside
         className={
-          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-[10px] overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
+          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-card overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
           (isVisible
             ? 'translate-y-0 md:translate-x-0'
             : 'translate-y-full md:-translate-x-full md:translate-y-0')
@@ -102,7 +102,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
           <button type="button" onClick={close} aria-label="Back" className="group_white">
             <ArrowBackOrangeIcon />
           </button>
-          <p className="font-normal text-xl tracking-[0.02em] text-paper">Category</p>
+          <p className="font-normal text-xl tracking-fine text-paper">Category</p>
           <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>

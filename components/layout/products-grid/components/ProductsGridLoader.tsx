@@ -7,14 +7,14 @@ import type { LoaderProps } from '@/app/types/global';
 import CardAnimations from '../animations/CardAnimations';
 
 type Props = LoaderProps & {
-  /** When true, animate scale only (no fade). Use for the overlay skeleton in `ProductsGridReveal` — the parent handles the opacity fade-out, and the skeleton's scale must track the card underneath in lockstep. */
+  /** When true, animate scale only (no fade). Use for the overlay skeleton in `ProductsGridReveal` - the parent handles the opacity fade-out, and the skeleton's scale must track the card underneath in lockstep. */
   scaleOnly?: boolean;
 };
 
 const SkeletonBody = (): ReactNode => (
   <>
     <div className="absolute right-2.5 top-3.75 z-10 h-5.25 w-6.5 animate-pulse rounded-md bg-paper/15 md:right-3.75 md:top-5 md:h-7.5 md:w-9.5" />
-    <div className="relative aspect-square w-full animate-pulse overflow-hidden rounded-[5px] bg-paper/10" />
+    <div className="relative aspect-square w-full animate-pulse overflow-hidden rounded-card bg-paper/10" />
     <div className="relative z-10 -mt-8 flex h-8.5 items-center justify-around bg-custom_black px-2.5 md:-mt-10.75 md:h-11">
       <div className="h-3 w-12 animate-pulse rounded-full bg-paper/20" />
       <div className="h-3 w-10 animate-pulse rounded-full bg-paper/20" />
@@ -32,7 +32,7 @@ const SkeletonBody = (): ReactNode => (
   </>
 );
 
-/** ProductsGridLoader — product card grid skeleton (mirrors `ProductCard` layout). */
+/** ProductsGridLoader - product card grid skeleton (mirrors `ProductCard` layout). */
 const ProductsGridLoader = ({ productsLimit = 10 }: Props): JSX.Element => {
   return (
     <section aria-hidden="true" className="products_grid_layout">

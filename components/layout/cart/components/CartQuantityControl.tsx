@@ -20,7 +20,7 @@ type CartQuantityControlProps = {
 };
 
 /**
- * CartQuantityControl — compact +/qty/- control; the `-` step at qty===1 removes the item with an undo toast.
+ * CartQuantityControl - compact +/qty/- control; the `-` step at qty===1 removes the item with an undo toast.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -65,7 +65,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
   };
 
   return (
-    <div className="flex h-17.5 w-8.75 flex-col items-stretch rounded-[5px] border border-white font-normal text-[20px] text-paper opacity-90">
+    <div className="flex h-17.5 w-8.75 flex-col items-stretch rounded-card border border-white font-normal text-xl text-paper opacity-90">
       <button
         type="button"
         onClick={onIncrease}

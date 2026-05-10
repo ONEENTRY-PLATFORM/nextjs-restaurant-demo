@@ -14,7 +14,7 @@ import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
 import Loader from '@/components/shared/Spinner';
 
-/** FavoritesGrid — favorites grid on the dashboard. */
+/** FavoritesGrid - favorites grid on the dashboard. */
 const FavoritesGrid = (): JSX.Element => {
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
@@ -46,7 +46,7 @@ const FavoritesGrid = (): JSX.Element => {
   );
 };
 
-/** FavoriteCard — single favorite card in the desktop grid. */
+/** FavoriteCard - single favorite card in the desktop grid. */
 const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
@@ -63,7 +63,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full items-center justify-between rounded-[5px] border border-gray-300 p-2.5">
+    <div className="flex w-full items-center justify-between rounded-card border border-gray-300 p-2.5">
       {imageSrc ? (
         <Image
           src={imageSrc}

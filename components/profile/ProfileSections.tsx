@@ -54,7 +54,7 @@ const resolveInputType = (attr: IFormAttribute): string => {
   return 'text';
 };
 
-/** ProfileSections — collapsible "My Profile" + "Address" sections. */
+/** ProfileSections - collapsible "My Profile" + "Address" sections. */
 const ProfileSections = (): JSX.Element => {
   const t = useT();
   const { user, refreshUser } = useContext(AuthContext);
@@ -95,7 +95,7 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
-  // Raw value without casting to string — for `json` fields (`user_address`), where the SDK returns an array/object.
+  // Raw value without casting to string - for `json` fields (`user_address`), where the SDK returns an array/object.
   const userRawField = useCallback(
     (marker: string): unknown => {
       if (!user?.formData || !Array.isArray(user.formData)) return undefined;
@@ -146,10 +146,10 @@ const ProfileSections = (): JSX.Element => {
         formData.push({ marker: 'user_address', type: 'json', value: serialized });
       }
       try {
-        // phoneSMS is optional and validated server-side against /^\+[0-9]{10,15}$/ — do not send a malformed phone in formData, otherwise it blocks saving addresses.
+        // phoneSMS is optional and validated server-side against /^\+[0-9]{10,15}$/ - do not send a malformed phone in formData, otherwise it blocks saving addresses.
         const phone = normalizePhoneE164(userField('phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
-        // authData is required for the email provider (otherwise 400 "Login or password values are missed"). After auto-login via refresh-token there is no password in the session — bail out.
+        // authData is required for the email provider (otherwise 400 "Login or password values are missed"). After auto-login via refresh-token there is no password in the session - bail out.
         if (!sessionPassword) {
           setAddressError('Address save requires entering your password in My Profile first.');
           return;
@@ -160,7 +160,7 @@ const ProfileSections = (): JSX.Element => {
           formData: formData as any,
           authData: [{ marker: 'password', value: sessionPassword }],
           notificationData: {
-            // For the email provider the email lives in `user.identifier`, not in `formData` — fallback to identifier.
+            // For the email provider the email lives in `user.identifier`, not in `formData` - fallback to identifier.
             email: userField('email') || user.identifier || '',
             phonePush: [],
             ...(phoneValid ? { phoneSMS: phone } : {}),
@@ -204,7 +204,7 @@ const ProfileSections = (): JSX.Element => {
           }
           return { marker: attr.marker, type: attr.type, value };
         })
-        // Do not send hidden fields without a value — the server rejects required even for an empty string.
+        // Do not send hidden fields without a value - the server rejects required even for an empty string.
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
@@ -255,7 +255,7 @@ const ProfileSections = (): JSX.Element => {
 
   const onDeleteAddress = async (id: string) => {
     const next = addresses.filter(a => a.id !== id);
-    // Deleted the selected one — auto-select the first remaining.
+    // Deleted the selected one - auto-select the first remaining.
     if (next.length > 0 && !next.some(a => a.selected)) {
       next[0]!.selected = true;
     }
@@ -327,9 +327,9 @@ const ProfileSections = (): JSX.Element => {
               <button
                 type="submit"
                 disabled={saving || !user?.formIdentifier}
-                className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-[5px] border border-brand font-bold text-[16px] text-brand disabled:opacity-60"
+                className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
               >
-                {saving ? '…' : 'Save'}
+                {saving ? 'â€¦' : 'Save'}
               </button>
               {saveError && <p className="text-[13px] text-red-400">{saveError}</p>}
             </form>
@@ -375,7 +375,7 @@ const ProfileSections = (): JSX.Element => {
                 <button
                   type="button"
                   onClick={() => onDeleteAddress(addr.id)}
-                  className="hover_btn_transp flex items-center justify-center rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
+                  className="hover_btn_transp flex items-center justify-center rounded-card border border-brand px-5 py-1.25 font-bold text-base text-brand"
                 >
                   Delete
                 </button>
@@ -385,7 +385,7 @@ const ProfileSections = (): JSX.Element => {
             <button
               type="button"
               onClick={() => setAddAddressOpen(v => !v)}
-              className="hover_btn_white mt-7.5 rounded-[5px] border border-white px-5 py-1.25 font-semibold text-[16px] text-paper"
+              className="hover_btn_white mt-7.5 rounded-card border border-white px-5 py-1.25 font-semibold text-base text-paper"
             >
               + Add Address
             </button>
@@ -398,9 +398,9 @@ const ProfileSections = (): JSX.Element => {
               }}
             >
               <div className="w-full">
-                <label className="font-normal text-[16px] text-paper">Street</label>
+                <label className="font-normal text-base text-paper">Street</label>
                 <input
-                  className="mt-2.5 h-6.75 w-full rounded-[5px] border border-muted bg-transparent px-5 text-paper focus:outline-muted"
+                  className="mt-2.5 h-6.75 w-full rounded-card border border-muted bg-transparent px-5 text-paper focus:outline-muted"
                   type="text"
                   placeholder="OneEntry"
                   value={newStreet}
@@ -408,9 +408,9 @@ const ProfileSections = (): JSX.Element => {
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-[16px] text-paper">House</label>
+                <label className="font-normal text-base text-paper">House</label>
                 <input
-                  className="h-6.75 rounded-[5px] border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
+                  className="h-6.75 rounded-card border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
                   type="text"
                   placeholder="40"
                   value={newHouse}
@@ -418,9 +418,9 @@ const ProfileSections = (): JSX.Element => {
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-[16px] text-paper">Floor</label>
+                <label className="font-normal text-base text-paper">Floor</label>
                 <input
-                  className="h-6.75 rounded-[5px] border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
+                  className="h-6.75 rounded-card border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
                   type="text"
                   placeholder="27"
                   value={newFloor}
@@ -429,7 +429,7 @@ const ProfileSections = (): JSX.Element => {
               </div>
               <button
                 type="submit"
-                className="hover_btn_transp flex h-6.75 items-center justify-center self-end rounded-[5px] border border-brand px-5 py-1.25 font-bold text-[16px] text-brand"
+                className="hover_btn_transp flex h-6.75 items-center justify-center self-end rounded-card border border-brand px-5 py-1.25 font-bold text-base text-brand"
               >
                 {t('apply_text', 'Apply')}
               </button>

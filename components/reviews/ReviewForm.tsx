@@ -31,7 +31,7 @@ const resolveAuthorName = (user: { identifier?: string; formData?: unknown }): s
 };
 
 /**
- * ReviewForm — product review form (star rating + text).
+ * ReviewForm - product review form (star rating + text).
  * @param   {object}      props             - Props.
  * @param   {number}      props.productId   - Product ID the review is attached to.
  * @param   {boolean}     [props.hideTitle] - Do not render the heading if the parent already has one.
@@ -68,7 +68,7 @@ const ReviewForm = ({
             setComponent('AuthProviderSelect');
             setOpen(!open);
           }}
-          className="h-12.5 w-full rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover"
+          className="h-12.5 w-full rounded-panel bg-custom-gradient font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover"
         >
           Sign in
         </button>
@@ -98,7 +98,7 @@ const ReviewForm = ({
         {
           marker: TEXT_MARKER,
           type: 'text',
-          // OneEntry: «Only one of htmlValue, plainValue or mdValue can be provided».
+          // OneEntry: Â«Only one of htmlValue, plainValue or mdValue can be providedÂ».
           value: [{ plainValue: text.trim() }],
         },
       ];
@@ -150,7 +150,7 @@ const ReviewForm = ({
       <button
         type="submit"
         disabled={loading}
-        className="h-12.5 w-full rounded-[10px] bg-custom-gradient font-bold text-[16px] uppercase text-white hover:bg-gradient-to-r-hover disabled:opacity-60"
+        className="h-12.5 w-full rounded-panel bg-custom-gradient font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover disabled:opacity-60"
       >
         {loading ? '...' : 'Submit review'}
       </button>

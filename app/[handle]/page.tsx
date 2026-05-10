@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 
 /**
- * PageLayout — generic renderer for CMS pages without a dedicated route.
+ * PageLayout - generic renderer for CMS pages without a dedicated route.
  * @param   {object} props - Page properties.
  * @returns {Promise<JSX.Element>} JSX of the generic page.
  */
@@ -30,7 +30,7 @@ const PageLayout = async ({
   return (
     <article className="mx-auto flex w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
       {title ? (
-        <h1 className="font-bold text-[24px] md:text-[32px] uppercase tracking-[0.02em] text-brand">
+        <h1 className="font-bold text-2xl md:text-[32px] uppercase tracking-fine text-brand">
           {title}
         </h1>
       ) : null}
@@ -50,7 +50,7 @@ const PageLayout = async ({
 export default PageLayout;
 
 /**
- * generateMetadata — generates page metadata.
+ * generateMetadata - generates page metadata.
  * @returns {Promise<Metadata>} Page metadata.
  */
 export async function generateMetadata({

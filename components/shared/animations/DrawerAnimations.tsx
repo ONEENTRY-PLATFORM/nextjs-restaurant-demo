@@ -9,11 +9,12 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * Popup open-animation variants:
- * - `bottom-sheet` — mobile: slide-up; desktop: scale + fade (centered popups).
- * - `slide-up`     — `yPercent: 100 → 0` always (Cart, Profile — anchored via top/right).
- * - `slide-right`  — `xPercent: 100 → 0` always (Filter).
+ * - `bottom-sheet`   — mobile: slide-up; desktop: scale + fade (centered popups).
+ * - `slide-up`       — `yPercent: 100 → 0` always (Cart — anchored via top/right).
+ * - `slide-right`    — `xPercent: 100 → 0` always (Filter).
+ * - `slide-up-right` — mobile: slide-up; desktop: slide-from-right (Profile — anchored top-right on md+).
  */
-export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right';
+export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right' | 'slide-up-right';
 
 /**
  * DrawerAnimations — generic GSAP wrapper for popups driven by {@link OpenDrawerContext}.
@@ -65,10 +66,13 @@ const DrawerAnimations = ({
     const isMobile =
       typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
+    // `slide-up-right` is yPercent on mobile and xPercent on desktop — handled together below.
+    const isSlideUpRightDesktop = variant === 'slide-up-right' && !isMobile;
+
     gsap.set(modalBg, { autoAlpha: 0 });
-    if (variant === 'slide-right') {
+    if (variant === 'slide-right' || isSlideUpRightDesktop) {
       gsap.set(modalBody, { xPercent: 100 });
-    } else if (variant === 'slide-up') {
+    } else if (variant === 'slide-up' || variant === 'slide-up-right') {
       gsap.set(modalBody, { yPercent: 100 });
     } else if (isMobile) {
       gsap.set(modalBody, { yPercent: 100 });
@@ -82,9 +86,9 @@ const DrawerAnimations = ({
       duration: 0.5,
     });
 
-    if (variant === 'slide-right') {
+    if (variant === 'slide-right' || isSlideUpRightDesktop) {
       tl.to(modalBody, { autoAlpha: 1, xPercent: 0, duration: 0.5 }, '-=0.25');
-    } else if (variant === 'slide-up' || isMobile) {
+    } else if (variant === 'slide-up' || variant === 'slide-up-right' || isMobile) {
       tl.to(modalBody, { autoAlpha: 1, yPercent: 0, duration: 0.5 }, '-=0.25');
     } else {
       tl.to(modalBody, { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, '-=0.25');

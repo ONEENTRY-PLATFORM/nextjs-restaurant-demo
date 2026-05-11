@@ -22,17 +22,26 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
 /**
  * SignInForm — email/password sign-in form.
  *
- * @param   {object}  props           - Component props.
- * @param   {string}  props.className - Wrapper class merged onto the animated form root.
- * @param   {boolean} props.isActive  - Whether the form is the active step in the auth wizard (drives animations).
+ * @param   {object}     props                   - Component props.
+ * @param   {string}     props.className         - Wrapper class merged onto the animated form root.
+ * @param   {boolean}    props.isActive          - Whether the form is the active step in the auth wizard (drives animations).
+ * @param   {() => void} [props.onSuccess]       - Optional callback fired on successful sign-in instead of closing the global drawer (used to swap a wizard sub-step inline, e.g. inside the reservation popup).
+ * @param   {() => void} [props.onCreateAccount] - Optional override for the "Create account" button (skips the default `setComponent('SignUpForm')` drawer swap).
+ * @param   {() => void} [props.onResetPassword] - Optional override for the "Reset password" button (skips the default `setComponent('ForgotPasswordForm')` drawer swap).
  * @returns JSX of the sign-in form.
  */
 const SignInForm = ({
   className,
   isActive,
+  onSuccess,
+  onCreateAccount,
+  onResetPassword,
 }: {
   className: string;
   isActive: boolean;
+  onSuccess?: () => void;
+  onCreateAccount?: () => void;
+  onResetPassword?: () => void;
 }): JSX.Element => {
   const t = useT();
   const { authenticate } = useContext(AuthContext);
@@ -69,10 +78,14 @@ const SignInForm = ({
         throw new Error(result.error);
       }
 
-      setOpen(false);
       authenticate();
       setError('');
       toast('You signed in!');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        setOpen(false);
+      }
     } catch (err: unknown) {
       setError((err as { message?: string })?.message ?? 'Sign-in failed');
     } finally {
@@ -101,11 +114,17 @@ const SignInForm = ({
           <div className="w-auto basis-auto text-lg text-paper/60 transition-colors duration-300">
             {t('forgot_password_text', 'Forgot Password?')}
           </div>
-          <ResetPasswordButton title={t('reset_password_text', 'Reset Password')} />
+          <ResetPasswordButton
+            title={t('reset_password_text', 'Reset Password')}
+            onClick={onResetPassword}
+          />
         </FormFieldAnimations>
 
         <FormFieldAnimations index={7} className="w-full">
-          <CreateAccountButton title={t('create_account_text', 'Create account')} />
+          <CreateAccountButton
+            title={t('create_account_text', 'Create account')}
+            onClick={onCreateAccount}
+          />
         </FormFieldAnimations>
 
         {error && <ErrorMessage error={error} />}

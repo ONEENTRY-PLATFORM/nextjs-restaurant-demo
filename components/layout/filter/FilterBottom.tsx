@@ -203,14 +203,14 @@ const FilterBottom = ({
         id="side-menu"
         ref={sheetRef}
         className={
-          'fixed bottom-0 left-0 h-dvh w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-20 pt-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
-          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:h-screen md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
+          'fixed flex flex-col bottom-0 left-0 min-h-[80vh] w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-20 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'
             : 'translate-y-full md:translate-y-0 md:translate-x-full')
         }
       >
-        <div className="max-w-89 mx-auto flex justify-between items-center mb-5">
+        <div className="max-w-89 w-full mx-auto flex justify-between items-between mb-5">
           <button
             type="button"
             onClick={close}
@@ -229,7 +229,48 @@ const FilterBottom = ({
             <CloseXIcon />
           </button>
         </div>
-        <div className="max-w-89 mx-auto flex justify-between items-center">
+        <div className="max-w-89 mx-auto">
+          <div className="flex flex-wrap mt-9.25 gap-1.75">
+            <p className="filter_title">{waitingTitle}</p>
+            {WAITING_TIME.map(({ label }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setWaitingTime(prev => (prev === label ? null : label))}
+                className={itemClass(waitingTime === label)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap mt-5.25 gap-1.75">
+            <p className="filter_title">{preferencesTitle}</p>
+            {preferenceOptions.map(option => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => togglePreference(option.value)}
+                className={itemClass(preferences.includes(option.value))}
+              >
+                {option.title}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
+            <p className="filter_title">Price $</p>
+            {priceChips.map(({ label }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => togglePrice(label)}
+                className={itemClass(price.includes(label))}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="max-w-89 w-full mx-auto mt-auto flex justify-between items-center">
           <button
             type="button"
             onClick={reset}
@@ -244,45 +285,6 @@ const FilterBottom = ({
           >
             Apply
           </button>
-        </div>
-        <div className="max-w-89 mx-auto flex flex-wrap mt-9.25 gap-1.75">
-          <p className="filter_title">{waitingTitle}</p>
-          {WAITING_TIME.map(({ label }) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => setWaitingTime(prev => (prev === label ? null : label))}
-              className={itemClass(waitingTime === label)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75">
-          <p className="filter_title">{preferencesTitle}</p>
-          {preferenceOptions.map(option => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => togglePreference(option.value)}
-              className={itemClass(preferences.includes(option.value))}
-            >
-              {option.title}
-            </button>
-          ))}
-        </div>
-        <div className="max-w-89 mx-auto flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
-          <p className="filter_title">Price $</p>
-          {priceChips.map(({ label }) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => togglePrice(label)}
-              className={itemClass(price.includes(label))}
-            >
-              {label}
-            </button>
-          ))}
         </div>
         <div className="h-25 bg-transparent border-none md:hidden"></div>
       </div>

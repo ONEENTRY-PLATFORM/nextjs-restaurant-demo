@@ -77,7 +77,7 @@ const AddressRow = ({
   };
 
   return (
-    <div className="step-payment-row flex flex-col gap-5">
+    <div className={`step-payment-row flex flex-col gap-5 ${menuOpen ? 'relative z-20' : ''}`}>
       <div className="flex items-center gap-2.5 text-paper">
         <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
         <p className="font-normal text-xl text-paper">{t('address_text', 'Address')}</p>

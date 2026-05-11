@@ -23,9 +23,18 @@ import SubmitButton from './inputs/FormSubmitButton';
 /**
  * SignUpForm — user sign-up form (email/phone + password) driven by the OneEntry `user` form schema.
  *
+ * @param   {object}     [props]                  - Component props.
+ * @param   {() => void} [props.onSuccess]        - Optional callback fired after an active-user sign-up + login (replaces `setOpen(false)`; used by the reservation popup to advance its wizard inline).
+ * @param   {() => void} [props.onNeedActivation] - Optional callback fired when the new user is inactive (replaces the default switch to `VerificationForm` in the drawer).
  * @returns JSX of the sign-up form, including transition into VerificationForm on inactive users.
  */
-const SignUpForm = (): JSX.Element => {
+const SignUpForm = ({
+  onSuccess,
+  onNeedActivation,
+}: {
+  onSuccess?: () => void;
+  onNeedActivation?: () => void;
+} = {}): JSX.Element => {
   const t = useT();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -106,7 +115,13 @@ const SignUpForm = (): JSX.Element => {
               password: fields.password?.value || '',
             });
             authenticate();
-            setOpen(false);
+            if (onSuccess) {
+              onSuccess();
+            } else {
+              setOpen(false);
+            }
+          } else if (onNeedActivation) {
+            onNeedActivation();
           } else {
             setOpen(true);
             setComponent('VerificationForm');

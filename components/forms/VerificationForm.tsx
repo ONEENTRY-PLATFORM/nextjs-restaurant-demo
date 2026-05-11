@@ -25,14 +25,27 @@ import FormSubmitButton from './inputs/FormSubmitButton';
  * `AuthProvider.checkCode(...)` or `activateUser(...)` for post-signup activation.
  * See MISMATCH-LOG §C.8.2.
  *
+ * @param   {object}     [props]                - Component props.
+ * @param   {'activateUser' | 'checkCode'} [props.mode] - Optional mode override that takes precedence over `OpenDrawerContext.action` (used when rendered outside the drawer, e.g. inline in the reservation popup).
+ * @param   {() => void} [props.onCodeVerified] - Optional callback fired after a successful `checkCode` (replaces the default drawer switch to `ResetPasswordForm`).
+ * @param   {() => void} [props.onActivated]    - Optional callback fired after a successful `activateUser` + login (replaces `router.push('/profile')` + `setOpen(false)`).
  * @returns JSX of the 6-digit OTP entry form.
  */
-const VerificationForm = (): JSX.Element => {
+const VerificationForm = ({
+  mode,
+  onCodeVerified,
+  onActivated,
+}: {
+  mode?: 'activateUser' | 'checkCode';
+  onCodeVerified?: () => void;
+  onActivated?: () => void;
+} = {}): JSX.Element => {
   const t = useT();
   const router = useTransitionRouter();
   const dispatch = useAppDispatch();
   const { authenticate } = useContext(AuthContext);
   const { setOpen, setComponent, action } = useContext(OpenDrawerContext);
+  const effectiveAction = mode ?? action;
 
   const [isLoading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
@@ -69,7 +82,7 @@ const VerificationForm = (): JSX.Element => {
 
   const handleVerification = async () => {
     try {
-      if (action !== 'activateUser') {
+      if (effectiveAction !== 'activateUser') {
         const result = await getApi().AuthProvider.checkCode(
           'email',
           fields.email?.value || '',
@@ -85,7 +98,11 @@ const VerificationForm = (): JSX.Element => {
           setError('Invalid code');
           return;
         }
-        setComponent('ResetPasswordForm');
+        if (onCodeVerified) {
+          onCodeVerified();
+        } else {
+          setComponent('ResetPasswordForm');
+        }
       } else {
         const result = await getApi().AuthProvider.activateUser(
           'email',
@@ -108,8 +125,12 @@ const VerificationForm = (): JSX.Element => {
           password: fields.password?.value || '',
         });
         authenticate();
-        router.push('/profile');
-        setOpen(false);
+        if (onActivated) {
+          onActivated();
+        } else {
+          router.push('/profile');
+          setOpen(false);
+        }
       }
     } catch (e: unknown) {
       setError((e as { message?: string })?.message ?? 'An error occurred');

@@ -39,9 +39,15 @@ export const resetPasswordFormFields = [
  * Intentionally uses static `<input>` fields (not `getFormByMarker` from the CMS) —
  * the data is sent straight to the SDK `AuthProvider.changePassword(...)`. See MISMATCH-LOG §C.8.2.
  *
+ * @param   {object}     [props]                   - Component props.
+ * @param   {() => void} [props.onPasswordChanged] - Optional callback fired after a successful change; replaces the default drawer switch back to `SignInForm` (used by the reservation popup for inline transitions).
  * @returns JSX of the OTP-based reset-password form.
  */
-const ResetPasswordForm = (): JSX.Element => {
+const ResetPasswordForm = ({
+  onPasswordChanged,
+}: {
+  onPasswordChanged?: () => void;
+} = {}): JSX.Element => {
   const t = useT();
   const { email, password, password_confirm, otp_code } = useAppSelector(
     state => state.formFieldsReducer.fields
@@ -68,8 +74,12 @@ const ResetPasswordForm = (): JSX.Element => {
       );
 
       if (result) {
-        setComponent('SignInForm');
-        setAction('');
+        if (onPasswordChanged) {
+          onPasswordChanged();
+        } else {
+          setComponent('SignInForm');
+          setAction('');
+        }
       }
     } catch (error: unknown) {
       setError((error as { message?: string })?.message ?? '');

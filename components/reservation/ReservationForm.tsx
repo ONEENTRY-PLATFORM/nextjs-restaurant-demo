@@ -7,6 +7,7 @@ import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { getApi, isError } from '@/app/api';
+import { validators } from '@/app/api/utils/validators';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -21,17 +22,104 @@ import RestaurantSelect from './RestaurantSelect';
 
 type FieldValue = string;
 
-/**
- * ROW_PAIRS — fields used for the two-column rows per `service_table.html` markup (form `booking_order`).
- */
-const ROW_PAIRS: Array<[string, string]> = [
-  ['name', 'surname'],
-  ['phone', 'people_count'],
-];
-
-const TEXT_MARKER = 'user_preferences';
 const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
+
+/**
+ * isFullWidthAttr — attributes that should occupy a full row in the booking form (entity select,
+ * multi-line text, date/time picker trigger). Everything else is paired into two-column rows.
+ *
+ * @param   {IFormAttribute} attr - OneEntry form attribute.
+ * @returns `true` when the attribute must render on its own row.
+ */
+const isFullWidthAttr = (attr: IFormAttribute): boolean =>
+  attr.type === 'entity' ||
+  attr.type === 'text' ||
+  attr.type === 'timeInterval' ||
+  attr.marker === TIME_SLOT_MARKER;
+
+type FormRow =
+  | { kind: 'full'; attr: IFormAttribute }
+  | { kind: 'pair'; left: IFormAttribute; right?: IFormAttribute };
+
+/** Translator function returned by `useT()` — `(marker, fallback) => string`. */
+type Translate = (marker: string, fallback: string) => string;
+
+/**
+ * validateField — runs the OneEntry validators attached to a single attribute against the current
+ * value and returns a localized error message, or `null` when the value passes every check.
+ *
+ * @param   {IFormAttribute} attr  - OneEntry form attribute carrying the `validators` map.
+ * @param   {string}         value - Current field value (always a string in this form).
+ * @param   {Translate}      t     - Dictionary lookup for the error message.
+ * @returns Error string to display, or `null` when valid.
+ */
+const validateField = (attr: IFormAttribute, value: string, t: Translate): string | null => {
+  const v = (attr.validators ?? {}) as Record<string, unknown>;
+  const required = (v.requiredValidator as { strict?: boolean } | undefined)?.strict === true;
+
+  if (required && !validators.requiredValidator(value)) {
+    return t('validation_required', 'Required field');
+  }
+  if (!value.length) return null;
+
+  const strCfg = v.stringInspectionValidator as
+    | { stringMin?: number; stringMax?: number; stringLength?: number }
+    | undefined;
+  if (strCfg && (strCfg.stringMin || strCfg.stringMax || strCfg.stringLength)) {
+    if (!validators.stringInspectionValidator(value, strCfg)) {
+      const { stringMin, stringMax, stringLength } = strCfg;
+      if (stringLength && stringLength > 0) {
+        return t('validation_string_length', `Length must be exactly ${stringLength}`);
+      }
+      return t(
+        'validation_string_range',
+        `Length must be between ${stringMin ?? 0} and ${stringMax ?? 0}`
+      );
+    }
+  }
+
+  if (v.emailInspectionValidator === true && !validators.emailInspectionValidator(value)) {
+    return t('validation_email', 'Invalid email');
+  }
+
+  const mask = v.fieldMaskValidator as { maskValue?: string } | undefined;
+  if (mask?.maskValue && !validators.fieldMaskValidator(value, mask)) {
+    return t('validation_mask', 'Invalid format');
+  }
+
+  return null;
+};
+
+/**
+ * buildFormRows — walks the position-sorted attributes and groups them into form rows: full-width
+ * fields get their own row; narrow fields are paired sequentially into two-column rows. Skips
+ * `button` and `spam` (the latter is submitted invisibly).
+ *
+ * @param   {IFormAttribute[]} sortedAttrs - Attributes pre-sorted by `position`.
+ * @returns Rows ready to render in document order.
+ */
+const buildFormRows = (sortedAttrs: IFormAttribute[]): FormRow[] => {
+  const rows: FormRow[] = [];
+  let pending: IFormAttribute | null = null;
+  for (const attr of sortedAttrs) {
+    if (attr.type === 'button' || attr.type === 'spam') continue;
+    if (isFullWidthAttr(attr)) {
+      if (pending) {
+        rows.push({ kind: 'pair', left: pending });
+        pending = null;
+      }
+      rows.push({ kind: 'full', attr });
+    } else if (pending) {
+      rows.push({ kind: 'pair', left: pending, right: attr });
+      pending = null;
+    } else {
+      pending = attr;
+    }
+  }
+  if (pending) rows.push({ kind: 'pair', left: pending });
+  return rows;
+};
 
 /**
  * getAvailableSlotsForDate — available `HH.MM` slot starts for a date, based on the restaurant schedule.
@@ -155,7 +243,14 @@ export type ReservationStep =
   | { kind: 'payment'; formData: IOrdersFormData[]; summary: string }
   | { kind: 'success'; orderId: number; summary: string };
 
-export type AuthSubStep = 'providers' | 'email';
+export type AuthSubStep =
+  | 'providers'
+  | 'sign-in'
+  | 'sign-up'
+  | 'forgot-password'
+  | 'verification-otp'
+  | 'verification-activate'
+  | 'reset-password';
 
 /**
  * formatBookingSummary — formats the booking summary as `DD.MM.YY HH.MM N person`.
@@ -207,6 +302,7 @@ const ReservationForm = ({
   const t = useT();
   const { isAuth } = useContext(AuthContext);
   const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -216,11 +312,7 @@ const ReservationForm = ({
     [form]
   );
 
-  const attrByMarker = useMemo(() => {
-    const map = new Map<string, IFormAttribute>();
-    for (const a of attrs) map.set(a.marker, a);
-    return map;
-  }, [attrs]);
+  const rows = useMemo<FormRow[]>(() => buildFormRows(attrs), [attrs]);
 
   const spamAttr = useMemo(() => attrs.find(a => a.type === 'spam'), [attrs]);
   const spamSettings = spamAttr?.settings as
@@ -230,6 +322,12 @@ const ReservationForm = ({
 
   const onChange = (marker: string, value: FieldValue) => {
     setValues(prev => ({ ...prev, [marker]: value }));
+    setErrors(prev => {
+      if (!prev[marker]) return prev;
+      const next = { ...prev };
+      delete next[marker];
+      return next;
+    });
   };
 
   const buildPayload = (): IOrdersFormData[] => {
@@ -295,6 +393,19 @@ const ReservationForm = ({
       setError('Please wait while captcha is loading.');
       return;
     }
+
+    const nextErrors: Record<string, string> = {};
+    for (const attr of attrs) {
+      if (attr.type === 'button' || attr.type === 'spam') continue;
+      const message = validateField(attr, values[attr.marker] ?? '', t);
+      if (message) nextErrors[attr.marker] = message;
+    }
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      setError('');
+      return;
+    }
+
     setError('');
     const payload = buildPayload();
     const summary = formatBookingSummary(values);
@@ -400,89 +511,63 @@ const ReservationForm = ({
     return <ReservationPaymentStep onApply={onApplyPayment} isLoading={loading} error={error} />;
   }
 
-  const hasNotes = attrByMarker.has(TEXT_MARKER);
-  const hasRestaurant = attrByMarker.has(RESTAURANT_MARKER) && restaurants.length > 0;
   const todayIso = new Date().toISOString().slice(0, 10);
 
   return (
-    <form onSubmit={onFormSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0">
-      {hasRestaurant ? (
-        <RestaurantSelect
-          options={restaurants}
-          value={values[RESTAURANT_MARKER] ?? ''}
-          onChange={v => onChange(RESTAURANT_MARKER, v)}
-          placeholder="Restaurant choosing"
-        />
-      ) : null}
-
-      {/* Two-column rows */}
-      {ROW_PAIRS.map(([left, right]) => {
-        const leftAttr = attrByMarker.get(left);
-        const rightAttr = attrByMarker.get(right);
-        if (!leftAttr && !rightAttr) return null;
+    <form onSubmit={onFormSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0" noValidate>
+      {rows.map((row, i) => {
+        if (row.kind === 'full') {
+          const { attr } = row;
+          if (attr.type === 'entity') {
+            if (attr.marker !== RESTAURANT_MARKER || restaurants.length === 0) return null;
+            return (
+              <div key={attr.marker} className="flex flex-col gap-1">
+                <RestaurantSelect
+                  options={restaurants}
+                  value={values[RESTAURANT_MARKER] ?? ''}
+                  onChange={v => onChange(RESTAURANT_MARKER, v)}
+                  placeholder={attr.localizeInfos?.title ?? 'Restaurant choosing'}
+                />
+                {errors[attr.marker] ? (
+                  <span className="px-4 text-sm text-red-500">{errors[attr.marker]}</span>
+                ) : null}
+              </div>
+            );
+          }
+          return (
+            <Field
+              key={attr.marker}
+              attr={attr}
+              values={values}
+              onChange={onChange}
+              onOpenPicker={() => setPickerOpen(true)}
+              error={errors[attr.marker] ?? null}
+            />
+          );
+        }
         return (
-          <div key={left + right} className="flex justify-between gap-3.75">
-            {leftAttr ? (
+          <div key={`row-${i}`} className="flex justify-between gap-3.75">
+            <Field
+              attr={row.left}
+              values={values}
+              onChange={onChange}
+              onOpenPicker={() => setPickerOpen(true)}
+              error={errors[row.left.marker] ?? null}
+            />
+            {row.right ? (
               <Field
-                attr={leftAttr}
+                attr={row.right}
                 values={values}
                 onChange={onChange}
                 onOpenPicker={() => setPickerOpen(true)}
+                error={errors[row.right.marker] ?? null}
               />
             ) : (
-              <div />
-            )}
-            {rightAttr ? (
-              <Field
-                attr={rightAttr}
-                values={values}
-                onChange={onChange}
-                onOpenPicker={() => setPickerOpen(true)}
-              />
-            ) : (
-              <div />
+              <div className="flex-1" />
             )}
           </div>
         );
       })}
-
-      {/* Preferences textarea (full width) */}
-      {hasNotes ? (
-        <div className="flex flex-col border-b border-b-muted">
-          <label htmlFor={TEXT_MARKER} className="font-normal text-base text-paper">
-            {attrByMarker.get(TEXT_MARKER)?.localizeInfos?.title ??
-              t('preferences_text', 'Preferences')}
-          </label>
-          <textarea
-            id={TEXT_MARKER}
-            name={TEXT_MARKER}
-            value={values[TEXT_MARKER] ?? ''}
-            onChange={ev => onChange(TEXT_MARKER, ev.currentTarget.value)}
-            className="cart_input resize-none w-full"
-            rows={4}
-          />
-        </div>
-      ) : null}
-
-      {/* All remaining fields not placed in the grid above (fallback) */}
-      {attrs
-        .filter(
-          a =>
-            a.type !== 'spam' &&
-            a.type !== 'button' &&
-            a.marker !== TEXT_MARKER &&
-            a.marker !== RESTAURANT_MARKER &&
-            !ROW_PAIRS.flat().includes(a.marker)
-        )
-        .map(a => (
-          <Field
-            key={a.marker}
-            attr={a}
-            values={values}
-            onChange={onChange}
-            onOpenPicker={() => setPickerOpen(true)}
-          />
-        ))}
 
       {/* Primary submit button */}
       <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
@@ -529,6 +614,7 @@ type FieldProps = {
   values: Record<string, FieldValue>;
   onChange: (marker: string, value: FieldValue) => void;
   onOpenPicker: () => void;
+  error: string | null;
 };
 
 /**
@@ -539,57 +625,69 @@ type FieldProps = {
  * @param   {Record<string, FieldValue>}                       props.values       - Current form values keyed by marker.
  * @param   {(marker: string, value: FieldValue) => void}      props.onChange     - Setter that updates a single field.
  * @param   {() => void}                                       props.onOpenPicker - Opens the date/time picker (for `timeInterval`/`time_slot`).
+ * @param   {string | null}                                    props.error        - Validation error to render under the field, or `null` when valid.
  * @returns JSX of the field.
  */
-const Field = ({ attr, values, onChange, onOpenPicker }: FieldProps): JSX.Element => {
+const Field = ({ attr, values, onChange, onOpenPicker, error }: FieldProps): JSX.Element => {
   const label = attr.localizeInfos?.title ?? attr.marker;
   const isUppercase = attr.marker === 'name' || attr.marker === 'surname';
+  const borderClass = error ? 'border-b-red-500' : 'border-b-muted';
+  const errorNode = error ? <span className="mt-1 text-sm text-red-500">{error}</span> : null;
 
   if (attr.type === 'timeInterval' || attr.marker === 'time_slot') {
     const v = values[attr.marker];
     return (
-      <button
-        type="button"
-        onClick={() => onOpenPicker()}
-        className="flex flex-1 flex-col border-b border-b-muted text-left"
-      >
-        <span className="font-normal text-base text-paper">{label}</span>
-        <span className="cart_input block">{v || 'Select date & time'}</span>
-      </button>
+      <div className="flex flex-1 flex-col">
+        <button
+          type="button"
+          onClick={() => onOpenPicker()}
+          className={`flex flex-col border-b text-left ${borderClass}`}
+        >
+          <span className="font-normal text-base text-paper">{label}</span>
+          <span className="cart_input block">{v || 'Select date & time'}</span>
+        </button>
+        {errorNode}
+      </div>
     );
   }
 
   if (attr.type === 'text') {
     return (
-      <div className="flex flex-1 flex-col border-b border-b-muted">
-        <label htmlFor={attr.marker} className="font-normal text-base text-paper">
-          {label}
-        </label>
-        <textarea
-          id={attr.marker}
-          name={attr.marker}
-          value={values[attr.marker] ?? ''}
-          onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
-          className="cart_input resize-none w-full"
-          rows={3}
-        />
+      <div className="flex flex-1 flex-col">
+        <div className={`flex flex-col border-b ${borderClass}`}>
+          <label htmlFor={attr.marker} className="font-normal text-base text-paper">
+            {label}
+          </label>
+          <textarea
+            id={attr.marker}
+            name={attr.marker}
+            value={values[attr.marker] ?? ''}
+            onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
+            className="cart_input resize-none w-full"
+            rows={3}
+          />
+        </div>
+        {errorNode}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col border-b border-b-muted">
-      <label htmlFor={attr.marker} className="font-normal text-base text-paper">
-        {label}
-      </label>
-      <input
-        id={attr.marker}
-        name={attr.marker}
-        type={resolveInputType(attr.type as string, attr.marker)}
-        value={values[attr.marker] ?? ''}
-        onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
-        className={'cart_input' + (isUppercase ? ' uppercase' : '')}
-      />
+    <div className="flex flex-1 flex-col">
+      <div className={`flex flex-col border-b ${borderClass}`}>
+        <label htmlFor={attr.marker} className="font-normal text-base text-paper">
+          {label}
+        </label>
+        <input
+          id={attr.marker}
+          name={attr.marker}
+          type={resolveInputType(attr.type as string, attr.marker)}
+          value={values[attr.marker] ?? ''}
+          onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
+          className={'cart_input' + (isUppercase ? ' uppercase' : '')}
+        />
+      </div>
+      {errorNode}
     </div>
   );
 };

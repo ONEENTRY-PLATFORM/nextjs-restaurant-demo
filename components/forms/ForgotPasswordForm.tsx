@@ -18,9 +18,15 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 /**
  * ForgotPasswordForm — form for requesting an OTP code to reset the password.
  *
+ * @param   {object}     [props]            - Component props.
+ * @param   {() => void} [props.onCodeSent] - Optional callback fired after the OTP is generated; replaces the default drawer switch to `VerificationForm` (used by the reservation popup for inline transitions).
  * @returns JSX of the forgot-password form (loader while the form schema is fetched).
  */
-export const ForgotPasswordForm = (): JSX.Element => {
+export const ForgotPasswordForm = ({
+  onCodeSent,
+}: {
+  onCodeSent?: () => void;
+} = {}): JSX.Element => {
   const t = useT();
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [isError, setError] = useState<string>('');
@@ -32,15 +38,25 @@ export const ForgotPasswordForm = (): JSX.Element => {
     e.preventDefault();
     try {
       await getApi().AuthProvider.generateCode('email', fields.email?.value || '', 'generate_otp');
-      setComponent('VerificationForm');
-      setAction('checkCode');
+      if (onCodeSent) {
+        onCodeSent();
+      } else {
+        setComponent('VerificationForm');
+        setAction('checkCode');
+      }
     } catch (error: unknown) {
       const err = error as { message?: string; statusCode?: number };
       setError(err?.message ?? '');
       if (err?.statusCode === 400) {
-        setTimeout(() => {
-          setComponent('VerificationForm');
-        }, 800);
+        if (onCodeSent) {
+          setTimeout(() => {
+            onCodeSent();
+          }, 800);
+        } else {
+          setTimeout(() => {
+            setComponent('VerificationForm');
+          }, 800);
+        }
       }
     }
   };

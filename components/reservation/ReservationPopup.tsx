@@ -2,12 +2,16 @@
 
 import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app/api';
+import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { PHONE_MARKERS } from '@/components/cart/steps/step-payment/constants';
+import { findUserField } from '@/components/cart/steps/step-payment/userFields';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
@@ -22,6 +26,32 @@ import {
   type ReservationOAuthResume,
 } from './reservationOAuthResumeState';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
+
+const NAME_MARKERS = ['name', 'first_name', 'firstname'] as const;
+const SURNAME_MARKERS = ['surname', 'last_name', 'lastname', 'family_name'] as const;
+const EMAIL_MARKERS = ['email'] as const;
+
+/**
+ * buildUserPrefill — extracts overlap fields (name, surname, phone, email) from the authenticated
+ * user's profile so the booking form opens pre-filled. Returns an empty object for guests, fields
+ * absent from `user.formData`, or empty values — `ReservationForm` then keeps those fields blank.
+ *
+ * @param   {IUserEntity | undefined} user - Authenticated user, or `undefined` for guests.
+ * @returns Map of `booking_order` markers → string values to seed `initialValues`.
+ */
+const buildUserPrefill = (user: IUserEntity | undefined): Record<string, string> => {
+  if (!user?.formData) return {};
+  const out: Record<string, string> = {};
+  const name = findUserField(user.formData, NAME_MARKERS);
+  const surname = findUserField(user.formData, SURNAME_MARKERS);
+  const phone = findUserField(user.formData, PHONE_MARKERS);
+  const email = findUserField(user.formData, EMAIL_MARKERS);
+  if (name) out.name = name;
+  if (surname) out.surname = surname;
+  if (phone) out.phone = phone;
+  if (email) out.email = email;
+  return out;
+};
 
 /**
  * buildInitialValuesFromOrder — converts `order.formData` into a flat set of initialValues for ReservationForm.
@@ -75,6 +105,7 @@ const buildInitialValuesFromOrder = (
 const ReservationPopup = (): JSX.Element => {
   const t = useT();
   const { open, component, action, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { user } = useContext(AuthContext);
   const isOpen = open && component === 'ReservationPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
@@ -141,10 +172,20 @@ const ReservationPopup = (): JSX.Element => {
    */
   const handleHeaderBack = (): void => {
     if (step.kind === 'auth') {
-      if (authSubStep === 'email') {
-        setAuthSubStep('providers');
+      const authParents: Partial<Record<AuthSubStep, AuthSubStep>> = {
+        'sign-in': 'providers',
+        'sign-up': 'sign-in',
+        'forgot-password': 'sign-in',
+        'verification-otp': 'forgot-password',
+        'verification-activate': 'sign-up',
+        'reset-password': 'sign-in',
+      };
+      const parent = authParents[authSubStep];
+      if (parent) {
+        setAuthSubStep(parent);
         return;
       }
+      // 'providers' → back to the form step
       setStep({ kind: 'form' });
       return;
     }
@@ -163,8 +204,10 @@ const ReservationPopup = (): JSX.Element => {
     if (resume) {
       return resume.values;
     }
-    return action ? { restaurant: action } : undefined;
-  }, [action, editing, resume, restaurants]);
+    const prefill = buildUserPrefill(user);
+    if (action) prefill.restaurant = action;
+    return Object.keys(prefill).length > 0 ? prefill : undefined;
+  }, [action, editing, resume, restaurants, user]);
 
   const isLoading = isFormLoading || isPagesLoading;
 
@@ -176,14 +219,18 @@ const ReservationPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
-          <button
-            type="button"
-            onClick={handleHeaderBack}
-            aria-label="Back"
-            className="group flex items-center justify-center"
-          >
-            <ArrowBackIcon className="hover-target text-paper" />
-          </button>
+          {step.kind === 'form' ? (
+            <span aria-hidden="true" className="size-11.5" />
+          ) : (
+            <button
+              type="button"
+              onClick={handleHeaderBack}
+              aria-label="Back"
+              className="group flex items-center justify-center"
+            >
+              <ArrowBackIcon className="hover-target text-paper" />
+            </button>
+          )}
           <p className="font-semibold text-2xl text-brand">
             {t('reservation_default_title', 'Reservation')}
           </p>
@@ -207,8 +254,12 @@ const ReservationPopup = (): JSX.Element => {
         ) : (
           <div className="mt-7.5">
             <ReservationForm
-              // `key` forces a form remount when edit/resume values arrive on the second render.
-              key={editing?.orderId ?? (resume ? 'oauth-resume' : 'fresh')}
+              // `key` forces a form remount when edit/resume/user-prefill values arrive after the
+              // first render (e.g. user is hydrated async via AuthContext polling).
+              key={
+                editing?.orderId ??
+                (resume ? 'oauth-resume' : user?.id ? `user-${user.id}` : 'fresh')
+              }
               form={form}
               restaurants={restaurants}
               initialValues={initialValues}

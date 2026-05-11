@@ -13,7 +13,6 @@ import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
-import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import BookingsContent from './BookingsContent';
@@ -233,18 +232,21 @@ const ProfilePopup = (): JSX.Element => {
   const activeScreen = isMdUp ? 'menu' : screen;
 
   return (
-    <DrawerAnimations component="ProfilePopup" variant="slide-up">
+    <DrawerAnimations component="ProfilePopup" variant="slide-up-right">
       <div
         id="modalBody"
         ref={sheetRef}
         className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-card shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
         <div className="hidden w-full md:flex justify-end">
-          <ClosePopupButton
-            onClose={close}
-            ariaLabel="Close profile"
-            className="hidden -mt-2.5 md:flex"
-          />
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close profile"
+            className="z-10 -mt-2.5 size-12 items-center justify-center rounded-full border border-solid border-paper/40 bg-transparent text-lg text-paper transition-colors hover:border-brand hover:text-brand md:flex md:size-10 lg:size-12.5 lg:p-2.5"
+          >
+            &#10005;
+          </button>
         </div>
 
         <div className="mx-auto h-full max-w-87.5 overflow-x-hidden overflow-y-auto pb-25 no-scrollbar md:pb-0">
@@ -257,12 +259,12 @@ const ProfilePopup = (): JSX.Element => {
           >
             {activeScreen === 'menu' ? (
               <>
-                <ProfileNavMenu isMdUp={isMdUp} onNavigate={close} onSelectScreen={setScreen} />
                 {isMdUp && (
-                  <div className="mt-7.5">
+                  <div className="mb-7.5">
                     <ProfileSections />
                   </div>
                 )}
+                <ProfileNavMenu isMdUp={isMdUp} onNavigate={close} onSelectScreen={setScreen} />
               </>
             ) : (
               <>

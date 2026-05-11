@@ -9,20 +9,26 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import EyeCircleIcon from '@/components/icons/eye-circle';
 
 /**
- * NavItemProfile — profile nav-item button; opens `ProfilePopup` when authenticated, otherwise the auth-provider picker.
+ * NavItemProfile — profile nav-item button; toggles `ProfilePopup` when authenticated, otherwise the auth-provider picker.
  *
  * @param   {object}      props      - Component props.
  * @param   {IMenusPages} props.item - OneEntry menu page entity (used for the accessible title only).
  * @returns JSX of the profile button.
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
-  const { setOpen, setComponent } = useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setComponent, setTransition } =
+    useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
   const title = item.localizeInfos?.menuTitle || item.localizeInfos?.title;
 
   const handleClick = () => {
+    const target = isAuth ? 'ProfilePopup' : 'AuthProviderSelect';
+    if (open && component === target && transition !== 'close') {
+      setTransition('close');
+      return;
+    }
     setOpen(true);
-    setComponent(isAuth ? 'ProfilePopup' : 'AuthProviderSelect');
+    setComponent(target);
   };
 
   return (

@@ -123,11 +123,7 @@ const BookingsContent = (): JSX.Element => {
       statusIdentifier: CANCELLED_STATUS,
     };
     try {
-      const res = await getApi().Orders.updateOrderByMarkerAndId(
-        'booking_order',
-        order.id,
-        body
-      );
+      const res = await getApi().Orders.updateOrderByMarkerAndId('booking_order', order.id, body);
       if (isError(res)) {
         toast(t('booking_cancel_failed', 'Failed to cancel reservation.'));
         return;

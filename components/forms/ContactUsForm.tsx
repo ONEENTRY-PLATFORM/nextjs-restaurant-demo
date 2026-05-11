@@ -86,7 +86,9 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         status: '',
       });
     } catch (error: unknown) {
-      setError((error as { message?: string })?.message ?? t('submit_failed_text', 'Submit failed'));
+      setError(
+        (error as { message?: string })?.message ?? t('submit_failed_text', 'Submit failed')
+      );
     } finally {
       setLoading(false);
     }

@@ -74,7 +74,9 @@ const CartButton = ({
             stop(e);
             if (qty <= 1) {
               dispatch(removeProduct(id));
-              toast(titleSlot(t('product_removed_cart_toast', 'Product {title} removed from cart!')));
+              toast(
+                titleSlot(t('product_removed_cart_toast', 'Product {title} removed from cart!'))
+              );
             } else {
               dispatch(decreaseProductQty({ id, quantity: 1 }));
             }

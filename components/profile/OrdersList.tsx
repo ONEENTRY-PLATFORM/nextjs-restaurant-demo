@@ -8,13 +8,14 @@ import { useRouter } from 'next/navigation';
 import type { IOrderByMarkerEntity, IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import type { BlogBanner } from '@/app/api';
 import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
 import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
 import { updateUserState } from '@/app/api/server/users/updateUserState';
+import { useIsMdUp } from '@/app/hooks/useIsMdUp';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -35,38 +36,6 @@ import { UsePrice } from '@/components/utils';
 const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
 
 // md+ opens the cart as the `/cart` page (see CartWizard) - Repeat order on desktop navigates there too, not into the drawer.
-const MD_QUERY = '(min-width: 768px)';
-/**
- * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
- *
- * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
- * @returns Unsubscribe function.
- */
-const subscribeMd = (cb: () => void): (() => void) => {
-  const mq = window.matchMedia(MD_QUERY);
-  mq.addEventListener('change', cb);
-  return () => mq.removeEventListener('change', cb);
-};
-/**
- * getMdSnapshot — current client snapshot of the `md` media query match state.
- *
- * @returns `true` when the viewport currently matches `md` (>= 768px).
- */
-const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
-/**
- * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
- *
- * @returns Always `false` so SSR renders the mobile layout deterministically.
- */
-const getMdServerSnapshot = (): boolean => false;
-/**
- * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
- *
- * @returns `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
- */
-const useIsMdUp = (): boolean =>
-  useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
-
 /**
  * statusLabel — human-readable order status (localized from CMS, otherwise derived from the identifier).
  *

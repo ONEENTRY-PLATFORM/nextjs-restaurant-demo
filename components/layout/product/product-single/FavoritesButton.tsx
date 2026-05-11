@@ -37,8 +37,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   }, []);
   const isFav = mounted ? isFavStored : false;
 
-  const titleSlot = (template: string) =>
-    template.replace('{title}', product.localizeInfos.title);
+  const titleSlot = (template: string) => template.replace('{title}', product.localizeInfos.title);
 
   const onUpdateFavoritesHandle = () => {
     if (isFav) {
@@ -48,9 +47,7 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
       );
     } else {
       dispatch(addFavorites(product.id));
-      toast(
-        titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!'))
-      );
+      toast(titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!')));
     }
   };
 
@@ -60,17 +57,13 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
         dispatch(addFavorites(product.id));
         await onSubscribeEvents(product.id);
 
-        toast(
-          titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!'))
-        );
+        toast(titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!')));
       } else {
         dispatch(removeFavorites(product.id));
         await onUnsubscribeEvents(product.id);
 
         toast(
-          titleSlot(
-            t('product_removed_favorites_toast', 'Product {title} removed from Favorites!')
-          )
+          titleSlot(t('product_removed_favorites_toast', 'Product {title} removed from Favorites!'))
         );
       }
     } catch (e: unknown) {

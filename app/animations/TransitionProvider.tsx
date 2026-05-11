@@ -52,9 +52,7 @@ export default function TransitionProvider({ children }: { children: ReactNode }
         }
         const holdForCards = hasCardLeave(pathname) ? CARD_LEAVE_HOLD : 0;
         const currentScroll =
-          typeof window === 'undefined'
-            ? 0
-            : window.scrollY || window.pageYOffset || 0;
+          typeof window === 'undefined' ? 0 : window.scrollY || window.pageYOffset || 0;
         const needsScroll = currentScroll > SCROLL_TO_TOP_MIN_PX;
         const tl = gsap.timeline();
         if (needsScroll) {

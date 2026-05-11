@@ -36,7 +36,12 @@ const DecreaseButton = ({
 
   const onRemoveFromCart = async () => {
     dispatch(removeProduct(id));
-    toast(t('product_removed_cart_toast', 'Product {title} removed from cart!').replace('{title}', title));
+    toast(
+      t('product_removed_cart_toast', 'Product {title} removed from cart!').replace(
+        '{title}',
+        title
+      )
+    );
 
     if (user) {
       await onUnsubscribeEvents(id);

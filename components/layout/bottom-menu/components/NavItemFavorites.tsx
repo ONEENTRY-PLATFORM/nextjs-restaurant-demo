@@ -9,13 +9,14 @@ import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
 
 /**
- * NavItemFavorites — favorites button in the bottom menu; opens `FavoritesPopup` and shows a count badge.
+ * NavItemFavorites — favorites button in the bottom menu; toggles `FavoritesPopup` and shows a count badge.
  *
  * @returns JSX of the favorites button with count badge (only after mount).
  */
 const NavItemFavorites = (): JSX.Element => {
   const t = useT();
-  const { setOpen, setComponent } = useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setComponent, setTransition } =
+    useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
   const mounted = useSyncExternalStore(
@@ -27,13 +28,19 @@ const NavItemFavorites = (): JSX.Element => {
     () => false
   );
 
+  const handleClick = () => {
+    if (open && component === 'FavoritesPopup' && transition !== 'close') {
+      setTransition('close');
+      return;
+    }
+    setComponent('FavoritesPopup');
+    setOpen(true);
+  };
+
   return (
     <button
       type="button"
-      onClick={() => {
-        setComponent('FavoritesPopup');
-        setOpen(true);
-      }}
+      onClick={handleClick}
       aria-label={t('favorites_label', 'Favorites')}
       className="group relative box-border flex size-6 shrink-0"
     >

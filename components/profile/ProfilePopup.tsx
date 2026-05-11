@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { useTransitionRouter } from 'next-transition-router';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
-import { useContext, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 
 import { logOutUser, useGetMenuByMarkerQuery } from '@/app/api';
+import { useIsMdUp } from '@/app/hooks/useIsMdUp';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -26,38 +27,6 @@ const PROFILE_NAV_ITEM_CLASS =
 
 const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';
-
-const MD_QUERY = '(min-width: 768px)';
-/**
- * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
- *
- * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
- * @returns Unsubscribe function.
- */
-const subscribeMd = (cb: () => void): (() => void) => {
-  const mq = window.matchMedia(MD_QUERY);
-  mq.addEventListener('change', cb);
-  return () => mq.removeEventListener('change', cb);
-};
-/**
- * getMdSnapshot — current client snapshot of the `md` media query match state.
- *
- * @returns `true` when the viewport currently matches `md` (>= 768px).
- */
-const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
-/**
- * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
- *
- * @returns Always `false` so SSR renders the mobile layout deterministically.
- */
-const getMdServerSnapshot = (): boolean => false;
-/**
- * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
- *
- * @returns `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
- */
-const useIsMdUp = (): boolean =>
-  useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 type ProfileScreen = 'menu' | 'orders' | 'favorites' | 'bookings' | 'personal';
 

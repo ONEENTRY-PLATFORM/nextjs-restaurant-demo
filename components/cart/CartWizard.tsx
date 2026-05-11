@@ -4,8 +4,9 @@ import { gsap } from 'gsap';
 import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX, ReactNode } from 'react';
-import { Fragment, useEffect, useSyncExternalStore } from 'react';
+import { Fragment, useEffect } from 'react';
 
+import { useIsMdUp } from '@/app/hooks/useIsMdUp';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import {
@@ -61,39 +62,6 @@ const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
   if (idx >= 0) return CHECKOUT_FLOW.slice(0, idx + 1);
   return [...CHECKOUT_FLOW, current];
 };
-
-// Tracks the md+ (768px) breakpoint on the client to render the step body in exactly one place
-const MD_QUERY = '(min-width: 768px)';
-/**
- * subscribeMd — `useSyncExternalStore` subscriber for the `md` (768px+) media query.
- *
- * @param   {() => void}   cb - Change listener triggered whenever the match state flips.
- * @returns Unsubscribe function.
- */
-const subscribeMd = (cb: () => void): (() => void) => {
-  const mq = window.matchMedia(MD_QUERY);
-  mq.addEventListener('change', cb);
-  return () => mq.removeEventListener('change', cb);
-};
-/**
- * getMdSnapshot — current client snapshot of the `md` media query match state.
- *
- * @returns `true` when the viewport currently matches `md` (>= 768px).
- */
-const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
-/**
- * getMdServerSnapshot — server snapshot for the `md` media query (always `false`).
- *
- * @returns Always `false` so SSR renders the mobile layout deterministically.
- */
-const getMdServerSnapshot = (): boolean => false;
-/**
- * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
- *
- * @returns `true` on md+ viewports, `false` otherwise (server snapshot is `false`).
- */
-const useIsMdUp = (): boolean =>
-  useSyncExternalStore(subscribeMd, getMdSnapshot, getMdServerSnapshot);
 
 /**
  * CartWizard — multi-step checkout driven by `orderReducer.step`.

@@ -1,6 +1,9 @@
+'use client';
+
 import type { JSX } from 'react';
 
 import { useAppDispatch } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { increaseProductQty } from '@/app/store/reducers/CartSlice';
 
 /**
@@ -21,6 +24,7 @@ const IncreaseButton = ({
   qty: number;
   units: number;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   if (qty < 1) {
     return <></>;
@@ -40,7 +44,7 @@ const IncreaseButton = ({
     <button
       onClick={() => onIncreaseHandle()}
       className="relative m-1 box-border size-8 rounded-full text-center text-white/90 transition-all duration-500 hover:bg-white/10 hover:text-brand"
-      aria-label="Increase quantity"
+      aria-label={t('increase_quantity_label', 'Increase quantity')}
     >
       +
     </button>

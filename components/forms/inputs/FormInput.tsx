@@ -17,6 +17,7 @@ import EyeOpenIcon from '@/components/icons/eye-o';
  */
 const FormInput = (field: IFormAttribute & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;
+  const placeholder = String(field.additionalFields?.placeholder?.value ?? '');
   const [value, setValue] = useState<string>(field.value || '');
   const [type, setType] = useState<string>('');
   const dispatch = useAppDispatch();
@@ -85,7 +86,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
         {type === 'textarea' && (
           <textarea
             id={field.marker}
-            placeholder={localizeInfos?.title}
+            placeholder={placeholder}
             className="cart_input"
             required={required}
             onChange={val => setValue(val.currentTarget.value)}
@@ -96,7 +97,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
           <input
             type={type}
             id={field.marker}
-            placeholder={localizeInfos?.title}
+            placeholder={placeholder}
             className="cart_input"
             required={required}
             onChange={val => setValue(val.currentTarget.value)}

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
+import { t } from '@/app/dictionaries';
 
 // Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
@@ -13,12 +14,13 @@ export const dynamic = 'force-dynamic';
  */
 const NotFound = async (): Promise<JSX.Element> => {
   const { page, isError } = await getPageByUrl('404');
+  const returnHome = await t('return_home_button', 'Return home');
 
   if (isError || !page) {
     return (
       <div className="mx-auto flex min-h-80 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
         <h1 className="mb-10 text-6xl">404</h1>
-        <Link href="/">Return home</Link>
+        <Link href="/">{returnHome}</Link>
       </div>
     );
   }
@@ -39,7 +41,7 @@ const NotFound = async (): Promise<JSX.Element> => {
         href="/"
         className="rounded-card border border-brand text-brand font-normal px-4 py-2 hover_btn_brand"
       >
-        Return home
+        {returnHome}
       </Link>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import type { JSX } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import StarCardIcon from '@/components/icons/star-card';
 
 /**
@@ -22,14 +23,17 @@ const StarRating = ({
   onChange?: (v: number) => void;
   size?: number;
 }): JSX.Element => {
+  const t = useT();
   const stars = [1, 2, 3, 4, 5];
   const isInteractive = Boolean(onChange);
+  const ratingPrefix = t('rating_prefix', 'Rating:');
+  const outOfText = t('rating_out_of_text', 'out of');
 
   return (
     <div
       className="flex gap-1"
       role={isInteractive ? 'radiogroup' : 'img'}
-      aria-label={`Rating: ${value} out of 5`}
+      aria-label={`${ratingPrefix} ${value} ${outOfText} 5`}
     >
       {stars.map(n => {
         const filled = n <= Math.round(value);

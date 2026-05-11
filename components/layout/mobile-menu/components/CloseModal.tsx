@@ -1,5 +1,8 @@
+'use client';
+
 import { useContext } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
@@ -8,10 +11,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
  * @returns JSX of the close button absolutely positioned in the drawer corner.
  */
 const CloseModal = () => {
+  const t = useT();
   const { setTransition } = useContext(OpenDrawerContext);
   return (
     <button
-      aria-label="Close menu"
+      aria-label={t('close_menu_label', 'Close menu')}
       onClick={() => {
         setTransition('close');
       }}

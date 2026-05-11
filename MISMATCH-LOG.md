@@ -26,13 +26,11 @@
 | B. Ручная сверка по экранам | см. ниже | — | — | — | — |
 | C. OneEntry Admin Setup | см. ниже | — | — | — | — |
 
-> Раздел A почти пуст: A.3 (закомментированный код, 5 файлов) — закрыт 2026-05-10 при ручной проверке (грепы по `^\s*//\s*(import|const|return|removeProduct|dispatch)` в указанных файлах ничего не возвращают). A.4 (arbitrary `[Npx]`) — массовая чистка 2026-05-10: 240 замен в 70 файлах для 7 топ-паттернов (`text-[16px]`, `text-[20px]`, `text-[24px]`, `rounded-[5px]`, `rounded-[10px]`, `backdrop-blur-[10px]`, `tracking-[0.02em]`), остаток 64 в 39 файлах — это уже одноразовые значения (`[18px]`, `[17px]`, `[14px]` и т.п.).
-
 ---
 
 ### A.4. Arbitrary px-значения `[Npx]` (правило 3.1.1 — переводить в шкалу)
 
-**Severity: P2.** Текущее состояние после массовой чистки 2026-05-10: **64 вхождения в 39 файлах** (было 176 в 63). Большинство оставшихся — одноразовые значения, которые по §3.1.1 допускается оставлять `[...]`. Топ остатков:
+**Severity: P2.** Остаток: **64 вхождения в 39 файлах**. Большинство — одноразовые значения, которые по §3.1.1 допускается оставлять `[...]`. Топ остатков:
 
 | Файл | Кол-во |
 |---|---|
@@ -43,32 +41,7 @@
 | [components/support/SupportPopup.tsx](components/support/SupportPopup.tsx) | 3 |
 | [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) | 3 |
 
-Промоутированы в `@theme inline` ([app/globals.css](app/globals.css)): `--radius-card` (5px), `--radius-panel` (10px), `--blur-card` (10px), `--tracking-fine` (0.02em). Размеры текста 16/20/24 покрыты дефолтами Tailwind v4 (`text-base`/`text-xl`/`text-2xl`).
-
-> Действие при дальнейших правках: для остатка следить за §3.1.1 — если какое-то arbitrary-значение начнёт встречаться в 3+ местах (например, `text-[18px]`, `text-[17px]`, `[8px]`), добавить токен.
-
----
-
-### A.5. Состояния кнопок vs Figma `BUTTONS_DESKTOP` / `BUTTONS` (mobile)
-
-**Severity: P2 (остаток).** Аудит 2026-05-10 от макетов Figma `node-id=2489-460` (desktop) и `node-id=2489-96` (mobile) — 4 состояния (default / hover / disabled / active) для 7 семейств кнопок (SIGN UP, ADD TO CART, LOGIN PHONE, CREATE ACCOUNT, Tertiary x1, + Add Address, Apply).
-
-**Закрыто в этом проходе (2026-05-10):**
-
-| Что | Где | Что сделано |
-| --- | --- | --- |
-| Hover-цвет filled-primary смешивал hover + active в один `#EB4B0E` | `--color-brand-hover` в [app/globals.css](app/globals.css) | Перевёл на Figma `#F15B22`; добавил `--color-brand-active: #E44306` для отдельного active. |
-| Не было токенов для outlined-fill hover/active | [app/globals.css](app/globals.css) | Добавил `--color-brand-soft-hover` (0.2) и `--color-brand-soft-active` (0.5, переименован из misleading `--color-btn_hover`). |
-| Не было disabled-токенов | [app/globals.css](app/globals.css) | Добавил `--color-disabled-bg` (Gray_50%), `--color-disabled-bg-soft` (Gray_20%), `--color-disabled-text` (#A8A9B5). |
-| `.cart_btn` хардкодил `bg-brand-hover` на hover/focus/**active** одинаково | [app/styles/main.css](app/styles/main.css#L555) | `active:bg-brand-active` отделён; добавлены `disabled:bg-disabled-bg disabled:text-disabled-text disabled:backdrop-blur-card disabled:cursor-not-allowed`. |
-| `.menu_items_btn` имел `border-custom_white` | [app/styles/main.css](app/styles/main.css#L400) | `border-ink` (`#4C4D56`, как Figma Tertiary default). |
-| `PaymentButton` использовал arbitrary `[#e44306]` и `bg-custom_btnorange` | [components/layout/cart/components/PaymentButton.tsx](components/layout/cart/components/PaymentButton.tsx#L17) | `bg-brand hover:bg-brand-hover active:bg-brand-active` + disabled-комплект. |
-| `AuthProviderSelect` / `ReservationAuthStep` показывали первого провайдера сплошным оранжевым (default), Figma показывает default = серый+blur, оранжевый — только hover | [components/forms/AuthProviderSelect.tsx](components/forms/AuthProviderSelect.tsx) · [components/reservation/ReservationAuthStep.tsx](components/reservation/ReservationAuthStep.tsx) | Все провайдеры теперь рендерятся в едином LOGIN PHONE state-machine: `bg-disabled-bg backdrop-blur-card hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`. Удалена ветка `isPrimary` (визуально не подтверждалась макетом). |
-| `+ Add Address` имел `border-white` (`#FFF`), а Figma — `#DFE9F9` (`paper`) | [components/profile/ProfileSections.tsx](components/profile/ProfileSections.tsx#L403) · [components/cart/steps/step-payment/AddressRow.tsx](components/cart/steps/step-payment/AddressRow.tsx#L126) | `border-paper`. |
-| Дублирующий override `cart_btn bg-custom_btnorange hover:bg-brand-hover` поверх `.cart_btn` | [app/restaurants/page.tsx](app/restaurants/page.tsx#L152) · [app/restaurants/[handle]/page.tsx](app/restaurants/[handle]/page.tsx) | Оставлен только `cart_btn`. После фикса самого класса (`bg-brand` сплошной + правильный hover/active) override не нужен. |
-| `.hover_btn_white` (`hover:text-white`) применялся как универсальный outlined-hover, но Figma даёт две разные семантики hover: для outlined-brand (CREATE ACCOUNT) — текст остаётся бренд + bg `brand-soft-hover`; для outlined-paper (`+ Add Address`) — текст остаётся paper + border меняется на бренд | [app/styles/main.css:186](app/styles/main.css#L186) → 13 callers | Класс удалён. Заменён на два узких: `.hover_btn_brand` (`hover:bg-brand-soft-hover`) и `.hover_btn_paper` (`hover:border-brand`). Все 11 outlined-brand/paper callers (CreateAccountButton, DateTimePickerSheet ×2, not-found, EmptyCart, FilterBottom, ResetButton, BookingsContent ×2, ReviewsSlideUpPanel ×2, OrderReviewPopup, ProfileSections, AddressRow) мигрированы. У [group-card/ApplyButton](components/layout/product/group-card/ApplyButton.tsx) Figma даёт особый hover (text → paper, без fill) — реализовано инлайн `hover:text-paper`. У [CreateAccountButton](components/forms/inputs/CreateAccountButton.tsx) дополнительно добавлен active-state (`active:bg-brand-soft-active active:text-white`) и disabled (`disabled:border-ink disabled:text-ink`) — это полная state-машина CREATE ACCOUNT из Figma. |
-| Filter `ApplyButton` был gradient-кнопкой, а Figma `Apply` — outlined 1px brand с hover `text → paper` | [components/layout/filter/components/buttons/ApplyButton.tsx](components/layout/filter/components/buttons/ApplyButton.tsx#L21) | Перевёл на outlined: `border border-brand text-brand ... hover:text-paper disabled:border-ink disabled:text-ink`. Gradient-токены `bg-custom-gradient` / `bg-gradient-to-r-hover` остаются для ADD TO CART (это там, где Figma действительно показывает gradient). |
-| `AddToCartButton` для `out_of_stock` подменял всю кнопку на pill (`border-muted text-muted`), Figma же показывает ту же кнопку в disabled-визуале (`Gray_50%` + `blur(10)`, label "Out of stock", cart-icon скрыта) | [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx) | Pill убрана. Теперь рендерится та же `<button>` с `disabled={notInStock}` и комбинированным className: при `notInStock` дописывается `bg-none bg-disabled-bg backdrop-blur-card cursor-not-allowed` (Tailwind v4 `bg-none` сбрасывает background-image gradient, `bg-disabled-bg` ставит solid Gray_50%). Лейбл переключается на `out_of_stock_button` из словаря, иконка корзины скрыта. JSDoc обновлён под новую семантику. |
+> Действие: следить за §3.1.1 — если какое-то arbitrary-значение начнёт встречаться в 3+ местах (`text-[18px]`, `text-[17px]`, `[8px]`), добавить токен.
 
 ---
 
@@ -126,11 +99,6 @@
 [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx)
 - Auth-шаги (sign-in / verification) рендерятся через канонический [Modal](components/layout/modal/index.tsx) + [AuthProviderSelect](components/forms/AuthProviderSelect.tsx) — отдельных wizard-шагов больше нет.
 
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-| B.4.11 | Хардкод-строки без маркеров в OneEntry: `'Cart'`, `'Order'`, `'Success'`, `'Error'` в STEP_TITLES + строка `'Cart'` в шапке мобильной корзины. Завести `cart_text` / `order_text` / `success_text` / `error_text` в `static_content` и подцепить через `dict`. _(line numbers refreshed 2026-05-10)_ | [components/cart/CartWizard.tsx:37-41,174](components/cart/CartWizard.tsx#L37-L41) | P3 |
-| B.4.12 | StepPayment: остался только хардкод `placeholder="phone number"` — нет маркера в `static_content`. _(2026-05-10: `'Pay with'` и `'Credit & Debit Cards'` убраны/вмерджены в dict; line numbers refreshed)_ | [components/cart/steps/StepPayment.tsx:336](components/cart/steps/StepPayment.tsx#L336) | P3 |
-
 ### B.5. Профиль и попапы (`m_profile.html`, `pk_active_orders.html` ↔ `app/profile/*`, `components/profile/*`)
 
 - 🌐 Live: <http://localhost:3000/profile> · <http://localhost:3000/profile/orders> · <http://localhost:3000/profile/favorites> · <http://localhost:3000/profile/bookings>
@@ -182,8 +150,7 @@
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.7.5 | Остался `md:text-[32px]` на h1 (одноразовое значение — оставить `[...]` по §3.1.1, либо завести `--text-display` если повторится в 3+ местах). _(2026-05-10: `text-[24px]` → `text-2xl` чисткой; line refreshed)_ | [app/support/page.tsx:39](app/support/page.tsx#L39) | P3 |
-| B.7.9 | `static-html/service_support.html` НЕ содержит формы Contact-Us — только два контактных блока. В проекте форма всё ещё есть. С клиентом форма подтверждена как нужна (`contact_us` создан в админке), но это значит макет support-страницы **отличается от static-html** — ✅ намеренно | [app/support/page.tsx:70-75](app/support/page.tsx#L70-L75) | — |
+| B.7.5 | Остался `md:text-[32px]` на h1 (одноразовое значение — оставить `[...]` по §3.1.1, либо завести `--text-display` если повторится в 3+ местах). | [app/support/page.tsx:39](app/support/page.tsx#L39) | P3 |
 
 ### B.8. Промо (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
 
@@ -193,9 +160,6 @@
   - day: [pk_promo_day.html](static-html/pk_promo_day.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_promo_day.html>
 - 📁 Файлы проекта: [app/promo/[handle]/page.tsx](app/promo/[handle]/page.tsx) · [components/promo/PromoCard.tsx](components/promo/PromoCard.tsx)
 
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-
 ---
 
 ## Раздел C. OneEntry Admin Setup — что осталось завести в админке
@@ -203,34 +167,6 @@
 Админка: `https://oe-restaurants.oneentry.cloud/`
 
 Код уже подключён к существующим сущностям (`services`, `bookings`, `filters`, `menu`, `restaurants`, `blog`, `delivery_order`, `booking_order`, `user`, attribute set `dish` с `cover/weight/rating/cooking_time/price/...`, attribute set `restaurant`, attribute set `catalog_page`). Ниже — только то, чего **нет** в админке и нужно для оставшихся функциональных пробелов.
-
-### C.1. Недостающие формы
-
-#### C.1.4. `review_form` — сабмит отвергает авторизованного юзера
-
-```text
-postFormsData → 400 "You must authorize to send data"
-```
-
-Сервер реально проверяет токен — на любом сломанном теле он возвращает осмысленные field-ошибки (`empty form data section`, `wrong form's attribute type`, `Incorrect formIdentifier for provided config`). Generic `"You must authorize to send data"` приходит **только** когда тело прошло field-валидацию — значит, после валидации полей выполняется ещё одна permission-проверка, и она режет нашего юзера.
-
-Текущее состояние формы (через `Forms.getFormByMarker('review_form')`):
-
-- `id: 5`, `type: 'rating'`, `processingType: 'script'`
-- `moduleFormConfigs[0]`: `id: 2`, `moduleIdentifier: 'catalog'`, `isAnonymous: false`, `commentOnlyUserData: false`, `viewOnlyUserData: false`, `isClosed: false`
-- `entityIdentifiers: [{ id: "menu", isNested: true }, { id: 37, isNested: false }, { id: 133, isNested: false }, { id: 129, isNested: false }, { id: 125, isNested: false }, { id: 120, isNested: false }, { id: 119, isNested: false }, { id: 116, isNested: false }, { id: 126, isNested: false }, { id: 132, isNested: false }]` _(админ расширил список 2026-05-10)_
-
-User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо, не хватает.
-
-> 🔄 **Обновлено 2026-05-10:** Из MCP видно, что для этого юзера **5 approved-записей реально существуют** в `getFormsDataByMarker('review_form')` — значит, сабмит уже работал минимум 5 раз. Проблема, по-видимому, **прерывистая** и привязана к конкретным product/page id, не входящим в `entityIdentifiers`. Поведение для продуктов с page id вне списка `{37, 116, 119, 120, 125, 126, 129, 132, 133}` (плюс nested под `menu`) — стоит проверить отдельно.
->
-> ❓ **Уточнить у клиента:**
->
-> 1. Воспроизвести 400 на конкретном товаре, чей page id **не** в списке выше — и проверить, что ошибка завязана на entity-фильтр, а не на permissions.
-> 2. Если подтвердится — добавить недостающие page id в `entityIdentifiers`, либо оставить только `{ id: "menu", isNested: true }` (если admin script корректно резолвит nested pages).
-> 3. Если ошибка приходит и для товаров **из** списка — значит дело в script-е (`processingType: 'script'`); см. вкладку Forms → review_form → Script.
->
-> На стороне кода фикса не требуется. Как только воспроизведение прояснится — пометить ✅ и удалить пункт.
 
 ### C.2. Недостающие страницы
 
@@ -277,131 +213,11 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 ### C.4. Словарь `static_content` — что осталось
 
-Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже **77 маркеров**. Все обращения в коде переведены на существующие маркеры — несуществующие удалены/перепривязаны:
-
-- [ReservationForm.tsx](components/reservation/ReservationForm.tsx) — `reservation_submit_text` → `submit_text`, `reservation_success_title` → `info_text`, `reservation_success_text` → `reservation_confirmed`.
-- [UserForm.tsx](components/forms/UserForm.tsx) — `save_button_text` → `submit_text`.
-
-Хардкод-фразы (старые находки):
-
-- [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx): wired — `select_payment_text`, `pay_cash_text`, `comment_order`, `another_person_text`. Хардкод (маркеры предложены в C.4.1 «StepPayment — дополнительные фразы»): «Pay with», «Credit & Debit Cards», placeholder «phone number», «Processing...», «APPLY», loading/error сообщения.
-- [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) — STEP_TITLES уже подцеплены к `sign_in_text`/`verification_text`/`address_text`/`select_payment_text`. «Cart», «Select time», «Success», «Error» — нет соответствующих маркеров, оставлены хардкодом.
+Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже **77 маркеров**.
 
 #### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
-
-##### ✅ Профиль / аккаунт
-
-Используется в: [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx), [components/forms/UserForm.tsx](components/forms/UserForm.tsx), [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx), [components/layout/header/nav/user-menu/LogoutMenuItem.tsx](components/layout/header/nav/user-menu/LogoutMenuItem.tsx).
-
-| marker                  | type   | title         |
-|-------------------------|--------|---------------|
-| `my_profile`            | string | My Profile    |
-| `logout_text`           | string | Logout        |
-| `edit_button`           | string | Edit          |
-| `delete_button`         | string | Delete        |
-| `add_address_button`    | string | + Add Address |
-| `street_label`          | string | Street        |
-| `house_label`           | string | House         |
-| `floor_label`           | string | Floor         |
-| `data_saved_toast`      | string | Data saved!   |
-
-##### ✅ Заказы (страница `/profile/orders`)
-
-Используется в: [components/profile/OrdersList.tsx](components/profile/OrdersList.tsx). Все ключи из таблицы прокинуты через проп `dict` (см. [app/profile/orders/page.tsx](app/profile/orders/page.tsx)) — до создания маркеров в админке UI отрендерит fallback-литералы.
-
-| marker                          | type   | title                                         |
-|---------------------------------|--------|-----------------------------------------------|
-| `contact_courier`               | string | Contact with the courier                      |
-| `repeat_order`                  | string | Repeat order                                  |
-| `loading_orders_text`           | string | Loading orders...                             |
-| `no_orders_text`                | string | You have no orders yet.                       |
-| `go_shopping_button`            | string | Go to shopping                                |
-| `active_orders_title`           | string | Active orders                                 |
-| `no_active_orders_text`         | string | You have no active orders.                    |
-| `orders_history_title`          | string | Orders History                                |
-| `no_history_orders_text`        | string | You have no past orders yet.                  |
-| `orders_load_error_prefix`      | string | Unable to load orders:                        |
-| `orders_signin_prompt`          | string | Please sign in to view your orders.           |
-| `leave_review_button`           | string | Leave a review                                |
-| `please_leave_review_text`      | string | Please, leave a review!                       |
-| `review_placeholder`            | string | Review                                        |
-| `review_submitted_text`         | string | Thanks for your review!                       |
-| `please_signin_review_text`     | string | Please sign in to leave a review.             |
-| `repeat_order_added_text`       | string | Items from your previous order added to cart  |
-| `repeat_order_all_unavailable`  | string | All items from this order are out of stock    |
-
-##### ✅ Избранное (страница `/profile/favorites`)
-
-Используется в: [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx).
-
-| marker              | type   | title                      |
-|---------------------|--------|----------------------------|
-| `no_favorites_text` | string | You have no favorites yet. |
-
-##### ✅ Корзина — пустое состояние
-
-Используется в: [components/layout/cart/components/EmptyCart.tsx](components/layout/cart/components/EmptyCart.tsx). Существующий `empty_cart_text` («Your cart is empty») — тёплое предложение, остаётся для inline-состояний; `empty_cart_title` — короткий heading.
-
-| marker              | type   | title      |
-|---------------------|--------|------------|
-| `empty_cart_title`  | string | Empty cart |
-| `go_to_shop` | string | Go to shop |
-
-##### ✅ Cart wizard / шаги
-
-Используется в: [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) (STEP_TITLES).
-
-| marker             | type   | title       |
-|--------------------|--------|-------------|
-| `cart_step_text`   | string | Cart        |
-| `select_time_text` | string | Select time |
-| `success_text`     | string | Success     |
-| `error_text`       | string | Error       |
-
-##### ✅ Toasts: cart / favorites (с плейсхолдером `{title}`)
-
-Используется в: [components/layout/product/components/AddToCartButton.tsx](components/layout/product/components/AddToCartButton.tsx), [components/layout/product/components/DecreaseButton.tsx](components/layout/product/components/DecreaseButton.tsx), [components/layout/product/product-single/FavoritesButton.tsx](components/layout/product/product-single/FavoritesButton.tsx), [components/layout/products-grid/components/product-card/CartButton.tsx](components/layout/products-grid/components/product-card/CartButton.tsx), [components/layout/products-grid/components/product-card/HeartCardButton.tsx](components/layout/products-grid/components/product-card/HeartCardButton.tsx). Шаблон `{title}` подменяется в коде на название блюда (`String.replace` / template-literal).
-
-| marker                            | type   | title                                       |
-|-----------------------------------|--------|---------------------------------------------|
-| `product_added_cart_toast`        | string | Product {title} added to cart!              |
-| `product_removed_cart_toast`      | string | Product {title} removed from cart!          |
-| `product_added_favorites_toast`   | string | Product {title} added to Favorites!         |
-| `product_removed_favorites_toast` | string | Product {title} removed from Favorites!     |
-| `auth_error_prefix`               | string | Auth error!                                 |
-
-##### ✅ Auth / формы
-
-Используется в: [components/forms/PhoneAuthForm.tsx](components/forms/PhoneAuthForm.tsx), [components/forms/ResetPasswordForm.tsx](components/forms/ResetPasswordForm.tsx).
-
-| marker                   | type   | title                                       |
-|--------------------------|--------|---------------------------------------------|
-| `phone_required_error`   | string | Please enter your phone number.             |
-| `code_send_error`        | string | Could not send the code. Please try again.  |
-| `new_password_label`     | string | New password                                |
-| `change_password_button` | string | Change password                             |
-
-##### ✅ Календарь / выбор даты-времени
-
-Используется в: [components/forms/CalendarForm.tsx](components/forms/CalendarForm.tsx), [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx).
-
-| marker                        | type   | title              |
-|-------------------------------|--------|--------------------|
-| `date_label`                  | string | Date               |
-| `select_date_placeholder`     | string | Select date        |
-| `select_time_placeholder`     | string | Select time        |
-| `select_datetime_placeholder` | string | Select date & time |
-
-##### ✅ Резервация (страница `/reservation`)
-
-Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx). `book_button` отделён от `submit_text` (default «Submit»), потому что в этой форме CTA — именно «Book».
-
-| marker                   | type   | title               |
-|--------------------------|--------|---------------------|
-| `restaurant_placeholder` | string | Restaurant choosing |
-| `book_button`            | string | Book                |
 
 ##### Reservation booking — auth + payment + success step
 
@@ -422,23 +238,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 | `email_label`               | string | Email                                                       |
 | `password_label`            | string | Password                                                    |
 | `signed_in_toast`           | string | You signed in!                                              |
-
-##### ✅ Поддержка (страница `/support`)
-
-Используется в: [app/support/page.tsx](app/support/page.tsx).
-
-| marker                    | type   | title                                |
-|---------------------------|--------|--------------------------------------|
-| `support_call_prompt`     | string | Would you like to call?              |
-| `support_question_prompt` | string | Would you like to ask a question?    |
-
-##### ✅ Главная
-
-Используется в: [components/home/HomePromo.tsx](components/home/HomePromo.tsx).
-
-| marker             | type   | title      |
-|--------------------|--------|------------|
-| `promotions_title` | string | Promotions |
 
 ##### ProfileTabs — вкладки попапа профиля
 
@@ -530,21 +329,11 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 - [forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) — `Please wait while captcha is loading.` → `captcha_loading_text`.
 - [reviews/StarRating.tsx](components/reviews/StarRating.tsx) — `Rating:` → `rating_prefix`. `aria-label` `N stars` (динамический множественный) пока оставить хардкодом — без полноценной i18n с pluralization подмена через словарь даст некрасивые формы.
 
-> ✅ Формат с плейсхолдером `{title}` подтверждён клиентом.
->
-> ❓ **Уточнить у клиента:** placeholder поля Street в попапе «My Profile» сейчас захардкожен как «OneEntry» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) — похоже на тестовый стаб. Оставить пустым (`""`), заменить на пример (`«ул. Тверская»` / `«Main St»`) или завести под маркер? То же с примерами «40»/«27» для House/Floor.
+> **TODO (код):** placeholders для Street/House/Floor в попапе «My Profile» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) сейчас хардкод (`«OneEntry»` / `«40»` / `«27»`). Подтянуть из `additionalFields` соответствующих атрибутов формы `delivery_order` (`delivery_address`, `floor`, `apartment_number`) — это канонический источник placeholder'ов и лейблов для полей форм в OneEntry. Не заводить отдельные dict-маркеры.
 
 ### C.5. Профиль — попап «My Profile» (детальный personal/payment/address)
 
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
-
-- **Address** ✅ — список адресов (street/house/floor) + map preview (`/images/picture/maps.png` static), Add/Delete/Apply. Атрибут `addresses` (json) создан в админке. Нужно читать/писать через `api.Users.updateUser`:
-
-  | marker      | type | title                    | notes                                                        |
-  |-------------|------|--------------------------|--------------------------------------------------------------|
-  | `addresses` | json | Saved delivery addresses | Массив `{ id, street, house, floor }` — адресная книга юзера |
-
-  Чекаут ([StepAddress.tsx](components/cart/steps/StepAddress.tsx)) должен предлагать сохранённые адреса из `user.formData.addresses` как `<select>` (вместо ввода с нуля); попап «My Profile» — читать/писать тот же атрибут через `api.Users.updateUser`.
 
 - **Map preview** — статичный PNG. Если нужна интерактивная карта (Google Maps / Yandex / Mapbox) — задача отдельная.
 
@@ -555,9 +344,7 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 ### C.6. Платежи
 
-`PROJECT_URL/payments/accounts` — `cash` (оплата при доставке) и `stripe` (карты через hosted Stripe Checkout). Оба передаются в [StepPayment](components/cart/steps/StepPayment.tsx) через `addPaymentMethod`. Отдельная форма ввода карты в приложении не нужна — Stripe собирает реквизиты на своей странице. ✅ Локальный `card:<id>` поток (бывший `StepAddCard` / `cart_add_card.html`) удалён.
-
-> ✅ **Подтверждено через `/api/content/payments/accounts` 2026-05-03:** `cash` (id=2) теперь имеет `isUsed: true` — клиент привязал аккаунт к orders-storage `delivery_order` в админке. `createOrder` с `paymentAccountIdentifier: 'cash'` проходит без 400.
+`PROJECT_URL/payments/accounts` — `cash` (оплата при доставке) и `stripe` (карты через hosted Stripe Checkout). Оба передаются в [StepPayment](components/cart/steps/StepPayment.tsx) через `addPaymentMethod`. Отдельная форма ввода карты в приложении не нужна — Stripe собирает реквизиты на своей странице.
 
 #### C.6.1. Форма `delivery_order` — обязательные поля
 
@@ -586,7 +373,9 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 - `floor` — добавить поле в [StepAddress.tsx](components/cart/steps/StepAddress.tsx) рядом со street (или брать из адресной книги юзера, см. C.5). Иначе при `requiredValidator: { strict: true }` (если клиент его выставит) — будет 400 после `contact_phone`.
 - `apartment_number` — опциональное поле, можно добавить рядом с floor.
-- **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом. Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"`/`testMode: true` (см. C.6.2 #1). Что нужно в админке: пройти **production**-онбординг Stripe Connect для аккаунта `stripe`, либо проверить, что storage `delivery_order` корректно линкует stripe в `paymentAccountIdentifiers`. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела админкой.
+- **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом. Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
+
+  > ❓ **Уточнить у OneEntry support:** при `testMode: true` сервер `Payments.createSession` должен валидировать `testSettings.status`, а не `settings.status`. Сейчас валидирует production-блок и отвечает `"Your payment account is not connected"`, хотя test-онбординг Stripe Connect завершён (`testSettings.stripeOnboardingComplete: true`, `testSettings.status: "connected"`). Воспроизведение — `Payments.createSession(<orderId>, 'session')` для проекта `oe-restaurants.oneentry.cloud`, account `stripe`. Запросить: либо чтобы на test-mode аккаунтах валидация шла по `testSettings`, либо чтобы сервер возвращал понятную ошибку «account is in testMode, but server requires production-connected account». Параллельно — клиент может временно пройти production Stripe Connect (live-ключи + KYC), это уберёт ошибку, но переведёт оплату на боевые карты.
 
 > ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
 
@@ -596,8 +385,6 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 **Поведение payment-шага:**
 - Аккаунты тянутся через `useGetAccountsQuery` (= `Payments.getAccounts()`), фильтр `isVisible && isUsed`, **дополнительно пересекаются** с `storage.paymentAccountIdentifiers` из `useGetOrderStorageByMarkerQuery({ marker: 'booking_order' })` — иначе при выборе непривязанного к storage аккаунта `createOrder` валится в 400 «Your payment account is not connected». Если у storage нет привязанных аккаунтов — fallback на полный список (плюс предупреждение в UI), как написано в `orders.md` rule.
-- Дефолт-выбор — Stripe (по Figma «Credit & Debit Cards» отмечен по умолчанию). Иконки маппятся по `type/identifier`: `stripe` → Visa+Mastercard, `paypal` → PayPal-лого; для `apple_pay`/`google_pay` ассетов нет — рендерим текстовый fallback (см. ниже).
-- При выбранном `card` рендерится визуальный плейсхолдер карточной формы + дисклеймер «You will be redirected to Stripe Checkout». PCI-данные на нашей стороне не собираем.
 
 **Поведение createOrder/payment:**
 - `paymentAccountIdentifier === 'cash'` → success-экран в попапе.
@@ -605,15 +392,26 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 **Открытые задачи на стороне клиента/админки:**
 
-1. **Stripe payment-account — production-онбординг не пройден.** На 2026-05-07 storage `booking_order` корректно содержит `cash` и `Stripe` в `paymentAccountIdentifiers` (подтверждено скриншотом админки), но `createOrder` с `paymentAccountIdentifier: 'stripe'` всё равно валится в `400 "Your payment account is not connected."` Причина — у Stripe-аккаунта `Payments.getAccounts()` возвращает `settings.status = "not_connected"` (production), при том что `testSettings.status = "connected"` и `testMode: true`. Сервер OneEntry валидирует именно `settings.status`, тестовый онбординг недостаточно. Что нужно в админке: Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (а не только test). Альтернатива — если проект целиком в test-mode, попросить OneEntry чтобы сервер на test-проектах смотрел `testSettings`. Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
+1. **Stripe payment-account — сервер валидирует `settings.status`, игнорируя `testMode`.** На 2026-05-07 storage `booking_order` корректно содержит `cash` и `Stripe` в `paymentAccountIdentifiers` (подтверждено скриншотом админки), но `createOrder` с `paymentAccountIdentifier: 'stripe'` валится в `400 "Your payment account is not connected."`. Подтверждено через SDK-инспекцию `Payments.getAccounts()` (2026-05-11):
+
+   ```text
+   cash:    testMode: true,  settings.status: "connected",     testSettings.status: "connected"   → работает
+   stripe:  testMode: true,  settings.status: "not_connected", testSettings.status: "connected"   → 403
+   ```
+
+   `testMode: true` и `settings.status` — независимы (у cash оба статуса `connected` при том же `testMode`). У Stripe выполнен только test-онбординг (`testSettings.stripeOnboardingComplete: true`, `pk_test_...`, незавершённый `stripeRedirectUrl: .../setup/s/<account>/...` — это setup-link от Stripe для админа аккаунта, **не** checkout-URL покупателя). Сервер OneEntry, судя по поведению, при `createSession` валидирует именно `settings.status`, игнорируя `testMode`.
+
+   > ❓ **Уточнить у OneEntry support:** должна ли валидация `Payments.createSession` при `testMode: true` смотреть на `testSettings.status` вместо `settings.status`? Воспроизведение — проект `oe-restaurants.oneentry.cloud`, account `stripe` (id=1): `testMode: true`, `testSettings.status: "connected"`, `settings.status: "not_connected"` → `Payments.createSession(<orderId>, 'session')` → `400 "Your payment account is not connected"`. Запрос: либо корректировать валидацию на test-mode аккаунтах (смотреть `testSettings`), либо возвращать понятную ошибку (`"account is in testMode but server requires production-connected account"`).
+
+   **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
+
+   Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
 2. **Apple Pay / Google Pay аккаунты в OneEntry.** В `Payments.getAccounts()` сейчас только `cash` и `stripe`. Если хотим Figma-полный комплект — нужно создать accounts с identifier `apple_pay` / `google_pay` (тип `custom` или `stripe`-через-Apple-Pay).
 3. **Иконки Apple Pay / Google Pay.** `public/images/icons/` — нет, добавить.
 4. **30% deposit — dictionary key `booking_deposit_text`.** Сейчас текст хардкод-fallback'ом `«30% deposit is required to confirm your booking»`. ❓ **Уточнить у клиента:** депозит реально 30% или другая ставка? Реализуется ли через preview/discount/promo на стороне OneEntry или это только UI-уведомление?
 5. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
 
-Дополнительно:
-
-Что нужно настроить в админке OneEntry для работающего промо:
+#### C.6.3. Купоны / промо-коды — что настроить в админке
 
 1. **Discounts → создать `DISCOUNT`** с `discountValue: { applicability, discountType, value, maxAmount? }`. Например, `applicability: TO_ORDER`, `discountType: PERCENT`, `value: 10` — 10% на заказ.
 2. **Conditions** (опционально): `MIN_CART_AMOUNT`, `PRODUCT_IN_CART`, `CATEGORY_IN_CART` и т.д. — определяют, когда купон применим. Если не выполнились — `previewOrder` вернёт `totalSumWithDiscount === totalSum`, UI покажет «Coupon does not apply to this cart».
@@ -628,16 +426,14 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 - **`menu/*`** (`appetizers`, `dinner`, `soup`, `fresh_juice`, …) — `icon` (заполнен), `service_*` (пустые, унаследовано из шаблона).
 - **`filters`** — `cooking_time_filters` (json), `preferences_filters` (json), `price_filters` (string).
-- **`blog/*`** — `bg_image`, `banner`, `description`, `action_type`. См. C.2.3. `title`, `promo_image`, `promo_title`, `promo_subtitle`, `promo_cta` — **исправлено** в предыдущем раунде.
+- **`blog/*`** — `bg_image`, `banner`, `description`, `action_type`. См. C.2.3.
 
 #### C.7.2. Product (attribute set `dish`)
 
 Реальные атрибуты у первого продукта (id=13):
 `weight` (integer), `calorrage` (integer), `cooking_time` (integer), `preferences` (list), `ingredients` (string), `price` (integer), `currency` (string), `rating` (float), `sku` (string), `cover` (image).
 
-- **`time`, `delivery_time`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
-- **`stars`** — ❌ нет. Удалён fallback в [ProductCard](components/layout/products-grid/components/product-card/ProductCard.tsx).
-- **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код раньше трактовал `statusIdentifier !== 'in_stock'` как «out of stock» → CTA «Add to cart» подменялся подписью «Out of stock» на каждом товаре. **Исправлено**: [AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65) и [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59) теперь блокируют покупку только при явном `statusIdentifier === 'out_of_stock'`. ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
+- **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код блокирует покупку только при явном `statusIdentifier === 'out_of_stock'` ([AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65), [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59)). ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
 
 #### C.7.3. Blocks (home_web)
 
@@ -653,31 +449,11 @@ User `kvasssukr.net@gmail.com` (id 31, `groups: [7]`) — прав, видимо
 
 ### C.8. Auth Providers
 
-#### C.8.1. `google` (OAuth) — нужен на шаге `signin` корзины ✅
-
-Подтверждено клиентом 2026-05-10: Google OAuth настроен полностью (OneEntry admin provider `google` активен, Google Cloud Console OAuth 2.0 client заведён, `.env` содержит `NEXT_PUBLIC_GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`). Маршрут callback'а — `/auth/callback/google` (см. [app/auth/callback/google/page.tsx](app/auth/callback/google/page.tsx) и [app/auth/callback/google/GoogleAuthCallbackInner.tsx](app/auth/callback/google/GoogleAuthCallbackInner.tsx)); инициатор — [components/forms/authProviders.ts](components/forms/authProviders.ts) `startGoogleOAuth()`; обмен `code → token` идёт через server-only [app/api/server/users/oauthLogIn.ts](app/api/server/users/oauthLogIn.ts). Если `NEXT_PUBLIC_GOOGLE_CLIENT_ID` всё-таки окажется не задан — `sortActiveAuthProviders` отфильтровывает провайдер из списка, и кнопка просто не рендерится (вместо «дохлой» кнопки с email-fallback'ом).
-
 > ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
 
-### C.8.2. Auth-формы вне CMS (Reset/Verification — фронт-only)
+### C.9. Меню `user_menu` — routing-формат
 
-Подтверждено клиентом 2026-05-04: auth-flow формы НЕ должны быть `getFormByMarker`-формами из админки. Они напрямую дёргают SDK с фиксированной сигнатурой:
-
-| Форма / экран | SDK метод | Статус |
-|---|---|---|
-| `ResetPasswordForm` | `AuthProvider.changePassword('email', login, 'otp', 1, code, newPwd, repeatPwd)` | ✅ статическая фронт-форма (нет в админке) — корректно |
-| `VerificationForm` | `AuthProvider.checkCode('email', login, 'otp', code)` или `activateUser(...)` после регистрации | ✅ статический OTP-input — корректно |
-| `ForgotPasswordForm` | `AuthProvider.generateCode('email', login, 'reset_password')` | ✅ корректно |
-
-MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер по `attribute.type`) применяется только к контентным формам (Contact Us, Sign Up, Reservation, заказ — те, что собираются админом в CMS). Auth-flow методы с зафиксированной SDK-сигнатурой остаются обычными React-формами; динамика тут не нужна и привела бы к избыточному API-вызову `getFormByMarker` без новых данных.
-
-### C.9. Меню `user_menu` — пункты профильного дропдауна
-
-[components/layout/header/nav/NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx) теперь рендерит выпадающее меню под иконкой профиля для авторизованных юзеров — пункты тянутся из CMS-меню с маркером `user_menu`. На десктопе это меню заменило табы `Personal / Orders / Favorites` (последние удалены из [app/profile/layout.tsx](app/profile/layout.tsx) — табов в дизайне нет).
-
-✅ **Контент пунктов меню — закрыто 2026-05-10.** `Menus.getMenusByMarker('user_menu', 'en_US').pages` отдаёт 6 правильных пунктов: `home_web` / `orders` / `bookings` / `favorites` / `cart` / `profile` — покрывает Orders/Bookings/Favorites из `pk_*.html`-эталона.
-
-> ⚠️ **Routing-формат — остаётся открытым.** В коде линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Сейчас `pageUrl` в CMS — flat (`orders`, `favorites`, `bookings`), а реальные Next.js-маршруты — `/profile/orders`, `/profile/favorites`, `/profile/bookings`. Варианты: (a) переименовать `pageUrl` в CMS на полные пути `profile/orders` и т.п.; (b) переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` совпадут; (c) маппить в коде. Решение за командой админки.
+⚠️ **Routing-формат — открыт.** В коде линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Сейчас `pageUrl` в CMS — flat (`orders`, `favorites`, `bookings`), а реальные Next.js-маршруты — `/profile/orders`, `/profile/favorites`, `/profile/bookings`. Варианты: (a) переименовать `pageUrl` в CMS на полные пути `profile/orders` и т.п.; (b) переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` совпадут; (c) маппить в коде. Решение за командой админки.
 
 ### C.10. Профиль — Reservations history (Figma 78:1293)
 
@@ -688,10 +464,7 @@ MCP-правило «Forms ALWAYS dynamic» (`getFormByMarker` + рендер п
 - **Active** = `statusIdentifier in (<все «активные» маркеры>)` — обычно «inProgress», «reserved» и т.п. Точные маркеры зависят от настройки в OneEntry admin → Orders → Statuses.
 - **History** = всё остальное (Canceled, Completed, прошедшие даты).
 
-**Реализовано:**
-
-- ✅ **Edit-flow.** [BookingsPopup.tsx](components/profile/BookingsPopup.tsx) кнопка `Edit` сохраняет pending-данные брони в side-channel ([reservationEditState.ts](components/reservation/reservationEditState.ts)) и переключает `OpenDrawerContext.component` на `ReservationPopup`. Тот при открытии вычитывает pending, билдит initialValues через `buildInitialValuesFromOrder` (entity-id → pageUrl, timeInterval ISO → `yyyy-MM-dd HH.MM`, text → plainValue, …) и пробрасывает `editingOrder` в `ReservationForm`. В edit-режиме форма скипает auth/payment-шаги и при submit вызывает `Orders.updateOrderByMarkerAndId('booking_order', orderId, body)` с `paymentAccountIdentifier` оригинального заказа.
-- ⚠️ **Cancel-flow (заглушка).** Кнопка `Cancel` показывает confirm, оптимистично убирает бронь из локального списка и тостит «Cancellation request received». ❗ Реальной отмены через клиентский SDK сейчас сделать нельзя: `IOrderData` (body для `updateOrderByMarkerAndId`) не содержит `statusIdentifier`, отдельного `cancelOrder` в SDK нет (`Orders.cancelRefundRequest` относится только к refund-flow). После рефреша попапа бронь снова появится из ответа `Orders.getAllOrdersByMarker`.
+⚠️ **Cancel-flow (заглушка).** Кнопка `Cancel` показывает confirm, оптимистично убирает бронь из локального списка и тостит «Cancellation request received». ❗ Реальной отмены через клиентский SDK сейчас сделать нельзя: `IOrderData` (body для `updateOrderByMarkerAndId`) не содержит `statusIdentifier`, отдельного `cancelOrder` в SDK нет (`Orders.cancelRefundRequest` относится только к refund-flow). После рефреша попапа бронь снова появится из ответа `Orders.getAllOrdersByMarker`.
 
 **Открытое для клиента:**
 

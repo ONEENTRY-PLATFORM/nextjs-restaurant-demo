@@ -15,6 +15,7 @@ type Props = {
   savedAddresses: SavedAddress[];
   onPickSaved: (line: string) => void;
   onAddAddressClick: () => void;
+  placeholder: string;
 };
 
 /**
@@ -29,6 +30,7 @@ type Props = {
  * @param   {SavedAddress[]}               props.savedAddresses    - Parsed `user_address` list to render in the dropdown.
  * @param   {(line: string) => void}       props.onPickSaved       - Called when the user picks a saved address line.
  * @param   {() => void}                   props.onAddAddressClick - Called when the user clicks "Add Address" (opens profile/auth drawer).
+ * @param   {string}                       props.placeholder       - Input placeholder pulled from the `delivery_address` form-attribute `additionalFields`.
  * @returns JSX of the address row.
  */
 const AddressRow = ({
@@ -37,6 +39,7 @@ const AddressRow = ({
   savedAddresses,
   onPickSaved,
   onAddAddressClick,
+  placeholder,
 }: Props): JSX.Element => {
   const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -87,7 +90,7 @@ const AddressRow = ({
           type="text"
           value={address}
           onChange={e => onAddressChange(e.currentTarget.value)}
-          placeholder="OneEntry str."
+          placeholder={placeholder}
           className="w-full rounded-card border border-paper bg-transparent p-1.25 pr-8.75 text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
         />
         <button

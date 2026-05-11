@@ -200,7 +200,7 @@ const StepOrder = (): JSX.Element => {
             value={promoCode}
             onChange={e => setPromoCode(e.currentTarget.value)}
             disabled={isLoading}
-            placeholder="Promo Code"
+            placeholder={t('promo_code_text', 'Promo Code')}
             className="h-8 w-2/3 rounded-card border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none disabled:opacity-60"
           />
           <button
@@ -210,10 +210,10 @@ const StepOrder = (): JSX.Element => {
             className="h-8 w-1/3 rounded-card border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
           >
             {isLoading
-              ? 'Applying'
+              ? t('applying_text', 'Applying')
               : appliedCoupon && appliedCoupon.code === promoCode.trim()
-                ? 'Remove'
-                : 'Apply Code'}
+                ? t('remove_button', 'Remove')
+                : t('apply_code_button', 'Apply Code')}
           </button>
         </div>
         {error ? (
@@ -223,7 +223,9 @@ const StepOrder = (): JSX.Element => {
         ) : null}
         {appliedCoupon && !error ? (
           <p className="text-xs text-brand">
-            Coupon <span className="font-bold uppercase">{appliedCoupon.code}</span> applied
+            {t('coupon_text', 'Coupon')}{' '}
+            <span className="font-bold uppercase">{appliedCoupon.code}</span>{' '}
+            {t('coupon_applied_suffix', 'applied')}
           </p>
         ) : null}
       </div>

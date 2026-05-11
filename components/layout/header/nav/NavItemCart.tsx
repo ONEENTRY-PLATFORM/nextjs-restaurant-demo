@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { type JSX, useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { resetCheckout } from '@/app/store/reducers/OrderSlice';
 import CartIcon from '@/components/icons/cart';
@@ -14,6 +15,7 @@ import CartIcon from '@/components/icons/cart';
  * @returns JSX of the cart link.
  */
 const NavItemCart = (): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;
   const count = items?.length ?? 0;
@@ -36,7 +38,7 @@ const NavItemCart = (): JSX.Element => {
       // `step` from a prior visit (e.g. `payment`) would render instead.
       onClick={() => dispatch(resetCheckout())}
       className="group relative my-auto box-border flex shrink-0"
-      aria-label="Cart"
+      aria-label={t('cart_label', 'Cart')}
     >
       <CartIcon />
       {mounted && count > 0 && (

@@ -4,7 +4,7 @@ import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces'
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -55,6 +55,10 @@ const ReviewForm = ({
   const { isAuth, user } = useContext(AuthContext);
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
 
+  const { data: reviewForm } = useGetFormByMarkerQuery({ marker: FORM_MARKER });
+  const reviewTextAttr = reviewForm?.attributes?.find(a => a.marker === TEXT_MARKER);
+  const reviewTextPlaceholder = String(reviewTextAttr?.additionalFields?.placeholder?.value ?? '');
+
   const [rating, setRating] = useState(0);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -67,7 +71,9 @@ const ReviewForm = ({
         {hideTitle ? null : (
           <h3 className="font-bold text-[18px] uppercase text-brand">{leaveReviewLabel}</h3>
         )}
-        <p className="text-sm text-paper/80">Please sign in to leave a review.</p>
+        <p className="text-sm text-paper/80">
+          {t('please_signin_review_text', 'Please sign in to leave a review.')}
+        </p>
         <button
           type="button"
           onClick={() => {
@@ -76,7 +82,7 @@ const ReviewForm = ({
           }}
           className="h-12.5 w-full rounded-panel bg-custom-gradient font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover"
         >
-          Sign in
+          {t('sign_in_text', 'Sign in')}
         </button>
       </div>
     );
@@ -85,11 +91,11 @@ const ReviewForm = ({
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!rating) {
-      setError('Please select a rating.');
+      setError(t('select_rating_error', 'Please select a rating.'));
       return;
     }
     if (!text.trim()) {
-      setError('Please write a review.');
+      setError(t('write_review_error', 'Please write a review.'));
       return;
     }
     setLoading(true);
@@ -118,7 +124,10 @@ const ReviewForm = ({
       });
       setLoading(false);
       if (isError(res)) {
-        setError((res as { message?: string }).message || 'Failed to submit review');
+        setError(
+          (res as { message?: string }).message ||
+            t('review_submit_error', 'Failed to submit review')
+        );
         return;
       }
       setSuccess(true);
@@ -126,12 +135,16 @@ const ReviewForm = ({
       setText('');
     } catch (err) {
       setLoading(false);
-      setError((err as Error).message || 'Failed to submit review');
+      setError((err as Error).message || t('review_submit_error', 'Failed to submit review'));
     }
   };
 
   if (success) {
-    return <div className="rounded-xl bg-ink/60 p-5 text-paper">Thank you for your review!</div>;
+    return (
+      <div className="rounded-xl bg-ink/60 p-5 text-paper">
+        {t('review_submitted_text', 'Thanks for your review!')}
+      </div>
+    );
   }
 
   return (
@@ -140,17 +153,18 @@ const ReviewForm = ({
         <h3 className="font-bold text-[18px] uppercase text-brand">{leaveReviewLabel}</h3>
       )}
       <p className="text-sm text-paper/70">
-        Posting as <span className="text-paper">{resolveAuthorName(user)}</span>
+        {t('posting_as_text', 'Posting as')}{' '}
+        <span className="text-paper">{resolveAuthorName(user)}</span>
       </p>
       <div className="flex items-center gap-3">
-        <span className="text-sm text-paper/80">Rating:</span>
+        <span className="text-sm text-paper/80">{t('rating_prefix', 'Rating:')}</span>
         <StarRating value={rating} onChange={setRating} size={24} />
       </div>
       <textarea
         rows={4}
         value={text}
         onChange={e => setText(e.currentTarget.value)}
-        placeholder="Tell us what you think..."
+        placeholder={reviewTextPlaceholder}
         className="w-full bg-transparent border border-muted rounded-md text-paper text-base p-3 focus:outline-none focus:border-brand"
       />
       <button
@@ -158,7 +172,7 @@ const ReviewForm = ({
         disabled={loading}
         className="h-12.5 w-full rounded-panel bg-custom-gradient font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover disabled:opacity-60"
       >
-        {loading ? '...' : 'Submit review'}
+        {loading ? '...' : t('submit_review_button', 'Submit review')}
       </button>
       {error ? <ErrorMessage error={error} /> : null}
     </form>

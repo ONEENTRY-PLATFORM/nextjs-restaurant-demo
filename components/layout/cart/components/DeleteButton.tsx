@@ -1,5 +1,8 @@
+'use client';
+
 import type { JSX } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import DeleteIcon from '@/components/icons/delete';
 
 import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
@@ -13,13 +16,14 @@ import { useCartRemoveWithUndo } from './useCartRemoveWithUndo';
  * @returns JSX of the trash button.
  */
 const DeleteButton = ({ productId, title }: { productId: number; title: string }): JSX.Element => {
+  const t = useT();
   const removeWithUndo = useCartRemoveWithUndo(productId, title);
 
   return (
     <button
       type="button"
       className="group relative box-border flex size-5 shrink-0 flex-col items-center justify-center"
-      aria-label="Delete item"
+      aria-label={t('delete_item_label', 'Delete item')}
       onClick={() => removeWithUndo()}
     >
       <DeleteIcon />

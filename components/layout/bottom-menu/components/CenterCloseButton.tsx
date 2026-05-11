@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 
@@ -12,6 +13,7 @@ import CloseXMiniIcon from '@/components/icons/close-x-mini';
  * @returns JSX of the centered close button.
  */
 const CenterCloseButton = (): JSX.Element => {
+  const t = useT();
   const { open, transition, setTransition } = useContext(OpenDrawerContext);
   // Hide as soon as a close is requested, so the icon crossfade runs
   // alongside the drawer's reverse animation rather than waiting for
@@ -21,7 +23,7 @@ const CenterCloseButton = (): JSX.Element => {
   return (
     <button
       type="button"
-      aria-label="close"
+      aria-label={t('close_label', 'Close')}
       onClick={() => setTransition('close')}
       aria-hidden={hidden}
       tabIndex={hidden ? -1 : 0}

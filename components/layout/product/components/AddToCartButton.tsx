@@ -81,9 +81,11 @@ const AddToCartButton = ({
     await onSubscribeEvents(id);
   };
 
+  const titleSlot = (template: string) => template.replace('{title}', productTitle);
+
   const addToCartHandle = async (): Promise<void> => {
     dispatch(addProductToCart({ id: id, selected: true, quantity: 1 }));
-    toast('Product ' + productTitle + ' added to cart!');
+    toast(titleSlot(t('product_added_cart_toast', 'Product {title} added to cart!')));
 
     if (user) {
       updateUserCartState();
@@ -105,7 +107,11 @@ const AddToCartButton = ({
           ? `${className} bg-none bg-disabled-bg backdrop-blur-card cursor-not-allowed`
           : className
       }
-      aria-label={notInStock ? `${productTitle} is out of stock` : `Add ${productTitle} to cart`}
+      aria-label={
+        notInStock
+          ? titleSlot(t('out_of_stock_aria_template', '{title} is out of stock'))
+          : titleSlot(t('add_to_cart_aria_template', 'Add {title} to cart'))
+      }
     >
       {notInStock ? outOfStockLabel : addToCartLabel}
       {!notInStock && <CartAddIcon className="w-5 h-4.5" />}

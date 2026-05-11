@@ -1,4 +1,8 @@
+'use client';
+
 import type { Dispatch, JSX, SetStateAction } from 'react';
+
+import { useT } from '@/app/store/providers/DictProvider';
 
 /**
  * CloseSearch — close button for the search-results panel that flips the panel state to `false`.
@@ -12,11 +16,12 @@ const CloseSearch = ({
 }: {
   setState: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
+  const t = useT();
   return (
     <button
       className="absolute right-3 top-3 size-4"
       onClick={() => setState(false)}
-      aria-label="Close search results"
+      aria-label={t('close_search_results_label', 'Close search results')}
     >
       &#10005;
     </button>

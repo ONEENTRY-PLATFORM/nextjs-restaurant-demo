@@ -9,6 +9,7 @@ import { useContext, useMemo, useRef, useState, useSyncExternalStore } from 'rea
 import { logOutUser, useGetMenuByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -208,6 +209,7 @@ const ScreenHeader = ({
  * @returns JSX of the profile drawer (or empty fragment when not active).
  */
 const ProfilePopup = (): JSX.Element => {
+  const t = useT();
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
@@ -236,14 +238,25 @@ const ProfilePopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-card shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
+        className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-card shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:min-w-85 md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
-        <div className="hidden w-full md:flex justify-end">
+        <div className="hidden w-full items-center justify-between gap-5 md:flex">
+          <button
+            type="button"
+            onClick={close}
+            aria-label={t('back_text', 'Back') || 'Back'}
+            className="group flex size-12 items-center justify-center bg-transparent transition-colors duration-200 md:size-10 md:p-3 lg:size-12.5 lg:p-3.5"
+          >
+            <ArrowBackIcon className="fill-paper group-hover:fill-brand" />
+          </button>
+          <p className="my-auto whitespace-nowrap font-bold text-2xl text-paper">
+            {t('profile_text', 'Profile')}
+          </p>
           <button
             type="button"
             onClick={close}
             aria-label="Close profile"
-            className="z-10 -mt-2.5 size-12 items-center justify-center rounded-full border border-solid border-paper/40 bg-transparent text-lg text-paper transition-colors hover:border-brand hover:text-brand md:flex md:size-10 lg:size-12.5 lg:p-2.5"
+            className="z-10 flex size-12 items-center justify-center bg-transparent text-lg text-paper transition-colors hover:text-brand md:size-10 lg:size-12.5 lg:p-2.5"
           >
             &#10005;
           </button>
@@ -253,7 +266,7 @@ const ProfilePopup = (): JSX.Element => {
           <div
             key={activeScreen}
             className={
-              'mt-5 md:mt-0 ' +
+              'mt-5 md:mt-7.5 ' +
               (activeScreen === 'menu' ? 'profile-screen-enter-left' : 'profile-screen-enter-right')
             }
           >

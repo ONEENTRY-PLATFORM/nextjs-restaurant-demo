@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addFavorites,
   removeFavorites,
@@ -24,6 +25,7 @@ import HeartOpenIcon from '@/components/icons/heart-o';
  * @returns JSX of the heart toggle button.
  */
 const FavoritesButton = (product: IProductsEntity): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
@@ -35,13 +37,20 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   }, []);
   const isFav = mounted ? isFavStored : false;
 
+  const titleSlot = (template: string) =>
+    template.replace('{title}', product.localizeInfos.title);
+
   const onUpdateFavoritesHandle = () => {
     if (isFav) {
       dispatch(removeFavorites(product.id));
-      toast('Product ' + product.localizeInfos.title + ' removed from Favorites!');
+      toast(
+        titleSlot(t('product_removed_favorites_toast', 'Product {title} removed from Favorites!'))
+      );
     } else {
       dispatch(addFavorites(product.id));
-      toast('Product ' + product.localizeInfos.title + ' added to Favorites!');
+      toast(
+        titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!'))
+      );
     }
   };
 
@@ -51,16 +60,22 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
         dispatch(addFavorites(product.id));
         await onSubscribeEvents(product.id);
 
-        toast('Product ' + product.localizeInfos.title + ' add to Favorites!');
+        toast(
+          titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!'))
+        );
       } else {
         dispatch(removeFavorites(product.id));
         await onUnsubscribeEvents(product.id);
 
-        toast('Product ' + product.localizeInfos.title + ' removed from Favorites!');
+        toast(
+          titleSlot(
+            t('product_removed_favorites_toast', 'Product {title} removed from Favorites!')
+          )
+        );
       }
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
-      toast('Auth error! ' + message);
+      toast(t('auth_error_prefix', 'Auth error!') + ' ' + message);
     }
   };
 
@@ -79,7 +94,11 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
           onUpdateFavoritesHandle();
         }
       }}
-      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+      aria-label={
+        isFav
+          ? t('remove_from_favorites_label', 'Remove from favorites')
+          : t('add_to_favorites_label', 'Add to favorites')
+      }
     >
       {isFav ? <HeartIcon /> : <HeartOpenIcon />}
     </button>

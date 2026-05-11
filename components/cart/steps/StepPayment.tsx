@@ -4,7 +4,7 @@ import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useCreateOrder, useGetAccountsQuery } from '@/app/api';
+import { useCreateOrder, useGetAccountsQuery, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -41,8 +41,15 @@ const StepPayment = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const { onConfirmOrder, isLoading } = useCreateOrder();
   const { user, isAuth } = useContext(AuthContext);
-  const { setOpen, setComponent } = useContext(OpenDrawerContext);
+  const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
   const delivery = useAppSelector(selectDeliveryData);
+
+  // Form-field placeholders come from `additionalFields.placeholder.value`, not static_content.
+  const { data: deliveryForm } = useGetFormByMarkerQuery({ marker: 'delivery_order' });
+  const fieldPlaceholder = (marker: string): string => {
+    const attr = deliveryForm?.attributes?.find(a => a.marker === marker);
+    return String(attr?.additionalFields?.placeholder?.value ?? '');
+  };
 
   // Structured `user_address` (street+house+floor) takes priority over flat markers - otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
@@ -71,11 +78,15 @@ const StepPayment = (): JSX.Element => {
   /**
    * onAddAddressClick — opens the profile drawer (or auth picker for guests).
    *
+   * Signals the profile popup via `action='add-address'` so `ProfileSections` collapses
+   * "My Profile" and expands the Address / add-form sections on mount.
+   *
    * @returns Nothing.
    */
   const onAddAddressClick = (): void => {
     setOpen(true);
     setComponent(isAuth ? 'ProfilePopup' : 'AuthProviderSelect');
+    if (isAuth) setAction('add-address');
   };
 
   /**
@@ -159,6 +170,7 @@ const StepPayment = (): JSX.Element => {
         savedAddresses={savedAddresses}
         onPickSaved={onPickSavedAddress}
         onAddAddressClick={onAddAddressClick}
+        placeholder={fieldPlaceholder('delivery_address')}
       />
 
       <TimeRow
@@ -169,6 +181,7 @@ const StepPayment = (): JSX.Element => {
           setMode('scheduled');
           setPickerOpen(true);
         }}
+        placeholder={fieldPlaceholder('delivery_time')}
       />
 
       <PaymentMethodsList
@@ -182,7 +195,7 @@ const StepPayment = (): JSX.Element => {
         type="text"
         value={comment}
         onChange={e => setComment(e.currentTarget.value)}
-        placeholder={t('comment_order', 'Comments to the order')}
+        placeholder={fieldPlaceholder('comment')}
         className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
       />
 
@@ -204,7 +217,7 @@ const StepPayment = (): JSX.Element => {
           autoComplete="tel"
           value={altPhone}
           onChange={e => setAltPhone(e.currentTarget.value)}
-          placeholder="phone number"
+          placeholder={fieldPlaceholder('alt_phone')}
           className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
         />
       )}
@@ -215,7 +228,7 @@ const StepPayment = (): JSX.Element => {
         disabled={isLoading || !identifier || !address.trim() || (altReceiver && !altPhone.trim())}
         className="step-payment-row cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
-        {isLoading ? 'Processing...' : 'APPLY'}
+        {isLoading ? t('processing_text', 'Processing...') : t('apply_coupon_button', 'APPLY')}
       </button>
 
       {pickerOpen ? (

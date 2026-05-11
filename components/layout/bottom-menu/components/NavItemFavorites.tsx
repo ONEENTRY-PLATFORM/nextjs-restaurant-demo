@@ -3,6 +3,7 @@
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 
 import { useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
@@ -13,6 +14,7 @@ import FavoritesIcon from '@/components/icons/favorites';
  * @returns JSX of the favorites button with count badge (only after mount).
  */
 const NavItemFavorites = (): JSX.Element => {
+  const t = useT();
   const { setOpen, setComponent } = useContext(OpenDrawerContext);
   const items = useAppSelector(selectFavoritesItems);
   const count = items?.length ?? 0;
@@ -32,7 +34,7 @@ const NavItemFavorites = (): JSX.Element => {
         setComponent('FavoritesPopup');
         setOpen(true);
       }}
-      aria-label="Favorites"
+      aria-label={t('favorites_label', 'Favorites')}
       className="group relative box-border flex size-6 shrink-0"
     >
       <FavoritesIcon />

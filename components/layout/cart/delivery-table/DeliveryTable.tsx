@@ -34,7 +34,6 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
   });
 
   const timeText = t('time_text', 'Time');
-  const addressText = t('address_text', 'Address');
 
   const attrs = data?.attributes.filter((attr: IFormAttribute) => attr.marker !== 'time2');
   const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value || '';
@@ -77,6 +76,7 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
       <div>
         {attrs?.map((attr: IFormAttribute, i: Key) => {
           const marker = attr.marker;
+          const fieldPlaceholder = String(attr.additionalFields?.placeholder?.value ?? '');
           if (marker === 'delivery_time') {
             return (
               <DeliveryTableRow
@@ -92,12 +92,12 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
                   </span>
                 }
                 label={timeText}
-                placeholder={timeText}
+                placeholder={fieldPlaceholder}
               />
             );
           }
           if (marker === 'delivery_address') {
-            return <AddressRow key={i} placeholder={addressText} />;
+            return <AddressRow key={i} placeholder={fieldPlaceholder} />;
           }
           return;
         })}

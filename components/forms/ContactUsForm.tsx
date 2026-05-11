@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 
 import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
@@ -25,6 +26,7 @@ type SpamCaptchaSettings = {
  * @returns JSX of the contact form (loader while the schema is fetched).
  */
 const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
+  const t = useT();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -46,7 +48,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
 
     if (!formFields) return;
     if (spamField && !captcha) {
-      setError('Please wait while captcha is loading.');
+      setError(t('captcha_loading_text', 'Please wait while captcha is loading.'));
       return;
     }
 
@@ -84,7 +86,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         status: '',
       });
     } catch (error: unknown) {
-      setError((error as { message?: string })?.message ?? 'Submit failed');
+      setError((error as { message?: string })?.message ?? t('submit_failed_text', 'Submit failed'));
     } finally {
       setLoading(false);
     }

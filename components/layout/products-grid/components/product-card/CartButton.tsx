@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addProductToCart,
   decreaseProductQty,
@@ -42,11 +43,13 @@ const CartButton = ({
   title: string;
   children: ReactNode;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const item = useAppSelector(state => selectCartItemWithIdLength(state, id)) as
     | { quantity?: number }
     | undefined;
   const qty = item?.quantity ?? 0;
+  const titleSlot = (template: string) => template.replace('{title}', title);
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -65,13 +68,13 @@ const CartButton = ({
       >
         <button
           type="button"
-          aria-label="Decrease quantity"
+          aria-label={t('decrease_quantity_label', 'Decrease quantity')}
           className="text-brand"
           onClick={e => {
             stop(e);
             if (qty <= 1) {
               dispatch(removeProduct(id));
-              toast('Product ' + title + ' removed from cart!');
+              toast(titleSlot(t('product_removed_cart_toast', 'Product {title} removed from cart!')));
             } else {
               dispatch(decreaseProductQty({ id, quantity: 1 }));
             }
@@ -82,7 +85,7 @@ const CartButton = ({
         <p className="counter">x{qty}</p>
         <button
           type="button"
-          aria-label="Increase quantity"
+          aria-label={t('increase_quantity_label', 'Increase quantity')}
           className="text-brand"
           onClick={e => {
             stop(e);
@@ -101,9 +104,9 @@ const CartButton = ({
       onClick={e => {
         stop(e);
         dispatch(addProductToCart({ id, selected: true, quantity: 1 }));
-        toast('Product ' + title + ' added to cart!');
+        toast(titleSlot(t('product_added_cart_toast', 'Product {title} added to cart!')));
       }}
-      aria-label={`Add ${title} to cart`}
+      aria-label={titleSlot(t('add_to_cart_aria_template', 'Add {title} to cart'))}
       className="menu_items_btn relative z-10"
     >
       {children}

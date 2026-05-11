@@ -12,6 +12,7 @@ type Props = {
   onModeChange: (mode: DeliveryMode) => void;
   scheduleAt: string;
   onSchedulePickerOpen: () => void;
+  placeholder: string;
 };
 
 /**
@@ -25,9 +26,16 @@ type Props = {
  * @param   {(mode: DeliveryMode) => void} props.onModeChange         - Mode change handler.
  * @param   {string}                       props.scheduleAt           - Pre-formatted `DD.MM.YY HH.MM` value (empty when not yet scheduled).
  * @param   {() => void}                   props.onSchedulePickerOpen - Called when the user clicks the readonly schedule input; parent opens the picker sheet.
+ * @param   {string}                       props.placeholder          - Schedule input placeholder pulled from the `delivery_time` form-attribute `additionalFields`.
  * @returns JSX of the time row.
  */
-const TimeRow = ({ mode, onModeChange, scheduleAt, onSchedulePickerOpen }: Props): JSX.Element => {
+const TimeRow = ({
+  mode,
+  onModeChange,
+  scheduleAt,
+  onSchedulePickerOpen,
+  placeholder,
+}: Props): JSX.Element => {
   const t = useT();
 
   return (
@@ -72,7 +80,7 @@ const TimeRow = ({ mode, onModeChange, scheduleAt, onSchedulePickerOpen }: Props
           value={scheduleAt}
           readOnly
           onClick={onSchedulePickerOpen}
-          placeholder="18.06.24  10.00"
+          placeholder={placeholder}
           className="cursor-pointer rounded-card border border-white bg-transparent px-1.25 text-brand opacity-80 focus:outline-none"
         />
       </div>

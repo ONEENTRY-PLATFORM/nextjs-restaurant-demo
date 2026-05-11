@@ -3,13 +3,14 @@
 import Image from 'next/image';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ProfileIcon from '@/components/icons/profile';
 import { normalizePhoneE164 } from '@/components/utils';
 
@@ -73,10 +74,18 @@ const resolveInputType = (attr: IFormAttribute): string => {
 const ProfileSections = (): JSX.Element => {
   const t = useT();
   const { user, refreshUser } = useContext(AuthContext);
+  const { action, setAction } = useContext(OpenDrawerContext);
 
-  const [profileOpen, setProfileOpen] = useState(true);
+  // When opened from "+ Add Address" in the checkout step, collapse My Profile and jump straight to the add-address form.
+  const addAddressIntent = action === 'add-address';
+  const [profileOpen, setProfileOpen] = useState(() => !addAddressIntent);
   const [addressOpen, setAddressOpen] = useState(true);
-  const [addAddressOpen, setAddAddressOpen] = useState(false);
+  const [addAddressOpen, setAddAddressOpen] = useState(() => addAddressIntent);
+
+  // Consume the intent so subsequent reopens of the popup show the default layout.
+  useEffect(() => {
+    if (addAddressIntent) setAction('');
+  }, [addAddressIntent, setAction]);
 
   const [pendingAddresses, setPendingAddresses] = useState<SavedAddress[] | null>(null);
   const [newStreet, setNewStreet] = useState('');
@@ -296,7 +305,7 @@ const ProfileSections = (): JSX.Element => {
           className="flex w-full items-center justify-start gap-2.5"
         >
           <ProfileIcon />
-          <p className="text-xl text-paper">My Profile</p>
+          <p className="text-xl text-paper">{t('my_profile', 'My Profile')}</p>
           <Image
             src="/images/icons/chevron-up.svg"
             alt=""
@@ -344,7 +353,7 @@ const ProfileSections = (): JSX.Element => {
                 disabled={saving || !user?.formIdentifier}
                 className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
               >
-                {saving ? '' : 'Save'}
+                {saving ? '' : t('submit_text', 'Save')}
               </button>
               {saveError && <p className="text-[13px] text-red-400">{saveError}</p>}
             </form>
@@ -392,7 +401,7 @@ const ProfileSections = (): JSX.Element => {
                   onClick={() => onDeleteAddress(addr.id)}
                   className="hover_btn_transp flex items-center justify-center rounded-card border border-brand px-5 py-1.25 font-bold text-base text-brand"
                 >
-                  Delete
+                  {t('delete_button', 'Delete')}
                 </button>
               </div>
             ))}
@@ -402,7 +411,7 @@ const ProfileSections = (): JSX.Element => {
               onClick={() => setAddAddressOpen(v => !v)}
               className="hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
             >
-              + Add Address
+              {t('add_address_button', '+ Add Address')}
             </button>
             <form
               hidden={!addAddressOpen}
@@ -413,31 +422,37 @@ const ProfileSections = (): JSX.Element => {
               }}
             >
               <div className="w-full">
-                <label className="font-normal text-base text-paper">Street</label>
+                <label className="font-normal text-base text-paper">
+                  {t('street_label', 'Street')}
+                </label>
                 <input
                   className="mt-2.5 h-6.75 w-full rounded-card border border-muted bg-transparent px-5 text-paper focus:outline-muted"
                   type="text"
-                  placeholder="OneEntry"
+                  placeholder=""
                   value={newStreet}
                   onChange={e => setNewStreet(e.target.value)}
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-base text-paper">House</label>
+                <label className="font-normal text-base text-paper">
+                  {t('house_label', 'House')}
+                </label>
                 <input
                   className="h-6.75 rounded-card border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
                   type="text"
-                  placeholder="40"
+                  placeholder=""
                   value={newHouse}
                   onChange={e => setNewHouse(e.target.value)}
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-base text-paper">Floor</label>
+                <label className="font-normal text-base text-paper">
+                  {t('floor_label', 'Floor')}
+                </label>
                 <input
                   className="h-6.75 rounded-card border border-muted bg-transparent px-2.5 text-paper focus:outline-muted"
                   type="text"
-                  placeholder="27"
+                  placeholder=""
                   value={newFloor}
                   onChange={e => setNewFloor(e.target.value)}
                 />

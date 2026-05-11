@@ -7,6 +7,7 @@ import { useContext, useMemo, useState } from 'react';
 
 import { useGetMenuByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ProfileIcon from '@/components/icons/profile';
 
@@ -24,6 +25,7 @@ const PROFILE_PAGE_URL = 'profile';
  * @returns JSX of the profile icon button (with hover sub-menu when authenticated).
  */
 const NavItemProfile = (): JSX.Element => {
+  const t = useT();
   const { open, setOpen, setComponent } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
 
@@ -54,7 +56,7 @@ const NavItemProfile = (): JSX.Element => {
       <button
         onClick={handleGuestClick}
         className="group relative my-auto box-border flex size-6 shrink-0 cursor-pointer"
-        aria-label="Sign In"
+        aria-label={t('sign_in_text', 'Sign In')}
       >
         <ProfileIcon />
       </button>
@@ -71,7 +73,7 @@ const NavItemProfile = (): JSX.Element => {
         href="/profile"
         prefetch={false}
         className="group relative my-auto box-border flex size-6 shrink-0"
-        aria-label="Profile"
+        aria-label={t('profile_label', 'Profile')}
       >
         <ProfileIcon />
       </Link>

@@ -4,6 +4,7 @@
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { resetCheckout } from '@/app/store/reducers/OrderSlice';
 
@@ -13,6 +14,7 @@ import { resetCheckout } from '@/app/store/reducers/OrderSlice';
  * @returns JSX of the centered cart button with rehydrated count badge.
  */
 const CenterCartButton = (): JSX.Element => {
+  const t = useT();
   const { open, transition, setOpen, setComponent } = useContext(OpenDrawerContext);
   const dispatch = useAppDispatch();
   const count = useAppSelector(state => state.cartReducer.productsData?.length ?? 0);
@@ -41,7 +43,7 @@ const CenterCartButton = (): JSX.Element => {
         setComponent('CartPopup');
         setOpen(true);
       }}
-      aria-label="Open cart"
+      aria-label={t('open_cart_label', 'Open cart')}
       aria-hidden={hidden}
       tabIndex={hidden ? -1 : 0}
       className={

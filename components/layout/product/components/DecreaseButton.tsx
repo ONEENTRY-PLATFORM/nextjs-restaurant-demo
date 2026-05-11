@@ -1,9 +1,12 @@
+'use client';
+
 import { type JSX, useContext } from 'react';
 import { toast } from 'react-toastify';
 
 import { onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { decreaseProductQty, removeProduct } from '@/app/store/reducers/CartSlice';
 
 /**
@@ -24,6 +27,7 @@ const DecreaseButton = ({
   qty: number;
   title: string;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   if (qty < 1) {
@@ -32,7 +36,7 @@ const DecreaseButton = ({
 
   const onRemoveFromCart = async () => {
     dispatch(removeProduct(id));
-    toast('Product ' + title + ' removed from cart!');
+    toast(t('product_removed_cart_toast', 'Product {title} removed from cart!').replace('{title}', title));
 
     if (user) {
       await onUnsubscribeEvents(id);
@@ -53,7 +57,7 @@ const DecreaseButton = ({
         }
       }}
       className="relative m-1 box-border size-8 rounded-full text-center text-white/90 transition-all duration-500 hover:bg-white/10 hover:text-brand"
-      aria-label="Decrease quantity"
+      aria-label={t('decrease_quantity_label', 'Decrease quantity')}
     >
       –
     </button>

@@ -113,11 +113,11 @@ const CartPopup = (): JSX.Element => {
   ) as IProductsEntity[];
 
   const stepTitles: Record<CheckoutStep, string> = {
-    cart: 'Cart',
-    order: 'Order',
+    cart: t('cart_step_text', 'Cart'),
+    order: t('order_step_text', 'Order'),
     payment: t('select_payment_text', 'Payment'),
-    success: 'Success',
-    error: 'Error',
+    success: t('success_text', 'Success'),
+    error: t('error_text', 'Error'),
   };
 
   // Back arrow only on intermediate steps (`order`/`payment`); terminal `success`/`error` are one-shot.
@@ -137,7 +137,7 @@ const CartPopup = (): JSX.Element => {
               <button
                 type="button"
                 onClick={() => dispatch(goBackStep())}
-                aria-label="Back"
+                aria-label={t('go_back_label', 'Go back')}
                 className="group flex h-9 w-9 items-center justify-center"
               >
                 <ArrowBackIcon className="hover-target" />
@@ -170,7 +170,7 @@ const CartPopup = (): JSX.Element => {
                     onClick={handleCartApply}
                     className="cart_btn mt-7.5 mx-auto"
                   >
-                    APPLY
+                    {t('apply_coupon_button', 'APPLY')}
                   </button>
                 </>
               )}

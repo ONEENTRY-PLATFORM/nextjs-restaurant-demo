@@ -9,6 +9,7 @@ import {
   getProductsPriceRange,
   getSingleAttributeByMarkerSet,
 } from '@/app/api';
+import { t } from '@/app/dictionaries';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import CategoryFilter from '@/components/layout/filter/CategoryFilter';
 import FilterBottom from '@/components/layout/filter/FilterBottom';
@@ -60,6 +61,8 @@ const Header = async (): Promise<JSX.Element> => {
       : [];
 
   const priceRange = await getProductsPriceRange();
+  const searchPlaceholder = await t('search_placeholder_text', 'Search');
+  const homeLabel = await t('home_label', 'Home');
 
   return (
     <div id="header">
@@ -75,8 +78,8 @@ const Header = async (): Promise<JSX.Element> => {
               </h1>
             </div>
             <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
-              <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'Search'} />
+              <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
+                <SearchBar placeholder={searchPlaceholder} />
               </Suspense>
               <FilterButton />
             </div>
@@ -89,15 +92,15 @@ const Header = async (): Promise<JSX.Element> => {
           <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
             <div className="flex justify-between items-center">
               <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
-              <a href="/" aria-label="Home">
+              <a href="/" aria-label={homeLabel}>
                 <LogoMobileIcon title="logo" />
               </a>
               <MobileBurgerButton />
             </div>
 
             <div className="relative max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
-              <Suspense fallback={<SearchFallback />}>
-                <SearchBar placeholder={'Search'} />
+              <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
+                <SearchBar placeholder={searchPlaceholder} />
               </Suspense>
               <FilterButton />
             </div>

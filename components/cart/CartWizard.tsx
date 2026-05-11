@@ -40,11 +40,11 @@ type CartWizardProps = {
 const buildStepTitles = (
   t: (marker: string, fallback: string) => string
 ): Record<CheckoutStep, string> => ({
-  cart: 'Cart',
-  order: 'Order',
+  cart: t('cart_step_text', 'Cart'),
+  order: t('order_step_text', 'Order'),
   payment: t('select_payment_text', 'Payment'),
-  success: 'Success',
-  error: 'Error',
+  success: t('success_text', 'Success'),
+  error: t('error_text', 'Error'),
 });
 
 // Canonical order of checkout steps
@@ -199,10 +199,10 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
       <div className={cartWrapperClass}>
         {/* Mobile-only header */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
-          <Link href="/" className="group_white" aria-label="Back">
+          <Link href="/" className="group_white" aria-label={t('go_back_label', 'Go back')}>
             <ArrowBackOrangeIcon />
           </Link>
-          <p className="font-normal text-2xl text-white">Cart</p>
+          <p className="font-normal text-2xl text-white">{STEP_TITLES.cart}</p>
           <div className="group_white">
             <BurgerOrangeIcon />
           </div>
@@ -214,7 +214,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
             <button
               type="button"
               onClick={handleBreadcrumbBack}
-              aria-label="Back"
+              aria-label={t('go_back_label', 'Go back')}
               className="transition-colors hover:text-brand"
             >
               <ArrowBackIcon className="h-3.5 w-auto" />
@@ -222,7 +222,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           ) : (
             <Link
               href="/"
-              aria-label="Home"
+              aria-label={t('home_label', 'Home')}
               className="group inline-flex h-4 w-4 items-center justify-center"
             >
               <HomeIcon />
@@ -267,7 +267,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
               <button
                 type="button"
                 onClick={() => dispatch(goBackStep())}
-                aria-label="Back"
+                aria-label={t('go_back_label', 'Go back')}
                 className="group flex h-9 w-9 items-center justify-center"
               >
                 <ArrowBackIcon className="hover-target" />

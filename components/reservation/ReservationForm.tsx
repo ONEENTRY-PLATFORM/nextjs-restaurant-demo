@@ -526,7 +526,7 @@ const ReservationForm = ({
                   options={restaurants}
                   value={values[RESTAURANT_MARKER] ?? ''}
                   onChange={v => onChange(RESTAURANT_MARKER, v)}
-                  placeholder={attr.localizeInfos?.title ?? 'Restaurant choosing'}
+                  placeholder={String(attr.additionalFields?.placeholder?.value ?? '')}
                 />
                 {errors[attr.marker] ? (
                   <span className="px-4 text-sm text-red-500">{errors[attr.marker]}</span>

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addFavorites,
   removeFavorites,
@@ -26,6 +27,7 @@ import HeartCardIcon from '@/components/icons/heart-card';
  * @returns JSX of the heart toggle button.
  */
 const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { user, isAuth } = useContext(AuthContext);
   const isFavStored = useAppSelector(state => selectIsFavorites(state, product.id));
@@ -42,14 +44,19 @@ const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element
   const isFav = hydrated && isFavStored;
 
   const title = product.localizeInfos?.title ?? '';
+  const titleSlot = (template: string) => template.replace('{title}', title);
+  const addedToast = (): string =>
+    titleSlot(t('product_added_favorites_toast', 'Product {title} added to Favorites!'));
+  const removedToast = (): string =>
+    titleSlot(t('product_removed_favorites_toast', 'Product {title} removed from Favorites!'));
 
   const toggleLocal = (): void => {
     if (isFav) {
       dispatch(removeFavorites(product.id));
-      toast('Product ' + title + ' removed from Favorites!');
+      toast(removedToast());
     } else {
       dispatch(addFavorites(product.id));
-      toast('Product ' + title + ' added to Favorites!');
+      toast(addedToast());
     }
   };
 
@@ -58,15 +65,15 @@ const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element
       if (!isFav) {
         dispatch(addFavorites(product.id));
         await onSubscribeEvents(product.id);
-        toast('Product ' + title + ' added to Favorites!');
+        toast(addedToast());
       } else {
         dispatch(removeFavorites(product.id));
         await onUnsubscribeEvents(product.id);
-        toast('Product ' + title + ' removed from Favorites!');
+        toast(removedToast());
       }
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
-      toast('Auth error! ' + message);
+      toast(t('auth_error_prefix', 'Auth error!') + ' ' + message);
     }
   };
 
@@ -84,7 +91,11 @@ const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element
     <button
       type="button"
       onClick={handleClick}
-      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+      aria-label={
+        isFav
+          ? t('remove_from_favorites_label', 'Remove from favorites')
+          : t('add_to_favorites_label', 'Add to favorites')
+      }
       aria-pressed={isFav}
       className="absolute top-3.75 md:top-5 right-2.5 md:right-3.75 z-10 bg-transparent border-0 p-0 cursor-pointer"
     >

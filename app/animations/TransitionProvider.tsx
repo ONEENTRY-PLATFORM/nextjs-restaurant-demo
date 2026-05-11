@@ -9,6 +9,8 @@ import { useRef } from 'react';
 const LEAVE_DURATION = 0.28;
 const ENTER_DURATION = 0.35;
 const CARD_LEAVE_HOLD = 0.8;
+const SCROLL_TO_TOP_DURATION = 0.45;
+const SCROLL_TO_TOP_MIN_PX = 8;
 
 /**
  * hasCardLeave — checks whether the current pathname needs the extended card-leave hold before navigating.
@@ -49,17 +51,26 @@ export default function TransitionProvider({ children }: { children: ReactNode }
           return;
         }
         const holdForCards = hasCardLeave(pathname) ? CARD_LEAVE_HOLD : 0;
-        const tl = gsap
-          .timeline()
-          .to(el, {
-            opacity: 0,
-            y: -8,
-            duration: LEAVE_DURATION,
-            ease: 'power2.in',
-            delay: holdForCards,
-          })
-          .set(window, { scrollTo: 0 })
-          .call(next);
+        const currentScroll =
+          typeof window === 'undefined'
+            ? 0
+            : window.scrollY || window.pageYOffset || 0;
+        const needsScroll = currentScroll > SCROLL_TO_TOP_MIN_PX;
+        const tl = gsap.timeline();
+        if (needsScroll) {
+          tl.to(window, {
+            scrollTo: { y: 0, autoKill: false },
+            duration: SCROLL_TO_TOP_DURATION,
+            ease: 'power2.inOut',
+          });
+        }
+        tl.to(el, {
+          opacity: 0,
+          y: -8,
+          duration: LEAVE_DURATION,
+          ease: 'power2.in',
+          delay: holdForCards,
+        }).call(next);
         return () => {
           tl.kill();
         };

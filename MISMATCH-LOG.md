@@ -384,9 +384,11 @@
 [ReservationForm.tsx](components/reservation/ReservationForm.tsx) теперь работает как мульти-шаговый визард: `form` → `payment` → `success`. Шаг `payment` использует [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx), `success` — [ReservationSuccess.tsx](components/reservation/ReservationSuccess.tsx).
 
 **Поведение payment-шага:**
+
 - Аккаунты тянутся через `useGetAccountsQuery` (= `Payments.getAccounts()`), фильтр `isVisible && isUsed`, **дополнительно пересекаются** с `storage.paymentAccountIdentifiers` из `useGetOrderStorageByMarkerQuery({ marker: 'booking_order' })` — иначе при выборе непривязанного к storage аккаунта `createOrder` валится в 400 «Your payment account is not connected». Если у storage нет привязанных аккаунтов — fallback на полный список (плюс предупреждение в UI), как написано в `orders.md` rule.
 
 **Поведение createOrder/payment:**
+
 - `paymentAccountIdentifier === 'cash'` → success-экран в попапе.
 - иначе → `Payments.createSession(orderId, 'session')` → `window.location.href = paymentUrl`. Если `paymentUrl` не пришёл (PayPal-async, ошибка) — fallback на success в попапе.
 
@@ -406,17 +408,8 @@
    **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
 
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
-2. **Apple Pay / Google Pay аккаунты в OneEntry.** В `Payments.getAccounts()` сейчас только `cash` и `stripe`. Если хотим Figma-полный комплект — нужно создать accounts с identifier `apple_pay` / `google_pay` (тип `custom` или `stripe`-через-Apple-Pay).
-3. **Иконки Apple Pay / Google Pay.** `public/images/icons/` — нет, добавить.
-4. **30% deposit — dictionary key `booking_deposit_text`.** Сейчас текст хардкод-fallback'ом `«30% deposit is required to confirm your booking»`. ❓ **Уточнить у клиента:** депозит реально 30% или другая ставка? Реализуется ли через preview/discount/promo на стороне OneEntry или это только UI-уведомление?
-5. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
-
-#### C.6.3. Купоны / промо-коды — что настроить в админке
-
-1. **Discounts → создать `DISCOUNT`** с `discountValue: { applicability, discountType, value, maxAmount? }`. Например, `applicability: TO_ORDER`, `discountType: PERCENT`, `value: 10` — 10% на заказ.
-2. **Conditions** (опционально): `MIN_CART_AMOUNT`, `PRODUCT_IN_CART`, `CATEGORY_IN_CART` и т.д. — определяют, когда купон применим. Если не выполнились — `previewOrder` вернёт `totalSumWithDiscount === totalSum`, UI покажет «Coupon does not apply to this cart».
-3. **Coupons → сгенерировать код** (`isReusable: true/false`) и привязать к нужному `DISCOUNT`. Юзер вводит этот код в поле «Promo Code».
-4. Бонусные баллы (`BONUS` / `PERSONAL_DISCOUNT`) и `additionalDiscountsMarkers` — отдельная задача, в UI пока не выведены.
+2. **30% deposit — dictionary key `booking_deposit_text`.** Сейчас текст хардкод-fallback'ом `«30% deposit is required to confirm your booking»`. ❓ **Уточнить у клиента:** депозит реально 30% или другая ставка? Реализуется ли через preview/discount/promo на стороне OneEntry или это только UI-уведомление?
+3. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
 
 ### C.7. Аудит соответствия полей коду (inspect-api)
 
@@ -447,10 +440,6 @@
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
-### C.8. Auth Providers
-
-> ❓ **Уточнить у клиента:** должны ли пользователи, зашедшие через Google, попадать в группу `guest` (как сейчас в `userGroupIdentifier`) или в `user`? И нужен ли отдельный auth-провайдер `facebook` (в верстке `cart_login.html` / `pk_login.html` он есть, но в проекте по решению клиента оставлены только Email + Google).
-
 ### C.9. Меню `user_menu` — routing-формат
 
 ⚠️ **Routing-формат — открыт.** В коде линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Сейчас `pageUrl` в CMS — flat (`orders`, `favorites`, `bookings`), а реальные Next.js-маршруты — `/profile/orders`, `/profile/favorites`, `/profile/bookings`. Варианты: (a) переименовать `pageUrl` в CMS на полные пути `profile/orders` и т.п.; (b) переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` совпадут; (c) маппить в коде. Решение за командой админки.
@@ -464,12 +453,12 @@
 - **Active** = `statusIdentifier in (<все «активные» маркеры>)` — обычно «inProgress», «reserved» и т.п. Точные маркеры зависят от настройки в OneEntry admin → Orders → Statuses.
 - **History** = всё остальное (Canceled, Completed, прошедшие даты).
 
-⚠️ **Cancel-flow (заглушка).** Кнопка `Cancel` показывает confirm, оптимистично убирает бронь из локального списка и тостит «Cancellation request received». ❗ Реальной отмены через клиентский SDK сейчас сделать нельзя: `IOrderData` (body для `updateOrderByMarkerAndId`) не содержит `statusIdentifier`, отдельного `cancelOrder` в SDK нет (`Orders.cancelRefundRequest` относится только к refund-flow). После рефреша попапа бронь снова появится из ответа `Orders.getAllOrdersByMarker`.
+✅ **Cancel-flow.** Эмпирически проверено (2026-05-11): SDK `Orders.updateOrderByMarkerAndId` пропускает поле `statusIdentifier` на сервер, и сервер его применяет, даже несмотря на отсутствие в типе `IOrderData`. Кнопка `Cancel` теперь делает реальный update с `statusIdentifier: 'booking_cancelled'` (см. [BookingsContent.tsx](components/profile/BookingsContent.tsx) `onCancel`), и заказ после ответа сервера локально перекладывается в Reservation History через `isHistoryOrder` (теперь матчит по подстрокам `cancel`/`complet`/`deliver`/`reject`/`refund`, чтобы покрыть admin-specific маркеры вроде `booking_cancelled`/`booking_completed`). После рефреша попапа отменённая бронь продолжает быть в History (статус закреплён на сервере).
 
 **Открытое для клиента:**
 
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
-2. **Cancel — настоящий API**. Без либо нового SDK-метода, либо разрешения передавать `statusIdentifier` в body update — только заглушка. Варианты: расширить SDK / OneEntry endpoint; завести FormData-форму `cancel_request` (юзер сабмитит → админ руками меняет status); принимать оптимистичную отмену + email-уведомление ресторану.
+2. ✅ **Cancel — настоящий API.** Закрыто 2026-05-11: server-side подтверждено принимает `statusIdentifier` в body `updateOrderByMarkerAndId` (см. ✅ выше). В админке настроен `booking_cancelled` (британское написание, не `booking_canceled`).
 3. **Edit ограничения.** Сейчас edit отдаёт `products: [{ productId: 34, quantity: 1 }]` (тот же placeholder, что и в `createOrder` — см. C.6.2). Если депозит привязан к product 34, при update это останется без изменений. ❓ Корректно ли или edit-флоу должен иметь другую логику по продуктам?
 4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
 
@@ -485,7 +474,9 @@
 | `reservation_status_canceled`| string | Canceled |
 | `no_active_reservations`     | string | You have no active reservations. |
 | `no_reservation_history`     | string | You have no past reservations yet. |
-| `booking_cancel_confirm`     | string | Cancel reservation #{id}? |
-| `booking_cancel_toast`       | string | Cancellation request received. We will contact you shortly. |
-| `booking_edit_unavailable`   | string | This booking cannot be edited. |
-| `booking_updated_toast`      | string | Reservation updated. |
+| `booking_cancel_confirm`     | string | Cancel reservation #{id}?                                   |
+| `booking_cancelled_toast`    | string | Reservation cancelled.                                      |
+| `booking_cancel_failed`      | string | Failed to cancel reservation.                               |
+| `booking_cancel_unavailable` | string | This booking cannot be cancelled.                           |
+| `booking_edit_unavailable`   | string | This booking cannot be edited.                              |
+| `booking_updated_toast`      | string | Reservation updated.                                        |

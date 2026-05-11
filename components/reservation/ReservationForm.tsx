@@ -24,10 +24,12 @@ type FieldValue = string;
 
 const RESTAURANT_MARKER = 'restaurant';
 const TIME_SLOT_MARKER = 'time_slot';
+const PREFERENCES_MARKER = 'user_preferences';
 
 /**
  * isFullWidthAttr — attributes that should occupy a full row in the booking form (entity select,
- * multi-line text, date/time picker trigger). Everything else is paired into two-column rows.
+ * multi-line text, date/time picker trigger, and the free-form preferences field rendered as a
+ * textarea). Everything else is paired into two-column rows.
  *
  * @param   {IFormAttribute} attr - OneEntry form attribute.
  * @returns `true` when the attribute must render on its own row.
@@ -36,7 +38,8 @@ const isFullWidthAttr = (attr: IFormAttribute): boolean =>
   attr.type === 'entity' ||
   attr.type === 'text' ||
   attr.type === 'timeInterval' ||
-  attr.marker === TIME_SLOT_MARKER;
+  attr.marker === TIME_SLOT_MARKER ||
+  attr.marker === PREFERENCES_MARKER;
 
 type FormRow =
   | { kind: 'full'; attr: IFormAttribute }

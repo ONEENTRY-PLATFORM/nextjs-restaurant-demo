@@ -1,11 +1,15 @@
 'use client';
 
-import type { IOrderByMarkerEntity, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type {
+  IOrderByMarkerEntity,
+  IOrderData,
+  IOrdersFormData,
+} from 'oneentry/dist/orders/ordersInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { getAllOrdersByMarker } from '@/app/api';
+import { getAllOrdersByMarker, getApi, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -13,17 +17,24 @@ import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
 import Loader from '@/components/shared/Spinner';
 
-const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
+const CANCELLED_STATUS = 'booking_cancelled';
+const BOOKING_PLACEHOLDER_PRODUCT_ID = 34;
+const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
 
 /**
- * isHistoryOrder — whether the booking order is in history (completed/cancelled).
+ * isHistoryOrder — whether the booking order is in history (completed/cancelled/rejected/refunded).
+ *
+ * Matches by substring so that admin-specific markers like `booking_cancelled` and
+ * `booking_completed` are recognised alongside the generic ones (`canceled`, `delivered`, …).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `true` when the booking belongs to history.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
-  return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
+  const id = (o.statusIdentifier ?? '').toLowerCase();
+  if (!id) return false;
+  return HISTORY_STATUS_KEYWORDS.some(k => id.includes(k));
 };
 
 /**
@@ -82,8 +93,12 @@ const BookingsContent = (): JSX.Element => {
     setComponent('ReservationPopup');
   };
 
-  // Cancel: SDK does not allow changing `statusIdentifier` from the client (MISMATCH-LOG §C.10) - optimistic removal + toast.
-  const onCancel = (order: IOrderByMarkerEntity) => {
+  // Cancel: re-submit the order via `updateOrderByMarkerAndId` with `statusIdentifier`
+  // overridden to the admin-configured cancellation marker. The SDK's `IOrderData` does
+  // not type `statusIdentifier`, but the underlying PUT accepts it (verified against the
+  // live project). After success the order's status flips client-side so `isHistoryOrder`
+  // routes it into Reservation History without a refetch.
+  const onCancel = async (order: IOrderByMarkerEntity) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
         '{id}',
@@ -91,8 +106,47 @@ const BookingsContent = (): JSX.Element => {
       )
     );
     if (!ok) return;
-    setOrders(prev => prev.filter(o => o.id !== order.id));
-    toast(t('booking_cancel_toast', 'Cancellation request received. We will contact you shortly.'));
+    if (!order.formIdentifier) {
+      toast(t('booking_cancel_unavailable', 'This booking cannot be cancelled.'));
+      return;
+    }
+    const existingFormData = (order.formData as IOrdersFormData[] | undefined) ?? [];
+    const products =
+      order.products.length > 0
+        ? order.products.map(p => ({ productId: p.id, quantity: p.quantity }))
+        : [{ productId: BOOKING_PLACEHOLDER_PRODUCT_ID, quantity: 1 }];
+    const body: IOrderData & { statusIdentifier?: string } = {
+      formIdentifier: order.formIdentifier,
+      paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
+      formData: existingFormData,
+      products,
+      statusIdentifier: CANCELLED_STATUS,
+    };
+    try {
+      const res = await getApi().Orders.updateOrderByMarkerAndId(
+        'booking_order',
+        order.id,
+        body
+      );
+      if (isError(res)) {
+        toast(t('booking_cancel_failed', 'Failed to cancel reservation.'));
+        return;
+      }
+      setOrders(prev =>
+        prev.map(o =>
+          o.id === order.id
+            ? {
+                ...o,
+                statusIdentifier: CANCELLED_STATUS,
+                statusLocalizeInfos: { title: t('reservation_status_canceled', 'Cancelled') },
+              }
+            : o
+        )
+      );
+      toast(t('booking_cancelled_toast', 'Reservation cancelled.'));
+    } catch {
+      toast(t('booking_cancel_failed', 'Failed to cancel reservation.'));
+    }
   };
 
   useEffect(() => {

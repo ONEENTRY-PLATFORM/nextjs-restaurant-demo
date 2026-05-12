@@ -95,7 +95,7 @@ const FavoritesPopup = (): JSX.Element => {
         className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] max-h-dvh right-0 z-20 flex w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
       >
         {/* sticky so it does not scroll with the list. Hidden on md+. */}
-        <div className="sticky -mx-5 -mt-5 -top-5 z-10 flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
+        <div className="sticky -mx-5 -mt-5 -top-5 z-10 backdrop-blur-3xl flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
           <p className="font-normal text-2xl text-white">Favorites</p>
         </div>
 

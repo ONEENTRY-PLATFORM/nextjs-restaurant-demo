@@ -242,7 +242,7 @@ const OrderCard = ({
   };
 
   return (
-    <div className="orders-row">
+    <div className="orders-row profile-anim-row">
       <button
         type="button"
         onClick={onToggle}
@@ -393,14 +393,17 @@ const OrderLineItem = ({
 /**
  * OrdersList — orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+.
  *
- * @param   {object}         [props]               - Component props.
- * @param   {BlogBanner[]}   [props.promoBanners]  - Promo banners rendered in the right column on md+.
+ * @param   {object}         [props]                   - Component props.
+ * @param   {BlogBanner[]}   [props.promoBanners]      - Promo banners rendered in the right column on md+.
+ * @param   {boolean}        [props.disableAnimations] - Skips the internal `OrdersAnimations` wrapper so a parent (e.g. the mobile ProfilePopup) can drive entry/exit on `.profile-anim-row` elements itself, avoiding double-animation.
  * @returns JSX of the orders dashboard section.
  */
 const OrdersList = ({
   promoBanners = [],
+  disableAnimations = false,
 }: {
   promoBanners?: BlogBanner[];
+  disableAnimations?: boolean;
 } = {}): JSX.Element => {
   const t = useT();
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
@@ -529,9 +532,11 @@ const OrdersList = ({
   } else {
     leftColumn = (
       <>
-        <p className="orders-row text-xl text-paper">{t('active_orders_title', 'Active orders')}</p>
+        <p className="orders-row profile-anim-row text-xl text-paper">
+          {t('active_orders_title', 'Active orders')}
+        </p>
         {active.length === 0 ? (
-          <p className="orders-row mt-2.75 text-sm text-paper/70">
+          <p className="orders-row profile-anim-row mt-2.75 text-sm text-paper/70">
             {t('no_active_orders_text', 'You have no active orders.')}
           </p>
         ) : (
@@ -546,11 +551,11 @@ const OrdersList = ({
             />
           ))
         )}
-        <p className="orders-row mt-5 text-xl text-paper">
+        <p className="orders-row profile-anim-row mt-5 text-xl text-paper">
           {t('orders_history_title', 'Orders History')}
         </p>
         {history.length === 0 ? (
-          <p className="orders-row mt-2.75 text-sm text-paper/70">
+          <p className="orders-row profile-anim-row mt-2.75 text-sm text-paper/70">
             {t('no_history_orders_text', 'You have no past orders yet.')}
           </p>
         ) : (
@@ -569,34 +574,42 @@ const OrdersList = ({
     );
   }
 
+  // `min-w-0` + `shrink-0` lock the 50/50 split - without them, flex children of an expanded item inflate the left column.
+  const grid = (
+    <div className="flex flex-col gap-10 md:flex-row md:gap-15">
+      <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
+      <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
+        {promoBanners
+          .filter(b => b.mobileImage)
+          .map(b => (
+            <Link
+              key={b.id}
+              href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+              title={b.title}
+              className="orders-row profile-anim-row block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
+            >
+              <Image
+                src={b.mobileImage as string}
+                alt={b.title}
+                width={620}
+                height={240}
+                className="h-auto w-full"
+              />
+            </Link>
+          ))}
+      </aside>
+    </div>
+  );
+
   return (
     <section>
-      <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
-        <div className="flex flex-col gap-10 md:flex-row md:gap-15">
-          {/* `min-w-0` + `shrink-0` lock the 50/50 split - without them, flex children of an expanded item inflate the left column. */}
-          <div className="min-w-0 md:w-1/2 md:shrink-0">{leftColumn}</div>
-          <aside className="hidden md:flex md:w-1/2 md:shrink-0 md:flex-col md:gap-10">
-            {promoBanners
-              .filter(b => b.mobileImage)
-              .map(b => (
-                <Link
-                  key={b.id}
-                  href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
-                  title={b.title}
-                  className="orders-row block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
-                >
-                  <Image
-                    src={b.mobileImage as string}
-                    alt={b.title}
-                    width={620}
-                    height={240}
-                    className="h-auto w-full"
-                  />
-                </Link>
-              ))}
-          </aside>
-        </div>
-      </OrdersAnimations>
+      {disableAnimations ? (
+        grid
+      ) : (
+        <OrdersAnimations rowsKey={active.length + history.length + promoBanners.length}>
+          {grid}
+        </OrdersAnimations>
+      )}
     </section>
   );
 };

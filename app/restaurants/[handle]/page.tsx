@@ -11,7 +11,15 @@ import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGall
 export const dynamic = 'force-dynamic';
 
 type Photo = { downloadLink?: string };
-type ScheduleInterval = { from?: string; to?: string };
+type ScheduleRule = {
+  timeIntervals?: Array<[string, string]>;
+};
+type ScheduleGroup = {
+  values?: ScheduleRule[];
+};
+type DaySchedule = { label: string; hours: string };
+
+const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 type ComfortItem = {
   title?: string;
   value?: string;
@@ -23,18 +31,99 @@ type ComfortItem = {
 type Comfort = { title: string; iconUrl?: string };
 
 /**
- * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
+ * pad2 — zero-pads an integer to two digits (`9` → `"09"`).
  *
- * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
- * @returns Formatted `from - to` string, or empty when no interval is present.
+ * @param   {number} n - Value to pad; non-numeric input renders as `"00"`.
+ * @returns Two-character string representation.
  */
-const formatSchedule = (raw: unknown): string => {
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
-  const first = arr ? arr[0] : (raw as ScheduleInterval);
-  if (!first || (!first.from && !first.to)) return '';
-  return `${first.from ?? ''} - ${first.to ?? ''}`;
+const pad2 = (n: number): string => String(n ?? 0).padStart(2, '0');
+
+/**
+ * mergeRanges — merges overlapping/adjacent `[fromMin, toMin]` ranges into a minimal set of spans.
+ *
+ * @param   {Array<[number, number]>} ranges - Half-open ranges expressed in minutes from midnight.
+ * @returns New sorted array with overlapping/contiguous ranges collapsed.
+ */
+const mergeRanges = (ranges: Array<[number, number]>): Array<[number, number]> => {
+  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
+  const [first, ...rest] = sorted;
+  if (!first) return [];
+  const merged: Array<[number, number]> = [first];
+  for (const next of rest) {
+    const last = merged[merged.length - 1]!;
+    if (next[0] <= last[1]) {
+      last[1] = Math.max(last[1], next[1]);
+    } else {
+      merged.push(next);
+    }
+  }
+  return merged;
+};
+
+/**
+ * formatRange — renders one merged minute range as `HH:MM - HH:MM`.
+ *
+ * @param   {[number, number]} range - `[fromMin, toMin]` pair in minutes from midnight (UTC).
+ * @returns Formatted span like `"10:00 - 20:00"`.
+ */
+const formatRange = ([from, to]: [number, number]): string =>
+  `${pad2(Math.floor(from / 60))}:${pad2(from % 60)} - ${pad2(Math.floor(to / 60))}:${pad2(to % 60)}`;
+
+/**
+ * formatSchedule — converts the OneEntry `timeInterval` attribute into grouped weekday rows.
+ *
+ * Uses `values[].timeIntervals` (the pre-computed `[startISO, endISO]` pairs that already honor
+ * `inEveryWeek` / `exceptions` / `intervals`). Groups by UTC weekday, merges adjacent slots, then
+ * collapses consecutive Mon→Sun days that share identical hours into a range label (e.g. `Mon-Sat`).
+ * Days with no intervals collapse into a `Closed` row.
+ *
+ * @param   {unknown} raw - Raw attribute value (OneEntry timeInterval array).
+ * @returns Ordered grouped schedule rows; empty array when the attribute is missing/unusable.
+ */
+const formatSchedule = (raw: unknown): DaySchedule[] => {
+  if (!Array.isArray(raw)) return [];
+  const groups = raw as ScheduleGroup[];
+  const byWeekday: Array<Array<[number, number]>> = [[], [], [], [], [], [], []];
+  let hasAny = false;
+  for (const group of groups) {
+    for (const rule of group?.values ?? []) {
+      for (const pair of rule?.timeIntervals ?? []) {
+        const start = pair?.[0];
+        const end = pair?.[1];
+        if (!start || !end) continue;
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) continue;
+        // `getUTCDay` returns 0=Sun..6=Sat; map to Mon=0..Sun=6.
+        const weekday = (startDate.getUTCDay() + 6) % 7;
+        const fromMin = startDate.getUTCHours() * 60 + startDate.getUTCMinutes();
+        const toMin = endDate.getUTCHours() * 60 + endDate.getUTCMinutes();
+        if (toMin <= fromMin) continue;
+        byWeekday[weekday]!.push([fromMin, toMin]);
+        hasAny = true;
+      }
+    }
+  }
+  if (!hasAny) return [];
+
+  const perDayHours = WEEKDAY_LABELS.map((_, i) => {
+    return mergeRanges(byWeekday[i] ?? [])
+      .map(formatRange)
+      .join(', ');
+  });
+
+  const rows: DaySchedule[] = [];
+  let runStart = 0;
+  for (let i = 1; i <= 7; i += 1) {
+    if (i === 7 || perDayHours[i] !== perDayHours[runStart]) {
+      const startLabel = WEEKDAY_LABELS[runStart]!;
+      const endLabel = WEEKDAY_LABELS[i - 1]!;
+      const label = runStart === i - 1 ? startLabel : `${startLabel}-${endLabel}`;
+      rows.push({ label, hours: perDayHours[runStart] ?? '' });
+      runStart = i;
+    }
+  }
+  return rows;
 };
 
 /**
@@ -182,8 +271,17 @@ const RestaurantPage = async ({
             </a>
           ) : null}
           {address ? <p className="font-bold text-xl text-paper">{address}</p> : null}
-          <p className="mt-3.75 font-bold text-xl uppercase text-brand">opening hours</p>
-          {schedule ? <p className="font-bold text-xl uppercase text-paper">{schedule}</p> : null}
+          <p className="mt-3.75 font-bold text-xl uppercase text-brand">Opening hours</p>
+          {schedule.length > 0 ? (
+            <ul className="flex flex-col gap-1 font-bold text-xl uppercase text-paper">
+              {schedule.map(row => (
+                <li key={row.label} className="flex items-baseline gap-2.5">
+                  <span className="shrink-0 text-brand">{row.label}</span>
+                  <span>{row.hours || 'Closed'}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
 
         {hasCoords ? (

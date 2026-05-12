@@ -73,7 +73,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
 
   return (
-    <div className="flex w-full items-center justify-between rounded-card border border-gray-300 p-2.5">
+    <div className="profile-anim-row flex w-full items-center justify-between rounded-card border border-gray-300 p-2.5">
       {imageSrc ? (
         <Image
           src={imageSrc}

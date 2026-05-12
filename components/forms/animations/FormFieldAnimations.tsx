@@ -8,13 +8,17 @@ import { useContext, useRef } from 'react';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
- * FormFieldAnimations — GSAP width-reveal wrapper for individual form fields with per-field stagger.
+ * FormFieldAnimations — GSAP fade-and-rise wrapper for individual form fields with per-field stagger.
+ *
+ * Mirrors the screen-level stagger used by `StaggerScreenAnimations` (cart / orders / favorites
+ * cards): each field rises from below with a fade-in, and on close runs the same path in reverse
+ * — later fields exit later because their own per-index delay shifts the reverse start.
  *
  * @param   {object}    props           - Component props.
  * @param   {ReactNode} props.children  - Field markup to reveal.
  * @param   {string}    props.className - Wrapper class merged onto the animated container.
  * @param   {number}    props.index     - Field index used to compute the stagger delay.
- * @returns JSX wrapper that animates the field width from 0 → 100%.
+ * @returns JSX wrapper that animates the field upward from below with a fade.
  */
 const FormFieldAnimations = ({
   children,
@@ -33,11 +37,6 @@ const FormFieldAnimations = ({
       return;
     }
 
-    gsap.set(ref.current, {
-      transformOrigin: '0 0',
-      overflow: 'hidden',
-    });
-
     const triggerTl = gsap.timeline({
       paused: true,
     });
@@ -45,12 +44,13 @@ const FormFieldAnimations = ({
     triggerTl.fromTo(
       ref.current,
       {
-        width: 0,
-        opacity: 0,
+        yPercent: 100,
+        autoAlpha: 0,
       },
       {
-        width: '100%',
-        opacity: 1,
+        yPercent: 0,
+        autoAlpha: 1,
+        duration: 0.4,
         delay: index / 10 + 0.35,
       }
     );

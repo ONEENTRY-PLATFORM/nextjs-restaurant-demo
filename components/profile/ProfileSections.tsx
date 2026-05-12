@@ -292,7 +292,7 @@ const ProfileSections = (): JSX.Element => {
   return (
     <>
       {/* My Profile */}
-      <div>
+      <div className="profile-anim-row">
         <button
           type="button"
           onClick={() => setProfileOpen(v => !v)}
@@ -322,7 +322,7 @@ const ProfileSections = (): JSX.Element => {
                 const inputType = resolveInputType(attr);
                 const placeholder = String(attr.additionalFields?.placeholder?.value ?? '');
                 return (
-                  <div key={attr.marker} className="flex gap-5">
+                  <div key={attr.marker} className="profile-anim-row flex gap-5">
                     <label className="label" htmlFor={attr.marker}>
                       {attr.localizeInfos?.title ?? attr.marker}
                     </label>
@@ -345,7 +345,7 @@ const ProfileSections = (): JSX.Element => {
               <button
                 type="submit"
                 disabled={saving || !user?.formIdentifier}
-                className="hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
+                className="profile-anim-row hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
               >
                 {saving ? '' : t('submit_text', 'Save')}
               </button>
@@ -356,7 +356,7 @@ const ProfileSections = (): JSX.Element => {
       </div>
 
       {/* Address */}
-      <div>
+      <div className="profile-anim-row">
         <button
           type="button"
           onClick={() => setAddressOpen(v => !v)}
@@ -376,7 +376,10 @@ const ProfileSections = (): JSX.Element => {
         {addressOpen && (
           <div className="mt-5">
             {addresses.map(addr => (
-              <div key={addr.id} className="mt-2.5 flex items-center justify-between gap-2.5">
+              <div
+                key={addr.id}
+                className="profile-anim-row mt-2.5 flex items-center justify-between gap-2.5"
+              >
                 <label className="flex items-center gap-2.5 cursor-pointer flex-1">
                   <input
                     type="radio"
@@ -403,7 +406,7 @@ const ProfileSections = (): JSX.Element => {
             <button
               type="button"
               onClick={() => setAddAddressOpen(v => !v)}
-              className="hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
+              className="profile-anim-row hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
             >
               {t('add_address_button', '+ Add Address')}
             </button>

@@ -165,9 +165,14 @@ const DateTimePickerSheet = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  // Re-run once `mounted` flips: the portal returns `null` on the first render so `wrapperRef.current`
+  // is still `null` when `useGSAP` first fires — without `mounted` in deps the targets resolve to
+  // `null` and the timeline animates nothing, so the picker visually "just appears".
   useGSAP(() => {
+    if (!mounted) return undefined;
     const modalBg = wrapperRef.current?.querySelector('#modalBg') ?? null;
     const modalBody = wrapperRef.current?.querySelector('#modalBody') ?? null;
+    if (!modalBg || !modalBody) return undefined;
     const isMobile =
       typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
@@ -197,7 +202,7 @@ const DateTimePickerSheet = ({
     return () => {
       tl.kill();
     };
-  }, []);
+  }, [mounted]);
 
   const animateAndRun = (cb: () => void): void => {
     const tl = tlRef.current;
@@ -305,15 +310,10 @@ const DateTimePickerSheet = ({
             {isDateStep ? dateTitle : timeTitle}
           </h2>
           {onClose ? (
-            <>
-              {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
-              <ClosePopupButton
-                onClose={handleClose}
-                ariaLabel="Close date and time picker"
-                className="max-md:hidden"
-              />
-              <span aria-hidden="true" className="size-11.5 md:hidden" />
-            </>
+            // Picker owns its own X on all breakpoints. Relying on the bottom-menu's CenterCloseButton on
+            // mobile would dispatch `setTransition('close')` on the host `OpenDrawerContext` (Cart /
+            // Reservation popup), which closes the host instead of just the picker.
+            <ClosePopupButton onClose={handleClose} ariaLabel="Close date and time picker" />
           ) : (
             <span className="h-5 w-5" aria-hidden="true" />
           )}

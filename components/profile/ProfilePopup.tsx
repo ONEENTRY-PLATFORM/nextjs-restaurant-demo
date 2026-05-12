@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useTransitionRouter } from 'next-transition-router';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { logOutUser, useGetMenuByMarkerQuery } from '@/app/api';
 import { useIsMdUp } from '@/app/hooks/useIsMdUp';
@@ -15,6 +15,7 @@ import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
+import StaggerScreenAnimations from '@/components/shared/animations/StaggerScreenAnimations';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import BookingsContent from './BookingsContent';
@@ -23,7 +24,7 @@ import OrdersList from './OrdersList';
 import ProfileSections from './ProfileSections';
 
 const PROFILE_NAV_ITEM_CLASS =
-  'group flex w-full items-center justify-between border-b border-muted/30 py-3.75 text-xl text-paper hover:text-brand';
+  'profile-anim-row group flex w-full items-center justify-between border-b border-muted/30 py-3.75 text-xl text-paper hover:text-brand';
 
 const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';
@@ -175,32 +176,66 @@ const ScreenHeader = ({
 /**
  * ProfilePopup — profile drawer (slide-up on mobile, side panel on md+).
  *
+ * Mobile flow: the popup hosts inline sub-screens (menu / orders / favorites /
+ * bookings / personal). Switching screens runs an exit stagger on the current
+ * `.profile-anim-row` rows, then swaps `displayedScreen`, then the wrapper's
+ * entry stagger plays on the new rows. Closing the popup (X / backdrop click —
+ * both flip `transition === 'close'`) runs the same exit stagger in parallel with
+ * `DrawerAnimations` reverse-playing the sheet.
+ *
  * @returns JSX of the profile drawer (or empty fragment when not active).
  */
 const ProfilePopup = (): JSX.Element => {
   const t = useT();
-  const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
+  const { open, component, transition, setOpen, setTransition } = useContext(OpenDrawerContext);
   const isOpen = open && component === 'ProfilePopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const isMdUp = useIsMdUp();
-  const [screen, setScreen] = useState<ProfileScreen>('menu');
+  const [displayedScreen, setDisplayedScreen] = useState<ProfileScreen>('menu');
+  const [pendingScreen, setPendingScreen] = useState<ProfileScreen | null>(null);
+
+  // Reset to `menu` whenever the popup fully closes — preserves the existing "reopen always lands on menu" behavior.
+  useEffect(() => {
+    if (!isOpen) {
+      setDisplayedScreen('menu');
+      setPendingScreen(null);
+    }
+  }, [isOpen]);
 
   useSwipeToClose(sheetRef, () => {
-    setScreen('menu');
     setOpen(false);
   });
 
-  const close = () => {
-    setScreen('menu');
+  const close = useCallback(() => {
     setTransition('close');
-  };
+  }, [setTransition]);
+
+  // On desktop always show the menu — sub-screens are not used and stay collapsed in the wrapper.
+  const activeScreen = isMdUp ? 'menu' : displayedScreen;
+
+  const requestScreenChange = useCallback(
+    (next: ProfileScreen): void => {
+      if (next === displayedScreen || pendingScreen !== null) return;
+      setPendingScreen(next);
+    },
+    [displayedScreen, pendingScreen]
+  );
+
+  const handleExited = useCallback((): void => {
+    if (pendingScreen !== null) {
+      setDisplayedScreen(pendingScreen);
+      setPendingScreen(null);
+    }
+  }, [pendingScreen]);
+
+  // `closing` drives the exit stagger inside the wrapper. Both screen-swap (pendingScreen)
+  // and full popup close (transition === 'close') trigger it; only the first calls back
+  // into `handleExited` to swap content — on full close DrawerAnimations unmounts the subtree.
+  const closing = transition === 'close' || pendingScreen !== null;
 
   if (!isOpen) {
     return <></>;
   }
-
-  // On desktop always show the menu.
-  const activeScreen = isMdUp ? 'menu' : screen;
 
   return (
     <DrawerAnimations component="ProfilePopup" variant="slide-up-right">
@@ -232,32 +267,39 @@ const ProfilePopup = (): JSX.Element => {
         </div>
 
         <div className="mx-auto h-full max-w-87.5 overflow-x-hidden overflow-y-auto pb-25 no-scrollbar md:pb-0">
-          <div
-            key={activeScreen}
-            className={
-              'mt-5 md:mt-7.5 ' +
-              (activeScreen === 'menu' ? 'profile-screen-enter-left' : 'profile-screen-enter-right')
-            }
+          <StaggerScreenAnimations
+            screenKey={activeScreen}
+            closing={closing}
+            onClosed={handleExited}
           >
-            {activeScreen === 'menu' ? (
-              <>
-                {isMdUp && (
-                  <div className="mb-7.5">
-                    <ProfileSections />
-                  </div>
-                )}
-                <ProfileNavMenu isMdUp={isMdUp} onNavigate={close} onSelectScreen={setScreen} />
-              </>
-            ) : (
-              <>
-                <ScreenHeader screen={activeScreen} onBack={() => setScreen('menu')} />
-                {activeScreen === 'orders' && <OrdersList />}
-                {activeScreen === 'favorites' && <FavoritesGrid />}
-                {activeScreen === 'bookings' && <BookingsContent />}
-                {activeScreen === 'personal' && <ProfileSections />}
-              </>
-            )}
-          </div>
+            <div className="mt-5 md:mt-7.5">
+              {activeScreen === 'menu' ? (
+                <>
+                  {isMdUp && (
+                    <div className="mb-7.5">
+                      <ProfileSections />
+                    </div>
+                  )}
+                  <ProfileNavMenu
+                    isMdUp={isMdUp}
+                    onNavigate={close}
+                    onSelectScreen={requestScreenChange}
+                  />
+                </>
+              ) : (
+                <>
+                  <ScreenHeader
+                    screen={activeScreen}
+                    onBack={() => requestScreenChange('menu')}
+                  />
+                  {activeScreen === 'orders' && <OrdersList disableAnimations />}
+                  {activeScreen === 'favorites' && <FavoritesGrid />}
+                  {activeScreen === 'bookings' && <BookingsContent />}
+                  {activeScreen === 'personal' && <ProfileSections />}
+                </>
+              )}
+            </div>
+          </StaggerScreenAnimations>
           <div className="h-25 bg-transparent md:hidden" />
         </div>
       </div>

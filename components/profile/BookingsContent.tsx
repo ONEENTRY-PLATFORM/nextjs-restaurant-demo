@@ -183,7 +183,9 @@ const BookingsContent = (): JSX.Element => {
   return (
     <div className="flex flex-col gap-5">
       {active.length === 0 ? (
-        <p className="text-center text-base text-paper/80">You have no active reservations.</p>
+        <p className="profile-anim-row text-center text-base text-paper/80">
+          You have no active reservations.
+        </p>
       ) : (
         active.map(o => (
           <ActiveBookingCard
@@ -195,12 +197,14 @@ const BookingsContent = (): JSX.Element => {
         ))
       )}
 
-      <p className="mt-2.5 text-center font-bold text-xl tracking-fine text-brand">
+      <p className="profile-anim-row mt-2.5 text-center font-bold text-xl tracking-fine text-brand">
         Reservation History
       </p>
 
       {history.length === 0 ? (
-        <p className="text-center text-base text-paper/80">No past reservations yet.</p>
+        <p className="profile-anim-row text-center text-base text-paper/80">
+          No past reservations yet.
+        </p>
       ) : (
         <div className="flex flex-col gap-3.75">
           {history.map(o => (
@@ -236,7 +240,7 @@ const ActiveBookingCard = ({
   const date = dateRaw ? formatDate(dateRaw) : '';
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="profile-anim-row flex flex-col gap-5">
       <div className="flex items-center justify-between rounded-card border border-brand px-3.75 py-1.25">
         <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
         <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
@@ -275,7 +279,7 @@ const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Ele
     '') as string;
   const date = dateRaw ? formatDate(dateRaw) : '';
   return (
-    <div className="flex items-center justify-between rounded-card border border-paper px-3.75 py-1.25">
+    <div className="profile-anim-row flex items-center justify-between rounded-card border border-paper px-3.75 py-1.25">
       <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
       <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
       <p className="font-normal text-base text-paper">{date}</p>

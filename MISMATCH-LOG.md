@@ -279,6 +279,15 @@
 |----------------------|--------|-------------|
 | `preferences_label`  | string | Preferences |
 
+##### FilterBottom — префиксы инпутов цены
+
+Используется в: [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) (префикс-лейблы рядом с инпутами min/max цены в фильтре).
+
+| marker             | type   | title |
+|--------------------|--------|-------|
+| `price_from_text`  | string | from  |
+| `price_under_text` | string | Under |
+
 ##### Хедер / навигация / общие (aria-label, кнопки)
 
 Прошлись по проекту, нашли хардкод user-facing-фраз, не покрытых выше. Часть — `aria-label` для иконочных кнопок (важно для скринридеров), часть — короткие лейблы и тосты, видимые в UI.

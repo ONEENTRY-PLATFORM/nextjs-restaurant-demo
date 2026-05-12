@@ -16,44 +16,13 @@ const WAITING_TIME: Array<{ label: string; max: number | null }> = [
   { label: 'Under 60 mins', max: 60 },
   { label: 'doesn’t matter', max: null },
 ];
-type PriceChip = {
-  label: string;
-  key: 'minPrice' | 'maxPrice';
-  value: number;
-};
-
-/**
- * buildPriceChips — builds the catalog price filter chips from the `{ min, max }` range.
- *
- * @param   {PriceRange | undefined} priceRange - Catalog price bounds.
- * @returns Array of `PriceChip` items (empty when the range is missing or trivial).
- */
-const buildPriceChips = (priceRange?: PriceRange): PriceChip[] => {
-  if (!priceRange || priceRange.max <= 0) return [];
-  const chips: PriceChip[] = [];
-  if (priceRange.min > 0) {
-    chips.push({
-      label: `from ${priceRange.min}`,
-      key: 'minPrice',
-      value: priceRange.min,
-    });
-  }
-  if (priceRange.max > priceRange.min) {
-    chips.push({
-      label: `Under ${priceRange.max}`,
-      key: 'maxPrice',
-      value: priceRange.max,
-    });
-  }
-  return chips;
-};
 
 /**
  * FilterBottom — bottom filter sheet (mobile) / right-side panel (md+), toggled via `OpenDrawerContext`.
  *
  * @param   {object}                  props               - Component props.
  * @param   {PreferenceOption[]}      [props.preferences] - Available preference filter options sourced from OneEntry.
- * @param   {PriceRange}              [props.priceRange]  - Optional catalog price range used to seed the price chips.
+ * @param   {PriceRange}              [props.priceRange]  - Optional catalog price range used as placeholders for the price inputs.
  * @returns JSX of the filter panel.
  */
 const FilterBottom = ({
@@ -70,12 +39,14 @@ const FilterBottom = ({
   const searchParams = useSearchParams();
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<string[]>([]);
-  const [price, setPrice] = useState<string[]>([]);
-  const priceChips = buildPriceChips(priceRange);
+  const [priceMin, setPriceMin] = useState<string>('');
+  const [priceMax, setPriceMax] = useState<string>('');
 
   const waitingTitle = t('order_waiting_time', 'Order waiting time');
   const preferencesTitle = t('preferences_text', 'Preferences');
   const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
+  const fromLabel = t('price_from_text', 'from');
+  const underLabel = t('price_under_text', 'Under');
 
   const isVisible = open && component === 'FilterForm';
 
@@ -98,15 +69,8 @@ const FilterBottom = ({
         : []
     );
 
-    const min = searchParams.get('minPrice');
-    const max = searchParams.get('maxPrice');
-    setPrice(
-      priceChips
-        .filter(({ key, value }) =>
-          key === 'minPrice' ? min === String(value) : max === String(value)
-        )
-        .map(p => p.label)
-    );
+    setPriceMin(searchParams.get('minPrice') ?? '');
+    setPriceMax(searchParams.get('maxPrice') ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
@@ -131,14 +95,19 @@ const FilterBottom = ({
     setPreferences(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
   };
 
-  const togglePrice = (label: string): void => {
-    setPrice(prev => (prev.includes(label) ? prev.filter(x => x !== label) : [...prev, label]));
-  };
+  /**
+   * sanitizePriceInput — keeps only digits in a free-text price input.
+   *
+   * @param   {string} raw - The raw input value from the user.
+   * @returns Digit-only string (may be empty).
+   */
+  const sanitizePriceInput = (raw: string): string => raw.replace(/[^0-9]/g, '');
 
   const reset = (): void => {
     setWaitingTime(null);
     setPreferences([]);
-    setPrice([]);
+    setPriceMin('');
+    setPriceMax('');
   };
 
   // Serialize selected chips into the URL and update the route;
@@ -159,15 +128,15 @@ const FilterBottom = ({
       params.delete('preferences');
     }
 
-    const minChip = priceChips.find(p => p.key === 'minPrice' && price.includes(p.label));
-    if (minChip) {
-      params.set('minPrice', String(minChip.value));
+    const minValue = Number(priceMin);
+    if (priceMin && Number.isFinite(minValue) && minValue > 0) {
+      params.set('minPrice', String(minValue));
     } else {
       params.delete('minPrice');
     }
-    const maxChip = priceChips.find(p => p.key === 'maxPrice' && price.includes(p.label));
-    if (maxChip) {
-      params.set('maxPrice', String(maxChip.value));
+    const maxValue = Number(priceMax);
+    if (priceMax && Number.isFinite(maxValue) && maxValue > 0) {
+      params.set('maxPrice', String(maxValue));
     } else {
       params.delete('maxPrice');
     }
@@ -229,8 +198,8 @@ const FilterBottom = ({
             <CloseXIcon />
           </button>
         </div>
-        <div className="max-w-89 mx-auto">
-          <div className="flex flex-wrap mt-9.25 gap-1.75">
+        <div className="max-w-89 mx-auto md:order-2">
+          <div className="flex flex-wrap mt-9.25 md:mt-0 gap-1.75">
             <p className="filter_title">{waitingTitle}</p>
             {WAITING_TIME.map(({ label }) => (
               <button
@@ -258,19 +227,35 @@ const FilterBottom = ({
           </div>
           <div className="flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
             <p className="filter_title">Price $</p>
-            {priceChips.map(({ label }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => togglePrice(label)}
-                className={itemClass(price.includes(label))}
-              >
-                {label}
-              </button>
-            ))}
+            <label className="filter_item flex items-center gap-1.5 hover:bg-transparent active:bg-transparent hover:border-paper">
+              <span>{fromLabel}</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={priceMin}
+                onChange={e => setPriceMin(sanitizePriceInput(e.target.value))}
+                placeholder={priceRange?.min ? String(priceRange.min) : '0'}
+                aria-label={`${fromLabel} price`}
+                className="bg-transparent border-0 outline-none w-12 text-paper placeholder:text-paper/50"
+              />
+            </label>
+            <label className="filter_item flex items-center gap-1.5 hover:bg-transparent active:bg-transparent hover:border-paper">
+              <span>{underLabel}</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={priceMax}
+                onChange={e => setPriceMax(sanitizePriceInput(e.target.value))}
+                placeholder={priceRange?.max ? String(priceRange.max) : '0'}
+                aria-label={`${underLabel} price`}
+                className="bg-transparent border-0 outline-none w-12 text-paper placeholder:text-paper/50"
+              />
+            </label>
           </div>
         </div>
-        <div className="max-w-89 w-full mx-auto mt-auto flex justify-between items-center">
+        <div className="max-w-89 w-full mx-auto mt-auto md:mt-0 md:mb-5 md:order-1 flex justify-between items-center">
           <button
             type="button"
             onClick={reset}

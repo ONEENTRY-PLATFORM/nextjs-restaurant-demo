@@ -72,7 +72,12 @@ export const ForgotPasswordForm = ({
         onSubmit={handleSubmit}
       >
         <div className="relative box-border flex shrink-0 flex-col gap-2.5">
-          <p className="text-xs text-paper/60 max-md:max-w-full">{t('reset_descr', '')}</p>
+          <p className="text-xs text-paper/60 max-md:max-w-full">
+            {t(
+              'reset_descr',
+              'Enter the email address linked to your account and we will send you a one-time code to reset your password.'
+            )}
+          </p>
         </div>
 
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
@@ -83,7 +88,7 @@ export const ForgotPasswordForm = ({
             ))}
         </div>
 
-        <FormSubmitButton title={t('send_text', '')} isLoading={isLoading} index={10} />
+        <FormSubmitButton title={t('send_text', 'Send code')} isLoading={isLoading} index={10} />
         {isError && <ErrorMessage error={isError} />}
       </form>
     </FormAnimations>

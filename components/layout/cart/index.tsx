@@ -160,8 +160,10 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     return <Loader />;
   }
 
-  // Delivery must not be rendered as a product card.
-  const visibleProducts = products.filter((p: IProductsEntity) => p.id !== DELIVERY_PRODUCT_ID);
+  // Delivery must not be rendered as a product card; drop entries without a stable id (defensive — keys must be unique).
+  const visibleProducts = products.filter(
+    (p: IProductsEntity) => typeof p?.id === 'number' && p.id !== DELIVERY_PRODUCT_ID
+  );
 
   if (visibleProducts.length < 1) {
     return <EmptyCart />;

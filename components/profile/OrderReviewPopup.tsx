@@ -397,6 +397,10 @@ const OrderReviewPopup = (): JSX.Element => {
 
   if (!order) return <></>;
 
+  // Defense-in-depth: reviews are only allowed for orders that were actually delivered.
+  // The primary gate lives in OrdersList (`canReview`), this is a safety net for any future caller.
+  if ((order.statusIdentifier ?? '').toLowerCase() !== 'delivered') return <></>;
+
   const close = (): void => setTransition('close');
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const statusLabel =

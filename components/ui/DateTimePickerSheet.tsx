@@ -6,6 +6,7 @@ import type { JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { toLocalIsoDate } from '@/app/utils/formatDate';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
@@ -37,6 +38,9 @@ type DayCell = {
 /**
  * buildMonthGrid — builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months.
  *
+ * Uses local-TZ ISO formatting (`toLocalIsoDate`) — `Date.toISOString()` shifts the calendar day
+ * by one in positive UTC offsets, which used to make "today" un-selectable.
+ *
  * @param   {number} year  - Calendar year.
  * @param   {number} month - Zero-based month index.
  * @returns Array of 42 day cells (previous-month tail + current month + next-month head).
@@ -51,28 +55,25 @@ const buildMonthGrid = (year: number, month: number): DayCell[] => {
 
   for (let i = firstDow - 1; i >= 0; i -= 1) {
     const day = daysInPrev - i;
-    const d = new Date(year, month - 1, day);
     cells.push({
       day,
       monthOffset: -1,
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalIsoDate(new Date(year, month - 1, day)),
     });
   }
   for (let day = 1; day <= daysInMonth; day += 1) {
-    const d = new Date(year, month, day);
     cells.push({
       day,
       monthOffset: 0,
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalIsoDate(new Date(year, month, day)),
     });
   }
   let nextDay = 1;
   while (cells.length < 42) {
-    const d = new Date(year, month + 1, nextDay);
     cells.push({
       day: nextDay,
       monthOffset: 1,
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalIsoDate(new Date(year, month + 1, nextDay)),
     });
     nextDay += 1;
   }
@@ -140,7 +141,14 @@ const DateTimePickerSheet = ({
   noTimeText = 'No available time slots for the selected date.',
 }: DateTimePickerSheetProps): JSX.Element | null => {
   const today = useMemo(() => new Date(), []);
-  const initial = date ? new Date(date) : today;
+  // Parse `yyyy-MM-dd` manually — `new Date("2026-05-12")` is UTC midnight, which shifts to the
+  // previous day in negative UTC offsets and would open the wrong month for a pre-selected date.
+  const initial = useMemo(() => {
+    if (!date) return today;
+    const [y, m, d] = date.split('-').map(Number);
+    if (!y || !m || !d) return today;
+    return new Date(y, m - 1, d);
+  }, [date, today]);
   const [year, setYear] = useState(initial.getFullYear());
   const [month, setMonth] = useState(initial.getMonth());
   const [selectedDate, setSelectedDate] = useState<string>(date ?? '');
@@ -219,6 +227,28 @@ const DateTimePickerSheet = ({
     return out;
   }, [selectedDate, getSlots, range, step]);
 
+  // Snapshot "now" once per modal open — slot disabled-state is computed against this baseline.
+  // Using a moving `new Date()` on every render would flicker disabled-state at minute boundaries.
+  const nowMinutes = useMemo(() => today.getHours() * 60 + today.getMinutes(), [today]);
+  const todayLocalIso = useMemo(() => toLocalIsoDate(today), [today]);
+
+  /**
+   * isSlotPast — whether a `HH.MM` slot is in the past for the currently selected date.
+   *
+   * Only flips to `true` when the selected date equals "today" in local time; future dates always pass.
+   *
+   * @param   {string} slot - Slot label in `HH.MM` format (matches `formatHour` and the reservation schedule).
+   * @returns `true` when the slot's start time is at or before the local "now" snapshot.
+   */
+  const isSlotPast = (slot: string): boolean => {
+    if (selectedDate !== todayLocalIso) return false;
+    const [hStr, mStr] = slot.split('.');
+    const h = Number(hStr);
+    const m = Number(mStr);
+    if (!Number.isFinite(h) || !Number.isFinite(m)) return false;
+    return h * 60 + m <= nowMinutes;
+  };
+
   // Intentionally do NOT reset the selected time when the date changes - the user expects the selection to persist "until I change it".
 
   const goPrev = () => {
@@ -240,7 +270,9 @@ const DateTimePickerSheet = ({
 
   const isDateStep = stepName === 'date';
   const canContinue = !!selectedDate;
-  const canApply = !!selectedDate && !!selectedTime;
+  // If `props.time` was a slot that has since passed, the UI still highlights it (active),
+  // but Apply must be blocked — otherwise the caller would receive a stale time.
+  const canApply = !!selectedDate && !!selectedTime && !isSlotPast(selectedTime);
 
   if (!mounted) return null;
 
@@ -342,14 +374,17 @@ const DateTimePickerSheet = ({
                 <div className="grid grid-cols-4 gap-2.5">
                   {slots.map(slot => {
                     const active = slot === selectedTime;
+                    const past = isSlotPast(slot);
                     return (
                       <button
                         key={slot}
                         type="button"
+                        disabled={past}
                         onClick={() => setSelectedTime(slot)}
                         className={
                           'service_time ' +
-                          (active ? 'border-brand text-brand font-extrabold ' : '')
+                          (active ? 'border-brand text-brand font-extrabold ' : '') +
+                          (past ? 'opacity-40 pointer-events-none ' : '')
                         }
                       >
                         {slot}

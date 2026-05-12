@@ -11,6 +11,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/reducers/OrderSlice';
+import { toLocalIsoDate } from '@/app/utils/formatDate';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -73,7 +74,7 @@ const StepPayment = (): JSX.Element => {
   const [mode, setMode] = useState<DeliveryMode>('asap');
   const [scheduleAt, setScheduleAt] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
-  const todayIso = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayIso = useMemo(() => toLocalIsoDate(), []);
 
   /**
    * onAddAddressClick — opens the profile drawer (or auth picker for guests).

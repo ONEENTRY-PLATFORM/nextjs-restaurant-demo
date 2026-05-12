@@ -11,6 +11,7 @@ import { validators } from '@/app/api/utils/validators';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import ErrorMessage from '../forms/inputs/ErrorMessage';
@@ -514,7 +515,7 @@ const ReservationForm = ({
     return <ReservationPaymentStep onApply={onApplyPayment} isLoading={loading} error={error} />;
   }
 
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = toLocalIsoDate();
 
   return (
     <form onSubmit={onFormSubmit} className="flex w-full flex-col gap-5 px-5 md:px-0" noValidate>

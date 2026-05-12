@@ -173,16 +173,12 @@ const ProfileSections = (): JSX.Element => {
         // phoneSMS is optional and validated server-side against /^\+[0-9]{10,15}$/ - do not send a malformed phone in formData, otherwise it blocks saving addresses.
         const phone = normalizePhoneE164(userField('phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
-        // authData is required for the email provider (otherwise 400 "Login or password values are missed"). After auto-login via refresh-token there is no password in the session - bail out.
-        if (!sessionPassword) {
-          setAddressError('Address save requires entering your password in My Profile first.');
-          return;
-        }
+        // No `authData` — updateUser without credentials is permitted for the currently authenticated user
+        // (same pattern as `updateUserState`). Requiring a session password here broke saves after refresh-token auto-login.
         await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           formData: formData as any,
-          authData: [{ marker: 'password', value: sessionPassword }],
           notificationData: {
             // For the email provider the email lives in `user.identifier`, not in `formData` - fallback to identifier.
             email: userField('email') || user.identifier || '',
@@ -196,7 +192,7 @@ const ProfileSections = (): JSX.Element => {
         setAddressError(e instanceof Error ? e.message : 'Failed to save address');
       }
     },
-    [refreshUser, sessionPassword, user, userField, userForm?.attributes]
+    [refreshUser, user, userField, userForm?.attributes]
   );
 
   const onSaveProfile = useCallback(async () => {

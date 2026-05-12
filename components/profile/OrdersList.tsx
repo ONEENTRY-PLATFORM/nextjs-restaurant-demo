@@ -33,7 +33,10 @@ import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
-const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'completed', 'rejected']);
+// Only terminal statuses count as "history": actually delivered, or actually cancelled/rejected.
+// `isCompleted === true` and the generic `completed` identifier are NOT used — they can be set by
+// the admin panel for orders that were never delivered, which would otherwise leak into "Orders History".
+const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'rejected']);
 
 // md+ opens the cart as the `/cart` page (see CartWizard) - Repeat order on desktop navigates there too, not into the drawer.
 /**
@@ -51,13 +54,12 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
- * isHistoryOrder — whether the order belongs to "Orders History" (completed/cancelled), not "Active".
+ * isHistoryOrder — whether the order belongs to "Orders History" (delivered / cancelled / rejected), not "Active".
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
- * @returns `true` when the order is completed or carries a history status.
+ * @returns `true` when the order is in a terminal status.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
-  if (o.isCompleted === true) return true;
   return HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase());
 };
 

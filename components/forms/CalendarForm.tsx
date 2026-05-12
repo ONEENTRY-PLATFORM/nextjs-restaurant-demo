@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
+import { toLocalIsoDate } from '@/app/utils/formatDate';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -32,8 +33,7 @@ const CalendarForm = ({
 
   const [date, setDate] = useState<string>(() => {
     const ts = delivery?.date as number | undefined;
-    const d = ts ? new Date(ts) : new Date();
-    return d.toISOString().slice(0, 10);
+    return toLocalIsoDate(ts ? new Date(ts) : new Date());
   });
   const [time, setTime] = useState<string>((delivery?.time as string | undefined) ?? '');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -83,7 +83,7 @@ const CalendarForm = ({
           <DateTimePickerSheet
             date={date}
             time={time}
-            minDate={new Date().toISOString().slice(0, 10)}
+            minDate={toLocalIsoDate()}
             onApply={(d, tm) => {
               setDate(d);
               setTime(tm);

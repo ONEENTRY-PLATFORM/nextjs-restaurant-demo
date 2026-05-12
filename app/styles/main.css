@@ -640,47 +640,49 @@ html {
   }
 }
 
-.calend_days {
-  @apply 
-    text-center 
-    p-2 
-    rounded-card 
-    font-light 
-    text-base 
-    text-paper 
-    hover:bg-brand 
-    active:bg-brand 
-    focus:bg-brand 
-    hover:text-white 
-    active:text-white 
-    focus:text-white;
-}
-.calend_mon {
-  @apply 
-    font-medium 
-    text-base 
-    text-brand 
-    text-center;
-}
-.service_time {
-  @apply 
-    border 
-    border-paper 
-    rounded-card 
-    py-2 
-    px-3.5 
-    font-light 
-    text-[15px] 
-    text-paper 
-    hover:border-brand 
-    active:border-brand 
-    focus:border-brand 
-    hover:text-brand 
-    active:text-brand 
-    focus:text-brand 
-    hover:font-extrabold 
-    active:font-extrabold 
-    focus:font-extrabold;
+@layer components {
+  .calend_days {
+    @apply
+      text-center
+      p-2
+      rounded-card
+      font-light
+      text-base
+      text-paper
+      hover:bg-brand
+      active:bg-brand
+      focus:bg-brand
+      hover:text-white
+      active:text-white
+      focus:text-white;
+  }
+  .calend_mon {
+    @apply
+      font-medium
+      text-base
+      text-brand
+      text-center;
+  }
+  .service_time {
+    @apply
+      border
+      border-paper
+      rounded-card
+      py-2
+      px-3.5
+      font-light
+      text-[15px]
+      text-paper
+      hover:border-brand
+      active:border-brand
+      focus:border-brand
+      hover:text-brand
+      active:text-brand
+      focus:text-brand
+      hover:font-extrabold
+      active:font-extrabold
+      focus:font-extrabold;
+  }
 }
 
 .no-blur {

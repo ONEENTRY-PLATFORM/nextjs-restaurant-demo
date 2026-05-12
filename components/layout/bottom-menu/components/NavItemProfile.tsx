@@ -16,8 +16,15 @@ import EyeCircleIcon from '@/components/icons/eye-circle';
  * @returns JSX of the profile button.
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
-  const { open, component, transition, setOpen, setComponent, setTransition, setPostAuthComponent } =
-    useContext(OpenDrawerContext);
+  const {
+    open,
+    component,
+    transition,
+    setOpen,
+    setComponent,
+    setTransition,
+    setPostAuthComponent,
+  } = useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
   const title = item.localizeInfos?.menuTitle || item.localizeInfos?.title;
 

@@ -197,6 +197,7 @@ const ProfilePopup = (): JSX.Element => {
   // Reset to `menu` whenever the popup fully closes — preserves the existing "reopen always lands on menu" behavior.
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayedScreen('menu');
       setPendingScreen(null);
     }
@@ -288,10 +289,7 @@ const ProfilePopup = (): JSX.Element => {
                 </>
               ) : (
                 <>
-                  <ScreenHeader
-                    screen={activeScreen}
-                    onBack={() => requestScreenChange('menu')}
-                  />
+                  <ScreenHeader screen={activeScreen} onBack={() => requestScreenChange('menu')} />
                   {activeScreen === 'orders' && <OrdersList disableAnimations />}
                   {activeScreen === 'favorites' && <FavoritesGrid />}
                   {activeScreen === 'bookings' && <BookingsContent />}

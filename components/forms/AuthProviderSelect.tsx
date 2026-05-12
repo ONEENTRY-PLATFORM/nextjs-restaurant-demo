@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { useGetAuthProvidersQuery } from '@/app/api';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
+import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import {
   getProviderMeta,
   sortActiveAuthProviders,
@@ -65,30 +66,33 @@ const AuthProviderSelect = ({
   return (
     <FormAnimations isLoading={isLoading} className={className} isActive={isActive}>
       <div className="mx-auto flex w-full flex-col">
-        <Image
-          src="/images/logo.svg"
-          alt="OneEntry Restaurant"
-          width={171}
-          height={143}
-          className="mx-auto h-auto w-42.5"
-          priority
-        />
+        <FormFieldAnimations index={0} from="above" className="mx-auto">
+          <Image
+            src="/images/logo.svg"
+            alt="OneEntry Restaurant"
+            width={171}
+            height={143}
+            className="mx-auto h-auto w-42.5"
+            priority
+          />
+        </FormFieldAnimations>
         <div className="mt-10 flex flex-col">
-          {active.map(p => {
+          {active.map((p, i) => {
             const meta = getProviderMeta(p);
             const isEmail = p.identifier === 'email';
             return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => onProviderClick(p)}
-                className={`mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none ${isEmail ? 'bg-brand' : 'bg-disabled-bg'} backdrop-blur-card text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`}
-              >
-                <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
-                  <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
-                  <span>{meta.label}</span>
-                </div>
-              </button>
+              <FormFieldAnimations key={p.id} index={i + 1} from="above" className="w-full">
+                <button
+                  type="button"
+                  onClick={() => onProviderClick(p)}
+                  className={`mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none ${isEmail ? 'bg-brand' : 'bg-disabled-bg'} backdrop-blur-card text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`}
+                >
+                  <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+                    <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
+                    <span>{meta.label}</span>
+                  </div>
+                </button>
+              </FormFieldAnimations>
             );
           })}
         </div>

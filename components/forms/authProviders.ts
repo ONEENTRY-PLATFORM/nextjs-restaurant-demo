@@ -84,6 +84,10 @@ export const sortActiveAuthProviders = (
  * `authUrl` is read from `provider.config.oauthAuthUrl` (OneEntry admin) — if it is `null`/empty,
  * falls back to `GOOGLE_AUTH_URL_FALLBACK`.
  *
+ * Persists the current pathname + search to `sessionStorage` under `google-oauth-return` so the
+ * callback can return the user to the page they signed in from. Google's `redirect_uri` must be
+ * whitelisted exactly, so we cannot pass the return path through the OAuth URL itself.
+ *
  * Returns `false` only as a defensive guard if `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is missing —
  * in normal operation the Google button is filtered out upstream by `sortActiveAuthProviders`.
  *
@@ -95,6 +99,10 @@ export const startGoogleOAuth = (authUrl?: string | null): boolean => {
   if (!clientId) return false;
   const state = crypto.randomUUID();
   sessionStorage.setItem('google-oauth-state', state);
+  const currentPath = window.location.pathname + window.location.search;
+  if (!currentPath.startsWith('/auth/callback/')) {
+    sessionStorage.setItem('google-oauth-return', currentPath);
+  }
   const redirectUri = `${window.location.origin}/auth/callback/google`;
   const search = new URLSearchParams({
     client_id: clientId,

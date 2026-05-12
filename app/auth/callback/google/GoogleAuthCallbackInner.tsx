@@ -13,12 +13,15 @@ import { peekPendingReservationResume } from '@/components/reservation/reservati
 /**
  * GoogleAuthCallbackInner — Google OAuth callback that exchanges `?code` for a OneEntry session
  * via {@link oauthLogIn}, stores the refresh token, signals {@link AuthContext} to re-fetch the user,
- * then redirects back to where the flow started (`?return=/cart`, defaults to `/`).
+ * then redirects back to where the flow started.
+ *
+ * Return path resolution (first hit wins): `?return=` query → reservation resume `returnTo`
+ * → `sessionStorage['google-oauth-return']` written by {@link startGoogleOAuth} → `'/'`.
  *
  * If the redirect was launched from the reservation popup ({@link ReservationAuthStep}),
- * `sessionStorage` holds a resume snapshot: `returnTo` is read from it (when the URL has no
- * `?return=`) and the popup is programmatically reopened via {@link OpenDrawerContext} so the user
- * sees their form values again — regardless of whether the login succeeded or was cancelled.
+ * `sessionStorage` also holds a resume snapshot and the popup is programmatically reopened via
+ * {@link OpenDrawerContext} so the user sees their form values again — regardless of whether the
+ * login succeeded or was cancelled.
  *
  * @returns JSX of the OAuth callback page (a "Signing you in…" placeholder while exchange runs).
  */
@@ -37,11 +40,14 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const state = params.get('state');
     const expectedState =
       typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-state') : null;
+    const storedReturn =
+      typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-return') : null;
     const resume = peekPendingReservationResume();
-    const returnTo = params.get('return') || resume?.returnTo || '/';
+    const returnTo = params.get('return') || resume?.returnTo || storedReturn || '/';
 
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('google-oauth-state');
+      sessionStorage.removeItem('google-oauth-return');
     }
 
     const reopenReservationPopup = () => {

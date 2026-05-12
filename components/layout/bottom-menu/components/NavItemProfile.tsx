@@ -16,7 +16,7 @@ import EyeCircleIcon from '@/components/icons/eye-circle';
  * @returns JSX of the profile button.
  */
 const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
-  const { open, component, transition, setOpen, setComponent, setTransition } =
+  const { open, component, transition, setOpen, setComponent, setTransition, setPostAuthComponent } =
     useContext(OpenDrawerContext);
   const { isAuth } = useContext(AuthContext);
   const title = item.localizeInfos?.menuTitle || item.localizeInfos?.title;
@@ -27,6 +27,9 @@ const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
       setTransition('close');
       return;
     }
+    // Signal the auth flow to swap to ProfilePopup on success instead of closing the drawer.
+    // Cleared by `OpenDrawerProvider` when the drawer ultimately closes (e.g. user cancels auth).
+    if (!isAuth) setPostAuthComponent('ProfilePopup');
     setOpen(true);
     setComponent(target);
   };

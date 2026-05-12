@@ -177,24 +177,35 @@ html {
   stroke: #ffffff;
 }
  
+/* On touch devices Tailwind v4's `hover:` variants are gated by `(hover: hover)` and never fire,
+   so taps would show no feedback. Mirroring each effect on `active:` gives the same orange flash
+   on mouse-down (desktop) and during a tap (mobile). `-webkit-tap-highlight-color: transparent`
+   removes the gray iOS overlay that would otherwise dim the custom feedback. */
 .hover_btn_transp {
   @apply
     hover:bg-brand-soft-active
-    hover:text-white;
+    hover:text-white
+    active:bg-brand-soft-active
+    active:text-white;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Outlined-brand hover (Figma CREATE ACCOUNT): default text-brand stays brand,
    bg gains the soft-hover fill (rgba 0.2). Border was already brand. */
 .hover_btn_brand {
   @apply
-    hover:bg-brand-soft-hover;
+    hover:bg-brand-soft-hover
+    active:bg-brand-soft-hover;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Outlined-paper hover (Figma + Add Address): default border/text are paper,
    on hover only the border switches to brand; text stays paper. */
 .hover_btn_paper {
   @apply
-    hover:border-brand;
+    hover:border-brand
+    active:border-brand;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .list_item {

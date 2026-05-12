@@ -7,7 +7,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { getApi, useGetFormByMarkerQuery } from '@/app/api';
-import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -131,15 +130,14 @@ const ProfileSections = (): JSX.Element => {
     [user]
   );
 
-  const sessionFields = useAppSelector(state => state.formFieldsReducer.fields);
-  const sessionPassword = sessionFields['password']?.value ?? '';
-
   const fieldValue = useCallback(
     (marker: string): string => {
-      if (marker.includes('password')) return edits[marker] ?? sessionPassword;
+      // Password is never prefilled — `userField('password')` returns '' anyway (user.formData has no password),
+      // and the previous session-store fallback leaked the password typed on the login screen into the profile form.
+      if (marker.includes('password')) return edits[marker] ?? '';
       return edits[marker] !== undefined ? edits[marker]! : userField(marker);
     },
-    [edits, sessionPassword, userField]
+    [edits, userField]
   );
 
   const baseAddresses = useMemo<SavedAddress[]>(() => {

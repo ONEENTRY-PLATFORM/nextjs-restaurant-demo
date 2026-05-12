@@ -529,9 +529,7 @@ const OrdersList = ({
   } else {
     leftColumn = (
       <>
-        <p className="orders-row mt-2.5 text-xl text-paper">
-          {t('active_orders_title', 'Active orders')}
-        </p>
+        <p className="orders-row text-xl text-paper">{t('active_orders_title', 'Active orders')}</p>
         {active.length === 0 ? (
           <p className="orders-row mt-2.75 text-sm text-paper/70">
             {t('no_active_orders_text', 'You have no active orders.')}

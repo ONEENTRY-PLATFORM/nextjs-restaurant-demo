@@ -9,19 +9,30 @@ export const OpenDrawerContext = createContext<{
   open: boolean;
   action: string;
   transition: string;
+  /**
+   * postAuthComponent — drawer component to switch to after a successful authentication,
+   * instead of closing the popup. Set by callers that initiate auth (e.g. bottom-menu profile
+   * tap) and consumed by SignInForm / SignUpForm / VerificationForm. Cleared on drawer close.
+   * Kept separate from `action` because `action` is already used as form data ('add-address',
+   * 'activateUser', 'checkCode'), so reusing it would clash with the signup flow.
+   */
+  postAuthComponent: string;
   setComponent: Dispatch<string>;
   setOpen: Dispatch<boolean>;
   setAction: Dispatch<string>;
   setTransition: Dispatch<string>;
+  setPostAuthComponent: Dispatch<string>;
 }>({
   open: false,
   component: '',
   action: '',
   transition: '',
+  postAuthComponent: '',
   setOpen(): void {},
   setComponent(): void {},
   setAction(): void {},
   setTransition(): void {},
+  setPostAuthComponent(): void {},
 });
 
 /**
@@ -36,6 +47,13 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
   const [component, setComponent] = useState<string>('');
   const [action, setAction] = useState<string>('');
   const [transition, setTransition] = useState<string>('');
+  const [postAuthComponent, setPostAuthComponent] = useState<string>('');
+
+  // Drop the post-auth intent whenever the drawer fully closes — otherwise a stale value
+  // (e.g. user opened auth, closed it without signing in) would hijack the next auth flow.
+  useEffect(() => {
+    if (!open && postAuthComponent) setPostAuthComponent('');
+  }, [open, postAuthComponent]);
 
   // Lock background scroll while a popup is open
   useEffect(() => {
@@ -91,6 +109,8 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
         setAction,
         transition,
         setTransition,
+        postAuthComponent,
+        setPostAuthComponent,
       }}
     >
       {children}

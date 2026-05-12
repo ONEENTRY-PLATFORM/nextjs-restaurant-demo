@@ -44,7 +44,8 @@ const VerificationForm = ({
   const router = useTransitionRouter();
   const dispatch = useAppDispatch();
   const { authenticate } = useContext(AuthContext);
-  const { setOpen, setComponent, action } = useContext(OpenDrawerContext);
+  const { setOpen, setComponent, action, postAuthComponent, setPostAuthComponent } =
+    useContext(OpenDrawerContext);
   const effectiveAction = mode ?? action;
 
   const [isLoading, setLoading] = useState(false);
@@ -127,6 +128,10 @@ const VerificationForm = ({
         authenticate();
         if (onActivated) {
           onActivated();
+        } else if (postAuthComponent) {
+          // Caller (e.g. bottom-menu profile tap) wants to land on a specific drawer after auth.
+          setComponent(postAuthComponent);
+          setPostAuthComponent('');
         } else {
           router.push('/profile');
           setOpen(false);

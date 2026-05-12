@@ -45,7 +45,8 @@ const SignInForm = ({
 }): JSX.Element => {
   const t = useT();
   const { authenticate } = useContext(AuthContext);
-  const { setOpen } = useContext(OpenDrawerContext);
+  const { setOpen, setComponent, postAuthComponent, setPostAuthComponent } =
+    useContext(OpenDrawerContext);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -83,6 +84,10 @@ const SignInForm = ({
       toast('You signed in!');
       if (onSuccess) {
         onSuccess();
+      } else if (postAuthComponent) {
+        // Caller (e.g. bottom-menu profile tap) wants to land on a specific drawer after auth.
+        setComponent(postAuthComponent);
+        setPostAuthComponent('');
       } else {
         setOpen(false);
       }

@@ -40,7 +40,8 @@ const SignUpForm = ({
   const [error, setError] = useState('');
 
   const { authenticate } = useContext(AuthContext);
-  const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
+  const { setOpen, setComponent, setAction, postAuthComponent, setPostAuthComponent } =
+    useContext(OpenDrawerContext);
 
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
 
@@ -117,6 +118,10 @@ const SignUpForm = ({
             authenticate();
             if (onSuccess) {
               onSuccess();
+            } else if (postAuthComponent) {
+              // Caller (e.g. bottom-menu profile tap) wants to land on a specific drawer after auth.
+              setComponent(postAuthComponent);
+              setPostAuthComponent('');
             } else {
               setOpen(false);
             }

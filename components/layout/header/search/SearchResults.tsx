@@ -21,7 +21,7 @@ import ProductRow from './ProductRow';
  * @param   {boolean}                                         [props.isPending]  - When `true`, the input value differs from the debounced one — show a spinner.
  * @param   {boolean}                                         props.state        - Whether the panel is currently visible.
  * @param   {Dispatch<React.SetStateAction<boolean>>}         props.setState     - Setter that toggles the panel visibility.
- * @param   {() => void}                                      props.onOpenInShop - Handler that navigates to `/shop?search=<query>`.
+ * @param   {(() => void) | null}                             props.onOpenInShop - Navigates to `/shop?search=<query>`; `null` on shop pages where the grid filters live and no jump is needed.
  * @returns JSX of the search results panel, or empty fragment when not shown.
  */
 const SearchResults = ({
@@ -35,7 +35,7 @@ const SearchResults = ({
   isPending?: boolean;
   state: boolean;
   setState: Dispatch<React.SetStateAction<boolean>>;
-  onOpenInShop: () => void;
+  onOpenInShop: (() => void) | null;
 }): JSX.Element => {
   const [pages, setPages] = useState<{
     [key: number]: {
@@ -82,7 +82,7 @@ const SearchResults = ({
 
   return (
     <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-panel bg-ink/80 p-5 shadow-lg backdrop-blur-card">
-      {hasResults ? (
+      {hasResults && onOpenInShop ? (
         <button
           type="button"
           onClick={onOpenInShop}

@@ -1,8 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent, JSX } from 'react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
 import SearchIcon from '@/components/icons/search';
@@ -10,14 +10,29 @@ import SearchIcon from '@/components/icons/search';
 import SearchResults from './SearchResults';
 
 /**
+ * isShopListingPath — `true` when the pathname is a shop listing route (root catalog or
+ * category) where the server-side product grid reads `?search=` and refilters live.
+ *
+ * The single-product page (`/shop/product/...`) is excluded so that typing in the header
+ * does not append a stray query to the product URL.
+ *
+ * @param   {string} pathname - Current pathname.
+ * @returns `true` when the path participates in live filtering.
+ */
+const isShopListingPath = (pathname: string): boolean =>
+  pathname === '/shop' || (pathname.startsWith('/shop/') && !pathname.startsWith('/shop/product'));
+
+/**
  * SearchBar — header search input with debounced query and a results dropdown.
  *
- * The query is held in local state and is intentionally NOT written to the URL —
- * pushing `?search=` into the current pathname caused server components on the
- * home page to refetch and filter their grids by the header input.
+ * Behavior split by route:
+ * - On shop listing pages (`isShopListingPath`) the debounced value is mirrored into
+ *   `?search=` on the current URL via `router.replace`, so the server grid refilters live.
+ * - On every other route the value is held only in local state — pushing `?search=` into
+ *   e.g. the home pathname caused unrelated server grids (recommendations) to refilter.
  *
  * Pressing Enter (or clicking the magnifier inside the dropdown) navigates to
- * `/shop?search=<query>`, where the catalog page reads the param and filters.
+ * `/shop?search=<query>` for users who started searching from outside the shop.
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      props.placeholder - Placeholder/aria-label for the input.
@@ -25,10 +40,24 @@ import SearchResults from './SearchResults';
  */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const router = useRouter();
+  const pathname = usePathname();
+  const urlSearchParams = useSearchParams();
+  const isShopListing = isShopListingPath(pathname);
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(() => urlSearchParams.get('search') ?? '');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [debouncedValue] = useDebounce(inputValue, 300);
+
+  useEffect(() => {
+    if (!isShopListing) return;
+    const next = new URLSearchParams(urlSearchParams.toString());
+    const trimmed = debouncedValue.trim();
+    if (trimmed) next.set('search', trimmed);
+    else next.delete('search');
+    if (next.toString() === urlSearchParams.toString()) return;
+    const qs = next.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  }, [debouncedValue, isShopListing, pathname, router, urlSearchParams]);
 
   const handleChange = (term: string) => {
     setInputValue(term);
@@ -72,7 +101,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
           isPending={inputValue !== debouncedValue}
           state={isSearchActive}
           setState={setIsSearchActive}
-          onOpenInShop={() => goToShopWithQuery(debouncedValue)}
+          onOpenInShop={isShopListing ? null : () => goToShopWithQuery(debouncedValue)}
         />
       </Suspense>
     </div>

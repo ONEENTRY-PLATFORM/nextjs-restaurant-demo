@@ -51,33 +51,38 @@ const NavItemProfile = (): JSX.Element => {
     setOpen(!open);
   };
 
-  if (!isAuth) {
-    return (
-      <button
-        onClick={handleGuestClick}
-        className="group relative my-auto box-border flex size-6 shrink-0 cursor-pointer"
-        aria-label={t('sign_in_text', 'Sign In')}
-      >
-        <ProfileIcon />
-      </button>
-    );
-  }
-
+  // The wrapping `<div>` is intentionally rendered in both branches so that the
+  // root DOM node stays stable across auth changes. `HeaderAnimations` runs
+  // once on mount and writes inline `opacity/visibility` onto each direct child
+  // of `[data-header-anim="top-nav"]`; the CSS pre-hide in `main.css` keeps
+  // those children hidden until GSAP reveals them. If the root element type
+  // changed on login (e.g. `<button>` → `<div>`), the fresh DOM node would
+  // re-trigger the CSS pre-hide and the icon would vanish.
   return (
     <div
       className="relative flex"
-      onPointerEnter={() => setHoverOpen(true)}
-      onPointerLeave={() => setHoverOpen(false)}
+      onPointerEnter={isAuth ? () => setHoverOpen(true) : undefined}
+      onPointerLeave={isAuth ? () => setHoverOpen(false) : undefined}
     >
-      <Link
-        href="/profile"
-        prefetch={false}
-        className="group relative my-auto box-border flex size-6 shrink-0"
-        aria-label={t('profile_label', 'Profile')}
-      >
-        <ProfileIcon />
-      </Link>
-      {hoverOpen && (profileChildren.length > 0 || isAuth) ? (
+      {isAuth ? (
+        <Link
+          href="/profile"
+          prefetch={false}
+          className="group relative my-auto box-border flex size-6 shrink-0"
+          aria-label={t('profile_label', 'Profile')}
+        >
+          <ProfileIcon />
+        </Link>
+      ) : (
+        <button
+          onClick={handleGuestClick}
+          className="group relative my-auto box-border flex size-6 shrink-0 cursor-pointer"
+          aria-label={t('sign_in_text', 'Sign In')}
+        >
+          <ProfileIcon />
+        </button>
+      )}
+      {isAuth && hoverOpen && profileChildren.length > 0 ? (
         <ul
           role="menu"
           // `pt-2` - gap so the hover zone doesn't break when the cursor moves from the icon to the sub-menu.

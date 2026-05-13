@@ -45,7 +45,7 @@ const SignInForm = ({
 }): JSX.Element => {
   const t = useT();
   const { authenticate } = useContext(AuthContext);
-  const { setOpen, setComponent, postAuthComponent, setPostAuthComponent } =
+  const { setTransition, setComponent, postAuthComponent, setPostAuthComponent } =
     useContext(OpenDrawerContext);
 
   const [loading, setLoading] = useState(false);
@@ -89,7 +89,9 @@ const SignInForm = ({
         setComponent(postAuthComponent);
         setPostAuthComponent('');
       } else {
-        setOpen(false);
+        // Play the modal outro instead of unmounting instantly — ModalAnimations
+        // reverses the entrance timeline and flips `open` on `onReverseComplete`.
+        setTransition('close');
       }
     } catch (err: unknown) {
       setError((err as { message?: string })?.message ?? 'Sign-in failed');

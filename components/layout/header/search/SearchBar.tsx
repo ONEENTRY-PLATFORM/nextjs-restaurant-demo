@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent, JSX } from 'react';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
 import SearchIcon from '@/components/icons/search';
@@ -47,19 +47,41 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const [inputValue, setInputValue] = useState(() => urlSearchParams.get('search') ?? '');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [debouncedValue] = useDebounce(inputValue, 300);
+  const urlSearch = urlSearchParams.get('search') ?? '';
+
+  // The header renders two `SearchBar` instances (desktop + mobile). Without this guard
+  // both would race to push `?search=` from their stale local state and ping-pong the URL.
+  // The flag stays `false` until the user types here, so a passive bar only mirrors the URL.
+  const userTypedRef = useRef(false);
+
+  // Reset ownership when the route changes — a new page is not "our" typing.
+  useEffect(() => {
+    userTypedRef.current = false;
+  }, [pathname]);
+
+  // Mirror URL → input when this bar didn't initiate the change.
+  useEffect(() => {
+    if (urlSearch === inputValue) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setInputValue(urlSearch);
+    userTypedRef.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlSearch]);
 
   useEffect(() => {
     if (!isShopListing) return;
-    const next = new URLSearchParams(urlSearchParams.toString());
+    if (!userTypedRef.current) return;
     const trimmed = debouncedValue.trim();
+    if (trimmed === urlSearch) return;
+    const next = new URLSearchParams(urlSearchParams.toString());
     if (trimmed) next.set('search', trimmed);
     else next.delete('search');
-    if (next.toString() === urlSearchParams.toString()) return;
     const qs = next.toString();
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
-  }, [debouncedValue, isShopListing, pathname, router, urlSearchParams]);
+  }, [debouncedValue, isShopListing, pathname, router, urlSearch, urlSearchParams]);
 
   const handleChange = (term: string) => {
+    userTypedRef.current = true;
     setInputValue(term);
     setIsSearchActive(term.length > 0);
   };

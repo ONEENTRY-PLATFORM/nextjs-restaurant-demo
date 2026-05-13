@@ -163,7 +163,7 @@ const FilterBottom = ({
       <div
         onClick={close}
         className={
-          'fixed inset-0 z-10 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
+          'fixed inset-0 z-100 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
           (isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
         }
         aria-hidden="true"
@@ -172,7 +172,7 @@ const FilterBottom = ({
         id="side-menu"
         ref={sheetRef}
         className={
-          'fixed flex flex-col bottom-0 left-0 min-h-[80vh] w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-20 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'fixed flex flex-col bottom-0 left-0 min-h-[80vh] w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-100 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
           'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'

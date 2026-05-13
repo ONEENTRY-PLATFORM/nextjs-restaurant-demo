@@ -24,7 +24,9 @@ const NavGroup = async (): Promise<JSX.Element> => {
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   return (
-    <div className="flex justify-between relative self-end cursor-pointer">
+    // `z-60` — keep nav drop-downs (e.g. profile sub-menu) above the search
+    // row, which sits in its own `z-50` stacking context below.
+    <div className="flex justify-between relative z-60 self-end cursor-pointer">
       <div data-header-anim="top-nav" className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
         {topLevel.length === 0 ? (
           // Fallback: menu did not load — default icon set.

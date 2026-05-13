@@ -40,7 +40,7 @@ const ProductCard = ({
   const weight = weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
 
   const ratingValue = product.rating?.value;
-  const rating = ratingValue != null ? String(ratingValue) : null;
+  const rating = ratingValue != null ? String(ratingValue) : '5';
 
   const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
   const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
@@ -50,25 +50,21 @@ const ProductCard = ({
       <HeartCardButton product={product} />
       <ProductImage attributes={attrs} alt={title} />
 
-      {time || weight || rating ? (
-        <div className="descr">
-          {time && time !== '0' ? <p> {time} min</p> : null}
-          {weight ? <p>{weight}</p> : null}
-          {rating ? (
-            <div className="rating">
-              <Image
-                className="rating_img"
-                src="/images/icons/Star 16.svg"
-                alt="star"
-                width={16}
-                height={16}
-                style={{ width: 'auto', height: 'auto' }}
-              />
-              <p>{rating}</p>
-            </div>
-          ) : null}
+      <div className="descr">
+        {time && time !== '0' ? <p> {time} min</p> : null}
+        {weight ? <p>{weight}</p> : null}
+        <div className="rating">
+          <Image
+            className="rating_img"
+            src="/images/icons/Star 16.svg"
+            alt="star"
+            width={16}
+            height={16}
+            style={{ width: 'auto', height: 'auto' }}
+          />
+          <p>{rating}</p>
         </div>
-      ) : null}
+      </div>
 
       <p className="menu_item-title">{title}</p>
 

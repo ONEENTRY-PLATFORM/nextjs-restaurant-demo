@@ -81,7 +81,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       <div
         onClick={close}
         className={
-          'fixed inset-0 z-10 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
+          'fixed inset-0 z-100 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ' +
           (isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
         }
         aria-hidden="true"

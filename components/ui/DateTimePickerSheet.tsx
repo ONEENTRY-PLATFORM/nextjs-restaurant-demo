@@ -164,6 +164,7 @@ const DateTimePickerSheet = ({
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const isFirstStepAnimRef = useRef(true);
 
   // Re-run once `mounted` flips: the portal returns `null` on the first render so `wrapperRef.current`
   // is still `null` when `useGSAP` first fires — without `mounted` in deps the targets resolve to
@@ -204,11 +205,61 @@ const DateTimePickerSheet = ({
     };
   }, [mounted]);
 
+  // Stagger reveal for calendar cells / time slots. Fires on initial open AND on step switch —
+  // useGSAP auto-kills the previous tween when `stepName` changes, so we never leak in-flight
+  // animations onto unmounted items. First run waits for the body to start sliding in (delay 0.3);
+  // subsequent step switches animate immediately since the body is already on-screen.
+  useGSAP(() => {
+    if (!mounted) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const items = wrapper.querySelectorAll<HTMLElement>('[data-anim="dt-item"]');
+    if (items.length === 0) return;
+
+    const delay = isFirstStepAnimRef.current ? 0.45 : 0;
+    isFirstStepAnimRef.current = false;
+
+    gsap.fromTo(
+      items,
+      { scale: 0.5, autoAlpha: 0 },
+      {
+        scale: 1,
+        // Per-item endpoint: disabled cells (past dates, neighbor months, past time slots) end at
+        // 0.4 to match the Tailwind `opacity-40` class. Without this, GSAP's inline `opacity: 1`
+        // would override the class and disabled cells would look fully opaque after the animation.
+        autoAlpha: (_i, el) => ((el as HTMLElement).hasAttribute('data-disabled') ? 0.4 : 1),
+        duration: 0.525,
+        ease: 'power2.out',
+        stagger: { amount: 0.525, from: 'start' },
+        delay,
+      }
+    );
+  }, [mounted, stepName]);
+
+  /**
+   * animateAndRun — plays the close choreography (stagger-out of inner items + reverse of bg/body
+   * timeline) and invokes `cb` once the body timeline has finished reversing.
+   *
+   * @param   {() => void} cb - Callback fired after the close animation completes (typically
+   *                            `onClose` or `() => onApply(date, time)`).
+   * @returns Nothing.
+   */
   const animateAndRun = (cb: () => void): void => {
     const tl = tlRef.current;
     if (!tl) {
       cb();
       return;
+    }
+    const wrapper = wrapperRef.current;
+    const items = wrapper?.querySelectorAll<HTMLElement>('[data-anim="dt-item"]');
+    if (items && items.length > 0) {
+      gsap.to(items, {
+        scale: 0.5,
+        autoAlpha: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        stagger: { amount: 0.3, from: 'end' },
+      });
     }
     tl.eventCallback('onReverseComplete', cb);
     tl.reverse(2);
@@ -319,22 +370,28 @@ const DateTimePickerSheet = ({
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           {isDateStep ? (
             <div className="mx-auto w-full max-w-87.5">
               <div className="grid grid-cols-7">
                 {WEEK.map(w => (
-                  <div key={w} className="calend_mon">
+                  <div key={w} data-anim="dt-item" className="calend_mon">
                     {w}
                   </div>
                 ))}
                 {grid.map(cell => {
-                  const active = cell.iso === selectedDate && cell.monthOffset === 0;
                   const disabled = (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
+                  // Suppress the active highlight on disabled cells so a pre-selected past date
+                  // doesn't appear "selected but dimmed" — past dates should look unambiguously
+                  // non-selectable, even if `selectedDate` still points at one (Apply is blocked
+                  // by `canApply` elsewhere).
+                  const active = cell.iso === selectedDate && cell.monthOffset === 0 && !disabled;
                   return (
                     <button
                       key={cell.iso + cell.monthOffset}
                       type="button"
+                      data-anim="dt-item"
+                      data-disabled={disabled || undefined}
                       disabled={disabled}
                       onClick={() => setSelectedDate(cell.iso)}
                       className={
@@ -373,12 +430,17 @@ const DateTimePickerSheet = ({
               ) : (
                 <div className="grid grid-cols-4 gap-2.5">
                   {slots.map(slot => {
-                    const active = slot === selectedTime;
                     const past = isSlotPast(slot);
+                    // Suppress active highlight on past slots: a pre-selected past time (e.g. 10:00
+                    // when it's already 17:00) would otherwise render highlighted-but-dimmed and
+                    // look picked. Apply is also blocked via `canApply`.
+                    const active = slot === selectedTime && !past;
                     return (
                       <button
                         key={slot}
                         type="button"
+                        data-anim="dt-item"
+                        data-disabled={past || undefined}
                         disabled={past}
                         onClick={() => setSelectedTime(slot)}
                         className={

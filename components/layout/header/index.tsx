@@ -15,6 +15,7 @@ import CategoryFilter from '@/components/layout/filter/CategoryFilter';
 import FilterBottom from '@/components/layout/filter/FilterBottom';
 import SupportPopup from '@/components/support/SupportPopup';
 
+import HeaderAnimations from './animations/HeaderAnimations';
 import CategoriesScroller, { type PreferenceOption } from './CategoriesScroller';
 import CategoryButton from './CategoryButton';
 import FilterButton from './FilterButton';
@@ -66,55 +67,66 @@ const Header = async (): Promise<JSX.Element> => {
 
   return (
     <div id="header">
-      <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
-        <div className="container px-4 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
-          <NavGroup />
-          <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
-            <div className="flex items-center justify-start md:gap-7.5 gap-15">
-              <Logo />
-              <h1 className="font-lato italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120">
-                Excellence taste
-                <br /> in <span className="text-brand">every bite</span>
-              </h1>
-            </div>
-            <div className="flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25">
-              <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
-                <SearchBar placeholder={searchPlaceholder} />
-              </Suspense>
-              <FilterButton />
+      <HeaderAnimations>
+        <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
+          <div className="container px-4 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
+            <NavGroup />
+            <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
+              <div className="flex items-center justify-start md:gap-7.5 gap-15">
+                <Logo />
+                <h1
+                  data-header-anim="slogan"
+                  className="font-lato italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120"
+                >
+                  Excellence taste
+                  <br /> in <span className="text-brand">every bite</span>
+                </h1>
+              </div>
+              <div
+                data-header-anim="search"
+                className="relative z-50 flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25"
+              >
+                <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
+                  <SearchBar placeholder={searchPlaceholder} />
+                </Suspense>
+                <FilterButton />
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="relative">
         <div className="relative">
-          <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
-            <div className="flex justify-between items-center">
-              <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
-              <a href="/" aria-label={homeLabel}>
-                <LogoMobileIcon title="logo" />
-              </a>
-              <MobileBurgerButton />
-            </div>
+          <div className="relative">
+            <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
+              <div className="flex justify-between items-center">
+                <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
+                <a href="/" aria-label={homeLabel} data-header-anim="logo-mobile">
+                  <LogoMobileIcon title="logo" />
+                </a>
+                <MobileBurgerButton />
+              </div>
 
-            <div className="relative max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden">
-              <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
-                <SearchBar placeholder={searchPlaceholder} />
+              <div
+                data-header-anim="search"
+                className="relative z-50 max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden"
+              >
+                <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
+                  <SearchBar placeholder={searchPlaceholder} />
+                </Suspense>
+                <FilterButton />
+              </div>
+            </header>
+
+            {/* Navigation */}
+            <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
+              <CategoryButton />
+              <Suspense fallback={null}>
+                <CategoriesScroller preferences={preferenceOptions} />
               </Suspense>
-              <FilterButton />
-            </div>
-          </header>
-
-          {/* Navigation */}
-          <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
-            <CategoryButton />
-            <Suspense fallback={null}>
-              <CategoriesScroller preferences={preferenceOptions} />
-            </Suspense>
-          </section>
+            </section>
+          </div>
         </div>
-      </div>
+      </HeaderAnimations>
       <FilterBottom preferences={preferenceOptions} priceRange={priceRange} />
       <CategoryFilter pages={populatedPages} />
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />

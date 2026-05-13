@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { JSX } from 'react';
 
+import HeaderAnimGate from '@/app/animations/HeaderAnimGate';
 import { getBlogBanners } from '@/app/api';
 
 /**
@@ -19,7 +20,7 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
   if (!heroBanner && mobileBanners.length === 0) return null;
 
   return (
-    <>
+    <HeaderAnimGate>
       {heroBanner ? (
         <div className="section_layout hidden md:flex pt-0">
           <Link
@@ -63,7 +64,7 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
           </div>
         </section>
       ) : null}
-    </>
+    </HeaderAnimGate>
   );
 };
 

@@ -288,6 +288,14 @@
 | `price_from_text`  | string | from  |
 | `price_under_text` | string | Under |
 
+##### ProductDetails — fallback при пустом рейтинге
+
+Используется в: [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx). Рейтинг товара читается из top-level `product.rating.value` (SDK тип `IRating`), а не из `attributeValues.rating` (это рудимент). Если `rating.value` отсутствует — в строке метрик вместо «звезда + число» рендерится текст ниже.
+
+| marker               | type   | title                  |
+|----------------------|--------|------------------------|
+| `rating_not_formed`  | string | Rating not yet formed  |
+
 ##### Хедер / навигация / общие (aria-label, кнопки)
 
 Прошлись по проекту, нашли хардкод user-facing-фраз, не покрытых выше. Часть — `aria-label` для иконочных кнопок (важно для скринридеров), часть — короткие лейблы и тосты, видимые в UI.

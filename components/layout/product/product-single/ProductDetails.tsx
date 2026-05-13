@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { t } from '@/app/dictionaries';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import StarPuffyIcon from '@/components/icons/star-puffy';
 
@@ -11,8 +12,12 @@ import AddToCartButton from '../components/AddToCartButton';
 /**
  * ProductDetails — right column of the product page (metrics, tags, CTA).
  *
- * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `rating`, `cooking_time`,
- * `preferences`, `ingredients`, `price` + `currency`.
+ * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `cooking_time`,
+ * `preferences`, `ingredients`, `price` + `currency`. The rating value is
+ * taken from the product's top-level `rating.value` (`IRating`), not from
+ * `attributeValues.rating` — the latter is a leftover from when real
+ * ratings were not yet wired up. When `rating.value` is empty, the metrics
+ * row shows a `rating_not_formed` dictionary message instead of star+score.
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.
@@ -23,22 +28,15 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     id,
     statusIdentifier,
     localizeInfos: { title },
-    attributeValues: {
-      weight,
-      calorrage,
-      rating,
-      cooking_time,
-      preferences,
-      ingredients,
-      price,
-      currency,
-    },
+    attributeValues: { weight, calorrage, cooking_time, preferences, ingredients, price, currency },
   } = product;
 
   const weightVal = weight?.value as number | undefined;
   const calorrageVal = calorrage?.value as number | undefined;
-  const ratingVal = rating?.value as number | undefined;
+  const ratingVal = product.rating?.value;
   const cookingVal = cooking_time?.value as number | undefined;
+
+  const ratingNotFormedText = await t('rating_not_formed', 'Rating not yet formed');
 
   const prefs =
     (preferences?.value as Array<{ title: string; value: string }>)?.filter(
@@ -81,7 +79,11 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
                   {ratingVal}
                 </p>
               </>
-            ) : null}
+            ) : (
+              <p className="font-normal text-[12px] tracking-fine text-white opacity-60">
+                {ratingNotFormedText}
+              </p>
+            )}
             {/* Cooking time - mobile/tablet variant, in the same row as the metrics */}
             {cookingVal != null && cookingVal > 0 ? (
               <div className="flex gap-1.25 items-center lg:hidden">

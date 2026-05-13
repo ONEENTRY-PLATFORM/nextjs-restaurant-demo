@@ -25,6 +25,7 @@ const CategoryButton = (): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
+      data-header-anim="tag"
       aria-label={t('open_categories_label', 'Open categories')}
       className="hidden md:block bg-transparent border-0 p-0 md:mr-6.25 lg:mr-12 min-h-9 cursor-pointer"
     >

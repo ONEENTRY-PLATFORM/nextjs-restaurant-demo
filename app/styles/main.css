@@ -1,3 +1,24 @@
+/*
+ * Header initial-load animation: pre-hide the elements that `HeaderAnimations`
+ * staggers in, so the page renders blank until GSAP takes over and reveals them
+ * via inline `opacity` / `visibility` (which override these rules).
+ *
+ * `[data-header-anim="top-nav"]` is a stagger CONTAINER, not a target — hiding it
+ * would cascade `visibility: hidden` to its children and block GSAP's reveal.
+ */
+.logo-top path,
+.logo-bottom path,
+.logo-text path,
+[data-header-anim='logo-mobile'],
+[data-header-anim='slogan'],
+[data-header-anim='search'],
+[data-header-anim='tag'],
+[data-header-anim='top-nav'] > *,
+[data-after-header] {
+  opacity: 0;
+  visibility: hidden;
+}
+
 @keyframes slide-up {
   0% {
     transform: translateY(100%);

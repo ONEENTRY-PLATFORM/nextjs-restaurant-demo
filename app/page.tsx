@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
+import HeaderAnimGate from '@/app/animations/HeaderAnimGate';
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
 import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
@@ -42,7 +43,11 @@ const HomePage = async (): Promise<JSX.Element> => {
         if (block.identifier === 'home_categories') {
           return <HomeCategoriesSection key={block.id} />;
         }
-        return <HomeBlockServer key={block.id} marker={block.identifier as string} limit={4} />;
+        return (
+          <HeaderAnimGate key={block.id} delay={0.4}>
+            <HomeBlockServer marker={block.identifier as string} limit={4} />
+          </HeaderAnimGate>
+        );
       })}
     </>
   );

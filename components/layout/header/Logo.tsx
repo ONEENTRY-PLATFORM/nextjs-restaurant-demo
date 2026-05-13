@@ -13,7 +13,7 @@ const Logo = (): JSX.Element => {
     <Link
       href={'/'}
       prefetch={false}
-      className="fade-in logo md:w-42.5 lg:w-55 xl:w-67.5 focus:outline-none"
+      className="logo md:w-42.5 lg:w-55 xl:w-67.5 focus:outline-none"
     >
       <LogoIcon className={'max-w-full'} fill={'#FFFFFF'} />
     </Link>

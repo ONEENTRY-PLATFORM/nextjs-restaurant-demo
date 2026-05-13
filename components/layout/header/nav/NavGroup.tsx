@@ -25,7 +25,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
 
   return (
     <div className="flex justify-between relative self-end cursor-pointer">
-      <div className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
+      <div data-header-anim="top-nav" className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
         {topLevel.length === 0 ? (
           // Fallback: menu did not load — default icon set.
           <>

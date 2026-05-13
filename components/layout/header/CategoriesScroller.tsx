@@ -52,7 +52,11 @@ const CategoriesScroller = ({ preferences }: CategoriesScrollerProps): JSX.Eleme
       {preferences.map(option => {
         const isActive = activeSet.has(option.value);
         return (
-          <li key={option.value} className={'list_item' + (isActive ? ' border-brand' : '')}>
+          <li
+            key={option.value}
+            data-header-anim="tag"
+            className={'list_item' + (isActive ? ' border-brand' : '')}
+          >
             <Link
               href={buildHref(option.value, isActive)}
               className={'list_link' + (isActive ? ' bg-brand text-white' : '')}

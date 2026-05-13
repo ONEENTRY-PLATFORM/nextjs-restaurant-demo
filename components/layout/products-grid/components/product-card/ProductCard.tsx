@@ -39,8 +39,8 @@ const ProductCard = ({
   const weightRaw = attrs.weight?.value as string | number | undefined;
   const weight = weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
 
-  const ratingRaw = attrs.rating?.value as string | number | undefined;
-  const rating = ratingRaw != null && ratingRaw !== '' ? String(ratingRaw) : null;
+  const ratingValue = product.rating?.value;
+  const rating = ratingValue != null ? String(ratingValue) : null;
 
   const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
   const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;

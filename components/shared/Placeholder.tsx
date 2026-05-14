@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import LogoIcon from './LogoIcon';
+import LogoIcon from '@/components/icons/logo';
 
 /**
  * Placeholder — fallback for a missing image, showing the project logo on a tinted card.

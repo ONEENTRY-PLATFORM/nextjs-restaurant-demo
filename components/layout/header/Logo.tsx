@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { JSX } from 'react';
 
-import LogoIcon from '../../shared/LogoIcon';
+import LogoIcon from '@/components/icons/logo';
 
 /**
  * Logo — header logo linking to the home page.

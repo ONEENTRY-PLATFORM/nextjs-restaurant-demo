@@ -20,11 +20,12 @@ import Loader from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
-import ReservationForm, { type AuthSubStep, type ReservationStep } from './ReservationForm';
+import ReservationForm from './ReservationForm';
 import {
   consumePendingReservationResume,
   type ReservationOAuthResume,
 } from './reservationOAuthResumeState';
+import type { AuthSubStep, ReservationStep } from './reservationTypes';
 import type { RestaurantOption, ScheduleSlotEntry } from './RestaurantSelect';
 
 const NAME_MARKERS = ['name', 'first_name', 'firstname'] as const;

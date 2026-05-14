@@ -17,11 +17,11 @@ import SignInForm from '@/components/forms/SignInForm';
 import SignUpForm from '@/components/forms/SignUpForm';
 import VerificationForm from '@/components/forms/VerificationForm';
 
-import type { AuthSubStep } from './ReservationForm';
 import {
   clearPendingReservationResume,
   setPendingReservationResume,
 } from './reservationOAuthResumeState';
+import type { AuthSubStep } from './reservationTypes';
 
 type ReservationAuthStepProps = {
   /** Callback fired on successful auth - switches the wizard step to `payment`. */

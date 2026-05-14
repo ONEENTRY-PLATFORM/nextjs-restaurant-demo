@@ -88,7 +88,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       />
       <aside
         className={
-          'fixed left-0 top-0 bottom-0 z-20 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-card overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
+          'fixed left-0 top-0 bottom-0 z-500 w-full md:w-100 max-w-full bg-ink/95 backdrop-blur-card overflow-y-auto rounded-tl-5 rounded-tr-5 md:rounded-tl-none md:rounded-br-5 px-4 transform transition-transform duration-500 ease-in-out ' +
           (isVisible
             ? 'translate-y-0 md:translate-x-0'
             : 'translate-y-full md:-translate-x-full md:translate-y-0')

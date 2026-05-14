@@ -5,7 +5,20 @@ import { gsap } from 'gsap';
 import { useSearchParams } from 'next/navigation';
 import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactElement, ReactNode } from 'react';
-import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
+import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from 'react';
+
+/**
+ * Strips the `page` param from a search-string so pagination changes don't trigger the
+ * filter-swap fade. Pagination keeps the same `swapKey` and only appends new cards.
+ *
+ * @param   {URLSearchParams} params - Source params.
+ * @returns Search-string without the `page` key.
+ */
+const buildSwapKey = (params: URLSearchParams): string => {
+  const next = new URLSearchParams(params.toString());
+  next.delete('page');
+  return next.toString();
+};
 
 /**
  * CardsGridAnimations — wraps the products grid with two animations:
@@ -38,7 +51,7 @@ const CardsGridAnimations = ({
   const ref = useRef<HTMLDivElement | null>(null);
 
   const searchParams = useSearchParams();
-  const paramsKey = searchParams.toString();
+  const swapKey = useMemo(() => buildSwapKey(searchParams), [searchParams]);
 
   const latestChildrenRef = useRef<ReactNode>(children);
   useEffect(() => {
@@ -46,17 +59,26 @@ const CardsGridAnimations = ({
   });
 
   const [displayed, setDisplayed] = useState<{ key: string; node: ReactNode }>(() => ({
-    key: paramsKey,
+    key: swapKey,
     node: children,
   }));
 
+  // Pagination (`?page=N`) keeps `swapKey` stable: pass new children through under the same
+  // React key so existing `ProductCard`s are reconciled by `product.id` (DOM kept, no re-animation)
+  // and only newly appended cards mount + run their first-time reveal.
+  useEffect(() => {
+    if (swapKey === displayed.key && children !== displayed.node) {
+      setDisplayed({ key: displayed.key, node: children });
+    }
+  }, [children, swapKey, displayed.key, displayed.node]);
+
   useGSAP(() => {
-    if (paramsKey === displayed.key) return;
+    if (swapKey === displayed.key) return;
 
     const el = ref.current;
     const cards = el?.querySelectorAll<HTMLElement>('.menu_item');
     if (!cards || cards.length === 0) {
-      setDisplayed({ key: paramsKey, node: latestChildrenRef.current });
+      setDisplayed({ key: swapKey, node: latestChildrenRef.current });
       return;
     }
 
@@ -67,14 +89,14 @@ const CardsGridAnimations = ({
       ease: 'power2.in',
       stagger: { each: 0.02, from: 'end' },
       onComplete: () => {
-        setDisplayed({ key: paramsKey, node: latestChildrenRef.current });
+        setDisplayed({ key: swapKey, node: latestChildrenRef.current });
       },
     });
 
     return () => {
       tl.kill();
     };
-  }, [paramsKey, displayed.key]);
+  }, [swapKey, displayed.key]);
 
   useGSAP(() => {
     const tl = gsap.timeline({

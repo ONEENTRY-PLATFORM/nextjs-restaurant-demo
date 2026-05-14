@@ -35,10 +35,13 @@ const CardAnimations = ({
   productsLimit: number;
 }): JSX.Element => {
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  // Captured once at mount: pagination later changes `currentPage`, but the per-card delay
+  // must stay frozen on the value that was correct when the card first appeared. Otherwise
+  // `useGSAP` re-runs and reverts the already-revealed cards.
+  const currentPageOnMountRef = useRef(Number(searchParams.get('page')) || 1);
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const delay = Math.max(0, (index - (currentPage - 1) * productsLimit) / 10);
+  const delay = Math.max(0, (index - (currentPageOnMountRef.current - 1) * productsLimit) / 10);
 
   useGSAP(() => {
     const el = ref.current;
@@ -66,7 +69,7 @@ const CardAnimations = ({
       tl?.kill();
       trigger.kill();
     };
-  }, [delay]);
+  }, []);
 
   return (
     <div ref={ref} className={className} style={HIDDEN_STYLE}>

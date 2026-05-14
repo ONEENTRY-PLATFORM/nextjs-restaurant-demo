@@ -87,7 +87,13 @@
 - Короткие договорённости про стиль ответа/общения — в персональную память (`~/.claude/projects/...`).
 - Правила проекта (как реализовывать фичи, откуда брать данные, куда писать) — сюда, в `CLAUDE.md`.
 
-## 5. MCP OneEntry — канонический источник правды
+## 5. OneEntry — данные, MCP, диагностика
+
+### 5.1. Где брать данные → [docs/rules/data-fetching.md](docs/rules/data-fetching.md)
+
+Server fetcher ([app/api/server/](app/api/server/)) для SSR, RTK Query (`useGet*Query` через [RTKApi.ts](app/api/api/RTKApi.ts)) для client-side GET с автокэшем, custom hook ([app/api/hooks/](app/api/hooks/)) для мутаций с side-effects. Полные правила, паттерны и decision tree — в [docs/rules/data-fetching.md](docs/rules/data-fetching.md).
+
+### 5.2. MCP OneEntry — канонический источник правды
 
 Строго придерживаться правил и паттернов MCP-сервера OneEntry (`@oneentry/mcp-server`, настроен в [.mcp.json](.mcp.json)), если иное явно не сказано в этих правилах.
 
@@ -97,7 +103,7 @@
 - Graceful fallback на `"Resource is closed"` и пустые коллекции — обязательный, как описано в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
 - Если рекомендация MCP противоречит локальным правилам (1–4), приоритет у локальных правил — но такой конфликт нужно зафиксировать вопросом пользователю, а не решать молча.
 
-### 5.1. Диагностика OneEntry — сначала через MCP/SDK, а не curl
+### 5.3. Диагностика OneEntry — сначала через MCP/SDK, а не curl
 
 Когда нужно проверить реальные данные OneEntry (формы, страницы, продукты, заказы, атрибуты), порядок строго такой:
 

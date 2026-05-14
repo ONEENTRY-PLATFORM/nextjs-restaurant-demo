@@ -1,11 +1,9 @@
-'use client';
-
 import type { JSX } from 'react';
 
 import Spinner from './Spinner';
 
 /**
- * SpinnerLoader — client-side wrapper around `Spinner` with a default loading-block size.
+ * SpinnerLoader — wrapper around `Spinner` with a default loading-block size.
  *
  * @returns JSX of the spinner loader (square aspect with a centred spinner).
  */

@@ -1,5 +1,3 @@
-'use client';
-
 import type { JSX, ReactNode } from 'react';
 
 import type { LoaderProps } from '@/app/types/global';

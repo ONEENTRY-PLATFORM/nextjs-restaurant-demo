@@ -55,9 +55,12 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const userTypedRef = useRef(false);
 
   // Reset ownership when the route changes — a new page is not "our" typing.
+  // Also force-close the dropdown on shop listing routes, where the grid filters
+  // cards live and the panel would just duplicate the visible result.
   useEffect(() => {
     userTypedRef.current = false;
-  }, [pathname]);
+    if (isShopListing) setIsSearchActive(false);
+  }, [pathname, isShopListing]);
 
   // Mirror URL → input when this bar didn't initiate the change.
   useEffect(() => {
@@ -83,7 +86,9 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const handleChange = (term: string) => {
     userTypedRef.current = true;
     setInputValue(term);
-    setIsSearchActive(term.length > 0);
+    // On shop listing routes the grid filters cards live via `?search=`,
+    // so the dropdown panel would just duplicate the visible result.
+    setIsSearchActive(!isShopListing && term.length > 0);
   };
 
   const goToShopWithQuery = (term: string) => {

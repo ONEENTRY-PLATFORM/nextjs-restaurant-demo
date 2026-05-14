@@ -119,6 +119,11 @@ const OrderCard = ({
     setOpen(true);
   };
 
+  const openContactCourier = (): void => {
+    setComponent('ContactUsForm');
+    setOpen(true);
+  };
+
   const repeatOrder = async (): Promise<void> => {
     const inCartIds = new Set(cartItems.map(c => c.id));
     const skipped: string[] = [];
@@ -198,6 +203,7 @@ const OrderCard = ({
           {!isHistory && (
             <button
               type="button"
+              onClick={openContactCourier}
               className="order-body-row mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
             >
               {t('contact_courier_button', 'Contact with the courier')}

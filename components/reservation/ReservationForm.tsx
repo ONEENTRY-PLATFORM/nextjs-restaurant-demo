@@ -13,6 +13,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
+import FormFieldAnimations from '../forms/animations/FormFieldAnimations';
 import ErrorMessage from '../forms/inputs/ErrorMessage';
 import ReservationAuthStep from './ReservationAuthStep';
 import ReservationField from './ReservationField';
@@ -298,7 +299,11 @@ const ReservationForm = ({
           if (attr.type === 'entity') {
             if (attr.marker !== RESTAURANT_MARKER || restaurants.length === 0) return null;
             return (
-              <div key={attr.marker} className="flex flex-col gap-1">
+              <FormFieldAnimations
+                key={attr.marker}
+                index={i}
+                className="flex flex-col gap-1"
+              >
                 <RestaurantSelect
                   options={restaurants}
                   value={values[RESTAURANT_MARKER] ?? ''}
@@ -308,22 +313,27 @@ const ReservationForm = ({
                 {errors[attr.marker] ? (
                   <span className="px-4 text-sm text-red-500">{errors[attr.marker]}</span>
                 ) : null}
-              </div>
+              </FormFieldAnimations>
             );
           }
           return (
-            <ReservationField
-              key={attr.marker}
-              attr={attr}
-              values={values}
-              onChange={onChange}
-              onOpenPicker={() => setPickerOpen(true)}
-              error={errors[attr.marker] ?? null}
-            />
+            <FormFieldAnimations key={attr.marker} index={i} className="">
+              <ReservationField
+                attr={attr}
+                values={values}
+                onChange={onChange}
+                onOpenPicker={() => setPickerOpen(true)}
+                error={errors[attr.marker] ?? null}
+              />
+            </FormFieldAnimations>
           );
         }
         return (
-          <div key={`row-${i}`} className="flex justify-between gap-3.75">
+          <FormFieldAnimations
+            key={`row-${i}`}
+            index={i}
+            className="flex justify-between gap-3.75"
+          >
             <ReservationField
               attr={row.left}
               values={values}
@@ -342,12 +352,15 @@ const ReservationForm = ({
             ) : (
               <div className="flex-1" />
             )}
-          </div>
+          </FormFieldAnimations>
         );
       })}
 
       {/* Primary submit button */}
-      <div className="mt-7.5 flex flex-col items-center justify-center gap-5">
+      <FormFieldAnimations
+        index={rows.length}
+        className="mt-7.5 flex flex-col items-center justify-center gap-5"
+      >
         <button
           type="submit"
           disabled={loading}
@@ -355,7 +368,7 @@ const ReservationForm = ({
         >
           {t('continue_text', 'Continue')}
         </button>
-      </div>
+      </FormFieldAnimations>
 
       {error ? <ErrorMessage error={error} /> : null}
 

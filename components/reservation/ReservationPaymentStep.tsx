@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useGetAccountsQuery, useGetOrderStorageByMarkerQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
 /**
@@ -85,31 +86,45 @@ const ReservationPaymentStep = ({
     setSelected((stripe ?? accounts[0]!).identifier);
   }, [accounts, selected]);
 
+  const isListLoading = isAccountsLoading || isStorageLoading;
+  const applyIndex = isListLoading || accounts.length === 0 ? 2 : accounts.length + 1;
+
   return (
     <div className="flex w-full flex-col items-center gap-6.25 px-5 md:px-19">
       {/* 30% deposit notice - Figma: 368×54, gray-50% bg, orange Lato 16/20 center */}
-      <div className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card">
+      <FormFieldAnimations
+        index={0}
+        className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card"
+      >
         <p className="text-center font-normal text-base leading-5 text-brand">
           {t('booking_deposit_text', '30% deposit is required to confirm your booking')}
         </p>
-      </div>
+      </FormFieldAnimations>
 
       {/* Radio list of payment methods */}
       <div className="flex w-full flex-col gap-3.75">
-        {isAccountsLoading || isStorageLoading ? (
-          <p className="text-paper/70">{t('loading_text', 'Loading')}</p>
+        {isListLoading ? (
+          <FormFieldAnimations index={1} className="">
+            <p className="text-paper/70">{t('loading_text', 'Loading')}</p>
+          </FormFieldAnimations>
         ) : accounts.length === 0 ? (
-          <p className="text-paper/70">
-            {t('no_payment_methods', 'No payment methods are configured. Please contact support.')}
-          </p>
+          <FormFieldAnimations index={1} className="">
+            <p className="text-paper/70">
+              {t(
+                'no_payment_methods',
+                'No payment methods are configured. Please contact support.'
+              )}
+            </p>
+          </FormFieldAnimations>
         ) : (
-          accounts.map(account => (
-            <PaymentRow
-              key={account.identifier}
-              account={account}
-              checked={selected === account.identifier}
-              onSelect={() => setSelected(account.identifier)}
-            />
+          accounts.map((account, i) => (
+            <FormFieldAnimations key={account.identifier} index={i + 1} className="">
+              <PaymentRow
+                account={account}
+                checked={selected === account.identifier}
+                onSelect={() => setSelected(account.identifier)}
+              />
+            </FormFieldAnimations>
           ))
         )}
       </div>
@@ -117,7 +132,10 @@ const ReservationPaymentStep = ({
       {error ? <ErrorMessage error={error} /> : null}
 
       {/* Apply button - Figma: 95×36, orange outline, text #EC722B */}
-      <div className="mt-2.5 flex items-center justify-center">
+      <FormFieldAnimations
+        index={applyIndex}
+        className="mt-2.5 flex items-center justify-center"
+      >
         <button
           type="button"
           onClick={() => selected && onApply(selected)}
@@ -126,7 +144,7 @@ const ReservationPaymentStep = ({
         >
           {isLoading ? '...' : t('apply_text', 'Apply')}
         </button>
-      </div>
+      </FormFieldAnimations>
     </div>
   );
 };

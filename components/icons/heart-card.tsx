@@ -19,7 +19,7 @@ const HeartCardIcon = ({
     <svg
       className={className}
       viewBox="0 0 38 30"
-      fill={filled ? 'white' : 'none'}
+      fill={filled ? 'white' : 'transparent'}
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >

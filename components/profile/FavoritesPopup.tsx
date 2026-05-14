@@ -20,7 +20,7 @@ import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 const FAVORITE_CARD_SELECTOR = '.favorite-card';
@@ -108,7 +108,7 @@ const FavoritesPopup = (): JSX.Element => {
 
         {isLoading ? (
           <div className="mt-15 flex w-full justify-center">
-            <Loader />
+            <Spinner />
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">

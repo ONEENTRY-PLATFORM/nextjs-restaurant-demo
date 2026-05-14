@@ -16,7 +16,7 @@ import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
@@ -246,7 +246,7 @@ const ReservationPopup = (): JSX.Element => {
 
         {isLoading ? (
           <div className="mt-15 flex w-full justify-center">
-            <Loader />
+            <Spinner />
           </div>
         ) : !form ? (
           <div className="mt-10 rounded-xl bg-ink/60 p-6 text-center text-paper/80">

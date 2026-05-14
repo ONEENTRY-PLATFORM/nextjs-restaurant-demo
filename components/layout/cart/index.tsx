@@ -24,7 +24,7 @@ import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
 import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 
 /**
  * CartPage — list of products in the cart + APPLY button (proceed to checkout).
@@ -157,7 +157,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   }, [pendingCheckout, isAuth, dispatch]);
 
   if (isLoading) {
-    return <Loader />;
+    return <Spinner />;
   }
 
   // Delivery must not be rendered as a product card; drop entries without a stable id (defensive — keys must be unique).

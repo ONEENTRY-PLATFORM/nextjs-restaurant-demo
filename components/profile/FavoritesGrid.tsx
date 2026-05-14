@@ -12,7 +12,7 @@ import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/Favo
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 
 /**
  * FavoritesGrid — favorites grid on the profile dashboard.
@@ -30,7 +30,7 @@ const FavoritesGrid = (): JSX.Element => {
   const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
 
   if (isLoading) {
-    return <Loader />;
+    return <Spinner />;
   }
 
   if (favoriteIds.length === 0 || products.length === 0) {

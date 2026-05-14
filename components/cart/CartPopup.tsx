@@ -30,7 +30,7 @@ import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
@@ -152,7 +152,7 @@ const CartPopup = (): JSX.Element => {
           {isCartStep ? (
             <div className="max-w-88.75 mx-auto mt-10 mb-10 flex flex-col gap-3.75">
               {isLoading ? (
-                <Loader />
+                <Spinner />
               ) : products.length === 0 ? (
                 <EmptyCart />
               ) : (

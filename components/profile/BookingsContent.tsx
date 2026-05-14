@@ -15,7 +15,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
-import Loader from '@/components/shared/Spinner';
+import Spinner from '@/components/shared/Spinner';
 
 const CANCELLED_STATUS = 'booking_cancelled';
 const BOOKING_PLACEHOLDER_PRODUCT_ID = 34;
@@ -175,7 +175,7 @@ const BookingsContent = (): JSX.Element => {
   if (isLoading) {
     return (
       <div className="mt-10 flex w-full justify-center">
-        <Loader />
+        <Spinner />
       </div>
     );
   }

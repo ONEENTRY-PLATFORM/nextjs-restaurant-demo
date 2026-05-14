@@ -44,7 +44,7 @@ const ProfilePageHeader = (): JSX.Element => {
           {trail.map((item, i) => (
             <Fragment key={item.href}>
               {i > 0 && ' / '}
-              <Link href={item.href} className="hover:text-brand">
+              <Link href={item.href} className="transition-colors duration-200 hover:text-brand">
                 {item.label}
               </Link>
             </Fragment>

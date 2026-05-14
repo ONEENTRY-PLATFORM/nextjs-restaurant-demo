@@ -44,7 +44,7 @@ const CategoriesSection = async ({
       <div className="title">
         <h2 className="title_name">{title}</h2>
         <Link
-          className="subtitle border-b border-white pb-0.75 hover:text-brand hover:border-brand"
+          className="subtitle border-b border-white pb-0.75 transition-colors duration-200 hover:text-brand hover:border-brand"
           href={viewAllHref}
         >
           {viewAllLabel}

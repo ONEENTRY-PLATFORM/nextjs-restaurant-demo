@@ -24,7 +24,7 @@ import OrdersList from './OrdersList';
 import ProfileSections from './ProfileSections';
 
 const PROFILE_NAV_ITEM_CLASS =
-  'profile-anim-row group flex w-full items-center justify-between border-b border-muted/30 py-3.75 text-xl text-paper hover:text-brand';
+  'profile-anim-row group flex w-full items-center justify-between border-b border-muted/30 py-3.75 text-xl text-paper transition-colors duration-200 hover:text-brand';
 
 const PROFILE_MENU_MARKER = 'user_menu';
 const PROFILE_PAGE_URL = 'profile';

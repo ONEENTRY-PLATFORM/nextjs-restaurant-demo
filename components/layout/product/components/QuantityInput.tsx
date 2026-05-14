@@ -37,7 +37,7 @@ const QuantityInput = ({
 
   return (
     <input
-      className="relative box-border h-8 w-16 rounded-full bg-transparent text-center text-white/90 hover:bg-white/10 hover:text-brand"
+      className="relative box-border h-8 w-16 rounded-full bg-transparent text-center text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-brand"
       type="number"
       name={'qty_selector_' + id}
       id={'qty_selector_' + id}

@@ -54,13 +54,19 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   // The flag stays `false` until the user types here, so a passive bar only mirrors the URL.
   const userTypedRef = useRef(false);
 
-  // Reset ownership when the route changes — a new page is not "our" typing.
-  // Also force-close the dropdown on shop listing routes, where the grid filters
-  // cards live and the panel would just duplicate the visible result.
+  // Force-close the dropdown on shop listing routes (the grid filters live, the panel would
+  // duplicate the visible result). Done in render via the prev-prop pattern instead of an effect
+  // to avoid the cascading-renders warning from synchronous setState inside `useEffect`.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    if (isShopListing) setIsSearchActive(false);
+  }
+
+  // Reset "this bar typed last" ownership when the route changes — a new page is not "ours".
   useEffect(() => {
     userTypedRef.current = false;
-    if (isShopListing) setIsSearchActive(false);
-  }, [pathname, isShopListing]);
+  }, [pathname]);
 
   // Mirror URL → input when this bar didn't initiate the change.
   useEffect(() => {

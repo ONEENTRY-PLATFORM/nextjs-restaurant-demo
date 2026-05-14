@@ -27,7 +27,7 @@ const ProductsNotFound = (): JSX.Element => {
       </p>
       <Link
         href="/shop"
-        className="mt-2 rounded-panel bg-custom-gradient py-2.5 font-bold text-base uppercase text-white hover:bg-gradient-to-r-hover px-5"
+        className="mt-2 rounded-panel bg-custom-gradient py-2.5 font-bold text-base uppercase text-white transition-all duration-200 hover:bg-gradient-to-r-hover active:bg-gradient-to-r-hover px-5"
       >
         Reset & browse all
       </Link>

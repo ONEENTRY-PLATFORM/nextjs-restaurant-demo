@@ -80,7 +80,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
         type="button"
         onClick={onIncrease}
         aria-label="Increase quantity"
-        className="flex flex-1 cursor-pointer items-center justify-center leading-none hover:text-brand"
+        className="flex flex-1 cursor-pointer items-center justify-center leading-none transition-colors duration-200 hover:text-brand active:text-brand"
       >
         +
       </button>
@@ -99,7 +99,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
         type="button"
         onClick={onDecrease}
         aria-label="Decrease quantity"
-        className="flex flex-1 cursor-pointer items-center justify-center leading-none hover:text-brand"
+        className="flex flex-1 cursor-pointer items-center justify-center leading-none transition-colors duration-200 hover:text-brand active:text-brand"
       >
         -
       </button>

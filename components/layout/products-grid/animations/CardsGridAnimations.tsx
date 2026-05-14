@@ -63,14 +63,13 @@ const CardsGridAnimations = ({
     node: children,
   }));
 
-  // Pagination (`?page=N`) keeps `swapKey` stable: pass new children through under the same
-  // React key so existing `ProductCard`s are reconciled by `product.id` (DOM kept, no re-animation)
-  // and only newly appended cards mount + run their first-time reveal.
-  useEffect(() => {
-    if (swapKey === displayed.key && children !== displayed.node) {
-      setDisplayed({ key: displayed.key, node: children });
-    }
-  }, [children, swapKey, displayed.key, displayed.node]);
+  // During a filter swap (`swapKey` changed) we freeze the old subtree as `displayed.node` so the
+  // fade-out animation has stable DOM to work on, then commit the latest children via
+  // `setDisplayed` in the gsap `onComplete`. Outside of a swap (initial render / pagination), the
+  // latest `children` are passed through directly under the same React key so existing
+  // `ProductCard`s are reconciled by `product.id` and only newly appended cards run their reveal.
+  const isMidSwap = swapKey !== displayed.key;
+  const nodeToRender = isMidSwap ? displayed.node : children;
 
   useGSAP(() => {
     if (swapKey === displayed.key) return;
@@ -125,9 +124,9 @@ const CardsGridAnimations = ({
     };
   }, [stage]);
 
-  const renderedChild = isValidElement(displayed.node)
-    ? cloneElement(displayed.node as ReactElement, { key: displayed.key })
-    : displayed.node;
+  const renderedChild = isValidElement(nodeToRender)
+    ? cloneElement(nodeToRender as ReactElement, { key: displayed.key })
+    : nodeToRender;
 
   return (
     <div ref={ref} className={className}>

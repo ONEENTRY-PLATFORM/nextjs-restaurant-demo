@@ -45,7 +45,7 @@ const ProductCard = ({
 
   return (
     <ProductAnimations
-      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-card border border-transparent hover:border-brand"
+      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-card border border-transparent transition-colors duration-200 hover:border-brand active:border-brand"
       product={product}
       index={index}
     >

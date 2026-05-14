@@ -131,7 +131,7 @@ const OrdersList = ({
             setComponent('AuthProviderSelect');
             setOpen(true);
           }}
-          className="cursor-pointer text-brand underline underline-offset-2 hover:no-underline"
+          className="cursor-pointer text-brand underline underline-offset-2 transition-all duration-200 hover:no-underline"
         >
           {signInLabel}
         </button>

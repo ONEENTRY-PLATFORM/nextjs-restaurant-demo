@@ -117,7 +117,7 @@ const FavoritesPopup = (): JSX.Element => {
               <Link
                 href="/shop"
                 onClick={() => setOpen(false)}
-                className="rounded-card bg-brand px-3.75 py-1.5 text-base text-paper hover:bg-brand-hover"
+                className="rounded-card bg-brand px-3.75 py-1.5 text-base text-paper transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
               >
                 Go to shop
               </Link>
@@ -199,7 +199,7 @@ const FavoriteCard = ({
   return (
     <div
       ref={cardRef}
-      className="favorite-card flex relative hover:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap"
+      className="favorite-card flex relative transition-colors duration-200 hover:border-brand active:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap"
     >
       <Link
         href={productHref}

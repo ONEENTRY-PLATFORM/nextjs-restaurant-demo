@@ -19,7 +19,7 @@ const CloseModal = () => {
       onClick={() => {
         setTransition('close');
       }}
-      className="absolute right-4 top-6 flex aspect-square size-12 shrink-0 items-center justify-center rounded-full border border-paper/40 text-xl text-paper hover:border-brand hover:text-brand"
+      className="absolute right-4 top-6 flex aspect-square size-12 shrink-0 items-center justify-center rounded-full border border-paper/40 text-xl text-paper transition-colors duration-200 hover:border-brand hover:text-brand active:border-brand active:text-brand"
     >
       &#10005;
     </button>

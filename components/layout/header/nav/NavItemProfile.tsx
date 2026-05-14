@@ -98,7 +98,7 @@ const NavItemProfile = (): JSX.Element => {
                     role="menuitem"
                     href={`/${PROFILE_PAGE_URL}/${page.pageUrl}`}
                     onClick={() => setHoverOpen(false)}
-                    className="block p-2 text-paper hover:text-brand"
+                    className="block p-2 text-paper transition-colors duration-200 hover:text-brand"
                   >
                     {label}
                   </Link>

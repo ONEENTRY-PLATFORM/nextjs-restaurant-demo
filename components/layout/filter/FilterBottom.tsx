@@ -259,7 +259,7 @@ const FilterBottom = ({
           <button
             type="button"
             onClick={reset}
-            className="filter_btn text-base border-b border-white pb-0.75 hover:text-brand hover:border-brand"
+            className="filter_btn text-base border-b border-white pb-0.75 transition-colors duration-200 hover:text-brand hover:border-brand"
           >
             {clearAllLabel}
           </button>

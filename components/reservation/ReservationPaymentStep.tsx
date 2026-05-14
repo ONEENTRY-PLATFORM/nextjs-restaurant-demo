@@ -122,7 +122,7 @@ const ReservationPaymentStep = ({
           type="button"
           onClick={() => selected && onApply(selected)}
           disabled={isLoading || !selected}
-          className="flex h-9 w-23.75 items-center justify-center rounded-card border border-brand font-normal text-base text-brand hover:bg-brand/10 disabled:opacity-60"
+          className="flex h-9 w-23.75 items-center justify-center rounded-card border border-brand font-normal text-base text-brand transition-colors duration-200 hover:bg-brand/10 active:bg-brand/10 disabled:opacity-60"
         >
           {isLoading ? '...' : t('apply_text', 'Apply')}
         </button>

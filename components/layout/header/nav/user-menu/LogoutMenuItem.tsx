@@ -29,7 +29,7 @@ const LogoutMenuItem = (): JSX.Element => {
 
   return (
     <button
-      className="group flex justify-start p-2 text-paper hover:text-brand"
+      className="group flex justify-start p-2 text-paper transition-colors duration-200 hover:text-brand"
       onClick={handleLogout}
     >
       <div>Logout</div>

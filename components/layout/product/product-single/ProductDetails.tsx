@@ -143,7 +143,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
           statusIdentifier={statusIdentifier || ''}
           productTitle={title || ''}
           height={50}
-          className="min-h-16.5 w-full flex justify-center items-center gap-2.5 font-bold text-xl text-white uppercase py-4.5 bg-custom-gradient rounded-panel hover:bg-gradient-to-r-hover"
+          className="min-h-16.5 w-full flex justify-center items-center gap-2.5 font-bold text-xl text-white uppercase py-4.5 bg-custom-gradient rounded-panel transition-all duration-200 hover:bg-gradient-to-r-hover active:bg-gradient-to-r-hover"
         />
       </div>
     </div>

@@ -205,7 +205,11 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
                   {isLast ? (
                     <span>{STEP_TITLES[s]}</span>
                   ) : (
-                    <button type="button" onClick={() => goToStep(s)} className="hover:text-brand">
+                    <button
+                      type="button"
+                      onClick={() => goToStep(s)}
+                      className="transition-colors duration-200 hover:text-brand"
+                    >
                       {STEP_TITLES[s]}
                     </button>
                   )}

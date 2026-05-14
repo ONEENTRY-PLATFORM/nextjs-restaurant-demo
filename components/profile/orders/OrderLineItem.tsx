@@ -49,7 +49,10 @@ const OrderLineItem = ({
           )}
         </Link>
         <div className="flex min-w-0 flex-1 flex-col justify-between">
-          <Link href={href} className="text-sm font-normal text-white hover:text-brand">
+          <Link
+            href={href}
+            className="text-sm font-normal text-white transition-colors duration-200 hover:text-brand"
+          >
             {product.title}
           </Link>
           <div className="flex items-center gap-2.5">

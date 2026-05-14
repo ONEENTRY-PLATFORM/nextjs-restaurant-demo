@@ -43,7 +43,7 @@ const IncreaseButton = ({
   return (
     <button
       onClick={() => onIncreaseHandle()}
-      className="relative m-1 box-border size-8 rounded-full text-center text-white/90 transition-all duration-500 hover:bg-white/10 hover:text-brand"
+      className="relative m-1 box-border size-8 rounded-full text-center text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-brand active:bg-white/10 active:text-brand"
       aria-label={t('increase_quantity_label', 'Increase quantity')}
     >
       +

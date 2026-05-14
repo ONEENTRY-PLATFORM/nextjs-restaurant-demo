@@ -255,7 +255,7 @@ const StepOrder = (): JSX.Element => {
       <button
         type="button"
         onClick={handleProceedToPayment}
-        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center font-normal text-base text-white hover:bg-brand-hover"
+        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center font-normal text-base text-white transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
       >
         APPLY
       </button>

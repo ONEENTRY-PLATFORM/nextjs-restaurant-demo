@@ -204,6 +204,8 @@ html {
    removes the gray iOS overlay that would otherwise dim the custom feedback. */
 .hover_btn_transp {
   @apply
+    transition-colors
+    duration-200
     hover:bg-brand-soft-active
     hover:text-white
     active:bg-brand-soft-active
@@ -215,6 +217,8 @@ html {
    bg gains the soft-hover fill (rgba 0.2). Border was already brand. */
 .hover_btn_brand {
   @apply
+    transition-colors
+    duration-200
     hover:bg-brand-soft-hover
     active:bg-brand-soft-hover;
   -webkit-tap-highlight-color: transparent;
@@ -224,19 +228,24 @@ html {
    on hover only the border switches to brand; text stays paper. */
 .hover_btn_paper {
   @apply
+    transition-colors
+    duration-200
     hover:border-brand
     active:border-brand;
   -webkit-tap-highlight-color: transparent;
 }
 
 .list_item {
-  @apply 
-    border 
-    border-custom_white 
-    list-none 
-    whitespace-nowrap 
-    hover:border-transparent 
-    snap-start 
+  @apply
+    border
+    border-custom_white
+    list-none
+    whitespace-nowrap
+    transition-colors
+    duration-200
+    hover:border-transparent
+    active:border-transparent
+    snap-start
     rounded-md;
 }
 
@@ -378,9 +387,6 @@ html {
     w-full
     overflow-hidden
     relative
-    transition-transform
-    hover:scale-105
-    duration-700
     px-px
     pb-px
     cursor-pointer;
@@ -452,7 +458,11 @@ html {
     gap-2.5
     md:gap-3.25
     cursor-pointer
-    hover:border-brand;
+    transition-colors
+    duration-200
+    hover:border-brand
+    active:border-brand;
+  -webkit-tap-highlight-color: transparent;
 }
 .heart_card {
   @apply 
@@ -494,8 +504,10 @@ html {
     active:bg-brand mb-3.75;
 }
 .nav_bottom {
-  @apply 
-    hover:fill-brand 
+  @apply
+    transition-colors
+    duration-200
+    hover:fill-brand
     active:fill-brand;
 }
 
@@ -681,6 +693,8 @@ html {
       font-light
       text-base
       text-paper
+      transition-colors
+      duration-200
       hover:bg-brand
       active:bg-brand
       focus:bg-brand
@@ -705,6 +719,8 @@ html {
       font-light
       text-[15px]
       text-paper
+      transition-colors
+      duration-200
       hover:border-brand
       active:border-brand
       focus:border-brand

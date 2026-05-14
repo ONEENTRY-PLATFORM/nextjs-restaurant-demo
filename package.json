@@ -10,7 +10,8 @@
     "tsc": "npx tsc --noEmit --watch false",
     "lint-fix": "eslint --fix .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:integration": "jest --testPathIgnorePatterns=/node_modules/ --testPathPatterns=__tests__/integration"
   },
   "dependencies": {
     "gsap": "^3.15.0",

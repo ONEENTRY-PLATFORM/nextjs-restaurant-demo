@@ -10,8 +10,13 @@ import {
   PREFERENCES_MARKER,
   resolveInputType,
   TIME_SLOT_MARKER,
+  validateField,
 } from '../reservationFormUtils';
 import type { RestaurantOption, ScheduleSlotEntry } from '../RestaurantSelect';
+import type { Translate } from '../reservationTypes';
+
+/** Identity translator — returns fallback verbatim, lets tests assert on the English fallback text. */
+const t: Translate = (_marker, fallback) => fallback;
 
 /** Minimal IFormAttribute stub — `marker`/`type` are the only fields the utils read. */
 const attr = (marker: string, type: string, extra: Partial<IFormAttribute> = {}): IFormAttribute =>
@@ -230,6 +235,93 @@ describe('getAvailableSlotsForDate', () => {
       } as ScheduleSlotEntry,
     ];
     expect(getAvailableSlotsForDate(schedule, '2026-05-14')).toEqual(['09.05', '12.00', '18.30']);
+  });
+});
+
+describe('validateField', () => {
+  it('required + empty → "Required field"', () => {
+    const a = attr('name', 'string', { validators: { requiredValidator: { strict: true } } } as never);
+    expect(validateField(a, '', t)).toBe('Required field');
+  });
+
+  it('required + filled → passes the required check (returns null if nothing else fails)', () => {
+    const a = attr('name', 'string', { validators: { requiredValidator: { strict: true } } } as never);
+    expect(validateField(a, 'John', t)).toBeNull();
+  });
+
+  it('non-required + empty → null (short-circuits before any other check)', () => {
+    const a = attr('name', 'string', { validators: {} } as never);
+    expect(validateField(a, '', t)).toBeNull();
+  });
+
+  it('stringInspection: exact length mismatch → "Length must be exactly N"', () => {
+    const a = attr('zip', 'string', {
+      validators: { stringInspectionValidator: { stringLength: 5 } },
+    } as never);
+    expect(validateField(a, '1234', t)).toBe('Length must be exactly 5');
+    expect(validateField(a, '12345', t)).toBeNull();
+  });
+
+  it('stringInspection: range mismatch → "Length must be between X and Y"', () => {
+    const a = attr('name', 'string', {
+      validators: { stringInspectionValidator: { stringMin: 2, stringMax: 5 } },
+    } as never);
+    expect(validateField(a, 'a', t)).toBe('Length must be between 2 and 5');
+    expect(validateField(a, 'ab', t)).toBeNull();
+    expect(validateField(a, 'abcdef', t)).toBe('Length must be between 2 and 5');
+  });
+
+  it('stringInspection: skipped when min/max/length are all 0', () => {
+    const a = attr('name', 'string', {
+      validators: { stringInspectionValidator: { stringMin: 0, stringMax: 0, stringLength: 0 } },
+    } as never);
+    // Truthy guard `if (strCfg && (strCfg.stringMin || strCfg.stringMax || strCfg.stringLength))`
+    // is false → branch is skipped, validation passes.
+    expect(validateField(a, 'any', t)).toBeNull();
+  });
+
+  it('emailInspection: invalid email → "Invalid email"', () => {
+    const a = attr('email', 'string', { validators: { emailInspectionValidator: true } } as never);
+    expect(validateField(a, 'not-an-email', t)).toBe('Invalid email');
+    expect(validateField(a, 'real@example.com', t)).toBeNull();
+  });
+
+  it('emailInspection: skipped when the validator flag is not exactly `true`', () => {
+    const a = attr('email', 'string', { validators: { emailInspectionValidator: false } } as never);
+    expect(validateField(a, 'not-an-email', t)).toBeNull();
+  });
+
+  it('fieldMask: value not matching the mask → "Invalid format"', () => {
+    const a = attr('phone', 'string', {
+      validators: { fieldMaskValidator: { maskValue: '9999' } },
+    } as never);
+    expect(validateField(a, '12', t)).toBe('Invalid format');
+    expect(validateField(a, '1234', t)).toBeNull();
+  });
+
+  it('fieldMask: skipped when maskValue is empty', () => {
+    const a = attr('phone', 'string', {
+      validators: { fieldMaskValidator: { maskValue: '' } },
+    } as never);
+    expect(validateField(a, 'anything', t)).toBeNull();
+  });
+
+  it('checks are layered — required first, then range, then format', () => {
+    const a = attr('email', 'string', {
+      validators: {
+        requiredValidator: { strict: true },
+        emailInspectionValidator: true,
+        stringInspectionValidator: { stringMin: 5, stringMax: 50 },
+      },
+    } as never);
+    // Required wins on empty.
+    expect(validateField(a, '', t)).toBe('Required field');
+    // Length fails before email even though both would fail.
+    expect(validateField(a, 'a@b', t)).toBe('Length must be between 5 and 50');
+    // Email format fails when length passes but format is wrong.
+    expect(validateField(a, 'notanemail', t)).toBe('Invalid email');
+    // All pass.
+    expect(validateField(a, 'user@example.com', t)).toBeNull();
   });
 });
 

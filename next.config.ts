@@ -7,7 +7,14 @@ const nextConfig: NextConfig = {
       dynamic: 30,
       static: 180,
     },
-    optimizePackageImports: ['gsap', 'react-toastify'],
+    optimizePackageImports: [
+      'gsap',
+      'react-toastify',
+      'swiper',
+      'oneentry',
+      '@reduxjs/toolkit',
+      'react-redux',
+    ],
     serverActions: {
       bodySizeLimit: '2mb',
     },
@@ -98,6 +105,18 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',
           },
+          // Conservative CSP — covers clickjacking, form hijack, plugins and <base> abuse
+          // without restricting script/img/connect sources (those need a nonce-based
+          // setup via middleware to be both strict and Next.js-compatible).
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "frame-ancestors 'self'",
+              "form-action 'self' https://checkout.stripe.com https://*.stripe.com",
+              "base-uri 'self'",
+              "object-src 'none'",
+            ].join('; '),
+          },
         ],
       },
     ];
@@ -108,14 +127,6 @@ const nextConfig: NextConfig = {
         source: '/password',
         destination: '/',
         permanent: true,
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/fonts/:path*',
-        destination: '/api/fonts/:path*',
       },
     ];
   },

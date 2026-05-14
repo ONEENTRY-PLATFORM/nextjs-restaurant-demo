@@ -22,13 +22,13 @@
 3. **Не оставляй компоненты пустыми** или с `TODO: hook up data later`. Либо OneEntry, либо мок — всегда рабочий рендер.
 4. Мок должен визуально соответствовать верстке (правило 1): если в `index.html` 8 карточек блюд в секции — мок тоже отдаёт 8.
 
-## 3. Недостающие сущности OneEntry → [MISMATCH-LOG.md](MISMATCH-LOG.md) (Раздел C)
+## 3. Недостающие сущности OneEntry → [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md)
 
 Когда по ходу работы выясняется, что в OneEntry admin-панели нет нужной страницы, блока, атрибута, формы, продукта и т.п.:
 
-- Открыть [MISMATCH-LOG.md](MISMATCH-LOG.md) и **дописать** в Раздел C конкретный пункт: что именно нужно создать (сущность, путь, поля, связи), для какого экрана/компонента это требуется, и каким fallback временно закрыли пробел.
+- Открыть [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) и **дописать** конкретный пункт: что именно нужно создать (сущность, путь, поля, связи), для какого экрана/компонента это требуется, и каким fallback временно закрыли пробел.
 - После того как пользователь сообщил, что настроено в админке, и ты это проверил через MCP — **отметить `✅`** рядом.
-- Структуру раздела C не ломать, сохранять существующее разбиение по подсекциям (C.1 Forms, C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.8 Auth и т.д.).
+- Структуру файла не ломать, сохранять существующее разбиение по подсекциям (C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history).
 - Новые пункты формулировать **actionable**: «создать в Pages страницу с URL `menu`, type `Category`, локаль ru/en» — а не «добавить меню».
 - **Поля атрибутов / форм** — оформлять только в виде markdown-таблицы с колонками `marker | type | title` (минимум). По необходимости добавлять колонки `required`, `default`, `notes` — но колонки `marker`/`type`/`title` обязательны и идут первыми. Текстом «нужны поля name, email, message» — нельзя, только таблица. Пример:
 
@@ -42,153 +42,43 @@
 
 ### 3.1. Вопросы клиенту → туда же
 
-Если по ходу работы возникает вопрос, который должен решить **клиент/заказчик** (расхождение макета и ТЗ, неоднозначное поведение, выбор между вариантами реализации, недостающие требования) — фиксируй его **в [MISMATCH-LOG.md](MISMATCH-LOG.md) (Раздел C) рядом с релевантным пунктом**, помечая префиксом `> ❓ **Уточнить у клиента:**`. Описывай: что в вёрстке/ТЗ не сходится, какие варианты возможны, какой временно выбран в коде. Не держи такие вопросы только в чате — они теряются. После ответа клиента — обновить пункт и пометить `✅` либо удалить.
+Если по ходу работы возникает вопрос, который должен решить **клиент/заказчик** (расхождение макета и ТЗ, неоднозначное поведение, выбор между вариантами реализации, недостающие требования) — фиксируй его **в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) рядом с релевантным пунктом**, помечая префиксом `> ❓ **Уточнить у клиента:**`. Описывай: что в вёрстке/ТЗ не сходится, какие варианты возможны, какой временно выбран в коде. Не держи такие вопросы только в чате — они теряются. После ответа клиента — обновить пункт и пометить `✅` либо удалить.
 
-## 3.1. Стили: тема vs CSS (Tailwind v4)
+## 3.1. Стили, тема и чистота кода → [docs/rules/styles.md](docs/rules/styles.md)
 
-- **Единственный источник истины для дизайн-токенов — `@theme inline { ... }` в [app/globals.css](app/globals.css)** (цвета `--color-*`, градиенты `--background-image-*`, шрифты `--font-*`, line-height `--leading-*`, брейкпоинты `--breakpoint-*`, width/spacing-формулы `--spacing-*`). Это v4-идиоматика — от сюда Tailwind автоматически генерирует утилиты `bg-*`, `text-*`, `leading-*`, `font-*`, респонсивные префиксы, и т.п. В [tailwind.config.js](tailwind.config.js) токены **не дублировать** — конфиг остаётся минимальным: только `content` и плагин `.no-scrollbar` (то, что нельзя выразить через `@theme`/`@utility` в CSS на момент v4.2).
-- Tailwind-утилиты из верстки (`md:pt-[62px]`, `gap-[38px]`, и т.п.) **не копировать** из `static-html/public/styles.css` в `main.css` — Tailwind v4 пересобирает их из `className`.
-- Компонентные кастомные классы (`.menu_item`, `.list_item`, `.category_item`, `.heart_card`, `.cart_btn`, `.keyb`, `.filter_btn`, `.header_mobile` и т.п.) — в [app/styles/main.css](app/styles/main.css).
-- **Подключение `main.css` в `globals.css` строго через `@import`, а не `@reference`.** `@reference` в Tailwind v4 даёт только контекст для `@apply`/токенов, но **не эмитит CSS-правила** файла — т.е. все `.menu_item {...}` тихо исчезают из бандла. Этот баг был и фикс в `globals.css:2`.
-- Удалять из темы всё, что повторяет дефолты Tailwind v4 (напр., `spacing.2.5: '10px'`, `margin.7.5: '30px'`, `margin.-11.25: '-45px'` — они уже есть в дефолтной шкале `calc(var(--spacing) * N)`), а также утилиты, совпадающие с встроенными (`.resize-none`, `.overflow-x-hidden`).
+Полные правила работы со стилями (Tailwind v4, токены `@theme`, arbitrary-значения, боковые отступы контента, чистка закомментированных блоков) — в [docs/rules/styles.md](docs/rules/styles.md).
 
-### 3.1.1. Tailwind v4: использовать токены темы, а не arbitrary-значения
+**tl;dr:**
 
-При написании `className` **всегда сначала ищи готовый класс из темы**, и только если его нет — используй квадратные скобки `[...]`. Дефолтная шкала Tailwind v4 + токены из `@theme inline { ... }` в [app/globals.css](app/globals.css) уже покрывают практически всё, что встречается в `static-html`.
+- Дизайн-токены — только в `@theme inline { ... }` в [app/globals.css](app/globals.css), не в [tailwind.config.js](tailwind.config.js).
+- Компонентные классы (`.menu_item`, `.cart_btn`, …) — в [app/styles/main.css](app/styles/main.css), подключение через `@import` (не `@reference`).
+- Перед `className="…[18px]…"` сначала ищи готовый класс из темы (например `h-4.5`). Arbitrary `[...]` — только когда токена нет; если повторяется в 3+ местах — заведи токен.
+- Любая корневая обёртка страницы — `px-4` + схема `max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323`. Контент не прижимать к краю вьюпорта.
+- Закомментированные `import`-ы и JSX `{/* <X /> */}` удалять сразу при правке файла, не тащить.
 
-- **Spacing / sizing.** Дефолтная шкала — `calc(var(--spacing) * N)` с шагом `0.25` (`--spacing: 0.25rem` = `4px`). Поэтому:
-  - `h-[18px]` → `h-4.5` (4.5 × 4 = 18)
-  - `gap-[10px]` → `gap-2.5`
-  - `mt-[15px]` → `mt-3.75`
-  - `w-[615px]` → `w-153.75` (если значение часто повторяется — добавь именованный токен `--spacing-*` в `@theme`)
-  - Проверка: `value_px / 4 = N` → используй `*-N` или `*-N.MM`. Не подходит ровно — оставляй `[...]`.
-- **Цвета.** Брендовые цвета и легаси-палитра уже в `@theme inline` (`--color-brand`, `--color-paper`, `--color-ink`, `--color-muted`, `--color-custom_*`). Поэтому:
-  - `text-[#EC722B]` / `bg-[#ec722b]` → `text-brand` / `bg-brand`
-  - `stroke-[#4C4D56]` → `stroke-ink`
-  - `text-[#dfe9f9]` / `text-white` (для дизайн-текста) → `text-paper`
-  - `text-[#969696]` — кастомного токена нет; либо добавь `--color-*` в `@theme`, либо оставь `[...]`. Не плоди дубли (`text-[#EC722B]` рядом с `text-brand` в одном файле).
-- **Градиенты.** `--background-image-custom-gradient` / `--background-image-gradient-to-r-hover` → классы `bg-custom-gradient` и `bg-gradient-to-r-hover`. **Не пиши** `bg-[linear-gradient(...)]`.
-- **Шрифты / line-height / breakpoints.** `font-main`, `leading-mobile`, `leading-150`, `xs:`, `mobile_wide:`, `md_wide:` — всё уже определено. Используй именованные классы, а не arbitrary.
-- **Когда добавлять новый токен в `@theme`.** Если одно и то же arbitrary-значение встречается в **3+ местах** (или это явный дизайн-токен — цвет, отступ-сетка, фирменный размер), — добавь `--color-*` / `--spacing-*` / `--leading-*` в `app/globals.css` и используй именованный класс везде. Одноразовое значение — оставь `[...]`.
-- **Антипаттерн:** копировать из `static-html` `className` 1:1 с кучей `[18px]`/`[#EC722B]`. Это режет читаемость и дублирует токены, которые уже есть. Перевод в именованные классы — обязательная часть переноса вёрстки (правило 1).
+## 3.3. Иконки → [docs/rules/icons.md](docs/rules/icons.md)
 
-## 3.1.2. Контент не прижимать к краю — везде нужны боковые отступы
+Три формы хранения иконок и правила выбора — в [docs/rules/icons.md](docs/rules/icons.md).
 
-На любой странице корневая обёртка контента **должна иметь горизонтальные отступы** на всех брейкпоинтах. Контент не должен касаться края вьюпорта — это касается не только мобильной версии. Конвенция проекта — `px-4` на корневой обёртке (`<section>` / `<article>` / `<div>` со схемой `mx-auto w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323`). Без `px-4` на мобиле получается edge-to-edge, а на xl-вьюпорте 1280–1291px содержимое с `xl:max-w-323` (1292px) ломает горизонталь.
+**tl;dr:**
 
-Брейкпоинты ширины:
+- `public/images/icons/*.svg` — декоративная иконка с зашитыми цветами, грузится как `<img>` через `next/image`. Default для нового.
+- `components/icons/*.svg` (через SVGR) — когда нужен инлайн SVG в DOM (CSS-родителя на `path`, `class="hover-target"`, `currentColor`).
+- `components/icons/*.tsx` — когда у иконки есть props, меняющие рендер (`filled`, `active`, `size`, `variant`).
+- Inline `<svg>` прямо в компонентах фич — нельзя. Дубликаты — проверяй [components/icons/](components/icons/) и [public/images/icons/](public/images/icons/) сначала.
 
-- **default (< xs / 480px)** — `max-w-85` (340px). На самых маленьких телефонах (320–360px) контент центрируется и не растекается на всю ширину.
-- **xs (480px+)** — `xs:max-w-none` (без капа): от 480 до 768px контент занимает всю доступную ширину минус `px-4`.
-- **md (768px+) / lg (1024px+) / xl (1280px+)** — `md:max-w-175` / `lg:max-w-250` / `xl:max-w-323` (700 / 1000 / 1292px).
+## 3.4. JSDoc → [docs/rules/jsdoc.md](docs/rules/jsdoc.md)
 
-- **Антипаттерн:** `mx-auto box-border flex w-full md:max-w-175 lg:max-w-250 xl:max-w-323 ...` без `px-4` и без `max-w-85` (на 320–360px контент прилипает к краю; на >480px — без проблем, на <480px — выглядит «edge-to-edge»).
-- **Правильно:** добавлять `max-w-85 xs:max-w-none` и `px-4` к этой же обёртке (см. [app/[handle]/page.tsx](app/[handle]/page.tsx), [app/cart/page.tsx](app/cart/page.tsx), [app/not-found.tsx](app/not-found.tsx); компонентные классы `.section_layout` / `.shop_section` / `.products_grid_layout` в [app/styles/main.css](app/styles/main.css) уже инкапсулируют эту схему).
-- **Исключение:** «полно-ширинные» секции с фоном (промо-баннер, hero), у которых сам фон должен идти от края до края — у них `px-4` и `max-w-*` ставятся на внутренний контейнер контента, а не на фон. Также мобильные горизонтальные скроллеры (категории, рейлы карточек) — у них `w-full` без капа, чтобы скролл занимал всю ширину.
+Полный контракт JSDoc (структура, выравнивание, примеры для компонентов / async-фетчеров / утилит) — в [docs/rules/jsdoc.md](docs/rules/jsdoc.md).
 
-## 3.2. Чистота кода — убирать закомментированный мусор
+**tl;dr:**
 
-Закомментированные `import`-ы, JSX-фрагменты `{/* <X /> */}` и т.п., которые больше не нужны, — удалять сразу, а не тащить с собой. Не оставлять как «на всякий случай» — git хранит историю.
-
-- **Почему:** в репо исторически копились `// import NavigationMenu...` / `{/* <CategoryModal /> */}` / `// const IntroAnimations = ...`, которые засоряют чтение компонентов и мешают видеть актуальную структуру.
-- **Как применять:** при любой правке файла — если наткнулся на закомментированный импорт/блок и по контексту видно, что он больше не используется (имени нет в JSX, нет в логике, модуль не существует или заменён на другое), — удалить в том же коммите. Если не уверен, что выпилено осознанно, — оставить и спросить пользователя.
-- **Исключение:** TODO-комментарии с осмысленным текстом («// TODO: replace with X after OneEntry block Y is live») — оставлять, они несут информацию.
-
-## 3.3. Иконки: куда класть и в какой форме
-
-Три формы хранения, выбор по тому, **что делает иконка в DOM**:
-
-1. **`public/images/icons/*.svg` (статический URL-ассет)** — для **полностью декоративных** иконок с **зашитыми** `fill`/`stroke` цветами, без CSS-стилизации со стороны родителя и без hover-эффектов на `path`. Загружаются через `next/image`:
-
-   ```tsx
-   import Image from 'next/image';
-   <Image src="/images/icons/flame.svg" alt="" width={15} height={20} />
-   ```
-
-   Здесь нет SVGR, иконка превращается в `<img>` (replaced element) — стили родителя (`group:hover`, `currentColor`) на `path` внутри **не действуют**. Зато оптимизация раздачи (immutable cache в [next.config.ts](next.config.ts) `headers()`), и не раздувается JS-бандл. Это default для новых декоративных иконок.
-
-2. **`components/icons/*.svg` (SVGR — инлайн SVG в DOM)** — когда иконка нужна **инлайн** в DOM, чтобы её `path` ловил CSS-селектор родителя (`.hover-target path { fill: var(--color-brand) }` из [app/styles/main.css](app/styles/main.css)) или чтобы внутри SVG работал `class="hover-target"`. SVGR настроен в [next.config.ts](next.config.ts) (`@svgr/webpack`, `icon: false, titleProp: true`), TS-декларация — в [app/types/svg.d.ts](app/types/svg.d.ts), Tailwind v4 content-glob расширен до `*.svg` в [tailwind.config.js](tailwind.config.js). Импорт **всегда с явным расширением**:
-
-   ```tsx
-   import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
-   <CloseXBoldIcon className="hover-target" />
-   ```
-
-   Внутри `.svg` пиши `class="..."` (не `className`) и `stroke-width=`/`fill-rule=` через дефис — SVGR конвертирует в JSX-имена.
-
-3. **`components/icons/*.tsx` (React-компонент)** — когда у иконки есть props, меняющие **рендер**: `active`, `filled`, `size`, `variant`, conditional-логика, мердж fixed className c пользовательским. Примеры: [heart-card.tsx](components/icons/heart-card.tsx) (filled), [house.tsx](components/icons/house.tsx) (size), [clock-circle.tsx](components/icons/clock-circle.tsx) (variant), [star-card.tsx](components/icons/star-card.tsx) (size+filled).
-
-**Правило выбора при добавлении новой иконки:**
-
-1. Цвета зашиты, ничего не реагирует на ховер родителя, нет внутренних классов вроде `hover-target` → **`public/images/icons/*.svg`**.
-2. Иконка должна быть инлайн в DOM (CSS-стилизация родителя на `path`, `class="hover-target"` внутри, `currentColor`) → **`components/icons/*.svg`**.
-3. Иконка переключается по состоянию (filled/outlined, active, disabled) или принимает дискриминирующий prop → **`components/icons/*.tsx`**.
-
-**Никогда:**
-
-- Не оставляй inline `<svg>` прямо в компонентах фич. Любой инлайновый SVG длиной > 1 path выноси либо в `public/images/icons/`, либо в `components/icons/` (правило 3.2 про чистоту кода).
-- Не дублируй уже существующую иконку под другим именем. Сначала проверяй [components/icons/](components/icons/) и [public/images/icons/](public/images/icons/).
-- Не клади SVG с `class="hover-target"` (или иной CSS-зависимостью от родителя) в `public/images/icons/` — внутренние стили потеряются, потому что `<img>` не пробрасывает CSS родителя в свой shadow DOM. Такой SVG должен жить в `components/icons/` и импортироваться через SVGR.
-
-**Tailwind-классы внутри `components/icons/*.svg`:** content-glob уже включает `*.svg`, так что `class="fill-[#EC722B] hover-target"` внутри SVG-файла будет отсканирован и сгенерирован. Если классы вдруг не применяются — первое, что проверить: что путь файла попадает под `content` в [tailwind.config.js](tailwind.config.js). Для `public/images/icons/*.svg` Tailwind-классы внутри **не работают** (файл не проходит через бандлер).
-
-## 3.4. JSDoc обязателен для функций — с типами и chain-нотацией
-
-Каждая **объявленная функция** в проекте — React-компонент, кастомный хук, утилита, серверный action, обработчик, экспортируемая или нет — должна сопровождаться JSDoc-блоком над объявлением. **Все `@param` обязательно с типом в фигурных скобках** — даже если этот тип уже есть в TypeScript-сигнатуре (это **сознательное дублирование**: помогает читать код в IDE-тултипах, в hover-предпросмотре, и в diff-ах без переключения на сигнатуру). **`@returns` пишется БЕЗ типа** — только описание (тип возврата уже есть в TS-сигнатуре, дублировать его в JSDoc не нужно).
-
-- **Язык — английский.** Все JSDoc-комментарии и инлайн-комментарии в коде пишутся на английском, в тон существующих описаний в проекте. Русские комментарии (наследие из ранних коммитов) при правке файла переводить на английский.
-- **Структура:**
-  1. Первая строка — короткое описание через em-dash: `Имя — что делает.` (английский).
-  2. Пустая строка.
-  3. Если нужен расширенный контекст (почему так, а не иначе; нюансы поведения) — следующий абзац, потом ещё одна пустая строка.
-  4. `@param   {Type}   name           - Description.` для каждого аргумента.
-  5. Для деструктурированных props — **chain-нотация**: сначала сам объект `props` (тип `{object}` или именованный type), затем каждое поле `props.fieldName` с собственным типом.
-  6. `@returns Description.` — **всегда** при наличии return-значения, **без типа в фигурных скобках**. Для React-компонентов: `@returns JSX of the <thing>.` Для async-серверных функций: `@returns Promise resolving to <thing>.`
-- **Выравнивание.** Колонки `{Type}`, `name`, `- Description` для `@param` — выравниваем пробелами по вертикали внутри одного JSDoc-блока, чтобы читать как таблицу. Если типы сильно разной длины — допускаем единичный пробел; главное, чтобы в одном блоке стиль был консистентным. У `@returns` колонки нет — описание идёт сразу после тега через один пробел.
-- **Внутренние коллбэки** в `useEffect`/`useGSAP`/`map`/`filter`/`onClick={() => ...}` — **без** JSDoc, если у них нет отдельного именованного объявления.
-- При правке файла, где у функции уже есть однострочный JSDoc без `@param`/`@returns` — **расширить** до полной формы.
-- Это правило **переопределяет** дефолтное «no comments» из системного промпта Claude: для этого проекта JSDoc — часть контракта функции, а не комментарий «на всякий случай».
-
-**Каноничный пример (React-компонент с деструктурированными props):**
-
-```tsx
-/**
- * CardAnimations — wraps a product card in a reveal animation that fires when it enters the viewport.
- *
- * @param   {object}    props               - Component props.
- * @param   {ReactNode} props.children      - Card content.
- * @param   {string}    props.className     - Class merged onto the wrapping `<div>`.
- * @param   {number}    props.index         - Absolute card index across all pages; drives the stagger.
- * @param   {number}    props.productsLimit - Page size; resets the stagger on a new page.
- * @returns JSX wrapper with the bound GSAP reveal animation.
- */
-const CardAnimations = ({ children, className, index, productsLimit }: Props): JSX.Element => { ... }
-```
-
-**Каноничный пример (async server fetcher):**
-
-```tsx
-/**
- * fetchDictionary — loads the `static_content` attribute set and normalizes it into
- * `Record<marker, IAttributeValue>`, so that `dict?.MARKER?.value` returns a string.
- *
- * @returns Promise resolving to a map of markers → attribute with a string `value`.
- */
-const fetchDictionary = async (): Promise<IAttributeValues> => { ... }
-```
-
-**Каноничный пример (утилита с примитивными аргументами):**
-
-```tsx
-/**
- * t — server-side counterpart of `useT()`: reads a string from the dictionary by marker.
- *
- * @param   {string}          marker   - Dictionary marker (attribute name).
- * @param   {string}          fallback - Returned when the marker is missing.
- * @returns Promise resolving to the dictionary string, or the fallback.
- */
-export const t = async (marker: string, fallback: string): Promise<string> => { ... }
-```
+- JSDoc обязателен над **каждой** объявленной функцией: React-компонент, хук, утилита, server action, обработчик.
+- Все `@param` — с типом в фигурных скобках (сознательное дублирование TS-типов для IDE-tooltips).
+- `@returns` — **без** типа, только описание.
+- Деструктурированные props — chain-нотация: сначала `props` (`{object}`), потом каждое поле `props.foo` со своим типом.
+- Внутренние коллбэки (`useEffect`, `map`, `onClick={() => …}`) — без JSDoc.
+- Это правило **переопределяет** дефолтное «no comments»: JSDoc — часть контракта функции.
 
 ## 4. Итеративное обновление этих правил
 
@@ -204,7 +94,7 @@ export const t = async (marker: string, fallback: string): Promise<string> => { 
 - Перед реализацией любой CMS-завязанной фичи вызывай `mcp__oneentry__load-context` / `mcp__oneentry__get-skill` / `mcp__oneentry__get-project-config` и следуй возвращённым рекомендациям (структура запросов, именование, порядок аргументов, обработка ошибок).
 - Используй именно те SDK-методы и сигнатуры, которые предписывает MCP, — не изобретай свои обёртки поверх `fetch`, если MCP рекомендует `oneentry` npm-пакет.
 - Типы ответов OneEntry (Products / Pages / Blocks / Forms / Orders / Attributes) приводи к форме, которую диктует MCP(SDK типы и интерфейсы), а не к произвольной.
-- Graceful fallback на `"Resource is closed"` и пустые коллекции — обязательный, как описано в [MISMATCH-LOG.md](MISMATCH-LOG.md) (Раздел C).
+- Graceful fallback на `"Resource is closed"` и пустые коллекции — обязательный, как описано в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
 - Если рекомендация MCP противоречит локальным правилам (1–4), приоритет у локальных правил — но такой конфликт нужно зафиксировать вопросом пользователю, а не решать молча.
 
 ### 5.1. Диагностика OneEntry — сначала через MCP/SDK, а не curl
@@ -231,35 +121,34 @@ export const t = async (marker: string, fallback: string): Promise<string> => { 
 - **Когда исключение:** только если пользователь явно попросил («запусти lint», «проверь билд»).
 - **TypeScript-диагностика IDE** уже идёт через hooks и попадает в контекст автоматически — это покрывает базовый sanity-check без явного запуска `tsc`.
 
-## 7. [MISMATCH-LOG.md](MISMATCH-LOG.md) — единый журнал расхождений и пробелов OneEntry
+## 7. Журналы расхождений и админ-задач
 
-Файл [MISMATCH-LOG.md](MISMATCH-LOG.md) — единый реестр для:
+Два связанных файла:
 
-- расхождений между эталоном [static-html/](static-html/) (правило 1) и текущей Next.js-реализацией (что чинится правкой кода);
-- пробелов в данных OneEntry (что нужно завести сущность/атрибут/форму в админке).
+- [MISMATCH-LOG.md](MISMATCH-LOG.md) — расхождения между эталоном [static-html/](static-html/) и текущей Next.js-реализацией (что чинится правкой **кода**).
+- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — пробелы в данных OneEntry (что нужно завести в **админке**).
 
-Используется при ручной сверке экранов, при чистке технического долга и для трекинга задач на стороне админки.
+Раньше всё лежало в одном MISMATCH-LOG (раздел C); сейчас разделено, чтобы команда админа не листала code-debt разработчика.
 
-- **Структура файла:**
-  - **Сводка** — таблица «Раздел / Файлов / P0–P3» (общая картина прогресса).
-  - **Топ-приоритет (P0/P1)** — что фиксить первыми.
+- **Структура [MISMATCH-LOG.md](MISMATCH-LOG.md):**
+  - **Сводка** — таблица «Раздел / Открыто / P0–P3» (общая картина прогресса).
   - **Severity** — описание уровней.
   - **Раздел A. Автоматические находки** — массовые находки по правилам (закомментированный код по §3.2, arbitrary `[Npx]`-значения по §3.1.1 и т.п.), агрегированные по файлам.
   - **Раздел B. Ручная сверка по экранам** — пункты вида `B.{section}.{n}` со ссылками на соответствующий `static-html/*.html`, файлы проекта и Severity.
-  - **Раздел C. OneEntry Admin Setup** — пробелы в данных OneEntry: формы (C.1), страницы и атрибуты (C.2), related products (C.3), словарь `static_content` (C.4), профиль/попап (C.5), платежи и купоны (C.6), аудит соответствия полей коду (C.7), auth-провайдеры (C.8). Для пунктов раздела C правило 3 (как формулировать, оформление таблицами `marker | type | title`, отметки `✅`).
-- **Severity:**
+- **Структура [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md):** C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history. Для пунктов C правило 3 (как формулировать, оформление таблицами `marker | type | title`, отметки `✅`).
+- **Severity (только MISMATCH-LOG):**
   - `P0` — структура DOM/функциональность сломана (нет блока, не работает кнопка).
   - `P1` — заметный визуальный мискшоп (бренд-цвета, отступы, неправильные классы).
   - `P2` — мелочи (px-токены вместо именованных, шрифты, hover-эффекты).
   - `P3` — гигиена кода (инлайн SVG → `components/icons/`, удалить закомментированное).
-  - Раздел C обычно идёт без P-метки (это задачи на стороне админки, а не code-debt) — фиксируется как «открыто / ✅ закрыто».
+  - Пункты ONEENTRY-ADMIN-TODO идут без P-метки — фиксируются как «открыто / ✅ закрыто».
 - **Когда обновлять:**
-  - Заметил новое расхождение со static-html, которое не чинишь прямо сейчас, — добавь пункт в соответствующий раздел B.x с уникальным id, ссылками на файл/строки и Severity.
+  - Заметил новое расхождение со static-html, которое не чинишь прямо сейчас, — добавь пункт в соответствующий раздел B.x в [MISMATCH-LOG.md](MISMATCH-LOG.md) с уникальным id, ссылками на файл/строки и Severity.
   - Починил пункт — либо удали его из лога, либо переведи в `—` Severity с пометкой типа **В плюс** / **Задокументировано** (как уже сделано для B.4.6, B.5.3, B.7.1 и т.п.). Не оставляй устаревшие пункты с прежней Severity.
-  - Появился новый пробел в OneEntry — добавь пункт в раздел C по правилу 3.
+  - Появился новый пробел в OneEntry — добавь пункт в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) по правилу 3.
   - Клиент закрыл пункт C.x в админке (проверено через MCP) — отметить `✅` или удалить.
   - При массовой чистке (например, перевод arbitrary `[Npx]` → токены) — обнови счётчики в Сводке и в разделе A.
-- **Приоритет работы:** при свободном бюджете на техдолг — сначала P0/P1 из раздела B, затем массовые находки раздела A. Раздел C — асинхронная работа клиента, не блокирует код-релизы.
+- **Приоритет работы:** при свободном бюджете на техдолг — сначала P0/P1 из раздела B, затем массовые находки раздела A. ONEENTRY-ADMIN-TODO — асинхронная работа клиента, не блокирует код-релизы.
 
 ---
 
@@ -267,7 +156,7 @@ export const t = async (marker: string, fallback: string): Promise<string> => { 
 
 - [ ] Компонент визуально совпадает с соответствующим `.html` из [static-html/](static-html/).
 - [ ] Данные: OneEntry (через MCP-совместимый слой) или мок нужной формы — не пусто.
-- [ ] Если потребовались новые сущности OneEntry — добавлены в [MISMATCH-LOG.md](MISMATCH-LOG.md) (Раздел C).
-- [ ] Выполненные ранее пункты из раздела C [MISMATCH-LOG.md](MISMATCH-LOG.md) — удалены или помечены `✅`.
-- [ ] Если правка закрывает пункт из [MISMATCH-LOG.md](MISMATCH-LOG.md) (раздел A/B/C) — пункт удалён или переведён в `—` Severity (правило 7).
+- [ ] Если потребовались новые сущности OneEntry — добавлены в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
+- [ ] Выполненные ранее пункты из [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — удалены или помечены `✅`.
+- [ ] Если правка закрывает пункт из [MISMATCH-LOG.md](MISMATCH-LOG.md) (раздел A/B) или [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — пункт удалён или переведён в `—` Severity (правило 7).
 - [ ] Линт/билд: пользователь запускает сам (правило 6).

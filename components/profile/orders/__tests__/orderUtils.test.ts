@@ -35,8 +35,8 @@ describe('isHistoryOrder / HISTORY_STATUSES', () => {
     }
   );
 
-  it('null statusIdentifier counts as active (not history)', () => {
-    expect(isHistoryOrder(order({ statusIdentifier: null }))).toBe(false);
+  it('missing statusIdentifier counts as active (not history)', () => {
+    expect(isHistoryOrder(order({}))).toBe(false);
   });
 
   it('is case-insensitive', () => {
@@ -65,7 +65,7 @@ describe('statusLabel', () => {
   });
 
   it('returns "-" when nothing is set', () => {
-    expect(statusLabel(order({ statusIdentifier: null }))).toBe('-');
+    expect(statusLabel(order({}))).toBe('-');
   });
 });
 

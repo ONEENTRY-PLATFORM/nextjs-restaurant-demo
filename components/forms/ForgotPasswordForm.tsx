@@ -10,7 +10,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
-import SpinnerLoader from '../shared/SpinnerLoader';
+import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
@@ -62,7 +62,7 @@ export const ForgotPasswordForm = ({
   };
 
   if (!data || isLoading) {
-    return <SpinnerLoader />;
+    return <Loader />;
   }
 
   return (

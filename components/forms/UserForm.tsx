@@ -13,7 +13,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { normalizePhoneE164 } from '@/components/utils';
 
-import SpinnerLoader from '../shared/SpinnerLoader';
+import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
@@ -97,7 +97,7 @@ const UserForm = (): JSX.Element => {
   );
 
   if (isLoading) {
-    return <SpinnerLoader />;
+    return <Loader />;
   }
 
   if (!isAuth || error || !user?.formData) {

@@ -9,7 +9,7 @@ import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 
-import SpinnerLoader from '../shared/SpinnerLoader';
+import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
@@ -95,7 +95,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   };
 
   if (isLoading) {
-    return <SpinnerLoader />;
+    return <Loader />;
   }
 
   return (

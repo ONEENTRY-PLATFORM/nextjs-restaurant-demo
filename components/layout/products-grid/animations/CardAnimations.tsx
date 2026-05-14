@@ -35,10 +35,6 @@ const CardAnimations = ({
   productsLimit: number;
 }): JSX.Element => {
   const searchParams = useSearchParams();
-  // Captured once at mount: pagination later changes `currentPage`, but the per-card delay
-  // must stay frozen on the value that was correct when the card first appeared. Otherwise
-  // `useGSAP` re-runs and reverts the already-revealed cards. `useState` (lazy init, setter
-  // never called) gives an immutable mount-time value that is safe to read during render.
   const [currentPageOnMount] = useState(() => Number(searchParams.get('page')) || 1);
 
   const ref = useRef<HTMLDivElement | null>(null);

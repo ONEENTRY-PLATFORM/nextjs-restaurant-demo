@@ -74,4 +74,72 @@ describe('validators.correctPasswordValidator', () => {
   it('treats empty strings as a valid match (caller must combine with requiredValidator)', () => {
     expect(validators.correctPasswordValidator('', '')).toBe(true);
   });
+  it('is case-sensitive', () => {
+    expect(validators.correctPasswordValidator('Pass1!', 'pass1!')).toBe(false);
+  });
+});
+
+describe('validators.fieldMaskValidator', () => {
+  it('accepts a value that matches the OneEntry mask', () => {
+    // "$9[[space]]999[[space]]999[[space]]9999" → international phone
+    expect(
+      validators.fieldMaskValidator('+1 415 555 2671', {
+        maskValue: '$9[[space]]999[[space]]999[[space]]9999',
+      })
+    ).toBe(true);
+  });
+
+  it('rejects a value that does not match the mask', () => {
+    expect(validators.fieldMaskValidator('not a phone', { maskValue: '9999' })).toBe(false);
+  });
+
+  it('rejects a partial match (compileRegex anchors the pattern)', () => {
+    expect(validators.fieldMaskValidator('12345', { maskValue: '9999' })).toBe(false);
+  });
+
+  it('accepts when mask matches an empty string for an empty mask', () => {
+    // Empty mask compiles to /^$/ — only empty string passes.
+    expect(validators.fieldMaskValidator('', { maskValue: '' })).toBe(true);
+    expect(validators.fieldMaskValidator('x', { maskValue: '' })).toBe(false);
+  });
+});
+
+describe('validators.stringInspectionValidator — additional edge cases', () => {
+  it('stringLength=0 falls through to the [min,max] branch (not a hard requirement)', () => {
+    // stringLength only takes effect when > 0; with 0 it skips and uses min/max defaults (0,0).
+    expect(validators.stringInspectionValidator('', { stringLength: 0 })).toBe(true);
+    expect(validators.stringInspectionValidator('a', { stringLength: 0 })).toBe(false);
+  });
+
+  it('without bounds, only the empty string passes (min/max default to 0)', () => {
+    expect(validators.stringInspectionValidator('', {})).toBe(true);
+    expect(validators.stringInspectionValidator('a', {})).toBe(false);
+  });
+
+  it('boundary lengths — exactly at stringMin and stringMax', () => {
+    expect(validators.stringInspectionValidator('ab', { stringMin: 2, stringMax: 4 })).toBe(true);
+    expect(validators.stringInspectionValidator('abcd', { stringMin: 2, stringMax: 4 })).toBe(true);
+  });
+
+  it('exact stringLength wins even when value is outside [min,max]', () => {
+    // The exact-length branch returns early, so out-of-range bounds do not matter.
+    expect(
+      validators.stringInspectionValidator('1234', {
+        stringLength: 4,
+        stringMin: 10,
+        stringMax: 20,
+      })
+    ).toBe(true);
+  });
+});
+
+describe('validators.requiredValidator — additional', () => {
+  it('returns true for any single character (including punctuation/digits)', () => {
+    expect(validators.requiredValidator('0')).toBe(true);
+    expect(validators.requiredValidator('!')).toBe(true);
+  });
+
+  it('returns true for multi-character strings', () => {
+    expect(validators.requiredValidator('hello world')).toBe(true);
+  });
 });

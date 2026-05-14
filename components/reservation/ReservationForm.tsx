@@ -299,11 +299,7 @@ const ReservationForm = ({
           if (attr.type === 'entity') {
             if (attr.marker !== RESTAURANT_MARKER || restaurants.length === 0) return null;
             return (
-              <FormFieldAnimations
-                key={attr.marker}
-                index={i}
-                className="flex flex-col gap-1"
-              >
+              <FormFieldAnimations key={attr.marker} index={i} className="flex flex-col gap-1">
                 <RestaurantSelect
                   options={restaurants}
                   value={values[RESTAURANT_MARKER] ?? ''}
@@ -329,11 +325,7 @@ const ReservationForm = ({
           );
         }
         return (
-          <FormFieldAnimations
-            key={`row-${i}`}
-            index={i}
-            className="flex justify-between gap-3.75"
-          >
+          <FormFieldAnimations key={`row-${i}`} index={i} className="flex justify-between gap-3.75">
             <ReservationField
               attr={row.left}
               values={values}

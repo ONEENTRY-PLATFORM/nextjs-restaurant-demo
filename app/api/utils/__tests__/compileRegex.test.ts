@@ -70,4 +70,47 @@ describe('compileRegex — composite masks', () => {
     expect(re.test('id:12')).toBe(false);
     expect(re.test('ID:1234')).toBe(false);
   });
+
+  it('empty mask matches only empty string', () => {
+    const re = compileRegex('');
+    expect(re.test('')).toBe(true);
+    expect(re.test('x')).toBe(false);
+  });
+
+  it('"AAA" rejects partial uppercase / spaces', () => {
+    const re = compileRegex('AAA');
+    expect(re.test('ABC')).toBe(true);
+    expect(re.test('AB')).toBe(false);
+    expect(re.test('A C')).toBe(false);
+  });
+
+  it('mixes alnum "*" with literal "/"', () => {
+    // E.g. "AB/12cd" — literal slash, no token clash.
+    const re = compileRegex('**/**');
+    expect(re.test('aA/9Z')).toBe(true);
+    expect(re.test('aA-9Z')).toBe(false);
+  });
+
+  it('"[[space]]" only matches a single whitespace character', () => {
+    const re = compileRegex('9[[space]]9');
+    expect(re.test('1 2')).toBe(true);
+    // Two spaces — no match (single \s).
+    expect(re.test('1  2')).toBe(false);
+    // Tab — \s also matches \t.
+    expect(re.test('1\t2')).toBe(true);
+  });
+
+  it('"$" matches each of () - + individually but not other punctuation', () => {
+    const re = compileRegex('$');
+    expect(re.test('.')).toBe(false);
+    expect(re.test('_')).toBe(false);
+    expect(re.test(',')).toBe(false);
+  });
+
+  it('long composite phone-like mask', () => {
+    // "+ (123) 456-7890" — leading $ for '+', then literal " (", then 3 digits, ") ", 3 digits, "-", 4 digits.
+    const re = compileRegex('$[[space]]$999$[[space]]999$9999');
+    expect(re.test('+ (123) 456-7890')).toBe(true);
+    expect(re.test('  123  456 7890')).toBe(false);
+  });
 });

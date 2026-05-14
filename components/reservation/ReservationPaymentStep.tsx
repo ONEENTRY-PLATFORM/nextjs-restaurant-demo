@@ -132,10 +132,7 @@ const ReservationPaymentStep = ({
       {error ? <ErrorMessage error={error} /> : null}
 
       {/* Apply button - Figma: 95×36, orange outline, text #EC722B */}
-      <FormFieldAnimations
-        index={applyIndex}
-        className="mt-2.5 flex items-center justify-center"
-      >
+      <FormFieldAnimations index={applyIndex} className="mt-2.5 flex items-center justify-center">
         <button
           type="button"
           onClick={() => selected && onApply(selected)}

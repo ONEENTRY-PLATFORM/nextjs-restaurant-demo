@@ -20,12 +20,70 @@ import Spinner from '@/components/shared/Spinner';
 const CANCELLED_STATUS = 'booking_cancelled';
 const BOOKING_PLACEHOLDER_PRODUCT_ID = 34;
 const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
+const TIME_SLOT_MARKER = 'time_slot';
 
 /**
- * isHistoryOrder — whether the booking order is in history (completed/cancelled/rejected/refunded).
+ * parseDateLoose — extracts a `Date` from heterogeneous OneEntry value shapes.
  *
- * Matches by substring so that admin-specific markers like `booking_cancelled` and
- * `booking_completed` are recognised alongside the generic ones (`canceled`, `delivered`, …).
+ * Handles ISO strings, `{ fullDate }` date-attribute objects, and `[fromIso, toIso]`
+ * tuples used by `timeInterval` (we use the `from` boundary as the booking moment).
+ *
+ * @param   {unknown} raw - Value from `IOrdersFormData.value`.
+ * @returns Parsed `Date` or `null` when the input cannot be interpreted.
+ */
+const parseDateLoose = (raw: unknown): Date | null => {
+  if (!raw) return null;
+  if (typeof raw === 'string') {
+    const d = new Date(raw);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  if (Array.isArray(raw)) {
+    for (const item of raw) {
+      const d = parseDateLoose(item);
+      if (d) return d;
+    }
+    return null;
+  }
+  if (typeof raw === 'object') {
+    const obj = raw as { fullDate?: unknown; from?: unknown; value?: unknown };
+    return (
+      parseDateLoose(obj.fullDate) ?? parseDateLoose(obj.from) ?? parseDateLoose(obj.value) ?? null
+    );
+  }
+  return null;
+};
+
+/**
+ * getBookingDate — reservation moment extracted from the order's `formData`.
+ *
+ * Prefers the `time_slot` (timeInterval) field used by `ReservationForm`; falls back to any
+ * `timeInterval` / `date`-typed field if the canonical marker is absent.
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns `Date` of the booking, or `null` when no date field is present.
+ */
+const getBookingDate = (o: IOrderByMarkerEntity): Date | null => {
+  const fields = (o.formData as IOrdersFormData[] | undefined) ?? [];
+  const slot = fields.find(f => f.marker === TIME_SLOT_MARKER);
+  if (slot) {
+    const d = parseDateLoose(slot.value);
+    if (d) return d;
+  }
+  const byType = fields.find(f => f.type === 'timeInterval' || f.type === 'date');
+  if (byType) {
+    const d = parseDateLoose(byType.value);
+    if (d) return d;
+  }
+  return null;
+};
+
+/**
+ * isHistoryOrder — whether the booking order is in history (past date / completed / cancelled / rejected / refunded).
+ *
+ * Status check matches by substring so that admin-specific markers like `booking_cancelled`
+ * and `booking_completed` are recognised alongside the generic ones (`canceled`, `delivered`, …).
+ * Additionally, any booking whose reservation moment (`time_slot`) already lies in the past
+ * is treated as history regardless of status.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `true` when the booking belongs to history.
@@ -33,8 +91,10 @@ const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refu
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
   const id = (o.statusIdentifier ?? '').toLowerCase();
-  if (!id) return false;
-  return HISTORY_STATUS_KEYWORDS.some(k => id.includes(k));
+  if (id && HISTORY_STATUS_KEYWORDS.some(k => id.includes(k))) return true;
+  const bookingDate = getBookingDate(o);
+  if (bookingDate && bookingDate.getTime() < Date.now()) return true;
+  return false;
 };
 
 /**

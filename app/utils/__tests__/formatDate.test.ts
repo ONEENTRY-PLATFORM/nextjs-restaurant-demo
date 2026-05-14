@@ -34,6 +34,34 @@ describe('formatDate', () => {
   it('returns "" for an unparseable string', () => {
     expect(formatDate('not-a-date')).toBe('');
   });
+
+  it('returns "" for `null` (falsy, even though TS forbids it)', () => {
+    // Runtime safety net — `attributeValues?.[marker]?.value` can come back as `null`.
+    expect(formatDate(null as unknown as undefined)).toBe('');
+  });
+
+  it('returns "" for `NaN` (falsy)', () => {
+    expect(formatDate(NaN)).toBe('');
+  });
+
+  it('returns "" for an Invalid Date object', () => {
+    expect(formatDate(new Date('garbage'))).toBe('');
+  });
+
+  it('handles year boundaries — slice(2) of 1999/2000/2100', () => {
+    expect(formatDate(new Date(1999, 11, 31))).toBe('31.12.99');
+    expect(formatDate(new Date(2000, 0, 1))).toBe('01.01.00');
+    expect(formatDate(new Date(2100, 0, 1))).toBe('01.01.00');
+  });
+
+  it('ignores time-of-day (only date components matter)', () => {
+    expect(formatDate(new Date(2026, 4, 14, 23, 59, 59))).toBe('14.05.26');
+    expect(formatDate(new Date(2026, 4, 14, 0, 0, 0))).toBe('14.05.26');
+  });
+
+  it('handles leap day Feb 29', () => {
+    expect(formatDate(new Date(2024, 1, 29))).toBe('29.02.24');
+  });
 });
 
 describe('toLocalIsoDate', () => {
@@ -55,5 +83,15 @@ describe('toLocalIsoDate', () => {
     // Freeze "now" so the test is deterministic across runs.
     jest.useFakeTimers().setSystemTime(new Date(2026, 5, 7, 10, 0, 0));
     expect(toLocalIsoDate()).toBe('2026-06-07');
+  });
+
+  it('handles leap day Feb 29 in local TZ', () => {
+    expect(toLocalIsoDate(new Date(2024, 1, 29))).toBe('2024-02-29');
+  });
+
+  it('handles end-of-year midnight (no UTC shift)', () => {
+    // The whole reason this helper exists: `toISOString()` here would roll to
+    // "2027-01-01" in positive UTC offsets — the helper must hold to local 2026-12-31.
+    expect(toLocalIsoDate(new Date(2026, 11, 31, 23, 59, 59))).toBe('2026-12-31');
   });
 });

@@ -21,10 +21,6 @@ import FormSubmitButton from './inputs/FormSubmitButton';
 /**
  * VerificationForm — 6-digit OTP code entry.
  *
- * Intentionally a static form (not from the CMS) — the code is sent to the SDK
- * `AuthProvider.checkCode(...)` or `activateUser(...)` for post-signup activation.
- * See MISMATCH-LOG §C.8.2.
- *
  * @param   {object}     [props]                - Component props.
  * @param   {'activateUser' | 'checkCode'} [props.mode] - Optional mode override that takes precedence over `OpenDrawerContext.action` (used when rendered outside the drawer, e.g. inline in the reservation popup).
  * @param   {() => void} [props.onCodeVerified] - Optional callback fired after a successful `checkCode` (replaces the default drawer switch to `ResetPasswordForm`).

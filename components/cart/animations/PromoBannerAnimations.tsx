@@ -8,9 +8,6 @@ import { useRef } from 'react';
 /**
  * PromoBannerAnimations — stagger fade-in wrapper for the cart / orders promo sidebar banners.
  *
- * Mirrors the first-load effect of `ProductAnimations` on cart items so that the sidebar banners
- * slide in together with the product list.
- *
  * @param   {object}    props           - Component props.
  * @param   {ReactNode} props.children  - Banner element to animate.
  * @param   {number}    props.index     - Position in the list (drives the stagger delay).

@@ -9,10 +9,7 @@ import { dictText } from '@/components/utils';
 const DictContext = createContext<IAttributeValues | undefined>(undefined);
 
 /**
- * DictProvider — provider for the `static_content` dictionary. Puts the normalized
- * map (see [app/dictionaries.ts](app/dictionaries.ts)) into Context so that
- * client components can read strings through {@link useT} without
- * threading `dict` through props.
+ * DictProvider — provider for the `static_content` dictionary.
  *
  * @param   {object}                          props          - Component props.
  * @param   {IAttributeValues | undefined}    props.value    - Dictionary map keyed by attribute marker.
@@ -28,11 +25,7 @@ export const DictProvider = ({
 }): JSX.Element => <DictContext.Provider value={value}>{children}</DictContext.Provider>;
 
 /**
- * useT — returns a `t(marker, fallback)` function that reads a string from
- * the dict context via {@link dictText}. It's a hook, so it's only used
- * in client components. Server components keep calling
- * `dictText(dict, marker, fallback)` directly with the result of
- * `getDictionary()`.
+ * useT — returns a `t(marker, fallback)` function that reads a string from the dict context via {@link dictText}.
  *
  * @example
  *   const t = useT();

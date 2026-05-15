@@ -7,19 +7,12 @@ import { useContext, useRef } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
-/**
- * Popup open-animation variants:
- * - `bottom-sheet`   — mobile: slide-up; desktop: scale + fade (centered popups).
- * - `slide-up`       — `yPercent: 100 → 0` always (Cart — anchored via top/right).
- * - `slide-right`    — `xPercent: 100 → 0` always (Filter).
- * - `slide-up-right` — mobile: slide-up; desktop: slide-from-right (Profile — anchored top-right on md+).
- */
+/** Popup open-animation variants. */
 export type DrawerAnimationVariant = 'bottom-sheet' | 'slide-up' | 'slide-right' | 'slide-up-right';
 
 /**
  * DrawerAnimations — generic GSAP wrapper for popups driven by {@link OpenDrawerContext}.
  *
- * Children must include elements with id `modalBg` (backdrop) and `modalBody` (body).
  * Close is triggered by `setTransition('close')` — the timeline plays in reverse.
  *
  * @param   {object}                  props                    - Component props.

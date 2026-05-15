@@ -19,8 +19,6 @@ const BLOG_HANDLE = 'blog';
 /**
  * BlogPromoListPage — root promo page listing child pages of `blog`.
  *
- * Overrides the generic render of `app/[handle]/page.tsx` for `/blog` (static segment > `[handle]`).
- *
  * @returns Promise resolving to JSX of the root promo page (intro + vertical list of promo banners).
  */
 const BlogPromoListPage = async (): Promise<JSX.Element> => {

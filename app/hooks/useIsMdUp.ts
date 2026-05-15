@@ -26,11 +26,7 @@ const getMdSnapshot = (): boolean => window.matchMedia(MD_QUERY).matches;
 /**
  * useIsMdUp — `useSyncExternalStore` hook returning whether the viewport is md+ (`min-width: 768px`).
  *
- * The `serverDefault` argument controls what SSR / pre-hydration renders should assume:
- * - `false` (default) — mobile-first; SSR renders the < md layout, then hydration flips to md+ if it matches.
- * - `true` — desktop-first; useful when desktop is the dominant traffic and a mobile-flicker after hydration is preferred over a desktop-flicker.
- *
- * @param   {boolean}  [serverDefault=false] - Match state to assume on the server and the first pre-hydration client render.
+ * @param   {boolean}  [serverDefault=false] - Match state to assume on the server and the first pre-hydration client render. `false` = mobile-first, `true` = desktop-first.
  * @returns `true` on md+ viewports, `false` otherwise.
  */
 export const useIsMdUp = (serverDefault: boolean = false): boolean =>

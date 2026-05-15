@@ -35,8 +35,6 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 /**
  * CartPopup — cart drawer with the full wizard (`cart` → `order` → `payment` → `success`/`error`).
- * APPLY on the cart step toggles the Redux step, it does not navigate to `/cart`. `CartWizard` on
- * `/cart` runs in parallel — they share the Redux step.
  *
  * @returns JSX of the cart drawer (rendered into the modal stack via `OpenDrawerContext`).
  */

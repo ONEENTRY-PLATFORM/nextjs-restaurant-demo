@@ -10,6 +10,7 @@ import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StoreProvider from '@/app/store/providers/StoreProvider';
 import Modal from '@/components/layout/modal';
 
+import HeaderAnimGate from './animations/HeaderAnimGate';
 import RegisterGSAP from './animations/RegisterGSAP';
 import TransitionProvider from './animations/TransitionProvider';
 
@@ -82,7 +83,9 @@ export default async function RootLayout({
                     {children}
                   </main>
                 </TransitionProvider>
-                <BottomMenu />
+                <HeaderAnimGate delay={0.5}>
+                  <BottomMenu />
+                </HeaderAnimGate>
                 <CartPopup />
                 <FavoritesPopup />
                 <ProfilePopup />

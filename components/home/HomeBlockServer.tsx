@@ -7,8 +7,6 @@ import HomeBlockSection from './HomeBlockSection';
 /**
  * HomeBlockServer — async wrapper over {@link HomeBlockSection}: fetches a OneEntry block by marker.
  *
- * Returns `null` when the block has no products — to avoid leaving an empty section.
- *
  * @param   {object} props             - Component props.
  * @param   {string} props.marker      - Block marker.
  * @param   {string} [props.className] - Override for the section className.

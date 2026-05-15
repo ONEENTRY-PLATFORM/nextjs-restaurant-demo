@@ -79,9 +79,6 @@ const StepPayment = (): JSX.Element => {
   /**
    * onAddAddressClick — opens the profile drawer (or auth picker for guests).
    *
-   * Signals the profile popup via `action='add-address'` so `ProfileSections` collapses
-   * "My Profile" and expands the Address / add-form sections on mount.
-   *
    * @returns Nothing.
    */
   const onAddAddressClick = (): void => {

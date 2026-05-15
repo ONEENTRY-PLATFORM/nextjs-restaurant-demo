@@ -12,16 +12,9 @@ import ProductAnimations from './animations/ProductAnimations';
 const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
 
 /**
- * RelatedItems — "related products" section at the bottom of a single dish page
- * (port of `Featured objects` from `static-html/details.html`).
+ * RelatedItems — "related products" section at the bottom of a single dish page.
  *
- * Supports two OneEntry data sources:
- * 1. Canonical `Products.getRelatedProductsById` (per-product `relatedIds`).
- * 2. A block of type `similar_products_block` attached to the product
- *    (for example, `similar_dishes`) — resolved via `getBlockProducts`,
- *    which knows how to read `block.similarProducts.items`.
- *
- * The first non-empty source in the listed order is used.
+ * Tries `Products.getRelatedProductsById` first; falls back to a `similar_products_block` attached to the product. Uses the first non-empty source.
  *
  * @param   {object}      props           - Component props.
  * @param   {number}      props.productId - Id of the current product (excluded from the result).

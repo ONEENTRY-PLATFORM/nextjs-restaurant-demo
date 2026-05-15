@@ -21,9 +21,6 @@ type Props = {
 /**
  * AddressRow — address input with a dropdown of the user's saved addresses.
  *
- * Owns the dropdown open/close state and the outside-click effect that closes it.
- * The selected/typed address itself is lifted to the parent so the order submit handler can read it.
- *
  * @param   {object}                       props                   - Component props.
  * @param   {string}                       props.address           - Current address input value.
  * @param   {(next: string) => void}       props.onAddressChange   - Called when the user types in the input (parent should mark it as touched).

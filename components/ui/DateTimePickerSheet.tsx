@@ -38,9 +38,6 @@ type DayCell = {
 /**
  * buildMonthGrid — builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months.
  *
- * Uses local-TZ ISO formatting (`toLocalIsoDate`) — `Date.toISOString()` shifts the calendar day
- * by one in positive UTC offsets, which used to make "today" un-selectable.
- *
  * @param   {number} year  - Calendar year.
  * @param   {number} month - Zero-based month index.
  * @returns Array of 42 day cells (previous-month tail + current month + next-month head).

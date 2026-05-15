@@ -9,20 +9,11 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 /**
  * FormFieldAnimationsSkipContext — when `true`, suppresses the per-field entry stagger.
- *
- * Set to `true` for forms rendered as outgoing snapshots (the previous slot in
- * `ModalScreenSwap`) so the fields are immediately at their final visible state
- * and the screen-level swap can translate the whole form intact, instead of the
- * fields running another entry stagger inside the leaving screen.
  */
 export const FormFieldAnimationsSkipContext = createContext(false);
 
 /**
  * FormFieldAnimations — GSAP fade-and-translate wrapper for individual form fields with per-field stagger.
- *
- * Mirrors the screen-level stagger used by `StaggerScreenAnimations` (cart / orders / favorites
- * cards): each field translates into place with a fade-in, and on close runs the same path in reverse
- * — later fields exit later because their own per-index delay shifts the reverse start.
  *
  * @param   {object}             props           - Component props.
  * @param   {ReactNode}          props.children  - Field markup to reveal.

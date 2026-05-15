@@ -36,12 +36,6 @@ type ReservationAuthStepProps = {
 /**
  * ReservationAuthStep — inline auth wizard inside the booking popup.
  *
- * Implemented as a thin wrapper around the regular auth forms ({@link SignInForm}, {@link SignUpForm},
- * {@link ForgotPasswordForm}, {@link VerificationForm}, {@link ResetPasswordForm}) so the booking
- * popup never tears down to swap to another drawer component — the form values entered on the
- * reservation step survive across the whole auth flow. Each form receives callbacks that drive the
- * lifted sub-step state owned by the popup (so the header back arrow can walk it backwards).
- *
  * @param   {ReservationAuthStepProps}    props                - Component props.
  * @param   {() => void}                  props.onAuthSuccess  - Callback fired on successful auth (switches the wizard step to `payment`).
  * @param   {Record<string, string>}      props.currentValues  - Current booking form values; persisted to sessionStorage before OAuth redirect.

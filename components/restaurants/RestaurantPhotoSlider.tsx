@@ -14,8 +14,7 @@ type Photo = { downloadLink?: string };
 /**
  * RestaurantPhotoSlider — restaurant photo slider with dot indicators, swipe, and autoplay.
  *
- * Swipe/drag/click discrimination is handled by Swiper internally. Pass `autoplayMs={null}`
- * to disable autoplay. When `onImageClick` is provided, a tap on the slide invokes it.
+ * Pass `autoplayMs={null}` to disable autoplay. When `onImageClick` is provided, a tap on the slide invokes it.
  *
  * @param   {object}        props                  - Component props.
  * @param   {Photo[]}       props.photos           - List of photos with `downloadLink` URLs.

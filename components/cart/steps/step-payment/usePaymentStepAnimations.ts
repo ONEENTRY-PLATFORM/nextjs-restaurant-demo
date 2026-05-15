@@ -11,9 +11,6 @@ import { PAYMENT_ROW_SELECTOR } from './constants';
 /**
  * usePaymentStepAnimations — slide-up + fade reveal on mount and reverse on route leave for the payment step rows.
  *
- * `dependencies: []` on the mount timeline is intentional — without it, every state toggle (mode, accounts,
- * dropdown) would re-run the reveal on already-visible rows.
- *
  * @param   {RefObject<HTMLDivElement | null>} containerRef - Ref to the step container that holds the `.step-payment-row` children.
  * @returns Nothing.
  */

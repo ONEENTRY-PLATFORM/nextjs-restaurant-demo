@@ -223,30 +223,24 @@
 |--------------------|--------------|-----------------------|--------|
 | `delivery_address` | string       | required (strict)     | ✅     |
 | `contact_phone`    | string       | required (strict)     | ✅     |
-| `floor`            | string       | required (без strict) | ❌     |
 | `delivery_time`    | timeInterval | —                     | ✅     |
 | `comment`          | string       | —                     | ✅     |
-| `apartment_number` | string       | —                     | ❌     |
 | `alt_phone`        | string       | —                     | ✅     |
 | `addresses`        | json         | —                     | ❌     |
 
 Как заполняется в коде:
 
-- `delivery_address` — [StepAddress.tsx:80](components/cart/steps/StepAddress.tsx#L80), `addData` по нажатию Continue.
-- `contact_phone` — [StepAddress.tsx:84](components/cart/steps/StepAddress.tsx#L84), берём `phone` / `phone_reg` / `contact_phone` из `user.formData`.
+- `delivery_address` — [StepPayment.tsx:136](components/cart/steps/StepPayment.tsx#L136), `addData` по нажатию Continue (адрес берётся из address-book юзера, см. C.5).
+- `contact_phone` — [StepPayment.tsx:138](components/cart/steps/StepPayment.tsx#L138), берём `phone` / `phone_reg` / `contact_phone` из `user.formData`.
 - `comment`, `alt_phone` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) (`alt_phone` — только если включён чекбокс «another person»).
 - `delivery_time` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) собирает `[[startISO, endISO]]` через `buildDeliveryTimeInterval` и шлёт `addData({ marker: 'delivery_time', type: 'timeInterval', ... })`. ASAP → start=now, end=now+45 мин; scheduled → start=parsed `DD.MM.YY HH.MM`, end=start+1 ч.
-- `floor`, `apartment_number`, `addresses` — UI пока не собирает (см. C.5 про адресную книгу юзера).
+- `addresses` — UI пока не собирает (см. C.5 про адресную книгу юзера).
 
 **Открытые задачи:**
 
-- `floor` — добавить поле в [StepAddress.tsx](components/cart/steps/StepAddress.tsx) рядом со street (или брать из адресной книги юзера, см. C.5). Иначе при `requiredValidator: { strict: true }` (если клиент его выставит) — будет 400 после `contact_phone`.
-- `apartment_number` — опциональное поле, можно добавить рядом с floor.
 - **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом. Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
 
   > ❓ **Уточнить у OneEntry support:** при `testMode: true` сервер `Payments.createSession` должен валидировать `testSettings.status`, а не `settings.status`. Сейчас валидирует production-блок и отвечает `"Your payment account is not connected"`, хотя test-онбординг Stripe Connect завершён (`testSettings.stripeOnboardingComplete: true`, `testSettings.status: "connected"`). Воспроизведение — `Payments.createSession(<orderId>, 'session')` для проекта `oe-restaurants.oneentry.cloud`, account `stripe`. Запросить: либо чтобы на test-mode аккаунтах валидация шла по `testSettings`, либо чтобы сервер возвращал понятную ошибку «account is in testMode, but server requires production-connected account». Параллельно — клиент может временно пройти production Stripe Connect (live-ключи + KYC), это уберёт ошибку, но переведёт оплату на боевые карты.
-
-> ❓ **Уточнить у клиента:** хотим ли мы реально сохранять `floor` / `apartment_number` в заказе (для курьера), или эти поля можно убрать из формы `delivery_order` в админке?
 
 ### C.6.2. Booking-flow — payment + success (Figma 120:1875 / 120:2338)
 

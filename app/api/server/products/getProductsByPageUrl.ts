@@ -9,8 +9,7 @@ import { typeError } from '@/components/utils';
 /**
  * getProductsByPageUrl — paginated products of the selected category.
  *
- * For multi-select `preferences` the SDK only accepts a scalar in `conditionValue` — so we run
- * one request per value and merge unique items (OR semantics), then slice to the requested page.
+ * For multi-select `preferences`, runs one request per value, merges unique items (OR semantics), then slices to the requested page.
  *
  * @param   {object} props          - Pagination, locale, category handle, and search-param filters.
  * @param   {number} props.limit    - Page size.

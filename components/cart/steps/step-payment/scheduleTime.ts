@@ -29,9 +29,6 @@ export const parseScheduleAt = (raw: string): { date: string; time: string } => 
 /**
  * buildDeliveryTimeInterval — value of `delivery_time` (type `timeInterval`) as `[[startISO, endISO]]`.
  *
- * `asap`: now → now+45 min; `scheduled` (`DD.MM.YY HH.MM`): parsed → +1 h. Returns `null` when the
- * scheduled string does not parse — the caller skips dispatching the field.
- *
  * @param   {DeliveryMode} mode         - Delivery mode (`asap` | `scheduled`).
  * @param   {string}       scheduledRaw - Raw `DD.MM.YY HH.MM` schedule string when `mode === 'scheduled'`.
  * @returns `[[startISO, endISO]]` interval, or `null` when the input cannot be parsed.

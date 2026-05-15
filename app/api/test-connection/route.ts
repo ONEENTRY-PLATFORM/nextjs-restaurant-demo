@@ -7,10 +7,6 @@ import { handleApiError } from '@/app/utils/errorHandler';
 /**
  * GET — OneEntry health-check: fetches `home_web` and returns the response time.
  *
- * Gated behind `NODE_ENV !== 'production'` — this is a dev-only diagnostic
- * (counterpart to the `/api-test` dashboard); on production builds the route
- * 404s so it cannot be abused to fan out unattributed OneEntry traffic.
- *
  * @returns Promise resolving to JSON `{ success, responseTime, data }`, or `{ success: false, error }` on failure.
  */
 export async function GET(): Promise<NextResponse> {

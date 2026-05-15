@@ -5,8 +5,6 @@ import { type JSX } from 'react';
 /**
  * ProductsNotFound — empty state for the product grid.
  *
- * Shown when `getProducts` returns nothing (search/filter without results, or no products in the category).
- *
  * @returns JSX of the empty-state card with a "Reset & browse all" link.
  */
 const ProductsNotFound = (): JSX.Element => {

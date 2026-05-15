@@ -27,9 +27,7 @@ type UseApplyCouponApi = {
 /**
  * useApplyCoupon — applies a promo code to the cart via `Orders.previewOrder`.
  *
- * The server validates the code and computes the discount honouring `MIN_CART_AMOUNT`, `applicability`, and `maxAmount`.
- * On success it stores `{ code, totalSum, totalSumWithDiscount }` in `OrderSlice.appliedCoupon` —
- * `StepOrder` reads the "Discount" line from there, and `useCreateOrder` forwards `couponCode` into `Orders.createOrder`.
+ * On success stores `{ code, totalSum, totalSumWithDiscount }` in `OrderSlice.appliedCoupon`.
  *
  * @returns `{ applyCoupon, removeCoupon, isLoading, error }` — apply/remove handlers plus loading/error state.
  */

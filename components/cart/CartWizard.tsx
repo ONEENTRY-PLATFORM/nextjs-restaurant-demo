@@ -69,10 +69,6 @@ const buildBreadcrumbPath = (current: CheckoutStep): CheckoutStep[] => {
  * Flow: `cart` → `order` (review + promo) → `payment` (address + time + payment in one step) →
  * `success` | `error`.
  *
- * Authorization runs through the canonical `Modal` + `AuthProviderSelect` (`OpenDrawerContext`)
- * launched from `CartPage.onApply`. The wizard itself does not render sign-in — after a successful
- * login, `CartPage` auto-advances to `order`.
- *
  * @param   {CartWizardProps}  props              - Component props.
  * @param   {IProductsEntity}  props.deliveryData - OneEntry product representing the delivery service line item.
  * @param   {ReactNode}        [props.promoSidebar] - Optional promo sidebar rendered next to the cart on md+.

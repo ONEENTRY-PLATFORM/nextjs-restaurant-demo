@@ -12,12 +12,7 @@ import AddToCartButton from '../components/AddToCartButton';
 /**
  * ProductDetails — right column of the product page (metrics, tags, CTA).
  *
- * Reads from the OneEntry `dish` set: `weight`, `calorrage`, `cooking_time`,
- * `preferences`, `ingredients`, `price` + `currency`. The rating value is
- * taken from the product's top-level `rating.value` (`IRating`), not from
- * `attributeValues.rating` — the latter is a leftover from when real
- * ratings were not yet wired up. When `rating.value` is empty, the metrics
- * row shows a `rating_not_formed` dictionary message instead of star+score.
+ * When `rating.value` is empty, the metrics row shows a `rating_not_formed` dictionary message instead of star+score.
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.

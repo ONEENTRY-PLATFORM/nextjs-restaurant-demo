@@ -28,17 +28,12 @@ const CenterCartButton = (): JSX.Element => {
     () => false
   );
 
-  // Flip back to the cart icon as soon as a close is requested, so the icon
-  // crossfade runs in parallel with the drawer's reverse animation rather
-  // than waiting for `open` to flip on `onReverseComplete`.
   const hidden = open && transition !== 'close';
 
   return (
     <button
       type="button"
       onClick={() => {
-        // Snap the wizard back to the cart step — otherwise the persisted
-        // `step` from a prior visit (e.g. `payment`) would render instead.
         dispatch(resetCheckout());
         setComponent('CartPopup');
         setOpen(true);

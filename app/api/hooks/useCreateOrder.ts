@@ -33,8 +33,7 @@ type UseCreateOrderApi = {
 /**
  * useCreateOrder — creates an order via `Orders.createOrder` and opens a payment session for non-cash methods.
  *
- * Does not navigate or clear state itself — returns a result so the caller decides what to do next.
- * On success it persists the order id via `setLastOrderId`, clears the cart, and resets the order draft in Redux.
+ * On success persists the order id via `setLastOrderId`, clears the cart, and resets the order draft in Redux.
  *
  * @returns `{ onConfirmOrder, isLoading, error }` — confirm callback plus loading/error state.
  */

@@ -13,9 +13,6 @@ import SearchResults from './SearchResults';
  * isShopListingPath — `true` when the pathname is a shop listing route (root catalog or
  * category) where the server-side product grid reads `?search=` and refilters live.
  *
- * The single-product page (`/shop/product/...`) is excluded so that typing in the header
- * does not append a stray query to the product URL.
- *
  * @param   {string} pathname - Current pathname.
  * @returns `true` when the path participates in live filtering.
  */
@@ -25,14 +22,7 @@ const isShopListingPath = (pathname: string): boolean =>
 /**
  * SearchBar — header search input with debounced query and a results dropdown.
  *
- * Behavior split by route:
- * - On shop listing pages (`isShopListingPath`) the debounced value is mirrored into
- *   `?search=` on the current URL via `router.replace`, so the server grid refilters live.
- * - On every other route the value is held only in local state — pushing `?search=` into
- *   e.g. the home pathname caused unrelated server grids (recommendations) to refilter.
- *
- * Pressing Enter (or clicking the magnifier inside the dropdown) navigates to
- * `/shop?search=<query>` for users who started searching from outside the shop.
+ * On shop listing pages (`isShopListingPath`) the debounced value is mirrored into `?search=` via `router.replace`; on other routes the value is held only in local state. Pressing Enter navigates to `/shop?search=<query>`.
  *
  * @param   {object}      props             - Component props.
  * @param   {string}      props.placeholder - Placeholder/aria-label for the input.

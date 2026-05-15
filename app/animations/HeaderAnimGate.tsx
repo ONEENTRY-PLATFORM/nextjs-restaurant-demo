@@ -13,11 +13,7 @@ import {
  * HeaderAnimGate — defers fading in its children until `HeaderAnimations` finishes
  * the initial-load timeline, with an optional extra delay to chain blocks in order.
  *
- * Subscribes to the shared header-animation flag from `headerAnimState`. If the flag
- * is already `true` at mount (e.g. on a client-side navigation back to a page that
- * uses the gate), it fades in immediately (still honouring `delay`). The wrapper is
- * pre-hidden via the `data-after-header` CSS rule so SSR markup never flashes before
- * GSAP takes over.
+ * If the animation flag is already `true` at mount, fades in immediately (still honouring `delay`).
  *
  * @param   {object}    props          - Component props.
  * @param   {ReactNode} props.children - Subtree to fade in after the header reveal.

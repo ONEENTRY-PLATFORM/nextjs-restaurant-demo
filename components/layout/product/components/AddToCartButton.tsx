@@ -18,10 +18,6 @@ import QuantitySelector from './QuantitySelector';
 /**
  * AddToCartButton — "ADD TO CART" button that switches to `QuantitySelector` after adding.
  *
- * When `statusIdentifier === 'out_of_stock'` the same button is rendered in the Figma
- * disabled-state (`Gray_50%` + `backdrop-blur(10)`, label swapped for "Out of stock",
- * cart icon hidden) — the DOM shape stays the same as the active button.
- *
  * @param   {object}      props                  - Component props.
  * @param   {number}      props.id               - Product id to add.
  * @param   {number}      props.units            - Maximum allowed units (used by the quantity selector cap).

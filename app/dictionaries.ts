@@ -10,10 +10,6 @@ import getCachedData from './api/utils/getCachedData';
 /**
  * fetchDictionary — loads the `static_content` attribute set and normalizes it.
  *
- * The attribute set's `value` field is a localization map; in this project it
- * is currently empty `{}`, so in the normalized record `value` is filled from
- * `initialValue` (the English default from the admin panel).
- *
  * @returns Promise resolving to a map of markers → attribute with a string `value`.
  */
 const fetchDictionary = async (): Promise<IAttributeValues> => {
@@ -57,11 +53,7 @@ export const getDictionary = async (): Promise<IAttributeValues> =>
   getCachedData('dictionary', fetchDictionary);
 
 /**
- * t — server-side counterpart of `useT()`: reads a string from the
- * `static_content` dictionary by marker with a fallback, without threading
- * `dict` through props. Internally calls the cached `getDictionary`, so
- * repeat calls are cheap. Use in server components instead of
- * `dictText(dict, marker, fallback)` with an explicit `await getDictionary()`.
+ * t — server-side counterpart of `useT()`: reads a string from the `static_content` dictionary by marker with a fallback.
  *
  * @example
  *   const title = await t('featured_objects', 'Featured objects');

@@ -21,9 +21,6 @@ type CartEntry = {
 /**
  * TotalAmount — total amount for selected cart entries + delivery.
  *
- * Client-side summation because `Orders.previewOrder()` requires auth (401 for guests).
- * `sale.value` takes precedence over `price`.
- *
  * @param   {object}      props           - Component props.
  * @param   {string}      props.className - Class merged onto the row wrapper.
  * @returns JSX of the total-amount line.

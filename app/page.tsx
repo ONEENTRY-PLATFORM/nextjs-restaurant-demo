@@ -16,10 +16,7 @@ const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categ
 /**
  * HomePage — home page driven by blocks of the CMS `home_web` page.
  *
- * Loads the page + attached blocks (sorted by `block.position`) and for each one
- * dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended`
- * → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
- * Reordering blocks in the admin panel changes the section order without code changes.
+ * Loads the page + attached blocks (sorted by `block.position`) and for each one dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended` → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
  *
  * @returns Promise resolving to JSX of the home page.
  */

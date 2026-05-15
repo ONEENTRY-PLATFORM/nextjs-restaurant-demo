@@ -10,11 +10,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
-/**
- * Visual category for a payment method per Figma 120:1875.
- * `card` - Stripe (Visa/MC), `paypal` - PayPal, `wallet` - Apple/Google Pay (text),
- * `other` - fallback (including cash).
- */
+/** Visual category for a payment method. */
 type PaymentVisualKind = 'card' | 'paypal' | 'wallet' | 'other';
 
 /**
@@ -42,11 +38,6 @@ type ReservationPaymentStepProps = {
 
 /**
  * ReservationPaymentStep — payment-method selection step for the booking.
- *
- * Account list = `Payments.getAccounts()` (filtered by `isVisible && isUsed`) intersected with
- * `storage.paymentAccountIdentifiers` from `getOrderStorageByMarker('booking_order')`, otherwise
- * `createOrder` fails with 400 "Your payment account is not connected". Back navigation is handled
- * by the popup header arrow (parent owns the wizard step).
  *
  * @param   {ReservationPaymentStepProps}  props           - Component props.
  * @param   {(id: string) => void}         props.onApply   - Called with the selected `paymentAccountIdentifier` when the user confirms.
@@ -203,8 +194,6 @@ const PaymentRow = ({
 
 /**
  * PaymentLogos — payment-system logos for the selection row.
- *
- * No assets exist for Apple/Google Pay — render a text fallback.
  *
  * @param   {object}             props          - Component props.
  * @param   {PaymentVisualKind}  props.kind     - Payment method category.

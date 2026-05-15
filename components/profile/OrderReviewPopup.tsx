@@ -331,9 +331,6 @@ const ReviewableItem = ({
 /**
  * OrderReviewPopup — "Leave a review" popup for the entire order (one button per order).
  *
- * Order summary + line-item list; each row has stars + input + Apply/Edit.
- * The order entity is passed via `orderReviewStore` because `OpenDrawerContext` only forwards a string `action`.
- *
  * @returns JSX of the order-review popup, or empty fragment when no order is targeted.
  */
 const OrderReviewPopup = (): JSX.Element => {

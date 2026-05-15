@@ -5,11 +5,7 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
-/**
- * BlockProducts — payload of {@link getBlockProducts}: title, products (sliced to `block.quantity`)
- * and a column-count hint. Hides the asymmetry between `product_block` (`block.products`)
- * and `similar_products_block` (`block.similarProducts.items`).
- */
+/** BlockProducts — payload of {@link getBlockProducts}: title, products (sliced to `block.quantity`) and a column-count hint. */
 export interface BlockProducts {
   isError: boolean;
   error?: IError;
@@ -22,8 +18,7 @@ export interface BlockProducts {
 /**
  * getBlockProducts — block by marker plus products and layout config in normalised form.
  *
- * The order in `products` is the one set by the editor (drag-and-drop in admin) — do not re-sort.
- * On any SDK error returns empty `products`, so callers can render conditionally without try/catch.
+ * Returns empty `products` on SDK error.
  *
  * @param   {string}                marker - Block marker (e.g. `recommended`).
  * @returns Normalised block data.

@@ -7,8 +7,6 @@ import { getImageUrl } from '@/app/api';
 /**
  * PromoCard — single promo card from a OneEntry `blog` child page (set: `blog_page`).
  *
- * Attributes: `banner`/`bg_image` (image), `description` (text), `action_type` (list, CTA).
- *
  * @param   {object}        props      - Component props.
  * @param   {IPagesEntity}  props.page - Promo page entity from OneEntry.
  * @returns JSX of the promo card.

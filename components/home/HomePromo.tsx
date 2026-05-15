@@ -8,8 +8,6 @@ import { getBlogBanners } from '@/app/api';
 /**
  * HomePromo — homepage promo strip (desktop hero + horizontal scroll for mobile).
  *
- * Driven by `blog` children from OneEntry.
- *
  * @returns JSX of the promo strip, or `null` when no banners are configured.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {

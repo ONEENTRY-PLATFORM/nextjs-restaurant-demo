@@ -4,13 +4,7 @@ import { getImageUrl } from '@/app/api/api/api';
 
 import { getChildPagesByParentUrl } from './getChildPagesByParentUrl';
 
-/**
- * BlogBanner — normalised promo banner (HomePromo, CartPromoSidebar, orders promo sidebar).
- *
- * `desktopImage` = `attributeValues.bg_image` (two-column sidebars and hero background);
- * `mobileImage`  = `attributeValues.banner` (narrow horizontal carousels);
- * `pageUrl`      links to `/promo/<pageUrl>`.
- */
+/** BlogBanner — normalised promo banner (HomePromo, CartPromoSidebar, orders promo sidebar). */
 export type BlogBanner = {
   id: number;
   pageUrl: string;
@@ -22,9 +16,8 @@ export type BlogBanner = {
 /**
  * getBlogBanners — child pages of `blog` rendered as promo banners with desktop/mobile images.
  *
- * Pages without images are still included — the caller decides which variant to render.
- * Manual sort by `position`: the SDK returns children in `id` (creation) order, not by position —
- * otherwise the hero and adjacent promo cards would render in random order.
+ * Manually sorts results by `position`.
+ *
  * @returns Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {

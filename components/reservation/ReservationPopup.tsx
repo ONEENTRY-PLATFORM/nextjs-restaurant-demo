@@ -33,9 +33,7 @@ const SURNAME_MARKERS = ['surname', 'last_name', 'lastname', 'family_name'] as c
 const EMAIL_MARKERS = ['email'] as const;
 
 /**
- * buildUserPrefill — extracts overlap fields (name, surname, phone, email) from the authenticated
- * user's profile so the booking form opens pre-filled. Returns an empty object for guests, fields
- * absent from `user.formData`, or empty values — `ReservationForm` then keeps those fields blank.
+ * buildUserPrefill — extracts overlap fields (name, surname, phone, email) from the authenticated user's profile so the booking form opens pre-filled.
  *
  * @param   {IUserEntity | undefined} user - Authenticated user, or `undefined` for guests.
  * @returns Map of `booking_order` markers → string values to seed `initialValues`.

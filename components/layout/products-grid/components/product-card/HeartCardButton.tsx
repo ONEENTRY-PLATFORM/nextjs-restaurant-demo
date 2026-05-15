@@ -19,9 +19,6 @@ import HeartCardIcon from '@/components/icons/heart-card';
 /**
  * HeartCardButton — toggles a product in the favorites store.
  *
- * Sits above the absolute click-through `<Link>` overlay in ProductCard via z-index, so clicking
- * the heart does not trigger navigation.
- *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - Product entity to toggle in favorites.
  * @returns JSX of the heart toggle button.

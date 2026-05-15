@@ -27,9 +27,6 @@ type DescriptionValue = Array<{
 /**
  * PromoDetailPage — promo detail page (`/promo/<pageUrl>`).
  *
- * Attributes of a `blog` child page (set `blog_page`): `bg_image` (hero desktop),
- * `banner` (mobile fallback), `description` (md/html). Products are fetched like in a regular category.
- *
  * @param   {PageProps}              props - Dynamic route props (`params`, `searchParams`).
  * @returns Promise resolving to JSX of the promo detail page.
  */

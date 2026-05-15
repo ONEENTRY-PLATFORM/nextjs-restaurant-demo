@@ -12,10 +12,7 @@ type FormProps = { className?: string; isActive?: boolean };
 /**
  * SCREEN_LEVELS — depth of each auth-popup screen in the wizard.
  *
- * Drives the slide direction: a transition toward a deeper level slides forward
- * (next rises from below, previous goes up and off the top), a transition back
- * toward the root slides backward (next drops in from above, previous goes down
- * and off the bottom). Tied to identifiers from {@link OpenDrawerContext}.
+ * A transition toward a deeper level slides forward; a transition back toward the root slides backward.
  */
 const SCREEN_LEVELS: Record<string, number> = {
   AuthProviderSelect: 0,

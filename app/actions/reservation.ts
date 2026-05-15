@@ -5,11 +5,7 @@ import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 
 import { getApi, isError } from '@/app/api';
 
-/**
- * Reservation payload sent from the client form.
- * Each item corresponds to the `marker`/`type` of a field defined in OneEntry
- * Forms admin for the `booking_order` marker.
- */
+/** Reservation payload sent from the client form. */
 export type ReservationPayload = {
   formData: FormDataType[];
 };
@@ -18,9 +14,6 @@ const ORDER_STORAGE_MARKER = 'booking_order';
 
 /**
  * Submits a table reservation via the OneEntry Orders API.
- *
- * `booking_order` in OneEntry is a form of type `order`, so it goes through
- * `Orders.createOrder`.
  *
  * @param   {ReservationPayload}                                     payload - Reservation fields prepared on the client.
  * @returns Result of the server action.

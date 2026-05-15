@@ -58,9 +58,6 @@ export const getProviderMeta = (p: IAuthProvidersEntity): ProviderMeta => {
 /**
  * sortActiveAuthProviders — filters to active providers and sorts them by the project's preferred order.
  *
- * Drops the `google` provider when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is not set —
- * showing a button that cannot complete the OAuth flow would be a dead-end for the user.
- *
  * @param   {IAuthProvidersEntity[]} providers - Auth providers from the OneEntry SDK.
  * @returns Active providers sorted with email first, google second, others after.
  */
@@ -80,16 +77,6 @@ export const sortActiveAuthProviders = (
 
 /**
  * startGoogleOAuth — starts the Google OAuth redirect.
- *
- * `authUrl` is read from `provider.config.oauthAuthUrl` (OneEntry admin) — if it is `null`/empty,
- * falls back to `GOOGLE_AUTH_URL_FALLBACK`.
- *
- * Persists the current pathname + search to `sessionStorage` under `google-oauth-return` so the
- * callback can return the user to the page they signed in from. Google's `redirect_uri` must be
- * whitelisted exactly, so we cannot pass the return path through the OAuth URL itself.
- *
- * Returns `false` only as a defensive guard if `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is missing —
- * in normal operation the Google button is filtered out upstream by `sortActiveAuthProviders`.
  *
  * @param   {string | null} [authUrl] - Optional OAuth authorization URL from the OneEntry admin.
  * @returns `true` when the redirect was initiated, `false` when the OAuth client id is missing.

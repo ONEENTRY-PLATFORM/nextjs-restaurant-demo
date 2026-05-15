@@ -10,19 +10,9 @@ export interface CaptchaValidationObject {
 }
 
 /**
- * useEnterpriseCaptcha — loads Google reCAPTCHA Enterprise for the given
- * `siteKey` and runs `grecaptcha.enterprise.execute(...)`, returning the
- * validation object that OneEntry expects in the `value` of a `spam`-type
- * field:
+ * useEnterpriseCaptcha — loads Google reCAPTCHA Enterprise for the given `siteKey` and runs `grecaptcha.enterprise.execute(...)`, returning the validation object that OneEntry expects in the `value` of a `spam`-type field.
  *
- * ```json
- * { "event": { "token": "...", "siteKey": "..." } }
- * ```
- *
- * The hook injects `<script src="...enterprise.js?render=KEY">` itself,
- * subscribes to `load`, fires `ready` → `execute`, and removes the
- * subscription on unmount. If `siteKey` is empty it does nothing and
- * returns `null`.
+ * Injects `<script src="...enterprise.js?render=KEY">`, subscribes to `load`, fires `ready` → `execute`, and removes the subscription on unmount.
  *
  * @param   {string | undefined}                 siteKey - Public Google reCAPTCHA Enterprise key (settings.captcha.key on the spam field).
  * @param   {string}                             action  - Action used for scoring (defaults to `'login'`; in OneEntry — settings.captcha.action).

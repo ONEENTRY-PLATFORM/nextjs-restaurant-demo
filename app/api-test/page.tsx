@@ -10,10 +10,6 @@ export const dynamic = 'force-dynamic';
 /**
  * ApiTestPage — dev-only performance dashboard for the OneEntry API.
  *
- * On production builds (`NODE_ENV === 'production'`) the page 404s — the
- * companion `/api/test-connection` route does the same — so this diagnostic
- * cannot be abused to fan out unattributed traffic against the CMS.
- *
  * @returns JSX of the test dashboard, or triggers `notFound()` on prod.
  */
 export default function ApiTestPage(): JSX.Element {

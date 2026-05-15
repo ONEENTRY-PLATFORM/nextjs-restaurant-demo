@@ -44,8 +44,6 @@ export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 /**
  * reDefine — recreates the SDK instance with a (possibly) new refreshToken and langCode.
  *
- * Always guard with {@link hasActiveSession} — each call hits `/refresh` and otherwise burns the current token.
- *
  * @param   {string}        refreshToken - Refresh token from localStorage.
  * @param   {string}        [langCode]   - Current language (defaults to `en_US`).
  * @returns Promise that resolves after the SDK instance has been recreated.
@@ -78,12 +76,6 @@ export const hasActiveSession = (): boolean => {
 
 /**
  * syncTokens — writes both tokens directly into the current SDK instance's state.
- *
- * Canonical login() pattern per MCP `tokens`: `AuthProvider.auth()` returns the tokens,
- * but the SDK does not push them into state itself — without `syncTokens` the next
- * auth-protected POST goes out without `Authorization` and fails with 400 (the SDK only retries on 401).
- * Use this instead of `reDefine` on login / OAuth callback; `reDefine` remains only
- * for restoring a session from localStorage on mount.
  *
  * @param   {string} accessToken  - Access JWT from `auth()`.
  * @param   {string} refreshToken - Refresh token from `auth()`.
@@ -126,8 +118,6 @@ type ImageField = { downloadLink?: string } | Array<{ downloadLink?: string }> |
 
 /**
  * getImageUrl — normalises a OneEntry `image` attribute value into a URL string.
- *
- * The SDK returns an object for Products and an array for Pages/Blocks — this helper handles both shapes.
  *
  * @param   {ImageField} value - `attributeValues.<marker>.value` from the SDK.
  * @returns Download URL, or an empty string when no image is present.

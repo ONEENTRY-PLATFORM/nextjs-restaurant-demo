@@ -18,9 +18,6 @@ type Props = {
 /**
  * TimeRow — delivery time selector: ASAP (45-min interval) or scheduled (date/time picker).
  *
- * The picker sheet itself is rendered by the parent — this row just displays the readonly
- * formatted value and asks the parent to open the picker.
- *
  * @param   {object}                       props                      - Component props.
  * @param   {DeliveryMode}                 props.mode                 - Current delivery mode.
  * @param   {(mode: DeliveryMode) => void} props.onModeChange         - Mode change handler.

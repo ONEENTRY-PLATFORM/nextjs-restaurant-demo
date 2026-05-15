@@ -9,8 +9,7 @@ import { typeError } from '@/components/utils';
 /**
  * getProducts — paginated products with filter.
  *
- * For multi-select `preferences` the SDK only accepts a scalar in `conditionValue` — each value
- * is fetched in a separate request and unique items are merged (OR semantics).
+ * For multi-select `preferences`, fetches each value in a separate request and merges unique items (OR semantics).
  *
  * @param   {object} props            - Pagination, locale, and inbound `searchParams` filters.
  * @param   {number} props.limit      - Page size.

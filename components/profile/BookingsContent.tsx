@@ -80,10 +80,7 @@ const getBookingDate = (o: IOrderByMarkerEntity): Date | null => {
 /**
  * isHistoryOrder — whether the booking order is in history (past date / completed / cancelled / rejected / refunded).
  *
- * Status check matches by substring so that admin-specific markers like `booking_cancelled`
- * and `booking_completed` are recognised alongside the generic ones (`canceled`, `delivered`, …).
- * Additionally, any booking whose reservation moment (`time_slot`) already lies in the past
- * is treated as history regardless of status.
+ * Any booking whose reservation moment (`time_slot`) already lies in the past is treated as history regardless of status.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `true` when the booking belongs to history.
@@ -125,8 +122,6 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
 
 /**
  * BookingsContent — Active reservation + Reservation History.
- *
- * Data: `getAllOrdersByMarker({ marker: 'booking_order' })` (same storage marker as in `ReservationForm`).
  *
  * @returns JSX of the bookings dashboard section.
  */

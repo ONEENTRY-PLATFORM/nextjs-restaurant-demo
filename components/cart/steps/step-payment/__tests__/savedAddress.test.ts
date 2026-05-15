@@ -15,8 +15,7 @@ import {
  * @param   {unknown} value  - Field value (raw or serialised).
  * @returns A FormDataType-compatible object suitable for `parseSavedAddresses` input.
  */
-const mkField = (marker: string, value: unknown) =>
-  ({ marker, value }) as unknown as FormDataType;
+const mkField = (marker: string, value: unknown) => ({ marker, value }) as unknown as FormDataType;
 
 const A: SavedAddress = { id: 'a1', street: 'Main', house: '12', floor: '3' };
 const B: SavedAddress = { id: 'b2', street: 'Side', house: '7', floor: '', selected: true };
@@ -95,9 +94,7 @@ describe('formatAddressLine', () => {
   });
 
   it('skips empty street', () => {
-    expect(formatAddressLine({ id: 'x', street: '', house: '12', floor: '3' })).toBe(
-      '12, fl. 3'
-    );
+    expect(formatAddressLine({ id: 'x', street: '', house: '12', floor: '3' })).toBe('12, fl. 3');
   });
 
   it('returns "" for null', () => {

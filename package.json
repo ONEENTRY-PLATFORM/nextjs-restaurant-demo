@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm test",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "tsc": "npx tsc --noEmit --watch false",
     "lint-fix": "eslint --fix .",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:integration": "jest --testPathIgnorePatterns=/node_modules/ --testPathPatterns=__tests__/integration"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "gsap": "^3.15.0",

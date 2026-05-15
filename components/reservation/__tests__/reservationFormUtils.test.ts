@@ -12,8 +12,8 @@ import {
   TIME_SLOT_MARKER,
   validateField,
 } from '../reservationFormUtils';
-import type { RestaurantOption, ScheduleSlotEntry } from '../RestaurantSelect';
 import type { Translate } from '../reservationTypes';
+import type { RestaurantOption, ScheduleSlotEntry } from '../RestaurantSelect';
 
 /** Identity translator — returns fallback verbatim, lets tests assert on the English fallback text. */
 const t: Translate = (_marker, fallback) => fallback;
@@ -240,12 +240,16 @@ describe('getAvailableSlotsForDate', () => {
 
 describe('validateField', () => {
   it('required + empty → "Required field"', () => {
-    const a = attr('name', 'string', { validators: { requiredValidator: { strict: true } } } as never);
+    const a = attr('name', 'string', {
+      validators: { requiredValidator: { strict: true } },
+    } as never);
     expect(validateField(a, '', t)).toBe('Required field');
   });
 
   it('required + filled → passes the required check (returns null if nothing else fails)', () => {
-    const a = attr('name', 'string', { validators: { requiredValidator: { strict: true } } } as never);
+    const a = attr('name', 'string', {
+      validators: { requiredValidator: { strict: true } },
+    } as never);
     expect(validateField(a, 'John', t)).toBeNull();
   });
 

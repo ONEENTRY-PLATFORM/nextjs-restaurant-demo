@@ -11,9 +11,6 @@ const createJestConfig = nextJest({ dir: './' });
 const config = {
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
-  // Integration tests hit the live OneEntry backend, so the default `npm test`
-  // skips them. Run them explicitly with `npm run test:integration`.
-  testPathIgnorePatterns: ['/node_modules/', '/__tests__/integration/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },

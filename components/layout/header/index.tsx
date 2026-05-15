@@ -98,7 +98,7 @@ const Header = async (): Promise<JSX.Element> => {
         <div className="relative">
           <div className="relative">
             <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
-              <div className="flex justify-between items-center">
+              <div data-header-anim="top-nav" className="flex justify-between items-center">
                 <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
                 <a href="/" aria-label={homeLabel} data-header-anim="logo-mobile">
                   <LogoMobileIcon title="logo" />

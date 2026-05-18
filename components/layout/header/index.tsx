@@ -53,12 +53,12 @@ const Header = async (): Promise<JSX.Element> => {
   });
   const preferenceOptions: PreferenceOption[] =
     !preferencesAttr.isError &&
-    preferencesAttr.attribute &&
-    'listTitles' in preferencesAttr.attribute
+      preferencesAttr.attribute &&
+      'listTitles' in preferencesAttr.attribute
       ? (preferencesAttr.attribute.listTitles as IListTitle[]).map(o => ({
-          title: o.title,
-          value: String(o.value),
-        }))
+        title: o.title,
+        value: String(o.value),
+      }))
       : [];
 
   const priceRange = await getProductsPriceRange();
@@ -78,7 +78,7 @@ const Header = async (): Promise<JSX.Element> => {
                   data-header-anim="slogan"
                   className="font-lato italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120"
                 >
-                  Excellence taste
+                  Excellent taste
                   <br /> in <span className="text-brand">every bite</span>
                 </h1>
               </div>

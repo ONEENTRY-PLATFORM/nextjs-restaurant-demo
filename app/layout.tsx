@@ -44,7 +44,7 @@ const lato = Lato({
 
 /** Static metadata for the home page. */
 export const metadata: Metadata = {
-  title: 'Restaurant — Excellence taste in every bite',
+  title: 'Restaurant — Excellent taste in every bite',
   description: 'Restaurant ordering platform built with Next.js + OneEntry CMS',
   openGraph: {
     type: 'website',

@@ -158,9 +158,6 @@ input[type="radio"]:checked + .radio-custom::before {
     display: none;
     margin: 0;
   }
-  svg {
-    cursor: pointer;
-  }
   button {
     cursor: pointer;
   }

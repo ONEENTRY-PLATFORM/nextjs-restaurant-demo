@@ -12,45 +12,20 @@
 
 ---
 
-## C.2. Недостающие страницы
+## C.2.4. Иконки `kids_menu` и `snacks` (атрибут `icon` страниц `menu/*`)
 
-### C.2.3. Дочерние страницы под `blog` (акции)
+У всех дочерних страниц `menu/*` (`appetizers`, `salads`, `desserts`, …) в attribute set `catalog_page` атрибут `icon` (image) заполнен — [CategoryFilter](components/layout/filter/CategoryFilter.tsx) показывает CMS-иконки в drawer категорий. Исключения:
 
-В админке: `birthday_offer`, `business_lunch`, `deal_of_the_day`. В вёрстке также упоминаются `kids_menu`, `happy_monday`, `dinner_fix_price` — создать недостающие child-pages под `blog`. Реальный attribute set `blog_page` (по результату [inspect-api](.claude/temp/inspect-blog.mjs)):
+| pageUrl     | icon в CMS |
+|-------------|------------|
+| `kids_menu` | ❌ пусто   |
+| `snacks`    | ❌ пусто   |
 
-| marker          | type  | title          |
-|-----------------|-------|----------------|
-| `bg_image`      | image | Desktop banner |
-| `banner`        | image | Mobile banner  |
-| `description`   | text  | Description    |
-| `action_type`   | list  | Action type    |
-
-- `bg_image` — десктоп-баннер на `/` ([getBlogBanners](app/api/server/pages/getBlogBanners.ts)) и hero на `/promo/[handle]`.
-- `banner` — мобильный/портретный баннер: горизонтальный скролл на `/`, сайдбар на `/cart` и `/profile/orders`, нижний блок «соседних промо» на `/promo/[handle]` (другие дочерние `blog`, исключая текущий handle, первые два с непустым `banner`), а также fallback для hero на детальной странице, если `bg_image` пуст.
-- `description` — markdown/HTML текст под заголовком (используется в `[handle]/page.tsx` через `htmlValue`).
-- `action_type` — list-атрибут; на `/promo/[handle]` больше не используется (CTA-кнопка удалена в соответствии с Figma `АКЦИЯ_DEAL OF THA DAY` / `static-html/pk_promo_day.html`). Если останется нужным для карточек — пересмотреть применение.
-
-Заголовок (title) идёт из `localizeInfos.title` страницы — отдельного `title`/`promo_title` атрибута в `blog_page` нет.
-
-Состояние данных (на момент проверки):
-
-| pageUrl                 | bg_image | banner | description | action_type |
-|-------------------------|----------|--------|-------------|-------------|
-| `birthday_offer`        | ✅       | ✅     | ✅          | ❌ пусто    |
-| `business_lunch`        | ✅       | ✅     | ✅          | ❌ пусто    |
-| `deal_of_the_day`       | ✅       | ✅     | ✅          | ❌ пусто    |
-
-наполнить `action_type` (list-options) для CTA-кнопок в карточках и на детальной странице.
-
-Десктоп-баннер берётся через [getBlogBanners](app/api/server/pages/getBlogBanners.ts) (`bg_image`), мобильный — через тот же fetcher (`banner`). Пока у дочерних страниц `blog` нет `bg_image` — десктопный hero на `/` не покажется (graceful fallback), а сайдбар `/cart` / `/profile/orders` будет пустым.
-
----
+После заливки иконок (или починки бага) и подтверждения через [inspect-api](.claude/temp/) — отметить `✅` и удалить пункт.
 
 ## C.3. Похожие товары (related products)
 
-Страница [app/shop/product/[handle]/page.tsx](app/shop/product/[handle]/page.tsx) рендерит секцию «Featured objects» через [components/layout/product/RelatedItems.tsx](components/layout/product/RelatedItems.tsx) → SDK `Products.getRelatedProductsById`. Чтобы секция реально что-то показывала:
-
-- В админке для каждого блюда открыть карточку товара и привязать минимум 4–6 «похожих» через стандартный механизм OneEntry «Related products». Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
+- В админке привязать минимум 4–6 «похожих» через стандартный механизм OneEntry **Product Links**. Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
 - (Опционально) Заголовок секции — берётся из `static_content.featured_objects` (string), fallback `"Featured objects"`. Если хочется локализованный заголовок — добавить атрибут:
 
   | marker              | type   | title             |
@@ -198,19 +173,6 @@
 
 ---
 
-## C.5. Профиль — попап «My Profile» (детальный personal/payment/address)
-
-[components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx) — порт верстки [static-html/details_personal.html](static-html/details_personal.html). Открывается из иконки пользователя в шапке. Сейчас:
-
-- **Map preview** — статичный PNG. Если нужна интерактивная карта (Google Maps / Yandex / Mapbox) — задача отдельная.
-
-Когда ответы получены — таски на код:
-
-1. Cards: persist в выбранное хранилище + load в `useEffect` из `AuthContext.user`.
-2. Addresses: persist + загружать в чекаут как `<select>` сохранённых.
-
----
-
 ## C.6. Платежи
 
 `PROJECT_URL/payments/accounts` — `cash` (оплата при доставке) и `stripe` (карты через hosted Stripe Checkout). Оба передаются в [StepPayment](components/cart/steps/StepPayment.tsx) через `addPaymentMethod`. Отдельная форма ввода карты в приложении не нужна — Stripe собирает реквизиты на своей странице.
@@ -293,23 +255,11 @@
 
 - **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код блокирует покупку только при явном `statusIdentifier === 'out_of_stock'` ([AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65), [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59)). ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
 
-### C.7.3. Blocks (home_web)
-
-3 блока с identifier'ами `home_promo`, `recommended`, `home_categories`. У всех блоков **нет атрибутов**. Код использует только `block.identifier` как позиционный якорь для рендера — это работает.
-
-[components/layout/product/ProductsGroup.tsx:32](components/layout/product/ProductsGroup.tsx) читает `block.attributeValues?.together_title?.value` для блока `together` (related products) — соответствующий блок в админке надо проверить отдельно (если есть).
-
 ### C.7.4. Dictionary (`static_content`) — что код читает, но в CMS нет
 
 - **`reset_descr`, `send_text`** ([ForgotPasswordForm.tsx](components/forms/ForgotPasswordForm.tsx)) — нет.
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
-
----
-
-## C.9. Меню `user_menu` — routing-формат
-
-⚠️ **Routing-формат — открыт.** В коде линки строятся как `/${page.pageUrl}` (см. [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx)). Сейчас `pageUrl` в CMS — flat (`orders`, `favorites`, `bookings`), а реальные Next.js-маршруты — `/profile/orders`, `/profile/favorites`, `/profile/bookings`. Варианты: (a) переименовать `pageUrl` в CMS на полные пути `profile/orders` и т.п.; (b) переименовать роуты в `app/` под flat-структуру (`app/orders`, `app/favorites`) и тогда `pageUrl: orders`/`favorites` совпадут; (c) маппить в коде. Решение за командой админки.
 
 ---
 
@@ -322,12 +272,9 @@
 - **Active** = `statusIdentifier in (<все «активные» маркеры>)` — обычно «inProgress», «reserved» и т.п. Точные маркеры зависят от настройки в OneEntry admin → Orders → Statuses.
 - **History** = всё остальное (Canceled, Completed, прошедшие даты).
 
-✅ **Cancel-flow.** Эмпирически проверено (2026-05-11): SDK `Orders.updateOrderByMarkerAndId` пропускает поле `statusIdentifier` на сервер, и сервер его применяет, даже несмотря на отсутствие в типе `IOrderData`. Кнопка `Cancel` теперь делает реальный update с `statusIdentifier: 'booking_cancelled'` (см. [BookingsContent.tsx](components/profile/BookingsContent.tsx) `onCancel`), и заказ после ответа сервера локально перекладывается в Reservation History через `isHistoryOrder` (теперь матчит по подстрокам `cancel`/`complet`/`deliver`/`reject`/`refund`, чтобы покрыть admin-specific маркеры вроде `booking_cancelled`/`booking_completed`). После рефреша попапа отменённая бронь продолжает быть в History (статус закреплён на сервере).
-
 **Открытое для клиента:**
 
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
-2. ✅ **Cancel — настоящий API.** Закрыто 2026-05-11: server-side подтверждено принимает `statusIdentifier` в body `updateOrderByMarkerAndId` (см. ✅ выше). В админке настроен `booking_cancelled` (британское написание, не `booking_canceled`).
 3. **Edit ограничения.** Сейчас edit отдаёт `products: [{ productId: 34, quantity: 1 }]` (тот же placeholder, что и в `createOrder` — см. C.6.2). Если депозит привязан к product 34, при update это останется без изменений. ❓ Корректно ли или edit-флоу должен иметь другую логику по продуктам?
 4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
 

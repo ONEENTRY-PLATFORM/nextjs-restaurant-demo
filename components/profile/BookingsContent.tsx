@@ -107,6 +107,30 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
 };
 
 /**
+ * formatBookingWhen — actual reservation moment as `DD.MM.YY HH:MM` (from `time_slot`), with a
+ * fallback to the order's creation date when no slot is set.
+ *
+ * Read in UTC to match how `ReservationForm` stores/displays the picked slot (the picker writes
+ * via `setUTCHours`, the popup reads back via `getUTCHours`).
+ *
+ * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
+ * @returns Formatted date + time string, empty when neither source is parseable.
+ */
+const formatBookingWhen = (o: IOrderByMarkerEntity): string => {
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  const bookingDate = getBookingDate(o);
+  if (bookingDate) {
+    const dateStr = `${pad(bookingDate.getUTCDate())}.${pad(bookingDate.getUTCMonth() + 1)}.${String(bookingDate.getUTCFullYear()).slice(2)}`;
+    const timeStr = `${pad(bookingDate.getUTCHours())}:${pad(bookingDate.getUTCMinutes())}`;
+    return `${dateStr} ${timeStr}`;
+  }
+  const dateRaw = (o.createdDate ??
+    (o as unknown as { formattedCreated?: string }).formattedCreated ??
+    '') as string;
+  return dateRaw ? formatDate(dateRaw) : '';
+};
+
+/**
  * statusLabel — human-readable booking status (localized from CMS, otherwise derived from the identifier).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
@@ -126,7 +150,7 @@ const statusLabel = (o: IOrderByMarkerEntity): string => {
  * @returns JSX of the bookings dashboard section.
  */
 const BookingsContent = (): JSX.Element => {
-  const { setComponent } = useContext(OpenDrawerContext);
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const { user } = useContext(AuthContext);
   const t = useT();
 
@@ -134,18 +158,19 @@ const BookingsContent = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Edit: pending -> side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
+  // formIdentifier is optional on the list-endpoint response (IOrderByMarkerEntity), so default
+  // to the storage marker — booking_order storage is bound to the form with the same identifier.
+  // setOpen(true) is required when invoked from the /profile/bookings route (no drawer is open yet);
+  // inside BookingsPopup/ProfilePopup `open` is already true and the call is a no-op.
   const onEdit = (order: IOrderByMarkerEntity) => {
-    if (!order.formIdentifier) {
-      toast(t('booking_edit_unavailable', 'This booking cannot be edited.'));
-      return;
-    }
     setPendingReservationEdit({
       orderId: order.id,
       formData: (order.formData as IOrdersFormData[] | undefined) ?? [],
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
-      formIdentifier: order.formIdentifier,
+      formIdentifier: order.formIdentifier ?? 'booking_order',
     });
     setComponent('ReservationPopup');
+    setOpen(true);
   };
 
   // Cancel: re-submit the order via `updateOrderByMarkerAndId` with `statusIdentifier`
@@ -161,17 +186,13 @@ const BookingsContent = (): JSX.Element => {
       )
     );
     if (!ok) return;
-    if (!order.formIdentifier) {
-      toast(t('booking_cancel_unavailable', 'This booking cannot be cancelled.'));
-      return;
-    }
     const existingFormData = (order.formData as IOrdersFormData[] | undefined) ?? [];
     const products =
       order.products.length > 0
         ? order.products.map(p => ({ productId: p.id, quantity: p.quantity }))
         : [{ productId: BOOKING_PLACEHOLDER_PRODUCT_ID, quantity: 1 }];
     const body: IOrderData & { statusIdentifier?: string } = {
-      formIdentifier: order.formIdentifier,
+      formIdentifier: order.formIdentifier ?? 'booking_order',
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
       formData: existingFormData,
       products,
@@ -289,17 +310,14 @@ const ActiveBookingCard = ({
   onCancel: () => void;
   onEdit: () => void;
 }): JSX.Element => {
-  const dateRaw = (order.createdDate ??
-    (order as unknown as { formattedCreated?: string }).formattedCreated ??
-    '') as string;
-  const date = dateRaw ? formatDate(dateRaw) : '';
+  const when = formatBookingWhen(order);
 
   return (
     <div className="profile-anim-row flex flex-col gap-5">
       <div className="flex items-center justify-between rounded-card border border-brand px-3.75 py-1.25">
         <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
         <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
-        <p className="font-normal text-base text-paper">{date}</p>
+        <p className="font-normal text-base text-paper">{when}</p>
       </div>
       <div className="flex items-center justify-between gap-3.75">
         <button

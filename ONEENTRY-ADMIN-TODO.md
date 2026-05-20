@@ -265,13 +265,6 @@
 
 ## C.10. Профиль — Reservations history (Figma 78:1293)
 
-Отдельный экран в зоне профиля: «Active reservation» (одна оранжево-обведённая карточка с № и датой) + «Reservation History» (список карточек со статусами `Canceled` / `Reserved` / и т.п.). Сейчас в проекте такого экрана нет — нужно завести роут `/profile/reservations` (или сделать линком из `user_menu`, см. C.9) и компонент, аналогичный [OrdersList.tsx](components/profile/OrdersList.tsx).
-
-Источник данных — `Orders.getAllOrdersByMarker('booking_order')`, фильтр по `statusIdentifier`:
-
-- **Active** = `statusIdentifier in (<все «активные» маркеры>)` — обычно «inProgress», «reserved» и т.п. Точные маркеры зависят от настройки в OneEntry admin → Orders → Statuses.
-- **History** = всё остальное (Canceled, Completed, прошедшие даты).
-
 **Открытое для клиента:**
 
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
@@ -293,6 +286,4 @@
 | `booking_cancel_confirm`     | string | Cancel reservation #{id}?                                   |
 | `booking_cancelled_toast`    | string | Reservation cancelled.                                      |
 | `booking_cancel_failed`      | string | Failed to cancel reservation.                               |
-| `booking_cancel_unavailable` | string | This booking cannot be cancelled.                           |
-| `booking_edit_unavailable`   | string | This booking cannot be edited.                              |
 | `booking_updated_toast`      | string | Reservation updated.                                        |

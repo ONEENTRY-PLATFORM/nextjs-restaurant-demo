@@ -42,7 +42,6 @@ const ProductRow = ({
 
   return (
     <Link
-      prefetch={false}
       href={`/shop/product/${product.id}`}
       onClick={() => onApplyHandle()}
       className="flex w-full py-2 text-paper transition-colors duration-200 hover:text-brand"

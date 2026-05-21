@@ -50,7 +50,6 @@ const ProductCard = ({
       index={index}
     >
       <Link
-        prefetch={true}
         href={'/shop/product/' + id}
         aria-label={title}
         className="absolute inset-0 z-0 rounded-card"

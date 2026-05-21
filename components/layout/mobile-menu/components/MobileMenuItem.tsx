@@ -33,7 +33,6 @@ function MobileMenuItem({ item, parentUrl }: { item: IMenusPages; parentUrl?: st
         <Link
           className="w-full"
           href={url}
-          prefetch={true}
           onClick={() => {
             setOpen(false);
           }}

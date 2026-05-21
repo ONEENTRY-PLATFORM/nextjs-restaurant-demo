@@ -20,7 +20,6 @@ const UserMenuItem = ({
   setState: (state: boolean) => void;
 }): JSX.Element => (
   <Link
-    prefetch={false}
     href={`/${page.pageUrl}`}
     title={page.localizeInfos.menuTitle ?? undefined}
     className="group relative box-border flex p-2 text-paper transition-colors duration-200 hover:text-brand"

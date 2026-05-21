@@ -23,7 +23,6 @@ const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
 
   return (
     <Link
-      prefetch={false}
       href={'/' + pageUrl}
       title={localizeInfos?.menuTitle ?? undefined}
       className="group relative box-border flex size-6 shrink-0 flex-col"

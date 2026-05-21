@@ -19,8 +19,6 @@ const NavItemCart = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartData) as Array<{ id: number }>;
   const count = items?.length ?? 0;
-  // Redux store is hydrated from localStorage only on the client — gate the
-  // badge so server and client markup match.
   const mounted = useSyncExternalStore(
     cb => {
       cb();
@@ -32,10 +30,7 @@ const NavItemCart = (): JSX.Element => {
 
   return (
     <Link
-      prefetch={false}
       href="/cart"
-      // Snap the wizard back to the cart step — otherwise the persisted
-      // `step` from a prior visit (e.g. `payment`) would render instead.
       onClick={() => dispatch(resetCheckout())}
       className="group relative my-auto box-border flex shrink-0"
       aria-label={t('cart_label', 'Cart')}

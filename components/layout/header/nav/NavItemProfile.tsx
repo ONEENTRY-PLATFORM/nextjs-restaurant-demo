@@ -67,7 +67,6 @@ const NavItemProfile = (): JSX.Element => {
       {isAuth ? (
         <Link
           href="/profile"
-          prefetch={false}
           className="group relative my-auto box-border flex size-6 shrink-0"
           aria-label={t('profile_label', 'Profile')}
         >

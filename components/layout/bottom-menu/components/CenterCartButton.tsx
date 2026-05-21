@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { resetCheckout } from '@/app/store/reducers/OrderSlice';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * CenterCartButton — central protruding cart button; opens the `CartPopup` drawer, crossfades with `CenterCloseButton`.
@@ -38,6 +39,8 @@ const CenterCartButton = (): JSX.Element => {
         setComponent('CartPopup');
         setOpen(true);
       }}
+      onPointerEnter={() => prefetchPopup('CartPopup')}
+      onFocus={() => prefetchPopup('CartPopup')}
       aria-label={t('open_cart_label', 'Open cart')}
       aria-hidden={hidden}
       tabIndex={hidden ? -1 : 0}

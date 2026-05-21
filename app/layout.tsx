@@ -8,7 +8,7 @@ import { DictProvider } from '@/app/store/providers/DictProvider';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StoreProvider from '@/app/store/providers/StoreProvider';
-import Modal from '@/components/layout/modal';
+import PopupRoot from '@/components/layout/PopupRoot';
 
 import HeaderAnimGate from './animations/HeaderAnimGate';
 import RegisterGSAP from './animations/RegisterGSAP';
@@ -20,15 +20,8 @@ const BottomMenu = dynamic(() => import('@/components/layout/bottom-menu'), {
 const Header = dynamic(() => import('@/components/layout/header'), {
   ssr: true,
 });
-const CartPopup = dynamic(() => import('@/components/cart/CartPopup'));
-const FavoritesPopup = dynamic(() => import('@/components/profile/FavoritesPopup'));
-const ProfilePopup = dynamic(() => import('@/components/profile/ProfilePopup'));
-const BookingsPopup = dynamic(() => import('@/components/profile/BookingsPopup'));
-const ReservationPopup = dynamic(() => import('@/components/reservation/ReservationPopup'));
-const OrderReviewPopup = dynamic(() => import('@/components/profile/OrderReviewPopup'));
 
 import './globals.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 import ResponsiveToastContainer from '@/components/shared/ResponsiveToastContainer';
 
@@ -98,13 +91,7 @@ export default async function RootLayout({
                 <HeaderAnimGate delay={0.5}>
                   <BottomMenu />
                 </HeaderAnimGate>
-                <CartPopup />
-                <FavoritesPopup />
-                <ProfilePopup />
-                <BookingsPopup />
-                <ReservationPopup />
-                <OrderReviewPopup />
-                <Modal />
+                <PopupRoot />
               </OpenDrawerProvider>
             </AuthProvider>
           </DictProvider>

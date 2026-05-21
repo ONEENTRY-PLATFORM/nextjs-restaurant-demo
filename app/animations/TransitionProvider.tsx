@@ -6,6 +6,22 @@ import { TransitionRouter } from 'next-transition-router';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
+// ScrollToPlugin is lazy-loaded on the first navigation to keep it out of the
+// initial layout chunk. The flag tracks whether the dynamic import has been
+// dispatched (success or failure) so we don't re-register on every leave.
+let scrollToPluginRegistered = false;
+let scrollToPluginPromise: Promise<void> | null = null;
+const ensureScrollToPlugin = (): Promise<void> => {
+  if (scrollToPluginRegistered) return Promise.resolve();
+  if (!scrollToPluginPromise) {
+    scrollToPluginPromise = import('gsap/dist/ScrollToPlugin').then(mod => {
+      gsap.registerPlugin(mod.ScrollToPlugin);
+      scrollToPluginRegistered = true;
+    });
+  }
+  return scrollToPluginPromise;
+};
+
 const LEAVE_DURATION = 0.28;
 const ENTER_DURATION = 0.35;
 const CARD_LEAVE_HOLD = 0.8;
@@ -54,13 +70,19 @@ export default function TransitionProvider({ children }: { children: ReactNode }
         const currentScroll =
           typeof window === 'undefined' ? 0 : window.scrollY || window.pageYOffset || 0;
         const needsScroll = currentScroll > SCROLL_TO_TOP_MIN_PX;
+        // Kick the lazy ScrollToPlugin import; if it lands before the leave
+        // tween starts, the smooth scroll plays — otherwise the navigation
+        // proceeds without the scroll-to-top (still correct, just snappier).
+        if (needsScroll) ensureScrollToPlugin();
         const tl = gsap.timeline();
-        if (needsScroll) {
+        if (needsScroll && scrollToPluginRegistered) {
           tl.to(window, {
             scrollTo: { y: 0, autoKill: false },
             duration: SCROLL_TO_TOP_DURATION,
             ease: 'power2.inOut',
           });
+        } else if (needsScroll) {
+          window.scrollTo({ top: 0, behavior: 'auto' });
         }
         tl.to(el, {
           opacity: 0,

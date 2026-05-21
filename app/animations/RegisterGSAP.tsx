@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
@@ -16,7 +15,9 @@ import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 const RegisterGSAP = () => {
   useIsomorphicLayoutEffect(() => {
     gsap.registerPlugin(useGSAP, ScrollTrigger);
-    gsap.registerPlugin(ScrollToPlugin);
+    // ScrollToPlugin is only needed by TransitionProvider during route changes;
+    // it registers itself there on the first `leave` to keep it out of the
+    // initial layout chunk.
 
     gsap.config({
       autoSleep: 120,

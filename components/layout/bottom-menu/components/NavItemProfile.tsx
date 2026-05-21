@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import EyeCircleIcon from '@/components/icons/eye-circle';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * NavItemProfile — profile nav-item button; toggles `ProfilePopup` when authenticated, otherwise the auth-provider picker.
@@ -41,9 +42,13 @@ const NavItemProfile = ({ item }: { item: IMenusPages }): JSX.Element => {
     setComponent(target);
   };
 
+  const prefetchTarget = isAuth ? 'ProfilePopup' : 'AuthProviderSelect';
+
   return (
     <button
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup(prefetchTarget)}
+      onFocus={() => prefetchPopup(prefetchTarget)}
       title={title}
       className="group relative box-border flex size-6 shrink-0"
     >

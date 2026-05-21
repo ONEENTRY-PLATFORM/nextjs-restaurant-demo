@@ -3,23 +3,21 @@
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs';
-import 'yet-another-react-lightbox/styles.css';
-import 'yet-another-react-lightbox/plugins/counter.css';
-import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import type { JSX } from 'react';
 import { useState } from 'react';
 import { FreeMode, Mousewheel, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper/types';
-import Lightbox from 'yet-another-react-lightbox';
-import Counter from 'yet-another-react-lightbox/plugins/counter';
-import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
-import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
-import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import RestaurantPhotoSlider from './RestaurantPhotoSlider';
+
+// `yet-another-react-lightbox` (lib + 4 plugins + 3 CSS) is only used after the
+// user opens the lightbox. Splitting it into its own chunk via `dynamic` keeps
+// it out of the first paint of the restaurant page.
+const RestaurantLightbox = dynamic(() => import('./RestaurantLightbox'), { ssr: false });
 
 type Photo = { downloadLink?: string };
 
@@ -38,6 +36,10 @@ type Photo = { downloadLink?: string };
 const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  // Defer mounting `RestaurantLightbox` (and thus loading its chunk) until the
+  // user has interacted with the gallery at least once. After the first open
+  // the component stays mounted so subsequent opens are instant.
+  const [lightboxMounted, setLightboxMounted] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 
   const slides = photos
@@ -45,7 +47,9 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
     .map(p => ({ src: p.downloadLink, alt }));
 
   const openLightbox = () => {
-    if (slides.length > 0) setLightboxOpen(true);
+    if (slides.length === 0) return;
+    setLightboxMounted(true);
+    setLightboxOpen(true);
   };
 
   return (
@@ -125,22 +129,15 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
         </Swiper>
       </div>
 
-      <Lightbox
-        open={lightboxOpen}
-        close={() => setLightboxOpen(false)}
-        index={active}
-        on={{ view: ({ index }) => setActive(index) }}
-        slides={slides}
-        plugins={[Counter, Fullscreen, Thumbnails, Zoom]}
-        controller={{ closeOnBackdropClick: true }}
-        styles={{
-          container: {
-            backgroundColor: 'rgba(76, 77, 86, 0.8)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-          },
-        }}
-      />
+      {lightboxMounted && (
+        <RestaurantLightbox
+          open={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+          index={active}
+          onView={setActive}
+          slides={slides}
+        />
+      )}
     </>
   );
 };

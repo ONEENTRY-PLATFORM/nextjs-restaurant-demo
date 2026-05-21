@@ -10,6 +10,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ProfileIcon from '@/components/icons/profile';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 import LogoutMenuItem from './user-menu/LogoutMenuItem';
 
@@ -75,6 +76,8 @@ const NavItemProfile = (): JSX.Element => {
       ) : (
         <button
           onClick={handleGuestClick}
+          onPointerEnter={() => prefetchPopup('AuthProviderSelect')}
+          onFocus={() => prefetchPopup('AuthProviderSelect')}
           className="group relative my-auto box-border flex size-6 shrink-0 cursor-pointer"
           aria-label={t('sign_in_text', 'Sign In')}
         >

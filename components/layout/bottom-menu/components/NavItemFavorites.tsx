@@ -7,6 +7,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import FavoritesIcon from '@/components/icons/favorites';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * NavItemFavorites — favorites button in the bottom menu; toggles `FavoritesPopup` and shows a count badge.
@@ -41,6 +42,8 @@ const NavItemFavorites = (): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup('FavoritesPopup')}
+      onFocus={() => prefetchPopup('FavoritesPopup')}
       aria-label={t('favorites_label', 'Favorites')}
       className="group relative box-border flex size-6 shrink-0"
     >

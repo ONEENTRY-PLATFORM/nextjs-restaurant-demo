@@ -4,6 +4,7 @@ import type { JSX, ReactNode } from 'react';
 import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * BookATableButton — client-side trigger button for `ReservationPopup`.
@@ -34,7 +35,13 @@ const BookATableButton = ({
   };
 
   return (
-    <button type="button" onClick={onClick} className={className}>
+    <button
+      type="button"
+      onClick={onClick}
+      onPointerEnter={() => prefetchPopup('ReservationPopup')}
+      onFocus={() => prefetchPopup('ReservationPopup')}
+      className={className}
+    >
       {children}
     </button>
   );

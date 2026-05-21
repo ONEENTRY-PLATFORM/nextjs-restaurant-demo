@@ -23,19 +23,20 @@ const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
     products: IProductsEntity[];
     total: number;
   };
-  const sections: CategoryEntry[] = [];
-  for (const page of visiblePages) {
-    const res = await getProductsByPageUrl({
-      offset: 0,
-      limit: SECTION_LIMIT,
-      params: { handle: page.pageUrl },
-    });
-    sections.push({
-      page,
-      products: res.isError ? [] : (res.products ?? []),
-      total: res.isError ? 0 : res.total,
-    });
-  }
+  const sections: CategoryEntry[] = await Promise.all(
+    visiblePages.map(async page => {
+      const res = await getProductsByPageUrl({
+        offset: 0,
+        limit: SECTION_LIMIT,
+        params: { handle: page.pageUrl },
+      });
+      return {
+        page,
+        products: res.isError ? [] : (res.products ?? []),
+        total: res.isError ? 0 : res.total,
+      };
+    })
+  );
 
   const populated = sections.filter(s => s.products.length > 0);
   if (populated.length === 0) return null;

@@ -35,11 +35,23 @@ import ResponsiveToastContainer from '@/components/shared/ResponsiveToastContain
 const lato = Lato({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
-  style: ['normal', 'italic'],
+  style: ['normal'],
   display: 'swap',
   preload: true,
   adjustFontFallback: true,
   variable: '--font-lato',
+});
+
+// Italic is used in exactly one place (hero slogan, weight 700) — load it as a
+// separate face so we don't pay for italic 300 / 400 that are never rendered.
+const latoItalic = Lato({
+  subsets: ['latin'],
+  weight: ['700'],
+  style: ['italic'],
+  display: 'swap',
+  preload: false,
+  adjustFontFallback: true,
+  variable: '--font-lato-italic',
 });
 
 /** Static metadata for the home page. */
@@ -70,7 +82,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lato.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative pb-19 md:pb-0`}
+        className={`${lato.variable} ${latoItalic.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative pb-19 md:pb-0`}
       >
         <RegisterGSAP />
         <StoreProvider>

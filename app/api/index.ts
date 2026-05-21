@@ -23,6 +23,7 @@ export {
   useGetProductByIdQuery,
   useGetProductsByIdsQuery,
   useGetProductsByPageUrlQuery,
+  useGetProductsPriceRangeQuery,
   useGetProductsQuery,
   useGetSingleOrderQuery,
   useLazyGetMeQuery,

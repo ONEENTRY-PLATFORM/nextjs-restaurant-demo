@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { type JSX, useContext, useEffect, useRef, useState } from 'react';
 
-import type { PriceRange } from '@/app/api';
+import { useGetProductsPriceRangeQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
@@ -27,13 +27,15 @@ const WAITING_TIME: Array<{ label: string; max: number | null }> = [
  */
 const FilterBottom = ({
   preferences: preferenceOptions = [],
-  priceRange,
 }: {
   preferences?: PreferenceOption[];
-  priceRange?: PriceRange;
 }): JSX.Element => {
   const t = useT();
   const { open, component, setOpen, setComponent } = useContext(OpenDrawerContext);
+  const isVisible = open && component === 'FilterForm';
+  // Lazy-load the catalog price range only on first filter-popup open — avoids
+  // the SSR `getProductsPriceRange` round-trip on every initial page render.
+  const { data: priceRange } = useGetProductsPriceRangeQuery({}, { skip: !isVisible });
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -47,8 +49,6 @@ const FilterBottom = ({
   const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
   const fromLabel = t('price_from_text', 'from');
   const underLabel = t('price_under_text', 'Under');
-
-  const isVisible = open && component === 'FilterForm';
 
   // Hydrate local state from the URL only on the transition to visible
   // so that fast router re-renders don't overwrite user edits.

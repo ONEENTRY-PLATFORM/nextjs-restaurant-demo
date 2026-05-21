@@ -3,12 +3,7 @@ import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInter
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
-import {
-  getChildPagesByParentUrl,
-  getPageByUrl,
-  getProductsPriceRange,
-  getSingleAttributeByMarkerSet,
-} from '@/app/api';
+import { getChildPagesByParentUrl, getPageByUrl, getSingleAttributeByMarkerSet } from '@/app/api';
 import { t } from '@/app/dictionaries';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import CategoryFilter from '@/components/layout/filter/CategoryFilter';
@@ -35,9 +30,18 @@ import SupportButton from './SupportButton';
  * @returns JSX of the header section (includes mobile/desktop variants and attached drawers).
  */
 const Header = async (): Promise<JSX.Element> => {
-  const { pages } = await getChildPagesByParentUrl('menu');
+  const [{ pages }, { page: supportPage }, preferencesAttr, searchPlaceholder, homeLabel] =
+    await Promise.all([
+      getChildPagesByParentUrl('menu'),
+      getPageByUrl('support'),
+      getSingleAttributeByMarkerSet({
+        setMarker: 'dish',
+        attributeMarker: 'preferences',
+      }),
+      t('search_placeholder_text', 'Search'),
+      t('home_label', 'Home'),
+    ]);
 
-  const { page: supportPage } = await getPageByUrl('support');
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
   const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as
     | string
@@ -47,23 +51,15 @@ const Header = async (): Promise<JSX.Element> => {
     .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
-  const preferencesAttr = await getSingleAttributeByMarkerSet({
-    setMarker: 'dish',
-    attributeMarker: 'preferences',
-  });
   const preferenceOptions: PreferenceOption[] =
     !preferencesAttr.isError &&
-      preferencesAttr.attribute &&
-      'listTitles' in preferencesAttr.attribute
+    preferencesAttr.attribute &&
+    'listTitles' in preferencesAttr.attribute
       ? (preferencesAttr.attribute.listTitles as IListTitle[]).map(o => ({
-        title: o.title,
-        value: String(o.value),
-      }))
+          title: o.title,
+          value: String(o.value),
+        }))
       : [];
-
-  const priceRange = await getProductsPriceRange();
-  const searchPlaceholder = await t('search_placeholder_text', 'Search');
-  const homeLabel = await t('home_label', 'Home');
 
   return (
     <div id="header">
@@ -76,7 +72,8 @@ const Header = async (): Promise<JSX.Element> => {
                 <Logo />
                 <h1
                   data-header-anim="slogan"
-                  className="font-lato italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120"
+                  style={{ fontFamily: 'var(--font-lato-italic)' }}
+                  className="italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120"
                 >
                   Excellent taste
                   <br /> in <span className="text-brand">every bite</span>
@@ -127,7 +124,7 @@ const Header = async (): Promise<JSX.Element> => {
           </div>
         </div>
       </HeaderAnimations>
-      <FilterBottom preferences={preferenceOptions} priceRange={priceRange} />
+      <FilterBottom preferences={preferenceOptions} />
       <CategoryFilter pages={populatedPages} />
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />
     </div>

@@ -21,12 +21,13 @@ const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categ
  * @returns Promise resolving to JSX of the home page.
  */
 const HomePage = async (): Promise<JSX.Element> => {
-  const { page } = await getPageByUrl('home_web');
+  const [{ page }, { blocks = [] }] = await Promise.all([
+    getPageByUrl('home_web'),
+    getBlocksByPageUrl('home_web'),
+  ]);
   if (!page) {
     notFound();
   }
-
-  const { blocks = [] } = await getBlocksByPageUrl('home_web');
   const sortedBlocks = [...blocks]
     .filter(b => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));

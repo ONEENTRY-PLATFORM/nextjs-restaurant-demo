@@ -18,6 +18,7 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { IProducts } from '@/app/types/global';
 import { typeError } from '@/components/utils';
 
+import type { PriceRange } from '../server/products/getProductsPriceRange';
 import { updateUserState } from '../server/users/updateUserState';
 import { getApi } from './api';
 
@@ -199,6 +200,33 @@ export const RTKApi = createApi({
       providesTags: ['Pages'],
       keepUnusedDataFor: 600,
     }),
+    /** getProductsPriceRange — catalog min/max price (lazy-fetched on filter popup open). */
+    getProductsPriceRange: build.query<PriceRange, { pageUrl?: string }>({
+      queryFn: async ({ pageUrl = 'services' }) => {
+        try {
+          const result = await getApi().Products.getProductsPriceByPageUrl(pageUrl);
+          if (typeError(result)) {
+            return { data: { min: 0, max: 0 } };
+          }
+          const prices = result.items
+            .map(item => Number(item.price))
+            .filter(p => Number.isFinite(p) && p > 0);
+          if (prices.length === 0) {
+            return { data: { min: 0, max: 0 } };
+          }
+          return {
+            data: {
+              min: Math.floor(Math.min(...prices)),
+              max: Math.ceil(Math.max(...prices)),
+            },
+          };
+        } catch {
+          return { data: { min: 0, max: 0 } };
+        }
+      },
+      providesTags: ['Products'],
+      keepUnusedDataFor: 600,
+    }),
     /** getMe — data of the currently authenticated user. */
     getMe: build.query<IUserEntity, string>({
       queryFn: async () => {
@@ -317,6 +345,7 @@ export const {
   useGetProductsQuery,
   useGetProductsByPageUrlQuery,
   useGetProductsByIdsQuery,
+  useGetProductsPriceRangeQuery,
   useUpdateOrderByMarkerAndIdQuery,
   useUpdateUserStateMutation,
   useUpdateOrderMutation,

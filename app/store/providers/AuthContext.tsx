@@ -56,8 +56,10 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     selectFavoritesItems(state)
   );
 
+  // 60s instead of 3s: getMe is just a keepalive / cross-tab session probe; 3s
+  // polling burned ~20 requests/min per logged-in tab for no UX benefit.
   const [trigger, { isError }] = useLazyGetMeQuery({
-    pollingInterval: isAuth ? 3000 : 0,
+    pollingInterval: isAuth ? 60000 : 0,
   });
 
   const onInit = async () => {

@@ -9,22 +9,25 @@ type HomeBlockSectionProps = {
   products: IProductsEntity[];
   countElementsPerRow?: number | undefined;
   className?: string | undefined;
+  blurMap?: Record<number, string> | undefined;
 };
 
 /**
  * HomeBlockSection — title + product grid, configured via a OneEntry block.
  *
- * @param   {HomeBlockSectionProps} props                       - Component props.
- * @param   {string}                props.title                 - Section heading.
- * @param   {IProductsEntity[]}     props.products              - Products to render in the grid.
- * @param   {number}                [props.countElementsPerRow] - Layout hint from the CMS (currently unused but accepted for parity).
- * @param   {string}                [props.className]           - Override for the section className.
+ * @param   {HomeBlockSectionProps}   props                       - Component props.
+ * @param   {string}                  props.title                 - Section heading.
+ * @param   {IProductsEntity[]}       props.products              - Products to render in the grid.
+ * @param   {number}                  [props.countElementsPerRow] - Layout hint from the CMS (currently unused but accepted for parity).
+ * @param   {string}                  [props.className]           - Override for the section className.
+ * @param   {Record<number, string>}  [props.blurMap]             - `{ productId: base64DataURI }` for LQIP placeholders (see `getProductBlurMap`).
  * @returns JSX of the section, or `null` when there is nothing visible to render.
  */
 const HomeBlockSection = ({
   title,
   products,
   className,
+  blurMap,
 }: HomeBlockSectionProps): JSX.Element | null => {
   const visible = products.filter(p => p.isVisible !== false);
   if (visible.length === 0) return null;
@@ -33,17 +36,19 @@ const HomeBlockSection = ({
       <div className="title">
         <h2 className="title_name">{title}</h2>
       </div>
-      <CardsGridAnimations
-        className={`menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full`}
-      >
-        {visible.map((product, i) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            index={i}
-            productsLimit={visible.length}
-          />
-        ))}
+      <CardsGridAnimations className={`menu_items`}>
+        {visible.map((product, i) => {
+          const blur = blurMap?.[product.id];
+          return (
+            <ProductCard
+              key={product.id}
+              product={product}
+              index={i}
+              productsLimit={visible.length}
+              {...(blur ? { blurDataURL: blur } : {})}
+            />
+          );
+        })}
       </CardsGridAnimations>
     </section>
   );

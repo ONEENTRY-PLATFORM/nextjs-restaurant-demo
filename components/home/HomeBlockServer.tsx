@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 
 import { getBlockProducts } from '@/app/api';
+import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
 
 import HomeBlockSection from './HomeBlockSection';
 
@@ -26,6 +27,7 @@ const HomeBlockServer = async ({
   if (data.isError || data.products.length === 0) return null;
 
   const products = limit ? data.products.slice(0, limit) : data.products;
+  const blurMap = await getProductBlurMap(products);
 
   return (
     <HomeBlockSection
@@ -33,6 +35,7 @@ const HomeBlockServer = async ({
       products={products}
       countElementsPerRow={data.countElementsPerRow}
       className={className ?? 'section_layout'}
+      blurMap={blurMap}
     />
   );
 };

@@ -2,6 +2,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import { getBlockProducts, getRelatedProductsById } from '@/app/api';
+import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
 import { t } from '@/app/dictionaries';
 
 import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations';
@@ -50,17 +51,29 @@ const RelatedItems = async ({
     return <></>;
   }
 
-  const title = await t('featured_objects', 'Featured objects');
+  const [title, blurMap] = await Promise.all([
+    t('featured_objects', 'Featured objects'),
+    getProductBlurMap(items),
+  ]);
 
   return (
     <section className="flex flex-col max-md:max-w-full pt-15">
       <ProductAnimations className={''} index={0}>
         <h3 className="title_name mb-3 max-md:max-w-full text-paper!">{title}</h3>
       </ProductAnimations>
-      <CardsGridAnimations className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
-        {items.map((product, i) => (
-          <ProductCard key={product.id} product={product} index={i} productsLimit={0} />
-        ))}
+      <CardsGridAnimations className="menu_items">
+        {items.map((product, i) => {
+          const blur = blurMap[product.id];
+          return (
+            <ProductCard
+              key={product.id}
+              product={product}
+              index={i}
+              productsLimit={0}
+              {...(blur ? { blurDataURL: blur } : {})}
+            />
+          );
+        })}
       </CardsGridAnimations>
     </section>
   );

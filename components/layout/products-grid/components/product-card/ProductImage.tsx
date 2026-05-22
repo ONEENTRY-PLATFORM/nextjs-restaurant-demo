@@ -14,19 +14,24 @@ import Placeholder from '@/components/shared/Placeholder';
  * 300 px of the viewport the wrapper renders an empty placeholder so the
  * Next.js image optimizer (`/image?url=…`) is not pinged for off-screen
  * cards. Once the card scrolls into range the real `<Image>` mounts and
- * inherits its own `loading="lazy"` for the actual byte fetch.
+ * inherits its own `loading="lazy"` for the actual byte fetch. When a
+ * server-generated `blurDataURL` is supplied, next/image renders it as a
+ * blurred background until the real cover decodes.
  *
- * @param   {object}            props            - Component props.
- * @param   {IAttributeValues}  props.attributes - `product.attributeValues` (reads `cover.value`, supports object and array).
- * @param   {string}            props.alt        - Alt text for accessibility.
+ * @param   {object}            props               - Component props.
+ * @param   {IAttributeValues}  props.attributes    - `product.attributeValues` (reads `cover.value`, supports object and array).
+ * @param   {string}            props.alt           - Alt text for accessibility.
+ * @param   {string}            [props.blurDataURL] - Base64 LQIP preview for the cover (from `getProductBlurMap`).
  * @returns JSX of the cover image (or `<Placeholder />` when no image is configured).
  */
 const ProductImage = ({
   attributes,
   alt,
+  blurDataURL,
 }: {
   attributes: IAttributeValues;
   alt: string;
+  blurDataURL?: string;
 }): JSX.Element => {
   const productImage = attributes?.cover?.value as
     | { downloadLink?: string }
@@ -59,6 +64,7 @@ const ProductImage = ({
           sizes="(min-width: 1240px) 278px, (min-width: 1020px) 220px, (min-width: 768px) 340px, 164px"
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          {...(blurDataURL ? { placeholder: 'blur' as const, blurDataURL } : {})}
         />
       ) : null}
     </div>

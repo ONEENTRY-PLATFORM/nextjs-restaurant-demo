@@ -19,6 +19,21 @@
   visibility: hidden;
 }
 
+/*
+ * HomePromo entrance: transform-only slide so the hero (LCP candidate) is
+ * never opacity:0 — Chrome's LCP heuristic excludes elements faded in from
+ * opacity:0 and falls back to the next-largest image. Transform-only keeps
+ * the hero visible from the first paint and a valid LCP candidate.
+ */
+@keyframes home-promo-enter {
+  from { transform: translateY(12px); }
+  to   { transform: translateY(0); }
+}
+.home-promo-enter {
+  animation: home-promo-enter 0.5s ease-out 0.1s both;
+  will-change: transform;
+}
+
 @keyframes slide-up {
   0% {
     transform: translateY(100%);
@@ -370,10 +385,16 @@ html {
       xl:gap-15
       lg:gap-10
       md:gap-8
-      flex
       justify-center
       md:justify-between
-      flex-wrap;
+      flex-wrap
+      grid
+      w-full
+      grid-cols-2
+      xl:grid-cols-4
+      lg:grid-cols-4
+      md:grid-cols-2
+      max-md:[&>.menu_item]:w-full;
   }
 }
 

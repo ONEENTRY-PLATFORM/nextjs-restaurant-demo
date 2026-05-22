@@ -39,14 +39,14 @@ const SkeletonBody = (): ReactNode => (
  * ProductsGridLoader — product-card grid skeleton (mirrors `ProductCard` layout) with staggered fade-in.
  *
  * @param   {Props}   props                 - Component props.
- * @param   {number}  [props.productsLimit] - Number of skeleton cards to render (defaults to 10).
+ * @param   {number}  [props.productsLimit] - Number of skeleton cards to render (defaults to 8).
  * @param   {boolean} [props.scaleOnly]     - When `true`, only animate scale (used as overlay in `ProductsGridReveal`).
  * @returns JSX of the skeleton grid.
  */
-const ProductsGridLoader = ({ productsLimit = 10 }: Props): JSX.Element => {
+const ProductsGridLoader = ({ productsLimit = 8 }: Props): JSX.Element => {
   return (
     <section aria-hidden="true" className="products_grid_layout">
-      <div className="menu_items grid w-full grid-cols-2 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 max-md:[&>.menu_item]:w-full">
+      <div className="menu_items">
         {Array.from(Array(productsLimit).keys()).map(item => (
           <CardAnimations
             key={item}

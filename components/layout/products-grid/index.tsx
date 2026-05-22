@@ -1,6 +1,7 @@
 import { type JSX } from 'react';
 
 import { getProducts, getProductsByPageUrl } from '@/app/api';
+import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
 import CardsGridAnimations from '@/components/layout/products-grid/animations/CardsGridAnimations';
 
 import LoadMore from './components/LoadMore';
@@ -69,12 +70,13 @@ const ProductsGridLayout = async ({
   }
 
   const totalPages = Math.ceil(total / productsLimit);
+  const blurMap = await getProductBlurMap(products);
 
   return (
     <ProductsGridReveal skeleton={<ProductsGridLoader productsLimit={productsLimit} scaleOnly />}>
       <CardsGridAnimations className={'relative box-border flex w-full shrink-0 flex-col'}>
         <section className="products_grid_layout">
-          <ProductsGrid productsLimit={productsLimit} products={products} />
+          <ProductsGrid productsLimit={productsLimit} products={products} blurMap={blurMap} />
           {totalPages > 1 && (
             <div className="mt-5 flex w-full justify-center">
               <LoadMore totalPages={totalPages} />

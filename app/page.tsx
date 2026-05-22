@@ -48,8 +48,9 @@ const HomePage = async (): Promise<JSX.Element> => {
         if (block.identifier === 'home_categories') {
           return <HomeCategoriesSection key={block.id} />;
         }
+        // Recommended fades in right after HomePromo (delay 0.5 + 0.5 s fade).
         return (
-          <HeaderAnimGate key={block.id} delay={0.4}>
+          <HeaderAnimGate key={block.id} delay={1.0}>
             <HomeBlockServer marker={block.identifier as string} limit={4} />
           </HeaderAnimGate>
         );

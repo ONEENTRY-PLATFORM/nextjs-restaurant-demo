@@ -13,18 +13,20 @@ type CategoriesSectionProps = {
   total: number;
   limit?: number;
   className?: string;
+  blurMap?: Record<number, string>;
 };
 
 /**
  * CategoriesSection — homepage category section with title, "View all" link and product grid.
  *
- * @param   {CategoriesSectionProps} props                - Component props.
- * @param   {string}                 props.title          - Section heading.
- * @param   {string}                 props.categoryMarker - Category page handle used for the "View all" link.
- * @param   {IProductsEntity[]}      props.products       - Products to render in the section grid.
- * @param   {number}                 props.total          - Total number of products in the category (rendered next to "View all").
- * @param   {number}                 [props.limit]        - Page-size hint passed to the inner products grid (defaults to 8).
- * @param   {string}                 [props.className]    - Optional class merged onto the wrapping `<section>` (currently unused).
+ * @param   {CategoriesSectionProps}  props                - Component props.
+ * @param   {string}                  props.title          - Section heading.
+ * @param   {string}                  props.categoryMarker - Category page handle used for the "View all" link.
+ * @param   {IProductsEntity[]}       props.products       - Products to render in the section grid.
+ * @param   {number}                  props.total          - Total number of products in the category (rendered next to "View all").
+ * @param   {number}                  [props.limit]        - Page-size hint passed to the inner products grid (defaults to 8).
+ * @param   {string}                  [props.className]    - Optional class merged onto the wrapping `<section>` (currently unused).
+ * @param   {Record<number, string>}  [props.blurMap]      - `{ productId: base64DataURI }` for LQIP placeholders (see `getProductBlurMap`).
  * @returns JSX of the homepage category section.
  */
 const CategoriesSection = async ({
@@ -33,6 +35,7 @@ const CategoriesSection = async ({
   products,
   total,
   limit = 8,
+  blurMap,
 }: CategoriesSectionProps): Promise<JSX.Element> => {
   const viewAllHref = '/shop/category/' + categoryMarker;
   const viewAllLabel = (await t('view_all_text', 'View all ({count})')).replace(
@@ -52,7 +55,7 @@ const CategoriesSection = async ({
       </div>
 
       <CardsGridAnimations className="w-full">
-        <ProductsGrid products={products} productsLimit={limit} />
+        <ProductsGrid products={products} productsLimit={limit} {...(blurMap ? { blurMap } : {})} />
       </CardsGridAnimations>
     </section>
   );

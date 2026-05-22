@@ -18,16 +18,19 @@ import ProductImage from './ProductImage';
  * @param   {IProductsEntity}   props.product       - OneEntry product entity.
  * @param   {number}            props.index         - Card index in the grid (drives the stagger animation).
  * @param   {number}            props.productsLimit - Page size used by the stagger to reset on a new page.
+ * @param   {string}            [props.blurDataURL] - Optional base64 LQIP for the cover (forwarded to {@link ProductImage}).
  * @returns JSX of the product card with image, meta, cart button, and link overlay.
  */
 const ProductCard = ({
   product,
   index,
   productsLimit,
+  blurDataURL,
 }: {
   product: IProductsEntity;
   index: number;
   productsLimit: number;
+  blurDataURL?: string;
 }): JSX.Element => {
   const { id, attributeValues, localizeInfos } = product;
   const attrs = attributeValues ?? {};
@@ -48,7 +51,7 @@ const ProductCard = ({
   return (
     <CardAnimations className="menu_item group" index={index} productsLimit={productsLimit}>
       <HeartCardButton product={product} />
-      <ProductImage attributes={attrs} alt={title} />
+      <ProductImage attributes={attrs} alt={title} {...(blurDataURL ? { blurDataURL } : {})} />
 
       <div className="descr">
         {time && time !== '0' ? <p> {time} min</p> : null}

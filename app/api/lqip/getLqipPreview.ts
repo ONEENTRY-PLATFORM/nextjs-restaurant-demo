@@ -1,7 +1,12 @@
+import 'server-only';
+
 import lqipModern from 'lqip-modern';
 
 // lqip-modern depends on sharp (Node-only: child_process, fs) — server-side use only.
-// For the client either wrap it in an API endpoint or use a browser-compatible alternative.
+// `'server-only'` makes the build fail with a clear error if this file is ever
+// imported from a client-bundled module (e.g. through the `@/app/api` barrel,
+// which `app/store/store.ts` pulls into the browser bundle). For client-side
+// blur previews, hit the `/api/lqip` route handler instead.
 
 const lqipCache = new Map<string, { dataURI: string; timestamp: number }>();
 const CACHE_DURATION = 10 * 60 * 1000;

@@ -7,17 +7,15 @@ import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
 
-// Home is OneEntry-driven content that changes only when an admin updates the
-// CMS, so we cache the SSR output for 5 minutes instead of re-fetching every
-// page view. Individual OneEntry fetchers also use `unstable_cache` with
-// 60-300 s TTL, so even a stale-while-revalidate regeneration usually serves
-// the heavy data from the data cache.
-// Every `useSearchParams()` in the tree (SearchBar, CategoriesScroller,
-// FilterBottom) is wrapped in `<Suspense>` upstream — `force-static` will
-// fail loud at build time if anything slips back into dynamic territory,
-// which is the early-warning we want.
-export const dynamic = 'force-static';
-export const revalidate = 300;
+// HOTFIX: Next 16.2.6 prerenders this page as a multipart/mixed payload
+// (boundary `--<hex>` + inner segment-prefetch headers leaked into the body)
+// when statically generated. Vercel CDN faithfully serves it with
+// `Content-Type: text/html`, the browser parses the boundary lines as text
+// nodes, and hydration breaks. Switching to `force-dynamic` bypasses the
+// broken prerender path until a Next/Vercel fix lands; the underlying SDK
+// calls still hit `unstable_cache` (60-300 s TTL), so the data layer remains
+// cached even though the HTML shell is rendered per-request.
+export const dynamic = 'force-dynamic';
 
 // Whitelisted block identifiers; unknown ones are silently skipped.
 const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);

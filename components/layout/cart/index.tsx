@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getApi, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
   addDeliveryToCart,
@@ -34,6 +35,7 @@ import Spinner from '@/components/shared/Spinner';
  * @returns JSX of the cart page (loader, empty state, or product list with APPLY).
  */
 const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { isAuth, user } = useContext(AuthContext);
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
@@ -219,7 +221,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
           onClick={onApply}
           className="cart-apply-btn flex h-15 w-full items-center justify-center rounded-panel bg-custom_btnorange text-center font-normal text-base text-white hover_btn_transp md:h-11.25"
         >
-          APPLY
+          {isAuth ? 'APPLY' : t('login_to_continue', 'Sign in to continue')}
         </button>
       </TableRowAnimations>
     </div>

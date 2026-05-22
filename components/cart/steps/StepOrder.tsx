@@ -6,11 +6,13 @@ import Image from 'next/image';
 import { useTransitionState } from 'next-transition-router';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 import { useApplyCoupon } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
@@ -26,13 +28,15 @@ type CartEntry = {
 };
 
 /**
- * StepOrder — checkout step: items + promo code + summary + APPLY → `payment`.
+ * StepOrder — checkout step: items + promo code + summary + APPLY → `payment` (or opens auth picker for guests).
  *
  * @returns JSX of the order step body.
  */
 const StepOrder = (): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
+  const { isAuth } = useContext(AuthContext);
+  const { setComponent, setOpen } = useContext(OpenDrawerContext);
   const cartData = useAppSelector(selectCartData) as CartEntry[];
   const products = useAppSelector(state => state.cartReducer.products) as IProductsEntity[];
   const deliveryPrice = useAppSelector(state => state.cartReducer.delivery?.price ?? 0);
@@ -126,6 +130,11 @@ const StepOrder = (): JSX.Element => {
   }, [stage]);
 
   const handleProceedToPayment = (): void => {
+    if (!isAuth) {
+      setComponent('AuthProviderSelect');
+      setOpen(true);
+      return;
+    }
     const root = containerRef.current;
     const targets = root?.querySelectorAll(ORDER_ROW_SELECTOR);
     if (!targets || targets.length === 0) {
@@ -257,7 +266,7 @@ const StepOrder = (): JSX.Element => {
         onClick={handleProceedToPayment}
         className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center font-normal text-base text-white transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
       >
-        APPLY
+        {isAuth ? 'APPLY' : t('login_to_continue', 'Sign in to continue')}
       </button>
     </div>
   );

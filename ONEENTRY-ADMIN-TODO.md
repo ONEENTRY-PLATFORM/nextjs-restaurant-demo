@@ -94,6 +94,14 @@
 |-------------------|--------|-------|
 | `order_step_text` | string | Order |
 
+#### Cart APPLY — гостевая CTA вместо APPLY
+
+Используется в: [components/layout/cart/index.tsx](components/layout/cart/index.tsx) (нижняя кнопка шага `cart`) и [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx) (нижняя кнопка шага `order`). Для незалогиненных вместо «APPLY» открывается `AuthProviderSelect` и показывается приглашение войти.
+
+| marker               | type   | title                |
+|----------------------|--------|----------------------|
+| `login_to_continue`  | string | Sign in to continue  |
+
 #### ReservationForm — лейбл «Preferences»
 
 Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) (fallback-лейбл поля гостевых предпочтений).

@@ -27,10 +27,9 @@ const HeaderAnimations = ({ children }: { children: ReactNode }): JSX.Element =>
     const slogan = q('[data-header-anim="slogan"]');
     const search = q('[data-header-anim="search"]');
     const topNavItems = q('[data-header-anim="top-nav"] > *:not([data-header-anim])');
-    const tags = q('[data-header-anim="tag"]');
-
-    const all = [...logoParts, ...slogan, ...search, ...topNavItems, ...tags];
-    if (all.length === 0) return undefined;
+    const initialTags = q('[data-header-anim="tag"]');
+    const handledTags = new WeakSet<Element>();
+    initialTags.forEach(el => handledTags.add(el));
 
     const ctx = gsap.context(() => {
       const preset = [...logoParts, ...slogan, ...search, ...topNavItems];
@@ -64,9 +63,9 @@ const HeaderAnimations = ({ children }: { children: ReactNode }): JSX.Element =>
       }
 
       // 5. Category tag chips
-      if (tags.length > 0) {
+      if (initialTags.length > 0) {
         tl.fromTo(
-          tags,
+          initialTags,
           { autoAlpha: 0, y: 20 },
           {
             autoAlpha: 1,
@@ -80,7 +79,44 @@ const HeaderAnimations = ({ children }: { children: ReactNode }): JSX.Element =>
       }
     }, root);
 
+    // CategoriesScroller sits inside <Suspense fallback={null}> (uses useSearchParams).
+    // Under force-static SSR its <li data-header-anim="tag"> elements arrive only
+    // after hydration, often AFTER this effect already ran — without a follow-up
+    // reveal they stay stuck at the CSS pre-hide (opacity:0; visibility:hidden).
+    let pending: Element[] = [];
+    let raf = 0;
+    const flush = (): void => {
+      raf = 0;
+      const batch = pending;
+      pending = [];
+      if (batch.length === 0) return;
+      gsap.fromTo(
+        batch,
+        { autoAlpha: 0, y: 20 },
+        { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out' }
+      );
+    };
+    const collect = (node: Node): void => {
+      if (!(node instanceof Element)) return;
+      if (node.matches('[data-header-anim="tag"]') && !handledTags.has(node)) {
+        handledTags.add(node);
+        pending.push(node);
+      }
+      node.querySelectorAll('[data-header-anim="tag"]').forEach(el => {
+        if (handledTags.has(el)) return;
+        handledTags.add(el);
+        pending.push(el);
+      });
+    };
+    const observer = new MutationObserver(mutations => {
+      for (const m of mutations) m.addedNodes.forEach(collect);
+      if (pending.length > 0 && raf === 0) raf = requestAnimationFrame(flush);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+
     return () => {
+      if (raf !== 0) cancelAnimationFrame(raf);
+      observer.disconnect();
       ctx.revert();
     };
   }, []);

@@ -1,6 +1,6 @@
 'use client';
 
-import { type JSX, useCallback, useMemo, useRef, useState } from 'react';
+import { type JSX, type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
 import { BarChart, Histogram, Legend } from './charts';
 import {
@@ -146,6 +146,51 @@ const Stat = ({
       </div>
     )}
   </div>
+);
+
+/**
+ * Th — table header cell with an optional hover/focus tooltip.
+ *
+ * Wraps the cell content in a `group` span and renders a popover *below* the header
+ * (the table sits low in the page, so `top-full` keeps the tooltip on-screen). When
+ * `tooltip` is provided the cell text gets a dotted underline + `cursor-help` to
+ * signal interactivity. `tabIndex={0}` keeps the tooltip reachable from the keyboard.
+ *
+ * @param   {object}     props          - Component props.
+ * @param   {ReactNode}  props.children - Header label content.
+ * @param   {('left'|'right')} [props.align] - Text alignment inside the `<th>` (default left).
+ * @param   {string}     [props.tooltip] - Plain-text explanation shown on hover/focus.
+ * @returns JSX `<th>` cell.
+ */
+const Th = ({
+  children,
+  align,
+  tooltip,
+}: {
+  children: ReactNode;
+  align?: 'left' | 'right';
+  tooltip?: string;
+}): JSX.Element => (
+  <th className={`px-2 py-1 font-normal ${align === 'right' ? 'text-right' : ''}`}>
+    {tooltip ? (
+      <span
+        className="group relative inline-flex cursor-help items-center gap-1 underline decoration-dotted decoration-paper/30 underline-offset-2 outline-none focus-visible:decoration-paper/70"
+        tabIndex={0}
+      >
+        {children}
+        <span
+          role="tooltip"
+          className={`pointer-events-none invisible absolute top-full z-20 mt-2 w-56 rounded-card border border-paper/15 bg-black/95 px-3 py-2 text-[11px] font-normal leading-snug tracking-normal text-paper/90 normal-case opacity-0 shadow-lg transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 ${
+            align === 'right' ? 'right-0' : 'left-0'
+          }`}
+        >
+          {tooltip}
+        </span>
+      </span>
+    ) : (
+      children
+    )}
+  </th>
 );
 
 /**
@@ -420,7 +465,8 @@ export default function ApiTestClient(): JSX.Element {
                   min={1}
                   max={32}
                   value={concurrency}
-                  onChange={e =>
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(e: { target: { value: any } }) =>
                     setConcurrency(Math.max(1, Math.min(32, Number(e.target.value) || 1)))
                   }
                   disabled={running}
@@ -496,7 +542,7 @@ export default function ApiTestClient(): JSX.Element {
         </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
+      <section className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         <Stat
           label="OK"
           value={`${successResults.length}`}
@@ -622,15 +668,48 @@ export default function ApiTestClient(): JSX.Element {
             <table className="w-full min-w-225 text-left text-xs tabular-nums">
               <thead>
                 <tr className="text-paper/50 uppercase tracking-fine">
-                  <th className="px-2 py-1 font-normal text-right">#</th>
-                  <th className="px-2 py-1 font-normal">Status</th>
-                  <th className="px-2 py-1 font-normal">Bucket</th>
-                  <th className="px-2 py-1 font-normal text-right">Client</th>
-                  <th className="px-2 py-1 font-normal text-right">Server</th>
-                  <th className="px-2 py-1 font-normal text-right">Network</th>
-                  <th className="px-2 py-1 font-normal text-right">Size</th>
-                  <th className="px-2 py-1 font-normal">Started</th>
-                  <th className="px-2 py-1 font-normal">Error</th>
+                  <Th
+                    align="right"
+                    tooltip="Original 1-based index of the request in the run. Sort or filter can reorder rows, but the # stays tied to the original probe."
+                  >
+                    #
+                  </Th>
+                  <Th tooltip="OK = the route returned success:true. FAIL = network error, abort, HTTP error, or success:false.">
+                    Status
+                  </Th>
+                  <Th tooltip="Qualitative latency band (matches the bar-chart legend): fast < 50 ms / ok 50–200 / medium 200–500 / slow 500–1000 / very slow > 1000 / failed.">
+                    Bucket
+                  </Th>
+                  <Th
+                    align="right"
+                    tooltip="Client round-trip: time measured in the browser from fetch start to JSON parse done. Includes network + server work + JSON decode."
+                  >
+                    Client
+                  </Th>
+                  <Th
+                    align="right"
+                    tooltip="Server-reported responseTime: only the time spent inside the route handler / SDK call. Network RTT is excluded."
+                  >
+                    Server
+                  </Th>
+                  <Th
+                    align="right"
+                    tooltip="Network overhead, computed as Client − Server. Approximates DNS / TCP / TLS / RTT plus browser fetch + JSON decode."
+                  >
+                    Network
+                  </Th>
+                  <Th
+                    align="right"
+                    tooltip="Approximate size of the response body in bytes (length of the JSON string, reported by the route)."
+                  >
+                    Size
+                  </Th>
+                  <Th tooltip="Wall-clock time (local) when the request was kicked off. Useful for spotting gaps and bursts in parallel mode.">
+                    Started
+                  </Th>
+                  <Th tooltip="Error message returned by the route or thrown by fetch (network failure, abort, HTTP error).">
+                    Error
+                  </Th>
                 </tr>
               </thead>
               <tbody>

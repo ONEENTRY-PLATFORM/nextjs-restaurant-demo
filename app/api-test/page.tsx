@@ -3,16 +3,22 @@ import type { JSX } from 'react';
 
 import ApiTestClient from './ApiTestClient';
 
-// Force-dynamic: the layout chain uses `useSearchParams()` (see the home page).
-// Route segment configs only work in server components, so the client logic lives in `ApiTestClient`.
+// Force-dynamic: the layout chain uses `useSearchParams()` (see the home page),
+// and the dashboard is dev-only — there's nothing to pre-render anyway.
 export const dynamic = 'force-dynamic';
 
 /**
  * ApiTestPage — dev-only performance dashboard for the OneEntry API.
  *
- * @returns JSX of the test dashboard, or triggers `notFound()` on prod.
+ * Gates the route on `NODE_ENV`: in production the page triggers `notFound()`
+ * so the dashboard never ships to end users; in dev/preview the client benchmark
+ * is rendered.
+ *
+ * @returns JSX of the dashboard, or never returns (triggers `notFound()`) in prod.
  */
 export default function ApiTestPage(): JSX.Element {
-  if (process.env.NODE_ENV === 'production') notFound();
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
   return <ApiTestClient />;
 }

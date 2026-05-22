@@ -20,7 +20,9 @@ const NotFound = async (): Promise<JSX.Element> => {
     return (
       <div className="mx-auto flex min-h-80 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
         <h1 className="mb-10 text-6xl">404</h1>
-        <Link href="/">{returnHome}</Link>
+        <Link href="/" prefetch={false}>
+          {returnHome}
+        </Link>
       </div>
     );
   }
@@ -39,6 +41,7 @@ const NotFound = async (): Promise<JSX.Element> => {
       </p>
       <Link
         href="/"
+        prefetch={false}
         className="rounded-card border border-brand text-brand font-normal px-4 py-2 hover_btn_brand"
       >
         {returnHome}

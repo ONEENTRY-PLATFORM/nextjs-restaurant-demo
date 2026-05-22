@@ -42,7 +42,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
       <nav aria-label="Breadcrumbs" className="mb-5 text-base">
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-text">
           <li>
-            <Link href="/" className="transition-colors hover:text-brand">
+            <Link href="/" prefetch={false} className="transition-colors hover:text-brand">
               Home
             </Link>
           </li>

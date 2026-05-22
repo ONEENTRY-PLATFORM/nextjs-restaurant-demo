@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { cache } from 'react';
@@ -5,30 +6,37 @@ import { cache } from 'react';
 import { getApi } from '@/app/api';
 import { typeError } from '@/components/utils';
 
+type ChildPagesResult = {
+  isError: boolean;
+  error?: IError;
+  pages?: IPagesEntity[];
+};
+
+const fetchChildPagesByParentUrl = unstable_cache(
+  async (url: string): Promise<ChildPagesResult> => {
+    try {
+      const data = await getApi().Pages.getChildPagesByParentUrl(url);
+      if (typeError(data)) {
+        return { isError: true, error: data };
+      }
+      return { isError: false, pages: data as IPagesEntity[] };
+    } catch (e: unknown) {
+      return { isError: true, error: e as IError };
+    }
+  },
+  ['oneentry-getChildPagesByParentUrl'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-pages'] }
+);
+
 /**
- * getChildPagesByParentUrl — child pages by parent url (React cache() deduplicates calls within a render).
+ * getChildPagesByParentUrl — child pages by parent url.
+ *
+ * Composed cache (see {@link getPageByUrl}): `unstable_cache` for 60 s
+ * cross-request caching, React `cache()` for in-render deduplication.
  *
  * @param   {string} url - OneEntry `pageUrl` marker of the parent page.
  * @returns Promise resolving to `{ isError, error?, pages? }` (graceful fallback on SDK error).
  */
 export const getChildPagesByParentUrl = cache(
-  async (
-    url: string
-  ): Promise<{
-    isError: boolean;
-    error?: IError;
-    pages?: IPagesEntity[];
-  }> => {
-    try {
-      const data = await getApi().Pages.getChildPagesByParentUrl(url);
-
-      if (typeError(data)) {
-        return { isError: true, error: data };
-      } else {
-        return { isError: false, pages: data as IPagesEntity[] };
-      }
-    } catch (e: unknown) {
-      return { isError: true, error: e as IError };
-    }
-  }
+  async (url: string): Promise<ChildPagesResult> => fetchChildPagesByParentUrl(url)
 );

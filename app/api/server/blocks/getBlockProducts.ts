@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
@@ -15,46 +16,59 @@ export interface BlockProducts {
   countElementsPerRow?: number;
 }
 
+const fetchBlockProducts = unstable_cache(
+  async (marker: string): Promise<BlockProducts> => {
+    try {
+      const data = await getApi().Blocks.getBlockByMarker(marker);
+      if (typeError(data)) {
+        return { isError: true, error: data, title: '', products: [] };
+      }
+      const block = data as unknown as {
+        localizeInfos?: { title?: string };
+        products?: IProductsEntity[];
+        similarProducts?: { items?: IProductsEntity[] } | IProductsEntity[];
+        quantity?: number;
+        countElementsPerRow?: number;
+      };
+      const title = block.localizeInfos?.title ?? marker;
+      const raw =
+        block.products ??
+        (Array.isArray(block.similarProducts)
+          ? block.similarProducts
+          : (block.similarProducts?.items ?? [])) ??
+        [];
+      const products =
+        typeof block.quantity === 'number' && block.quantity > 0
+          ? raw.slice(0, block.quantity)
+          : raw;
+      return {
+        isError: false,
+        title,
+        products,
+        ...(block.quantity !== undefined && { quantity: block.quantity }),
+        ...(block.countElementsPerRow !== undefined && {
+          countElementsPerRow: block.countElementsPerRow,
+        }),
+      };
+    } catch (e: unknown) {
+      return { isError: true, error: e as IError, title: '', products: [] };
+    }
+  },
+  ['oneentry-getBlockProducts'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-blocks', 'oneentry-products'] }
+);
+
 /**
  * getBlockProducts — block by marker plus products and layout config in normalised form.
  *
+ * Composed cache (see {@link getPageByUrl}): `unstable_cache` for 60 s
+ * cross-request caching, React `cache()` for in-render deduplication.
+ *
  * Returns empty `products` on SDK error.
  *
- * @param   {string}                marker - Block marker (e.g. `recommended`).
+ * @param   {string} marker - Block marker (e.g. `recommended`).
  * @returns Normalised block data.
  */
-export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> => {
-  try {
-    const data = await getApi().Blocks.getBlockByMarker(marker);
-    if (typeError(data)) {
-      return { isError: true, error: data, title: '', products: [] };
-    }
-    const block = data as unknown as {
-      localizeInfos?: { title?: string };
-      products?: IProductsEntity[];
-      similarProducts?: { items?: IProductsEntity[] } | IProductsEntity[];
-      quantity?: number;
-      countElementsPerRow?: number;
-    };
-    const title = block.localizeInfos?.title ?? marker;
-    const raw =
-      block.products ??
-      (Array.isArray(block.similarProducts)
-        ? block.similarProducts
-        : (block.similarProducts?.items ?? [])) ??
-      [];
-    const products =
-      typeof block.quantity === 'number' && block.quantity > 0 ? raw.slice(0, block.quantity) : raw;
-    return {
-      isError: false,
-      title,
-      products,
-      ...(block.quantity !== undefined && { quantity: block.quantity }),
-      ...(block.countElementsPerRow !== undefined && {
-        countElementsPerRow: block.countElementsPerRow,
-      }),
-    };
-  } catch (e: unknown) {
-    return { isError: true, error: e as IError, title: '', products: [] };
-  }
-});
+export const getBlockProducts = cache(
+  async (marker: string): Promise<BlockProducts> => fetchBlockProducts(marker)
+);

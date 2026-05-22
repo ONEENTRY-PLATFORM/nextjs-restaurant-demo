@@ -124,7 +124,11 @@ const Header = async (): Promise<JSX.Element> => {
           </div>
         </div>
       </HeaderAnimations>
-      <FilterBottom preferences={preferenceOptions} />
+      {/* `Suspense` isolates `useSearchParams()` inside FilterBottom — without it
+          the whole route would bail out to dynamic rendering and skip ISR. */}
+      <Suspense fallback={null}>
+        <FilterBottom preferences={preferenceOptions} />
+      </Suspense>
       <CategoryFilter pages={populatedPages} />
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />
     </div>

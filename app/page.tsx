@@ -7,8 +7,17 @@ import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
 
-// Force-dynamic: the layout chain uses `useSearchParams()`.
-export const dynamic = 'force-dynamic';
+// Home is OneEntry-driven content that changes only when an admin updates the
+// CMS, so we cache the SSR output for 5 minutes instead of re-fetching every
+// page view. Individual OneEntry fetchers also use `unstable_cache` with
+// 60-300 s TTL, so even a stale-while-revalidate regeneration usually serves
+// the heavy data from the data cache.
+// Every `useSearchParams()` in the tree (SearchBar, CategoriesScroller,
+// FilterBottom) is wrapped in `<Suspense>` upstream — `force-static` will
+// fail loud at build time if anything slips back into dynamic territory,
+// which is the early-warning we want.
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 // Whitelisted block identifiers; unknown ones are silently skipped.
 const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);

@@ -6,7 +6,6 @@ import { getDictionary } from '@/app/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { DictProvider } from '@/app/store/providers/DictProvider';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
-import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StoreProvider from '@/app/store/providers/StoreProvider';
 import PopupRoot from '@/components/layout/PopupRoot';
 
@@ -63,14 +62,18 @@ export const metadata: Metadata = {
  * @param   {React.ReactNode}   props.children - Page tree rendered inside the layout.
  * @returns Promise resolving to JSX of the `<html>` shell with global providers, header, footer, and modals.
  */
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const dictValue = await getDictionary();
-  ServerProvider('dict', dictValue);
-  const dict = dictValue;
+  // Kick off the dictionary fetch but DO NOT await it: passing the promise to
+  // `DictProvider` lets Header / page server components fire their own
+  // OneEntry calls in parallel with `getDictionary()` instead of waiting for
+  // it to resolve first. `getDictionary()` is wrapped in React `cache()`, so
+  // every other server caller (e.g. server-side `t()`) shares this same
+  // in-flight promise.
+  const dictPromise = getDictionary();
 
   return (
     <html lang="en">
@@ -79,7 +82,7 @@ export default async function RootLayout({
       >
         <RegisterGSAP />
         <StoreProvider>
-          <DictProvider value={dict}>
+          <DictProvider value={dictPromise}>
             <AuthProvider>
               <OpenDrawerProvider>
                 <Header />

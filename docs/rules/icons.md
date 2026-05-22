@@ -1,43 +1,43 @@
 # Icons — three storage forms
 
-Полное правило хранения и подключения иконок. Краткое tl;dr — в [CLAUDE.md §3.3](../../CLAUDE.md).
+Full rule for icon storage and wiring. Short tl;dr — in [CLAUDE.md §3.3](../../CLAUDE.md).
 
 ---
 
-## 3.3. Иконки: куда класть и в какой форме
+## 3.3. Icons: where to put them and in what form
 
-Три формы хранения, выбор по тому, **что делает иконка в DOM**:
+Three storage forms, chosen by **what the icon does in the DOM**:
 
-1. **`public/images/icons/*.svg` (статический URL-ассет)** — для **полностью декоративных** иконок с **зашитыми** `fill`/`stroke` цветами, без CSS-стилизации со стороны родителя и без hover-эффектов на `path`. Загружаются через `next/image`:
+1. **`public/images/icons/*.svg` (static URL asset)** — for **fully decorative** icons with **hard-coded** `fill`/`stroke` colors, with no CSS styling from the parent and no `path`-level hover effects. Loaded via `next/image`:
 
    ```tsx
    import Image from 'next/image';
    <Image src="/images/icons/flame.svg" alt="" width={15} height={20} />
    ```
 
-   Здесь нет SVGR, иконка превращается в `<img>` (replaced element) — стили родителя (`group:hover`, `currentColor`) на `path` внутри **не действуют**. Зато оптимизация раздачи (immutable cache в [next.config.ts](../../next.config.ts) `headers()`), и не раздувается JS-бандл. Это default для новых декоративных иконок.
+   There's no SVGR here, the icon becomes an `<img>` (replaced element) — parent styles (`group:hover`, `currentColor`) **do not affect** the inner `path`. In return you get delivery optimization (immutable cache in [next.config.ts](../../next.config.ts) `headers()`), and the JS bundle doesn't bloat. This is the default for new decorative icons.
 
-2. **`components/icons/*.svg` (SVGR — инлайн SVG в DOM)** — когда иконка нужна **инлайн** в DOM, чтобы её `path` ловил CSS-селектор родителя (`.hover-target path { fill: var(--color-brand) }` из [app/styles/main.css](../../app/styles/main.css)) или чтобы внутри SVG работал `class="hover-target"`. SVGR настроен в [next.config.ts](../../next.config.ts) (`@svgr/webpack`, `icon: false, titleProp: true`), TS-декларация — в [app/types/svg.d.ts](../../app/types/svg.d.ts), Tailwind v4 content-glob расширен до `*.svg` в [tailwind.config.js](../../tailwind.config.js). Импорт **всегда с явным расширением**:
+2. **`components/icons/*.svg` (SVGR — inline SVG in the DOM)** — when the icon needs to be **inline** in the DOM so its `path` is hit by a parent's CSS selector (`.hover-target path { fill: var(--color-brand) }` from [app/styles/main.css](../../app/styles/main.css)) or so that `class="hover-target"` works inside the SVG. SVGR is configured in [next.config.ts](../../next.config.ts) (`@svgr/webpack`, `icon: false, titleProp: true`), the TS declaration is in [app/types/svg.d.ts](../../app/types/svg.d.ts), Tailwind v4 content-glob is extended to `*.svg` in [tailwind.config.js](../../tailwind.config.js). Import **always with explicit extension**:
 
    ```tsx
    import CloseXBoldIcon from '@/components/icons/close-x-bold.svg';
    <CloseXBoldIcon className="hover-target" />
    ```
 
-   Внутри `.svg` пиши `class="..."` (не `className`) и `stroke-width=`/`fill-rule=` через дефис — SVGR конвертирует в JSX-имена.
+   Inside the `.svg` write `class="..."` (not `className`) and `stroke-width=`/`fill-rule=` with a dash — SVGR converts them into JSX names.
 
-3. **`components/icons/*.tsx` (React-компонент)** — когда у иконки есть props, меняющие **рендер**: `active`, `filled`, `size`, `variant`, conditional-логика, мердж fixed className c пользовательским. Примеры: [heart-card.tsx](../../components/icons/heart-card.tsx) (filled), [house.tsx](../../components/icons/house.tsx) (size), [clock-circle.tsx](../../components/icons/clock-circle.tsx) (variant), [star-card.tsx](../../components/icons/star-card.tsx) (size+filled).
+3. **`components/icons/*.tsx` (React component)** — when the icon has props that change the **render**: `active`, `filled`, `size`, `variant`, conditional logic, merging a fixed className with a user one. Examples: [heart-card.tsx](../../components/icons/heart-card.tsx) (filled), [house.tsx](../../components/icons/house.tsx) (size), [clock-circle.tsx](../../components/icons/clock-circle.tsx) (variant), [star-card.tsx](../../components/icons/star-card.tsx) (size+filled).
 
-**Правило выбора при добавлении новой иконки:**
+**Selection rule when adding a new icon:**
 
-1. Цвета зашиты, ничего не реагирует на ховер родителя, нет внутренних классов вроде `hover-target` → **`public/images/icons/*.svg`**.
-2. Иконка должна быть инлайн в DOM (CSS-стилизация родителя на `path`, `class="hover-target"` внутри, `currentColor`) → **`components/icons/*.svg`**.
-3. Иконка переключается по состоянию (filled/outlined, active, disabled) или принимает дискриминирующий prop → **`components/icons/*.tsx`**.
+1. Colors are hard-coded, nothing reacts to a parent hover, no internal classes like `hover-target` → **`public/images/icons/*.svg`**.
+2. The icon must be inline in the DOM (parent CSS styling of `path`, `class="hover-target"` inside, `currentColor`) → **`components/icons/*.svg`**.
+3. The icon switches by state (filled/outlined, active, disabled) or accepts a discriminating prop → **`components/icons/*.tsx`**.
 
-**Никогда:**
+**Never:**
 
-- Не оставляй inline `<svg>` прямо в компонентах фич. Любой инлайновый SVG длиной > 1 path выноси либо в `public/images/icons/`, либо в `components/icons/` (правило 3.2 про чистоту кода).
-- Не дублируй уже существующую иконку под другим именем. Сначала проверяй [components/icons/](../../components/icons/) и [public/images/icons/](../../public/images/icons/).
-- Не клади SVG с `class="hover-target"` (или иной CSS-зависимостью от родителя) в `public/images/icons/` — внутренние стили потеряются, потому что `<img>` не пробрасывает CSS родителя в свой shadow DOM. Такой SVG должен жить в `components/icons/` и импортироваться через SVGR.
+- Don't leave inline `<svg>` directly in feature components. Any inline SVG longer than 1 path — move it either to `public/images/icons/` or to `components/icons/` (rule 3.2 on code hygiene).
+- Don't duplicate an existing icon under a different name. First check [components/icons/](../../components/icons/) and [public/images/icons/](../../public/images/icons/).
+- Don't put an SVG with `class="hover-target"` (or any other CSS dependency on a parent) into `public/images/icons/` — internal styles will be lost because `<img>` doesn't propagate parent CSS into its shadow DOM. Such an SVG must live in `components/icons/` and be imported via SVGR.
 
-**Tailwind-классы внутри `components/icons/*.svg`:** content-glob уже включает `*.svg`, так что `class="fill-[#EC722B] hover-target"` внутри SVG-файла будет отсканирован и сгенерирован. Если классы вдруг не применяются — первое, что проверить: что путь файла попадает под `content` в [tailwind.config.js](../../tailwind.config.js). Для `public/images/icons/*.svg` Tailwind-классы внутри **не работают** (файл не проходит через бандлер).
+**Tailwind classes inside `components/icons/*.svg`:** the content-glob already includes `*.svg`, so `class="fill-[#EC722B] hover-target"` inside an SVG file will be scanned and generated. If classes aren't applying — the first thing to check is that the file path falls under `content` in [tailwind.config.js](../../tailwind.config.js). For `public/images/icons/*.svg`, Tailwind classes inside **don't work** (the file doesn't pass through the bundler).

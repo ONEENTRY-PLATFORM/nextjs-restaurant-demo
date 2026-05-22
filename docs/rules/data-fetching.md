@@ -1,25 +1,25 @@
 # Data fetching — RTK Query vs server fetcher vs custom hook
 
-Где брать данные из OneEntry и в каком слое. Краткое tl;dr — в [CLAUDE.md §5](../../CLAUDE.md).
+Where to fetch OneEntry data from and in which layer. Short tl;dr — in [CLAUDE.md §5](../../CLAUDE.md).
 
-В проекте три параллельных способа обращения к OneEntry. Это **сознательное** разделение по сценарию; выбор зависит от того, где и зачем нужны данные.
+The project has three parallel ways of talking to OneEntry. This is a **deliberate** separation by scenario; the choice depends on where and why the data is needed.
 
 ---
 
-## Слои
+## Layers
 
 ### 1. Server fetchers — [app/api/server/](../../app/api/server/)
 
-Async-функции, обёртки над `getApi()` SDK с `cache()` от React (deduplication внутри одного рендера).
+Async functions wrapping `getApi()` SDK with React `cache()` (deduplication within a single render).
 
-**Когда использовать:**
+**When to use:**
 
-- Server Components (`page.tsx`, `layout.tsx` без `'use client'`).
-- `generateMetadata()` для SEO.
+- Server Components (`page.tsx`, `layout.tsx` without `'use client'`).
+- `generateMetadata()` for SEO.
 - Route handlers (`app/.../route.ts`).
-- Везде, где данные нужны на сервере и могут быть отрисованы в HTML без гидратации.
+- Anywhere data is needed on the server and can be rendered into HTML without hydration.
 
-**Паттерн** (см. [app/api/server/pages/getPageByUrl.ts](../../app/api/server/pages/getPageByUrl.ts)):
+**Pattern** (see [app/api/server/pages/getPageByUrl.ts](../../app/api/server/pages/getPageByUrl.ts)):
 
 ```typescript
 import { cache } from 'react';
@@ -37,19 +37,19 @@ export const getPageByUrl = cache(async (url: string) => {
 });
 ```
 
-Возвращаем discriminated union `{ isError, error?, page? }` — graceful fallback, **не** бросаем (правило 5: graceful fallback на `"Resource is closed"` и пустые коллекции обязателен).
+Return a discriminated union `{ isError, error?, page? }` — graceful fallback, **don't** throw (rule 5: graceful fallback on `"Resource is closed"` and empty collections is mandatory).
 
 ### 2. RTK Query — [app/api/api/RTKApi.ts](../../app/api/api/RTKApi.ts)
 
-Один централизованный `createApi()` с `fakeBaseQuery()`. Все query/mutation endpoints собраны в одном файле, экспортируются как `useGet*Query` / `useLazyGet*Query` через [app/api/index.ts](../../app/api/index.ts).
+One centralized `createApi()` with `fakeBaseQuery()`. All query/mutation endpoints are collected in a single file and exported as `useGet*Query` / `useLazyGet*Query` via [app/api/index.ts](../../app/api/index.ts).
 
-**Когда использовать:**
+**When to use:**
 
-- Client Components, которым нужны данные **на лету** (открытие попапа, переключение фильтров, search-as-you-type).
-- Когда нужна автоматическая дедупликация запросов, инвалидация по `tagTypes`, и shared cache между компонентами.
-- Когда отображается лоадер/ошибка прямо в UI (`isLoading`, `isError` приходят бесплатно).
+- Client Components that need data **on the fly** (opening a popup, switching filters, search-as-you-type).
+- When you need automatic request deduplication, invalidation via `tagTypes`, and shared cache across components.
+- When loader/error are displayed directly in the UI (`isLoading`, `isError` come for free).
 
-**Паттерн** (см. [RTKApi.ts](../../app/api/api/RTKApi.ts) — `getBlocksByPageUrl`):
+**Pattern** (see [RTKApi.ts](../../app/api/api/RTKApi.ts) — `getBlocksByPageUrl`):
 
 ```typescript
 getBlocksByPageUrl: build.query<IPositionBlock[], { pageUrl: string }>({
@@ -63,25 +63,25 @@ getBlocksByPageUrl: build.query<IPositionBlock[], { pageUrl: string }>({
 }),
 ```
 
-Использование в компоненте:
+Usage in a component:
 
 ```tsx
 const { data: blocks, isLoading } = useGetBlocksByPageUrlQuery({ pageUrl: 'home' });
 ```
 
-`tagTypes` (`['Products', 'Pages', 'Blocks', 'Forms', 'Orders', 'User', 'Accounts', 'Sessions']`) — для cross-endpoint инвалидации. После мутации (например, `Orders.createOrder`) — `invalidatesTags: ['Orders']` пересоберёт список заказов.
+`tagTypes` (`['Products', 'Pages', 'Blocks', 'Forms', 'Orders', 'User', 'Accounts', 'Sessions']`) — for cross-endpoint invalidation. After a mutation (e.g. `Orders.createOrder`) — `invalidatesTags: ['Orders']` will refetch the orders list.
 
 ### 3. Custom hooks — [app/api/hooks/](../../app/api/hooks/)
 
-Тонкие client-side хуки **поверх** `getApi()` или RTK Query, инкапсулирующие специфическую логику (мутация + state, поиск с debounce, координация нескольких вызовов).
+Thin client-side hooks **over** `getApi()` or RTK Query, encapsulating specific logic (mutation + state, search with debounce, coordination of several calls).
 
-**Когда использовать:**
+**When to use:**
 
-- Мутации с побочными эффектами (создать заказ → очистить корзину → редирект на Stripe).
-- Логика, которая не ложится в `build.mutation` RTK Query: ветвление на `paymentAccountIdentifier === 'cash'` vs Stripe-redirect, error mapping, toast'ы (см. [useCreateOrder.ts](../../app/api/hooks/useCreateOrder.ts)).
-- Search с debounce, поверх `Products.getProducts` (см. [useSearchProducts.ts](../../app/api/hooks/useSearchProducts.ts)).
+- Mutations with side effects (create an order → clear the cart → redirect to Stripe).
+- Logic that doesn't fit into an RTK Query `build.mutation`: branching on `paymentAccountIdentifier === 'cash'` vs Stripe redirect, error mapping, toasts (see [useCreateOrder.ts](../../app/api/hooks/useCreateOrder.ts)).
+- Search with debounce on top of `Products.getProducts` (see [useSearchProducts.ts](../../app/api/hooks/useSearchProducts.ts)).
 
-**Паттерн** (см. [useCreateOrder.ts](../../app/api/hooks/useCreateOrder.ts)):
+**Pattern** (see [useCreateOrder.ts](../../app/api/hooks/useCreateOrder.ts)):
 
 ```typescript
 'use client';
@@ -107,48 +107,48 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 };
 ```
 
-Возвращают **action callbacks**, а не данные — компонент сам решает, когда вызвать.
+They return **action callbacks**, not data — the component decides when to invoke them.
 
 ---
 
 ## Decision tree
 
 ```text
-Где нужны данные?
+Where is the data needed?
 ├── Server Component / generateMetadata / route handler
-│   └── server fetcher из app/api/server/
+│   └── server fetcher from app/api/server/
 │
 └── Client Component
-    ├── GET для отображения (с loading/error в UI)
-    │   ├── Эндпоинт уже есть в RTKApi.ts
+    ├── GET for display (with loading/error in the UI)
+    │   ├── Endpoint already exists in RTKApi.ts
     │   │   └── useGet*Query / useLazyGet*Query
-    │   └── Нет эндпоинта — добавить в RTKApi.ts (build.query)
+    │   └── No endpoint — add to RTKApi.ts (build.query)
     │
-    ├── Мутация + redux side-effects / branching / toasts
-    │   └── Custom hook в app/api/hooks/ поверх getApi()
+    ├── Mutation + redux side-effects / branching / toasts
+    │   └── Custom hook in app/api/hooks/ over getApi()
     │
-    └── One-off вызов без redux/UI state
-        └── Прямой getApi() в коллбэке (без хука)
+    └── One-off call without redux/UI state
+        └── Direct getApi() in a callback (no hook)
 ```
 
 ---
 
 ## Anti-patterns
 
-- **Server fetcher в Client Component.** Server fetchers (`getPageByUrl`, `getProducts`, ...) могут импортироваться в client, но при первом рендере браузер сделает API-вызов из клиента, теряя SSR-преимущества. Если нужна client-side подгрузка — используй RTK Query.
+- **Server fetcher in a Client Component.** Server fetchers (`getPageByUrl`, `getProducts`, ...) can be imported into a client, but on first render the browser will make the API call from the client, losing the SSR benefit. If client-side loading is needed — use RTK Query.
 
-- **`getApi()` напрямую в Client Component без обёртки.** Допустимо только для одноразового coll-back-style вызова без redux-зависимости (например, `onClick={async () => { await getApi().Events.subscribe(id); }}`). Если появляется loading/error state или повторное использование — это сигнал завести custom hook или эндпоинт в RTK.
+- **`getApi()` directly in a Client Component without a wrapper.** Acceptable only for a one-off callback-style call without redux dependency (e.g. `onClick={async () => { await getApi().Events.subscribe(id); }}`). If a loading/error state or reuse appears — that's a signal to create a custom hook or an RTK endpoint.
 
-- **Дублирование одного и того же запроса в нескольких слоях.** Например, `getProductById` существует и в `server/` и в `RTKApi` (`useGetProductByIdQuery`) — это норма, потому что один используется на SSR-странице товара, другой — для подсветки товара в попапе. Но не заводи **третью** обёртку («custom hook вокруг useGetProductByIdQuery»), если нет специфической логики.
+- **Duplicating the same request across several layers.** For example, `getProductById` exists both in `server/` and in `RTKApi` (`useGetProductByIdQuery`) — that's fine, because one is used on the SSR product page, the other for highlighting a product in a popup. But don't create a **third** wrapper ("custom hook around useGetProductByIdQuery") if there's no specific logic.
 
-- **Хардкод markers / pageUrls.** Любой `getApi().Pages.getPageByUrl('home')` или `Orders.getAllOrdersByMarker('delivery_order')` — это **marker**, не Next.js route. Не подставляй сюда `params.handle` без проверки (см. [CLAUDE.md глоссарий MCP](../../CLAUDE.md), §5).
+- **Hard-coding markers / pageUrls.** Any `getApi().Pages.getPageByUrl('home')` or `Orders.getAllOrdersByMarker('delivery_order')` — that's a **marker**, not a Next.js route. Don't substitute `params.handle` here without verification (see [CLAUDE.md MCP glossary](../../CLAUDE.md), §5).
 
-- **Бросать ошибку из server fetcher.** Сервер должен возвращать `{ isError: true, error }`, не `throw`. Иначе ломается graceful fallback на `"Resource is closed"`.
+- **Throwing from a server fetcher.** The server must return `{ isError: true, error }`, not `throw`. Otherwise the graceful fallback on `"Resource is closed"` breaks.
 
 ---
 
-## Текущий inventory
+## Current inventory
 
-- **Server fetchers** — `getPageByUrl`, `getProducts`, `getProductById`, `getBlocks`, `getBlockProducts`, `getBlocksByPageUrl`, `getMenuByMarker`, `getFormByMarker`, `getAllOrdersByMarker`, `updateOrderByMarkerAndId`, `getBlogBanners`, `getChildPagesByParentUrl`, `getPagesByIds`, `getProductsByPageUrl`, `getProductsPriceRange`, `getRelatedProductsById`, `getProductReviews`, `getAdminsInfo`, `getSingleAttributeByMarkerSet`, `logInUser`, `logOutUser`, `oauthLogIn`, `updateUserState` — см. [app/api/index.ts](../../app/api/index.ts).
+- **Server fetchers** — `getPageByUrl`, `getProducts`, `getProductById`, `getBlocks`, `getBlockProducts`, `getBlocksByPageUrl`, `getMenuByMarker`, `getFormByMarker`, `getAllOrdersByMarker`, `updateOrderByMarkerAndId`, `getBlogBanners`, `getChildPagesByParentUrl`, `getPagesByIds`, `getProductsByPageUrl`, `getProductsPriceRange`, `getRelatedProductsById`, `getProductReviews`, `getAdminsInfo`, `getSingleAttributeByMarkerSet`, `logInUser`, `logOutUser`, `oauthLogIn`, `updateUserState` — see [app/api/index.ts](../../app/api/index.ts).
 - **RTK Query endpoints** — `useGetAccountsQuery`, `useGetAuthProvidersQuery`, `useGetBlockByMarkerQuery`, `useGetBlocksByPageUrlQuery`, `useGetChildPagesByParentUrlQuery`, `useGetFormByMarkerQuery`, `useGetMenuByMarkerQuery`, `useGetOrderStorageByMarkerQuery`, `useGetPageByIdQuery`, `useGetPaymentSessionByIdQuery`, `useGetProductByIdQuery`, `useGetProductsByIdsQuery`, `useGetProductsByPageUrlQuery`, `useGetProductsQuery`, `useGetSingleOrderQuery`, `useLazyGetMeQuery`, `useLazyGetPaymentSessionByIdQuery`.
 - **Custom hooks** — `useApplyCoupon`, `useCreateOrder`, `useSearchProducts`, `useSetForm`, `useAttributesData`, `useEvents`.

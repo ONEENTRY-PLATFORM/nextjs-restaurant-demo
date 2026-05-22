@@ -1,27 +1,27 @@
 # JSDoc contract
 
-Полное правило JSDoc для всех объявленных функций. Краткое tl;dr — в [CLAUDE.md §3.4](../../CLAUDE.md).
+Full JSDoc rule for every declared function. Short tl;dr — in [CLAUDE.md §3.4](../../CLAUDE.md).
 
 ---
 
-## 3.4. JSDoc обязателен для функций — с типами и chain-нотацией
+## 3.4. JSDoc is mandatory on functions — with types and chain notation
 
-Каждая **объявленная функция** в проекте — React-компонент, кастомный хук, утилита, серверный action, обработчик, экспортируемая или нет — должна сопровождаться JSDoc-блоком над объявлением. **Все `@param` обязательно с типом в фигурных скобках** — даже если этот тип уже есть в TypeScript-сигнатуре (это **сознательное дублирование**: помогает читать код в IDE-тултипах, в hover-предпросмотре, и в diff-ах без переключения на сигнатуру). **`@returns` пишется БЕЗ типа** — только описание (тип возврата уже есть в TS-сигнатуре, дублировать его в JSDoc не нужно).
+Every **declared function** in the project — React component, custom hook, utility, server action, handler, exported or not — must be accompanied by a JSDoc block above the declaration. **All `@param` entries must carry a type in curly braces** — even though that type already exists in the TypeScript signature (this is **deliberate duplication**: it helps reading code in IDE tooltips, in hover previews, and in diffs without switching to the signature). **`@returns` is written WITHOUT a type** — description only (the return type is already in the TS signature, no need to duplicate it in JSDoc).
 
-- **Язык — английский.** Все JSDoc-комментарии и инлайн-комментарии в коде пишутся на английском, в тон существующих описаний в проекте. Русские комментарии (наследие из ранних коммитов) при правке файла переводить на английский.
-- **Структура:**
-  1. Первая строка — короткое описание через em-dash: `Имя — что делает.` (английский).
-  2. Пустая строка.
-  3. **Только flow-описание** (последовательность действий: «Fetches X, then normalizes Y, persists Z»; «Tries A first; falls back to B»; «On success stores X»; «Mobile: …; Desktop: …»). Никакого другого расширенного контекста — не писать rationale («because of …»), альтернативы, причины возникновения, usage-context («used as / used by …»), исторические заметки, кросс-ссылки на других вызывающих, edge-case-замечания. Эти вещи живут в PR-описании / commit message, а не в JSDoc — там они быстро устаревают. Если flow-абзаца нет — сразу `@param`/`@returns` после пустой строки.
-  4. `@param   {Type}   name           - Description.` для каждого аргумента.
-  5. Для деструктурированных props — **chain-нотация**: сначала сам объект `props` (тип `{object}` или именованный type), затем каждое поле `props.fieldName` с собственным типом.
-  6. `@returns Description.` — **всегда** при наличии return-значения, **без типа в фигурных скобках**. Для React-компонентов: `@returns JSX of the <thing>.` Для async-серверных функций: `@returns Promise resolving to <thing>.`
-- **Выравнивание.** Колонки `{Type}`, `name`, `- Description` для `@param` — выравниваем пробелами по вертикали внутри одного JSDoc-блока, чтобы читать как таблицу. Если типы сильно разной длины — допускаем единичный пробел; главное, чтобы в одном блоке стиль был консистентным. У `@returns` колонки нет — описание идёт сразу после тега через один пробел.
-- **Внутренние коллбэки** в `useEffect`/`useGSAP`/`map`/`filter`/`onClick={() => ...}` — **без** JSDoc, если у них нет отдельного именованного объявления.
-- При правке файла, где у функции уже есть однострочный JSDoc без `@param`/`@returns` — **расширить** до полной формы.
-- Это правило **переопределяет** дефолтное «no comments» из системного промпта Claude: для этого проекта JSDoc — часть контракта функции, а не комментарий «на всякий случай».
+- **Language — English.** All JSDoc comments and inline comments in code are written in English, in the tone of existing descriptions in the project. Russian comments (legacy from early commits) are to be translated to English when editing the file.
+- **Structure:**
+  1. First line — a short description via em-dash: `Name — what it does.` (English).
+  2. Empty line.
+  3. **Only the flow description** (sequence of actions: "Fetches X, then normalizes Y, persists Z"; "Tries A first; falls back to B"; "On success stores X"; "Mobile: …; Desktop: …"). No other extended context — do not write rationale ("because of …"), alternatives, reasons for existence, usage context ("used as / used by …"), historical notes, cross-references to other callers, edge-case remarks. These belong in the PR description / commit message, not in JSDoc — there they go stale fast. If there's no flow paragraph — go straight to `@param`/`@returns` after the empty line.
+  4. `@param   {Type}   name           - Description.` for each argument.
+  5. For destructured props — **chain notation**: first the object `props` itself (type `{object}` or a named type), then each field `props.fieldName` with its own type.
+  6. `@returns Description.` — **always** when there is a return value, **without a type in curly braces**. For React components: `@returns JSX of the <thing>.` For async server functions: `@returns Promise resolving to <thing>.`
+- **Alignment.** The `{Type}`, `name`, `- Description` columns for `@param` are aligned vertically with spaces inside a single JSDoc block so it reads like a table. If types vary widely in length — a single space is acceptable; the main thing is that the style is consistent within one block. `@returns` has no column — the description goes right after the tag with a single space.
+- **Inner callbacks** in `useEffect`/`useGSAP`/`map`/`filter`/`onClick={() => ...}` — **no** JSDoc, unless they have a separate named declaration.
+- When editing a file where a function already has a one-liner JSDoc without `@param`/`@returns` — **expand** it to the full form.
+- This rule **overrides** the default "no comments" from Claude's system prompt: for this project JSDoc is part of a function's contract, not a "just in case" comment.
 
-**Каноничный пример (React-компонент с деструктурированными props):**
+**Canonical example (React component with destructured props):**
 
 ```tsx
 /**
@@ -37,7 +37,7 @@
 const CardAnimations = ({ children, className, index, productsLimit }: Props): JSX.Element => { ... }
 ```
 
-**Каноничный пример (async server fetcher):**
+**Canonical example (async server fetcher):**
 
 ```tsx
 /**
@@ -49,7 +49,7 @@ const CardAnimations = ({ children, className, index, productsLimit }: Props): J
 const fetchDictionary = async (): Promise<IAttributeValues> => { ... }
 ```
 
-**Каноничный пример (утилита с примитивными аргументами):**
+**Canonical example (utility with primitive arguments):**
 
 ```tsx
 /**

@@ -1,36 +1,36 @@
 # Claude Rules — nextjs-restaurant
 
-Правила работы Claude в этом проекте. Следовать строго. Обновлять этот файл по мере появления новых договорённостей с пользователем (правило 4).
+Rules for how Claude works in this project. Follow strictly. Update this file as new agreements with the user emerge (rule 4).
 
 ---
 
-## 1. Источники верстки — [static-html/](static-html/) + Figma (приоритет на размеры)
+## 1. Markup sources — [static-html/](static-html/) + Figma (sizes take priority)
 
-В папке [static-html/](static-html/) находится готовая HTML/CSS вёрстка, которую нужно перенести в полноценное Next.js-приложение на базе OneEntry CMS (проект: `https://oe-restaurants.oneentry.cloud/`). Figma-макет десктопа — `https://www.figma.com/design/l8tkFOn0DQ7tjvoMr15Fno/Rest_desktop`.
+The [static-html/](static-html/) folder contains a ready HTML/CSS markup that needs to be ported into a full Next.js application backed by OneEntry CMS (project: `https://oe-restaurants.oneentry.cloud/`). The desktop Figma is at `https://www.figma.com/design/l8tkFOn0DQ7tjvoMr15Fno/Rest_desktop`.
 
-- **Static-html — истина для DOM-структуры**: классы, теги, порядок элементов, текст-плейсхолдеры, ассеты. При реализации любого компонента сначала смотри соответствующий `.html` в [static-html/](static-html/).
-- **Figma — истина для размеров** (gap, padding, max-width, ширины/высоты карточек, расстояния между секциями). При конфликте по числовым размерам между static-html и Figma — **выигрывает Figma** (static-html не всегда успевает за обновлениями макета). Пример: card row gap = `xl:gap-15` (60px) по Figma, даже если в `static-html/index.html` стоит `gap-5` (20px).
-- Не «улучшай» разметку на свой вкус (не меняй теги, не переставляй блоки, не переименовывай классы) без явной просьбы пользователя.
-- CSS/ассеты подтягивай из [static-html/](static-html/) (уже частично скопированы в [public/](public/) и [app/styles/](app/styles/)). Если чего-то нет — перенеси из `static-html`, а не генерируй заново.
+- **Static-html is the truth for DOM structure**: classes, tags, element order, text placeholders, assets. When implementing any component, first look at the matching `.html` in [static-html/](static-html/).
+- **Figma is the truth for sizes** (gap, padding, max-width, card widths/heights, distances between sections). On a numeric-size conflict between static-html and Figma — **Figma wins** (static-html does not always keep up with mockup updates). Example: card row gap = `xl:gap-15` (60px) per Figma, even if `static-html/index.html` says `gap-5` (20px).
+- Do not "improve" the markup to your own taste (do not change tags, do not reorder blocks, do not rename classes) without an explicit user request.
+- Pull CSS/assets from [static-html/](static-html/) (already partially copied to [public/](public/) and [app/styles/](app/styles/)). If something is missing — port it over from `static-html`, don't regenerate from scratch.
 
-## 2. Интеграция OneEntry или моки — сразу, без «заглушек на потом»
+## 2. OneEntry integration or mocks — right away, no "stubs for later"
 
-При реализации каждого компонента:
+When implementing each component:
 
-1. **Сначала пытайся подтянуть данные из OneEntry** через MCP (правило 5) и серверные API-обёртки в [app/api/](app/api/).
-2. **Если данных в OneEntry пока нет** — используй мок-данные, соответствующие по форме реальному ответу OneEntry (чтобы потом замена была тривиальной). Мок кладётся рядом с компонентом в файле `mock*.ts` (см. существующий паттерн [components/home/mockMenuData.ts](components/home/mockMenuData.ts)).
-3. **Не оставляй компоненты пустыми** или с `TODO: hook up data later`. Либо OneEntry, либо мок — всегда рабочий рендер.
-4. Мок должен визуально соответствовать верстке (правило 1): если в `index.html` 8 карточек блюд в секции — мок тоже отдаёт 8.
+1. **First try to pull data from OneEntry** via MCP (rule 5) and the server API wrappers in [app/api/](app/api/).
+2. **If OneEntry doesn't have the data yet** — use mock data shaped to match the real OneEntry response (so a later swap is trivial). The mock goes next to the component in a `mock*.ts` file (see the existing pattern [components/home/mockMenuData.ts](components/home/mockMenuData.ts)).
+3. **Don't leave components empty** or with `TODO: hook up data later`. Either OneEntry or a mock — always a working render.
+4. The mock must visually match the markup (rule 1): if `index.html` has 8 dish cards in a section — the mock returns 8 too.
 
-## 3. Недостающие сущности OneEntry → [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md)
+## 3. Missing OneEntry entities → [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md)
 
-Когда по ходу работы выясняется, что в OneEntry admin-панели нет нужной страницы, блока, атрибута, формы, продукта и т.п.:
+When during the work it turns out that the OneEntry admin panel doesn't have a needed page, block, attribute, form, product, etc.:
 
-- Открыть [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) и **дописать** конкретный пункт: что именно нужно создать (сущность, путь, поля, связи), для какого экрана/компонента это требуется, и каким fallback временно закрыли пробел.
-- После того как пользователь сообщил, что настроено в админке, и ты это проверил через MCP — **отметить `✅`** рядом.
-- Структуру файла не ломать, сохранять существующее разбиение по подсекциям (C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history).
-- Новые пункты формулировать **actionable**: «создать в Pages страницу с URL `menu`, type `Category`, локаль ru/en» — а не «добавить меню».
-- **Поля атрибутов / форм** — оформлять только в виде markdown-таблицы с колонками `marker | type | title` (минимум). По необходимости добавлять колонки `required`, `default`, `notes` — но колонки `marker`/`type`/`title` обязательны и идут первыми. Текстом «нужны поля name, email, message» — нельзя, только таблица. Пример:
+- Open [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) and **add** a concrete item: what exactly needs to be created (entity, path, fields, relations), for which screen/component it's required, and what fallback temporarily closed the gap.
+- After the user reports that the admin panel is configured, and you have verified it via MCP — **mark with `✅`** next to it.
+- Don't break the file's structure, keep the existing subsection split (C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history).
+- Phrase new items as **actionable**: "create a page in Pages with URL `menu`, type `Category`, locales ru/en" — not "add a menu".
+- **Attribute / form fields** — only as a markdown table with columns `marker | type | title` (at minimum). Add `required`, `default`, `notes` columns if needed — but `marker`/`type`/`title` columns are mandatory and come first. Plain text like "we need fields name, email, message" is not allowed, only a table. Example:
 
   ```markdown
   | marker     | type    | title       |
@@ -40,130 +40,145 @@
   | `spam`     | spam    | reCAPTCHA   |
   ```
 
-### 3.1. Вопросы клиенту → туда же
+### 3.1. Questions for the client → same file
 
-Если по ходу работы возникает вопрос, который должен решить **клиент/заказчик** (расхождение макета и ТЗ, неоднозначное поведение, выбор между вариантами реализации, недостающие требования) — фиксируй его **в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) рядом с релевантным пунктом**, помечая префиксом `> ❓ **Уточнить у клиента:**`. Описывай: что в вёрстке/ТЗ не сходится, какие варианты возможны, какой временно выбран в коде. Не держи такие вопросы только в чате — они теряются. После ответа клиента — обновить пункт и пометить `✅` либо удалить.
+If during the work a question arises that must be decided by the **client/customer** (mismatch between mockup and spec, ambiguous behavior, choice between implementation options, missing requirements) — record it **in [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) next to the relevant item**, marking it with the prefix `> ❓ **Ask the client:**`. Describe: what in the markup/spec doesn't add up, what options are possible, which one is temporarily chosen in code. Don't keep such questions only in chat — they get lost. After the client answers — update the item and mark `✅` or remove.
 
-## 3.1. Стили, тема и чистота кода → [docs/rules/styles.md](docs/rules/styles.md)
+## 3.1. Styles, theme, and code hygiene → [docs/rules/styles.md](docs/rules/styles.md)
 
-Полные правила работы со стилями (Tailwind v4, токены `@theme`, arbitrary-значения, боковые отступы контента, чистка закомментированных блоков) — в [docs/rules/styles.md](docs/rules/styles.md).
-
-**tl;dr:**
-
-- Дизайн-токены — только в `@theme inline { ... }` в [app/globals.css](app/globals.css), не в [tailwind.config.js](tailwind.config.js).
-- Компонентные классы (`.menu_item`, `.cart_btn`, …) — в [app/styles/main.css](app/styles/main.css), подключение через `@import` (не `@reference`).
-- Перед `className="…[18px]…"` сначала ищи готовый класс из темы (например `h-4.5`). Arbitrary `[...]` — только когда токена нет; если повторяется в 3+ местах — заведи токен.
-- Любая корневая обёртка страницы — `px-4` + схема `max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323`. Контент не прижимать к краю вьюпорта.
-- Закомментированные `import`-ы и JSX `{/* <X /> */}` удалять сразу при правке файла, не тащить.
-
-## 3.3. Иконки → [docs/rules/icons.md](docs/rules/icons.md)
-
-Три формы хранения иконок и правила выбора — в [docs/rules/icons.md](docs/rules/icons.md).
+Full rules for working with styles (Tailwind v4, `@theme` tokens, arbitrary values, content side padding, cleanup of commented-out blocks) — in [docs/rules/styles.md](docs/rules/styles.md).
 
 **tl;dr:**
 
-- `public/images/icons/*.svg` — декоративная иконка с зашитыми цветами, грузится как `<img>` через `next/image`. Default для нового.
-- `components/icons/*.svg` (через SVGR) — когда нужен инлайн SVG в DOM (CSS-родителя на `path`, `class="hover-target"`, `currentColor`).
-- `components/icons/*.tsx` — когда у иконки есть props, меняющие рендер (`filled`, `active`, `size`, `variant`).
-- Inline `<svg>` прямо в компонентах фич — нельзя. Дубликаты — проверяй [components/icons/](components/icons/) и [public/images/icons/](public/images/icons/) сначала.
+- Design tokens live only in `@theme inline { ... }` in [app/globals.css](app/globals.css), not in [tailwind.config.js](tailwind.config.js).
+- Component classes (`.menu_item`, `.cart_btn`, …) — in [app/styles/main.css](app/styles/main.css), wired via `@import` (not `@reference`).
+- Before writing `className="…[18px]…"` first look for a ready-made theme class (e.g. `h-4.5`). Arbitrary `[...]` — only when no token exists; if it repeats in 3+ places — introduce a token.
+- Any root page wrapper — `px-4` + the scheme `max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323`. Content must not stick to the viewport edge.
+- Commented `import`s and JSX `{/* <X /> */}` — delete on the spot when editing the file, don't carry them along.
+
+## 3.3. Icons → [docs/rules/icons.md](docs/rules/icons.md)
+
+Three storage forms for icons and selection rules — in [docs/rules/icons.md](docs/rules/icons.md).
+
+**tl;dr:**
+
+- `public/images/icons/*.svg` — a decorative icon with hard-coded colors, loaded as `<img>` via `next/image`. Default for new ones.
+- `components/icons/*.svg` (via SVGR) — when an inline SVG in the DOM is needed (parent CSS on `path`, `class="hover-target"`, `currentColor`).
+- `components/icons/*.tsx` — when the icon has props that change the render (`filled`, `active`, `size`, `variant`).
+- Inline `<svg>` directly in feature components — not allowed. Duplicates — check [components/icons/](components/icons/) and [public/images/icons/](public/images/icons/) first.
+
+## 3.5. Performance — SSR caching, lazy, parallelism → [docs/rules/performance.md](docs/rules/performance.md)
+
+Full rules: ISR (`force-static` + `revalidate`), `unstable_cache` over server fetchers, lazy-mount popups via `PopupRoot` + prefetch on hover, IntersectionObserver gate for images, deferred loading via `requestIdleCallback`, parallelizing layout fetches via a Promise prop with React 19 `use()` — in [docs/rules/performance.md](docs/rules/performance.md).
+
+**tl;dr:**
+
+- Content pages — `export const dynamic = 'force-static'; export const revalidate = 300;`. Never `force-dynamic` without justification.
+- Every `useSearchParams()` in the page tree — wrapped in `<Suspense>`, otherwise ISR silently switches off.
+- Server fetcher = `unstable_cache(impl, [keyParts], { revalidate, tags })` wrapped in React `cache()`. It's composition, not an alternative.
+- In one server component, independent fetches — `Promise.all`. Listing fetch per item — `Promise.all(items.map(...))`. No for-await waterfalls.
+- Popups (Cart/Profile/Reservation/Modal) are mounted only via [PopupRoot](components/layout/PopupRoot.tsx). A loader is added to [popupRegistry.ts](components/layout/popupRegistry.ts). On the trigger button — `onPointerEnter={() => prefetchPopup('CartPopup')}`.
+- Heavy libs (lightbox/charts) — separate module with a static CSS import, `dynamic({ ssr: false })`, `mounted` state. Turbopack does NOT support dynamic import of CSS.
+- Repeating product images — gate via `useNearViewport({ rootMargin: '300px' })` on top of `<Image loading="lazy">`.
+- `<Link>` in listings — `prefetch={false}` for product cards.
 
 ## 3.4. JSDoc → [docs/rules/jsdoc.md](docs/rules/jsdoc.md)
 
-Полный контракт JSDoc (структура, выравнивание, примеры для компонентов / async-фетчеров / утилит) — в [docs/rules/jsdoc.md](docs/rules/jsdoc.md).
+Full JSDoc contract (structure, alignment, examples for components / async fetchers / utilities) — in [docs/rules/jsdoc.md](docs/rules/jsdoc.md).
 
 **tl;dr:**
 
-- JSDoc обязателен над **каждой** объявленной функцией: React-компонент, хук, утилита, server action, обработчик.
-- Все `@param` — с типом в фигурных скобках (сознательное дублирование TS-типов для IDE-tooltips).
-- `@returns` — **без** типа, только описание.
-- Между summary-строкой и `@param` допускается **только flow-абзац** (последовательность действий / условные ветки / mobile vs desktop). Rationale, usage-context, исторические заметки, кросс-ссылки на вызывающих — **нельзя**: место таких комментариев в PR-описании / commit message, не в JSDoc.
-- Деструктурированные props — chain-нотация: сначала `props` (`{object}`), потом каждое поле `props.foo` со своим типом.
-- Внутренние коллбэки (`useEffect`, `map`, `onClick={() => …}`) — без JSDoc.
-- Это правило **переопределяет** дефолтное «no comments»: JSDoc — часть контракта функции.
+- JSDoc is mandatory above **every** declared function: React component, hook, utility, server action, handler.
+- All `@param` — with a type in curly braces (deliberate duplication of TS types for IDE tooltips).
+- `@returns` — **without** a type, description only.
+- Between the summary line and `@param` only a **flow paragraph** is allowed (sequence of actions / conditional branches / mobile vs desktop). Rationale, usage context, historical notes, cross-references to callers — **not allowed**: the place for such comments is the PR description / commit message, not JSDoc.
+- Destructured props — chain notation: first `props` (`{object}`), then each field `props.foo` with its own type.
+- Inner callbacks (`useEffect`, `map`, `onClick={() => …}`) — no JSDoc.
+- This rule **overrides** the default "no comments": JSDoc is part of a function's contract.
 
-## 4. Итеративное обновление этих правил
+## 4. Iterative updates to these rules
 
-Когда пользователь даёт новое распоряжение, которое меняет или расширяет способ работы над проектом (стиль кода, инструменты, ограничения, приоритеты) — дополни этот `CLAUDE.md` новым пунктом или уточни существующий. Правила эволюционируют вместе с проектом.
+When the user gives a new directive that changes or extends how to work on the project (code style, tools, constraints, priorities) — extend this `CLAUDE.md` with a new item or refine an existing one. Rules evolve together with the project.
 
-- Короткие договорённости про стиль ответа/общения — в персональную память (`~/.claude/projects/...`).
-- Правила проекта (как реализовывать фичи, откуда брать данные, куда писать) — сюда, в `CLAUDE.md`.
+- Short agreements about response/communication style — into personal memory (`~/.claude/projects/...`).
+- Project rules (how to implement features, where to fetch data from, where to write) — here, in `CLAUDE.md`.
 
-## 5. OneEntry — данные, MCP, диагностика
+## 5. OneEntry — data, MCP, diagnostics
 
-### 5.1. Где брать данные → [docs/rules/data-fetching.md](docs/rules/data-fetching.md)
+### 5.1. Where to fetch data → [docs/rules/data-fetching.md](docs/rules/data-fetching.md)
 
-Server fetcher ([app/api/server/](app/api/server/)) для SSR, RTK Query (`useGet*Query` через [RTKApi.ts](app/api/api/RTKApi.ts)) для client-side GET с автокэшем, custom hook ([app/api/hooks/](app/api/hooks/)) для мутаций с side-effects. Полные правила, паттерны и decision tree — в [docs/rules/data-fetching.md](docs/rules/data-fetching.md).
+Server fetcher ([app/api/server/](app/api/server/)) for SSR, RTK Query (`useGet*Query` via [RTKApi.ts](app/api/api/RTKApi.ts)) for client-side GET with auto-cache, custom hook ([app/api/hooks/](app/api/hooks/)) for mutations with side effects. Full rules, patterns, and decision tree — in [docs/rules/data-fetching.md](docs/rules/data-fetching.md).
 
-### 5.2. MCP OneEntry — канонический источник правды
+### 5.2. MCP OneEntry — canonical source of truth
 
-Строго придерживаться правил и паттернов MCP-сервера OneEntry (`@oneentry/mcp-server`, настроен в [.mcp.json](.mcp.json)), если иное явно не сказано в этих правилах.
+Strictly follow the rules and patterns of the OneEntry MCP server (`@oneentry/mcp-server`, configured in [.mcp.json](.mcp.json)), unless explicitly overridden by these rules.
 
-- Перед реализацией любой CMS-завязанной фичи вызывай `mcp__oneentry__load-context` / `mcp__oneentry__get-skill` / `mcp__oneentry__get-project-config` и следуй возвращённым рекомендациям (структура запросов, именование, порядок аргументов, обработка ошибок).
-- Используй именно те SDK-методы и сигнатуры, которые предписывает MCP, — не изобретай свои обёртки поверх `fetch`, если MCP рекомендует `oneentry` npm-пакет.
-- Типы ответов OneEntry (Products / Pages / Blocks / Forms / Orders / Attributes) приводи к форме, которую диктует MCP(SDK типы и интерфейсы), а не к произвольной.
-- Graceful fallback на `"Resource is closed"` и пустые коллекции — обязательный, как описано в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
-- Если рекомендация MCP противоречит локальным правилам (1–4), приоритет у локальных правил — но такой конфликт нужно зафиксировать вопросом пользователю, а не решать молча.
+- Before implementing any CMS-driven feature, call `mcp__oneentry__load-context` / `mcp__oneentry__get-skill` / `mcp__oneentry__get-project-config` and follow the returned recommendations (request structure, naming, argument order, error handling).
+- Use the exact SDK methods and signatures the MCP prescribes — do not invent your own `fetch` wrappers when MCP recommends the `oneentry` npm package.
+- OneEntry response types (Products / Pages / Blocks / Forms / Orders / Attributes) must be brought to the shape MCP dictates (SDK types and interfaces), not an arbitrary one.
+- Graceful fallback on `"Resource is closed"` and empty collections is mandatory, as described in [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
+- If an MCP recommendation contradicts the local rules (1–4), the local rules win — but such a conflict must be raised as a question to the user, not resolved silently.
 
-### 5.3. Диагностика OneEntry — сначала через MCP/SDK, а не curl
+### 5.3. OneEntry diagnostics — first via MCP/SDK, not curl
 
-Когда нужно проверить реальные данные OneEntry (формы, страницы, продукты, заказы, атрибуты), порядок строго такой:
+When you need to inspect real OneEntry data (forms, pages, products, orders, attributes), the order is strictly:
 
-1. **Сначала MCP** — `mcp__oneentry__inspect-api`, `get-skill`, `load-context`, `get-rule` — это канонический источник.
-2. **Если MCP не покрывает кейс** — временный node-скрипт через SDK (`defineOneEntry(...)`) в `.claude/temp/`, как описано в скилле `inspect-api`. Скрипт после инспекции удаляется.
-3. **Curl — последняя инстанция**, и только если ни MCP, ни SDK-скрипт по какой-то причине недоступны.
+1. **First MCP** — `mcp__oneentry__inspect-api`, `get-skill`, `load-context`, `get-rule` — this is the canonical source.
+2. **If MCP doesn't cover the case** — a temporary node script via the SDK (`defineOneEntry(...)`) in `.claude/temp/`, as described in the `inspect-api` skill. The script is deleted after inspection.
+3. **Curl is the last resort**, and only if neither MCP nor the SDK script is available for some reason.
 
-**Почему именно так:**
+**Why exactly this order:**
 
-- SDK нормализует ответы (`additionalFields` массив → `Record<marker, field>`, `attributeValues` по локали и т.п.). Curl возвращает сырые данные, которые **НЕ совпадают** с тем, что SDK отдаёт приложению — код по сырым данным будет ломаться.
-- SDK правильно проставляет хедеры (`x-app-token`, `x-device-metadata`, `Authorization` после auth). Если ставить руками `Authorization: Bearer <APP_TOKEN>` — SDK ждёт `x-app-token`, и сервер вернёт `403 "Resource is closed"` даже на абсолютно публичный ресурс. Этот же 403 ловится при curl-запросе и легко принимается за «ресурс закрыт в админке», хотя проблема — в неправильном хедере.
-- Реальные конфигурационные id (`moduleFormConfigs[0].id`, `moduleEntityIdentifier`, `formIdentifier`) приходят только из ответа SDK на `getFormByMarker`. Хардкодить такие id «по умолчанию» нельзя — они расходятся между проектами и легко ломают `postFormsData` молчанием.
+- The SDK normalizes responses (`additionalFields` array → `Record<marker, field>`, `attributeValues` by locale, etc.). Curl returns raw data that **does NOT match** what the SDK delivers to the app — code written against raw data will break.
+- The SDK sets headers correctly (`x-app-token`, `x-device-metadata`, `Authorization` after auth). If you set `Authorization: Bearer <APP_TOKEN>` manually — the SDK expects `x-app-token`, and the server returns `403 "Resource is closed"` even for an entirely public resource. That same 403 gets caught in a curl request and is easily mistaken for "the resource is closed in the admin", though the actual issue is the wrong header.
+- Real configuration IDs (`moduleFormConfigs[0].id`, `moduleEntityIdentifier`, `formIdentifier`) come only from the SDK response to `getFormByMarker`. Hardcoding such IDs "by default" is not allowed — they diverge between projects and silently break `postFormsData`.
 
-**Когда пользователь жалуется «не работает»:** не угадывай причину. Воспроизведи запрос через MCP/SDK-скрипт, посмотри ответ, и только после этого правь код. Без подтверждённого ответа сервера любая правка — гадание.
+**When the user complains "it doesn't work":** don't guess the cause. Reproduce the request via an MCP/SDK script, look at the response, and only then fix the code. Without a confirmed server response, any fix is guesswork.
 
-## 6. Не запускать `npm run lint` / `npm run build` автоматически
+## 6. Don't run `npm run lint` / `npm run build` automatically
 
-Эти команды пользователь запускает сам после своих правок. Claude **не должен** проактивно вызывать `npm run lint`, `npm run build`, `next build`, `tsc --noEmit` и подобные — даже после массовых замен или рефакторинга. Если по итогам работы хочется проверить — просто сказать пользователю «готово, можно прогнать lint/build».
+These commands are launched by the user after their own edits. Claude **must not** proactively run `npm run lint`, `npm run build`, `next build`, `tsc --noEmit`, etc. — even after mass replacements or refactors. If you want a check at the end of work — just tell the user "done, you can run lint/build".
 
-- **Почему:** билд может занимать минуты, лишний шум в чате, плюс пользователь параллельно держит dev-server и хочет сам контролировать момент проверки.
-- **Когда исключение:** только если пользователь явно попросил («запусти lint», «проверь билд»).
-- **TypeScript-диагностика IDE** уже идёт через hooks и попадает в контекст автоматически — это покрывает базовый sanity-check без явного запуска `tsc`.
+- **Why:** the build can take minutes, it adds noise to chat, and the user keeps a dev server running in parallel and wants to control the verification timing themselves.
+- **Exception:** only if the user explicitly asks ("run lint", "check the build").
+- **IDE TypeScript diagnostics** already flow through hooks and land in context automatically — this covers a basic sanity check without explicitly running `tsc`.
 
-## 7. Журналы расхождений и админ-задач
+## 7. Mismatch and admin-task logs
 
-Два связанных файла:
+Two related files:
 
-- [MISMATCH-LOG.md](MISMATCH-LOG.md) — расхождения между эталоном [static-html/](static-html/) и текущей Next.js-реализацией (что чинится правкой **кода**).
-- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — пробелы в данных OneEntry (что нужно завести в **админке**).
+- [MISMATCH-LOG.md](MISMATCH-LOG.md) — discrepancies between the reference [static-html/](static-html/) and the current Next.js implementation (fixed by editing **code**).
+- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — gaps in the OneEntry data (what needs to be set up in the **admin panel**).
 
-Раньше всё лежало в одном MISMATCH-LOG (раздел C); сейчас разделено, чтобы команда админа не листала code-debt разработчика.
+Earlier everything lived in a single MISMATCH-LOG (section C); now it's split so the admin team doesn't have to scroll through developer code-debt.
 
-- **Структура [MISMATCH-LOG.md](MISMATCH-LOG.md):**
-  - **Сводка** — таблица «Раздел / Открыто / P0–P3» (общая картина прогресса).
-  - **Severity** — описание уровней.
-  - **Раздел A. Автоматические находки** — массовые находки по правилам (закомментированный код по §3.2, arbitrary `[Npx]`-значения по §3.1.1 и т.п.), агрегированные по файлам.
-  - **Раздел B. Ручная сверка по экранам** — пункты вида `B.{section}.{n}` со ссылками на соответствующий `static-html/*.html`, файлы проекта и Severity.
-- **Структура [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md):** C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history. Для пунктов C правило 3 (как формулировать, оформление таблицами `marker | type | title`, отметки `✅`).
-- **Severity (только MISMATCH-LOG):**
-  - `P0` — структура DOM/функциональность сломана (нет блока, не работает кнопка).
-  - `P1` — заметный визуальный мискшоп (бренд-цвета, отступы, неправильные классы).
-  - `P2` — мелочи (px-токены вместо именованных, шрифты, hover-эффекты).
-  - `P3` — гигиена кода (инлайн SVG → `components/icons/`, удалить закомментированное).
-  - Пункты ONEENTRY-ADMIN-TODO идут без P-метки — фиксируются как «открыто / ✅ закрыто».
-- **Когда обновлять:**
-  - Заметил новое расхождение со static-html, которое не чинишь прямо сейчас, — добавь пункт в соответствующий раздел B.x в [MISMATCH-LOG.md](MISMATCH-LOG.md) с уникальным id, ссылками на файл/строки и Severity.
-  - Починил пункт — либо удали его из лога, либо переведи в `—` Severity с пометкой типа **В плюс** / **Задокументировано** (как уже сделано для B.4.6, B.5.3, B.7.1 и т.п.). Не оставляй устаревшие пункты с прежней Severity.
-  - Появился новый пробел в OneEntry — добавь пункт в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) по правилу 3.
-  - Клиент закрыл пункт C.x в админке (проверено через MCP) — отметить `✅` или удалить.
-  - При массовой чистке (например, перевод arbitrary `[Npx]` → токены) — обнови счётчики в Сводке и в разделе A.
-- **Приоритет работы:** при свободном бюджете на техдолг — сначала P0/P1 из раздела B, затем массовые находки раздела A. ONEENTRY-ADMIN-TODO — асинхронная работа клиента, не блокирует код-релизы.
+- **Structure of [MISMATCH-LOG.md](MISMATCH-LOG.md):**
+  - **Summary** — a "Section / Open / P0–P3" table (overall progress picture).
+  - **Severity** — description of levels.
+  - **Section A. Automated findings** — mass findings by rules (commented code per §3.2, arbitrary `[Npx]` values per §3.1.1, etc.), aggregated per file.
+  - **Section B. Manual screen-by-screen audit** — items of the form `B.{section}.{n}` with links to the corresponding `static-html/*.html`, project files, and Severity.
+- **Structure of [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md):** C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history. For C items, rule 3 applies (how to phrase, formatting via `marker | type | title` tables, `✅` marks).
+- **Severity (MISMATCH-LOG only):**
+  - `P0` — DOM structure / functionality is broken (block missing, button doesn't work).
+  - `P1` — noticeable visual mismatch (brand colors, paddings, wrong classes).
+  - `P2` — small things (px tokens instead of named ones, fonts, hover effects).
+  - `P3` — code hygiene (inline SVG → `components/icons/`, remove commented-out).
+  - ONEENTRY-ADMIN-TODO items go without a P mark — tracked as "open / ✅ closed".
+- **When to update:**
+  - Spotted a new mismatch with static-html that you're not fixing right now — add an item to the appropriate section B.x in [MISMATCH-LOG.md](MISMATCH-LOG.md) with a unique id, links to file/lines, and Severity.
+  - Fixed an item — either delete it from the log, or move it to `—` Severity with a note like **Improved** / **Documented** (as already done for B.4.6, B.5.3, B.7.1, etc.). Don't leave outdated items with the old Severity.
+  - A new OneEntry gap surfaced — add an item to [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) per rule 3.
+  - The client closed item C.x in the admin (verified via MCP) — mark `✅` or delete.
+  - On bulk cleanup (e.g. converting arbitrary `[Npx]` → tokens) — update the counters in the Summary and in section A.
+- **Work priority:** when there's free tech-debt budget — first P0/P1 from section B, then mass findings from section A. ONEENTRY-ADMIN-TODO is asynchronous client work, it doesn't block code releases.
 
 ---
 
-## Быстрая проверка перед коммитом
+## Quick pre-commit check
 
-- [ ] Компонент визуально совпадает с соответствующим `.html` из [static-html/](static-html/).
-- [ ] Данные: OneEntry (через MCP-совместимый слой) или мок нужной формы — не пусто.
-- [ ] Если потребовались новые сущности OneEntry — добавлены в [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
-- [ ] Выполненные ранее пункты из [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — удалены или помечены `✅`.
-- [ ] Если правка закрывает пункт из [MISMATCH-LOG.md](MISMATCH-LOG.md) (раздел A/B) или [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — пункт удалён или переведён в `—` Severity (правило 7).
-- [ ] Линт/билд: пользователь запускает сам (правило 6).
+- [ ] The component visually matches the corresponding `.html` from [static-html/](static-html/).
+- [ ] Data: OneEntry (via the MCP-compatible layer) or a mock of the right shape — not empty.
+- [ ] If new OneEntry entities were needed — they're added to [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
+- [ ] Previously completed items from [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — removed or marked `✅`.
+- [ ] If the change closes an item from [MISMATCH-LOG.md](MISMATCH-LOG.md) (section A/B) or [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — the item is removed or moved to `—` Severity (rule 7).
+- [ ] Lint/build: the user runs them themselves (rule 6).

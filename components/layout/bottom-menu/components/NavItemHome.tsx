@@ -15,7 +15,6 @@ const NavItemHome = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX.El
   return (
     <Link
       href={'/'}
-      prefetch={false}
       title={localizeInfos.menuTitle ?? undefined}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >

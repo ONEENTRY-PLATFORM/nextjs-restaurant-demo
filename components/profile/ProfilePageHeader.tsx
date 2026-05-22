@@ -35,7 +35,6 @@ const ProfilePageHeader = (): JSX.Element => {
       <div className="mb-2 flex items-center gap-2.5 text-base text-muted-text">
         <Link
           href="/"
-          prefetch={false}
           aria-label="Home"
           className="group inline-flex h-4 w-4 items-center justify-center"
         >

@@ -163,12 +163,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
       <div className={cartWrapperClass}>
         {/* Mobile-only header */}
         <div className="flex items-center justify-between p-5 pb-0 md:hidden">
-          <Link
-            href="/"
-            prefetch={false}
-            className="group_white"
-            aria-label={t('go_back_label', 'Go back')}
-          >
+          <Link href="/" className="group_white" aria-label={t('go_back_label', 'Go back')}>
             <ArrowBackOrangeIcon />
           </Link>
           <p className="font-normal text-2xl text-white">{STEP_TITLES.cart}</p>
@@ -191,7 +186,6 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           ) : (
             <Link
               href="/"
-              prefetch={false}
               aria-label={t('home_label', 'Home')}
               className="group inline-flex h-4 w-4 items-center justify-center"
             >

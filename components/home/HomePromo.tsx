@@ -5,10 +5,14 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 import getBannerBlurMap from '@/app/api/lqip/getBannerBlurMap';
 
+import HomePromoOverlay from './HomePromoOverlay';
+
 /**
  * HomePromo — homepage promo strip (desktop hero + horizontal scroll for mobile).
  *
- * Wrapped in `home-promo-enter` (CSS-only transform-slide, 0.1 s delay + 0.5 s duration, no opacity change) instead of `HeaderAnimGate` — the hero is the LCP candidate and must not wait for the header GSAP timeline, and must not be faded from opacity:0 (Chrome's LCP heuristic excludes such elements). `getBannerBlurMap` is imported via its direct path (not the `@/app/api` barrel) because `sharp` is Node-only and the barrel reaches the client bundle.
+ * Entrance animation is done by a solid-black overlay that fades from opacity:1 → 0 over the banners (`.home-promo-overlay` in `main.css`, 0.5 s delay + 0.5 s duration). The hero `<img>` itself never animates opacity, so Chrome's LCP heuristic still picks it up at the first paint — visual fade-in without LCP regression. Chrome ignores visual occlusion by sibling elements when computing LCP candidacy, so the overlay is "free".
+ *
+ * `getBannerBlurMap` is imported via its direct path (not the `@/app/api` barrel) because `sharp` is Node-only and the barrel reaches the client bundle.
  *
  * @returns Promise resolving to JSX of the promo strip, or `null` when no banners are configured.
  */
@@ -23,7 +27,8 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
   const heroBlur = heroBanner ? blurMap[heroBanner.id]?.desktop : null;
 
   return (
-    <div className="home-promo-enter">
+    <div className="relative">
+      <HomePromoOverlay />
       {heroBanner ? (
         <div className="section_layout hidden md:flex pt-0">
           <Link

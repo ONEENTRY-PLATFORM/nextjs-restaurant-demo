@@ -20,18 +20,28 @@
 }
 
 /*
- * HomePromo entrance: transform-only slide so the hero (LCP candidate) is
- * never opacity:0 — Chrome's LCP heuristic excludes elements faded in from
- * opacity:0 and falls back to the next-largest image. Transform-only keeps
- * the hero visible from the first paint and a valid LCP candidate.
+ * HomePromo entrance: solid `bg-black` overlay that fades from opacity:1 → 0
+ * over the hero. The class is added by `HomePromoOverlay` only AFTER the
+ * header GSAP timeline reports completion — so the sequence stays
+ * `header → HomePromo → recommended`, matching the previous HeaderAnimGate
+ * behaviour. The hero `<img>` itself stays at opacity:1 from the first
+ * paint, so Chrome's LCP heuristic — which excludes elements faded in from
+ * opacity:0 — keeps the hero as LCP. Chrome's LCP detection ignores visual
+ * occlusion by sibling elements, so the overlay "fade-in" effect is free.
+ *
+ * Background must match the page background (`body { background: black }`)
+ * so the overlay is invisible at opacity:1.
+ *
+ * `prefers-reduced-motion` is handled inside `HomePromoOverlay` via the
+ * Tailwind `motion-reduce:hidden` utility — no media query needed here.
  */
-@keyframes home-promo-enter {
-  from { transform: translateY(12px); }
-  to   { transform: translateY(0); }
+@keyframes home-promo-overlay-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
-.home-promo-enter {
-  animation: home-promo-enter 0.5s ease-out 0.1s both;
-  will-change: transform;
+.home-promo-overlay {
+  animation: home-promo-overlay-fade 0.5s ease-out 0.5s both;
+  will-change: opacity;
 }
 
 @keyframes slide-up {

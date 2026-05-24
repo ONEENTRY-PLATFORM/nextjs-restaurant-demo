@@ -20,6 +20,8 @@ export type RestaurantOption = {
   id: number;
   // Schedule — passed to the TimePicker so only available slots are shown.
   schedule?: ScheduleSlotEntry[];
+  // `booking_policy` attribute of the restaurant page — shown on the payment step.
+  bookingPolicy?: string;
 };
 
 /**
@@ -69,27 +71,37 @@ const RestaurantSelect = ({
           className={'transition-transform duration-200 ' + (open ? 'rotate-180' : '')}
         />
       </button>
-      {open ? (
-        <ul
-          role="listbox"
-          className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md bg-custom_transparent backdrop-blur-md"
-        >
-          {options.map(o => (
-            <li
-              key={o.value}
-              role="option"
-              aria-selected={o.value === value}
-              onClick={() => {
-                onChange(o.value);
-                setOpen(false);
-              }}
-              className="cursor-pointer px-4 py-2 text-brand transition-colors duration-200 hover:bg-white/20 active:bg-white/20"
-            >
-              {o.label}
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <ul
+        role="listbox"
+        aria-hidden={!open}
+        className={
+          'absolute top-full left-0 right-0 z-100 mt-1 overflow-auto rounded-md bg-custom_transparent backdrop-blur-lg origin-top transition-all duration-200 ease-out ' +
+          (open
+            ? 'max-h-60 opacity-100 translate-y-0 pointer-events-auto'
+            : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none')
+        }
+      >
+        {options.map((o, i) => (
+          <li
+            key={o.value}
+            role="option"
+            aria-selected={o.value === value}
+            onClick={() => {
+              onChange(o.value);
+              setOpen(false);
+            }}
+            style={{
+              transitionDelay: open ? `${80 + i * 60}ms` : `${(options.length - 1 - i) * 30}ms`,
+            }}
+            className={
+              'cursor-pointer px-4 py-2 text-brand transition-all duration-200 ease-out hover:bg-white/20 active:bg-white/20 ' +
+              (open ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1')
+            }
+          >
+            {o.label}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

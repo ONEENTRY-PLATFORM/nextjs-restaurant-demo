@@ -286,7 +286,15 @@ const ReservationForm = ({
   }
 
   if (step.kind === 'payment') {
-    return <ReservationPaymentStep onApply={onApplyPayment} isLoading={loading} error={error} />;
+    const selectedRestaurant = restaurants.find(r => r.value === values[RESTAURANT_MARKER]);
+    return (
+      <ReservationPaymentStep
+        onApply={onApplyPayment}
+        isLoading={loading}
+        error={error}
+        bookingPolicy={selectedRestaurant?.bookingPolicy ?? ''}
+      />
+    );
   }
 
   const todayIso = toLocalIsoDate();
@@ -299,7 +307,7 @@ const ReservationForm = ({
           if (attr.type === 'entity') {
             if (attr.marker !== RESTAURANT_MARKER || restaurants.length === 0) return null;
             return (
-              <FormFieldAnimations key={attr.marker} index={i} className="flex flex-col gap-1">
+              <FormFieldAnimations key={attr.marker} index={i} className="flex flex-col gap-1 z-50">
                 <RestaurantSelect
                   options={restaurants}
                   value={values[RESTAURANT_MARKER] ?? ''}

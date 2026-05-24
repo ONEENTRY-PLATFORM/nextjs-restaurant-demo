@@ -137,6 +137,7 @@ const ReservationPopup = (): JSX.Element => {
             ((p.attributeValues?.address?.value as string | undefined) || p.localizeInfos?.title) ??
             'Restaurant',
           schedule: scheduleEntries,
+          bookingPolicy: (p.attributeValues?.booking_policy?.value as string | undefined) ?? '',
         };
       }),
     [pages]

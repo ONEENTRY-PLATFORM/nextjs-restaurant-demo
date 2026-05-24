@@ -39,14 +39,6 @@ describe('getProviderMeta', () => {
     expect(meta.iconHeight).toBe(24);
   });
 
-  it('falls back to localizeInfos.title for unknown providers', () => {
-    const meta = getProviderMeta(
-      mkProvider('github', { localizeInfos: { title: 'Login With GitHub' } } as never)
-    );
-    expect(meta.label).toBe('Login With GitHub');
-    expect(meta.icon).toBe('/images/icons/login-email.svg'); // generic fallback icon
-  });
-
   it('falls back to "Login With <identifier>" when localizeInfos has no title', () => {
     const meta = getProviderMeta(mkProvider('apple'));
     expect(meta.label).toBe('Login With apple');

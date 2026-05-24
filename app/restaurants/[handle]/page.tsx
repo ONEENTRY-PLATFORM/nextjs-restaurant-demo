@@ -11,15 +11,6 @@ import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGall
 export const dynamic = 'force-dynamic';
 
 type Photo = { downloadLink?: string };
-type ScheduleRule = {
-  timeIntervals?: Array<[string, string]>;
-};
-type ScheduleGroup = {
-  values?: ScheduleRule[];
-};
-type DaySchedule = { label: string; hours: string };
-
-const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 type ComfortItem = {
   title?: string;
   value?: string;
@@ -29,101 +20,21 @@ type ComfortItem = {
   };
 };
 type Comfort = { title: string; iconUrl?: string };
+type RichTextValue = Array<{ htmlValue?: string; plainValue?: string }>;
 
 /**
- * pad2 — zero-pads an integer to two digits (`9` → `"09"`).
+ * pickRichTextHtml — extracts meaningful HTML from a OneEntry `text` attribute value.
  *
- * @param   {number} n - Value to pad; non-numeric input renders as `"00"`.
- * @returns Two-character string representation.
+ * Treats `<p><br></p>` and similar empty rich-text payloads as no content (returns `''`),
+ * so callers can short-circuit rendering of the surrounding section.
+ *
+ * @param   {unknown} raw - Raw attribute value (OneEntry rich-text array of `{ htmlValue, plainValue }`).
+ * @returns Trimmed HTML string, or `''` when the value is missing/empty/whitespace-only.
  */
-const pad2 = (n: number): string => String(n ?? 0).padStart(2, '0');
-
-/**
- * mergeRanges — merges overlapping/adjacent `[fromMin, toMin]` ranges into a minimal set of spans.
- *
- * @param   {Array<[number, number]>} ranges - Half-open ranges expressed in minutes from midnight.
- * @returns New sorted array with overlapping/contiguous ranges collapsed.
- */
-const mergeRanges = (ranges: Array<[number, number]>): Array<[number, number]> => {
-  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
-  const [first, ...rest] = sorted;
-  if (!first) return [];
-  const merged: Array<[number, number]> = [first];
-  for (const next of rest) {
-    const last = merged[merged.length - 1]!;
-    if (next[0] <= last[1]) {
-      last[1] = Math.max(last[1], next[1]);
-    } else {
-      merged.push(next);
-    }
-  }
-  return merged;
-};
-
-/**
- * formatRange — renders one merged minute range as `HH:MM - HH:MM`.
- *
- * @param   {[number, number]} range - `[fromMin, toMin]` pair in minutes from midnight (UTC).
- * @returns Formatted span like `"10:00 - 20:00"`.
- */
-const formatRange = ([from, to]: [number, number]): string =>
-  `${pad2(Math.floor(from / 60))}:${pad2(from % 60)} - ${pad2(Math.floor(to / 60))}:${pad2(to % 60)}`;
-
-/**
- * formatSchedule — converts the OneEntry `timeInterval` attribute into grouped weekday rows.
- *
- * Uses `values[].timeIntervals` (the pre-computed `[startISO, endISO]` pairs that already honor
- * `inEveryWeek` / `exceptions` / `intervals`). Groups by UTC weekday, merges adjacent slots, then
- * collapses consecutive Mon→Sun days that share identical hours into a range label (e.g. `Mon-Sat`).
- * Days with no intervals collapse into a `Closed` row.
- *
- * @param   {unknown} raw - Raw attribute value (OneEntry timeInterval array).
- * @returns Ordered grouped schedule rows; empty array when the attribute is missing/unusable.
- */
-const formatSchedule = (raw: unknown): DaySchedule[] => {
-  if (!Array.isArray(raw)) return [];
-  const groups = raw as ScheduleGroup[];
-  const byWeekday: Array<Array<[number, number]>> = [[], [], [], [], [], [], []];
-  let hasAny = false;
-  for (const group of groups) {
-    for (const rule of group?.values ?? []) {
-      for (const pair of rule?.timeIntervals ?? []) {
-        const start = pair?.[0];
-        const end = pair?.[1];
-        if (!start || !end) continue;
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) continue;
-        // `getUTCDay` returns 0=Sun..6=Sat; map to Mon=0..Sun=6.
-        const weekday = (startDate.getUTCDay() + 6) % 7;
-        const fromMin = startDate.getUTCHours() * 60 + startDate.getUTCMinutes();
-        const toMin = endDate.getUTCHours() * 60 + endDate.getUTCMinutes();
-        if (toMin <= fromMin) continue;
-        byWeekday[weekday]!.push([fromMin, toMin]);
-        hasAny = true;
-      }
-    }
-  }
-  if (!hasAny) return [];
-
-  const perDayHours = WEEKDAY_LABELS.map((_, i) => {
-    return mergeRanges(byWeekday[i] ?? [])
-      .map(formatRange)
-      .join(', ');
-  });
-
-  const rows: DaySchedule[] = [];
-  let runStart = 0;
-  for (let i = 1; i <= 7; i += 1) {
-    if (i === 7 || perDayHours[i] !== perDayHours[runStart]) {
-      const startLabel = WEEKDAY_LABELS[runStart]!;
-      const endLabel = WEEKDAY_LABELS[i - 1]!;
-      const label = runStart === i - 1 ? startLabel : `${startLabel}-${endLabel}`;
-      rows.push({ label, hours: perDayHours[runStart] ?? '' });
-      runStart = i;
-    }
-  }
-  return rows;
+const pickRichTextHtml = (raw: unknown): string => {
+  if (!Array.isArray(raw)) return '';
+  const html = (raw as RichTextValue)[0]?.htmlValue ?? '';
+  return /\S/.test(html.replace(/<[^>]*>/g, '')) ? html : '';
 };
 
 /**
@@ -179,21 +90,25 @@ const RestaurantPage = async ({
   const photos = (attrs.photos?.value as Photo[] | undefined) ?? [];
   const address = (attrs.address?.value as string | undefined) ?? '';
   const phone = (attrs.phone?.value as string | undefined) ?? '';
-  const schedule = formatSchedule(attrs.schedule?.value);
+  const whatsapp = (attrs.whatsapp?.value as string | undefined) ?? '';
+  const instagram = (attrs.instagram?.value as string | undefined) ?? '';
+  const email = (attrs.email?.value as string | undefined) ?? '';
+  const parking = (attrs.parking?.value as string | undefined) ?? '';
+  const cuisine = (attrs.cuisine?.value as string | undefined) ?? '';
+  const bookingPolicy = (attrs.booking_policy?.value as string | undefined) ?? '';
+  const liveEvents = (attrs.live_events?.value as string | undefined) ?? '';
+  const openingHoursHtml = pickRichTextHtml(attrs.opening_hours?.value);
   const comforts = normalizeComforts(attrs.comforts?.value);
   const lat = Number(attrs.lat?.value);
   const lng = Number(attrs.long?.value);
   const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
   const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
-  const descriptionRaw = attrs.description?.value as
-    | Array<{ htmlValue?: string; plainValue?: string }>
-    | undefined;
-  const descriptionHtmlRaw = descriptionRaw?.[0]?.htmlValue ?? '';
+  const descriptionRaw = attrs.description?.value as RichTextValue | undefined;
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
-  // Rich-text sometimes returns `<p><br></p>` - treat html as meaningful only if there is text.
-  const descriptionHtml = /\S/.test(descriptionHtmlRaw.replace(/<[^>]*>/g, ''))
-    ? descriptionHtmlRaw
-    : '';
+  const descriptionHtml = pickRichTextHtml(attrs.description?.value);
+
+  const waNumber = whatsapp.replace(/[^\d]/g, '');
+  const instagramHandle = instagram.replace(/^@/, '');
 
   return (
     <section className="section_layout pt-0">
@@ -221,6 +136,35 @@ const RestaurantPage = async ({
         <p className="mt-10 text-base text-paper/90 text-justify md:text-left">
           {descriptionPlain}
         </p>
+      ) : null}
+
+      {cuisine || parking || bookingPolicy || liveEvents ? (
+        <div className="mt-5 grid grid-cols-1 gap-5 text-base text-paper sm:grid-cols-2 md:grid-cols-4">
+          {cuisine ? (
+            <div className="flex flex-col gap-1">
+              <span className="uppercase text-brand">Cuisine</span>
+              <span>{cuisine}</span>
+            </div>
+          ) : null}
+          {parking ? (
+            <div className="flex flex-col gap-1">
+              <span className="uppercase text-brand">Parking</span>
+              <span>{parking}</span>
+            </div>
+          ) : null}
+          {bookingPolicy ? (
+            <div className="flex flex-col gap-1">
+              <span className="uppercase text-brand">Booking policy</span>
+              <span>{bookingPolicy}</span>
+            </div>
+          ) : null}
+          {liveEvents ? (
+            <div className="flex flex-col gap-1">
+              <span className="uppercase text-brand">Live events</span>
+              <span>{liveEvents}</span>
+            </div>
+          ) : null}
+        </div>
       ) : null}
 
       {/* Comforts row + BOOK A TABLE */}
@@ -270,17 +214,41 @@ const RestaurantPage = async ({
               {phone}
             </a>
           ) : null}
+          {whatsapp ? (
+            <a
+              href={`https://wa.me/${waNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base text-paper hover:text-brand"
+            >
+              <span className="uppercase text-brand">WhatsApp: </span>
+              {whatsapp}
+            </a>
+          ) : null}
+          {email ? (
+            <a href={`mailto:${email}`} className="text-base text-paper hover:text-brand">
+              <span className="uppercase text-brand">Email: </span>
+              {email}
+            </a>
+          ) : null}
+          {instagram ? (
+            <a
+              href={`https://instagram.com/${instagramHandle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base text-paper hover:text-brand"
+            >
+              <span className="uppercase text-brand">Instagram: </span>
+              {instagram}
+            </a>
+          ) : null}
           {address ? <p className="font-bold text-xl text-paper">{address}</p> : null}
           <p className="mt-3.75 font-bold text-xl uppercase text-brand">Opening hours</p>
-          {schedule.length > 0 ? (
-            <ul className="flex flex-col gap-1 font-bold text-xl uppercase text-paper">
-              {schedule.map(row => (
-                <li key={row.label} className="flex items-baseline gap-2.5">
-                  <span className="shrink-0 text-brand">{row.label}</span>
-                  <span>{row.hours || 'Closed'}</span>
-                </li>
-              ))}
-            </ul>
+          {openingHoursHtml ? (
+            <div
+              className="text-base text-paper [&_p]:leading-snug"
+              dangerouslySetInnerHTML={{ __html: openingHoursHtml }}
+            />
           ) : null}
         </div>
 

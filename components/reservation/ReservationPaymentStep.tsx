@@ -34,21 +34,24 @@ type ReservationPaymentStepProps = {
   onApply: (paymentAccountIdentifier: string) => void;
   isLoading: boolean;
   error: string;
+  bookingPolicy?: string;
 };
 
 /**
  * ReservationPaymentStep — payment-method selection step for the booking.
  *
- * @param   {ReservationPaymentStepProps}  props           - Component props.
- * @param   {(id: string) => void}         props.onApply   - Called with the selected `paymentAccountIdentifier` when the user confirms.
- * @param   {boolean}                      props.isLoading - When `true`, disables the apply button.
- * @param   {string}                       props.error     - Error message displayed under the radio list.
+ * @param   {ReservationPaymentStepProps}  props                 - Component props.
+ * @param   {(id: string) => void}         props.onApply         - Called with the selected `paymentAccountIdentifier` when the user confirms.
+ * @param   {boolean}                      props.isLoading       - When `true`, disables the apply button.
+ * @param   {string}                       props.error           - Error message displayed under the radio list.
+ * @param   {string}                       [props.bookingPolicy] - `booking_policy` attribute of the selected restaurant; falls back to the dict text.
  * @returns JSX of the payment-method selection step.
  */
 const ReservationPaymentStep = ({
   onApply,
   isLoading,
   error,
+  bookingPolicy,
 }: ReservationPaymentStepProps): JSX.Element => {
   const t = useT();
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
@@ -82,13 +85,13 @@ const ReservationPaymentStep = ({
 
   return (
     <div className="flex w-full flex-col items-center gap-6.25 px-5 md:px-19">
-      {/* 30% deposit notice - Figma: 368×54, gray-50% bg, orange Lato 16/20 center */}
       <FormFieldAnimations
         index={0}
         className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card"
       >
         <p className="text-center font-normal text-base leading-5 text-brand">
-          {t('booking_deposit_text', '30% deposit is required to confirm your booking')}
+          {bookingPolicy ||
+            t('booking_deposit_text', 'Deposit is required to confirm your booking')}
         </p>
       </FormFieldAnimations>
 
@@ -122,7 +125,6 @@ const ReservationPaymentStep = ({
 
       {error ? <ErrorMessage error={error} /> : null}
 
-      {/* Apply button - Figma: 95×36, orange outline, text #EC722B */}
       <FormFieldAnimations index={applyIndex} className="mt-2.5 flex items-center justify-center">
         <button
           type="button"
@@ -159,7 +161,6 @@ const PaymentRow = ({
   const kind = resolveVisualKind(account);
   const id = `pay-${account.identifier}`;
 
-  // Label per Figma: card -> "Credit & Debit Cards", others -> "Pay with".
   const label =
     kind === 'card'
       ? t('booking_credit_cards', 'Credit & Debit Cards')

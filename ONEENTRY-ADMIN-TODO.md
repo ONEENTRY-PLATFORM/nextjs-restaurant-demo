@@ -52,7 +52,6 @@
 | `back_text`                 | string | Back                                                        |
 | `apply_text`                | string | Apply                                                       |
 | `loading_text`              | string | Loading…                                                    |
-| `booking_deposit_text`      | string | 30% deposit is required to confirm your booking             |
 | `booking_pay_with`          | string | Pay with                                                    |
 | `booking_credit_cards`      | string | Credit & Debit Cards                                        |
 | `no_payment_methods`        | string | No payment methods are configured. Please contact support.  |
@@ -241,7 +240,6 @@
    **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
 
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
-2. **30% deposit — dictionary key `booking_deposit_text`.** Сейчас текст хардкод-fallback'ом `«30% deposit is required to confirm your booking»`. ❓ **Уточнить у клиента:** депозит реально 30% или другая ставка? Реализуется ли через preview/discount/promo на стороне OneEntry или это только UI-уведомление?
 3. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
 
 ---

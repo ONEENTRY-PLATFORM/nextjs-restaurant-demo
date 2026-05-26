@@ -88,10 +88,7 @@ const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => 
   const icon = page.attributeValues?.menu_icon as
     | {
         type?: string;
-        value?:
-          | { downloadLink?: string }
-          | Array<{ downloadLink?: string }>
-          | null;
+        value?: { downloadLink?: string } | Array<{ downloadLink?: string }> | null;
       }
     | undefined;
   const iconValue = icon?.value;

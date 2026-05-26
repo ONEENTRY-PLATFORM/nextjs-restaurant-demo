@@ -29,8 +29,8 @@ export {
   useLazyGetMeQuery,
   useLazyGetPaymentSessionByIdQuery,
 } from './api/RTKApi';
-export { getProductImageUrl } from './hooks/useAttributesData';
 export { useApplyCoupon } from './hooks/useApplyCoupon';
+export { getProductImageUrl } from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
 export { useSearchProducts } from './hooks/useSearchProducts';

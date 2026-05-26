@@ -109,16 +109,13 @@ const FilterChipGroups = ({
 /**
  * FilterBottom — bottom filter sheet (mobile) / right-side panel (md+), toggled via `OpenDrawerContext`.
  *
- * @param   {object}                  props               - Component props.
- * @param   {PreferenceOption[]}      [props.preferences] - Available `preferences` (dietary) filter options sourced from OneEntry.
- * @param   {PreferenceOption[]}      [props.filters]     - Available `filter` (course/meal-type) options sourced from OneEntry.
+ * @param   {object}                  props           - Component props.
+ * @param   {PreferenceOption[]}      [props.filters] - Available `filter` (course/meal-type) options sourced from OneEntry.
  * @returns JSX of the filter panel.
  */
 const FilterBottom = ({
-  preferences: preferenceOptions = [],
   filters: filterOptions = [],
 }: {
-  preferences?: PreferenceOption[];
   filters?: PreferenceOption[];
 }): JSX.Element => {
   const t = useT();
@@ -131,7 +128,6 @@ const FilterBottom = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
-  const [preferences, setPreferences] = useState<string[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
   const [priceMin, setPriceMin] = useState<string>('');
   const [priceMax, setPriceMax] = useState<string>('');
@@ -150,16 +146,6 @@ const FilterBottom = ({
     const matchedTime = WAITING_TIME.find(t => t.max !== null && String(t.max) === cookingMax);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setWaitingTime(matchedTime?.label ?? null);
-
-    const prefsParam = searchParams.get('preferences') ?? '';
-    setPreferences(
-      prefsParam
-        ? prefsParam
-            .split(',')
-            .map(v => v.trim())
-            .filter(Boolean)
-        : []
-    );
 
     const filterParam = searchParams.get('filter') ?? '';
     setFilters(
@@ -193,10 +179,6 @@ const FilterBottom = ({
     }
   }, [isVisible]);
 
-  const togglePreference = (item: string): void => {
-    setPreferences(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
-  };
-
   const toggleFilter = (item: string): void => {
     setFilters(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
   };
@@ -211,7 +193,6 @@ const FilterBottom = ({
 
   const reset = (): void => {
     setWaitingTime(null);
-    setPreferences([]);
     setFilters([]);
     setPriceMin('');
     setPriceMax('');
@@ -227,12 +208,6 @@ const FilterBottom = ({
       params.set('cooking_time_max', String(time.max));
     } else {
       params.delete('cooking_time_max');
-    }
-
-    if (preferences.length > 0) {
-      params.set('preferences', preferences.join(','));
-    } else {
-      params.delete('preferences');
     }
 
     if (filters.length > 0) {

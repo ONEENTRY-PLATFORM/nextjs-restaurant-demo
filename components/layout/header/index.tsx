@@ -75,8 +75,9 @@ const Header = async (): Promise<JSX.Element> => {
   const filterOptions: PreferenceOption[] =
     !filterAttr.isError && filterAttr.attribute && 'listTitles' in filterAttr.attribute
       ? (filterAttr.attribute.listTitles as IListTitle[]).map(o => {
-          const extendedValue = (o.extended as { type?: string | null; value?: string | null } | null | undefined)
-            ?.value;
+          const extendedValue = (
+            o.extended as { type?: string | null; value?: string | null } | null | undefined
+          )?.value;
           const group = typeof extendedValue === 'string' && extendedValue ? extendedValue : '';
           return {
             title: o.title,
@@ -152,7 +153,7 @@ const Header = async (): Promise<JSX.Element> => {
       {/* `Suspense` isolates `useSearchParams()` inside FilterBottom — without it
           the whole route would bail out to dynamic rendering and skip ISR. */}
       <Suspense fallback={null}>
-        <FilterBottom preferences={preferenceOptions} filters={filterOptions} />
+        <FilterBottom filters={filterOptions} />
       </Suspense>
       <CategoryFilter pages={populatedPages} />
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />

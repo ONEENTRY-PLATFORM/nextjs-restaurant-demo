@@ -38,11 +38,11 @@ export const revalidate = 300; // or 60 for fast-moving listings
 
 ```tsx
 // ❌ Without Suspense — the whole page falls into dynamic rendering
-<FilterBottom preferences={preferenceOptions} />
+<FilterBottom filters={filterOptions} />
 
 // ✅ With Suspense — useSearchParams is isolated
 <Suspense fallback={null}>
-  <FilterBottom preferences={preferenceOptions} />
+  <FilterBottom filters={filterOptions} />
 </Suspense>
 ```
 

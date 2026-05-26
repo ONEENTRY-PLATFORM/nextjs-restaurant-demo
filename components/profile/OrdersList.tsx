@@ -12,6 +12,7 @@ import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
 
 import OrderCard from './orders/OrderCard';
@@ -49,7 +50,7 @@ const OrdersList = ({
     let cancelled = false;
     (async () => {
       const res = await getAllOrdersByMarker({
-        marker: 'delivery_order',
+        marker: FORMS.deliveryOrder,
         offset: 0,
         limit: 50,
       });

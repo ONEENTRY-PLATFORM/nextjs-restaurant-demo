@@ -35,8 +35,8 @@ This project targets teams building a restaurant or food-service front-end on On
 - **OneEntry SDK integration:** server fetchers (`app/api/server/*`) for SSR and RTK Query hooks (`app/api/api/RTKApi.ts`) for client-side data.
 - **User authentication:** email and Google OAuth sign-in providers, with code-based account activation.
 - **State management:** Redux Toolkit plus `redux-persist` for cart, favorites, and form-field memory.
-- **Menu & catalog:** dynamic product catalog with filtering, pagination (`NEXT_PUBLIC_SHOP_PAGE_LIMIT`), and category pages.
-- **Cart & checkout:** delivery line driven by `NEXT_PUBLIC_DELIVERY_PRODUCT_ID`; order creation via the OneEntry Orders API; Stripe-based payment redirects.
+- **Menu & catalog:** dynamic product catalog with filtering, pagination (`SHOP_PAGE_LIMIT` in [app/utils/constants.ts](app/utils/constants.ts)), and category pages.
+- **Cart & checkout:** delivery line driven by `DELIVERY_PRODUCT_ID` (see [app/utils/constants.ts](app/utils/constants.ts)); order creation via the OneEntry Orders API; Stripe-based payment redirects.
 - **Reservations:** table-booking form backed by a OneEntry form marker; booking history in the user profile.
 - **Promo & editable content:** every section is wired to a OneEntry block; no hardcoded copy.
 - **Animations:** GSAP + `@gsap/react` for transitions, scroll-triggered reveals, and card hover behavior.
@@ -100,8 +100,36 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_ONEENTRY_TOKEN` | App token from OneEntry admin → Project → API. |
 | `NEXT_PUBLIC_VERCEL_URL` | Public origin used in absolute URLs (canonical, OG, Stripe redirects). |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth (sign-in provider). Optional during local UI work. |
-| `NEXT_PUBLIC_SHOP_PAGE_LIMIT` | Product cards per catalog page. Default `8`. |
-| `NEXT_PUBLIC_DELIVERY_PRODUCT_ID` | OneEntry product id representing delivery cost (not shown in the cart list; added to order totals). Default `33`. |
+
+## Project Constants
+
+Values that are project-wide but **not** sensitive (so they don't belong in `.env`) live in [app/utils/constants.ts](app/utils/constants.ts). Two kinds:
+
+**1. Numeric constants** — tunable behaviour:
+
+| Constant | Purpose |
+| --- | --- |
+| `SHOP_PAGE_LIMIT` | Product cards per catalog page (`/shop`, `/shop/category/*`, `/shop/[handle]`, `/promo/[handle]`). |
+| `DELIVERY_PRODUCT_ID` | Id of the OneEntry product that represents delivery cost. Hidden from the cart list, added as a separate line to totals and to `orderProducts` on order creation. |
+
+**2. OneEntry markers** — string identifiers that mirror what is configured in the OneEntry admin panel. Centralised so a renamed page/form/attribute is a one-line edit, not a project-wide grep. Use these everywhere instead of inline string literals.
+
+| Map | Used by | Members |
+| --- | --- | --- |
+| `PAGES` | `getPageByUrl` / `getChildPagesByParentUrl` / `getBlocksByPageUrl` / `getProductsByPageUrl`; also matched against `page.pageUrl` returned by the Menus API in navigation dispatchers | `home`, `support`, `notFound`, `blog`, `restaurants`, `services`, `filters`, `menu`, `profile`, `cart`, `favorites`, `bookings` |
+| `MENUS` | `getMenuByMarker` | `bottomWeb`, `userMenu` |
+| `FORMS` | `getFormByMarker`, `postFormsData` (`formIdentifier`), `Orders.getAllOrdersByMarker`, `Orders.createOrder`, `Orders.updateOrderByMarkerAndId` | `contactUs`, `user`, `deliveryOrder`, `bookingOrder` |
+| `ATTR_SETS` | `setMarker` of `getSingleAttributeByMarkerSet` | `dish`, `product` |
+| `ATTRS` | `attributeMarker` field on attribute / filter requests | `preferences`, `staticContent`, `sku`, `price`, `cookingTime` |
+| `BLOCKS` | matched against `block.identifier` from `getBlocksByPageUrl`; passed as marker to `Blocks.getBlockByMarker` / `getBlockProducts` | `homePromo`, `recommended`, `homeCategories`, `similarDishes` |
+
+> Orders share the form's marker — that's why `FORMS.deliveryOrder` is used both for `useGetFormByMarkerQuery({ marker })` and for `getAllOrdersByMarker({ marker })`.
+
+When adding new content in the OneEntry admin (a new page, form, menu, attribute set, or attribute), append the marker here first and import from `@/app/utils/constants` at the call site. If the admin rename happens later, only this file changes.
+
+Per-form **field markers** (e.g. `email`, `password`, `delivery_address`, `comment` inside `delivery_order`, or the field markers inside `authData[]` payloads) are intentionally kept inline next to their form — they're part of that form's contract, not a project-wide concept.
+
+**Auth provider identifiers** (`email`, `google`, …) are intentionally NOT in this file. They come from OneEntry admin via `AuthProvider.getAuthProviders()` and the forms thread the active provider's `identifier` through to each API call — see [components/forms/authProviders.ts](components/forms/authProviders.ts) (`sortActiveAuthProviders`, `useEmailAuthProviderMarker`). Hardcoding them in `constants.ts` would have given a false impression that the project owns the list.
 
 ## Run Locally
 

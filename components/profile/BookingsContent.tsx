@@ -13,14 +13,15 @@ import { getAllOrdersByMarker, getApi, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
+import { TIME_SLOT_MARKER } from '@/components/reservation/reservationFormUtils';
 import Spinner from '@/components/shared/Spinner';
 
 const CANCELLED_STATUS = 'booking_cancelled';
 const BOOKING_PLACEHOLDER_PRODUCT_ID = 34;
 const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
-const TIME_SLOT_MARKER = 'time_slot';
 
 /**
  * parseDateLoose — extracts a `Date` from heterogeneous OneEntry value shapes.
@@ -167,7 +168,7 @@ const BookingsContent = (): JSX.Element => {
       orderId: order.id,
       formData: (order.formData as IOrdersFormData[] | undefined) ?? [],
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
-      formIdentifier: order.formIdentifier ?? 'booking_order',
+      formIdentifier: order.formIdentifier ?? FORMS.bookingOrder,
     });
     setComponent('ReservationPopup');
     setOpen(true);
@@ -192,14 +193,18 @@ const BookingsContent = (): JSX.Element => {
         ? order.products.map(p => ({ productId: p.id, quantity: p.quantity }))
         : [{ productId: BOOKING_PLACEHOLDER_PRODUCT_ID, quantity: 1 }];
     const body: IOrderData & { statusIdentifier?: string } = {
-      formIdentifier: order.formIdentifier ?? 'booking_order',
+      formIdentifier: order.formIdentifier ?? FORMS.bookingOrder,
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
       formData: existingFormData,
       products,
       statusIdentifier: CANCELLED_STATUS,
     };
     try {
-      const res = await getApi().Orders.updateOrderByMarkerAndId('booking_order', order.id, body);
+      const res = await getApi().Orders.updateOrderByMarkerAndId(
+        FORMS.bookingOrder,
+        order.id,
+        body
+      );
       if (isError(res)) {
         toast(t('booking_cancel_failed', 'Failed to cancel reservation.'));
         return;
@@ -226,7 +231,7 @@ const BookingsContent = (): JSX.Element => {
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    getAllOrdersByMarker({ marker: 'booking_order', offset: 0, limit: 50 })
+    getAllOrdersByMarker({ marker: FORMS.bookingOrder, offset: 0, limit: 50 })
       .then(res => {
         if (cancelled) return;
         setOrders(res.orders ?? []);

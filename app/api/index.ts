@@ -30,6 +30,7 @@ export {
   useLazyGetPaymentSessionByIdQuery,
 } from './api/RTKApi';
 export { useApplyCoupon } from './hooks/useApplyCoupon';
+export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
 export { useSearchProducts } from './hooks/useSearchProducts';
 export { useSetForm } from './hooks/useSetForm';

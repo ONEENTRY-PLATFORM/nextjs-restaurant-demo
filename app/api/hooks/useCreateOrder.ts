@@ -7,7 +7,7 @@ import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
 import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -95,7 +95,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         orderProducts.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
       }
 
-      const created = await getApi().Orders.createOrder('delivery_order', {
+      const created = await getApi().Orders.createOrder(FORMS.deliveryOrder, {
         formData: orderFormData,
         products: orderProducts,
         paymentAccountIdentifier,

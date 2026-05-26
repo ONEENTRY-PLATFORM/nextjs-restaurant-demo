@@ -9,8 +9,6 @@ import { typeError } from '@/components/utils';
 
 type SearchParams = {
   search?: string;
-  in_stock?: string;
-  color?: string;
   preferences?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -43,8 +41,6 @@ const buildKey = (
     handle,
     {
       search: searchParams?.search ?? '',
-      in_stock: searchParams?.in_stock ?? '',
-      color: searchParams?.color ?? '',
       preferences: searchParams?.preferences ?? '',
       minPrice: searchParams?.minPrice ?? '',
       maxPrice: searchParams?.maxPrice ?? '',

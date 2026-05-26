@@ -4,13 +4,14 @@ import type { JSX } from 'react';
 import { getBlockProducts, getRelatedProductsById } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
 import { t } from '@/app/dictionaries';
+import { BLOCKS } from '@/app/utils/constants';
 
 import CardsGridAnimations from '../products-grid/animations/CardsGridAnimations';
 import ProductCard from '../products-grid/components/product-card/ProductCard';
 import ProductAnimations from './animations/ProductAnimations';
 
 /** Markers handled elsewhere (e.g. ProductsGroup) — do not try them as similar. */
-const NON_SIMILAR_BLOCK_MARKERS = new Set<string>(['similar_dishes']);
+const NON_SIMILAR_BLOCK_MARKERS = new Set<string>([BLOCKS.similarDishes]);
 
 /**
  * RelatedItems — "related products" section at the bottom of a single dish page.

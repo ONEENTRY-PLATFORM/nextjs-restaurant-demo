@@ -6,11 +6,12 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { logOutUser, useGetMenuByMarkerQuery } from '@/app/api';
+import { logOutUser, useEmailAuthProviderMarker, useGetMenuByMarkerQuery } from '@/app/api';
 import { useIsMdUp } from '@/app/hooks/useIsMdUp';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { MENUS, PAGES } from '@/app/utils/constants';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -25,9 +26,6 @@ import ProfileSections from './ProfileSections';
 
 const PROFILE_NAV_ITEM_CLASS =
   'profile-anim-row group flex w-full items-center justify-between border-b border-muted/30 py-3.75 text-xl text-paper transition-colors duration-200 hover:text-brand';
-
-const PROFILE_MENU_MARKER = 'user_menu';
-const PROFILE_PAGE_URL = 'profile';
 
 type ProfileScreen = 'menu' | 'orders' | 'favorites' | 'bookings' | 'personal';
 
@@ -57,14 +55,12 @@ const ProfileNavMenu = ({
 }): JSX.Element | null => {
   const { isAuth, authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();
-  const { data: menu } = useGetMenuByMarkerQuery(
-    { marker: PROFILE_MENU_MARKER },
-    { skip: !isAuth }
-  );
+  const { data: menu } = useGetMenuByMarkerQuery({ marker: MENUS.userMenu }, { skip: !isAuth });
+  const emailProviderMarker = useEmailAuthProviderMarker();
 
   const profileChildren = useMemo<IMenusPages[]>(() => {
     const pages = menu?.pages ?? [];
-    const profileEntry = pages.find(p => p.pageUrl === PROFILE_PAGE_URL);
+    const profileEntry = pages.find(p => p.pageUrl === PAGES.profile);
     if (!profileEntry) return [];
     return pages
       .filter(p => p.parentId === profileEntry.id)
@@ -75,7 +71,7 @@ const ProfileNavMenu = ({
 
   const handleLogout = async () => {
     try {
-      await logOutUser({ marker: 'email' });
+      await logOutUser({ marker: emailProviderMarker });
       authenticate();
       onNavigate();
       router.push('/');
@@ -110,7 +106,7 @@ const ProfileNavMenu = ({
         return (
           <Link
             key={page.id}
-            href={`/${PROFILE_PAGE_URL}/${page.pageUrl}`}
+            href={`/${PAGES.profile}/${page.pageUrl}`}
             onClick={onNavigate}
             className={PROFILE_NAV_ITEM_CLASS}
           >

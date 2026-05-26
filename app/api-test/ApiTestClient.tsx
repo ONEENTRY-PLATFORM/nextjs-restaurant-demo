@@ -2,6 +2,8 @@
 
 import { type JSX, type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
+import { MENUS, PAGES } from '@/app/utils/constants';
+
 import { BarChart, Histogram, Legend } from './charts';
 import {
   bucketColor,
@@ -26,8 +28,8 @@ const PRESET_OPTIONS: ReadonlyArray<{
   defaultMarker: string;
   hint: string;
 }> = [
-  { value: 'page', label: 'Page', defaultMarker: 'home_web', hint: 'Pages.getPageByUrl' },
-  { value: 'menu', label: 'Menu', defaultMarker: 'bottom_web', hint: 'Menus.getMenusByMarker' },
+  { value: 'page', label: 'Page', defaultMarker: PAGES.home, hint: 'Pages.getPageByUrl' },
+  { value: 'menu', label: 'Menu', defaultMarker: MENUS.bottomWeb, hint: 'Menus.getMenusByMarker' },
   {
     value: 'block',
     label: 'Block',
@@ -207,7 +209,7 @@ const Th = ({
  */
 export default function ApiTestClient(): JSX.Element {
   const [preset, setPreset] = useState<Preset>('page');
-  const [marker, setMarker] = useState<string>('home_web');
+  const [marker, setMarker] = useState<string>(PAGES.home);
   const [cached, setCached] = useState<boolean>(false);
   const [count, setCount] = useState<number>(20);
   const [mode, setMode] = useState<Mode>('sequential');

@@ -10,6 +10,7 @@ import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import ProfileIcon from '@/components/icons/profile';
 import { normalizePhoneE164 } from '@/components/utils';
 
@@ -96,7 +97,7 @@ const ProfileSections = (): JSX.Element => {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
-  const { data: userForm } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data: userForm } = useGetFormByMarkerQuery({ marker: FORMS.user });
 
   const profileAttributes = useMemo<IFormAttribute[]>(
     () =>

@@ -1,67 +1,30 @@
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
+import { ATTRS } from '@/app/utils/constants';
+
 /**
  * getSearchParams — builds an `IFilterParams` array for a Products API request from URL `searchParams`.
  *
- * @param   {object}  [searchParams] - Inbound URL `searchParams` map (search, in_stock, color, preferences, price range, cooking_time_max).
- * @param   {string}  [handle]       - Optional category handle that becomes a `stickers` filter.
- * @returns Array of OneEntry `IFilterParams` (with optional `statusMarker`) suitable for `Products.getProducts*`.
+ * @param   {object}  [searchParams] - Inbound URL `searchParams` map (search, preferences, price range, cooking_time_max).
+ * @returns Array of OneEntry `IFilterParams` suitable for `Products.getProducts*`.
  */
-const getSearchParams = (
-  searchParams?: {
-    search?: string;
-    in_stock?: string;
-    color?: string;
-    preferences?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    cooking_time_max?: string;
-  },
-  handle?: string
-) => {
-  const expandedFilters: Array<IFilterParams & { statusMarker?: string }> | undefined = [];
+const getSearchParams = (searchParams?: {
+  search?: string;
+  preferences?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  cooking_time_max?: string;
+}) => {
+  const expandedFilters: IFilterParams[] = [];
 
   // Filter out service products that have no SKU.
-  const servicesFilter: IFilterParams = {
-    attributeMarker: 'sku',
+  expandedFilters.push({
+    attributeMarker: ATTRS.sku,
     conditionMarker: 'nin',
     conditionValue: null,
     title: searchParams?.search || '',
     isNested: false,
-  };
-  expandedFilters.push(servicesFilter);
-
-  if (handle) {
-    const stickersFilter: IFilterParams = {
-      attributeMarker: 'stickers',
-      conditionMarker: 'in',
-      conditionValue: handle,
-      title: searchParams?.search || '',
-      isNested: false,
-    };
-    expandedFilters.push(stickersFilter);
-  }
-
-  if (searchParams?.in_stock) {
-    expandedFilters.push({
-      statusMarker: 'in_stock',
-      attributeMarker: 'price',
-      conditionValue: null,
-      title: searchParams.search || '',
-      isNested: false,
-    });
-  }
-
-  if (searchParams?.color) {
-    const newFilter: IFilterParams = {
-      attributeMarker: 'color',
-      conditionMarker: 'in',
-      conditionValue: searchParams.color,
-      title: searchParams.search || '',
-      isNested: false,
-    };
-    expandedFilters.push(newFilter);
-  }
+  });
 
   if (searchParams?.preferences) {
     // Multi-select preferences arrive as `?preferences=Meat,Fish`.
@@ -73,7 +36,7 @@ const getSearchParams = (
       .filter(Boolean);
     for (const value of values) {
       expandedFilters.push({
-        attributeMarker: 'preferences',
+        attributeMarker: ATTRS.preferences,
         conditionMarker: 'in',
         conditionValue: value,
         title: searchParams.search || '',
@@ -86,7 +49,7 @@ const getSearchParams = (
     const min = Number(searchParams.minPrice);
     if (Number.isFinite(min)) {
       expandedFilters.push({
-        attributeMarker: 'price',
+        attributeMarker: ATTRS.price,
         conditionMarker: 'mth',
         conditionValue: min,
         title: searchParams.search || '',
@@ -99,7 +62,7 @@ const getSearchParams = (
     const max = Number(searchParams.maxPrice);
     if (Number.isFinite(max)) {
       expandedFilters.push({
-        attributeMarker: 'price',
+        attributeMarker: ATTRS.price,
         conditionMarker: 'lth',
         conditionValue: max,
         title: searchParams.search || '',
@@ -112,7 +75,7 @@ const getSearchParams = (
     const max = Number(searchParams.cooking_time_max);
     if (Number.isFinite(max)) {
       expandedFilters.push({
-        attributeMarker: 'cooking_time',
+        attributeMarker: ATTRS.cookingTime,
         conditionMarker: 'lth',
         conditionValue: max,
         title: searchParams.search || '',

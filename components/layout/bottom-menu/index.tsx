@@ -2,6 +2,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { ComponentType, JSX } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
+import { MENUS, PAGES } from '@/app/utils/constants';
 
 import CenterCartButton from './components/CenterCartButton';
 import CenterCloseButton from './components/CenterCloseButton';
@@ -17,11 +18,11 @@ type NavConfig = {
 };
 
 const NAV_BY_URL: Record<string, NavConfig> = {
-  home_web: { Component: NavItemHome, groupClass: 'group' },
-  favorites: { Component: NavItemFavorites, groupClass: 'group_stroke' },
-  menu: { Component: NavItemCatalog, groupClass: 'group' },
-  profile: { Component: NavItemProfile, groupClass: 'group' },
-  bookings: { Component: NavItemCalendar, groupClass: 'group_stroke' },
+  [PAGES.home]: { Component: NavItemHome, groupClass: 'group' },
+  [PAGES.favorites]: { Component: NavItemFavorites, groupClass: 'group_stroke' },
+  [PAGES.menu]: { Component: NavItemCatalog, groupClass: 'group' },
+  [PAGES.profile]: { Component: NavItemProfile, groupClass: 'group' },
+  [PAGES.bookings]: { Component: NavItemCalendar, groupClass: 'group_stroke' },
 };
 
 /**
@@ -30,7 +31,7 @@ const NAV_BY_URL: Record<string, NavConfig> = {
  * @returns JSX of the fixed bottom navigation bar (rendered only below md).
  */
 const BottomMobileMenu = async (): Promise<JSX.Element> => {
-  const { menu, isError, error } = await getMenuByMarker('bottom_web');
+  const { menu, isError, error } = await getMenuByMarker(MENUS.bottomWeb);
 
   if (isError || !menu) {
     // eslint-disable-next-line no-console

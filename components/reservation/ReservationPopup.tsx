@@ -10,6 +10,7 @@ import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS, PAGES } from '@/app/utils/constants';
 import { PHONE_MARKERS } from '@/components/cart/steps/step-payment/constants';
 import { findUserField } from '@/components/cart/steps/step-payment/userFields';
 import ArrowBackIcon from '@/components/icons/arrow-back';
@@ -113,11 +114,11 @@ const ReservationPopup = (): JSX.Element => {
   const close = () => setTransition('close');
 
   const { data: form, isLoading: isFormLoading } = useGetFormByMarkerQuery(
-    { marker: 'booking_order' },
+    { marker: FORMS.bookingOrder },
     { skip: !isOpen }
   );
   const { data: pages, isLoading: isPagesLoading } = useGetChildPagesByParentUrlQuery(
-    { url: 'restaurants' },
+    { url: PAGES.restaurants },
     { skip: !isOpen }
   );
 

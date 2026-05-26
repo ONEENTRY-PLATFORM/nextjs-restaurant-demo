@@ -5,6 +5,7 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
+import { PAGES } from '@/app/utils/constants';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
 
 export const dynamic = 'force-dynamic';
@@ -69,8 +70,8 @@ const buildCard = (page: IPagesEntity, index: number): RestaurantCard => {
  */
 const RestaurantsPage = async (): Promise<JSX.Element> => {
   const [parentRes, childrenRes] = await Promise.all([
-    getPageByUrl('restaurants'),
-    getChildPagesByParentUrl('restaurants'),
+    getPageByUrl(PAGES.restaurants),
+    getChildPagesByParentUrl(PAGES.restaurants),
   ]);
 
   if (parentRes.isError || !parentRes.page) {
@@ -164,7 +165,7 @@ export default RestaurantsPage;
  * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('restaurants');
+  const { page } = await getPageByUrl(PAGES.restaurants);
   const title = page?.localizeInfos?.title ?? 'Restaurants';
   return {
     title,

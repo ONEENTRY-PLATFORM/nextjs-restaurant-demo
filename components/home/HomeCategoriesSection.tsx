@@ -3,6 +3,7 @@ import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { PAGES } from '@/app/utils/constants';
 
 import CategoriesSection from './CategoriesSection';
 
@@ -14,7 +15,7 @@ const SECTION_LIMIT = 4;
  * @returns JSX of the homepage category list, or `null` when no category has products.
  */
 const HomeCategoriesSection = async (): Promise<JSX.Element | null> => {
-  const { pages = [] } = await getChildPagesByParentUrl('menu');
+  const { pages = [] } = await getChildPagesByParentUrl(PAGES.menu);
   const visiblePages = pages
     .filter(p => p.isVisible !== false)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));

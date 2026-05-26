@@ -6,7 +6,7 @@ import { memo, Suspense } from 'react';
 import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
-import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -19,7 +19,7 @@ const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 export const dynamic = 'force-dynamic';
 
 /**
- * ShopPageLayout — shop page (root catalog backed by the OneEntry `services` page).
+ * ShopPageLayout — shop page (root catalog backed by the OneEntry `menu` page).
  *
  * @param   {PageProps}            props - Page props with `params` and `searchParams`.
  * @returns Promise resolving to JSX of the shop page layout (breadcrumb JSON-LD + suspended products grid).
@@ -28,7 +28,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
   const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
   ServerProvider('dict', await getDictionary());
 
-  const { page } = await getPageByUrl('services');
+  const { page } = await getPageByUrl(PAGES.menu);
   const productsLimit = SHOP_PAGE_LIMIT;
 
   if (!page) {
@@ -88,7 +88,7 @@ export default ShopPageLayout;
  */
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { handle, lang } = await params;
-  const { isError, page } = await getPageByUrl('services');
+  const { isError, page } = await getPageByUrl(PAGES.services);
 
   if (isError || !page) {
     return notFound();

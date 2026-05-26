@@ -6,13 +6,14 @@ import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import { getApi, logInUser, useGetAuthProvidersQuery } from '@/app/api';
+import { getApi, logInUser, useEmailAuthProviderMarker, useGetAuthProvidersQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
+import { findEmailLikeProvider } from '@/components/forms/authProviders';
 import { typeError } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
@@ -50,8 +51,8 @@ const VerificationForm = ({
 
   // Cooldown between OTP resends.
   const { data: providers } = useGetAuthProvidersQuery('');
-  const ttl =
-    Number(providers?.find(p => p.identifier === 'email')?.config?.systemCodeTlsSec) || 60;
+  const emailProviderMarker = useEmailAuthProviderMarker();
+  const ttl = Number(findEmailLikeProvider(providers ?? [])?.config?.systemCodeTlsSec) || 60;
   const [cooldown, setCooldown] = useState(60);
   const initializedRef = useRef(false);
 
@@ -81,7 +82,7 @@ const VerificationForm = ({
     try {
       if (effectiveAction !== 'activateUser') {
         const result = await getApi().AuthProvider.checkCode(
-          'email',
+          emailProviderMarker,
           fields.email?.value || '',
           'otp',
           otp
@@ -102,7 +103,7 @@ const VerificationForm = ({
         }
       } else {
         const result = await getApi().AuthProvider.activateUser(
-          'email',
+          emailProviderMarker,
           fields.email?.value || '',
           otp
         );
@@ -117,7 +118,7 @@ const VerificationForm = ({
         }
         // Activation succeeded — sign the user in and close the popup.
         await logInUser({
-          method: 'email',
+          method: emailProviderMarker,
           login: fields.email?.value || '',
           password: fields.password?.value || '',
         });
@@ -159,7 +160,7 @@ const VerificationForm = ({
       setLoading(true);
       setError('');
       const result = await getApi().AuthProvider.generateCode(
-        'email',
+        emailProviderMarker,
         fields.email?.value || '',
         'generate_code'
       );

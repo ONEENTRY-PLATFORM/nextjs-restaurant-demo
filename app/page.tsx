@@ -3,6 +3,7 @@ import type { JSX } from 'react';
 
 import HeaderAnimGate from '@/app/animations/HeaderAnimGate';
 import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
+import { BLOCKS, PAGES } from '@/app/utils/constants';
 import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';
 import HomePromo from '@/components/home/HomePromo';
@@ -18,7 +19,11 @@ import HomePromo from '@/components/home/HomePromo';
 export const dynamic = 'force-dynamic';
 
 // Whitelisted block identifiers; unknown ones are silently skipped.
-const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categories']);
+const HOME_BLOCK_IDENTIFIERS = new Set<string>([
+  BLOCKS.homePromo,
+  BLOCKS.recommended,
+  BLOCKS.homeCategories,
+]);
 
 /**
  * HomePage — home page driven by blocks of the CMS `home_web` page.
@@ -29,8 +34,8 @@ const HOME_BLOCK_IDENTIFIERS = new Set(['home_promo', 'recommended', 'home_categ
  */
 const HomePage = async (): Promise<JSX.Element> => {
   const [{ page }, { blocks = [] }] = await Promise.all([
-    getPageByUrl('home_web'),
-    getBlocksByPageUrl('home_web'),
+    getPageByUrl(PAGES.home),
+    getBlocksByPageUrl(PAGES.home),
   ]);
   if (!page) {
     notFound();
@@ -42,10 +47,10 @@ const HomePage = async (): Promise<JSX.Element> => {
   return (
     <>
       {sortedBlocks.map(block => {
-        if (block.identifier === 'home_promo') {
+        if (block.identifier === BLOCKS.homePromo) {
           return <HomePromo key={block.id} />;
         }
-        if (block.identifier === 'home_categories') {
+        if (block.identifier === BLOCKS.homeCategories) {
           return <HomeCategoriesSection key={block.id} />;
         }
         // Recommended fades in right after HomePromo (delay 0.5 + 0.5 s fade).

@@ -8,11 +8,12 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import { getApi, logInUser, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, logInUser, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import { normalizePhoneE164, typeError } from '@/components/utils';
 
@@ -43,7 +44,8 @@ const SignUpForm = ({
   const { setOpen, setComponent, setAction, postAuthComponent, setPostAuthComponent } =
     useContext(OpenDrawerContext);
 
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: FORMS.user });
+  const emailProviderMarker = useEmailAuthProviderMarker();
 
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
@@ -76,7 +78,7 @@ const SignUpForm = ({
 
       // `formIdentifier` must match the auth provider's `formIdentifier`.
       const data: ISignUpData = {
-        formIdentifier: 'user',
+        formIdentifier: FORMS.user,
         authData: [
           {
             marker: 'email',
@@ -101,7 +103,7 @@ const SignUpForm = ({
       setLoading(true);
 
       try {
-        const res = await getApi().AuthProvider.signUp('email', data);
+        const res = await getApi().AuthProvider.signUp(emailProviderMarker, data);
 
         if (typeError(res)) {
           // Sign-up error — stay on SignUpForm: the user was not created, do not switch to VerificationForm.
@@ -111,7 +113,7 @@ const SignUpForm = ({
           const entity = res as ISignUpEntity;
           if (entity.isActive) {
             await logInUser({
-              method: 'email',
+              method: emailProviderMarker,
               login: entity.identifier,
               password: fields.password?.value || '',
             });

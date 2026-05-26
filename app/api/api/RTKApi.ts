@@ -16,6 +16,7 @@ import type { IProductsEntity, IProductsResponse } from 'oneentry/dist/products/
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import type { IProducts } from '@/app/types/global';
+import { PAGES } from '@/app/utils/constants';
 import { typeError } from '@/components/utils';
 
 import type { PriceRange } from '../server/products/getProductsPriceRange';
@@ -202,7 +203,7 @@ export const RTKApi = createApi({
     }),
     /** getProductsPriceRange — catalog min/max price (lazy-fetched on filter popup open). */
     getProductsPriceRange: build.query<PriceRange, { pageUrl?: string }>({
-      queryFn: async ({ pageUrl = 'services' }) => {
+      queryFn: async ({ pageUrl = PAGES.services }) => {
         try {
           const result = await getApi().Products.getProductsPriceByPageUrl(pageUrl);
           if (typeError(result)) {

@@ -4,7 +4,7 @@ import { useTransitionRouter } from 'next-transition-router';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
-import { logOutUser } from '@/app/api';
+import { logOutUser, useEmailAuthProviderMarker } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 
 /**
@@ -15,10 +15,11 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 const LogoutMenuItem = (): JSX.Element => {
   const { authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();
+  const emailProviderMarker = useEmailAuthProviderMarker();
 
   const handleLogout = async () => {
     try {
-      await logOutUser({ marker: 'email' });
+      await logOutUser({ marker: emailProviderMarker });
       authenticate();
       router.push('/');
     } catch (error) {

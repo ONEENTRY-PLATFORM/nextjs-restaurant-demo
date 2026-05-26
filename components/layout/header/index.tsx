@@ -5,6 +5,7 @@ import { type JSX, Suspense } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl, getSingleAttributeByMarkerSet } from '@/app/api';
 import { t } from '@/app/dictionaries';
+import { ATTR_SETS, ATTRS, PAGES } from '@/app/utils/constants';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import CategoryFilter from '@/components/layout/filter/CategoryFilter';
 import FilterBottom from '@/components/layout/filter/FilterBottom';
@@ -32,11 +33,11 @@ import SupportButton from './SupportButton';
 const Header = async (): Promise<JSX.Element> => {
   const [{ pages }, { page: supportPage }, preferencesAttr, searchPlaceholder, homeLabel] =
     await Promise.all([
-      getChildPagesByParentUrl('menu'),
-      getPageByUrl('support'),
+      getChildPagesByParentUrl(PAGES.menu),
+      getPageByUrl(PAGES.support),
       getSingleAttributeByMarkerSet({
-        setMarker: 'dish',
-        attributeMarker: 'preferences',
+        setMarker: ATTR_SETS.dish,
+        attributeMarker: ATTRS.preferences,
       }),
       t('search_placeholder_text', 'Search'),
       t('home_label', 'Home'),

@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { getImageUrl } from '@/app/api/api/api';
+import { PAGES } from '@/app/utils/constants';
 
 import { getChildPagesByParentUrl } from './getChildPagesByParentUrl';
 
@@ -21,7 +22,7 @@ export type BlogBanner = {
  * @returns Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
-  const { isError, pages } = await getChildPagesByParentUrl('blog');
+  const { isError, pages } = await getChildPagesByParentUrl(PAGES.blog);
   if (isError || !pages) return [];
 
   type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;

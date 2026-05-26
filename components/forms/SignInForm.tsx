@@ -5,11 +5,12 @@ import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { logInUser, useGetFormByMarkerQuery } from '@/app/api';
+import { logInUser, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 
@@ -51,7 +52,8 @@ const SignInForm = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: FORMS.user });
+  const emailProviderMarker = useEmailAuthProviderMarker();
 
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
@@ -70,7 +72,7 @@ const SignInForm = ({
     try {
       setLoading(true);
       const result = await logInUser({
-        method: 'email',
+        method: emailProviderMarker,
         login: fields.email.value,
         password: fields.password.value,
       });

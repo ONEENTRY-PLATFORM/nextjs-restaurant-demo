@@ -10,6 +10,7 @@ import { getApi, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { FORMS } from '@/app/utils/constants';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -192,7 +193,7 @@ const ReservationForm = ({
       setLoading(true);
       try {
         const res = await getApi().Orders.updateOrderByMarkerAndId(
-          'booking_order',
+          FORMS.bookingOrder,
           editingOrder.orderId,
           {
             formIdentifier: editingOrder.formIdentifier,
@@ -228,8 +229,8 @@ const ReservationForm = ({
     setLoading(true);
     setError('');
     try {
-      const res = await getApi().Orders.createOrder('booking_order', {
-        formIdentifier: 'booking_order',
+      const res = await getApi().Orders.createOrder(FORMS.bookingOrder, {
+        formIdentifier: FORMS.bookingOrder,
         paymentAccountIdentifier,
         formData: step.formData,
         products: [{ productId: 34, quantity: 1 }],

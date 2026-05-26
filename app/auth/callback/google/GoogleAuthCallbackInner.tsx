@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { oauthLogIn, syncTokens } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { GOOGLE_OAUTH_MARKER_STORAGE_KEY } from '@/components/forms/authProviders';
 import { peekPendingReservationResume } from '@/components/reservation/reservationOAuthResumeState';
 
 /**
@@ -42,12 +43,20 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
       typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-state') : null;
     const storedReturn =
       typeof window !== 'undefined' ? sessionStorage.getItem('google-oauth-return') : null;
+    // Marker is written by `startGoogleOAuth(provider)` before the redirect. Falls back to
+    // `'google'` defensively in case sessionStorage was cleared between redirect and callback.
+    const storedMarker =
+      typeof window !== 'undefined'
+        ? sessionStorage.getItem(GOOGLE_OAUTH_MARKER_STORAGE_KEY)
+        : null;
+    const providerMarker = storedMarker || 'google';
     const resume = peekPendingReservationResume();
     const returnTo = params.get('return') || resume?.returnTo || storedReturn || '/';
 
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('google-oauth-state');
       sessionStorage.removeItem('google-oauth-return');
+      sessionStorage.removeItem(GOOGLE_OAUTH_MARKER_STORAGE_KEY);
     }
 
     const reopenReservationPopup = () => {
@@ -73,7 +82,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const toastId = toast.loading('Signing you in…');
     router.replace(returnTo);
 
-    oauthLogIn({ marker: 'google', code, redirectUri }).then(res => {
+    oauthLogIn({ marker: providerMarker, code, redirectUri }).then(res => {
       if (res?.error || !res?.data) {
         toast.update(toastId, {
           render: res?.error ?? 'Google sign-in failed.',

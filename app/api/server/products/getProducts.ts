@@ -24,11 +24,8 @@ export const getProducts = cache(
     offset: number;
     langCode?: string;
     params?: {
-      handle?: string;
       searchParams?: {
         search?: string;
-        in_stock?: string;
-        color?: string;
         preferences?: string;
         minPrice?: string;
         maxPrice?: string;
@@ -56,10 +53,10 @@ export const getProducts = cache(
       try {
         const results = await Promise.all(
           prefList.map(async value => {
-            const filters = getSearchParams(
-              { ...(params?.searchParams ?? {}), preferences: value },
-              params?.handle
-            );
+            const filters = getSearchParams({
+              ...(params?.searchParams ?? {}),
+              preferences: value,
+            });
             const data = await getApi().Products.getProducts(filters, lang, {
               offset: 0,
               limit: fetchLimit,
@@ -87,7 +84,7 @@ export const getProducts = cache(
       }
     }
 
-    const expandedFilters = getSearchParams(params?.searchParams, params?.handle);
+    const expandedFilters = getSearchParams(params?.searchParams);
 
     try {
       const data = await getApi().Products.getProducts(

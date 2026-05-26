@@ -6,6 +6,7 @@ import { dictText } from '@/components/utils';
 
 import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
 import getCachedData from './api/utils/getCachedData';
+import { ATTRS } from './utils/constants';
 
 /**
  * fetchDictionary — loads the `static_content` attribute set and normalizes it.
@@ -15,7 +16,7 @@ import getCachedData from './api/utils/getCachedData';
 const fetchDictionary = async (): Promise<IAttributeValues> => {
   try {
     const { isError, attributes } = await getAttributesByMarker({
-      attributeMarker: 'static_content',
+      attributeMarker: ATTRS.staticContent,
     });
 
     if (isError || !Array.isArray(attributes)) {

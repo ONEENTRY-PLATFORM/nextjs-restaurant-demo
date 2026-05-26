@@ -51,7 +51,7 @@ const AuthProviderSelect = ({
       return;
     }
     if (p.identifier === 'google') {
-      startGoogleOAuth(p.config?.oauthAuthUrl);
+      startGoogleOAuth(p);
       return;
     }
     if (p.type === 'oauth' && p.config?.oauthAuthUrl) {

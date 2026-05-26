@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { JSX } from 'react';
 
 import { getImageUrl, getPageByUrl } from '@/app/api';
+import { PAGES } from '@/app/utils/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> |
  * @returns Promise resolving to JSX of the service entry page (logo, primary/secondary CTA buttons over background image).
  */
 const ServicePage = async (): Promise<JSX.Element> => {
-  const { page } = await getPageByUrl('services');
+  const { page } = await getPageByUrl(PAGES.services);
   const attrs = page?.attributeValues ?? {};
 
   const logo = getImageUrl(attrs.service_logo?.value as ImageValue);
@@ -72,6 +73,6 @@ export default ServicePage;
  * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl('services');
+  const { page } = await getPageByUrl(PAGES.services);
   return { title: page?.localizeInfos?.title };
 }

@@ -5,6 +5,7 @@ import { getBlockByMarker } from '@/app/api/server/blocks/getBlockByMarker';
 import { getMenuByMarker } from '@/app/api/server/menus/getMenuByMarker';
 import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { LanguageEnum } from '@/app/types/enum';
+import { MENUS, PAGES } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 export const dynamic = 'force-dynamic';
@@ -12,8 +13,8 @@ export const dynamic = 'force-dynamic';
 type Preset = 'page' | 'menu' | 'block' | 'products';
 
 const DEFAULT_MARKER: Record<Preset, string> = {
-  page: 'home_web',
-  menu: 'bottom_web',
+  page: PAGES.home,
+  menu: MENUS.bottomWeb,
   block: '',
   products: '',
 };

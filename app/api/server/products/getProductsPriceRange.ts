@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { getApi, getLang } from '@/app/api';
+import { PAGES } from '@/app/utils/constants';
 import { typeError } from '@/components/utils';
 
 export type PriceRange = {
@@ -18,7 +19,7 @@ export type PriceRange = {
  * @returns Promise resolving to the catalog price range.
  */
 export const getProductsPriceRange = cache(
-  async (pageUrl = 'services', langCode?: string): Promise<PriceRange> => {
+  async (pageUrl: string = PAGES.menu, langCode?: string): Promise<PriceRange> => {
     try {
       const data = await getApi().Products.getProductsPriceByPageUrl(
         pageUrl,

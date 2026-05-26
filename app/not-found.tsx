@@ -3,6 +3,7 @@ import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
 import { t } from '@/app/dictionaries';
+import { PAGES } from '@/app/utils/constants';
 
 // Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * @returns Promise resolving to JSX of the 404 page (CMS title + `error_description` attribute, with a fallback shell).
  */
 const NotFound = async (): Promise<JSX.Element> => {
-  const { page, isError } = await getPageByUrl('404');
+  const { page, isError } = await getPageByUrl(PAGES.notFound);
   const returnHome = await t('return_home_button', 'Return home');
 
   if (isError || !page) {

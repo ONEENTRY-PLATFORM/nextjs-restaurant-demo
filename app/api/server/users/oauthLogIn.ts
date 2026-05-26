@@ -24,8 +24,12 @@ type OauthLoginProps = {
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {
-    const clientId = marker === 'google' ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID : undefined;
-    const clientSecret = marker === 'google' ? process.env.GOOGLE_CLIENT_SECRET : undefined;
+    // This server action is wired up only for the Google OAuth callback (the only
+    // OAuth provider with a code-exchange step in this project). The `marker` is
+    // forwarded to `AuthProvider.oauth(marker, body)` so OneEntry knows which
+    // provider entity to authenticate against.
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
       return { error: `OAuth credentials are not configured for "${marker}".` };

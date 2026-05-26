@@ -16,51 +16,9 @@ describe('getSearchParams — service-products filter (always present)', () => {
   });
 
   it('propagates `search` text into every filter as `title`', () => {
-    const result = getSearchParams(
-      { search: 'pizza', color: 'red', in_stock: '1' },
-      'main-courses'
-    );
+    const result = getSearchParams({ search: 'pizza', preferences: 'Meat' });
     expect(result.length).toBeGreaterThan(1);
     expect(result.every(f => f.title === 'pizza')).toBe(true);
-  });
-});
-
-describe('getSearchParams — handle (category sticker)', () => {
-  it('adds a stickers filter when `handle` is passed', () => {
-    const result = getSearchParams(undefined, 'pizza');
-    expect(result).toHaveLength(2);
-    expect(result[1]).toMatchObject({
-      attributeMarker: 'stickers',
-      conditionMarker: 'in',
-      conditionValue: 'pizza',
-    });
-  });
-
-  it('omits the stickers filter when `handle` is empty / undefined', () => {
-    expect(getSearchParams(undefined, '')).toHaveLength(1);
-    expect(getSearchParams(undefined, undefined)).toHaveLength(1);
-  });
-});
-
-describe('getSearchParams — in_stock / color', () => {
-  it('adds an `in_stock` status filter when present', () => {
-    const result = getSearchParams({ in_stock: '1' });
-    const stockFilter = result.find(f => 'statusMarker' in f && f.statusMarker === 'in_stock');
-    expect(stockFilter).toBeDefined();
-    expect(stockFilter).toMatchObject({
-      attributeMarker: 'price',
-      conditionValue: null,
-    });
-  });
-
-  it('adds a `color` filter when present', () => {
-    const result = getSearchParams({ color: 'red' });
-    const color = result.find(f => f.attributeMarker === 'color');
-    expect(color).toMatchObject({
-      attributeMarker: 'color',
-      conditionMarker: 'in',
-      conditionValue: 'red',
-    });
   });
 });
 
@@ -88,7 +46,6 @@ describe('getSearchParams — price range', () => {
   it('adds minPrice (`mth`) and maxPrice (`lth`) when both are numeric', () => {
     const result = getSearchParams({ minPrice: '10', maxPrice: '99' });
     const price = result.filter(f => f.attributeMarker === 'price');
-    // 2 filters: min (mth) + max (lth). No in_stock here.
     expect(price).toHaveLength(2);
     expect(price.find(f => f.conditionMarker === 'mth')?.conditionValue).toBe(10);
     expect(price.find(f => f.conditionMarker === 'lth')?.conditionValue).toBe(99);

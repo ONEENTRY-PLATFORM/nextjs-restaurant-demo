@@ -11,6 +11,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/reducers/OrderSlice';
+import { FORMS } from '@/app/utils/constants';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
@@ -46,7 +47,7 @@ const StepPayment = (): JSX.Element => {
   const delivery = useAppSelector(selectDeliveryData);
 
   // Form-field placeholders come from `additionalFields.placeholder.value`, not static_content.
-  const { data: deliveryForm } = useGetFormByMarkerQuery({ marker: 'delivery_order' });
+  const { data: deliveryForm } = useGetFormByMarkerQuery({ marker: FORMS.deliveryOrder });
   const fieldPlaceholder = (marker: string): string => {
     const attr = deliveryForm?.attributes?.find(a => a.marker === marker);
     return String(attr?.additionalFields?.placeholder?.value ?? '');

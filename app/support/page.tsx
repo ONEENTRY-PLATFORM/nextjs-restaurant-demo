@@ -4,6 +4,7 @@ import type { JSX } from 'react';
 
 import { getFormByMarker, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
+import { FORMS, PAGES } from '@/app/utils/constants';
 import ContactUsForm from '@/components/forms/ContactUsForm';
 
 export const dynamic = 'force-dynamic';
@@ -15,8 +16,8 @@ export const dynamic = 'force-dynamic';
  */
 const SupportPage = async (): Promise<JSX.Element> => {
   const [{ page }, formRes, dict] = await Promise.all([
-    getPageByUrl('support'),
-    getFormByMarker('contact_us'),
+    getPageByUrl(PAGES.support),
+    getFormByMarker(FORMS.contactUs),
     getDictionary(),
   ]);
   const attrs = page?.attributeValues ?? {};
@@ -100,7 +101,7 @@ export default SupportPage;
  * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const [{ page }, dict] = await Promise.all([getPageByUrl('support'), getDictionary()]);
+  const [{ page }, dict] = await Promise.all([getPageByUrl(PAGES.support), getDictionary()]);
   const title =
     (page?.attributeValues?.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??

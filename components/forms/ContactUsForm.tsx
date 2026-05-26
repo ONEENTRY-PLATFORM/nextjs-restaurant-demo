@@ -8,6 +8,7 @@ import { getApi, useGetFormByMarkerQuery } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
+import { FORMS } from '@/app/utils/constants';
 
 import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
@@ -30,7 +31,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'contact_us' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: FORMS.contactUs });
 
   const fieldsData = useAppSelector(state => state.formFieldsReducer.fields);
 
@@ -78,7 +79,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
     try {
       setLoading(true);
       await getApi().FormData.postFormsData({
-        formIdentifier: 'contact_us',
+        formIdentifier: FORMS.contactUs,
         formData: transformedFormData,
         formModuleConfigId: data?.moduleFormConfigs?.[0]?.id ?? 0,
         moduleEntityIdentifier: data?.moduleFormConfigs?.[0]?.entityIdentifiers?.[0]?.id ?? '',

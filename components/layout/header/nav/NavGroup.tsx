@@ -4,6 +4,7 @@ import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { JSX } from 'react';
 
 import { getMenuByMarker } from '@/app/api';
+import { MENUS, PAGES } from '@/app/utils/constants';
 import HouseIcon from '@/components/icons/house';
 
 import NavItemCart from './NavItemCart';
@@ -18,7 +19,7 @@ import NavItemProfile from './NavItemProfile';
  * @returns JSX of the top navigation icon row.
  */
 const NavGroup = async (): Promise<JSX.Element> => {
-  const { menu } = await getMenuByMarker('user_menu');
+  const { menu } = await getMenuByMarker(MENUS.userMenu);
   const topLevel = (menu?.pages ?? [])
     .filter(p => p.parentId === null)
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
@@ -51,7 +52,7 @@ const NavGroup = async (): Promise<JSX.Element> => {
  */
 const renderItem = (page: IMenusPages): JSX.Element | null => {
   switch (page.pageUrl) {
-    case 'home_web':
+    case PAGES.home:
       // The Home page has no `menu_icon` in the CMS — fall back to the built-in `HouseIcon`.
       return (
         <Link
@@ -63,11 +64,11 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
           <HouseIcon size="lg" />
         </Link>
       );
-    case 'cart':
+    case PAGES.cart:
       return <NavItemCart key={page.id} />;
-    case 'favorites':
+    case PAGES.favorites:
       return <NavItemFavorites key={page.id} />;
-    case 'profile':
+    case PAGES.profile:
       return <NavItemProfile key={page.id} />;
     default:
       return <NavGenericIcon key={page.id} page={page} />;
@@ -90,7 +91,7 @@ const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => 
   if (!iconUrl) return null;
 
   const title = page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? page.pageUrl ?? '';
-  const href = page.pageUrl === 'home_web' ? '/' : `/${page.pageUrl}`;
+  const href = page.pageUrl === PAGES.home ? '/' : `/${page.pageUrl}`;
 
   return (
     <Link

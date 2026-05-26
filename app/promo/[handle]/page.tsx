@@ -9,7 +9,7 @@ import { getBlogBanners, getImageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
-import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 import RelatedPromosCarousel from '@/components/promo/RelatedPromosCarousel';
@@ -39,7 +39,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const [{ page, isError }, banners, parentResp] = await Promise.all([
     getPageByUrl(handle),
     getBlogBanners(),
-    getPageByUrl('blog'),
+    getPageByUrl(PAGES.blog),
   ]);
 
   if (isError || !page) {

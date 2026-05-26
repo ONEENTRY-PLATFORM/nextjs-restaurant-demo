@@ -4,10 +4,11 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { getApi, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
 import Loader from '../shared/Loader';
@@ -31,13 +32,18 @@ export const ForgotPasswordForm = ({
   const { setComponent, setAction } = useContext(OpenDrawerContext);
   const [isError, setError] = useState<string>('');
 
-  const { data, isLoading } = useGetFormByMarkerQuery({ marker: 'user' });
+  const { data, isLoading } = useGetFormByMarkerQuery({ marker: FORMS.user });
+  const emailProviderMarker = useEmailAuthProviderMarker();
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await getApi().AuthProvider.generateCode('email', fields.email?.value || '', 'generate_otp');
+      await getApi().AuthProvider.generateCode(
+        emailProviderMarker,
+        fields.email?.value || '',
+        'generate_otp'
+      );
       if (onCodeSent) {
         onCodeSent();
       } else {

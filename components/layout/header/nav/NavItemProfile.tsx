@@ -9,13 +9,11 @@ import { useGetMenuByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { MENUS, PAGES } from '@/app/utils/constants';
 import ProfileIcon from '@/components/icons/profile';
 import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 import LogoutMenuItem from './user-menu/LogoutMenuItem';
-
-const PROFILE_MENU_MARKER = 'user_menu';
-const PROFILE_PAGE_URL = 'profile';
 
 /**
  * NavItemProfile — profile icon in the top menu.
@@ -32,15 +30,12 @@ const NavItemProfile = (): JSX.Element => {
 
   const [hoverOpen, setHoverOpen] = useState(false);
 
-  const { data: menu } = useGetMenuByMarkerQuery(
-    { marker: PROFILE_MENU_MARKER },
-    { skip: !isAuth }
-  );
+  const { data: menu } = useGetMenuByMarkerQuery({ marker: MENUS.userMenu }, { skip: !isAuth });
 
   // Children of the `profile` item in `user_menu` - sub-menu contents.
   const profileChildren = useMemo<IMenusPages[]>(() => {
     const pages = menu?.pages ?? [];
-    const profileEntry = pages.find(p => p.pageUrl === PROFILE_PAGE_URL);
+    const profileEntry = pages.find(p => p.pageUrl === PAGES.profile);
     if (!profileEntry) return [];
     return pages
       .filter(p => p.parentId === profileEntry.id)
@@ -98,7 +93,7 @@ const NavItemProfile = (): JSX.Element => {
                 <li key={page.id} role="none">
                   <Link
                     role="menuitem"
-                    href={`/${PROFILE_PAGE_URL}/${page.pageUrl}`}
+                    href={`/${PAGES.profile}/${page.pageUrl}`}
                     onClick={() => setHoverOpen(false)}
                     className="block p-2 text-paper transition-colors duration-200 hover:text-brand"
                   >

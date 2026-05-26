@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useGetAccountsQuery, useGetOrderStorageByMarkerQuery } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { FORMS } from '@/app/utils/constants';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 import ErrorMessage from '@/components/forms/inputs/ErrorMessage';
 
@@ -56,7 +57,7 @@ const ReservationPaymentStep = ({
   const t = useT();
   const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
   const { data: storage, isLoading: isStorageLoading } = useGetOrderStorageByMarkerQuery({
-    marker: 'booking_order',
+    marker: FORMS.bookingOrder,
   });
 
   const allowedIdentifiers = useMemo(() => {

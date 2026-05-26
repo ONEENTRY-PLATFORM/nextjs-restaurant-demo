@@ -13,8 +13,6 @@ import ProductsNotFound from './components/ProductsNotFound';
 type GridSearchParams = {
   search?: string;
   page?: string;
-  in_stock?: string;
-  color?: string;
   preferences?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -51,18 +49,17 @@ const ProductsGridLayout = async ({
 
   const currentPage = Number(searchParams?.page) || 1;
   const limit = currentPage * productsLimit > 0 ? currentPage * productsLimit : productsLimit;
-  const combinedParams = searchParams ? { ...p, searchParams } : { ...p };
 
   const { isError, products, total } = !isCategory
     ? await getProducts({
         offset: 0,
         limit: limit,
-        params: combinedParams,
+        params: searchParams ? { searchParams } : {},
       })
     : await getProductsByPageUrl({
         offset: 0,
         limit: limit,
-        params: { ...combinedParams, handle: p.handle as string },
+        params: { handle: p.handle as string, ...(searchParams ? { searchParams } : {}) },
       });
 
   if (!products || total < 1 || isError) {

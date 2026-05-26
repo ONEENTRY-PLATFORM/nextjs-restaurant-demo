@@ -7,7 +7,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FilterIcon from '@/components/icons/filter';
 
 /**
- * FilterButton — header trigger that opens `FilterModal` via `OpenDrawerContext`.
+ * FilterButton — header trigger that opens `FilterBottom` via `OpenDrawerContext` (sets `component='FilterForm'`).
  *
  * @returns JSX of the filter button.
  */

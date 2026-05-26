@@ -4,7 +4,7 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { getApi } from '@/app/api';
+import { getApi, useEmailAuthProviderMarker } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -51,6 +51,7 @@ const ResetPasswordForm = ({
   );
 
   const { setComponent, setAction } = useContext(OpenDrawerContext);
+  const emailProviderMarker = useEmailAuthProviderMarker();
 
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState('');
@@ -61,7 +62,7 @@ const ResetPasswordForm = ({
 
     try {
       const result = await getApi().AuthProvider.changePassword(
-        'email',
+        emailProviderMarker,
         email?.value as string,
         'otp',
         1,

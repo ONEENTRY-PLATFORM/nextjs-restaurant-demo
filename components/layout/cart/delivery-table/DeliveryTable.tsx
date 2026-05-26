@@ -9,6 +9,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
+import { FORMS } from '@/app/utils/constants';
 import CalendarIcon from '@/components/icons/calendar';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
@@ -30,7 +31,7 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
   const deliveryData = useAppSelector(selectDeliveryData);
 
   const { data } = useGetFormByMarkerQuery({
-    marker: 'delivery_order',
+    marker: FORMS.deliveryOrder,
   });
 
   const timeText = t('time_text', 'Time');

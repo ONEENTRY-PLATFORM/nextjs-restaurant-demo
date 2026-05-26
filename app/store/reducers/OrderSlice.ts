@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 
 import type { IAppOrder } from '@/app/types/global';
+import { FORMS } from '@/app/utils/constants';
 
 export type CheckoutStep = 'cart' | 'order' | 'payment' | 'success' | 'error';
 
@@ -35,7 +36,7 @@ const initialState: InitialStateType = {
   order: {
     formData: [],
     products: [],
-    formIdentifier: 'delivery_order',
+    formIdentifier: FORMS.deliveryOrder,
   },
   step: 'cart',
   stepHistory: [],

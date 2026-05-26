@@ -14,7 +14,7 @@ type Props = LoaderProps & {
  *
  * @returns JSX of the skeleton inner content.
  */
-const SkeletonBody = (): ReactNode => (
+export const SkeletonBody = (): ReactNode => (
   <>
     <div className="absolute right-2.5 top-3.75 z-10 h-5.25 w-6.5 animate-pulse rounded-md bg-paper/15 md:right-3.75 md:top-5 md:h-7.5 md:w-9.5" />
     <div className="relative aspect-square w-full animate-pulse overflow-hidden rounded-card bg-paper/10" />

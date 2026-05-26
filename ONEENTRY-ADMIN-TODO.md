@@ -12,24 +12,13 @@
 
 ---
 
-## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`)
+## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`) ✅
 
-Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` **удалён** — если иконки нет в CMS, тайл рисует пустой кружок.
+Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` удалён — если иконки нет в CMS, тайл рисует пустой кружок.
 
-Состояние на 2026-05-26 (проверено через `inspect-api`):
+На 2026-05-26 у всех 8 страниц `menu/*` (`kids-menu`, `desserts`, `salads`, `cold-drinks`, `hot-drinks`, `appetizers`, `main-courses`, `soups`) `menu_icon` заполнен. Пункт закрыт.
 
-| pageUrl         | menu_icon в CMS |
-|-----------------|-----------------|
-| `kids-menu`     | ✅              |
-| `soups`         | ✅              |
-| `desserts`      | ❌              |
-| `salads`        | ❌              |
-| `cold-drinks`   | ❌              |
-| `hot-drinks`    | ❌              |
-| `appetizers`    | ❌              |
-| `main-courses`  | ❌              |
-
-После заливки оставшихся иконок и подтверждения через [inspect-api](.claude/temp/) — отметить `✅` и удалить пункт.
+> ⚠️ При первом запросе после изменения админ-конфига API может вернуть `value: []` (CDN/index lag, наблюдалось эмпирически). Повторный запрос через несколько минут отдаёт корректный массив.
 
 ## C.3. Похожие товары (related products)
 

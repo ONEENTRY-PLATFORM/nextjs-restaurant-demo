@@ -43,7 +43,9 @@ const groupByExtended = (
   // If at least one option carries a group, push the ungrouped bucket to the end so it doesn't
   // visually split the named sections; otherwise the natural ordering is preserved.
   const hasNamed = order.some(k => k !== '');
-  const finalOrder = hasNamed ? [...order.filter(k => k !== ''), ...order.filter(k => k === '')] : order;
+  const finalOrder = hasNamed
+    ? [...order.filter(k => k !== ''), ...order.filter(k => k === '')]
+    : order;
   return finalOrder
     .map(name => ({ name, items: buckets.get(name) ?? [] }))
     .filter(g => g.items.length > 0);
@@ -84,7 +86,7 @@ const FilterChipGroups = ({
       {groups.map(group => (
         <div key={group.name || '_'} className="flex flex-col gap-1.75">
           {group.name ? (
-            <p className="text-xs uppercase tracking-wide text-paper/60">{group.name}</p>
+            <p className="text-xs uppercase tracking-wide text-paper/80">{group.name}</p>
           ) : null}
           <div className="flex flex-wrap gap-1.75">
             {group.items.map(option => (
@@ -135,8 +137,7 @@ const FilterBottom = ({
   const [priceMax, setPriceMax] = useState<string>('');
 
   const waitingTitle = t('order_waiting_time', 'Order waiting time');
-  const preferencesTitle = t('preferences_text', 'Preferences');
-  const filtersTitle = t('filters_text', 'Categories');
+  const filtersTitle = t('filters_text', 'Preferences');
   const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
   const fromLabel = t('price_from_text', 'from');
   const underLabel = t('price_under_text', 'Under');
@@ -285,13 +286,13 @@ const FilterBottom = ({
         ref={sheetRef}
         className={
           'fixed flex flex-col bottom-0 left-0 min-h-[80vh] w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-100 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
-          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-95 md:max-w-95 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
+          'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-100 md:max-w-100 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'
             : 'translate-y-full md:translate-y-0 md:translate-x-full')
         }
       >
-        <div className="max-w-89 w-full mx-auto flex justify-between items-between mb-5">
+        <div className="w-full flex justify-between items-between mb-8">
           <button
             type="button"
             onClick={close}
@@ -310,7 +311,7 @@ const FilterBottom = ({
             <CloseXIcon />
           </button>
         </div>
-        <div className="max-w-89 mx-auto md:order-2">
+        <div className="w-full md:order-2">
           <div className="flex flex-wrap mt-9.25 md:mt-0 gap-1.75">
             <p className="filter_title">{waitingTitle}</p>
             {WAITING_TIME.map(({ label }) => (
@@ -333,19 +334,6 @@ const FilterBottom = ({
               itemClass={itemClass}
             />
           ) : null}
-          <div className="flex flex-wrap mt-5.25 gap-1.75">
-            <p className="filter_title">{preferencesTitle}</p>
-            {preferenceOptions.map(option => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => togglePreference(option.value)}
-                className={itemClass(preferences.includes(option.value))}
-              >
-                {option.title}
-              </button>
-            ))}
-          </div>
           <div className="flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
             <p className="filter_title">Price $</p>
             <label className="filter_item flex items-center gap-1.5 hover:bg-transparent active:bg-transparent hover:border-paper">
@@ -376,7 +364,7 @@ const FilterBottom = ({
             </label>
           </div>
         </div>
-        <div className="max-w-89 w-full mx-auto mt-auto md:mt-0 md:mb-5 md:order-1 flex justify-between items-center">
+        <div className="w-full mt-auto md:mt-0 md:mb-8 md:order-1 flex justify-between items-center">
           <button
             type="button"
             onClick={reset}

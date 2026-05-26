@@ -76,8 +76,8 @@ const ProductsGridLayout = async ({
         <section className="products_grid_layout">
           <ProductsGrid productsLimit={productsLimit} products={products} blurMap={blurMap} />
           {totalPages > 1 && (
-            <div className="mt-5 flex w-full justify-center">
-              <LoadMore totalPages={totalPages} />
+            <div className="mt-5 w-full">
+              <LoadMore totalPages={totalPages} productsLimit={productsLimit} total={total} />
             </div>
           )}
         </section>

@@ -31,17 +31,27 @@ import SupportButton from './SupportButton';
  * @returns JSX of the header section (includes mobile/desktop variants and attached drawers).
  */
 const Header = async (): Promise<JSX.Element> => {
-  const [{ pages }, { page: supportPage }, preferencesAttr, searchPlaceholder, homeLabel] =
-    await Promise.all([
-      getChildPagesByParentUrl(PAGES.menu),
-      getPageByUrl(PAGES.support),
-      getSingleAttributeByMarkerSet({
-        setMarker: ATTR_SETS.dish,
-        attributeMarker: ATTRS.preferences,
-      }),
-      t('search_placeholder_text', 'Search'),
-      t('home_label', 'Home'),
-    ]);
+  const [
+    { pages },
+    { page: supportPage },
+    preferencesAttr,
+    filterAttr,
+    searchPlaceholder,
+    homeLabel,
+  ] = await Promise.all([
+    getChildPagesByParentUrl(PAGES.menu),
+    getPageByUrl(PAGES.support),
+    getSingleAttributeByMarkerSet({
+      setMarker: ATTR_SETS.dish,
+      attributeMarker: ATTRS.preferences,
+    }),
+    getSingleAttributeByMarkerSet({
+      setMarker: ATTR_SETS.dish,
+      attributeMarker: ATTRS.filter,
+    }),
+    t('search_placeholder_text', 'Search'),
+    t('home_label', 'Home'),
+  ]);
 
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
   const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as
@@ -60,6 +70,20 @@ const Header = async (): Promise<JSX.Element> => {
           title: o.title,
           value: String(o.value),
         }))
+      : [];
+
+  const filterOptions: PreferenceOption[] =
+    !filterAttr.isError && filterAttr.attribute && 'listTitles' in filterAttr.attribute
+      ? (filterAttr.attribute.listTitles as IListTitle[]).map(o => {
+          const extendedValue = (o.extended as { type?: string | null; value?: string | null } | null | undefined)
+            ?.value;
+          const group = typeof extendedValue === 'string' && extendedValue ? extendedValue : '';
+          return {
+            title: o.title,
+            value: String(o.value),
+            ...(group ? { group } : {}),
+          };
+        })
       : [];
 
   return (
@@ -128,7 +152,7 @@ const Header = async (): Promise<JSX.Element> => {
       {/* `Suspense` isolates `useSearchParams()` inside FilterBottom — without it
           the whole route would bail out to dynamic rendering and skip ISR. */}
       <Suspense fallback={null}>
-        <FilterBottom preferences={preferenceOptions} />
+        <FilterBottom preferences={preferenceOptions} filters={filterOptions} />
       </Suspense>
       <CategoryFilter pages={populatedPages} />
       <SupportPopup phone={supportPhone} whatsappUrl={supportWhatsappUrl} />

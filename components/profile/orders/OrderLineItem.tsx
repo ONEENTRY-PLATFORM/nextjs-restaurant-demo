@@ -4,6 +4,7 @@ import type { IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductImageUrl } from '@/app/api';
 import { UsePrice } from '@/components/utils';
 
 /**
@@ -12,7 +13,7 @@ import { UsePrice } from '@/components/utils';
  * @param   {object}                       props             - Component props.
  * @param   {IOrderProducts}               props.product     - Order line-item entity.
  * @param   {boolean}                      props.first       - Whether this is the first row (drops the top margin).
- * @param   {IProductsEntity | undefined}  [props.fullProduct] - Optional full product entity used to resolve a fallback cover image.
+ * @param   {IProductsEntity | undefined}  [props.fullProduct] - Optional full product entity used to resolve a fallback image.
  * @returns JSX of the line-item row.
  */
 const OrderLineItem = ({
@@ -24,10 +25,8 @@ const OrderLineItem = ({
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
 }): JSX.Element => {
-  const coverFromEntity = (
-    fullProduct?.attributeValues?.cover?.value as { downloadLink?: string } | undefined
-  )?.downloadLink;
-  const previewSrc = product.previewImage?.previewLink ?? coverFromEntity ?? null;
+  const fallbackFromEntity = getProductImageUrl(fullProduct?.attributeValues);
+  const previewSrc = product.previewImage?.previewLink ?? fallbackFromEntity ?? null;
   const href = '/shop/product/' + product.id;
   return (
     <div className={'order-body-row' + (first ? '' : ' mt-5')}>

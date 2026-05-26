@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductImageUrl } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { deselectProduct } from '@/app/store/reducers/CartSlice';
 import Placeholder from '@/components/shared/Placeholder';
@@ -33,11 +34,10 @@ const ProductCard = ({
   const dispatch = useAppDispatch();
   const {
     id,
-    attributeValues: { cover, price, sale, units_product, weight },
+    attributeValues: { price, sale, units_product, weight },
     localizeInfos,
   } = product;
-  const imageAttr = cover?.value as { downloadLink?: string } | undefined;
-  const imgSrc = imageAttr?.downloadLink;
+  const imgSrc = getProductImageUrl(product.attributeValues);
   const title = localizeInfos?.title ?? '';
   const weightValue = weight?.value as string | number | undefined;
   const outOfStock = product.statusIdentifier === 'out_of_stock';

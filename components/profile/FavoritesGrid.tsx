@@ -5,7 +5,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { toast } from 'react-toastify';
 
-import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import { getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
@@ -61,13 +61,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const attrs = product.attributeValues ?? {};
-  const imageSrc = getImageUrl(
-    attrs.cover?.value as
-      | { downloadLink?: string }
-      | Array<{ downloadLink?: string }>
-      | null
-      | undefined
-  );
+  const imageSrc = getProductImageUrl(attrs);
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;

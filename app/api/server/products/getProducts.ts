@@ -6,10 +6,26 @@ import { getApi, getLang } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
 import { typeError } from '@/components/utils';
 
+type SearchParams = {
+  search?: string;
+  preferences?: string;
+  filter?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  cooking_time_max?: string;
+};
+
+const splitCsv = (value: string | undefined): string[] =>
+  (value ?? '')
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
+
 /**
  * getProducts — paginated products with filter.
  *
- * For multi-select `preferences`, fetches each value in a separate request and merges unique items (OR semantics).
+ * For multi-select list attributes (`preferences`, `filter`), fetches each unique value in a separate
+ * request and merges unique items (OR semantics).
  *
  * @param   {object} props            - Pagination, locale, and inbound `searchParams` filters.
  * @param   {number} props.limit      - Page size.
@@ -24,13 +40,7 @@ export const getProducts = cache(
     offset: number;
     langCode?: string;
     params?: {
-      searchParams?: {
-        search?: string;
-        preferences?: string;
-        minPrice?: string;
-        maxPrice?: string;
-        cooking_time_max?: string;
-      };
+      searchParams?: SearchParams;
     };
   }): Promise<{
     isError: boolean;
@@ -40,22 +50,25 @@ export const getProducts = cache(
   }> => {
     const { limit, offset, langCode, params } = props;
     const lang = langCode || getLang();
-    const prefList = (params?.searchParams?.preferences ?? '')
-      .split(',')
-      .map(v => v.trim())
-      .filter(Boolean);
+    const prefList = splitCsv(params?.searchParams?.preferences);
+    const filterList = splitCsv(params?.searchParams?.filter);
 
-    // OR semantics for multi-select preferences: the SDK accepts only a scalar in `conditionValue`,
-    // so each value is fetched in a separate request and unique items are merged. The AND variant is
-    // almost always empty — the admin has no dishes that satisfy all selected preferences at once.
-    if (prefList.length > 1) {
+    // OR semantics for multi-select list attributes: the SDK accepts only a scalar in
+    // `conditionValue`, so each value is fetched in a separate request and unique items are merged.
+    // We expand on whichever list is multi-valued and pin the other side to its original CSV.
+    const multiPref = prefList.length > 1;
+    const multiFilter = filterList.length > 1;
+    if (multiPref || multiFilter) {
+      const expansion: { key: 'preferences' | 'filter'; values: string[] } = multiPref
+        ? { key: 'preferences', values: prefList }
+        : { key: 'filter', values: filterList };
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
         const results = await Promise.all(
-          prefList.map(async value => {
+          expansion.values.map(async value => {
             const filters = getSearchParams({
               ...(params?.searchParams ?? {}),
-              preferences: value,
+              [expansion.key]: value,
             });
             const data = await getApi().Products.getProducts(filters, lang, {
               offset: 0,

@@ -52,6 +52,26 @@ export const getText = (
 };
 
 /**
+ * getProductImageUrl — first image URL from a product `images` (groupOfImages) attribute.
+ *
+ * Returns the `downloadLink` of `attributeValues.images.value[0]` — products use a single attribute
+ * (`images`, type `groupOfImages`) that always returns an array. Used by every product image render path
+ * (grid card, product cover, cart row, favorites, order line item, OG metadata, LQIP) so they all read
+ * the same source and stay in sync if the schema changes again.
+ *
+ * @param   {AttributeValuesInput} attributeValues - OneEntry product `attributeValues` map.
+ * @returns First image download URL, or an empty string when no image is configured.
+ */
+export const getProductImageUrl = (attributeValues: AttributeValuesInput): string => {
+  const value = attributeValues?.images?.value;
+  if (Array.isArray(value)) {
+    const first = value[0] as { downloadLink?: string } | undefined;
+    return first?.downloadLink ?? '';
+  }
+  return '';
+};
+
+/**
  * getImageUrl — extracts the image URL from an Image attribute's value.
  *
  * @param   {string}                name            - Attribute marker.

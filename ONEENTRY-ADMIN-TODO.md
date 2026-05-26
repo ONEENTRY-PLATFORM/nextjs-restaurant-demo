@@ -8,7 +8,7 @@
 - Закрытый клиентом пункт — отмечается `✅` рядом или удаляется.
 - Вопросы клиенту — префикс `> ❓ **Уточнить у клиента:**`.
 
-Код уже подключён к существующим сущностям (`services`, `bookings`, `filters`, `menu`, `restaurants`, `blog`, `delivery_order`, `booking_order`, `user`, attribute set `dish` с `cover/weight/rating/cooking_time/price/...`, attribute set `restaurant`, attribute set `catalog_page`). Ниже — только то, чего **нет** в админке и нужно для оставшихся функциональных пробелов.
+Код уже подключён к существующим сущностям (`services`, `bookings`, `filters`, `menu`, `restaurants`, `blog`, `delivery_order`, `booking_order`, `user`, attribute set `dish` с `images/weight/calories/cooking_time/price/preferences/filter/ingredients/...`, attribute set `restaurant`, attribute set `catalog_page`). Ниже — только то, чего **нет** в админке и нужно для оставшихся функциональных пробелов.
 
 ---
 
@@ -256,8 +256,15 @@
 
 ### C.7.2. Product (attribute set `dish`)
 
-Реальные атрибуты у первого продукта (id=13):
-`weight` (integer), `calorrage` (integer), `cooking_time` (integer), `preferences` (list), `ingredients` (string), `price` (integer), `currency` (string), `rating` (float), `sku` (string), `cover` (image).
+Реальные атрибуты товара (на 2026-05-26, проверено через `inspect-api`):
+`dish_name` (string), `sku` (string), `category` (string), `ingredients` (**list** `Array<{title,value}>`), `cooking_time` (integer), `weight` (integer), `calories` (integer), `price` (float), `currency` (string), `preferences` (list), **`filter` (list)** — новые маркеры курса/типа блюда для фильтрации (Breakfast/Lunch/Dinner/Soup/…), **`images` (groupOfImages)** — основное изображение(я).
+
+Что изменилось в схеме (миграция уже отражена в коде):
+
+- `cover` (image) → **`images` (groupOfImages)**. Все ридеры идут через `getProductImageUrl(attrs)` ([app/api/hooks/useAttributesData.ts](app/api/hooks/useAttributesData.ts)).
+- `calorrage` → **`calories`** (опечатка в маркере исправлена в админке, использовалось в [ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx)).
+- `ingredients` (string) → **list** `Array<{title,value}>`; рендер на странице товара берёт `title` и склеивает через запятую.
+- Добавлен **`filter` (list)** — `listTitles` в attribute set `dish`. Подключён в `?filter=…` ([getSearchParams.ts](app/api/utils/getSearchParams.ts)) и UI-секцию в [FilterBottom.tsx](components/layout/filter/FilterBottom.tsx). OR-семантика мульти-селекта обрабатывается в [getProducts.ts](app/api/server/products/getProducts.ts) / [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts).
 
 - **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код блокирует покупку только при явном `statusIdentifier === 'out_of_stock'` ([AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65), [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59)). ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
 

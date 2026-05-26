@@ -5,12 +5,13 @@ import { ATTRS } from '@/app/utils/constants';
 /**
  * getSearchParams — builds an `IFilterParams` array for a Products API request from URL `searchParams`.
  *
- * @param   {object}  [searchParams] - Inbound URL `searchParams` map (search, preferences, price range, cooking_time_max).
+ * @param   {object}  [searchParams] - Inbound URL `searchParams` map (search, preferences, filter, price range, cooking_time_max).
  * @returns Array of OneEntry `IFilterParams` suitable for `Products.getProducts*`.
  */
 const getSearchParams = (searchParams?: {
   search?: string;
   preferences?: string;
+  filter?: string;
   minPrice?: string;
   maxPrice?: string;
   cooking_time_max?: string;
@@ -37,6 +38,24 @@ const getSearchParams = (searchParams?: {
     for (const value of values) {
       expandedFilters.push({
         attributeMarker: ATTRS.preferences,
+        conditionMarker: 'in',
+        conditionValue: value,
+        title: searchParams.search || '',
+        isNested: false,
+      });
+    }
+  }
+
+  if (searchParams?.filter) {
+    // `?filter=Dinner,Soup` — same shape and semantics as `?preferences=...`. OR semantics across
+    // values is handled in `getProducts` / `getProductsByPageUrl` (one request per value, merged).
+    const values = searchParams.filter
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean);
+    for (const value of values) {
+      expandedFilters.push({
+        attributeMarker: ATTRS.filter,
         conditionMarker: 'in',
         conditionValue: value,
         title: searchParams.search || '',

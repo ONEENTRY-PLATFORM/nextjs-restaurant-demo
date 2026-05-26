@@ -4,25 +4,26 @@ import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import { type JSX, useRef } from 'react';
 
+import { getProductImageUrl } from '@/app/api';
 import { useNearViewport } from '@/app/hooks/useNearViewport';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * ProductImage — product image inside a grid card.
  *
- * Wraps the cover in an IntersectionObserver gate: until the card is within
+ * Wraps the image in an IntersectionObserver gate: until the card is within
  * 300 px of the viewport the wrapper renders an empty placeholder so the
  * Next.js image optimizer (`/image?url=…`) is not pinged for off-screen
  * cards. Once the card scrolls into range the real `<Image>` mounts and
  * inherits its own `loading="lazy"` for the actual byte fetch. When a
  * server-generated `blurDataURL` is supplied, next/image renders it as a
- * blurred background until the real cover decodes.
+ * blurred background until the real image decodes.
  *
  * @param   {object}            props               - Component props.
- * @param   {IAttributeValues}  props.attributes    - `product.attributeValues` (reads `cover.value`, supports object and array).
+ * @param   {IAttributeValues}  props.attributes    - `product.attributeValues` (reads the `images` groupOfImages).
  * @param   {string}            props.alt           - Alt text for accessibility.
- * @param   {string}            [props.blurDataURL] - Base64 LQIP preview for the cover (from `getProductBlurMap`).
- * @returns JSX of the cover image (or `<Placeholder />` when no image is configured).
+ * @param   {string}            [props.blurDataURL] - Base64 LQIP preview for the image (from `getProductBlurMap`).
+ * @returns JSX of the product image (or `<Placeholder />` when no image is configured).
  */
 const ProductImage = ({
   attributes,
@@ -33,13 +34,7 @@ const ProductImage = ({
   alt: string;
   blurDataURL?: string;
 }): JSX.Element => {
-  const productImage = attributes?.cover?.value as
-    | { downloadLink?: string }
-    | Array<{ downloadLink?: string }>
-    | undefined;
-  const imageSrc = Array.isArray(productImage)
-    ? productImage[0]?.downloadLink
-    : productImage?.downloadLink;
+  const imageSrc = getProductImageUrl(attributes);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isNear = useNearViewport(wrapperRef, { rootMargin: '300px' });

@@ -23,11 +23,11 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     id,
     statusIdentifier,
     localizeInfos: { title },
-    attributeValues: { weight, calorrage, cooking_time, preferences, ingredients, price, currency },
+    attributeValues: { weight, calories, cooking_time, preferences, ingredients, price, currency },
   } = product;
 
   const weightVal = weight?.value as number | undefined;
-  const calorrageVal = calorrage?.value as number | undefined;
+  const caloriesVal = calories?.value as number | undefined;
   const ratingVal = product.rating?.value;
   const cookingVal = cooking_time?.value as number | undefined;
 
@@ -38,7 +38,11 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
       o => o?.title && o?.value
     ) ?? [];
 
-  const ingredientsText = ingredients?.value as string | undefined;
+  const ingredientsList = (ingredients?.value as Array<{ title: string; value: string }>) ?? [];
+  const ingredientsText = ingredientsList
+    .map(i => i?.title)
+    .filter(Boolean)
+    .join(', ');
   const priceVal = price?.value as number | undefined;
   const currencyVal = (currency?.value as string | undefined) ?? 'USD';
   const priceFormatted =
@@ -59,11 +63,11 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
                 </p>
               </>
             ) : null}
-            {calorrageVal != null ? (
+            {caloriesVal != null ? (
               <>
                 <Image src="/images/icons/flame.svg" alt="flame" width={15} height={20} />
                 <p className="font-bold text-[12px] tracking-fine text-white opacity-90">
-                  {calorrageVal} ccal
+                  {caloriesVal} ccal
                 </p>
               </>
             ) : null}

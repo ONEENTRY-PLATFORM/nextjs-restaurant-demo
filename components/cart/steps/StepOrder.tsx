@@ -8,7 +8,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
-import { useApplyCoupon } from '@/app/api';
+import { getProductImageUrl, useApplyCoupon } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -162,10 +162,7 @@ const StepOrder = (): JSX.Element => {
           const title = product.localizeInfos?.title ?? 'Item';
           const weight = product.attributeValues?.weight?.value as string | number | undefined;
           const unit = product.price ?? 0;
-          const cover = product.attributeValues?.cover?.value as
-            | { downloadLink?: string }
-            | undefined;
-          const imgSrc = cover?.downloadLink;
+          const imgSrc = getProductImageUrl(product.attributeValues);
           return (
             <div
               key={entry.id}

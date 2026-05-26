@@ -8,7 +8,7 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { getImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import { getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -167,13 +167,7 @@ const FavoriteCard = ({
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const cardRef = useRef<HTMLDivElement | null>(null);
   const attrs = product.attributeValues ?? {};
-  const imageSrc = getImageUrl(
-    attrs.cover?.value as
-      | { downloadLink?: string }
-      | Array<{ downloadLink?: string }>
-      | null
-      | undefined
-  );
+  const imageSrc = getProductImageUrl(attrs);
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;

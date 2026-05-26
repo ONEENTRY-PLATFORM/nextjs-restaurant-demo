@@ -53,6 +53,7 @@ export const ATTR_SETS = {
 /** OneEntry attribute markers — `attributeMarker` field on attribute and filter requests. */
 export const ATTRS = {
   preferences: 'preferences',
+  filter: 'filter',
   staticContent: 'static_content',
   sku: 'sku',
   price: 'price',

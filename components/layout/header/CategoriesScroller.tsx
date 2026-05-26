@@ -9,6 +9,8 @@ import { useDragScroll } from '@/app/hooks/useDragScroll';
 export type PreferenceOption = {
   title: string;
   value: string;
+  /** Optional group label sourced from `listTitles[].extended.value`. Used by `FilterBottom` to render chips inside named sections (e.g. "Food type", "Meal occasion"). Empty/absent → chip is rendered ungrouped. */
+  group?: string;
 };
 
 type CategoriesScrollerProps = {

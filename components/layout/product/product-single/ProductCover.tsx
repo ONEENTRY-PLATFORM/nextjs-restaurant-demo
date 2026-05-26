@@ -2,11 +2,12 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductImageUrl } from '@/app/api';
 import FavoritesButton from '@/components/layout/product/product-single/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
- * ProductCover — main product image (`cover` attribute) with a favourites button overlay.
+ * ProductCover — main product image (`images` groupOfImages) with a favourites button overlay.
  *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.
@@ -14,12 +15,7 @@ import Placeholder from '@/components/shared/Placeholder';
  * @returns JSX of the product cover image.
  */
 const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
-  const coverRaw = product.attributeValues.cover?.value as
-    | { downloadLink?: string }
-    | Array<{ downloadLink?: string }>
-    | undefined;
-  const cover = Array.isArray(coverRaw) ? coverRaw[0] : coverRaw;
-  const src = cover?.downloadLink;
+  const src = getProductImageUrl(product.attributeValues);
 
   return (
     <div className="relative w-full">

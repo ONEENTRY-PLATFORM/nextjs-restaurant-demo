@@ -10,6 +10,7 @@ import { typeError } from '@/components/utils';
 type SearchParams = {
   search?: string;
   preferences?: string;
+  filter?: string;
   minPrice?: string;
   maxPrice?: string;
   cooking_time_max?: string;
@@ -21,6 +22,12 @@ type ProductsResult = {
   products?: IProductsEntity[];
   total: number;
 };
+
+const splitCsv = (value: string | undefined): string[] =>
+  (value ?? '')
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
 
 // `unstable_cache` keys are derived from positional args, so the entry point
 // flattens the nested `params` object into a stable signature string. That
@@ -42,6 +49,7 @@ const buildKey = (
     {
       search: searchParams?.search ?? '',
       preferences: searchParams?.preferences ?? '',
+      filter: searchParams?.filter ?? '',
       minPrice: searchParams?.minPrice ?? '',
       maxPrice: searchParams?.maxPrice ?? '',
       cooking_time_max: searchParams?.cooking_time_max ?? '',
@@ -57,20 +65,22 @@ const fetchProducts = unstable_cache(
     handle: string,
     searchParams: SearchParams
   ): Promise<ProductsResult> => {
-    const prefList = (searchParams.preferences ?? '')
-      .split(',')
-      .map(v => v.trim())
-      .filter(Boolean);
+    const prefList = splitCsv(searchParams.preferences);
+    const filterList = splitCsv(searchParams.filter);
 
-    // OR semantics for multi-select preferences (see getProducts.ts): the SDK
-    // accepts only a scalar in `conditionValue` — fetch each value in a
-    // separate request and merge.
-    if (prefList.length > 1) {
+    // OR semantics for multi-select list attributes (see getProducts.ts): the SDK accepts only a
+    // scalar in `conditionValue` — fetch each value in a separate request and merge.
+    const multiPref = prefList.length > 1;
+    const multiFilter = filterList.length > 1;
+    if (multiPref || multiFilter) {
+      const expansion: { key: 'preferences' | 'filter'; values: string[] } = multiPref
+        ? { key: 'preferences', values: prefList }
+        : { key: 'filter', values: filterList };
       const fetchLimit = Math.max(offset + limit, limit) || limit;
       try {
         const results = await Promise.all(
-          prefList.map(async value => {
-            const filters = getSearchParams({ ...searchParams, preferences: value });
+          expansion.values.map(async value => {
+            const filters = getSearchParams({ ...searchParams, [expansion.key]: value });
             const data = await getApi().Products.getProductsByPageUrl(handle, filters, lang, {
               offset: 0,
               limit: fetchLimit,

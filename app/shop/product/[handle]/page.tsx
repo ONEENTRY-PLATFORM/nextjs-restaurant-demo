@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { getProductById } from '@/app/api';
+import { getProductById, getProductImageUrl } from '@/app/api';
 import ProductSingle from '@/components/layout/product';
 
 /**
@@ -32,15 +32,13 @@ const ProductPageLayout = async ({
   const descriptionValue = attributeValues.description?.value as
     | Array<{ plainValue?: string }>
     | undefined;
-  const picValue = attributeValues.cover?.value as
-    | { downloadLink?: string; alt?: string }
-    | undefined;
+  const imageUrl = getProductImageUrl(attributeValues);
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: localizeInfos.title,
     description: descriptionValue?.[0]?.plainValue,
-    image: picValue?.downloadLink,
+    image: imageUrl || undefined,
     offers: {
       '@type': 'AggregateOffer',
       availability:
@@ -87,10 +85,8 @@ export async function generateMetadata({
     return notFound();
   }
 
-  const picValue = product.attributeValues.cover?.value as
-    | { downloadLink?: string; alt?: string }
-    | undefined;
-  const { downloadLink, alt = 'alt' } = picValue || {};
+  const downloadLink = getProductImageUrl(product.attributeValues);
+  const alt = product.localizeInfos?.title ?? 'alt';
   const descValue = product.attributeValues.description?.value as
     | Array<{ plainValue?: string }>
     | undefined;

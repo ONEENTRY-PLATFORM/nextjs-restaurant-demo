@@ -14,6 +14,7 @@ type GridSearchParams = {
   search?: string;
   page?: string;
   preferences?: string;
+  filter?: string;
   minPrice?: string;
   maxPrice?: string;
   cooking_time_max?: string;

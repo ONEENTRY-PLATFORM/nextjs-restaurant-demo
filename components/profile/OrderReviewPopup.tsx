@@ -7,7 +7,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, getProductImageUrl, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -166,7 +166,7 @@ const fetchUserReview = async (
  *
  * @param   {object}                     props               - Component props.
  * @param   {IOrderProducts}             props.product       - Order line-item entity.
- * @param   {IProductsEntity | undefined} props.fullProduct  - Full product entity used to resolve a fallback cover image.
+ * @param   {IProductsEntity | undefined} props.fullProduct  - Full product entity used to resolve a fallback image from `images`.
  * @param   {ExistingReview | null}      props.initialReview - Existing review to prefill (or `null` when none).
  * @returns JSX of the reviewable row.
  */
@@ -182,10 +182,8 @@ const ReviewableItem = ({
   const t = useT();
   const [state, setState] = useState<ItemState>(() => initialItemState(initialReview));
 
-  const coverFromEntity = (
-    fullProduct?.attributeValues?.cover?.value as { downloadLink?: string } | undefined
-  )?.downloadLink;
-  const previewSrc = product.previewImage?.previewLink ?? coverFromEntity ?? null;
+  const fallbackFromEntity = getProductImageUrl(fullProduct?.attributeValues);
+  const previewSrc = product.previewImage?.previewLink ?? fallbackFromEntity ?? null;
 
   const onApply = async () => {
     if (state.loading) return;

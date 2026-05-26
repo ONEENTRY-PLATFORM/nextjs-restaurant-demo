@@ -18,17 +18,106 @@ const WAITING_TIME: Array<{ label: string; max: number | null }> = [
 ];
 
 /**
+ * groupByExtended — partitions chip options into ordered groups by their `group` field.
+ *
+ * Preserves the input order (which mirrors `listTitles[].position` from OneEntry) both inside each
+ * group and across groups (a group's bucket appears at the position of its first option). Options
+ * without a group fall into a synthetic `''` bucket rendered last and without a subheader.
+ *
+ * @param   {PreferenceOption[]} options - Chip options from OneEntry.
+ * @returns Ordered array of `{ name, items }` buckets.
+ */
+const groupByExtended = (
+  options: PreferenceOption[]
+): Array<{ name: string; items: PreferenceOption[] }> => {
+  const order: string[] = [];
+  const buckets = new Map<string, PreferenceOption[]>();
+  for (const option of options) {
+    const key = option.group ?? '';
+    if (!buckets.has(key)) {
+      order.push(key);
+      buckets.set(key, []);
+    }
+    buckets.get(key)!.push(option);
+  }
+  // If at least one option carries a group, push the ungrouped bucket to the end so it doesn't
+  // visually split the named sections; otherwise the natural ordering is preserved.
+  const hasNamed = order.some(k => k !== '');
+  const finalOrder = hasNamed ? [...order.filter(k => k !== ''), ...order.filter(k => k === '')] : order;
+  return finalOrder
+    .map(name => ({ name, items: buckets.get(name) ?? [] }))
+    .filter(g => g.items.length > 0);
+};
+
+/**
+ * FilterChipGroups — chip list grouped by `option.group` for the OneEntry `filter` attribute.
+ *
+ * Renders the section title once at the top, then for each group emits a small uppercase subheader
+ * (`option.group`) followed by a row of toggleable chips. When no option declares a group, falls
+ * back to a single ungrouped row to stay compatible with flat list attributes.
+ *
+ * @param   {object}              props           - Component props.
+ * @param   {string}              props.title     - Parent section title (e.g. "Categories").
+ * @param   {PreferenceOption[]}  props.options   - All chip options.
+ * @param   {string[]}            props.selected  - Currently selected `value`s.
+ * @param   {(v: string) => void} props.onToggle  - Toggle handler for a chip.
+ * @param   {(active: boolean) => string} props.itemClass - Class builder for chip active/idle state.
+ * @returns JSX of the grouped chip block.
+ */
+const FilterChipGroups = ({
+  title,
+  options,
+  selected,
+  onToggle,
+  itemClass,
+}: {
+  title: string;
+  options: PreferenceOption[];
+  selected: string[];
+  onToggle: (value: string) => void;
+  itemClass: (active: boolean) => string;
+}): JSX.Element => {
+  const groups = groupByExtended(options);
+  return (
+    <div className="mt-5.25 flex flex-col gap-3.75">
+      <p className="filter_title">{title}</p>
+      {groups.map(group => (
+        <div key={group.name || '_'} className="flex flex-col gap-1.75">
+          {group.name ? (
+            <p className="text-xs uppercase tracking-wide text-paper/60">{group.name}</p>
+          ) : null}
+          <div className="flex flex-wrap gap-1.75">
+            {group.items.map(option => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => onToggle(option.value)}
+                className={itemClass(selected.includes(option.value))}
+              >
+                {option.title}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/**
  * FilterBottom — bottom filter sheet (mobile) / right-side panel (md+), toggled via `OpenDrawerContext`.
  *
  * @param   {object}                  props               - Component props.
- * @param   {PreferenceOption[]}      [props.preferences] - Available preference filter options sourced from OneEntry.
- * @param   {PriceRange}              [props.priceRange]  - Optional catalog price range used as placeholders for the price inputs.
+ * @param   {PreferenceOption[]}      [props.preferences] - Available `preferences` (dietary) filter options sourced from OneEntry.
+ * @param   {PreferenceOption[]}      [props.filters]     - Available `filter` (course/meal-type) options sourced from OneEntry.
  * @returns JSX of the filter panel.
  */
 const FilterBottom = ({
   preferences: preferenceOptions = [],
+  filters: filterOptions = [],
 }: {
   preferences?: PreferenceOption[];
+  filters?: PreferenceOption[];
 }): JSX.Element => {
   const t = useT();
   const { open, component, setOpen, setComponent } = useContext(OpenDrawerContext);
@@ -41,11 +130,13 @@ const FilterBottom = ({
   const searchParams = useSearchParams();
   const [waitingTime, setWaitingTime] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<string[]>([]);
+  const [filters, setFilters] = useState<string[]>([]);
   const [priceMin, setPriceMin] = useState<string>('');
   const [priceMax, setPriceMax] = useState<string>('');
 
   const waitingTitle = t('order_waiting_time', 'Order waiting time');
   const preferencesTitle = t('preferences_text', 'Preferences');
+  const filtersTitle = t('filters_text', 'Categories');
   const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
   const fromLabel = t('price_from_text', 'from');
   const underLabel = t('price_under_text', 'Under');
@@ -63,6 +154,16 @@ const FilterBottom = ({
     setPreferences(
       prefsParam
         ? prefsParam
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean)
+        : []
+    );
+
+    const filterParam = searchParams.get('filter') ?? '';
+    setFilters(
+      filterParam
+        ? filterParam
             .split(',')
             .map(v => v.trim())
             .filter(Boolean)
@@ -95,6 +196,10 @@ const FilterBottom = ({
     setPreferences(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
   };
 
+  const toggleFilter = (item: string): void => {
+    setFilters(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
+  };
+
   /**
    * sanitizePriceInput — keeps only digits in a free-text price input.
    *
@@ -106,6 +211,7 @@ const FilterBottom = ({
   const reset = (): void => {
     setWaitingTime(null);
     setPreferences([]);
+    setFilters([]);
     setPriceMin('');
     setPriceMax('');
   };
@@ -126,6 +232,12 @@ const FilterBottom = ({
       params.set('preferences', preferences.join(','));
     } else {
       params.delete('preferences');
+    }
+
+    if (filters.length > 0) {
+      params.set('filter', filters.join(','));
+    } else {
+      params.delete('filter');
     }
 
     const minValue = Number(priceMin);
@@ -212,6 +324,15 @@ const FilterBottom = ({
               </button>
             ))}
           </div>
+          {filterOptions.length > 0 ? (
+            <FilterChipGroups
+              title={filtersTitle}
+              options={filterOptions}
+              selected={filters}
+              onToggle={toggleFilter}
+              itemClass={itemClass}
+            />
+          ) : null}
           <div className="flex flex-wrap mt-5.25 gap-1.75">
             <p className="filter_title">{preferencesTitle}</p>
             {preferenceOptions.map(option => (

@@ -42,6 +42,32 @@ describe('getSearchParams — preferences (multi-select → multiple filters)', 
   });
 });
 
+describe('getSearchParams — filter (multi-select → multiple filters)', () => {
+  it('splits comma-separated values into independent filters', () => {
+    const result = getSearchParams({ filter: 'Dinner,Soup,Vegetarian' });
+    const list = result.filter(f => f.attributeMarker === 'filter');
+    expect(list).toHaveLength(3);
+    expect(list.map(p => p.conditionValue)).toEqual(['Dinner', 'Soup', 'Vegetarian']);
+  });
+
+  it('trims whitespace and drops empty fragments', () => {
+    const result = getSearchParams({ filter: ' Dinner , , Soup ,' });
+    const list = result.filter(f => f.attributeMarker === 'filter');
+    expect(list.map(p => p.conditionValue)).toEqual(['Dinner', 'Soup']);
+  });
+
+  it('produces no filter rows when the value is empty/whitespace', () => {
+    const result = getSearchParams({ filter: ' , , ' });
+    expect(result.filter(f => f.attributeMarker === 'filter')).toHaveLength(0);
+  });
+
+  it('coexists with preferences', () => {
+    const result = getSearchParams({ preferences: 'Meat', filter: 'Dinner' });
+    expect(result.filter(f => f.attributeMarker === 'preferences')).toHaveLength(1);
+    expect(result.filter(f => f.attributeMarker === 'filter')).toHaveLength(1);
+  });
+});
+
 describe('getSearchParams — price range', () => {
   it('adds minPrice (`mth`) and maxPrice (`lth`) when both are numeric', () => {
     const result = getSearchParams({ minPrice: '10', maxPrice: '99' });

@@ -83,11 +83,24 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
  * @returns JSX of the generic nav link, or `null` when no icon is configured.
  */
 const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => {
-  // SDK types `menu_icon.value` as `{}`, but for an image it actually arrives as `{ downloadLink, ... }`.
+  // SDK types `menu_icon.value` as `{}`. For Pages the SDK actually returns an ARRAY of image
+  // objects (groupOfImages-style normalization), so we unwrap the first element.
   const icon = page.attributeValues?.menu_icon as
-    | { type?: string; value?: { downloadLink?: string } }
+    | {
+        type?: string;
+        value?:
+          | { downloadLink?: string }
+          | Array<{ downloadLink?: string }>
+          | null;
+      }
     | undefined;
-  const iconUrl = icon?.type === 'image' ? icon.value?.downloadLink : undefined;
+  const iconValue = icon?.value;
+  const iconUrl =
+    icon?.type === 'image'
+      ? Array.isArray(iconValue)
+        ? iconValue[0]?.downloadLink
+        : iconValue?.downloadLink
+      : undefined;
   if (!iconUrl) return null;
 
   const title = page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? page.pageUrl ?? '';

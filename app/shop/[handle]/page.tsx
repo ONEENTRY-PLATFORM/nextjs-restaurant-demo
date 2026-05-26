@@ -68,13 +68,21 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
 
   const { localizeInfos, isVisible, attributeValues } = page;
 
+  // `menu_icon` (image) is normalized by the SDK into a `{type, value: Array<{downloadLink}>}` shape
+  // on Pages — unwrap the first element for the OG image.
+  const menuIconAttr = attributeValues?.menu_icon as
+    | { value?: { downloadLink?: string } | Array<{ downloadLink?: string }> | null }
+    | undefined;
+  const menuIconValue = menuIconAttr?.value;
   const {
     url,
     width,
     height,
     altText: alt,
   } = {
-    url: (attributeValues?.icon as { downloadLink?: string } | undefined)?.downloadLink,
+    url: Array.isArray(menuIconValue)
+      ? menuIconValue[0]?.downloadLink
+      : menuIconValue?.downloadLink,
     width: 300,
     height: 300,
     altText: localizeInfos?.title,

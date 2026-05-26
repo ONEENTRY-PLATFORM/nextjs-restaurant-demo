@@ -10,11 +10,12 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 type Category = {
   label: string;
+  /** Empty string when no CMS icon is configured — the tile renders an empty circle. */
   icon: string;
   href: string;
 };
 
-// Trailing CTA - hardcoded since it lives outside the `menu` page tree.
+// Trailing CTA — hardcoded since it lives outside the `menu` page tree (not a CMS category).
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
   icon: '/images/icons/categories/booking_table.svg',
@@ -61,15 +62,20 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
       .filter(p => p.isVisible !== false)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map<Category>(p => {
-        const iconAttr = p.attributeValues?.icon?.value as
-          | { downloadLink?: string }
-          | Array<{ downloadLink?: string }>
-          | null
-          | undefined;
-        const cmsIcon = getImageUrl(iconAttr);
+        // SDK returns `menu_icon.value` as an array of image objects for Pages (per the
+        // `attribute-values` rule). `getImageUrl` already unwraps the first element. When the
+        // admin hasn't configured an icon, this returns `''` and the tile shows an empty circle —
+        // no local fallback by design (icons must come from CMS).
+        const cmsIcon = getImageUrl(
+          p.attributeValues?.menu_icon?.value as
+            | Array<{ downloadLink?: string }>
+            | { downloadLink?: string }
+            | null
+            | undefined
+        );
         return {
           label: (p.localizeInfos?.title ?? p.pageUrl).toUpperCase(),
-          icon: cmsIcon || '/images/icons/categories/' + p.pageUrl + '.svg',
+          icon: cmsIcon,
           href: '/shop/category/' + p.pageUrl,
         };
       });
@@ -108,15 +114,17 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
               className="group flex flex-col items-center"
             >
               <div className="w-27.5 h-27.5 rounded-full flex items-center justify-center bg-paper transition-colors duration-200 group-hover:bg-brand">
-                <div className="relative w-15 h-15">
-                  <Image
-                    src={cat.icon}
-                    alt={cat.label}
-                    fill
-                    sizes="60px"
-                    className="object-contain"
-                  />
-                </div>
+                {cat.icon ? (
+                  <div className="relative w-15 h-15">
+                    <Image
+                      src={cat.icon}
+                      alt={cat.label}
+                      fill
+                      sizes="60px"
+                      className="object-contain"
+                    />
+                  </div>
+                ) : null}
               </div>
               <p className="font-bold uppercase text-base text-paper mt-2.5 leading-4 text-center whitespace-pre-line">
                 {cat.label}

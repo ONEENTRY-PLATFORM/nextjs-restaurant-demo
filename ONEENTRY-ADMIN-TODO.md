@@ -12,16 +12,24 @@
 
 ---
 
-## C.2.4. Иконки `kids_menu` и `snacks` (атрибут `icon` страниц `menu/*`)
+## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`)
 
-У всех дочерних страниц `menu/*` (`appetizers`, `salads`, `desserts`, …) в attribute set `catalog_page` атрибут `icon` (image) заполнен — [CategoryFilter](components/layout/filter/CategoryFilter.tsx) показывает CMS-иконки в drawer категорий. Исключения:
+Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` **удалён** — если иконки нет в CMS, тайл рисует пустой кружок.
 
-| pageUrl     | icon в CMS |
-|-------------|------------|
-| `kids_menu` | ❌ пусто   |
-| `snacks`    | ❌ пусто   |
+Состояние на 2026-05-26 (проверено через `inspect-api`):
 
-После заливки иконок (или починки бага) и подтверждения через [inspect-api](.claude/temp/) — отметить `✅` и удалить пункт.
+| pageUrl         | menu_icon в CMS |
+|-----------------|-----------------|
+| `kids-menu`     | ✅              |
+| `soups`         | ✅              |
+| `desserts`      | ❌              |
+| `salads`        | ❌              |
+| `cold-drinks`   | ❌              |
+| `hot-drinks`    | ❌              |
+| `appetizers`    | ❌              |
+| `main-courses`  | ❌              |
+
+После заливки оставшихся иконок и подтверждения через [inspect-api](.claude/temp/) — отметить `✅` и удалить пункт.
 
 ## C.3. Похожие товары (related products)
 

@@ -8,6 +8,7 @@ import type { JSX } from 'react';
 import { useLayoutEffect, useRef, useTransition } from 'react';
 import { useCallback } from 'react';
 
+import CardAnimations from '../animations/CardAnimations';
 import { SkeletonBody } from './ProductsGridLoader';
 
 /**
@@ -82,12 +83,18 @@ const LoadMore = ({
 
   if (isPending) {
     const remaining = Math.max(0, Math.min(productsLimit, total - currentPage * productsLimit));
+    const baseIndex = (currentPage - 1) * productsLimit;
     return (
       <div aria-hidden="true" className="menu_items w-full">
         {Array.from({ length: remaining }).map((_, i) => (
-          <div key={i} className="menu_item relative flex flex-col">
+          <CardAnimations
+            key={i}
+            className="menu_item relative flex flex-col"
+            index={baseIndex + i}
+            productsLimit={productsLimit}
+          >
             <SkeletonBody />
-          </div>
+          </CardAnimations>
         ))}
       </div>
     );

@@ -5,11 +5,31 @@ import { useContext, useRef } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import * as forms from '@/components/forms';
+import AuthProviderSelect from '@/components/forms/AuthProviderSelect';
+import CalendarForm from '@/components/forms/CalendarForm';
+import ContactUsForm from '@/components/forms/ContactUsForm';
+import ForgotPasswordForm from '@/components/forms/ForgotPasswordForm';
+import ResetPasswordForm from '@/components/forms/ResetPasswordForm';
+import SignInForm from '@/components/forms/SignInForm';
+import SignUpForm from '@/components/forms/SignUpForm';
+import UserForm from '@/components/forms/UserForm';
+import VerificationForm from '@/components/forms/VerificationForm';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalAnimations from '@/components/layout/modal/animations/ModalAnimations';
 import ModalScreenSwap from '@/components/layout/modal/animations/ModalScreenSwap';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+
+const FORMS = {
+  AuthProviderSelect,
+  CalendarForm,
+  ContactUsForm,
+  ForgotPasswordForm,
+  ResetPasswordForm,
+  SignInForm,
+  SignUpForm,
+  UserForm,
+  VerificationForm,
+};
 
 import CloseModal from './components/CloseModal';
 import ModalBackdrop from './components/ModalBackdrop';
@@ -53,7 +73,7 @@ const Modal = (): JSX.Element => {
 
   // Form components have heterogeneous props (some ignore className/isActive); cast to a
   // common subset for the screen-swap container, which only forwards className/isActive.
-  const formsByName = forms as unknown as Record<
+  const formsByName = FORMS as unknown as Record<
     string,
     ComponentType<{ className?: string; isActive?: boolean }> | undefined
   >;

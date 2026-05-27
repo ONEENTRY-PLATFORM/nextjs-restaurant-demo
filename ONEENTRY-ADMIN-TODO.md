@@ -278,7 +278,7 @@
 **Открытое для клиента:**
 
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
-3. **Edit ограничения.** Сейчас edit отдаёт `products: [{ productId: 34, quantity: 1 }]` (тот же placeholder, что и в `createOrder` — см. C.6.2). Если депозит привязан к product 34, при update это останется без изменений. ❓ Корректно ли или edit-флоу должен иметь другую логику по продуктам?
+
 4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
 
 **Новые dictionary-ключи для C.4.1:**

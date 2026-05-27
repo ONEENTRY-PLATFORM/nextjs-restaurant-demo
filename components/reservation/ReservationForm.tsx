@@ -10,7 +10,7 @@ import { getApi, isError } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
-import { FORMS } from '@/app/utils/constants';
+import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -199,7 +199,7 @@ const ReservationForm = ({
             formIdentifier: editingOrder.formIdentifier,
             paymentAccountIdentifier: editingOrder.paymentAccountIdentifier,
             formData: payload,
-            products: [{ productId: 34, quantity: 1 }],
+            products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }],
           }
         );
         setLoading(false);
@@ -233,7 +233,7 @@ const ReservationForm = ({
         formIdentifier: FORMS.bookingOrder,
         paymentAccountIdentifier,
         formData: step.formData,
-        products: [{ productId: 34, quantity: 1 }],
+        products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }],
       });
       if (isError(res)) {
         setLoading(false);

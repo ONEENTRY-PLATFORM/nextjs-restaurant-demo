@@ -4,7 +4,7 @@ import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces'
 import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
 
 import { getApi, isError } from '@/app/api';
-import { FORMS } from '@/app/utils/constants';
+import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 
 /** Reservation payload sent from the client form. */
 export type ReservationPayload = {
@@ -25,7 +25,7 @@ export async function submitReservation(
       formIdentifier: FORMS.bookingOrder,
       paymentAccountIdentifier: 'cash',
       formData: payload.formData as IOrdersFormData[],
-      products: [],
+      products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }],
     });
 
     if (isError(created)) {

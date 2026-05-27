@@ -2,7 +2,10 @@
 export const SHOP_PAGE_LIMIT = 8;
 
 /** Id of the OneEntry product representing delivery. */
-export const DELIVERY_PRODUCT_ID = 33;
+export const DELIVERY_PRODUCT_ID = 1828;
+
+/** Id of the OneEntry product representing booking. */
+export const BOOKING_PRODUCT_ID = 2071;
 
 /**
  * OneEntry page markers (`pageUrl`).

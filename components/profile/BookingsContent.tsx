@@ -13,14 +13,13 @@ import { getAllOrdersByMarker, getApi, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { FORMS } from '@/app/utils/constants';
+import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
 import { TIME_SLOT_MARKER } from '@/components/reservation/reservationFormUtils';
 import Spinner from '@/components/shared/Spinner';
 
 const CANCELLED_STATUS = 'booking_cancelled';
-const BOOKING_PLACEHOLDER_PRODUCT_ID = 34;
 const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
 
 /**
@@ -191,7 +190,7 @@ const BookingsContent = (): JSX.Element => {
     const products =
       order.products.length > 0
         ? order.products.map(p => ({ productId: p.id, quantity: p.quantity }))
-        : [{ productId: BOOKING_PLACEHOLDER_PRODUCT_ID, quantity: 1 }];
+        : [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }];
     const body: IOrderData & { statusIdentifier?: string } = {
       formIdentifier: order.formIdentifier ?? FORMS.bookingOrder,
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',

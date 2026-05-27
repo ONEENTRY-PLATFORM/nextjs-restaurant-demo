@@ -42,13 +42,19 @@ test.describe('Cart flow', () => {
     await link.click();
     await page.waitForURL(/\/shop\/product\/\d+/);
 
-    const addBtn = page.getByRole('button', { name: /add to cart/i }).first();
-    if (!(await addBtn.isVisible().catch(() => false))) {
-      test.info().annotations.push({ type: 'skip', description: 'product out of stock' });
+    // Wait for the CTA button: `AddToCartButton` renders either the active CTA (aria-label
+    // `Add <title> to cart`) or the disabled one (`<title> is out of stock`). Eager
+    // `isVisible()` was firing before the product page had finished its dev-mode compile
+    // and silently skipping the test.
+    const cta = page.getByRole('button', { name: /to cart|out of stock/i }).first();
+    await expect(cta).toBeVisible({ timeout: 20_000 });
+
+    if (await cta.isDisabled()) {
+      test.info().annotations.push({ type: 'skip', description: 'product is out of stock' });
       test.skip();
     }
 
-    await addBtn.click();
+    await cta.click();
 
     const dec = page.getByRole('button', { name: /decrease/i }).first();
     await expect(dec).toBeVisible({ timeout: 10_000 });

@@ -177,6 +177,10 @@ Open <http://localhost:3000> with your browser to see the result.
 | `npm run tsc` | One-shot TypeScript check (`tsc --noEmit`). |
 | `npm test` | Jest unit / component tests. |
 | `npm run test:watch` | Jest in watch mode. |
+| `npm run test:e2e` | Playwright end-to-end suite (auto-starts `npm run dev` if no `PLAYWRIGHT_BASE_URL`). |
+| `npm run test:e2e:ui` | Playwright in interactive UI mode. |
+| `npm run test:e2e:headed` | Playwright with a visible browser. |
+| `npm run test:e2e:report` | Open the last Playwright HTML report. |
 
 ## Project Structure
 
@@ -192,11 +196,12 @@ Open <http://localhost:3000> with your browser to see the result.
 
 ## Testing
 
-The project uses Jest + Testing Library for unit and component tests.
+Two suites: pure-logic and component-level tests run under Jest, browser-level flows run under Playwright. There is no overlap — anything that needs a real DOM/network is in `e2e/`, anything else lives next to the source.
 
-| Layer            | Tool                   | Scope                                                |
-|------------------|------------------------|------------------------------------------------------|
-| Unit / Component | Jest + Testing Library | Redux slices, utility functions, UI components       |
+| Layer | Runner | Where | Config |
+| --- | --- | --- | --- |
+| Unit / Component | Jest + jsdom | `app/**/__tests__/`, `components/**/__tests__/` | [jest.config.mjs](jest.config.mjs) |
+| End-to-end | Playwright (4 projects) | [e2e/](e2e/) | [playwright.config.ts](playwright.config.ts) |
 
 ### Unit tests (Jest)
 
@@ -205,11 +210,62 @@ npm test            # run once
 npm run test:watch  # watch mode
 ```
 
-Test files live next to the source in `__tests__/` folders (e.g. `app/api/utils/__tests__/`, `app/store/reducers/__tests__/`, `components/**/__tests__/`).
+22 suites, ~296 cases. Files live next to the source in `__tests__/` folders.
+
+| Suite | Under test |
+| --- | --- |
+| [CartSlice.test.ts](app/store/reducers/__tests__/CartSlice.test.ts) | `cartSlice` — add / remove / increase / decrease / setQty / clear |
+| [FavoritesSlice.test.ts](app/store/reducers/__tests__/FavoritesSlice.test.ts) | `favoritesSlice` — add / dedupe / remove / version / selector |
+| [OrderSlice.test.ts](app/store/reducers/__tests__/OrderSlice.test.ts) | `orderSlice` — checkout flow: products, currency, payment, steps, coupon, reset |
+| [AnimationsSlice.test.ts](app/store/reducers/__tests__/AnimationsSlice.test.ts) | `animationsSlice` — `readyState` flag and selector |
+| [FormFieldsSlice.test.ts](app/store/reducers/__tests__/FormFieldsSlice.test.ts) | `formFieldsSlice` — `addField` keyed by marker |
+| [api.test.ts](app/api/api/__tests__/api.test.ts) | SDK helpers — `isError`, `getImageUrl` |
+| [validators.test.ts](app/api/utils/__tests__/validators.test.ts) | Form-field validators (`required`, `email`, masks, …) |
+| [compileRegex.test.ts](app/api/utils/__tests__/compileRegex.test.ts) | `compileRegex` — mask-token → RegExp |
+| [getSearchParams.test.ts](app/api/utils/__tests__/getSearchParams.test.ts) | `getSearchParams` — catalog filter URL → SDK filter array |
+| [formatDate.test.ts](app/utils/__tests__/formatDate.test.ts) | `formatDate`, `toLocalIsoDate` |
+| [errorHandler.test.ts](app/utils/__tests__/errorHandler.test.ts) | `ApiError`, `formatErrorMessage`, `handleApiError`, `isIError`, `useApiErrorHandler` |
+| [generatePageMetadata.test.ts](app/utils/__tests__/generatePageMetadata.test.ts) | `generatePageMetadata` — title, description, canonical, OG |
+| [headerAnimState.test.ts](app/animations/__tests__/headerAnimState.test.ts) | One-shot header-anim flag and listener semantics |
+| [utils.test.ts](components/__tests__/utils.test.ts) | Shared utils — `UsePrice`, `dictText`, `flatMenuToNested`, `normalizePhoneE164`, `shuffleArray`, sorts, `typeError` |
+| [authProviders.test.ts](components/forms/__tests__/authProviders.test.ts) | `getProviderMeta`, `sortActiveAuthProviders` |
+| [orderUtils.test.ts](components/profile/orders/__tests__/orderUtils.test.ts) | `computeTotals`, `formatOrderNumber`, `statusLabel`, `isHistoryOrder` |
+| [userFields.test.ts](components/cart/steps/step-payment/__tests__/userFields.test.ts) | `findUserField` priority resolution over user profile data |
+| [scheduleTime.test.ts](components/cart/steps/step-payment/__tests__/scheduleTime.test.ts) | `formatScheduleAt`, `parseScheduleAt`, `buildDeliveryTimeInterval` |
+| [savedAddress.test.ts](components/cart/steps/step-payment/__tests__/savedAddress.test.ts) | `formatAddressLine`, `parseSavedAddresses`, `pickSelectedAddress` |
+| [reservationFormUtils.test.ts](components/reservation/__tests__/reservationFormUtils.test.ts) | `buildFormRows`, `buildTimeIntervalValue`, `formatBookingSummary`, `getAvailableSlotsForDate`, `validateField`, `resolveInputType`, … |
+| [reservationOAuthResumeState.test.ts](components/reservation/__tests__/reservationOAuthResumeState.test.ts) | `set/peek/consume/clearPendingReservationResume` (sessionStorage) |
+| [reservationEditState.test.ts](components/reservation/__tests__/reservationEditState.test.ts) | Module-scoped pending-edit slot (isolated reloads) |
+
+### End-to-end tests (Playwright)
+
+```bash
+npm run test:e2e             # run the full suite
+npm run test:e2e:ui          # interactive UI mode
+npm run test:e2e:headed      # visible browser
+npm run test:e2e:report      # open the last HTML report
+```
+
+10 spec files, 66 cases × 4 projects (chromium, firefox, webkit, mobile-chrome `Pixel 7`). The config auto-starts `npm run dev` unless `PLAYWRIGHT_BASE_URL` is set, and reuses an already-running dev server outside CI.
+
+| Spec | What it covers |
+| --- | --- |
+| [home.spec.ts](e2e/home.spec.ts) | Home page renders, header + logo, navigation to catalog, no console errors, no Next 16.2.6 multipart prerender artifacts in the DOM |
+| [catalog.spec.ts](e2e/catalog.spec.ts) | `/shop` grid renders cards with title / price / cooking time / weight / rating / add button; card click opens product; nonexistent id → 404 |
+| [categories-scroller.spec.ts](e2e/categories-scroller.spec.ts) | Preferences chips on home — render, click → `/shop?preferences=…`, active highlight, multi-select via comma, scroller is horizontally scrollable |
+| [filter-popups.spec.ts](e2e/filter-popups.spec.ts) | Category drawer and Filter popup — open/close, tile navigation, waiting time / price / preferences → URL params, reset, BOOKING TABLE → `/restaurants` |
+| [product-single.spec.ts](e2e/product-single.spec.ts) | Product page — title + CTA, JSON-LD `Product` schema, OG-image, breadcrumb / preference pill navigation, Add to cart → QuantitySelector, Heart → favorites, related blocks |
+| [cart.spec.ts](e2e/cart.spec.ts) | Empty-state, add from card swaps to counter, add from product page, persists into `/cart`, guest APPLY → auth modal |
+| [favorites.spec.ts](e2e/favorites.spec.ts) | Empty Favorites popup, add from home → appears in popup, badge count, `/profile/favorites` page, toggle off removes |
+| [forms.spec.ts](e2e/forms.spec.ts) | `/support` ContactUs form — schema render, required asterisks, persisted state, HTML5 email validation; Reset-password flow (open from sign-in, generate code) |
+| [auth.spec.ts](e2e/auth.spec.ts) | Auth modal — open from header / bottom menu, Email provider form, empty / invalid submits, switch to Create account, registration email validation, modal close |
+| [auth-flow.spec.ts](e2e/auth-flow.spec.ts) | Authenticated flow against a real OneEntry test user — sign in → Profile, `/profile`, `/profile/orders`, `/profile/bookings`, expand/collapse, booking row interaction |
+
+Shared helpers (header / bottom-menu triggers, cookie banner dismissal, sign-in) live in [e2e/fixtures/helpers.ts](e2e/fixtures/helpers.ts); [e2e/fixtures/loadEnv.ts](e2e/fixtures/loadEnv.ts) reads `.env.local` so specs can pick up `PLAYWRIGHT_TEST_USER_EMAIL` / `…_PASSWORD` for `auth-flow`.
 
 ### Browser verification (Playwright MCP)
 
-End-to-end tests are **not** wired as a Playwright test suite in this repo. Instead, the Playwright **MCP server** (`@playwright/mcp`) is configured in [.mcp.json](.mcp.json) and is used for ad-hoc, in-browser checks of the live UI — navigation, clicks, screenshots, console/network inspection — directly from the assistant loop during development.
+In addition to the scripted suite above, the Playwright **MCP server** (`@playwright/mcp`) is wired in [.mcp.json](.mcp.json) for ad-hoc, in-browser checks of the live UI — navigation, clicks, screenshots, console/network inspection — directly from the assistant loop during development.
 
 ## Development Tools
 

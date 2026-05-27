@@ -111,10 +111,17 @@ test.describe('ProductSingle (product page)', () => {
     const productId = Number(new URL(page.url()).pathname.split('/').pop());
     expect(Number.isFinite(productId)).toBeTruthy();
 
-    const addBtn = page.getByRole('button', { name: /^add to cart/i }).first();
-    if (!(await addBtn.isVisible().catch(() => false))) test.skip();
+    // `AddToCartButton` sets `aria-label = "Add <title> to cart"` or `"<title> is out of stock"`
+    // (see components/layout/product/components/AddToCartButton.tsx). The previous `^add to cart`
+    // anchor never matched because the product title sits between "Add" and "to cart".
+    const cta = page.getByRole('button', { name: /to cart|out of stock/i }).first();
+    await expect(cta).toBeVisible({ timeout: 20_000 });
+    if (await cta.isDisabled()) {
+      test.info().annotations.push({ type: 'skip', description: 'product is out of stock' });
+      test.skip();
+    }
 
-    await addBtn.click();
+    await cta.click();
 
     await expect(page.getByRole('button', { name: /decrease/i }).first()).toBeVisible({
       timeout: 10_000,
@@ -156,9 +163,17 @@ test.describe('ProductSingle (product page)', () => {
     await openFirstProduct(page);
 
     const productId = Number(new URL(page.url()).pathname.split('/').pop());
-    const addBtn = page.getByRole('button', { name: /^add to cart/i }).first();
-    if (!(await addBtn.isVisible().catch(() => false))) test.skip();
-    await addBtn.click();
+
+    // Same anchoring bug as the first test: `AddToCartButton` aria-label is
+    // `Add <title> to cart`, so `^add to cart` never matched and the eager `isVisible()`
+    // check silently skipped.
+    const cta = page.getByRole('button', { name: /to cart|out of stock/i }).first();
+    await expect(cta).toBeVisible({ timeout: 20_000 });
+    if (await cta.isDisabled()) {
+      test.info().annotations.push({ type: 'skip', description: 'product is out of stock' });
+      test.skip();
+    }
+    await cta.click();
 
     const inc = page.getByRole('button', { name: /increase/i }).first();
     await expect(inc).toBeVisible({ timeout: 10_000 });

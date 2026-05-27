@@ -173,9 +173,7 @@ export const signInAsTestUser = async (page: Page): Promise<void> => {
     .catch(() => 'pending' as const);
   const winner = await Promise.race([closed, errored]);
   if (winner === 'errored') {
-    throw new Error(
-      'OneEntry auth failed for E2E_USER_EMAIL — verify credentials in .env.local'
-    );
+    throw new Error('OneEntry auth failed for E2E_USER_EMAIL — verify credentials in .env.local');
   }
   await expect(modal).toBeHidden({ timeout: 5_000 });
 };

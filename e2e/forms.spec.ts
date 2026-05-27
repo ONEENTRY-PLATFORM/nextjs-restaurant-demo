@@ -143,9 +143,9 @@ test.describe('ForgotPasswordForm (drawer)', () => {
       timeout: FORM_SETTLE_MS,
     });
     await expect(modal.locator('input[type="password"]')).toHaveCount(0);
-    await expect(
-      modal.getByRole('button', { name: /send|code|continue|send code/i })
-    ).toBeVisible({ timeout: FORM_SETTLE_MS });
+    await expect(modal.getByRole('button', { name: /send|code|continue|send code/i })).toBeVisible({
+      timeout: FORM_SETTLE_MS,
+    });
   });
 
   test('submit with empty email does not trigger generateCode', async ({ page }) => {

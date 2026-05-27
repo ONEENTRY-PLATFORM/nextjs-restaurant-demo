@@ -23,7 +23,11 @@ const openFavoritesPopup = async (page: Page): Promise<void> => {
   // FavoritesPopup renders the title twice (mobile header + desktop) — Playwright treats opacity-0
   // / display:none-via-md: as "visible" if size is non-zero, so explicitly filter to the visible one.
   await expect(
-    page.locator('#modalBody').getByText(/^Favorites$/).filter({ visible: true }).first()
+    page
+      .locator('#modalBody')
+      .getByText(/^Favorites$/)
+      .filter({ visible: true })
+      .first()
   ).toBeVisible();
 };
 
@@ -150,7 +154,10 @@ test.describe('Favorites flow', () => {
 
     await openFavoritesPopup(page);
     await expect(
-      page.locator('#modalBody').getByText(/you have no favorites yet/i).first()
+      page
+        .locator('#modalBody')
+        .getByText(/you have no favorites yet/i)
+        .first()
     ).toBeVisible();
     await expect(page.locator('.favorite-card')).toHaveCount(0);
   });

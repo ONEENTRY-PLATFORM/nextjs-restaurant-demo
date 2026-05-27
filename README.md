@@ -86,6 +86,16 @@ Inside the admin panel:
 3. Copy the generated token — you’ll need it in `.env.local`.
 4. (Optional) Configure access scopes depending on your use case.
 
+### 3. Seed Content for Import
+
+Ready-to-import content for populating a fresh OneEntry workspace lives in [public/content/](public/content/):
+
+- [public/content/dishes_catalog.xlsx](public/content/dishes_catalog.xlsx) — product catalog (titles, weights, prices, descriptions, category mapping) for bulk import into OneEntry.
+- [public/content/images/](public/content/images/) — dish photos referenced by the catalog (filenames match the SKU column).
+- [public/content/categories/](public/content/categories/) — category icons (`appetizers.svg`, `dessert.svg`, `main_courses.svg`, …) used as icon attributes on category pages.
+
+Upload the spreadsheet via the admin panel's import tool, then attach the matching image/icon assets. After import, the storefront picks them up automatically — no code changes needed.
+
 ## Environment Variables
 
 To run this project you will need to copy `.env.example` to `.env.local` and fill in the values:
@@ -295,6 +305,7 @@ In addition to the scripted suite above, the Playwright **MCP server** (`@playwr
 | `components/layout/`        | Header, modal, mobile menu, products grid, filters            |
 |                             |                                                               |
 | `public/`                   | Static assets                                                 |
+| `public/content/`           | Seed content for OneEntry import (xlsx, images, icons)        |
 | `static-html/`              | Design-team HTML/CSS mockup (reference)                       |
 | `docs/rules/`               | Working rules (styles, icons, JSDoc, data fetching)           |
 

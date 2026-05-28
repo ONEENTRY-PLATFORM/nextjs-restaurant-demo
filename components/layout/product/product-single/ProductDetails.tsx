@@ -45,6 +45,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     .join(', ');
   const priceVal = price?.value as number | undefined;
   const currencyVal = (currency?.value as string | undefined) ?? 'USD';
+
   const priceFormatted =
     priceVal != null ? (currencyVal === 'USD' ? `$${priceVal}` : `${priceVal} ${currencyVal}`) : '';
 

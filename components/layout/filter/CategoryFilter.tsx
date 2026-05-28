@@ -18,7 +18,7 @@ type Category = {
 // Trailing CTA — hardcoded since it lives outside the `menu` page tree (not a CMS category).
 const BOOKING_TILE: Category = {
   label: 'BOOKING\nTABLE',
-  icon: '/images/icons/categories/booking_table.svg',
+  icon: '/content/categories/booking_table.svg',
   href: '/restaurants',
 };
 

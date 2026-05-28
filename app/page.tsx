@@ -18,17 +18,20 @@ import HomePromo from '@/components/home/HomePromo';
 // cached even though the HTML shell is rendered per-request.
 export const dynamic = 'force-dynamic';
 
-// Whitelisted block identifiers; unknown ones are silently skipped.
-const HOME_BLOCK_IDENTIFIERS = new Set<string>([
+// Whitelisted block identifiers, in the order they should appear on the home page.
+// Used both as a filter for CMS-driven blocks and as a fallback list when the
+// `home_web` page has no blocks attached in OneEntry (see ONEENTRY-ADMIN-TODO C.2.5).
+const HOME_BLOCK_ORDER: readonly string[] = [
   BLOCKS.homePromo,
   BLOCKS.recommended,
   BLOCKS.homeCategories,
-]);
+];
+const HOME_BLOCK_IDENTIFIERS = new Set<string>(HOME_BLOCK_ORDER);
 
 /**
  * HomePage — home page driven by blocks of the CMS `home_web` page.
  *
- * Loads the page + attached blocks (sorted by `block.position`) and for each one dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended` → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}.
+ * Loads the page + attached blocks (sorted by `block.position`) and for each one dispatches by `block.identifier`: `home_promo` → {@link HomePromo}, `recommended` → {@link HomeBlockServer}, `home_categories` → {@link HomeCategoriesSection}. If CMS returns no whitelisted blocks (e.g. blocks were detached from the page), falls back to a hardcoded list in {@link HOME_BLOCK_ORDER}.
  *
  * @returns Promise resolving to JSX of the home page.
  */
@@ -37,26 +40,32 @@ const HomePage = async (): Promise<JSX.Element> => {
     getPageByUrl(PAGES.home),
     getBlocksByPageUrl(PAGES.home),
   ]);
+
   if (!page) {
     notFound();
   }
-  const sortedBlocks = [...blocks]
+  const cmsBlocks = [...blocks]
     .filter(b => b.identifier && HOME_BLOCK_IDENTIFIERS.has(b.identifier))
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
+  const renderItems: { key: string; identifier: string }[] =
+    cmsBlocks.length > 0
+      ? cmsBlocks.map(b => ({ key: String(b.id), identifier: b.identifier as string }))
+      : HOME_BLOCK_ORDER.map(id => ({ key: `fallback:${id}`, identifier: id }));
+
   return (
     <>
-      {sortedBlocks.map(block => {
-        if (block.identifier === BLOCKS.homePromo) {
-          return <HomePromo key={block.id} />;
+      {renderItems.map(({ key, identifier }) => {
+        if (identifier === BLOCKS.homePromo) {
+          return <HomePromo key={key} />;
         }
-        if (block.identifier === BLOCKS.homeCategories) {
-          return <HomeCategoriesSection key={block.id} />;
+        if (identifier === BLOCKS.homeCategories) {
+          return <HomeCategoriesSection key={key} />;
         }
         // Recommended fades in right after HomePromo (delay 0.5 + 0.5 s fade).
         return (
-          <HeaderAnimGate key={block.id} delay={1.0}>
-            <HomeBlockServer marker={block.identifier as string} limit={4} />
+          <HeaderAnimGate key={key} delay={1.0}>
+            <HomeBlockServer marker={identifier} limit={4} />
           </HeaderAnimGate>
         );
       })}

@@ -12,6 +12,14 @@
 
 ---
 
+## C.2.5. Блоки страницы `home_web` отвязаны
+
+На 2026-05-28 `getBlocksByPageUrl('home_web')` возвращает `[]`, и `page.blocks` тоже пустой (страница id=28 существует, тип `common_page`). Из-за этого код в [app/page.tsx](app/page.tsx) не находит ни одного блока для рендера.
+
+Что нужно в админке: на странице `home_web` снова привязать три блока с identifier'ами `home_promo`, `recommended`, `home_categories` (именно в этом порядке через `block.position`). Они уже существуют в CMS (используются на других экранах) — нужно только восстановить привязку к странице.
+
+Временный фолбэк в коде: если CMS вернёт пустой список — рендерим `HOME_BLOCK_ORDER` (`home_promo` → `recommended` → `home_categories`) хардкодом, чтобы главная не схлопывалась. После восстановления привязки фолбэк перестанет срабатывать сам собой (CMS-порядок имеет приоритет). После проверки через MCP — отметить `✅`.
+
 ## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`) ✅
 
 Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` удалён — если иконки нет в CMS, тайл рисует пустой кружок.

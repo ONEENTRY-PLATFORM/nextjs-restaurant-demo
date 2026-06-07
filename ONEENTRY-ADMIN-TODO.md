@@ -20,6 +20,33 @@
 
 Временный фолбэк в коде: если CMS вернёт пустой список — рендерим `HOME_BLOCK_ORDER` (`home_promo` → `recommended` → `home_categories`) хардкодом, чтобы главная не схлопывалась. После восстановления привязки фолбэк перестанет срабатывать сам собой (CMS-порядок имеет приоритет). После проверки через MCP — отметить `✅`.
 
+## C.2.6. Закрыты права на product/page-scoped запросы
+
+На 2026-05-28 ряд публичных эндпоинтов отвечают **403 `Permission data not found. Provide the permission for requested url`**. Это блокирует категории, блок `recommended`, фильтры и теги на всех листингах. Диагностика через SDK (с `NEXT_PUBLIC_ONEENTRY_TOKEN`):
+
+| Запрос                                                       | Статус               |
+| ------------------------------------------------------------ | -------------------- |
+| `Products.getProducts` (глобально)                           | ✅ 200, 123 товара    |
+| `Products.getProductsByPageUrl('menu', id=1)`                | ❌ 403                |
+| `Products.getProductsByPageUrl('soups', id=167)`             | ❌ 403                |
+| `Products.getProductsByPageUrl(<any menu child>)`            | ❌ 403                |
+| `Blocks.getBlockByMarker('recommended')` → `similarProducts` | ❌ 403 в теле ответа  |
+| `Pages.getPageByUrl(...)` (метаданные страниц)               | ✅ 200                |
+
+Что закрылось на UI как следствие:
+
+- **Главная** — секции категорий ([HomeCategoriesSection](components/home/HomeCategoriesSection.tsx)) и `Recommended` ([HomeBlockServer](components/home/HomeBlockServer.tsx)) пустые (graceful fallback на `null`), потому что `getProductsByPageUrl` и `similarProducts` возвращают 403.
+- **Категорийные страницы** (`/shop/category/*`, `/shop/[handle]`) — нет товаров, нет тегов/чипов и панели фильтров.
+- **HomePromo** — на `getBlogBanners`, к этим правам не относится, отображается.
+
+Что нужно в админке OneEntry: открыть публичные права на чтение для:
+
+1. `Products.getProductsByPageUrl` — для страницы `menu` (id=1) **и всех 8 её дочерних** (`soups` id=167, `main-courses` id=168, `appetizers` id=169, `hot-drinks` id=170, `cold-drinks` id=171, `salads` id=172, `desserts` id=173, `kids-menu` id=174).
+2. `similar_products_block` — чтобы блок `recommended` (id=1) отдавал `similarProducts` без 403.
+3. Чтение фильтров (`Products.getFilters` / facets) на тех же страницах.
+
+После открытия прав — проверить через `inspect-api` (или MCP `inspect-api`), что все три ручки выше отвечают 200, и снять этот пункт. До тех пор главная и категорийные страницы рендерятся «пусто» по этим секциям — это не баг кода, а пустой ответ CMS.
+
 ## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`) ✅
 
 Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` удалён — если иконки нет в CMS, тайл рисует пустой кружок.
@@ -31,11 +58,6 @@
 ## C.3. Похожие товары (related products)
 
 - В админке привязать минимум 4–6 «похожих» через стандартный механизм OneEntry **Product Links**. Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
-- (Опционально) Заголовок секции — берётся из `static_content.featured_objects` (string), fallback `"Featured objects"`. Если хочется локализованный заголовок — добавить атрибут:
-
-  | marker              | type   | title             |
-  |---------------------|--------|-------------------|
-  | `featured_objects`  | string | Featured objects  |
 
 ---
 
@@ -46,35 +68,6 @@
 ### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
-
-#### Reservation booking — auth + payment + success step
-
-Новые маркеры для мульти-шагового флоу бронирования (Figma 120:1875 + 120:2338, плюс auth-шаг для незалогиненных). Используется в [components/reservation/ReservationAuthStep.tsx](components/reservation/ReservationAuthStep.tsx), [components/reservation/ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) и [components/reservation/ReservationSuccess.tsx](components/reservation/ReservationSuccess.tsx). Сейчас все ключи рендерятся через `useT(key, fallback)` — пока не созданы в админке, UI отдаст английский fallback.
-
-| marker                      | type   | title                                                       |
-|-----------------------------|--------|-------------------------------------------------------------|
-| `continue_text`             | string | Continue                                                    |
-| `back_text`                 | string | Back                                                        |
-| `apply_text`                | string | Apply                                                       |
-| `loading_text`              | string | Loading…                                                    |
-| `booking_pay_with`          | string | Pay with                                                    |
-| `booking_credit_cards`      | string | Credit & Debit Cards                                        |
-| `no_payment_methods`        | string | No payment methods are configured. Please contact support.  |
-| `booking_confirmed_message` | string | Your reservation has been confirmed.\nSee you soon!         |
-| `booking_signin_prompt`     | string | Please sign in to confirm your booking.                     |
-| `email_label`               | string | Email                                                       |
-| `password_label`            | string | Password                                                    |
-| `signed_in_toast`           | string | You signed in!                                              |
-
-#### ProfileTabs — вкладки попапа профиля
-
-Используется в: [components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx).
-
-| marker          | type   | title     |
-|-----------------|--------|-----------|
-| `personal_tab`  | string | Personal  |
-| `orders_tab`    | string | Orders    |
-| `favorites_tab` | string | Favorites |
 
 #### StepPayment — дополнительные фразы
 

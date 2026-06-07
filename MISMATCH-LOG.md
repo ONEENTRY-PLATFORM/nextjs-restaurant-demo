@@ -114,7 +114,6 @@
 [app/profile/page.tsx](app/profile/page.tsx)
 [app/profile/orders/page.tsx](app/profile/orders/page.tsx)
 [app/profile/favorites/page.tsx](app/profile/favorites/page.tsx)
-[components/profile/ProfileTabs.tsx](components/profile/ProfileTabs.tsx)
 [components/profile/ProfilePopup.tsx](components/profile/ProfilePopup.tsx)
 [components/profile/FavoritesPopup.tsx](components/profile/FavoritesPopup.tsx)
 [components/profile/FavoritesGrid.tsx](components/profile/FavoritesGrid.tsx)

@@ -1,6 +1,6 @@
 # OneEntry Admin Setup — что осталось завести в админке
 
-Реестр задач **на стороне OneEntry admin** (`https://oe-restaurants.oneentry.cloud/`) для команды клиента / администратора CMS. Когда-то жил как «Раздел C» в [MISMATCH-LOG.md](MISMATCH-LOG.md); вынесен в отдельный файл, чтобы клиенту не надо было листать code-debt разработчика.
+Реестр задач **на стороне OneEntry admin** (`https://oe-restaurants.oneentry.cloud/`) для команды клиента / администратора CMS.
 
 Правила оформления — см. [CLAUDE.md §3](CLAUDE.md) и [§7](CLAUDE.md):
 

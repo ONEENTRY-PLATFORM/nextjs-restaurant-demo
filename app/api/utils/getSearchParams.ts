@@ -1,6 +1,6 @@
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 
-import { ATTRS } from '@/app/utils/constants';
+import { PRODUCT_ATTRS } from '@/app/utils/constants';
 
 /**
  * getSearchParams — builds an `IFilterParams` array for a Products API request from URL `searchParams`.
@@ -20,7 +20,7 @@ const getSearchParams = (searchParams?: {
 
   // Filter out service products that have no SKU.
   expandedFilters.push({
-    attributeMarker: ATTRS.sku,
+    attributeMarker: PRODUCT_ATTRS.sku,
     conditionMarker: 'nin',
     conditionValue: null,
     title: searchParams?.search || '',
@@ -37,7 +37,7 @@ const getSearchParams = (searchParams?: {
       .filter(Boolean);
     for (const value of values) {
       expandedFilters.push({
-        attributeMarker: ATTRS.preferences,
+        attributeMarker: PRODUCT_ATTRS.preferences,
         conditionMarker: 'in',
         conditionValue: value,
         title: searchParams.search || '',
@@ -55,7 +55,7 @@ const getSearchParams = (searchParams?: {
       .filter(Boolean);
     for (const value of values) {
       expandedFilters.push({
-        attributeMarker: ATTRS.filter,
+        attributeMarker: PRODUCT_ATTRS.filter,
         conditionMarker: 'in',
         conditionValue: value,
         title: searchParams.search || '',
@@ -68,7 +68,7 @@ const getSearchParams = (searchParams?: {
     const min = Number(searchParams.minPrice);
     if (Number.isFinite(min)) {
       expandedFilters.push({
-        attributeMarker: ATTRS.price,
+        attributeMarker: PRODUCT_ATTRS.price,
         conditionMarker: 'mth',
         conditionValue: min,
         title: searchParams.search || '',
@@ -81,7 +81,7 @@ const getSearchParams = (searchParams?: {
     const max = Number(searchParams.maxPrice);
     if (Number.isFinite(max)) {
       expandedFilters.push({
-        attributeMarker: ATTRS.price,
+        attributeMarker: PRODUCT_ATTRS.price,
         conditionMarker: 'lth',
         conditionValue: max,
         title: searchParams.search || '',
@@ -94,7 +94,7 @@ const getSearchParams = (searchParams?: {
     const max = Number(searchParams.cooking_time_max);
     if (Number.isFinite(max)) {
       expandedFilters.push({
-        attributeMarker: ATTRS.cookingTime,
+        attributeMarker: PRODUCT_ATTRS.cookingTime,
         conditionMarker: 'lth',
         conditionValue: max,
         title: searchParams.search || '',

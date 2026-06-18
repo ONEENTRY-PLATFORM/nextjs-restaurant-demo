@@ -53,14 +53,35 @@ export const ATTR_SETS = {
   product: 'product',
 } as const;
 
-/** OneEntry attribute markers — `attributeMarker` field on attribute and filter requests. */
-export const ATTRS = {
-  preferences: 'preferences',
-  filter: 'filter',
-  staticContent: 'static_content',
+/**
+ * OneEntry product attribute markers — the `dish` attribute set schema.
+ *
+ * Single source of truth for product markers. Used both as keys into a product's `attributeValues`
+ * map (e.g. `attributeValues[PRODUCT_ATTRS.weight]?.value`) and as the `attributeMarker` passed to
+ * `getSingleAttributeByMarkerSet` / product `IFilterParams` (search, preferences, filter, price range).
+ * Keep in sync with the `dish` attribute set in the OneEntry admin panel.
+ */
+export const PRODUCT_ATTRS = {
+  dishName: 'dish_name',
+  category: 'category',
+  description: 'description',
+  images: 'images',
+  morePic: 'more_pic',
   sku: 'sku',
   price: 'price',
+  currency: 'currency',
+  sale: 'sale',
+  weight: 'weight',
+  calories: 'calories',
   cookingTime: 'cooking_time',
+  ingredients: 'ingredients',
+  preferences: 'preferences',
+  filter: 'filter',
+} as const;
+
+/** OneEntry non-product attribute markers — `attributeMarker` field on attribute requests. */
+export const ATTRS = {
+  staticContent: 'static_content',
 } as const;
 
 /**

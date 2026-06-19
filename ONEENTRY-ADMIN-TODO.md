@@ -12,23 +12,6 @@
 
 ---
 
-## C.2.5. Блоки страницы `home_web` отвязаны
-
-На 2026-05-28 `getBlocksByPageUrl('home_web')` возвращает `[]`, и `page.blocks` тоже пустой (страница id=28 существует, тип `common_page`). Из-за этого код в [app/page.tsx](app/page.tsx) не находит ни одного блока для рендера.
-
-Что нужно в админке: на странице `home_web` снова привязать три блока с identifier'ами `home_promo`, `recommended`, `home_categories` (именно в этом порядке через `block.position`). Они уже существуют в CMS (используются на других экранах) — нужно только восстановить привязку к странице.
-
-Временный фолбэк в коде: если CMS вернёт пустой список — рендерим `HOME_BLOCK_ORDER` (`home_promo` → `recommended` → `home_categories`) хардкодом, чтобы главная не схлопывалась. После восстановления привязки фолбэк перестанет срабатывать сам собой (CMS-порядок имеет приоритет). После проверки через MCP — отметить `✅`.
-
-## C.2.6. Права на product/page-scoped запросы ✅
-
-На 2026-05-28 ряд публичных эндпоинтов отвечал **403 `Permission data not found. Provide the permission for requested url`**, что блокировало категории, блок `recommended`, фильтры и теги на всех листингах. На 2026-06-19 права открыты и закрыты по двум подходам (категории — затем блоки). Подтверждено SDK-проверкой:
-
-- ✅ `Products.getProductsByPageUrl` — `menu` (id=1) и все 8 дочерних отвечают 200 (`soups` 10, `main-courses` 50, `appetizers` 13, `hot-drinks` 8, `cold-drinks` 12, `salads` 10, `desserts` 10, `kids-menu` 8 товаров). Категорийные страницы, секции категорий на главной и фильтры/чипы рендерят реальные товары.
-- ✅ `similar_products_block` — `Blocks.getBlockByMarker('recommended')` → `similarProducts` отдаёт 200, 8 товаров. Секция `Recommended` на главной ([HomeBlockServer](components/home/HomeBlockServer.tsx)) больше не пустует.
-
-Пункт закрыт.
-
 ## C.2.7. Права на `ProductStatuses` + статус-маркеры (сверка MCP 2026-06-19)
 
 Чтобы код мог **динамически** читать и валидировать статусы (как требует rule `product-statuses` последней MCP), а не держать их хардкодом, нужно открыть права и подтвердить маркеры.
@@ -38,8 +21,10 @@
 
 Что нужно в админке OneEntry:
 
-1. Открыть группе **Guests** право на чтение `ProductStatuses` (эндпоинт product-statuses), чтобы `getProductStatuses()` отвечал 200.
-2. Подтвердить реальные маркеры статусов товаров (есть ли `out_of_stock`, нужен ли `in_stock` — см. C.7.2) и заказов по сторам `delivery_order` / `booking_order` (см. также C.10 #1). Особое внимание — написание `canceled` vs `cancelled`: код сейчас хеджирует оба, после сверки оставить один.
+1. Открыть группе **Guests** право на чтение `ProductStatuses` (эндпоинт `GET /api/content/product-statuses`), чтобы `getProductStatuses()` отвечал 200.
+   - **Повторная сверка 2026-06-19 (после настройки правила клиентом):** правило **не подействовало на Guests** — анонимный (app-token) `GET /api/content/product-statuses` всё ещё **403**, тогда как под **user-token — 200** (список отдаётся). Значит право выдано залогиненным юзерам / другой группе (или другому ресурсу), а не Guests. Лаг исключён (проверено серией опросов >15 мин). Код читает статусы на SSR под одним app-token (юзера на сервере нет), поэтому нужен именно **Guests** на этот эндпойнт — грант для авторизованных SSR не помогает.
+2. ✅ **Маркеры статусов товаров подтверждены** (под user-token, 2026-06-19): `in_stock` (id=1, `isDefault: true`, «In stock») + `out_of_stock` (id=2, «Out of stock»). Хардкод `out_of_stock` в [app/utils/constants.ts](app/utils/constants.ts) корректен; дефолт — `in_stock`. Остаётся сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
+3. (минорно, не блокирует) Открыть группе **Guests** право на чтение `Events` (эндпоинт `events/all`), чтобы `Events.getAllEvents()` отвечал 200 (сейчас анонимно — 403 `Permission data not found`) и список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
 
 После открытия прав и сверки через `inspect-api`: заменить хардкод-константы на динамический фетч `getProductStatuses()` (кэшированный server fetcher) и снять пункт.
 
@@ -51,12 +36,13 @@
 
 | identifier                 | BlockType                          | где используется в коде                          |
 |----------------------------|------------------------------------|--------------------------------------------------|
-| `cart_complement`          | `cart_complement_block`            | апселл в корзине (kind `cartComplement`)         |
-| `recently_viewed`          | `recently_viewed_block`            | страница товара (kind `recentlyViewed`) — подключено |
 | `trending`                 | `trending_block`                   | главная/листинги (kind `trending`)               |
-| `personal_recommendations` | `personal_recommendations_block`   | главная для залогиненных (kind `personalRecommendations`) |
 
-Временный фолбэк в коде: пока блоков нет (или сервер вернул пусто/403), `getRecommendations` отдаёт реальные товары каталога (первые N) — секция не пустует и автоматически переключится на настоящие рекомендации после создания блоков. После создания и проверки через `inspect-api` — снять пункт.
+Статус (сверено через SDK 2026-06-19): **все 4 блока созданы ✅** — `cart_complement` (id=14), `recently_viewed` (id=15), `personal_recommendations` (id=17) видны через `getBlockByMarker`; `trending` проверяется своим методом `getTrending` (путь `/api/content/blocks/:marker/trending`) и отвечает `{items:[],total:0}` — валидно (пустой список = трендовых товаров ещё не насчиталось). 404 от generic `getBlockByMarker('trending')` — это норма: trending не отдаётся marker-эндпоинтом `/marker/<marker>`, это вычисляемая витрина с отдельным контроллером.
+
+Право Guests на `Blocks.getBlocks()` (list-all) клиент открыл 2026-06-19 — на момент правки ещё 403 (лаг индексации), перепроверить позже; на работу блоков не влияет.
+
+Временный фолбэк в коде: пока у блока нет товаров (пусто/403), `getRecommendations` отдаёт первые N товаров каталога — секция не пустует и переключится на реальные рекомендации автоматически. Остаётся только завести dict-маркеры ниже — после этого снять пункт.
 
 Новые dictionary-маркеры для заголовков секций (атрибут-сет `static_content`, см. C.4.1):
 
@@ -67,14 +53,6 @@
 | `recommended_for_you`   | string | Recommended for you |
 | `goes_well_with_title`  | string | Goes well with your order |
 
-## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`) ✅
-
-Атрибут переименован: `icon` → `menu_icon` (image). На странице `attributeValues.menu_icon.value` приходит **массивом** объектов с `downloadLink`. Ридеры обновлены: [CategoryFilter](components/layout/filter/CategoryFilter.tsx), [NavGenericIcon](components/layout/header/nav/NavGroup.tsx), [shop/[handle]/page.tsx](app/shop/[handle]/page.tsx) (OG). Локальный fallback на файлы `public/images/icons/categories/*.svg` удалён — если иконки нет в CMS, тайл рисует пустой кружок.
-
-На 2026-05-26 у всех 8 страниц `menu/*` (`kids-menu`, `desserts`, `salads`, `cold-drinks`, `hot-drinks`, `appetizers`, `main-courses`, `soups`) `menu_icon` заполнен. Пункт закрыт.
-
-> ⚠️ При первом запросе после изменения админ-конфига API может вернуть `value: []` (CDN/index lag, наблюдалось эмпирически). Повторный запрос через несколько минут отдаёт корректный массив.
-
 ## C.3. Похожие товары (related products)
 
 - В админке привязать минимум 4–6 «похожих» через стандартный механизм OneEntry **Product Links**. Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
@@ -83,7 +61,10 @@
 
 ## C.4. Словарь `static_content` — что осталось
 
-Словарь подгружается через [app/dictionaries.ts](app/dictionaries.ts) (атрибут-сет `static_content`, нормализован в `Record<marker, attr>`, `value` = `initialValue` если локализация не заполнена). В админке уже **77 маркеров**.
+**Тем же механизмом осталось открыть для анонимного app-token** (тот же тип ошибки `Permission data not found`):
+
+- `ProductStatuses` (`GET /api/content/product-statuses`) — всё ещё **403** (см. C.2.7). Нужно для динамического чтения статусов вместо хардкода.
+- `Events.getAllEvents` (`/api/content/events/all`) — теперь **401 Unauthorized** (было 403). Минорно, на подписки товара не влияет (см. C.2.7 #3).
 
 ### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 

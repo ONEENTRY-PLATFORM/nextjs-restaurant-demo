@@ -144,7 +144,8 @@ const ReservationForm = ({
             type: 'date',
             value: {
               fullDate: d.toISOString(),
-              formattedValue: d.toDateString() + ' 00:00',
+              // formattedValue must match formatString ('YYYY-MM-DD'), not a JS locale string.
+              formattedValue: d.toISOString().slice(0, 10),
               formatString: 'YYYY-MM-DD',
             },
           };

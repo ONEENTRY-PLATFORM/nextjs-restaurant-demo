@@ -6,6 +6,7 @@ export {
   hasActiveSession,
   isError,
   reDefine,
+  setGuestId,
   syncTokens,
 } from './api/api';
 export {
@@ -14,6 +15,8 @@ export {
   useGetAuthProvidersQuery,
   useGetBlockByMarkerQuery,
   useGetBlocksByPageUrlQuery,
+  useGetBonusBalanceQuery,
+  useGetBonusHistoryQuery,
   useGetChildPagesByParentUrlQuery,
   useGetFormByMarkerQuery,
   useGetMenuByMarkerQuery,
@@ -33,8 +36,13 @@ export { useApplyCoupon } from './hooks/useApplyCoupon';
 export { getProductImageUrl } from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
+export type { RefundsApi } from './hooks/useRefunds';
+export { useRefunds } from './hooks/useRefunds';
 export { useSearchProducts } from './hooks/useSearchProducts';
+export type { ServerCartApi, ServerWishlistApi } from './hooks/useServerCart';
+export { useServerCart, useServerWishlist } from './hooks/useServerCart';
 export { useSetForm } from './hooks/useSetForm';
+export { trackActivity, useTrackProductView } from './hooks/useTrackActivity';
 export { getAdminsInfo } from './server/admins/getAdminsInfo';
 export { getSingleAttributeByMarkerSet } from './server/attributes/getSingleAttributeByMarkerSet';
 export { getBlockByMarker } from './server/blocks/getBlockByMarker';
@@ -42,8 +50,10 @@ export type { BlockProducts } from './server/blocks/getBlockProducts';
 export { getBlockProducts } from './server/blocks/getBlockProducts';
 export { getBlocks } from './server/blocks/getBlocks';
 export { getBlocksByPageUrl } from './server/blocks/getBlocksByPageUrl';
+export type { RecommendationKind } from './server/blocks/getRecommendations';
+export { getRecommendations } from './server/blocks/getRecommendations';
 export { getFormByMarker } from './server/forms/getFormByMarker';
-export type { ProductReview, RawReviewItem } from './server/forms/getProductReviews';
+export type { ProductReview } from './server/forms/getProductReviews';
 export { getProductReviews } from './server/forms/getProductReviews';
 export { getMenuByMarker } from './server/menus/getMenuByMarker';
 export { getAllOrdersByMarker } from './server/orders/getAllOrdersByMarker';

@@ -8,6 +8,7 @@ import ProductAnimations from './animations/ProductAnimations';
 import ProductCover from './product-single/ProductCover';
 import ProductDetails from './product-single/ProductDetails';
 import ProductsGroup from './ProductsGroup';
+import RecommendationsSection from './RecommendationsSection';
 import RelatedItems from './RelatedItems';
 
 type ProductPageLink = { categoryPath?: string };
@@ -104,6 +105,15 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
       {/* Related items: canonical getRelatedProductsById, or fallback to a
           similar_products_block-style block from product.blocks */}
       <RelatedItems productId={id} {...(blocks ? { blocks } : {})} />
+
+      {/* "Recently viewed" recommendation surface (UserActivity-driven Block;
+          falls back to catalog until the Block is configured — see ADMIN-TODO C.2.8). */}
+      <RecommendationsSection
+        kind="recentlyViewed"
+        titleMarker="recently_viewed_title"
+        titleFallback="Recently viewed"
+        excludeId={id}
+      />
     </section>
   );
 };

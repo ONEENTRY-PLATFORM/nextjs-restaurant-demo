@@ -6,6 +6,7 @@ import type { JSX } from 'react';
 import { getProductImageUrl } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
 import { deselectProduct } from '@/app/store/reducers/CartSlice';
+import { PRODUCT_STATUSES } from '@/app/utils/constants';
 import Placeholder from '@/components/shared/Placeholder';
 
 import ProductAnimations from '../animations/ProductAnimations';
@@ -40,7 +41,7 @@ const ProductCard = ({
   const imgSrc = getProductImageUrl(product.attributeValues);
   const title = localizeInfos?.title ?? '';
   const weightValue = weight?.value as string | number | undefined;
-  const outOfStock = product.statusIdentifier === 'out_of_stock';
+  const outOfStock = product.statusIdentifier === PRODUCT_STATUSES.outOfStock;
   const checkboxChecked = selected && !outOfStock;
 
   return (

@@ -13,13 +13,13 @@ import { getAllOrdersByMarker, getApi, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
+import { BOOKING_PRODUCT_ID, FORMS, ORDER_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
 import { TIME_SLOT_MARKER } from '@/components/reservation/reservationFormUtils';
 import Spinner from '@/components/shared/Spinner';
 
-const CANCELLED_STATUS = 'booking_cancelled';
+const CANCELLED_STATUS = ORDER_STATUSES.bookingCancelled;
 const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
 
 /**

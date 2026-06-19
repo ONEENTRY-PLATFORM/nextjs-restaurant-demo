@@ -91,6 +91,22 @@ export const syncTokens = (accessToken: string, refreshToken: string): void => {
 };
 
 /**
+ * setGuestId — sets the guest identifier sent as the `x-guest-id` header on
+ * unauthenticated cart / wishlist / activity requests.
+ *
+ * In the browser the SDK already auto-generates a stable id (localStorage key
+ * `oneentry_guest_id`), so this is only needed to override it — e.g. on the
+ * server from a per-visitor cookie, or to reset it with an empty string after
+ * merging the guest cart into the user account on login.
+ *
+ * @param   {string} guestId - Guest id to set, or `''` to clear it.
+ * @returns Nothing.
+ */
+export const setGuestId = (guestId: string): void => {
+  (api as unknown as { setGuestId?: (id: string) => unknown }).setGuestId?.(guestId);
+};
+
+/**
  * getLang — current langCode of the SDK instance.
  *
  * @returns Language code currently configured on the SDK (e.g. `en_US`).

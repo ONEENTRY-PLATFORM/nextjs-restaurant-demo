@@ -4,6 +4,8 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import { getProductById, getProductImageUrl } from '@/app/api';
+import { PRODUCT_STATUSES } from '@/app/utils/constants';
+import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 
 /**
@@ -42,7 +44,7 @@ const ProductPageLayout = async ({
     offers: {
       '@type': 'AggregateOffer',
       availability:
-        statusIdentifier === 'out_of_stock'
+        statusIdentifier === PRODUCT_STATUSES.outOfStock
           ? 'https://schema.org/OutOfStock'
           : 'https://schema.org/InStock',
       priceCurrency: attributeValues.currency?.value,
@@ -59,6 +61,7 @@ const ProductPageLayout = async ({
           __html: JSON.stringify(productJsonLd),
         }}
       />
+      <TrackProductView productId={product.id} />
       <ProductSingle product={product as IProductsEntity} />
     </>
   );

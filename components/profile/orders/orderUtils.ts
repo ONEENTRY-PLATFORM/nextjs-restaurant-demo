@@ -1,11 +1,11 @@
 import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
 
-import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID, ORDER_HISTORY_STATUSES } from '@/app/utils/constants';
 
 // Only terminal statuses count as "history": actually delivered, or actually cancelled/rejected.
 // `isCompleted === true` and the generic `completed` identifier are NOT used — they can be set by
 // the admin panel for orders that were never delivered, which would otherwise leak into "Orders History".
-export const HISTORY_STATUSES = new Set(['delivered', 'canceled', 'cancelled', 'rejected']);
+export const HISTORY_STATUSES = new Set<string>(ORDER_HISTORY_STATUSES);
 
 /**
  * statusLabel — human-readable order status (localized from CMS, otherwise derived from the identifier).

@@ -93,4 +93,43 @@ export const BLOCKS = {
   recommended: 'recommended',
   homeCategories: 'home_categories',
   similarDishes: 'similar_dishes',
+  cartComplement: 'cart_complement',
+  recentlyViewed: 'recently_viewed',
+  trending: 'trending',
+  personalRecommendations: 'personal_recommendations',
 } as const;
+
+/**
+ * OneEntry product-status markers (`product.statusIdentifier`).
+ *
+ * ⚠️ Single source of truth — replaces scattered string literals. These cannot
+ * yet be fetched/verified dynamically: the Guests group lacks read permission on
+ * ProductStatuses (`403 "Permission data not found"`), see ONEENTRY-ADMIN-TODO.
+ * Keep in sync with the admin panel until that permission is granted.
+ */
+export const PRODUCT_STATUSES = {
+  outOfStock: 'out_of_stock',
+} as const;
+
+/**
+ * OneEntry order-status markers (`order.statusIdentifier`).
+ *
+ * ⚠️ Order statuses require user auth to read, so they cannot be verified
+ * anonymously — confirm against the admin panel (see ONEENTRY-ADMIN-TODO).
+ * `canceled`/`cancelled` are both kept because the marker spelling is unverified.
+ */
+export const ORDER_STATUSES = {
+  delivered: 'delivered',
+  canceled: 'canceled',
+  cancelled: 'cancelled',
+  rejected: 'rejected',
+  bookingCancelled: 'booking_cancelled',
+} as const;
+
+/** Order statuses that move an order into the "history" tab (`isHistoryOrder`). */
+export const ORDER_HISTORY_STATUSES = [
+  ORDER_STATUSES.delivered,
+  ORDER_STATUSES.canceled,
+  ORDER_STATUSES.cancelled,
+  ORDER_STATUSES.rejected,
+] as const;

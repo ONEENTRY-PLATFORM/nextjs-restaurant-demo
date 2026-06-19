@@ -18,10 +18,12 @@ const getSearchParams = (searchParams?: {
 }) => {
   const expandedFilters: IFilterParams[] = [];
 
-  // Filter out service products that have no SKU.
+  // Filter out service products that have no SKU. Must be `neq` (scalar "not equal"),
+  // not `nin` (list "not in"): the server returns 0 results for `sku nin null`, while
+  // `sku neq null` correctly keeps every product that has a SKU.
   expandedFilters.push({
     attributeMarker: PRODUCT_ATTRS.sku,
-    conditionMarker: 'nin',
+    conditionMarker: 'neq',
     conditionValue: null,
     title: searchParams?.search || '',
     isNested: false,

@@ -3,7 +3,9 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { useEffect, useState } from 'react';
 
-import { getApi } from '@/app/api';
+import { getApi, isError } from '@/app/api';
+
+import { trackActivity } from './useTrackActivity';
 
 /**
  * useSearchProducts — product search via the Products API.
@@ -30,7 +32,13 @@ export const useSearchProducts = ({ name }: { name: string }) => {
     setProducts([]);
     let cancelled = false;
     (async () => {
-      const result = await getApi().Products.searchProduct(name);
+      // Prefer semantic (vector) search; fall back to substring search when it is
+      // not configured for the project (error / empty) so behaviour never regresses.
+      const vector = await getApi().Products.getProductsByVectorSearch({ queryText: name });
+      const result =
+        !isError(vector) && Array.isArray(vector) && vector.length > 0
+          ? vector
+          : await getApi().Products.searchProduct(name);
       if (cancelled) {
         return;
       }
@@ -42,6 +50,8 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       });
       setProducts(unique);
       setLoading(false);
+      // Feeds search-driven recommendations (UserActivity → recommendation Blocks).
+      trackActivity({ type: 'search', query: name });
     })();
     return () => {
       cancelled = true;

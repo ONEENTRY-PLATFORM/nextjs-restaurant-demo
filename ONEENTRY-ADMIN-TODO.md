@@ -20,32 +20,52 @@
 
 Временный фолбэк в коде: если CMS вернёт пустой список — рендерим `HOME_BLOCK_ORDER` (`home_promo` → `recommended` → `home_categories`) хардкодом, чтобы главная не схлопывалась. После восстановления привязки фолбэк перестанет срабатывать сам собой (CMS-порядок имеет приоритет). После проверки через MCP — отметить `✅`.
 
-## C.2.6. Закрыты права на product/page-scoped запросы
+## C.2.6. Права на product/page-scoped запросы ✅
 
-На 2026-05-28 ряд публичных эндпоинтов отвечают **403 `Permission data not found. Provide the permission for requested url`**. Это блокирует категории, блок `recommended`, фильтры и теги на всех листингах. Диагностика через SDK (с `NEXT_PUBLIC_ONEENTRY_TOKEN`):
+На 2026-05-28 ряд публичных эндпоинтов отвечал **403 `Permission data not found. Provide the permission for requested url`**, что блокировало категории, блок `recommended`, фильтры и теги на всех листингах. На 2026-06-19 права открыты и закрыты по двум подходам (категории — затем блоки). Подтверждено SDK-проверкой:
 
-| Запрос                                                       | Статус               |
-| ------------------------------------------------------------ | -------------------- |
-| `Products.getProducts` (глобально)                           | ✅ 200, 123 товара    |
-| `Products.getProductsByPageUrl('menu', id=1)`                | ❌ 403                |
-| `Products.getProductsByPageUrl('soups', id=167)`             | ❌ 403                |
-| `Products.getProductsByPageUrl(<any menu child>)`            | ❌ 403                |
-| `Blocks.getBlockByMarker('recommended')` → `similarProducts` | ❌ 403 в теле ответа  |
-| `Pages.getPageByUrl(...)` (метаданные страниц)               | ✅ 200                |
+- ✅ `Products.getProductsByPageUrl` — `menu` (id=1) и все 8 дочерних отвечают 200 (`soups` 10, `main-courses` 50, `appetizers` 13, `hot-drinks` 8, `cold-drinks` 12, `salads` 10, `desserts` 10, `kids-menu` 8 товаров). Категорийные страницы, секции категорий на главной и фильтры/чипы рендерят реальные товары.
+- ✅ `similar_products_block` — `Blocks.getBlockByMarker('recommended')` → `similarProducts` отдаёт 200, 8 товаров. Секция `Recommended` на главной ([HomeBlockServer](components/home/HomeBlockServer.tsx)) больше не пустует.
 
-Что закрылось на UI как следствие:
+Пункт закрыт.
 
-- **Главная** — секции категорий ([HomeCategoriesSection](components/home/HomeCategoriesSection.tsx)) и `Recommended` ([HomeBlockServer](components/home/HomeBlockServer.tsx)) пустые (graceful fallback на `null`), потому что `getProductsByPageUrl` и `similarProducts` возвращают 403.
-- **Категорийные страницы** (`/shop/category/*`, `/shop/[handle]`) — нет товаров, нет тегов/чипов и панели фильтров.
-- **HomePromo** — на `getBlogBanners`, к этим правам не относится, отображается.
+## C.2.7. Права на `ProductStatuses` + статус-маркеры (сверка MCP 2026-06-19)
 
-Что нужно в админке OneEntry: открыть публичные права на чтение для:
+Чтобы код мог **динамически** читать и валидировать статусы (как требует rule `product-statuses` последней MCP), а не держать их хардкодом, нужно открыть права и подтвердить маркеры.
 
-1. `Products.getProductsByPageUrl` — для страницы `menu` (id=1) **и всех 8 её дочерних** (`soups` id=167, `main-courses` id=168, `appetizers` id=169, `hot-drinks` id=170, `cold-drinks` id=171, `salads` id=172, `desserts` id=173, `kids-menu` id=174).
-2. `similar_products_block` — чтобы блок `recommended` (id=1) отдавал `similarProducts` без 403.
-3. Чтение фильтров (`Products.getFilters` / facets) на тех же страницах.
+- На 2026-06-19 анонимный (app-token) вызов `ProductStatuses.getProductStatuses()` отвечает **403 `Permission data not found. Provide the permission for requested url`**, а `Orders.getAllOrdersStorage()` — **401 Unauthorized** (требует юзер-токен). Поэтому статусы товаров/заказов сейчас нельзя ни прочитать, ни сверить без авторизации.
+- Временный фолбэк в коде: статус-маркеры вынесены в единый источник `PRODUCT_STATUSES` / `ORDER_STATUSES` / `ORDER_HISTORY_STATUSES` в [app/utils/constants.ts](app/utils/constants.ts) (заменили разрозненные строковые литералы по проекту). Значения: продукт — `out_of_stock`; заказы — `delivered`, `canceled`, `cancelled`, `rejected`, `booking_cancelled`.
 
-После открытия прав — проверить через `inspect-api` (или MCP `inspect-api`), что все три ручки выше отвечают 200, и снять этот пункт. До тех пор главная и категорийные страницы рендерятся «пусто» по этим секциям — это не баг кода, а пустой ответ CMS.
+Что нужно в админке OneEntry:
+
+1. Открыть группе **Guests** право на чтение `ProductStatuses` (эндпоинт product-statuses), чтобы `getProductStatuses()` отвечал 200.
+2. Подтвердить реальные маркеры статусов товаров (есть ли `out_of_stock`, нужен ли `in_stock` — см. C.7.2) и заказов по сторам `delivery_order` / `booking_order` (см. также C.10 #1). Особое внимание — написание `canceled` vs `cancelled`: код сейчас хеджирует оба, после сверки оставить один.
+
+После открытия прав и сверки через `inspect-api`: заменить хардкод-константы на динамический фетч `getProductStatuses()` (кэшированный server fetcher) и снять пункт.
+
+## C.2.8. Рекомендательные блоки (новые BlockType — сверка MCP 2026-06-19)
+
+Последняя версия SDK добавила персональные рекомендации на модуле **Blocks**: `getCartComplement`, `getRecentlyViewed`, `getTrending`, `getPersonalRecommendations` (питаются событиями `UserActivity` — уже отправляются из кода: view/add_to_cart/search/purchase). Код подключён ([getRecommendations.ts](app/api/server/blocks/getRecommendations.ts), секция [RecommendationsSection.tsx](components/layout/product/RecommendationsSection.tsx), на странице товара уже рендерится `recently_viewed`).
+
+Что нужно в админке OneEntry — создать **Blocks новых типов** с такими identifier'ами (маркеры уже прописаны в `BLOCKS`, [app/utils/constants.ts](app/utils/constants.ts)):
+
+| identifier                 | BlockType                          | где используется в коде                          |
+|----------------------------|------------------------------------|--------------------------------------------------|
+| `cart_complement`          | `cart_complement_block`            | апселл в корзине (kind `cartComplement`)         |
+| `recently_viewed`          | `recently_viewed_block`            | страница товара (kind `recentlyViewed`) — подключено |
+| `trending`                 | `trending_block`                   | главная/листинги (kind `trending`)               |
+| `personal_recommendations` | `personal_recommendations_block`   | главная для залогиненных (kind `personalRecommendations`) |
+
+Временный фолбэк в коде: пока блоков нет (или сервер вернул пусто/403), `getRecommendations` отдаёт реальные товары каталога (первые N) — секция не пустует и автоматически переключится на настоящие рекомендации после создания блоков. После создания и проверки через `inspect-api` — снять пункт.
+
+Новые dictionary-маркеры для заголовков секций (атрибут-сет `static_content`, см. C.4.1):
+
+| marker                  | type   | title           |
+|-------------------------|--------|-----------------|
+| `recently_viewed_title` | string | Recently viewed |
+| `trending_title`        | string | Trending now    |
+| `recommended_for_you`   | string | Recommended for you |
+| `goes_well_with_title`  | string | Goes well with your order |
 
 ## C.2.4. Иконки страниц `menu/*` (атрибут `menu_icon`) ✅
 
@@ -242,6 +262,22 @@
 
 ---
 
+### C.6.3. Бонусная программа / лояльность (сверка MCP 2026-06-19)
+
+Последняя версия SDK добавила бонусы на модуле **Discounts**: `getBonusBalance()` → `{ balance }` и `getBonusHistory(...)` → транзакции (обе требуют авторизации). Код подключён: баланс + история показываются в профиле ([BonusSection.tsx](components/profile/BonusSection.tsx)) через RTK-эндпоинты `useGetBonusBalanceQuery` / `useGetBonusHistoryQuery`. Пока программа не настроена, вызовы отдают 403/пусто — секция деградирует до `balance: 0` и «No bonus transactions yet» (graceful, не баг).
+
+Что нужно в админке OneEntry:
+
+1. Настроить **бонусную программу** (Discounts → тип `BONUS`): правила начисления (например, % с заказа), лимиты (`maxBonusPaymentPercent`, `minBonusAmount`), срок жизни бонусов.
+2. (Опционально, отдельной задачей) списание бонусов на чекауте — поля `bonusAmount` в `previewOrder`/`createOrder` уже поддержаны SDK; в коде пока **не** подключено к доставочному checkout (см. MISMATCH-LOG D.* — checkout-флоу зафиксирован отдельно). После настройки программы — решить, добавлять ли «оплатить бонусами» в `StepOrder`/`StepPayment`.
+
+Новые dictionary-маркеры (атрибут-сет `static_content`, см. C.4.1):
+
+| marker                | type   | title                       |
+|-----------------------|--------|-----------------------------|
+| `bonus_balance_title` | string | Bonus balance               |
+| `bonus_history_empty` | string | No bonus transactions yet.  |
+
 ## C.7. Аудит соответствия полей коду (inspect-api)
 
 Проверка проведена через `oneentry` SDK напрямую к проекту `oe-restaurants.oneentry.cloud` (lang=`en_US`). Зафиксировано на момент проверки.
@@ -281,6 +317,15 @@
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
 
 4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
+
+### C.10.2. Возвраты (refunds) — сверка MCP 2026-06-19
+
+SDK поддерживает заявки на возврат на модуле **Orders**: `getRefunds(id)`, `createRefundRequest(id, { products, note? })`, `cancelRefundRequest(id)`. Код-фундамент готов — хук [useRefunds.ts](app/api/hooks/useRefunds.ts) (`list`/`create`/`cancel`, graceful). UI на карточке заказа ([OrderCard.tsx](components/profile/orders/OrderCard.tsx)) пока не добавлен — это остаток.
+
+Что нужно в админке OneEntry:
+
+1. Настроить **статусы возврата** (refund statuses) и правила: для каких статусов заказа разрешён возврат, какие статусы проходит заявка (requested → approved/rejected → refunded). Без этого `getRefunds` отдаёт пусто, а `createRefundRequest` может валиться.
+2. После настройки — построить на клиенте map `{ refundStatus → label, color }` (как для заказов) и добавить кнопку «Request refund» + модалку выбора товаров/количеств в `OrderCard` поверх `useRefunds`.
 
 **Новые dictionary-ключи для C.4.1:**
 

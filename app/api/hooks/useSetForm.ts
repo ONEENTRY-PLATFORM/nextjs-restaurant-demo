@@ -8,22 +8,22 @@ import { getApi } from '@/app/api';
 /**
  * useSetForm — submit form data via the FormData API.
  *
- * @returns Object `{ loading, sendData }` — `sendData(payload)` returns an async result thunk.
+ * `sendData` awaits the SDK call and toggles `loading` around the in-flight
+ * request, so consumers get an accurate pending state and a resolved response.
+ *
+ * @returns Object `{ loading, sendData }` — `sendData(payload)` resolves to the post response or the thrown error.
  */
 export const useSetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const sendData = (data: IBodyPostFormData) => {
+  const sendData = async (data: IBodyPostFormData) => {
     setLoading(true);
-    const result = async () => {
-      try {
-        const res = await getApi().FormData.postFormsData(data);
-        return res;
-      } catch (e: unknown) {
-        return e;
-      }
-    };
-    setLoading(false);
-    return result;
+    try {
+      return await getApi().FormData.postFormsData(data);
+    } catch (e: unknown) {
+      return e;
+    } finally {
+      setLoading(false);
+    }
   };
   return {
     loading,

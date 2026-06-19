@@ -7,10 +7,11 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { getApi, getLang, getProductImageUrl, isError } from '@/app/api';
+import { getApi, getLang, getProductImageUrl, isError, useGetFormByMarkerQuery } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { ORDER_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -25,7 +26,9 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 const FORM_MARKER = 'review_form';
 const FORM_STATUS = 'approved';
-const FORM_MODULE_CONFIG_ID = 2;
+// Fallback only — the live id is resolved from getFormByMarker().moduleFormConfigs[0].id
+// so a recreated config never silently breaks review reads/writes.
+const DEFAULT_MODULE_CONFIG_ID = 2;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 
@@ -105,18 +108,20 @@ const readNumber = (value: unknown): number => {
 /**
  * fetchUserReview — loads the user's already submitted review for a product.
  *
- * @param   {number} productId - OneEntry product id (used as `entityIdentifier`).
- * @param   {string} userId    - OneEntry user identifier.
+ * @param   {number} productId      - OneEntry product id (used as `entityIdentifier`).
+ * @param   {string} userId         - OneEntry user identifier.
+ * @param   {number} moduleConfigId - `moduleFormConfigs[0].id` resolved from the form.
  * @returns Promise resolving to the existing review, or `null` when none / on SDK error (graceful fallback).
  */
 const fetchUserReview = async (
   productId: number,
-  userId: string
+  userId: string,
+  moduleConfigId: number
 ): Promise<ExistingReview | null> => {
   try {
     const data = await getApi().FormData.getFormsDataByMarker(
       FORM_MARKER,
-      FORM_MODULE_CONFIG_ID,
+      moduleConfigId,
       {
         entityIdentifier: productId,
         userIdentifier: userId,
@@ -166,18 +171,21 @@ const fetchUserReview = async (
  *
  * @param   {object}                     props               - Component props.
  * @param   {IOrderProducts}             props.product       - Order line-item entity.
- * @param   {IProductsEntity | undefined} props.fullProduct  - Full product entity used to resolve a fallback image from `images`.
- * @param   {ExistingReview | null}      props.initialReview - Existing review to prefill (or `null` when none).
+ * @param   {IProductsEntity | undefined} props.fullProduct   - Full product entity used to resolve a fallback image from `images`.
+ * @param   {ExistingReview | null}      props.initialReview  - Existing review to prefill (or `null` when none).
+ * @param   {number}                     props.moduleConfigId - `moduleFormConfigs[0].id` resolved from the form.
  * @returns JSX of the reviewable row.
  */
 const ReviewableItem = ({
   product,
   fullProduct,
   initialReview,
+  moduleConfigId,
 }: {
   product: IOrderProducts;
   fullProduct: IProductsEntity | undefined;
   initialReview: ExistingReview | null;
+  moduleConfigId: number;
 }): JSX.Element => {
   const t = useT();
   const [state, setState] = useState<ItemState>(() => initialItemState(initialReview));
@@ -209,7 +217,7 @@ const ReviewableItem = ({
         // Edit: PUT `/api/content/form-data/{id}` - same body as in `postFormsData`, id in the URL. Requires auth.
         const res = await getApi().FormData.updateFormsDataByid(state.existingId, {
           formIdentifier: FORM_MARKER,
-          formModuleConfigId: FORM_MODULE_CONFIG_ID,
+          formModuleConfigId: moduleConfigId,
           moduleEntityIdentifier: String(product.id),
           replayTo: null,
           status: FORM_STATUS,
@@ -229,7 +237,7 @@ const ReviewableItem = ({
       const res = await getApi().FormData.postFormsData({
         formIdentifier: FORM_MARKER,
         formData,
-        formModuleConfigId: FORM_MODULE_CONFIG_ID,
+        formModuleConfigId: moduleConfigId,
         moduleEntityIdentifier: String(product.id),
         replayTo: null,
         status: FORM_STATUS,
@@ -336,6 +344,8 @@ const OrderReviewPopup = (): JSX.Element => {
   const { open, component, setOpen, setTransition } = useContext(OpenDrawerContext);
   const { isAuth, user } = useContext(AuthContext);
   const { order, productsById } = useOrderReviewTarget();
+  const { data: reviewForm } = useGetFormByMarkerQuery({ marker: FORM_MARKER });
+  const moduleConfigId = reviewForm?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
   const isOpen = open && component === 'OrderReviewPopup';
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
@@ -379,7 +389,7 @@ const OrderReviewPopup = (): JSX.Element => {
     setPrefilling(true);
     (async () => {
       const entries = await Promise.all(
-        productIds.map(async pid => [pid, await fetchUserReview(pid, userId)] as const)
+        productIds.map(async pid => [pid, await fetchUserReview(pid, userId, moduleConfigId)] as const)
       );
       if (cancelled) return;
       setExistingReviews(new Map(entries));
@@ -388,13 +398,13 @@ const OrderReviewPopup = (): JSX.Element => {
     return () => {
       cancelled = true;
     };
-  }, [isOpen, orderId, userId, productIds]);
+  }, [isOpen, orderId, userId, productIds, moduleConfigId]);
 
   if (!order) return <></>;
 
   // Defense-in-depth: reviews are only allowed for orders that were actually delivered.
   // The primary gate lives in OrdersList (`canReview`), this is a safety net for any future caller.
-  if ((order.statusIdentifier ?? '').toLowerCase() !== 'delivered') return <></>;
+  if ((order.statusIdentifier ?? '').toLowerCase() !== ORDER_STATUSES.delivered) return <></>;
 
   const close = (): void => setTransition('close');
   const created = (order as unknown as { createdDate?: string }).createdDate;
@@ -457,6 +467,7 @@ const OrderReviewPopup = (): JSX.Element => {
                     product={p}
                     fullProduct={productsById.get(p.id)}
                     initialReview={existingReviews.get(p.id) ?? null}
+                    moduleConfigId={moduleConfigId}
                   />
                 ))}
               </div>

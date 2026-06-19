@@ -42,8 +42,10 @@ const ProductCard = ({
   const weightRaw = attrs.weight?.value as string | number | undefined;
   const weight = weightRaw != null && weightRaw !== '' ? `${weightRaw} g` : null;
 
+  // Aggregate rating from the entity (top-level `rating`, not attributeValues).
+  // No reviews yet → omit the badge entirely rather than fake a "5".
   const ratingValue = product.rating?.value;
-  const rating = ratingValue != null ? String(ratingValue) : '5';
+  const rating = ratingValue != null ? String(ratingValue) : null;
 
   const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
   const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
@@ -56,18 +58,20 @@ const ProductCard = ({
       <div className="descr">
         {time && time !== '0' ? <p> {time} min</p> : null}
         {weight ? <p>{weight}</p> : null}
-        <div className="rating">
-          <Image
-            className="rating_img"
-            src="/images/icons/Star 16.svg"
-            alt="star"
-            width={16}
-            height={16}
-            loading="eager"
-            style={{ width: 'auto', height: 'auto' }}
-          />
-          <p>{rating}</p>
-        </div>
+        {rating != null ? (
+          <div className="rating">
+            <Image
+              className="rating_img"
+              src="/images/icons/Star 16.svg"
+              alt="star"
+              width={16}
+              height={16}
+              loading="eager"
+              style={{ width: 'auto', height: 'auto' }}
+            />
+            <p>{rating}</p>
+          </div>
+        ) : null}
       </div>
 
       <p className="menu_item-title">{title}</p>

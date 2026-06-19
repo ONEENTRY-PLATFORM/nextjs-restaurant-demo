@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { type JSX, memo, Suspense } from 'react';
 
-import { getPageByUrl } from '@/app/api';
+import { getImageUrl, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
@@ -103,7 +103,15 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     height,
     altText: alt,
   } = {
-    url: (attributeValues.icon as { downloadLink?: string } | undefined)?.downloadLink,
+    // Page `image` attribute value is an ARRAY (unlike Products, which is an object);
+    // getImageUrl normalises both shapes.
+    url: getImageUrl(
+      (attributeValues.icon as { value?: unknown } | undefined)?.value as
+        | { downloadLink?: string }
+        | Array<{ downloadLink?: string }>
+        | null
+        | undefined
+    ),
     width: 300,
     height: 300,
     altText: localizeInfos.title,

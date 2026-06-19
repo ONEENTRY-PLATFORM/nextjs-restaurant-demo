@@ -1,4 +1,8 @@
 import { unstable_noStore } from 'next/cache';
+import type {
+  IFormByMarkerDataEntity,
+  IFormsByMarkerDataEntity,
+} from 'oneentry/dist/forms-data/formsDataInterfaces';
 import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -9,18 +13,19 @@ const FORM_MARKER = 'review_form';
 const DEFAULT_MODULE_CONFIG_ID = 2;
 const REVIEWS_LIMIT = 50;
 
-/** RawReviewItem — a OneEntry FormsData record from `getFormsDataByMarker` (loosely typed — the SDK does not export a stable type). */
-export interface RawReviewItem {
-  id: number;
-  parentId: number | null;
-  userIdentifier?: string;
-  time?: string;
-  formData?: Array<{
-    marker: string;
-    type?: string;
-    value?: unknown;
-  }>;
-}
+/**
+ * readField — value of a `formData` entry by marker.
+ *
+ * `formData` is the polymorphic `FormDataType[]` union, so the marker/value pair
+ * is read through a single localised cast rather than a redefined SDK shape.
+ * @param   {IFormByMarkerDataEntity} item   - Review record.
+ * @param   {string}                  marker - Field marker (e.g. `review_rating`).
+ * @returns Raw field value, or `undefined` when the marker is absent.
+ */
+const readField = (item: IFormByMarkerDataEntity, marker: string): unknown => {
+  const fields = item.formData as unknown as Array<{ marker?: unknown; value?: unknown }>;
+  return fields?.find(f => f.marker === marker)?.value;
+};
 
 /** ProductReview — normalised review record for `<ProductReviewsList />`. */
 export interface ProductReview {
@@ -74,11 +79,8 @@ export const getProductReviews = async (productId: number): Promise<ProductRevie
   try {
     const lang = getLang();
 
-    const form = await getApi().Forms.getFormByMarker(FORM_MARKER);
-    const formMeta = form as IFormsEntity as {
-      moduleFormConfigs?: Array<{ id?: number }>;
-    };
-    const formModuleConfigId = formMeta?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
+    const form = (await getApi().Forms.getFormByMarker(FORM_MARKER)) as IFormsEntity;
+    const formModuleConfigId = form?.moduleFormConfigs?.[0]?.id ?? DEFAULT_MODULE_CONFIG_ID;
 
     const data = await getApi().FormData.getFormsDataByMarker(
       FORM_MARKER,
@@ -100,21 +102,17 @@ export const getProductReviews = async (productId: number): Promise<ProductRevie
       return [];
     }
 
-    const items = (data as unknown as { items?: RawReviewItem[] })?.items ?? [];
+    const items: IFormByMarkerDataEntity[] = (data as IFormsByMarkerDataEntity).items ?? [];
 
     return items
       .filter(item => item.parentId === null)
-      .map<ProductReview>(item => {
-        const ratingField = item.formData?.find(f => f.marker === 'review_rating');
-        const textField = item.formData?.find(f => f.marker === 'review_text');
-        return {
-          id: String(item.id),
-          author: item.userIdentifier?.trim() || 'Anonymous',
-          date: item.time ? new Date(item.time).toLocaleDateString('en-US') : '',
-          rating: readNumber(ratingField?.value),
-          text: readPlainText(textField?.value),
-        };
-      })
+      .map<ProductReview>(item => ({
+        id: String(item.id),
+        author: item.userIdentifier?.trim() || 'Anonymous',
+        date: item.time ? new Date(item.time).toLocaleDateString('en-US') : '',
+        rating: readNumber(readField(item, 'review_rating')),
+        text: readPlainText(readField(item, 'review_text')),
+      }))
       .sort((a, b) => Number(b.id) - Number(a.id));
   } catch {
     return [];

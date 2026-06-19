@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
@@ -23,20 +24,10 @@ const fetchBlockProducts = unstable_cache(
       if (typeError(data)) {
         return { isError: true, error: data, title: '', products: [] };
       }
-      const block = data as unknown as {
-        localizeInfos?: { title?: string };
-        products?: IProductsEntity[];
-        similarProducts?: { items?: IProductsEntity[] } | IProductsEntity[];
-        quantity?: number;
-        countElementsPerRow?: number;
-      };
+      const block = data as IBlockEntity;
       const title = block.localizeInfos?.title ?? marker;
-      const raw =
-        block.products ??
-        (Array.isArray(block.similarProducts)
-          ? block.similarProducts
-          : (block.similarProducts?.items ?? [])) ??
-        [];
+      // similarProducts is always IProductsResponse ({ items, total }), never a bare array.
+      const raw = block.products ?? block.similarProducts?.items ?? [];
       const products =
         typeof block.quantity === 'number' && block.quantity > 0
           ? raw.slice(0, block.quantity)

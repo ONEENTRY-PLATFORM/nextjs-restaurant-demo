@@ -61,9 +61,13 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         return { marker, type: 'spam', value: captcha };
       }
 
-      switch (marker) {
+      // Dispatch on the attribute TYPE (not the marker) — the marker is project
+      // data and may differ from the type name.
+      switch (type) {
         case 'list':
-          return { marker, type: 'list', value: [{ title: value, value }] };
+        case 'radioButton':
+          // list/radioButton value is a plain array of selected values, not {title,value}.
+          return { marker, type, value: value != null && value !== '' ? [value] : [] };
         case 'text':
           // OneEntry: "Only one of htmlValue, plainValue or mdValue can be provided".
           return {

@@ -4,6 +4,7 @@ import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/or
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
+import { trackActivity } from '@/app/api/hooks/useTrackActivity';
 import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
 import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
@@ -120,6 +121,16 @@ export const useCreateOrder = (): UseCreateOrderApi => {
       // Stripe paymentUrl). On payment-session failure we keep them — the order in OneEntry
       // is already created, and retrying without losing the cart is less bad than a duplicate order.
       const clearCheckoutState = (): void => {
+        // Purchase signal for recommendations (skip the virtual delivery product).
+        orderProducts
+          .filter(p => p.productId !== DELIVERY_PRODUCT_ID)
+          .forEach(p =>
+            trackActivity({
+              type: 'product_purchase',
+              productId: p.productId,
+              meta: { orderId: id, qty: p.quantity },
+            })
+          );
         dispatch(removeAllProducts());
         dispatch(removeOrder());
       };

@@ -32,3 +32,51 @@ export const onUnsubscribeEvents = async (id: number) => {
     console.log(e);
   }
 };
+
+/**
+ * onSubscribeToForm — subscribe to status changes of a FormData record.
+ *
+ * For form-driven flows that want push updates when the admin changes a record's
+ * status (e.g. review moderation: notify the author when a review is approved).
+ *
+ * @param   {string} formMarker - Form/event marker.
+ * @param   {number} formDataId - FormData record id to watch.
+ * @param   {string} [status]   - Optional status to subscribe for.
+ * @returns Promise resolving to `true` on success, `false` on error.
+ */
+export const onSubscribeToForm = async (
+  formMarker: string,
+  formDataId: number,
+  status?: string
+): Promise<boolean> => {
+  try {
+    const res = await getApi().Events.subscribeToForm(formMarker, {
+      formDataId,
+      ...(status ? { status } : {}),
+    });
+    return res === true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+/**
+ * onUnsubscribeFromForm — removes a FormData status subscription.
+ *
+ * @param   {string} formMarker - Form/event marker.
+ * @param   {number} formDataId - FormData record id.
+ * @returns Promise resolving to `true` on success, `false` on error.
+ */
+export const onUnsubscribeFromForm = async (
+  formMarker: string,
+  formDataId: number
+): Promise<boolean> => {
+  try {
+    const res = await getApi().Events.unsubscribeFromForm(formMarker, { formDataId });
+    return res === true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};

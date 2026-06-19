@@ -8,7 +8,7 @@ describe('getSearchParams — service-products filter (always present)', () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({
       attributeMarker: 'sku',
-      conditionMarker: 'nin',
+      conditionMarker: 'neq',
       conditionValue: null,
       title: '',
       isNested: false,

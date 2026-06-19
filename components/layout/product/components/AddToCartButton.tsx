@@ -5,12 +5,14 @@ import { useContext, useMemo, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
+import { trackActivity } from '@/app/api/hooks/useTrackActivity';
 import { updateUserState } from '@/app/api/server/users/updateUserState';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
+import { PRODUCT_STATUSES } from '@/app/utils/constants';
 import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
@@ -59,7 +61,10 @@ const AddToCartButton = ({
   );
   const { user } = useContext(AuthContext);
   // `null` = "no status assigned" = available; only block on an explicit out_of_stock.
-  const notInStock = useMemo(() => statusIdentifier === 'out_of_stock', [statusIdentifier]);
+  const notInStock = useMemo(
+    () => statusIdentifier === PRODUCT_STATUSES.outOfStock,
+    [statusIdentifier]
+  );
 
   const updateUserCartState = async () => {
     const updatedItems = items.some(product => product.id === id)
@@ -82,6 +87,7 @@ const AddToCartButton = ({
   const addToCartHandle = async (): Promise<void> => {
     dispatch(addProductToCart({ id: id, selected: true, quantity: 1 }));
     toast(titleSlot(t('product_added_cart_toast', 'Product {title} added to cart!')));
+    trackActivity({ type: 'product_add_to_cart', productId: id });
 
     if (user) {
       updateUserCartState();

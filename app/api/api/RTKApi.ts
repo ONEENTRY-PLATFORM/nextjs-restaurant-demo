@@ -2,6 +2,10 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
+import type {
+  IBonusBalanceEntity,
+  IBonusTransactionEntity,
+} from 'oneentry/dist/discounts/discountsInterfaces';
 import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import type {
@@ -240,6 +244,30 @@ export const RTKApi = createApi({
       providesTags: ['User'],
       keepUnusedDataFor: 60,
     }),
+    /** getBonusBalance — current user's bonus balance (requires auth). */
+    getBonusBalance: build.query<IBonusBalanceEntity, void>({
+      queryFn: async () => {
+        const result = await getApi().Discounts.getBonusBalance();
+        if (typeError(result)) {
+          return { error: result };
+        }
+        return { data: result as IBonusBalanceEntity };
+      },
+      providesTags: ['User'],
+      keepUnusedDataFor: 60,
+    }),
+    /** getBonusHistory — current user's bonus transaction history (requires auth). */
+    getBonusHistory: build.query<IBonusTransactionEntity[], void>({
+      queryFn: async () => {
+        const result = await getApi().Discounts.getBonusHistory();
+        if (typeError(result)) {
+          return { error: result };
+        }
+        return { data: result as IBonusTransactionEntity[] };
+      },
+      providesTags: ['User'],
+      keepUnusedDataFor: 60,
+    }),
     /** getAccounts — all payment accounts. */
     getAccounts: build.query<IAccountsEntity[], object>({
       queryFn: async () => {
@@ -337,6 +365,8 @@ export const {
   useGetAuthProvidersQuery,
   useLazyGetMeQuery,
   useGetAccountsQuery,
+  useGetBonusBalanceQuery,
+  useGetBonusHistoryQuery,
   useGetPageByIdQuery,
   useGetPaymentSessionByIdQuery,
   useLazyGetPaymentSessionByIdQuery,

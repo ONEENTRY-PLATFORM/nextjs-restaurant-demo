@@ -24,7 +24,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID, ORDER_STATUSES, PRODUCT_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
@@ -66,7 +66,7 @@ const OrderCard = ({
   const { user } = useContext(AuthContext);
   const { subtotal, delivery, discount, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
-  const canReview = (order.statusIdentifier ?? '').toLowerCase() === 'delivered';
+  const canReview = (order.statusIdentifier ?? '').toLowerCase() === ORDER_STATUSES.delivered;
 
   const bodyRef = useRef<HTMLDivElement>(null);
   const [rendered, setRendered] = useState(expanded);
@@ -135,7 +135,7 @@ const OrderCard = ({
 
     for (const p of order.products) {
       const fullProduct = productsById.get(p.id);
-      if (fullProduct?.statusIdentifier === 'out_of_stock') {
+      if (fullProduct?.statusIdentifier === PRODUCT_STATUSES.outOfStock) {
         skipped.push(p.title);
         continue;
       }
@@ -165,7 +165,7 @@ const OrderCard = ({
       await updateUserState({ favorites: favoritesIds, cart: addedItems, user });
       await Promise.all(
         order.products
-          .filter(p => productsById.get(p.id)?.statusIdentifier !== 'out_of_stock')
+          .filter(p => productsById.get(p.id)?.statusIdentifier !== PRODUCT_STATUSES.outOfStock)
           .map(p => onSubscribeEvents(p.id))
       );
     }

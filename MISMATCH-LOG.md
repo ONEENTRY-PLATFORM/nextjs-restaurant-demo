@@ -25,6 +25,7 @@
 | --- | --- | --- | --- | --- | --- |
 | A. Автоматические находки | 1 | 0 | 0 | 1 | 0 |
 | B. Ручная сверка по экранам | см. ниже | — | — | — | — |
+| D. Соответствие MCP/SDK (отложенные) | 7 | 0 | 2 | 5 | 0 |
 | OneEntry Admin Setup | [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) | — | — | — | — |
 
 ---
@@ -88,6 +89,22 @@
   - birthday: [pk_promo_BIRTHDAY.html](static-html/pk_promo_BIRTHDAY.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_promo_BIRTHDAY.html>
   - day: [pk_promo_day.html](static-html/pk_promo_day.html) · <file:///d:/OneEntry/nextjs-restaurant/static-html/pk_promo_day.html>
 - 📁 Файлы проекта: [app/promo/[handle]/page.tsx](app/promo/[handle]/page.tsx) · [components/promo/PromoCard.tsx](components/promo/PromoCard.tsx)
+
+---
+
+## Раздел D. Соответствие MCP/SDK (отложенные code-fixable правки)
+
+Найдено при сверке кода с последней версией OneEntry MCP (2026-06-19). Правки в **коде** (не вёрстка, не админка). По решению владельца доставочный checkout-флоу пока не трогаем — фиксируем здесь. Остальные находки сверки уже поправлены в коде (token-handling в `AuthContext`, config-id в `OrderReviewPopup`, типовая гигиена, централизация статус-маркеров в `constants.ts`).
+
+| # | Что не так | Файл | Severity |
+|---|---|---|---|
+| D.1 | Поля доставочной формы захардкожены, а не рендерятся динамически из Forms API (`getAllOrdersStorage` → `formIdentifier` → `getFormByMarker` → рендер по `attribute.type`/`position`). Маркер `delivery_order` зашит в `StepPayment`, `useCreateOrder`, `OrderSlice`. По `create-checkout` поля должны приходить из API. | [StepPayment.tsx:131-162](components/cart/steps/StepPayment.tsx#L131-L162) | P1 |
+| D.2 | `timeInterval` трактуется как свободный ввод (`buildDeliveryTimeInterval` фабрикует слот из произвольных даты/времени), а не как список доступных слотов `[[startISO,endISO],...]` из `value` поля формы. `timeInterval.value` нигде не читается. | [scheduleTime.ts:36-54](components/cart/steps/step-payment/scheduleTime.ts#L36-L54) | P1 |
+| D.3 | Способы оплаты в доставочном checkout берутся глобально (`useGetAccountsQuery({})`), без пересечения с `storage.paymentAccountIdentifiers`. В брони ([ReservationPaymentStep.tsx:59-72](components/reservation/ReservationPaymentStep.tsx#L59-L72)) сделано правильно — скопировать паттерн. | [StepPayment.tsx:113-114](components/cart/steps/StepPayment.tsx#L113-L114) | P2 |
+| D.4 | Список заказов грузится по двум захардкоженным сторам (`FORMS.deliveryOrder`/`FORMS.bookingOrder`), а не через `getAllOrdersStorage()` → итерация по всем сторам. Новый стор в админке не появится в истории. | [OrdersList.tsx:52-56](components/profile/OrdersList.tsx#L52-L56), [BookingsContent.tsx:233](components/profile/BookingsContent.tsx#L233) | P2 |
+| D.5 | Пред-чекаут тоталы считаются на клиенте по ценам Redux; `Orders.previewOrder` вызывается только при применённом купоне. Серверные скидки/бонусы/налоги не видны до создания заказа. | [StepOrder.tsx:65-73](components/cart/steps/StepOrder.tsx#L65-L73) | P2 |
+| D.6 | `logInUser` строит `authData` с захардкоженными маркерами `'email'/'password'` вместо разбора по флагам `isLogin`/`isPassword` из `getFormByMarker`. Инспект подтвердил: у формы `user` поле `email` имеет `isLogin: true` — для текущего email-провайдера хардкод корректен, но ломается при переименовании/смене провайдера. | [logInUser.ts:21-25](app/api/server/users/logInUser.ts#L21-L25) | P2 |
+| D.7 | **Серверная корзина/wishlist — миграция не завершена.** Заложен фундамент: `setGuestId` ([api.ts](app/api/api/api.ts)) и хуки `useServerCart`/`useServerWishlist` ([useServerCart.ts](app/api/hooks/useServerCart.ts)) поверх `Users.getCart/setCart/addCartItem/getWishlist` (работают для гостя через `x-guest-id` и для юзера). Живой UI всё ещё на Redux + `redux-persist` + `updateUserState`. Остаток (эффорт L): перевести `AddToCartButton`/`HeartCardButton`/cart-steps на серверную корзину с оптимистичными апдейтами и merge-on-login (читать гостевую корзину до `reDefine`, после — `setCart` объединённого, затем `setGuestId('')`). Redux вшит в reservations/animations — отдельная задача, не трогаем сейчас. UserActivity-трекинг для гостей уже работает (браузер авто-генерит `oneentry_guest_id`). | [useServerCart.ts](app/api/hooks/useServerCart.ts) | P2 |
 
 ---
 

@@ -15,7 +15,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID, PRODUCT_STATUSES } from '@/app/utils/constants';
 import Placeholder from '@/components/shared/Placeholder';
 import { UsePrice } from '@/components/utils';
 
@@ -54,7 +54,7 @@ const StepOrder = (): JSX.Element => {
       row =>
         row.product &&
         row.entry.selected &&
-        row.product.statusIdentifier !== 'out_of_stock' &&
+        row.product.statusIdentifier !== PRODUCT_STATUSES.outOfStock &&
         // Delivery shows as a separate line in the totals - otherwise it gets double-counted in the subtotal.
         row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{

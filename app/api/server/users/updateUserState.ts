@@ -27,12 +27,20 @@ export const updateUserState = async ({
   if (!user) {
     return;
   }
+  // user.formData is FormDataType[] (a union that includes Record<string, unknown>);
+  // narrow to entries that actually carry a marker before reshaping into IAuthFormData.
+  const hasMarker = (item: unknown): item is { marker: string; value: unknown } =>
+    typeof item === 'object' &&
+    item !== null &&
+    typeof (item as { marker?: unknown }).marker === 'string';
+
   const formData: IAuthFormData[] = user.formData
+    .filter(hasMarker)
     .filter(item => item.marker !== 'otp_code')
     .map(item => ({
-      marker: item.marker as string,
+      marker: item.marker,
       type: 'string',
-      value: item.value as string,
+      value: String(item.value ?? ''),
     }));
   const email = user.formData.find(item => item.marker === 'email');
   const phone = user.formData.find(item => item.marker === 'phone');

@@ -1,5 +1,6 @@
 'use client';
 
+import type { IError } from 'oneentry/dist/base/utils';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
   // 60s instead of 3s: getMe is just a keepalive / cross-tab session probe; 3s
   // polling burned ~20 requests/min per logged-in tab for no UX benefit.
-  const [trigger, { isError }] = useLazyGetMeQuery({
+  const [trigger, { isError, error: meError }] = useLazyGetMeQuery({
     pollingInterval: isAuth ? 60000 : 0,
   });
 
@@ -77,22 +78,45 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     await checkToken();
   };
 
+  /**
+   * checkToken — probes the session via getMe and decides whether to keep or drop it.
+   *
+   * A user is logged out ONLY on a confirmed 401/403 — and only after one retry
+   * with the latest `refresh-token` (another tab/operation may have rotated it).
+   * Transient failures (429/500/network/"Resource is closed") keep the session
+   * intact, so a server hiccup never silently signs the user out.
+   */
   // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang is a stable module-level function
   const checkToken = useCallback(async () => {
-    trigger(getLang())
-      .then(async res => {
-        if ((res.isError && !res.isLoading) || !res.data?.id) {
-          localStorage.removeItem('refresh-token');
-          setIsAuth(false);
-        } else {
+    const evaluate = async (allowRetry: boolean): Promise<void> => {
+      try {
+        const res = await trigger(getLang());
+        if (res.data?.id) {
           setUser(res.data);
           setIsAuth(true);
+          return;
         }
-      })
-      .catch(async () => {
+        if (!res.isError || res.isLoading) {
+          return;
+        }
+        const status = (res.error as IError | undefined)?.statusCode;
+        // Only a confirmed auth failure invalidates the session.
+        if (status !== 401 && status !== 403) {
+          return;
+        }
+        const fresh = localStorage.getItem('refresh-token');
+        if (allowRetry && fresh) {
+          await reDefine(fresh, getLang());
+          await evaluate(false);
+          return;
+        }
         localStorage.removeItem('refresh-token');
         setIsAuth(false);
-      });
+      } catch {
+        // Thrown (network) — transient, do not destroy the session.
+      }
+    };
+    await evaluate(true);
   }, [trigger]);
 
   const updateUserData = async (): Promise<void> => {
@@ -139,14 +163,22 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   }, [refetch]);
 
   useEffect(() => {
-    const refresh = localStorage.getItem('refresh-token');
-    if (isError && refresh) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRefetch(true);
-      localStorage.removeItem('refresh-token');
-      setIsAuth(false);
+    if (!isError) {
+      return;
     }
-  }, [isError]);
+    // Re-run onInit only on a confirmed auth failure; checkToken then retries
+    // with the latest token and logs out solely if it is still 401/403.
+    // Transient poll failures (429/500/network) are ignored — no forced logout.
+    const status = (meError as IError | undefined)?.statusCode;
+    if (status !== 401 && status !== 403) {
+      return;
+    }
+    const refresh = localStorage.getItem('refresh-token');
+    if (refresh) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRefetch(prev => !prev);
+    }
+  }, [isError, meError]);
 
   useEffect(() => {
     if (isAuth) {

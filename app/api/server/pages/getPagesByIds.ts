@@ -13,25 +13,23 @@ import { typeError } from '@/components/utils';
  */
 export const getPagesByIds = cache(
   async (
-    ids: []
+    ids: number[]
   ): Promise<{
     isError: boolean;
     error?: IError;
     pages?: IPagesEntity[];
   }> => {
     try {
-      const data = await Promise.all(
-        ids.map(async (id: number) => {
+      const results = await Promise.all(
+        ids.map(async id => {
           const page = await getApi().Pages.getPageById(id);
-          return page;
+          // Guard per page: Promise.all returns an array, so a global isError
+          // check never fires — an errored page would otherwise leak through.
+          return typeError(page) ? null : (page as IPagesEntity);
         })
-      ).then(results => results);
-
-      if (typeError(data)) {
-        return { isError: true, error: data };
-      } else {
-        return { isError: false, pages: data as IPagesEntity[] };
-      }
+      );
+      const pages = results.filter((page): page is IPagesEntity => page !== null);
+      return { isError: false, pages };
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }

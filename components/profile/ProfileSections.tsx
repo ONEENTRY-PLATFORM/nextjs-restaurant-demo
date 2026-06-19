@@ -12,6 +12,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
 import ProfileIcon from '@/components/icons/profile';
+import BonusSection from '@/components/profile/BonusSection';
 import { normalizePhoneE164 } from '@/components/utils';
 
 type SavedAddress = {
@@ -465,6 +466,9 @@ const ProfileSections = (): JSX.Element => {
           </div>
         )}
       </div>
+
+      {/* Bonus balance + history (loyalty — Discounts API; hidden until configured in admin) */}
+      <BonusSection />
     </>
   );
 };

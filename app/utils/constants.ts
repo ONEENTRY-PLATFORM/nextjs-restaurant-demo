@@ -84,6 +84,11 @@ export const ATTRS = {
   staticContent: 'static_content',
 } as const;
 
+/** OneEntry content-filter markers — used by `Filters.getFilterByMarker` (curated grouped filter trees). */
+export const CONTENT_FILTERS = {
+  dishes: 'dishes',
+} as const;
+
 /**
  * OneEntry block identifiers — matched against `block.identifier` returned by `getBlocksByPageUrl`,
  * and passed as marker to `Blocks.getBlockByMarker` / `getBlockProducts`.

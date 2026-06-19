@@ -52,6 +52,8 @@ export { getBlocks } from './server/blocks/getBlocks';
 export { getBlocksByPageUrl } from './server/blocks/getBlocksByPageUrl';
 export type { RecommendationKind } from './server/blocks/getRecommendations';
 export { getRecommendations } from './server/blocks/getRecommendations';
+export type { ContentFilterOption } from './server/filters/getContentFilter';
+export { contentFilterToOptions, getContentFilter } from './server/filters/getContentFilter';
 export { getFormByMarker } from './server/forms/getFormByMarker';
 export type { ProductReview } from './server/forms/getProductReviews';
 export { getProductReviews } from './server/forms/getProductReviews';

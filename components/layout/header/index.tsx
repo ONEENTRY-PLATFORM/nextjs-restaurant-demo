@@ -3,9 +3,15 @@ import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInter
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
 
-import { getChildPagesByParentUrl, getPageByUrl, getSingleAttributeByMarkerSet } from '@/app/api';
+import {
+  contentFilterToOptions,
+  getChildPagesByParentUrl,
+  getContentFilter,
+  getPageByUrl,
+  getSingleAttributeByMarkerSet,
+} from '@/app/api';
 import { t } from '@/app/dictionaries';
-import { ATTR_SETS, PAGES, PRODUCT_ATTRS } from '@/app/utils/constants';
+import { ATTR_SETS, CONTENT_FILTERS, PAGES, PRODUCT_ATTRS } from '@/app/utils/constants';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';
 import CategoryFilter from '@/components/layout/filter/CategoryFilter';
 import FilterBottom from '@/components/layout/filter/FilterBottom';
@@ -35,7 +41,7 @@ const Header = async (): Promise<JSX.Element> => {
     { pages },
     { page: supportPage },
     preferencesAttr,
-    filterAttr,
+    dishesFilter,
     searchPlaceholder,
     homeLabel,
   ] = await Promise.all([
@@ -45,10 +51,7 @@ const Header = async (): Promise<JSX.Element> => {
       setMarker: ATTR_SETS.dish,
       attributeMarker: PRODUCT_ATTRS.preferences,
     }),
-    getSingleAttributeByMarkerSet({
-      setMarker: ATTR_SETS.dish,
-      attributeMarker: PRODUCT_ATTRS.filter,
-    }),
+    getContentFilter(CONTENT_FILTERS.dishes),
     t('search_placeholder_text', 'Search'),
     t('home_label', 'Home'),
   ]);
@@ -72,20 +75,11 @@ const Header = async (): Promise<JSX.Element> => {
         }))
       : [];
 
-  const filterOptions: PreferenceOption[] =
-    !filterAttr.isError && filterAttr.attribute && 'listTitles' in filterAttr.attribute
-      ? (filterAttr.attribute.listTitles as IListTitle[]).map(o => {
-          const extendedValue = (
-            o.extended as { type?: string | null; value?: string | null } | null | undefined
-          )?.value;
-          const group = typeof extendedValue === 'string' && extendedValue ? extendedValue : '';
-          return {
-            title: o.title,
-            value: String(o.value),
-            ...(group ? { group } : {}),
-          };
-        })
-      : [];
+  // FilterBottom chips are sourced from the `dishes` content filter (curated grouped tree,
+  // leaves target the product `filter` attribute) rather than the raw `filter` attribute listTitles.
+  const filterOptions: PreferenceOption[] = contentFilterToOptions(
+    dishesFilter.isError ? undefined : dishesFilter.filter
+  );
 
   return (
     <div id="header">

@@ -203,6 +203,10 @@ const FilterBottom = ({
   const apply = (): void => {
     const params = new URLSearchParams(searchParams.toString());
 
+    // Changing filters invalidates the current page offset — drop `page` so the
+    // grid reloads from the first page (see LoadMore/Pagination `?page=` writers).
+    params.delete('page');
+
     const time = WAITING_TIME.find(t => t.label === waitingTime);
     if (time?.max != null) {
       params.set('cooking_time_max', String(time.max));

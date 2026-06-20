@@ -23,6 +23,7 @@ import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import AddressRow from './step-payment/AddressRow';
 import { ADDRESS_MARKERS, type DeliveryMode, PHONE_MARKERS } from './step-payment/constants';
+import { inputTypeForAttribute, selectGenericFields } from './step-payment/deliveryFields';
 import {
   buildDeliveryTimeInterval,
   makeGetSlots,
@@ -39,42 +40,6 @@ import { formatScheduleAt, parseScheduleAt } from './step-payment/scheduleTime';
 import TimeRow from './step-payment/TimeRow';
 import { usePaymentStepAnimations } from './step-payment/usePaymentStepAnimations';
 import { findUserField } from './step-payment/userFields';
-
-/**
- * Markers rendered by bespoke UI (or sourced from the profile) — excluded from the generic
- * pass so the designed checkout layout is preserved: `delivery_address`/`delivery_time`/`comment`/
- * `alt_phone` have dedicated rows, `contact_phone` is auto-filled from the profile, and `addresses`
- * is an internal json bag.
- */
-const HANDLED_MARKERS = new Set([
-  'delivery_address',
-  'delivery_time',
-  'comment',
-  'alt_phone',
-  'contact_phone',
-  'addresses',
-]);
-
-/**
- * inputTypeForAttribute — maps a OneEntry attribute type to an HTML input type for generic fields.
- *
- * @param   {string} [type] - OneEntry attribute `type`.
- * @returns HTML input `type` value.
- */
-const inputTypeForAttribute = (type?: string): string => {
-  switch (type) {
-    case 'email':
-      return 'email';
-    case 'phone':
-      return 'tel';
-    case 'number':
-    case 'integer':
-    case 'float':
-      return 'number';
-    default:
-      return 'text';
-  }
-};
 
 /**
  * StepPayment — checkout step: address + time + payment on a single screen.
@@ -136,14 +101,7 @@ const StepPayment = (): JSX.Element => {
   const getSlots = useMemo(() => makeGetSlots(schedule), [schedule]);
 
   // Extra visible attributes not covered by the bespoke rows — rendered generically (by type/position).
-  const genericFields = useMemo(
-    () =>
-      (form?.attributes ?? [])
-        .filter(a => a.isVisible !== false && !HANDLED_MARKERS.has(a.marker))
-        .slice()
-        .sort((a, b) => a.position - b.position),
-    [form]
-  );
+  const genericFields = useMemo(() => selectGenericFields(form?.attributes), [form]);
 
   // Structured `user_address` (street+house+floor) takes priority over flat markers - otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);

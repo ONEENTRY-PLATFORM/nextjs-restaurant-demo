@@ -47,6 +47,19 @@ export const FORMS = {
   bookingOrder: 'booking_order',
 } as const;
 
+/**
+ * isBookingStorageMarker — whether an order-storage marker belongs to the reservation (booking) flow.
+ *
+ * Routes storages between the delivery orders dashboard and the reservations dashboard without
+ * hard-coding a single marker on each side: anything matching is a booking storage, everything else
+ * (delivery + any future order-type storage) lands in the orders list.
+ *
+ * @param   {string | null} [marker] - Order-storage marker.
+ * @returns `true` when the storage is a booking/reservation storage.
+ */
+export const isBookingStorageMarker = (marker?: string | null): boolean =>
+  Boolean(marker && (marker === FORMS.bookingOrder || marker.toLowerCase().includes('booking')));
+
 /** OneEntry attribute-set markers — first arg of `getSingleAttributeByMarkerSet({ setMarker })`. */
 export const ATTR_SETS = {
   dish: 'dish',

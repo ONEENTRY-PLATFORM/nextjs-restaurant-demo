@@ -11,6 +11,8 @@ import {
 } from '@/app/api';
 import { FORMS } from '@/app/utils/constants';
 
+import { filterAllowedAccounts } from './checkout.utils';
+
 export type DeliveryCheckout = {
   /** Resolved order-storage marker (`createOrder` first arg). */
   storageMarker: string;
@@ -54,11 +56,10 @@ export const useDeliveryCheckout = (): DeliveryCheckout => {
     return new Set(list.map(x => x.identifier));
   }, [storage]);
 
-  const accounts = useMemo<IAccountsEntity[]>(() => {
-    const visible = (accountsData ?? []).filter(a => a.isVisible !== false && a.isUsed !== false);
-    if (allowedIdentifiers.size === 0) return visible;
-    return visible.filter(a => allowedIdentifiers.has(a.identifier));
-  }, [accountsData, allowedIdentifiers]);
+  const accounts = useMemo<IAccountsEntity[]>(
+    () => filterAllowedAccounts(accountsData, allowedIdentifiers),
+    [accountsData, allowedIdentifiers]
+  );
 
   return {
     storageMarker,

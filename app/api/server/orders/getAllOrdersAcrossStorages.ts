@@ -3,27 +3,16 @@ import type { IOrderByMarkerEntity, IOrdersEntity } from 'oneentry/dist/orders/o
 import { cache } from 'react';
 
 import { getApi, getLang } from '@/app/api';
-import { FORMS } from '@/app/utils/constants';
 import { typeError } from '@/components/utils';
+
+// Re-exported from the pure constants module so unit tests can import it without the SDK/api chain.
+export { isBookingStorageMarker } from '@/app/utils/constants';
 
 /** An order tagged with the storage it came from, so cancel/edit target the right storage marker. */
 export type OrderWithStorage = IOrderByMarkerEntity & {
   storageMarker: string;
   storageFormIdentifier: string;
 };
-
-/**
- * isBookingStorageMarker — whether a storage marker belongs to the reservation (booking) flow.
- *
- * Used to route storages between the delivery orders dashboard and the reservations dashboard
- * without hard-coding a single marker on each side: anything matching is a booking storage, everything
- * else (delivery + any future order-type storage) lands in the orders list.
- *
- * @param   {string | null} [marker] - Order-storage marker.
- * @returns `true` when the storage is a booking/reservation storage.
- */
-export const isBookingStorageMarker = (marker?: string | null): boolean =>
-  Boolean(marker && (marker === FORMS.bookingOrder || marker.toLowerCase().includes('booking')));
 
 interface HandleProps {
   offset?: number;

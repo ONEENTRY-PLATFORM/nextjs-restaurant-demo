@@ -9,6 +9,13 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 
+import {
+  cartContentKey,
+  cartToServerCartItems,
+  favoritesKey,
+  favoritesToWishlistItems,
+} from './serverCartSync.utils';
+
 /** Debounce window for coalescing rapid cart/favorites edits into a single server write. */
 const SYNC_DEBOUNCE_MS = 800;
 
@@ -37,16 +44,8 @@ export const useServerCartSync = (): void => {
   const guestClearedRef = useRef(false);
 
   // Content keys — the mirror fires only when the cart / favorites actually change.
-  const cartKey = useMemo(
-    () =>
-      productsData
-        .filter(p => p.quantity > 0)
-        .map(p => `${p.id}:${p.quantity}`)
-        .sort()
-        .join(','),
-    [productsData]
-  );
-  const favKey = useMemo(() => [...favorites].sort((a, b) => a - b).join(','), [favorites]);
+  const cartKey = useMemo(() => cartContentKey(productsData), [productsData]);
+  const favKey = useMemo(() => favoritesKey(favorites), [favorites]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -65,9 +64,7 @@ export const useServerCartSync = (): void => {
   // cart to the user's server cart (not the guest's).
   useEffect(() => {
     if (!ready) return;
-    const items = productsData
-      .filter(p => p.quantity > 0)
-      .map(p => ({ productId: p.id, qty: p.quantity }));
+    const items = cartToServerCartItems(productsData);
     const handle = setTimeout(() => {
       void cart.set(items);
     }, SYNC_DEBOUNCE_MS);
@@ -78,7 +75,7 @@ export const useServerCartSync = (): void => {
   // Mirror favorites → server wishlist (same merge-on-login semantics via the `isAuth` dependency).
   useEffect(() => {
     if (!ready) return;
-    const items = favorites.map(productId => ({ productId }));
+    const items = favoritesToWishlistItems(favorites);
     const handle = setTimeout(() => {
       void wishlist.set(items);
     }, SYNC_DEBOUNCE_MS);

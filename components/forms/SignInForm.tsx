@@ -14,6 +14,7 @@ import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 
+import { pickAuthMarkers } from './authMarkers';
 import CreateAccountButton from './inputs/CreateAccountButton';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -67,14 +68,7 @@ const SignInForm = ({
 
   // Login/password markers come from the form's `isLogin`/`isPassword` flags, not hard-coded
   // `email`/`password` — a renamed field or a non-email provider keeps working (defaults stay safe).
-  const loginMarker = useMemo(
-    () => formFields?.find(f => f.isLogin)?.marker ?? 'email',
-    [formFields]
-  );
-  const passwordMarker = useMemo(
-    () => formFields?.find(f => f.isPassword)?.marker ?? 'password',
-    [formFields]
-  );
+  const { loginMarker, passwordMarker } = useMemo(() => pickAuthMarkers(formFields), [formFields]);
 
   const onSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -9,26 +9,14 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 
+import { derivePreviewTotals, type ServerOrderTotals } from './checkout.utils';
+
+export type { ServerOrderTotals } from './checkout.utils';
+
 type CartEntry = {
   id: number;
   quantity?: number;
   selected?: boolean;
-};
-
-/** Server-authoritative order totals derived from `Orders.previewOrder`. */
-export type ServerOrderTotals = {
-  /** Sum of item lines (excludes the delivery line). */
-  subtotal: number;
-  /** Delivery line total. */
-  delivery: number;
-  /** Discount = `totalSum − totalSumWithDiscount` (server-side coupons/auto-discounts). */
-  discount: number;
-  /** Amount due after discounts and bonuses (`totalDue`). */
-  total: number;
-  /** Bonuses applied by the server. */
-  bonusApplied: number;
-  /** Order currency reported by the server. */
-  currency?: string;
 };
 
 type UseOrderPreviewApi = {
@@ -89,22 +77,7 @@ export const useOrderPreview = (couponCode?: string): UseOrderPreviewApi => {
       if (isError(res)) {
         setTotals(null);
       } else {
-        const preview = res as IOrderPreviewResponse;
-        const items = Array.isArray(preview.orderPreview) ? preview.orderPreview : [];
-        const subtotal = items
-          .filter(i => i.id !== DELIVERY_PRODUCT_ID)
-          .reduce((sum, i) => sum + (i.price ?? 0) * (i.quantity ?? 1), 0);
-        const delivery = items
-          .filter(i => i.id === DELIVERY_PRODUCT_ID)
-          .reduce((sum, i) => sum + (i.price ?? 0) * (i.quantity ?? 1), 0);
-        setTotals({
-          subtotal,
-          delivery,
-          discount: Math.max(0, preview.totalSum - preview.totalSumWithDiscount),
-          total: preview.totalDue ?? preview.totalSumWithDiscount,
-          bonusApplied: preview.bonusApplied ?? 0,
-          currency: preview.currency,
-        });
+        setTotals(derivePreviewTotals(res as IOrderPreviewResponse, DELIVERY_PRODUCT_ID));
       }
       setIsLoading(false);
     })();

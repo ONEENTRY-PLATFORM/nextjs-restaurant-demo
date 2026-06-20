@@ -14,6 +14,7 @@ import orderReducer, {
   resetCheckout,
   setAppliedCoupon,
   setLastOrderId,
+  setOrderForm,
   setStep,
   setStepError,
 } from '../OrderSlice';
@@ -93,6 +94,23 @@ describe('OrderSlice — addProducts / addPaymentMethod / addOrderCurrency', () 
   it('addOrderCurrency sets the currency', () => {
     const state = orderReducer(initial(), addOrderCurrency('USD'));
     expect(state.currency).toBe('USD');
+  });
+});
+
+describe('OrderSlice — setOrderForm (dynamic storage resolution)', () => {
+  it('defaults the draft to the delivery_order markers', () => {
+    const state = initial();
+    expect(state.order.storageMarker).toBe('delivery_order');
+    expect(state.order.formIdentifier).toBe('delivery_order');
+  });
+
+  it('overrides storage marker + form identifier from the resolved storage', () => {
+    const state = orderReducer(
+      initial(),
+      setOrderForm({ storageMarker: 'my_orders', formIdentifier: 'orderForm' })
+    );
+    expect(state.order.storageMarker).toBe('my_orders');
+    expect(state.order.formIdentifier).toBe('orderForm');
   });
 });
 

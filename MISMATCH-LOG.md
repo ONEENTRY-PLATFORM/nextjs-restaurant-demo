@@ -30,23 +30,6 @@
 
 ---
 
-### A.4. Arbitrary px-значения `[Npx]` (правило 3.1.1 — переводить в шкалу)
-
-**Severity: P2.** Остаток: **64 вхождения в 39 файлах**. Большинство — одноразовые значения, которые по §3.1.1 допускается оставлять `[...]`. Топ остатков:
-
-| Файл | Кол-во |
-|---|---|
-| [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx) | 6 |
-| [components/reviews/ProductReviewsList.tsx](components/reviews/ProductReviewsList.tsx) | 5 |
-| [components/cart/steps/StepResult.tsx](components/cart/steps/StepResult.tsx) | 5 |
-| [app/support/page.tsx](app/support/page.tsx) | 4 |
-| [components/support/SupportPopup.tsx](components/support/SupportPopup.tsx) | 3 |
-| [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) | 3 |
-
-> Действие: следить за §3.1.1 — если какое-то arbitrary-значение начнёт встречаться в 3+ местах (`text-[18px]`, `text-[17px]`, `[8px]`), добавить токен.
-
----
-
 ## Раздел B. Ручная сверка по экранам
 
 ### B.7. Поддержка / Service (`service_support.html`, `service.html` ↔ `app/support`, `app/service`)
@@ -64,23 +47,6 @@
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | B.7.3 | CMS-атрибуты `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` — **существуют в OneEntry, но значения пусты** (см. §C.7.1). Используются хардкоды `'FOOD DELIVERY'`, `'BOOK A TABLE'`, `/shop`, `/reservation` — fallback работает. Действие на стороне админа | [app/service/page.tsx:40-48](app/service/page.tsx#L40-L48) | — |
-
-#### B.7b. SupportPage (`service_support.html`)
-
-- 🌐 Live: <http://localhost:3000/support>
-- 📄 Static:
-  [service_support.html](static-html/service_support.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service_support.html>
-  [m_support.html](static-html/m_support.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/m_support.html>
-
-- 📁 Файлы проекта:
-  [app/support/page.tsx](app/support/page.tsx)
-  [components/forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx)
-
-| # | Что не так | Файл | Severity |
-|---|---|---|---|
-| B.7.5 | Остался `md:text-[32px]` на h1 (одноразовое значение — оставить `[...]` по §3.1.1, либо завести `--text-display` если повторится в 3+ местах). | [app/support/page.tsx:39](app/support/page.tsx#L39) | P3 |
 
 ### B.8. Промо (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
 

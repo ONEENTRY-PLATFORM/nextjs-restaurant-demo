@@ -1,21 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import { firstProductCard, gotoAndReady, isMobile } from './fixtures/helpers';
-
-/**
- * openFirstProduct — navigates from `/shop` to the first available product detail page.
- *
- * @param   {Page}   page - Playwright page.
- * @returns Promise resolving once the product page has loaded (URL matches `/shop/product/<id>`).
- */
-const openFirstProduct = async (page: Page): Promise<void> => {
-  await gotoAndReady(page, '/shop');
-  const link = firstProductCard(page).locator('a[href^="/shop/product/"]').first();
-  await expect(link).toBeVisible({ timeout: 20_000 });
-  await link.click();
-  await page.waitForURL(/\/shop\/product\/\d+/);
-  await expect(page.locator('.shop_section')).toBeVisible();
-};
+import { isMobile, openFirstProduct } from './fixtures/helpers';
 
 test.describe('ProductSingle (product page)', () => {
   test.beforeEach(async ({ context, page }) => {
@@ -39,7 +24,12 @@ test.describe('ProductSingle (product page)', () => {
     const section = page.locator('.shop_section');
     await expect(section).toBeVisible();
 
-    const title = section.locator('p.font-bold.text-xl.tracking-fine.text-paper').first();
+    // ProductSingle renders the title twice (desktop `hidden md:block` + mobile `md:hidden`); the
+    // hidden copy is first in the DOM, so filter to the visible one.
+    const title = section
+      .locator('p.font-bold.text-xl.tracking-fine.text-paper')
+      .filter({ visible: true })
+      .first();
     await expect(title).toBeVisible();
     await expect(title).not.toBeEmpty();
 
@@ -175,10 +165,18 @@ test.describe('ProductSingle (product page)', () => {
     }
     await cta.click();
 
-    const inc = page.getByRole('button', { name: /increase/i }).first();
+    const inc = page.getByRole('button', { name: /increase/i }).filter({ visible: true }).first();
     await expect(inc).toBeVisible({ timeout: 10_000 });
+
+    // Pace the clicks: wait for the visible quantity input to reflect each increment before clicking
+    // again. Firing two rapid clicks races the QuantitySelector's redux→local-state sync and can drop
+    // one (observed on mobile). The CTA already added 1, so the input reads 1 → 2 → 3.
+    const qtyInput = page.locator(`#qty_selector_${productId}`).filter({ visible: true }).first();
+    await expect(qtyInput).toHaveValue('1');
     await inc.click();
+    await expect(qtyInput).toHaveValue('2');
     await inc.click();
+    await expect(qtyInput).toHaveValue('3');
 
     const qty = await page.evaluate(id => {
       const raw = window.localStorage.getItem('persist:cart-slice');

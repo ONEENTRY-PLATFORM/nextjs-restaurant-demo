@@ -11,7 +11,12 @@ import { gotoAndReady, isMobile } from './fixtures/helpers';
  */
 const openFavoritesPopup = async (page: Page): Promise<void> => {
   const desktopTrigger = page.locator('header button[aria-label="Favorites"]').first();
-  const anyTrigger = page.locator('button[aria-label="Favorites"]').first();
+  // The Favorites button is rendered twice (desktop header + mobile bottom menu); the hidden copy
+  // comes first in the DOM, so filter to the visible one before clicking.
+  const anyTrigger = page
+    .locator('button[aria-label="Favorites"]')
+    .filter({ visible: true })
+    .first();
 
   if (!isMobile(page) && (await desktopTrigger.isVisible().catch(() => false))) {
     await desktopTrigger.click();
@@ -103,7 +108,7 @@ test.describe('Favorites flow', () => {
     await gotoAndReady(page, '/shop');
 
     const trigger = isMobile(page)
-      ? page.locator('button[aria-label="Favorites"]').first()
+      ? page.locator('button[aria-label="Favorites"]').filter({ visible: true }).first()
       : page.locator('header button[aria-label="Favorites"]').first();
     await expect(trigger).toBeVisible();
 

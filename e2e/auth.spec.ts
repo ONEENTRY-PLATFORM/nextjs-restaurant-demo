@@ -159,7 +159,19 @@ test.describe('Auth modal', () => {
     const modal = page.locator('#modalBody');
     await expect(modal).toBeVisible();
 
-    const close = page.locator('#modalBody').getByRole('button', { name: /close/i }).first();
+    // Desktop renders the Close control inside #modalBody; on mobile the modal's close lives in the
+    // bottom nav (outside #modalBody), so fall back to the page-level visible Close button.
+    let close = page
+      .locator('#modalBody')
+      .getByRole('button', { name: /close/i })
+      .filter({ visible: true })
+      .first();
+    if ((await close.count()) === 0) {
+      close = page
+        .getByRole('button', { name: /^close$/i })
+        .filter({ visible: true })
+        .first();
+    }
     await expect(close).toBeVisible({ timeout: MODAL_SETTLE_MS });
     await close.click();
 

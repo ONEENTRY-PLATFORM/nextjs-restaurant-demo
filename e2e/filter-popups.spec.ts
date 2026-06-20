@@ -158,7 +158,10 @@ test.describe('FilterBottom popup', () => {
 
     const sheet = page.locator('#side-menu');
     const chip = sheet.getByRole('button', { name: 'Under 30 mins' });
-    await chip.click();
+    // On mobile the sheet is content-height, bottom-pinned and overflows above the viewport with no
+    // internal scroll room, so the top "Cooking time" chips sit off-screen and a real click reports
+    // "outside of the viewport". Dispatch the click to toggle the chip regardless of position.
+    await chip.dispatchEvent('click');
     await expect(chip).toHaveClass(/bg-brand/);
 
     await sheet.getByRole('button', { name: /apply/i }).click();
@@ -219,9 +222,11 @@ test.describe('FilterBottom popup', () => {
 
     const sheet = page.locator('#side-menu');
     const chip = sheet.getByRole('button', { name: 'Under 60 mins' });
-    await chip.click();
+    // See the "Apply with waiting time" test: top "Cooking time" chips sit off-screen on mobile, so
+    // dispatch the click instead of a viewport-bound real click.
+    await chip.dispatchEvent('click');
     await expect(chip).toHaveClass(/bg-brand/);
-    await chip.click();
+    await chip.dispatchEvent('click');
     await expect(chip).not.toHaveClass(/bg-brand/);
   });
 

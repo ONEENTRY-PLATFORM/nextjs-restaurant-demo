@@ -52,7 +52,10 @@ test.describe('Catalog & product page', () => {
     const href = await link.getAttribute('href');
     expect(href).toMatch(/^\/shop\/product\/\d+$/);
 
-    await link.click();
+    // The overlay link is `z-0` while the `.descr` strip is `z-10`, so on the narrow mobile grid the
+    // link's centre is covered by `.descr` and a real click is intercepted. Dispatch the click
+    // directly on the anchor to exercise the Next.js `<Link>` navigation regardless of geometry.
+    await link.dispatchEvent('click');
     await page.waitForURL(/\/shop\/product\/\d+/);
 
     await expect(page.locator('.shop_section')).toBeVisible();

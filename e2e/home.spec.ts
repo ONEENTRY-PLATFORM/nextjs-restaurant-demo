@@ -26,7 +26,12 @@ test.describe('Home page', () => {
 
   test('header contains a logo linking back to home', async ({ page }) => {
     await gotoAndReady(page, '/shop');
-    const logoLink = page.locator('header a[href="/"], #header a[href="/"]').first();
+    // The desktop header logo stays in the DOM (CSS-hidden) on mobile and precedes the visible
+    // mobile logo, so filter to the visible one before asserting/clicking.
+    const logoLink = page
+      .locator('header a[href="/"], #header a[href="/"]')
+      .filter({ visible: true })
+      .first();
     await expect(logoLink).toBeVisible();
     await logoLink.click();
     await page.waitForURL(u => u.pathname === '/' || u.pathname === '');
@@ -111,8 +116,13 @@ test.describe('Home — category "View all" links', () => {
     await viewAll.click();
     await page.waitForURL(new RegExp(href!.replace(/\//g, '\\/')));
 
-    // Category route renders the catalog grid (`.menu_items` / `.menu_item`).
-    const grid = page.locator('.menu_items');
+    // Category route renders the catalog grid (`.menu_items` / `.menu_item`). The skeleton loader
+    // (`ProductsGridLoader`) also emits a `.menu_items` inside an `aria-hidden="true"` section and
+    // can linger on slower engines (webkit), so scope to the real, non-aria-hidden grid to avoid a
+    // strict-mode match on two `.menu_items`.
+    const grid = page
+      .locator('section.products_grid_layout:not([aria-hidden="true"]) .menu_items')
+      .first();
     await expect(grid).toBeVisible({ timeout: 20_000 });
     await expect(grid.locator('.menu_item').first()).toBeVisible();
   });

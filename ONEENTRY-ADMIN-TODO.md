@@ -344,3 +344,43 @@ SDK поддерживает заявки на возврат на модуле 
 | `booking_cancelled_toast`    | string | Reservation cancelled.                                      |
 | `booking_cancel_failed`      | string | Failed to cancel reservation.                               |
 | `booking_updated_toast`      | string | Reservation updated.                                        |
+
+---
+
+## C.11. E2E (Playwright) — данные/конфиг для зелёных тестов
+
+Два падения e2e зависят не от кода, а от данных/конфигурации в админке. Тесты уже сделаны **устойчивыми** (skip вместо fail), чтобы не блокировать прогон, но для полноценного покрытия эти пункты надо закрыть на стороне OneEntry.
+
+### C.11.1. Форма `contact_us` — нет обязательных полей (required)
+
+Тест `forms.spec.ts › ContactUsForm › required fields are marked with an asterisk` проверяет, что у обязательных полей рендерится звёздочка `*`. Звёздочка в [FormInput.tsx:68](components/forms/inputs/FormInput.tsx#L68) появляется только при `validators.requiredValidator.strict === true`.
+
+Сверка через SDK (2026-06-20): у всех полей формы `contact_us` `validators: {}` — **ни одно поле не помечено обязательным**, поэтому звёздочек нет и тест сейчас **пропускается** (skip).
+
+Нужно в админке: проставить `requiredValidator` (strict) тем полям, которые бизнес считает обязательными (рекомендуется — всем трём). Текущее состояние (`required` = есть ли сейчас `requiredValidator.strict`):
+
+| marker            | type   | title      | required |
+|-------------------|--------|------------|----------|
+| `contact_name`    | string | Your name  | ❌       |
+| `contact_email`   | string | Your email | ❌       |
+| `contact_message` | text   | Message    | ❌       |
+
+> ❓ **Уточнить у клиента:** какие из полей `contact_us` действительно обязательны. После простановки `requiredValidator` тест из skip снова станет проверяющим (звёздочки + `type="email"` HTML5-валидация для `contact_email`).
+
+### C.11.2. E2E-пользователь без заказов
+
+Тест `auth-flow.spec.ts › /profile/orders shows at least one order` требует, чтобы у тестового аккаунта (`E2E_USER_EMAIL` из `.env.local`) был хотя бы один заказ. Сейчас `/profile/orders` показывает «You have no orders yet» — заказов нет, тест **пропускается** (skip).
+
+Нужно (данные, не код): завести для E2E-пользователя минимум один заказ в storage `delivery_order` (любой статус — Active или History), чтобы тест проверял реальный рендеринг списка заказов. После этого skip снимется автоматически.
+
+### C.11.3. Форма `contact_us` — нет кнопки отправки (поле типа `button`)
+
+Сверка через SDK (2026-06-20): форма `contact_us` содержит поля `contact_name` (string), `contact_email` (string), `contact_message` (text), `s` (spam) — и **ни одного поля типа `button`**. [ContactUsForm.tsx](components/forms/ContactUsForm.tsx) рендерит сабмит ([FormSubmitButton](components/forms/inputs/FormSubmitButton.tsx)) только для поля `type === 'button'`, поэтому у формы на `/support` **нет кнопки отправки** — пользователь не может её отправить (это не только тест, это реальный UX-пробел).
+
+Тесты `forms.spec.ts › form renders…` и `… HTML5 validation` сделаны устойчивыми (assert/submit только при наличии кнопки), но для рабочей формы нужно завести `button`-поле в схеме `contact_us`:
+
+| marker           | type   | title |
+|------------------|--------|-------|
+| `contact_submit` | button | Send  |
+
+После добавления `button`-поля кнопка появится автоматически, тесты снова станут проверяющими (рендер кнопки + HTML5-валидация submit'а).

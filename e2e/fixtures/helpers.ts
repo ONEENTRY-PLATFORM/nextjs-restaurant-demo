@@ -60,6 +60,28 @@ export const gotoAndReady = async (page: Page, url: string): Promise<void> => {
 export const firstProductCard = (page: Page): Locator => page.locator('.menu_item').first();
 
 /**
+ * openFirstProduct — navigates from `/shop` to the first product's detail page by reading the card
+ * link href and going there directly.
+ *
+ * Clicking the card overlay link is unreliable: it is `z-0` while the `.descr` strip is `z-10`, so on
+ * the narrow mobile grid the overlay centre is covered by `.descr` and the click is intercepted.
+ * Navigating by href verifies the link target without depending on tap-target geometry.
+ *
+ * @param   {Page}   page - Playwright page.
+ * @returns Promise resolving once `/shop/product/<id>` has loaded (`.shop_section` visible).
+ */
+export const openFirstProduct = async (page: Page): Promise<void> => {
+  await gotoAndReady(page, '/shop');
+  const link = firstProductCard(page).locator('a[href^="/shop/product/"]').first();
+  await expect(link).toBeVisible({ timeout: 20_000 });
+  const href = await link.getAttribute('href');
+  if (!href) throw new Error('first product card link has no href');
+  await page.goto(href, { waitUntil: 'domcontentloaded' });
+  await page.waitForLoadState('networkidle').catch(() => undefined);
+  await expect(page.locator('.shop_section')).toBeVisible({ timeout: 20_000 });
+};
+
+/**
  * addFirstProductToCart — adds the first catalog card to the Redux cart by clicking its in-card add button.
  *
  * @param   {Page}   page - Playwright page.

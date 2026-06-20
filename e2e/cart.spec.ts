@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 
 import {
   addFirstProductToCart,
-  firstProductCard,
   gotoAndReady,
   openCartFromHeader,
+  openFirstProduct,
 } from './fixtures/helpers';
 
 test.describe('Cart flow', () => {
@@ -37,10 +37,7 @@ test.describe('Cart flow', () => {
   });
 
   test('adding from the product page -> switches to QuantitySelector', async ({ page }) => {
-    await gotoAndReady(page, '/shop');
-    const link = firstProductCard(page).locator('a[href^="/shop/product/"]').first();
-    await link.click();
-    await page.waitForURL(/\/shop\/product\/\d+/);
+    await openFirstProduct(page);
 
     // Wait for the CTA button: `AddToCartButton` renders either the active CTA (aria-label
     // `Add <title> to cart`) or the disabled one (`<title> is out of stock`). Eager

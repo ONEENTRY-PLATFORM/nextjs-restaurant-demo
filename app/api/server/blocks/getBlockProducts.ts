@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache';
-import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
+import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 

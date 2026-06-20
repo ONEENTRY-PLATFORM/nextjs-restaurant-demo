@@ -1,9 +1,6 @@
 'use client';
 
-import type {
-  ICreateRefundRequest,
-  IRefundRequest,
-} from 'oneentry/dist/orders/ordersInterfaces';
+import type { ICreateRefundRequest, IRefundRequest } from 'oneentry/dist/orders/ordersInterfaces';
 import { useMemo } from 'react';
 
 import { getApi, isError } from '@/app/api';

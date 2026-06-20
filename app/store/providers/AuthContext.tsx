@@ -86,7 +86,6 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
    * Transient failures (429/500/network/"Resource is closed") keep the session
    * intact, so a server hiccup never silently signs the user out.
    */
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- getLang is a stable module-level function
   const checkToken = useCallback(async () => {
     const evaluate = async (allowRetry: boolean): Promise<void> => {
       try {

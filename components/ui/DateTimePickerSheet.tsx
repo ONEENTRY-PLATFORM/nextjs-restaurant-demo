@@ -91,7 +91,7 @@ type DateTimePickerSheetProps = {
   onApply: (date: string, time: string) => void;
   onClose?: () => void;
   minDate?: string;
-  getSlots?: (dateIso: string) => string[];
+  getSlots?: ((dateIso: string) => string[]) | undefined;
   range?: [number, number];
   step?: 1 | 2;
   dateTitle?: string;

@@ -36,6 +36,7 @@ const initialState: InitialStateType = {
   order: {
     formData: [],
     products: [],
+    storageMarker: FORMS.deliveryOrder,
     formIdentifier: FORMS.deliveryOrder,
   },
   step: 'cart',
@@ -99,6 +100,18 @@ const orderReducer = createSlice({
       }
       state.order.paymentAccountIdentifier = action.payload;
     },
+    /**
+     * Set the resolved order-storage marker + form identifier (from `getOrdersStorageByMarker`),
+     * so `createOrder` targets the storage/form configured in the admin panel instead of a
+     * hard-coded `delivery_order` marker.
+     */
+    setOrderForm(state, action: PayloadAction<{ storageMarker: string; formIdentifier: string }>) {
+      if (!state.order) {
+        return;
+      }
+      state.order.storageMarker = action.payload.storageMarker;
+      state.order.formIdentifier = action.payload.formIdentifier;
+    },
     addOrderCurrency(state, action: PayloadAction<string>) {
       if (!state.order) {
         return;
@@ -159,6 +172,7 @@ export const {
   addProducts,
   addPaymentMethods,
   addPaymentMethod,
+  setOrderForm,
   addOrderCurrency,
   setStep,
   goBackStep,

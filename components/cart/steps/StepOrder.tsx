@@ -8,7 +8,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
-import { getProductImageUrl, useApplyCoupon } from '@/app/api';
+import { getProductImageUrl, useApplyCoupon, useOrderPreview } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -62,15 +62,26 @@ const StepOrder = (): JSX.Element => {
     product: IProductsEntity;
   }>;
 
-  const subtotal = items.reduce((sum, { entry, product }) => {
+  const clientSubtotal = items.reduce((sum, { entry, product }) => {
     const price = product.price ?? 0;
     return sum + price * (entry.quantity ?? 1);
   }, 0);
-  const discount = appliedCoupon
+  const clientDiscount = appliedCoupon
     ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
     : 0;
   // "To Entire Order" coupon: `totalSumWithDiscount` already includes delivery - do not add it again, otherwise it gets double-counted.
-  const total = appliedCoupon ? appliedCoupon.totalSumWithDiscount : subtotal + deliveryPrice;
+  const clientTotal = appliedCoupon
+    ? appliedCoupon.totalSumWithDiscount
+    : clientSubtotal + deliveryPrice;
+
+  // Server-authoritative totals (discounts/bonuses/taxes) for authed users; client math is the fallback.
+  const { totals: serverTotals } = useOrderPreview(appliedCoupon?.code);
+  const display = serverTotals ?? {
+    subtotal: clientSubtotal,
+    delivery: deliveryPrice,
+    discount: clientDiscount,
+    total: clientTotal,
+  };
 
   const handleApply = (): void => {
     if (appliedCoupon && appliedCoupon.code === promoCode.trim()) {
@@ -240,21 +251,21 @@ const StepOrder = (): JSX.Element => {
       <div className="step-order-row mt-10 rounded-card border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>{t('subtotal_text', 'Subtotal')}:</p>
-          <p>{UsePrice({ amount: subtotal })}</p>
+          <p>{UsePrice({ amount: display.subtotal })}</p>
         </div>
         <div className="flex gap-1.25 text-brand">
           <p>{t('delivery_text', 'Delivery')}:</p>
-          <p>{UsePrice({ amount: deliveryPrice })}</p>
+          <p>{UsePrice({ amount: display.delivery })}</p>
         </div>
-        {discount > 0 ? (
+        {display.discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
-            <p>{UsePrice({ amount: discount })}</p>
+            <p>{UsePrice({ amount: display.discount })}</p>
           </div>
         ) : null}
         <div className="flex gap-1.25 text-white">
           <p>{t('total_amount_text', 'Total Amount')}:</p>
-          <p>{UsePrice({ amount: total })}</p>
+          <p>{UsePrice({ amount: display.total })}</p>
         </div>
       </div>
 

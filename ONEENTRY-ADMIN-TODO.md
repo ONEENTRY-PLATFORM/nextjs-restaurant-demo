@@ -201,8 +201,10 @@
 - `delivery_address` — [StepPayment.tsx:136](components/cart/steps/StepPayment.tsx#L136), `addData` по нажатию Continue (адрес берётся из address-book юзера, см. C.5).
 - `contact_phone` — [StepPayment.tsx:138](components/cart/steps/StepPayment.tsx#L138), берём `phone` / `phone_reg` / `contact_phone` из `user.formData`.
 - `comment`, `alt_phone` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) (`alt_phone` — только если включён чекбокс «another person»).
-- `delivery_time` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) собирает `[[startISO, endISO]]` через `buildDeliveryTimeInterval` и шлёт `addData({ marker: 'delivery_time', type: 'timeInterval', ... })`. ASAP → start=now, end=now+45 мин; scheduled → start=parsed `DD.MM.YY HH.MM`, end=start+1 ч.
+- `delivery_time` — [StepPayment.tsx](components/cart/steps/StepPayment.tsx) собирает `[[startISO, endISO]]` через `buildDeliveryTimeInterval` ([deliverySlots.ts](components/cart/steps/step-payment/deliverySlots.ts)) и шлёт `addData({ marker: 'delivery_time', type: 'timeInterval', ... })`. **С D.2 (2026-06-20)** scheduled-режим больше не свободный ввод: доступные слоты читаются из `delivery_time.localizeInfos.intervals[].timeIntervals` (преднасчитанный список `[[startISO,endISO],…]`), извлекается time-of-day паттерн + покрытые weekdays и проецируется на ближайшие даты; пикер показывает чипы слотов. ASAP → start=now, end=now+45 мин; scheduled → выбранный слот (start..end из расписания).
 - `addresses` — UI пока не собирает (см. C.5 про адресную книгу юзера).
+
+  > ❓ **Уточнить у клиента (delivery_time schedule):** в `delivery_order` → `delivery_time` преднасчитанные `timeIntervals` покрывают окно 2025-05-01…2026-04-30 (на 2026-06-20 всё в прошлом), с рекуррентностью `inEveryWeek/inEveryMonth: true` и слотами 10:00–14:15 UTC, шаг 15 мин. Код интерпретирует это как «слоты доступны каждый день в эти часы (UTC)» и проецирует вперёд, **игнорируя** блок `external` (per-date `externalTimes`/`inFullDay`-оверрайды). Вопросы: (1) часы 10:00–14:15 заданы в UTC или должны трактоваться как локальное время ресторана? (2) нужны ли `external`-исключения (праздники/особые даты) на витрине, или базового недельного расписания достаточно? (3) стоит ли в админке обновить/продлить окно расписания, чтобы оно не было полностью в прошлом.
 
 **Открытые задачи:**
 

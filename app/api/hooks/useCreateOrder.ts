@@ -96,11 +96,14 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         orderProducts.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
       }
 
-      const created = await getApi().Orders.createOrder(FORMS.deliveryOrder, {
+      // Storage marker + formIdentifier are resolved from `getOrdersStorageByMarker` (StepPayment →
+      // `setOrderForm`); fall back to the `delivery_order` constant only when resolution failed.
+      const storageMarker = order.storageMarker || FORMS.deliveryOrder;
+      const created = await getApi().Orders.createOrder(storageMarker, {
         formData: orderFormData,
         products: orderProducts,
         paymentAccountIdentifier,
-        formIdentifier: order.formIdentifier,
+        formIdentifier: order.formIdentifier || FORMS.deliveryOrder,
         ...(appliedCoupon?.code ? { couponCode: appliedCoupon.code } : {}),
       });
 

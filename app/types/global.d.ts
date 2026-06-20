@@ -190,6 +190,9 @@ declare type TabLayoutProps = {
 };
 
 declare type IAppOrder = {
+  /** Order-storage marker (`Orders.createOrder` first arg) — resolved from `getOrdersStorageByMarker`. */
+  storageMarker?: string;
+  /** Order form marker (`createOrder` body `formIdentifier`) — taken from `storage.formIdentifier`. */
   formIdentifier?: string;
   paymentAccountIdentifier?: string;
   formData: Array<IOrdersFormData & { valid?: boolean }>;

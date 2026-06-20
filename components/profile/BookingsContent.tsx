@@ -9,7 +9,8 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { getAllOrdersByMarker, getApi, isError } from '@/app/api';
+import type { OrderWithStorage } from '@/app/api';
+import { getAllOrdersAcrossStorages, getApi, isBookingStorageMarker, isError } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -154,7 +155,7 @@ const BookingsContent = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const t = useT();
 
-  const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
+  const [orders, setOrders] = useState<OrderWithStorage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Edit: pending -> side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
@@ -162,12 +163,12 @@ const BookingsContent = (): JSX.Element => {
   // to the storage marker — booking_order storage is bound to the form with the same identifier.
   // setOpen(true) is required when invoked from the /profile/bookings route (no drawer is open yet);
   // inside BookingsPopup/ProfilePopup `open` is already true and the call is a no-op.
-  const onEdit = (order: IOrderByMarkerEntity) => {
+  const onEdit = (order: OrderWithStorage) => {
     setPendingReservationEdit({
       orderId: order.id,
       formData: (order.formData as IOrdersFormData[] | undefined) ?? [],
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
-      formIdentifier: order.formIdentifier ?? FORMS.bookingOrder,
+      formIdentifier: order.formIdentifier ?? order.storageFormIdentifier ?? FORMS.bookingOrder,
     });
     setComponent('ReservationPopup');
     setOpen(true);
@@ -178,7 +179,7 @@ const BookingsContent = (): JSX.Element => {
   // not type `statusIdentifier`, but the underlying PUT accepts it (verified against the
   // live project). After success the order's status flips client-side so `isHistoryOrder`
   // routes it into Reservation History without a refetch.
-  const onCancel = async (order: IOrderByMarkerEntity) => {
+  const onCancel = async (order: OrderWithStorage) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
         '{id}',
@@ -192,7 +193,7 @@ const BookingsContent = (): JSX.Element => {
         ? order.products.map(p => ({ productId: p.id, quantity: p.quantity }))
         : [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }];
     const body: IOrderData & { statusIdentifier?: string } = {
-      formIdentifier: order.formIdentifier ?? FORMS.bookingOrder,
+      formIdentifier: order.formIdentifier ?? order.storageFormIdentifier ?? FORMS.bookingOrder,
       paymentAccountIdentifier: order.paymentAccountIdentifier ?? 'cash',
       formData: existingFormData,
       products,
@@ -200,7 +201,7 @@ const BookingsContent = (): JSX.Element => {
     };
     try {
       const res = await getApi().Orders.updateOrderByMarkerAndId(
-        FORMS.bookingOrder,
+        order.storageMarker ?? FORMS.bookingOrder,
         order.id,
         body
       );
@@ -230,10 +231,12 @@ const BookingsContent = (): JSX.Element => {
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    getAllOrdersByMarker({ marker: FORMS.bookingOrder, offset: 0, limit: 50 })
+    // Iterate every order-storage and keep the booking ones — a new booking-type storage in the
+    // admin panel surfaces automatically instead of being missed by a single hard-coded marker.
+    getAllOrdersAcrossStorages({ offset: 0, limit: 50 })
       .then(res => {
         if (cancelled) return;
-        setOrders(res.orders ?? []);
+        setOrders(res.orders.filter(o => isBookingStorageMarker(o.storageMarker)));
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
@@ -244,8 +247,8 @@ const BookingsContent = (): JSX.Element => {
   }, [user]);
 
   const { active, history } = useMemo(() => {
-    const a: IOrderByMarkerEntity[] = [];
-    const h: IOrderByMarkerEntity[] = [];
+    const a: OrderWithStorage[] = [];
+    const h: OrderWithStorage[] = [];
     for (const o of orders) {
       (isHistoryOrder(o) ? h : a).push(o);
     }

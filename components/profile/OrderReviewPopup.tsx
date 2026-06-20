@@ -389,7 +389,9 @@ const OrderReviewPopup = (): JSX.Element => {
     setPrefilling(true);
     (async () => {
       const entries = await Promise.all(
-        productIds.map(async pid => [pid, await fetchUserReview(pid, userId, moduleConfigId)] as const)
+        productIds.map(
+          async pid => [pid, await fetchUserReview(pid, userId, moduleConfigId)] as const
+        )
       );
       if (cancelled) return;
       setExistingReviews(new Map(entries));

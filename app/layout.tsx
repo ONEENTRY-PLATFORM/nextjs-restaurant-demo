@@ -8,6 +8,7 @@ import { DictProvider } from '@/app/store/providers/DictProvider';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
 import StoreProvider from '@/app/store/providers/StoreProvider';
 import PopupRoot from '@/components/layout/PopupRoot';
+import ServerCartSync from '@/components/layout/ServerCartSync';
 
 import HeaderAnimGate from './animations/HeaderAnimGate';
 import RegisterGSAP from './animations/RegisterGSAP';
@@ -84,6 +85,7 @@ export default function RootLayout({
         <StoreProvider>
           <DictProvider value={dictPromise}>
             <AuthProvider>
+              <ServerCartSync />
               <OpenDrawerProvider>
                 <Header />
                 <TransitionProvider>

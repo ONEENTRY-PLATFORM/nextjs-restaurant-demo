@@ -65,16 +65,31 @@ const SignInForm = ({
     [data]
   );
 
+  // Login/password markers come from the form's `isLogin`/`isPassword` flags, not hard-coded
+  // `email`/`password` — a renamed field or a non-email provider keeps working (defaults stay safe).
+  const loginMarker = useMemo(
+    () => formFields?.find(f => f.isLogin)?.marker ?? 'email',
+    [formFields]
+  );
+  const passwordMarker = useMemo(
+    () => formFields?.find(f => f.isPassword)?.marker ?? 'password',
+    [formFields]
+  );
+
   const onSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!fields.email || !fields.password) return;
+    const loginValue = fields[loginMarker]?.value;
+    const passwordValue = fields[passwordMarker]?.value;
+    if (!loginValue || !passwordValue) return;
 
     try {
       setLoading(true);
       const result = await logInUser({
         method: emailProviderMarker,
-        login: fields.email.value,
-        password: fields.password.value,
+        login: loginValue,
+        password: passwordValue,
+        loginMarker,
+        passwordMarker,
       });
 
       if (result?.error) {
@@ -110,7 +125,7 @@ const SignInForm = ({
       >
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
           {formFields?.map((field: IFormAttribute, index: number) => {
-            if (field.marker === 'email' || field.marker === 'password') {
+            if (field.isLogin || field.isPassword) {
               return <FormInput key={index} index={index + 2} {...field} />;
             }
             return null;

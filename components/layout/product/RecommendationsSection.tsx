@@ -47,7 +47,10 @@ const RecommendationsSection = async ({
     return <></>;
   }
 
-  const [title, blurMap] = await Promise.all([t(titleMarker, titleFallback), getProductBlurMap(items)]);
+  const [title, blurMap] = await Promise.all([
+    t(titleMarker, titleFallback),
+    getProductBlurMap(items),
+  ]);
 
   return (
     <section className="flex flex-col max-md:max-w-full pt-15">

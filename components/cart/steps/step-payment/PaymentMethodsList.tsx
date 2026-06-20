@@ -39,7 +39,10 @@ const PaymentMethodsList = ({ accounts, isLoading, identifier, onSelect }: Props
         <p className="text-paper/70">{t('loading_payment_text', 'Loading payment methods…')}</p>
       ) : accounts.length === 0 ? (
         <p className="text-paper/70">
-          {t('no_payment_methods_text', 'No payment methods are configured. Please contact support.')}
+          {t(
+            'no_payment_methods_text',
+            'No payment methods are configured. Please contact support.'
+          )}
         </p>
       ) : (
         accounts.map(account => (

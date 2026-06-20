@@ -1,40 +1,88 @@
 'use client';
 
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useCreateOrder, useGetAccountsQuery, useGetFormByMarkerQuery } from '@/app/api';
+import { useCreateOrder, useDeliveryCheckout } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectDeliveryData, setDeliveryData } from '@/app/store/reducers/CartSlice';
-import { addData, addPaymentMethod, setStep, setStepError } from '@/app/store/reducers/OrderSlice';
-import { FORMS } from '@/app/utils/constants';
+import {
+  addData,
+  addPaymentMethod,
+  setOrderForm,
+  setStep,
+  setStepError,
+} from '@/app/store/reducers/OrderSlice';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
 import AddressRow from './step-payment/AddressRow';
 import { ADDRESS_MARKERS, type DeliveryMode, PHONE_MARKERS } from './step-payment/constants';
+import {
+  buildDeliveryTimeInterval,
+  makeGetSlots,
+  parseDeliverySchedule,
+  type TimeIntervalAttribute,
+} from './step-payment/deliverySlots';
 import PaymentMethodsList from './step-payment/PaymentMethodsList';
 import {
   formatAddressLine,
   parseSavedAddresses,
   pickSelectedAddress,
 } from './step-payment/savedAddress';
-import {
-  buildDeliveryTimeInterval,
-  formatScheduleAt,
-  parseScheduleAt,
-} from './step-payment/scheduleTime';
+import { formatScheduleAt, parseScheduleAt } from './step-payment/scheduleTime';
 import TimeRow from './step-payment/TimeRow';
 import { usePaymentStepAnimations } from './step-payment/usePaymentStepAnimations';
 import { findUserField } from './step-payment/userFields';
 
 /**
+ * Markers rendered by bespoke UI (or sourced from the profile) — excluded from the generic
+ * pass so the designed checkout layout is preserved: `delivery_address`/`delivery_time`/`comment`/
+ * `alt_phone` have dedicated rows, `contact_phone` is auto-filled from the profile, and `addresses`
+ * is an internal json bag.
+ */
+const HANDLED_MARKERS = new Set([
+  'delivery_address',
+  'delivery_time',
+  'comment',
+  'alt_phone',
+  'contact_phone',
+  'addresses',
+]);
+
+/**
+ * inputTypeForAttribute — maps a OneEntry attribute type to an HTML input type for generic fields.
+ *
+ * @param   {string} [type] - OneEntry attribute `type`.
+ * @returns HTML input `type` value.
+ */
+const inputTypeForAttribute = (type?: string): string => {
+  switch (type) {
+    case 'email':
+      return 'email';
+    case 'phone':
+      return 'tel';
+    case 'number':
+    case 'integer':
+    case 'float':
+      return 'number';
+    default:
+      return 'text';
+  }
+};
+
+/**
  * StepPayment — checkout step: address + time + payment on a single screen.
+ *
+ * The order storage / form / payment methods are resolved dynamically via `useDeliveryCheckout`
+ * (no hard-coded `delivery_order` marker): field placeholders/labels and the time slots come from
+ * the form schema, each designed row is gated on its form attribute being present, and any extra
+ * visible attribute is rendered as a generic input so newly-added admin fields appear automatically.
  *
  * @returns JSX of the payment step body.
  */
@@ -46,12 +94,56 @@ const StepPayment = (): JSX.Element => {
   const { setOpen, setComponent, setAction } = useContext(OpenDrawerContext);
   const delivery = useAppSelector(selectDeliveryData);
 
-  // Form-field placeholders come from `additionalFields.placeholder.value`, not static_content.
-  const { data: deliveryForm } = useGetFormByMarkerQuery({ marker: FORMS.deliveryOrder });
+  const {
+    storageMarker,
+    formIdentifier,
+    form,
+    accounts,
+    isLoading: isCheckoutLoading,
+  } = useDeliveryCheckout();
+
+  // Persist the resolved storage/form markers so `useCreateOrder` targets the admin-configured
+  // storage instead of the `delivery_order` constant.
+  useEffect(() => {
+    dispatch(setOrderForm({ storageMarker, formIdentifier }));
+  }, [dispatch, storageMarker, formIdentifier]);
+
+  const attrByMarker = useMemo(() => {
+    const map = new Map<string, IFormAttribute>();
+    (form?.attributes ?? []).forEach(a => map.set(a.marker, a));
+    return map;
+  }, [form]);
+
+  const hasField = (marker: string): boolean => {
+    const attr = attrByMarker.get(marker);
+    return Boolean(attr && attr.isVisible !== false);
+  };
+  // Field-level metadata comes from the form schema (placeholder from `additionalFields`, label
+  // from `localizeInfos.title`), not static_content or hard-coded strings.
   const fieldPlaceholder = (marker: string): string => {
-    const attr = deliveryForm?.attributes?.find(a => a.marker === marker);
+    const attr = attrByMarker.get(marker);
     return String(attr?.additionalFields?.placeholder?.value ?? '');
   };
+
+  // Available delivery slots are read from the `delivery_time` attribute's interval schedule.
+  const schedule = useMemo(
+    () =>
+      parseDeliverySchedule(
+        attrByMarker.get('delivery_time') as unknown as TimeIntervalAttribute | undefined
+      ),
+    [attrByMarker]
+  );
+  const getSlots = useMemo(() => makeGetSlots(schedule), [schedule]);
+
+  // Extra visible attributes not covered by the bespoke rows — rendered generically (by type/position).
+  const genericFields = useMemo(
+    () =>
+      (form?.attributes ?? [])
+        .filter(a => a.isVisible !== false && !HANDLED_MARKERS.has(a.marker))
+        .slice()
+        .sort((a, b) => a.position - b.position),
+    [form]
+  );
 
   // Structured `user_address` (street+house+floor) takes priority over flat markers - otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
@@ -110,13 +202,11 @@ const StepPayment = (): JSX.Element => {
     setAddressTouched(true);
   };
 
-  const { data, isLoading: isAccountsLoading } = useGetAccountsQuery({});
-  const accounts: IAccountsEntity[] = (data ?? []).filter(a => a.isVisible !== false);
-
   const [identifier, setIdentifier] = useState('');
   const [comment, setComment] = useState('');
   const [altReceiver, setAltReceiver] = useState(false);
   const [altPhone, setAltPhone] = useState('');
+  const [extra, setExtra] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!identifier && accounts.length > 0) {
@@ -128,25 +218,34 @@ const StepPayment = (): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   usePaymentStepAnimations(containerRef);
 
+  const addressRequired = hasField('delivery_address');
+
   const onNext = async () => {
-    if (!identifier || !address.trim()) return;
+    if (!identifier) return;
+    if (addressRequired && !address.trim()) return;
 
     const deliveryTime = mode === 'asap' ? '40-45 min' : scheduleAt || '';
-    const deliveryInterval = buildDeliveryTimeInterval(mode, scheduleAt);
+    const deliveryInterval = buildDeliveryTimeInterval(mode, scheduleAt, schedule);
     dispatch(setDeliveryData({ ...delivery, address, time: deliveryTime }));
-    dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
-    if (userPhone) {
+    if (hasField('delivery_address')) {
+      dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
+    }
+    if (hasField('contact_phone') && userPhone) {
       dispatch(addData({ marker: 'contact_phone', type: 'string', value: userPhone }));
     }
-    if (deliveryInterval) {
+    if (hasField('delivery_time') && deliveryInterval) {
       dispatch(addData({ marker: 'delivery_time', type: 'timeInterval', value: deliveryInterval }));
     }
-    if (comment.trim()) {
+    if (hasField('comment') && comment.trim()) {
       dispatch(addData({ marker: 'comment', type: 'string', value: comment.trim() }));
     }
-    if (altReceiver && altPhone.trim()) {
+    if (hasField('alt_phone') && altReceiver && altPhone.trim()) {
       dispatch(addData({ marker: 'alt_phone', type: 'string', value: altPhone.trim() }));
     }
+    genericFields.forEach(attr => {
+      const value = extra[attr.marker]?.trim();
+      if (value) dispatch(addData({ marker: attr.marker, type: attr.type, value }));
+    });
 
     dispatch(addPaymentMethod(identifier));
     const result = await onConfirmOrder({ paymentAccountIdentifier: identifier });
@@ -163,68 +262,94 @@ const StepPayment = (): JSX.Element => {
 
   return (
     <div ref={containerRef} className="flex flex-col gap-5">
-      <AddressRow
-        address={address}
-        onAddressChange={onAddressChange}
-        savedAddresses={savedAddresses}
-        onPickSaved={onPickSavedAddress}
-        onAddAddressClick={onAddAddressClick}
-        placeholder={fieldPlaceholder('delivery_address')}
-      />
+      {hasField('delivery_address') ? (
+        <AddressRow
+          address={address}
+          onAddressChange={onAddressChange}
+          savedAddresses={savedAddresses}
+          onPickSaved={onPickSavedAddress}
+          onAddAddressClick={onAddAddressClick}
+          placeholder={fieldPlaceholder('delivery_address')}
+        />
+      ) : null}
 
-      <TimeRow
-        mode={mode}
-        onModeChange={setMode}
-        scheduleAt={scheduleAt}
-        onSchedulePickerOpen={() => {
-          setMode('scheduled');
-          setPickerOpen(true);
-        }}
-        placeholder={fieldPlaceholder('delivery_time')}
-      />
+      {hasField('delivery_time') ? (
+        <TimeRow
+          mode={mode}
+          onModeChange={setMode}
+          scheduleAt={scheduleAt}
+          onSchedulePickerOpen={() => {
+            setMode('scheduled');
+            setPickerOpen(true);
+          }}
+          placeholder={fieldPlaceholder('delivery_time')}
+        />
+      ) : null}
 
       <PaymentMethodsList
         accounts={accounts}
-        isLoading={isAccountsLoading}
+        isLoading={isCheckoutLoading}
         identifier={identifier}
         onSelect={setIdentifier}
       />
 
-      <input
-        type="text"
-        value={comment}
-        onChange={e => setComment(e.currentTarget.value)}
-        placeholder={fieldPlaceholder('comment')}
-        className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
-      />
-
-      <label className="step-payment-row custom-checkbox text-[14px] text-paper">
+      {hasField('comment') ? (
         <input
-          type="checkbox"
-          checked={altReceiver}
-          onChange={e => setAltReceiver(e.currentTarget.checked)}
-        />
-        <span className="checkbox-box mr-2.5">
-          <CheckboxMarkIcon />
-        </span>
-        {t('another_person_text', 'The order will be taken by another person')}
-      </label>
-
-      {altReceiver && (
-        <input
-          type="tel"
-          autoComplete="tel"
-          value={altPhone}
-          onChange={e => setAltPhone(e.currentTarget.value)}
-          placeholder={fieldPlaceholder('alt_phone')}
+          type="text"
+          value={comment}
+          onChange={e => setComment(e.currentTarget.value)}
+          placeholder={fieldPlaceholder('comment')}
           className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
         />
-      )}
+      ) : null}
+
+      {hasField('alt_phone') ? (
+        <>
+          <label className="step-payment-row custom-checkbox text-[14px] text-paper">
+            <input
+              type="checkbox"
+              checked={altReceiver}
+              onChange={e => setAltReceiver(e.currentTarget.checked)}
+            />
+            <span className="checkbox-box mr-2.5">
+              <CheckboxMarkIcon />
+            </span>
+            {t('another_person_text', 'The order will be taken by another person')}
+          </label>
+
+          {altReceiver && (
+            <input
+              type="tel"
+              autoComplete="tel"
+              value={altPhone}
+              onChange={e => setAltPhone(e.currentTarget.value)}
+              placeholder={fieldPlaceholder('alt_phone')}
+              className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
+            />
+          )}
+        </>
+      ) : null}
+
+      {genericFields.map(attr => (
+        <input
+          key={attr.marker}
+          type={inputTypeForAttribute(attr.type)}
+          value={extra[attr.marker] ?? ''}
+          onChange={e => setExtra(prev => ({ ...prev, [attr.marker]: e.currentTarget.value }))}
+          placeholder={fieldPlaceholder(attr.marker) || attr.localizeInfos?.title || attr.marker}
+          className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
+        />
+      ))}
 
       <button
         type="button"
         onClick={onNext}
-        disabled={isLoading || !identifier || !address.trim() || (altReceiver && !altPhone.trim())}
+        disabled={
+          isLoading ||
+          !identifier ||
+          (addressRequired && !address.trim()) ||
+          (altReceiver && !altPhone.trim())
+        }
         className="step-payment-row cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
       >
         {isLoading ? t('processing_text', 'Processing...') : t('apply_coupon_button', 'APPLY')}
@@ -235,6 +360,7 @@ const StepPayment = (): JSX.Element => {
           date={parseScheduleAt(scheduleAt).date}
           time={parseScheduleAt(scheduleAt).time}
           minDate={todayIso}
+          getSlots={getSlots}
           onApply={(d, tm) => {
             setScheduleAt(formatScheduleAt(d, tm));
             setMode('scheduled');

@@ -19,6 +19,7 @@ export type ServerWishlistApi = {
   get: () => Promise<IWishlistResponse | null>;
   add: (productId: number) => Promise<IWishlistResponse | null>;
   remove: (productId: number) => Promise<IWishlistResponse | null>;
+  set: (items: Array<{ productId: number }>) => Promise<IWishlistResponse | null>;
 };
 
 /**
@@ -39,7 +40,8 @@ export const useServerCart = (): ServerCartApi => {
       isError(res) ? null : res;
     return {
       get: async () => unwrap(await getApi().Users.getCart()),
-      add: async (productId, qty = 1) => unwrap(await getApi().Users.addCartItem({ productId, qty })),
+      add: async (productId, qty = 1) =>
+        unwrap(await getApi().Users.addCartItem({ productId, qty })),
       remove: async productId => unwrap(await getApi().Users.removeCartItem(productId)),
       set: async items => unwrap(await getApi().Users.setCart({ items })),
     };
@@ -61,6 +63,7 @@ export const useServerWishlist = (): ServerWishlistApi => {
       get: async () => unwrap(await getApi().Users.getWishlist()),
       add: async productId => unwrap(await getApi().Users.addWishlistItem({ productId })),
       remove: async productId => unwrap(await getApi().Users.removeWishlistItem(productId)),
+      set: async items => unwrap(await getApi().Users.setWishlist({ items })),
     };
   }, []);
 };

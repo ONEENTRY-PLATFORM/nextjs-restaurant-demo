@@ -7,12 +7,15 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import type { BlogBanner } from '@/app/api';
-import { getAllOrdersByMarker, useGetProductsByIdsQuery } from '@/app/api';
+import type { BlogBanner, OrderWithStorage } from '@/app/api';
+import {
+  getAllOrdersAcrossStorages,
+  isBookingStorageMarker,
+  useGetProductsByIdsQuery,
+} from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { FORMS } from '@/app/utils/constants';
 import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
 
 import OrderCard from './orders/OrderCard';
@@ -36,7 +39,7 @@ const OrdersList = ({
   const t = useT();
   const { isAuth, isLoading: authLoading } = useContext(AuthContext);
   const { setComponent, setOpen } = useContext(OpenDrawerContext);
-  const [orders, setOrders] = useState<IOrderByMarkerEntity[]>([]);
+  const [orders, setOrders] = useState<OrderWithStorage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
@@ -49,16 +52,13 @@ const OrdersList = ({
     }
     let cancelled = false;
     (async () => {
-      const res = await getAllOrdersByMarker({
-        marker: FORMS.deliveryOrder,
-        offset: 0,
-        limit: 50,
-      });
+      // All order-storages except the booking one — a new order-type storage shows up automatically.
+      const res = await getAllOrdersAcrossStorages({ offset: 0, limit: 50 });
       if (cancelled) return;
       if (res.isError) {
         setError(res.error?.message ?? 'Failed to load orders');
       } else {
-        setOrders(res.orders ?? []);
+        setOrders(res.orders.filter(o => !isBookingStorageMarker(o.storageMarker)));
       }
       setLoading(false);
     })();

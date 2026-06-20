@@ -36,11 +36,16 @@ export { useApplyCoupon } from './hooks/useApplyCoupon';
 export { getProductImageUrl } from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
+export type { DeliveryCheckout } from './hooks/useDeliveryCheckout';
+export { useDeliveryCheckout } from './hooks/useDeliveryCheckout';
+export type { ServerOrderTotals } from './hooks/useOrderPreview';
+export { useOrderPreview } from './hooks/useOrderPreview';
 export type { RefundsApi } from './hooks/useRefunds';
 export { useRefunds } from './hooks/useRefunds';
 export { useSearchProducts } from './hooks/useSearchProducts';
 export type { ServerCartApi, ServerWishlistApi } from './hooks/useServerCart';
 export { useServerCart, useServerWishlist } from './hooks/useServerCart';
+export { useServerCartSync } from './hooks/useServerCartSync';
 export { useSetForm } from './hooks/useSetForm';
 export { trackActivity, useTrackProductView } from './hooks/useTrackActivity';
 export { getAdminsInfo } from './server/admins/getAdminsInfo';
@@ -58,6 +63,11 @@ export { getFormByMarker } from './server/forms/getFormByMarker';
 export type { ProductReview } from './server/forms/getProductReviews';
 export { getProductReviews } from './server/forms/getProductReviews';
 export { getMenuByMarker } from './server/menus/getMenuByMarker';
+export type { OrderWithStorage } from './server/orders/getAllOrdersAcrossStorages';
+export {
+  getAllOrdersAcrossStorages,
+  isBookingStorageMarker,
+} from './server/orders/getAllOrdersAcrossStorages';
 export { getAllOrdersByMarker } from './server/orders/getAllOrdersByMarker';
 export { updateOrderByMarkerAndId } from './server/orders/updateOrderByMarkerAndId';
 export type { BlogBanner } from './server/pages/getBlogBanners';

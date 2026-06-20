@@ -1,38 +1,62 @@
 import type { JSX } from 'react';
 
-import { getBlockProducts } from '@/app/api';
+import { getBlockProducts, getProducts } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { t } from '@/app/dictionaries';
 
 import HomeBlockSection from './HomeBlockSection';
 
 /**
  * HomeBlockServer — async wrapper over {@link HomeBlockSection}: fetches a OneEntry block by marker.
  *
- * @param   {object} props             - Component props.
- * @param   {string} props.marker      - Block marker.
- * @param   {string} [props.className] - Override for the section className.
- * @param   {number} [props.limit]     - Cap on the number of products.
- * @returns JSX of the block, or `null` when the block is empty / errored.
+ * When the block yields no products and `fallbackToCatalog` is set, it backfills with the first
+ * catalog products so the section never disappears (same "never empty" approach as
+ * `getRecommendations`). This matters for the home `recommended` block: it is a
+ * `similar_products_block` whose `similarProducts` payload returns `403` to the anonymous
+ * app-token used during home SSR (see ONEENTRY-ADMIN-TODO C.2.8), so the real products are
+ * unavailable until the Guests permission / block type is fixed in the admin panel — the
+ * fallback keeps the surface populated and swaps to real recommendations automatically once
+ * the block returns them.
+ *
+ * @param   {object}  props                     - Component props.
+ * @param   {string}  props.marker              - Block marker.
+ * @param   {string}  [props.className]         - Override for the section className.
+ * @param   {number}  [props.limit]             - Cap on the number of products.
+ * @param   {boolean} [props.fallbackToCatalog] - Backfill with catalog products when the block is empty.
+ * @returns JSX of the block, or `null` when the block is empty and no fallback is requested.
  */
 const HomeBlockServer = async ({
   marker,
   className,
   limit,
+  fallbackToCatalog = false,
 }: {
   marker: string;
   className?: string;
   limit?: number;
+  fallbackToCatalog?: boolean;
 }): Promise<JSX.Element | null> => {
   const data = await getBlockProducts(marker);
-  if (data.isError || data.products.length === 0) return null;
+  let products = data.isError ? [] : data.products;
+  let title = data.title;
 
-  const products = limit ? data.products.slice(0, limit) : data.products;
-  const blurMap = await getProductBlurMap(products);
+  // Empty can mean an empty block OR a swallowed sub-resource error (e.g. the `recommended`
+  // similar_products_block returns `similarProducts: 403` anonymously). Backfill so the row renders.
+  if (products.length === 0 && fallbackToCatalog) {
+    const fallback = await getProducts({ limit: limit ?? 8, offset: 0 });
+    products = fallback.products ?? [];
+    if (!title) title = await t('recommended_for_you', 'Recommended for you');
+  }
+
+  if (products.length === 0) return null;
+
+  const sliced = limit ? products.slice(0, limit) : products;
+  const blurMap = await getProductBlurMap(sliced);
 
   return (
     <HomeBlockSection
-      title={data.title}
-      products={products}
+      title={title}
+      products={sliced}
       countElementsPerRow={data.countElementsPerRow}
       className={className ?? 'section_layout'}
       blurMap={blurMap}

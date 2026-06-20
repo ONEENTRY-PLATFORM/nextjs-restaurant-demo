@@ -63,9 +63,12 @@ const HomePage = async (): Promise<JSX.Element> => {
           return <HomeCategoriesSection key={key} />;
         }
         // Recommended fades in right after HomePromo (delay 0.5 + 0.5 s fade).
+        // fallbackToCatalog: the `recommended` block is a `similar_products_block` whose products
+        // are unavailable to the anonymous home SSR (similarProducts → 403, see ONEENTRY-ADMIN-TODO
+        // C.2.8); backfill with catalog products so the row never vanishes.
         return (
           <HeaderAnimGate key={key} delay={1.0}>
-            <HomeBlockServer marker={identifier} limit={4} />
+            <HomeBlockServer marker={identifier} limit={4} fallbackToCatalog />
           </HeaderAnimGate>
         );
       })}

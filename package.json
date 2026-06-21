@@ -1,6 +1,6 @@
 {
   "name": "oneentry-next-restaurant",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "engines": {
     "node": ">=20.9.0 <20.19.0 || >=22.0.0 <22.15.0"

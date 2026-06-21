@@ -261,6 +261,21 @@
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
 3. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
 
+### C.6.2.1. Продукт брони без цены → `createOrder` падает «Product's price is not defined»
+
+**Блокирует оформление резервации.** Бронь создаётся с `products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }]` ([ReservationForm.tsx](components/reservation/ReservationForm.tsx), `BOOKING_PRODUCT_ID = 2071`). OneEntry при `Orders.createOrder` валидирует цену каждого продукта и отвечает `"Product's price is not defined"`.
+
+Сверка через SDK (2026-06-21): продукт **id 2071 «Booking»** — `price` (float) = **0**, top-level `price` = **null**, `currency` (string) = **""**. Для сравнения обычный товар (id 3568 «Fruit Plate») — `price` = 6.5, `currency` = `USD`, и заказывается нормально.
+
+Нужно в админке OneEntry — проставить продукту **2071** цену и валюту:
+
+| marker     | type   | title    | value (нужно)        |
+|------------|--------|----------|----------------------|
+| `price`    | float  | Price    | > 0 (напр. депозит)  |
+| `currency` | string | Currency | `USD`                |
+
+> ❓ **Уточнить у клиента:** какова цена брони столика — фиксированный депозит (вернётся/спишется?) или символическая сумма? Бесплатная бронь (price 0) сейчас невозможна: OneEntry не принимает заказ без определённой цены продукта. После простановки цены+валюты у продукта 2071 ошибка уйдёт.
+
 ---
 
 ### C.6.3. Бонусная программа / лояльность (сверка MCP 2026-06-19)

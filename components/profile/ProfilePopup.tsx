@@ -59,12 +59,17 @@ const ProfileNavMenu = ({
   const emailProviderMarker = useEmailAuthProviderMarker();
 
   const profileChildren = useMemo<IMenusPages[]>(() => {
-    const pages = menu?.pages ?? [];
+    const pages = (menu?.pages ?? []) as Array<IMenusPages & { children?: IMenusPages[] }>;
     const profileEntry = pages.find(p => p.pageUrl === PAGES.profile);
     if (!profileEntry) return [];
-    return pages
-      .filter(p => p.parentId === profileEntry.id)
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const sortByPosition = (list: IMenusPages[]): IMenusPages[] =>
+      [...list].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    // The Menus API now returns a nested tree (sub-items in `children`); top-level `menu.pages`
+    // holds only roots. Read `children` first, fall back to the legacy flat `parentId` shape.
+    if (Array.isArray(profileEntry.children) && profileEntry.children.length > 0) {
+      return sortByPosition(profileEntry.children);
+    }
+    return sortByPosition(pages.filter(p => p.parentId === profileEntry.id));
   }, [menu]);
 
   if (profileChildren.length === 0) return null;

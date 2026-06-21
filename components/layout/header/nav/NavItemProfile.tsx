@@ -15,6 +15,9 @@ import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 import LogoutMenuItem from './user-menu/LogoutMenuItem';
 
+/** Menu page node with the nested `children` the Menus API now returns (not in the SDK base type). */
+type MenuPageNode = IMenusPages & { children?: MenuPageNode[] };
+
 /**
  * NavItemProfile — profile icon in the top menu.
  *
@@ -33,13 +36,19 @@ const NavItemProfile = (): JSX.Element => {
   const { data: menu } = useGetMenuByMarkerQuery({ marker: MENUS.userMenu }, { skip: !isAuth });
 
   // Children of the `profile` item in `user_menu` - sub-menu contents.
+  // The Menus API returns a nested tree: sub-items live in `profileEntry.children`, while top-level
+  // `menu.pages` holds only the roots. Read `children` first; fall back to the legacy flat shape
+  // (filter `pages` by `parentId`) so the dropdown survives either API response.
   const profileChildren = useMemo<IMenusPages[]>(() => {
-    const pages = menu?.pages ?? [];
+    const pages = (menu?.pages ?? []) as MenuPageNode[];
     const profileEntry = pages.find(p => p.pageUrl === PAGES.profile);
     if (!profileEntry) return [];
-    return pages
-      .filter(p => p.parentId === profileEntry.id)
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const sortByPosition = (list: IMenusPages[]): IMenusPages[] =>
+      [...list].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    if (Array.isArray(profileEntry.children) && profileEntry.children.length > 0) {
+      return sortByPosition(profileEntry.children);
+    }
+    return sortByPosition(pages.filter(p => p.parentId === profileEntry.id));
   }, [menu]);
 
   const handleGuestClick = () => {

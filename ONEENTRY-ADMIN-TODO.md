@@ -367,11 +367,14 @@ SDK поддерживает заявки на возврат на модуле 
 
 > ❓ **Уточнить у клиента:** какие из полей `contact_us` действительно обязательны. После простановки `requiredValidator` тест из skip снова станет проверяющим (звёздочки + `type="email"` HTML5-валидация для `contact_email`).
 
-### C.11.2. E2E-пользователь без заказов
+### C.11.2. E2E-пользователь без заказов и броней
 
-Тест `auth-flow.spec.ts › /profile/orders shows at least one order` требует, чтобы у тестового аккаунта (`E2E_USER_EMAIL` из `.env.local`) был хотя бы один заказ. Сейчас `/profile/orders` показывает «You have no orders yet» — заказов нет, тест **пропускается** (skip).
+Тесты `auth-flow.spec.ts` требуют, чтобы у тестового аккаунта (`E2E_USER_EMAIL` из `.env.local`) был хотя бы один заказ И одна бронь:
 
-Нужно (данные, не код): завести для E2E-пользователя минимум один заказ в storage `delivery_order` (любой статус — Active или History), чтобы тест проверял реальный рендеринг списка заказов. После этого skip снимется автоматически.
+- `/profile/orders shows at least one order` — сейчас `/profile/orders` показывает «You have no orders yet» → **skip**.
+- `/profile/bookings shows at least one booking` и `booking row interaction…` — сейчас на `/profile/bookings` нет строк брони (`№<номер>`) → **skip** (без этого в serial-блоке падал и скипал остальные).
+
+Нужно (данные, не код): завести для E2E-пользователя минимум один заказ в storage `delivery_order` и одну бронь в storage `booking_order` (любой статус — Active или History). После этого все три теста из skip снова станут проверяющими.
 
 ### C.11.3. Форма `contact_us` — нет кнопки отправки (поле типа `button`)
 

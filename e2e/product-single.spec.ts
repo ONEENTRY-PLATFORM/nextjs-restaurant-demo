@@ -118,15 +118,23 @@ test.describe('ProductSingle (product page)', () => {
     });
     await expect(page.getByRole('button', { name: /increase/i }).first()).toBeVisible();
 
-    // Each redux-persist slice has its own storage key (`persist:<slice-name>`).
-    const cartIds = await page.evaluate(() => {
-      const raw = window.localStorage.getItem('persist:cart-slice');
-      if (!raw) return null;
-      const slice = JSON.parse(raw) as Record<string, string>;
-      return slice.productsData ? JSON.parse(slice.productsData) : null;
-    });
-    expect(Array.isArray(cartIds)).toBeTruthy();
-    expect((cartIds as Array<{ id: number }>).some(p => p.id === productId)).toBeTruthy();
+    // Each redux-persist slice has its own storage key (`persist:<slice-name>`). The write is
+    // throttled, so poll until the cart slice reflects the just-added product.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const raw = window.localStorage.getItem('persist:cart-slice');
+            if (!raw) return [] as number[];
+            const slice = JSON.parse(raw) as Record<string, string>;
+            const productsData = slice.productsData
+              ? (JSON.parse(slice.productsData) as Array<{ id: number }>)
+              : [];
+            return productsData.map(p => p.id);
+          }),
+        { timeout: 10_000 }
+      )
+      .toContain(productId);
   });
 
   test('Heart on the cover adds the product to favorites', async ({ page }) => {
@@ -139,14 +147,20 @@ test.describe('ProductSingle (product page)', () => {
 
     await expect(page.locator('button[aria-label="Remove from favorites"]').first()).toBeVisible();
 
-    const favIds = await page.evaluate(() => {
-      const raw = window.localStorage.getItem('persist:favorites-slice');
-      if (!raw) return null;
-      const slice = JSON.parse(raw) as Record<string, string>;
-      return slice.products ? JSON.parse(slice.products) : null;
-    });
-    expect(Array.isArray(favIds)).toBeTruthy();
-    expect((favIds as number[]).includes(productId)).toBeTruthy();
+    // redux-persist flushes to localStorage on a throttle, so the write can lag the redux update
+    // (the toast / button state already flipped). Poll until the slice reflects the product.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const raw = window.localStorage.getItem('persist:favorites-slice');
+            if (!raw) return [] as number[];
+            const slice = JSON.parse(raw) as Record<string, string>;
+            return (slice.products ? JSON.parse(slice.products) : []) as number[];
+          }),
+        { timeout: 10_000 }
+      )
+      .toContain(productId);
   });
 
   test('Increase in QuantitySelector grows the cart quantity', async ({ page }) => {
@@ -178,17 +192,22 @@ test.describe('ProductSingle (product page)', () => {
     await inc.click();
     await expect(qtyInput).toHaveValue('3');
 
-    const qty = await page.evaluate(id => {
-      const raw = window.localStorage.getItem('persist:cart-slice');
-      if (!raw) return null;
-      const slice = JSON.parse(raw) as Record<string, string>;
-      const productsData = slice.productsData
-        ? (JSON.parse(slice.productsData) as Array<{ id: number; quantity: number }>)
-        : null;
-      const item = productsData?.find(p => p.id === id);
-      return item?.quantity ?? null;
-    }, productId);
-    expect(qty).toBeGreaterThanOrEqual(3);
+    // redux-persist throttles its write — poll the slice until the persisted quantity catches up.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(id => {
+            const raw = window.localStorage.getItem('persist:cart-slice');
+            if (!raw) return 0;
+            const slice = JSON.parse(raw) as Record<string, string>;
+            const productsData = slice.productsData
+              ? (JSON.parse(slice.productsData) as Array<{ id: number; quantity: number }>)
+              : [];
+            return productsData.find(p => p.id === id)?.quantity ?? 0;
+          }, productId),
+        { timeout: 10_000 }
+      )
+      .toBeGreaterThanOrEqual(3);
   });
 
   test('product page shows related blocks (if any)', async ({ page }) => {

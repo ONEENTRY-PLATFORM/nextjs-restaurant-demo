@@ -324,6 +324,17 @@
 
 > ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
+### C.7.5. Inline LQIP-превью изображений — не у всех ассетов (сверка SDK 2026-06-25)
+
+OneEntry для сжатых на сервере изображений отдаёт готовый base64-плейсхолдер прямо в значении атрибута: `images.value[0].previewLink[defaultPreview]` = `[ "data:image/webp;base64,…", "<preview-sized URL>" ]`. Код теперь читает его через `getProductBlurDataURL(attrs)` ([useAttributesData.ts](app/api/hooks/useAttributesData.ts)) и подставляет в `placeholder="blur"` без `sharp`/скачивания ассета ([getProductBlurMap.ts](app/api/lqip/getProductBlurMap.ts), [ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx)).
+
+Где `previewLink` **отсутствует** (фолбэк на генерацию через `lqip-modern`/`sharp` сохранён, всё работает, но медленнее и грузит билд):
+
+- **Товары без inline-превью — 25 из 121** (id: `3523, 3522, 3521, 3520, 3517, 3516, 3514, 3510, 3509, 3508, 3507, 3505, 3502, 3501, 3499, 3497, 3496, 3495, 3484, 3476, 3474, 3473, 3466, 3465, 3463`). У них `images.value[0]` без `previewLink`/`defaultPreview` — изображение, видимо, загружено до включения серверной генерации превью.
+- **Баннеры (страницы `blog/*`, атрибуты `bg_image`/`banner`)** — `previewLink` отсутствует у всех (id `22`, `39`, `40`): значение содержит только `[size, filename, contentType, downloadLink]`.
+
+**Действие для админки:** пере-сохранить/перезалить изображения у перечисленных товаров и у баннеров, чтобы OneEntry сгенерировал `previewLink` (сжатую копию + base64-плейсхолдер). После этого фолбэк на `sharp` для них перестанет срабатывать. Не блокирует релиз — фолбэк закрывает пробел.
+
 ---
 
 ## C.8. Отзывы (`review_form`) — публичное чтение отдаёт 403 анониму (сверка SDK 2026-06-25)
@@ -380,46 +391,3 @@ SDK поддерживает заявки на возврат на модуле 
 | `booking_cancelled_toast`    | string | Reservation cancelled.                                      |
 | `booking_cancel_failed`      | string | Failed to cancel reservation.                               |
 | `booking_updated_toast`      | string | Reservation updated.                                        |
-
----
-
-## C.11. E2E (Playwright) — данные/конфиг для зелёных тестов
-
-Два падения e2e зависят не от кода, а от данных/конфигурации в админке. Тесты уже сделаны **устойчивыми** (skip вместо fail), чтобы не блокировать прогон, но для полноценного покрытия эти пункты надо закрыть на стороне OneEntry.
-
-### C.11.1. Форма `contact_us` — нет обязательных полей (required)
-
-Тест `forms.spec.ts › ContactUsForm › required fields are marked with an asterisk` проверяет, что у обязательных полей рендерится звёздочка `*`. Звёздочка в [FormInput.tsx:68](components/forms/inputs/FormInput.tsx#L68) появляется только при `validators.requiredValidator.strict === true`.
-
-Сверка через SDK (2026-06-20): у всех полей формы `contact_us` `validators: {}` — **ни одно поле не помечено обязательным**, поэтому звёздочек нет и тест сейчас **пропускается** (skip).
-
-Нужно в админке: проставить `requiredValidator` (strict) тем полям, которые бизнес считает обязательными (рекомендуется — всем трём). Текущее состояние (`required` = есть ли сейчас `requiredValidator.strict`):
-
-| marker            | type   | title      | required |
-|-------------------|--------|------------|----------|
-| `contact_name`    | string | Your name  | ❌       |
-| `contact_email`   | string | Your email | ❌       |
-| `contact_message` | text   | Message    | ❌       |
-
-> ❓ **Уточнить у клиента:** какие из полей `contact_us` действительно обязательны. После простановки `requiredValidator` тест из skip снова станет проверяющим (звёздочки + `type="email"` HTML5-валидация для `contact_email`).
-
-### C.11.2. E2E-пользователь без заказов и броней
-
-Тесты `auth-flow.spec.ts` требуют, чтобы у тестового аккаунта (`E2E_USER_EMAIL` из `.env.local`) был хотя бы один заказ И одна бронь:
-
-- `/profile/orders shows at least one order` — сейчас `/profile/orders` показывает «You have no orders yet» → **skip**.
-- `/profile/bookings shows at least one booking` и `booking row interaction…` — сейчас на `/profile/bookings` нет строк брони (`№<номер>`) → **skip** (без этого в serial-блоке падал и скипал остальные).
-
-Нужно (данные, не код): завести для E2E-пользователя минимум один заказ в storage `delivery_order` и одну бронь в storage `booking_order` (любой статус — Active или History). После этого все три теста из skip снова станут проверяющими.
-
-### C.11.3. Форма `contact_us` — нет кнопки отправки (поле типа `button`)
-
-Сверка через SDK (2026-06-20): форма `contact_us` содержит поля `contact_name` (string), `contact_email` (string), `contact_message` (text), `s` (spam) — и **ни одного поля типа `button`**. [ContactUsForm.tsx](components/forms/ContactUsForm.tsx) рендерит сабмит ([FormSubmitButton](components/forms/inputs/FormSubmitButton.tsx)) только для поля `type === 'button'`, поэтому у формы на `/support` **нет кнопки отправки** — пользователь не может её отправить (это не только тест, это реальный UX-пробел).
-
-Тесты `forms.spec.ts › form renders…` и `… HTML5 validation` сделаны устойчивыми (assert/submit только при наличии кнопки), но для рабочей формы нужно завести `button`-поле в схеме `contact_us`:
-
-| marker           | type   | title |
-|------------------|--------|-------|
-| `contact_submit` | button | Send  |
-
-После добавления `button`-поля кнопка появится автоматически, тесты снова станут проверяющими (рендер кнопки + HTML5-валидация submit'а).

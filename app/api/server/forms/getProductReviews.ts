@@ -8,16 +8,13 @@ import type {
 import { getApi, getLang, isError } from '@/app/api';
 
 const FORM_MARKER = 'review_form';
-// `moduleFormConfigs[0].id` of the `review_form` form = 2 (verified via the SDK). When the
-// config is recreated, the first id from `getFormByMarker` always wins over this default.
+// `moduleFormConfigs[0].id` of the `review_form` form = 2 (verified via the SDK).
 const DEFAULT_MODULE_CONFIG_ID = 2;
 const REVIEWS_LIMIT = 50;
 
 /**
  * readField — value of a `formData` entry by marker.
  *
- * `formData` is the polymorphic `FormDataType[]` union, so the marker/value pair
- * is read through a single localised cast rather than a redefined SDK shape.
  * @param   {IFormByMarkerDataEntity} item   - Review record.
  * @param   {string}                  marker - Field marker (e.g. `review_rating`).
  * @returns Raw field value, or `undefined` when the marker is absent.

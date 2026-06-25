@@ -2,20 +2,32 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { getProductImageUrl } from '@/app/api';
+import { getProductBlurDataURL, getProductImageUrl } from '@/app/api';
+import getLqipPreview from '@/app/api/lqip/getLqipPreview';
 import FavoritesButton from '@/components/layout/product/product-single/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';
 
 /**
  * ProductCover — main product image (`images` groupOfImages) with a favourites button overlay.
  *
+ * Prefers OneEntry's inline LQIP (`getProductBlurDataURL`) as the blur placeholder; for images uploaded
+ * before preview generation it falls back to generating one from the full asset via `getLqipPreview`.
+ *
  * @param   {object}            props         - Component props.
  * @param   {IProductsEntity}   props.product - OneEntry product entity.
  * @param   {string}            props.alt     - Image alt attribute.
- * @returns JSX of the product cover image.
+ * @returns Promise resolving to JSX of the product cover image.
  */
-const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string }): JSX.Element => {
+const ProductCover = async ({
+  product,
+  alt,
+}: {
+  product: IProductsEntity;
+  alt: string;
+}): Promise<JSX.Element> => {
   const src = getProductImageUrl(product.attributeValues);
+  const blurDataURL =
+    getProductBlurDataURL(product.attributeValues) || (src ? await getLqipPreview(src) : '');
 
   return (
     <div className="relative w-full">
@@ -27,6 +39,7 @@ const ProductCover = ({ product, alt }: { product: IProductsEntity; alt: string 
           src={src}
           alt={alt}
           className="block h-auto max-h-75 w-full object-cover md:max-h-none lg:h-115"
+          {...(blurDataURL ? { placeholder: 'blur' as const, blurDataURL } : {})}
         />
       ) : (
         <div className="relative aspect-4/3 w-full overflow-hidden">

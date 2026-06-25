@@ -33,7 +33,7 @@ export {
   useLazyGetPaymentSessionByIdQuery,
 } from './api/RTKApi';
 export { useApplyCoupon } from './hooks/useApplyCoupon';
-export { getProductImageUrl } from './hooks/useAttributesData';
+export { getProductBlurDataURL, getProductImageUrl } from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
 export type { DeliveryCheckout } from './hooks/useDeliveryCheckout';

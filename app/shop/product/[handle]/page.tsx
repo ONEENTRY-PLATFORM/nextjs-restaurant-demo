@@ -8,6 +8,9 @@ import { PRODUCT_STATUSES } from '@/app/utils/constants';
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 
+export const dynamic = 'force-static';
+export const revalidate = 300;
+
 /**
  * ProductPageLayout — product page layout (Product JSON-LD + `<ProductSingle />`).
  *

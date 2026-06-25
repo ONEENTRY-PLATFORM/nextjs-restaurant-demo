@@ -13,6 +13,7 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 import { getImageUrl } from '../api/hooks/useAttributesData';
 import { getDictionary } from '../dictionaries';
 import { generatePageMetadata } from '../utils/generatePageMetadata';
+import { shopCrawlMeta, type ShopSearchParams } from '../utils/shopCrawlMeta';
 
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
@@ -86,8 +87,12 @@ export default ShopPageLayout;
  * @param   {MetadataParams['params']}        props.params - Async route params (handle, locale).
  * @returns Promise resolving to the page metadata.
  */
-export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: MetadataParams & { searchParams?: Promise<ShopSearchParams> }): Promise<Metadata> {
   const { handle, lang } = await params;
+  const sp = await searchParams;
   const { isError, page } = await getPageByUrl(PAGES.services);
 
   if (isError || !page) {
@@ -96,14 +101,17 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
 
   const { localizeInfos, isVisible, attributeValues } = page;
 
-  return generatePageMetadata({
-    handle: handle,
-    title: localizeInfos.title,
-    description: (localizeInfos as { plainContent?: string }).plainContent ?? '',
-    isVisible: isVisible,
-    imageUrl: getImageUrl('opengraph_image', attributeValues),
-    imageAlt: localizeInfos.title,
-    lang: lang,
-    baseUrl: '',
-  });
+  return {
+    ...generatePageMetadata({
+      handle: handle,
+      title: localizeInfos.title,
+      description: (localizeInfos as { plainContent?: string }).plainContent ?? '',
+      isVisible: isVisible,
+      imageUrl: getImageUrl('opengraph_image', attributeValues),
+      imageAlt: localizeInfos.title,
+      lang: lang,
+      baseUrl: '',
+    }),
+    ...shopCrawlMeta({ searchParams: sp, canonicalPath: '/shop', isVisible }),
+  };
 }

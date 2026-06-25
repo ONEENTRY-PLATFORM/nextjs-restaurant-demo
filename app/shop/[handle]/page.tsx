@@ -7,6 +7,7 @@ import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { shopCrawlMeta, type ShopSearchParams } from '@/app/utils/shopCrawlMeta';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -58,8 +59,12 @@ export default ShopCatalogPage;
  * @param   {MetadataParams['params']}        props.params - Async route params with the page handle.
  * @returns Promise resolving to the page metadata.
  */
-export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: MetadataParams & { searchParams?: Promise<ShopSearchParams> }): Promise<Metadata> {
   const { handle } = await params;
+  const sp = await searchParams;
   const { isError, page } = await getPageByUrl(handle);
 
   if (isError || !page) {
@@ -111,5 +116,6 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
           ],
         }
       : null,
+    ...shopCrawlMeta({ searchParams: sp, canonicalPath: `/shop/${handle}`, isVisible }),
   };
 }

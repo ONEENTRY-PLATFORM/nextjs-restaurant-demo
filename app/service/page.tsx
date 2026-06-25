@@ -6,7 +6,8 @@ import type { JSX } from 'react';
 import { getImageUrl, getPageByUrl } from '@/app/api';
 import { PAGES } from '@/app/utils/constants';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 

@@ -6,16 +6,6 @@ import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import { getLang, hasActiveSession, reDefine, useLazyGetMeQuery } from '@/app/api';
-import type { IProducts } from '@/app/types/global';
-
-import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  addProductToCart,
-  selectCartData,
-  selectCartVersion,
-  setCartVersion,
-} from '../reducers/CartSlice';
-import { selectFavoritesItems } from '../reducers/FavoritesSlice';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -44,18 +34,11 @@ export const AuthContext = createContext<{
  * @returns JSX provider wrapping children with the auth context value.
  */
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  const dispatch = useAppDispatch();
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<IUserEntity | undefined>();
   const [refetch, setRefetch] = useState<boolean>(false);
   const [refetchUser, setRefetchUser] = useState<boolean>(false);
-
-  const cartVersion = useAppSelector(selectCartVersion) as number;
-  const productsInCart = useAppSelector(selectCartData);
-  const favoritesIds = useAppSelector((state: { favoritesReducer: { products: number[] } }) =>
-    selectFavoritesItems(state)
-  );
 
   // 60s instead of 3s: getMe is just a keepalive / cross-tab session probe; 3s
   // polling burned ~20 requests/min per logged-in tab for no UX benefit.
@@ -117,38 +100,6 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     };
     await evaluate(true);
   }, [trigger]);
-
-  const updateUserData = async (): Promise<void> => {
-    if (!user) {
-      return;
-    }
-  };
-
-  useEffect(() => {
-    if (!isAuth || !user) {
-      return;
-    }
-    updateUserData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuth, user, productsInCart, favoritesIds]);
-
-  useEffect(() => {
-    if (!user?.state.cart || cartVersion > 0) {
-      return;
-    }
-
-    (user.state.cart as IProducts[] | undefined)?.forEach(product => {
-      const productInCart = productsInCart?.find((p: { id: number }) => p.id === product.id);
-      if (!productInCart) {
-        // The reducer expects `{ id, selected, quantity }`; without quantity here
-        // the QuantitySelector in the cart is hidden and totals stay at $0.
-        dispatch(addProductToCart({ id: product.id, selected: true, quantity: 1 }));
-      }
-    });
-
-    dispatch(setCartVersion(1));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuth, user, dispatch, productsInCart]);
 
   useEffect(() => {
     // Synchronous setState in the effect body — mark "loading" before the

@@ -179,7 +179,10 @@ test.describe('ProductSingle (product page)', () => {
     }
     await cta.click();
 
-    const inc = page.getByRole('button', { name: /increase/i }).filter({ visible: true }).first();
+    const inc = page
+      .getByRole('button', { name: /increase/i })
+      .filter({ visible: true })
+      .first();
     await expect(inc).toBeVisible({ timeout: 10_000 });
 
     // Pace the clicks: wait for the visible quantity input to reflect each increment before clicking

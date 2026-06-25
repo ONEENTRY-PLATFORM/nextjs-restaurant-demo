@@ -56,7 +56,14 @@ describe('selectGenericFields', () => {
 
   it('returns [] for undefined input and keeps every bespoke marker handled', () => {
     expect(selectGenericFields(undefined)).toEqual([]);
-    for (const m of ['delivery_address', 'delivery_time', 'comment', 'alt_phone', 'contact_phone', 'addresses']) {
+    for (const m of [
+      'delivery_address',
+      'delivery_time',
+      'comment',
+      'alt_phone',
+      'contact_phone',
+      'addresses',
+    ]) {
       expect(HANDLED_MARKERS.has(m)).toBe(true);
     }
   });

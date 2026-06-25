@@ -8,7 +8,8 @@ import { getPageByUrl } from '@/app/api';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 type Photo = { downloadLink?: string };
 type ComfortItem = {

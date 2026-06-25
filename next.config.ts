@@ -63,10 +63,14 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,
-    deviceSizes: [320, 640, 768, 1024, 1280, 1536, 1920, 2560],
+    // OneEntry CDN URLs (/cloud-static/**) are immutable per file — the optimized
+    // variant never needs to change, so cache it for a year. The previous 60s TTL made
+    // the edge re-fetch from compute every minute, re-encoding and re-streaming each
+    // dish photo back to the CDN (Fast Origin Transfer outgoing) on a loop.
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 768, 1024, 1280, 1920, 2560],
     imageSizes: [16, 32, 64, 96, 128, 256],
-    qualities: [50, 75],
+    qualities: [75],
     unoptimized: false,
     // OneEntry CDN resolves via NAT64 (64:ff9b::/96) — the image optimizer treats
     // this as a private IP and refuses to fetch. The host is public, opt-in is safe.

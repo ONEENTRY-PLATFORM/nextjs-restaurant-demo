@@ -31,6 +31,9 @@ describe('pickAuthMarkers', () => {
       loginMarker: 'email',
       passwordMarker: 'password',
     });
-    expect(pickAuthMarkers(undefined)).toEqual({ loginMarker: 'email', passwordMarker: 'password' });
+    expect(pickAuthMarkers(undefined)).toEqual({
+      loginMarker: 'email',
+      passwordMarker: 'password',
+    });
   });
 });

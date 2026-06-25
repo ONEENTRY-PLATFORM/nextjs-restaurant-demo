@@ -8,7 +8,8 @@ import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import { PAGES } from '@/app/utils/constants';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 type RestaurantPhoto = { downloadLink?: string };
 type ScheduleInterval = { from?: string; to?: string };

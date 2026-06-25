@@ -12,7 +12,8 @@ type DescriptionValue = Array<{
   mdValue?: string;
 }>;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 const BLOG_HANDLE = 'blog';
 

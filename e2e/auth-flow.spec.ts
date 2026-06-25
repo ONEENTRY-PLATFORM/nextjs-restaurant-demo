@@ -44,7 +44,9 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     ).toBeVisible({ timeout: 15_000 });
   });
 
-  test('after login the profile menu reveals user sub-items on hover (desktop)', async ({ page }) => {
+  test('after login the profile menu reveals user sub-items on hover (desktop)', async ({
+    page,
+  }) => {
     // The hover dropdown is a desktop affordance; on mobile the profile menu is the ProfilePopup.
     test.skip(isMobile(page), 'profile hover dropdown is desktop-only');
     await gotoAndReady(page, '/');
@@ -96,7 +98,10 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     const sections = page.getByText(/active orders|orders history/i);
     await expect(empty.or(sections.first())).toBeVisible({ timeout: 15_000 });
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, 'E2E user has no orders in OneEntry — seed an order (see ONEENTRY-ADMIN-TODO)');
+      test.skip(
+        true,
+        'E2E user has no orders in OneEntry — seed an order (see ONEENTRY-ADMIN-TODO)'
+      );
     }
 
     await expect(sections.first()).toBeVisible({ timeout: 15_000 });
@@ -120,7 +125,10 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
       .then(() => true)
       .catch(() => false);
     if (!hasBooking) {
-      test.skip(true, 'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)');
+      test.skip(
+        true,
+        'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)'
+      );
     }
 
     await expect(bookingRow).toBeVisible();
@@ -162,7 +170,10 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
       .then(() => true)
       .catch(() => false);
     if (!hasBooking) {
-      test.skip(true, 'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)');
+      test.skip(
+        true,
+        'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)'
+      );
     }
 
     // Booking rows expose Edit / Cancel buttons for active bookings — verify they exist and are

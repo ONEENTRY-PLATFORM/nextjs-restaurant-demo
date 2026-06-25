@@ -7,7 +7,8 @@ import { getDictionary } from '@/app/dictionaries';
 import { FORMS, PAGES } from '@/app/utils/constants';
 import ContactUsForm from '@/components/forms/ContactUsForm';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 /**
  * SupportPage — support page (CMS title/description/contacts + Contact-Us form).

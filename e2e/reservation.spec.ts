@@ -105,9 +105,9 @@ test.describe('Reservation (booking) form', () => {
       .click();
 
     await expect(page.getByRole('button', { name: /time slot/i }).first()).toBeVisible();
-    await expect(
-      page.locator('#modalBody').first().locator('.text-red-500').first()
-    ).toBeVisible({ timeout: FORM_SETTLE_MS });
+    await expect(page.locator('#modalBody').first().locator('.text-red-500').first()).toBeVisible({
+      timeout: FORM_SETTLE_MS,
+    });
   });
 
   test('filled form (guest) advances to the auth step', async ({ page }) => {
@@ -170,10 +170,7 @@ test.describe('Reservation (booking) form', () => {
       .click();
 
     // Authenticated → straight to the payment step. A method auto-selects; confirm with Apply.
-    const applyBtn = page
-      .locator('#modalBody')
-      .first()
-      .getByRole('button', { name: /apply/i });
+    const applyBtn = page.locator('#modalBody').first().getByRole('button', { name: /apply/i });
     await expect(applyBtn).toBeVisible({ timeout: FORM_SETTLE_MS });
     await applyBtn.click();
 

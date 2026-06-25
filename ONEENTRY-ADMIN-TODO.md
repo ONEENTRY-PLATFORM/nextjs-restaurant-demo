@@ -326,6 +326,27 @@
 
 ---
 
+## C.8. Отзывы (`review_form`) — публичное чтение отдаёт 403 анониму (сверка SDK 2026-06-25)
+
+Симптом: на карточках товара блок «Reviews» всегда пустой («No reviews yet»), хотя в CMS отзывы есть. Диагностика через SDK (анонимный app-token = как на SSR карточки товара):
+
+- `FormData.getFormsDataByMarker('review_form', 2, …)` **анонимно** → `{ statusCode: 403, message: "Permission data not found. Provide the permission for requested url" }`.
+- Под авторизацией (любой user-token) тот же запрос отдаёт `total: 363`, статусы `approved` — данные на месте и корректны.
+- Конфиг формы `review_form` → `moduleFormConfigs[0]`: **`isGlobal: false`, `isAnonymous: false`, `viewOnlyUserData: false`**.
+
+Причина (подтверждает гипотезу «нет прав»): серверный фетчер сайта [getProductReviews](app/api/server/forms/getProductReviews.ts) и его обёртка [ProductReviewsListServer.tsx](components/reviews/ProductReviewsListServer.tsx) рендерятся на SSR **анонимно** (app-token, без user-сессии). Роль гостя (Guests) не имеет права читать данные формы `review_form` → 403 → graceful-фолбэк в пустой массив → блок пустует. Тот же класс проблемы, что C.2.8.1. (`isGlobal: false` в ответе SDK — лишь отражение этого: отдельного UI-тумблера `isGlobal` у форм нет, доступ регулируется секцией разрешений.)
+
+Действия на стороне админа OneEntry — форма `review_form`, **секция разрешений (permissions)**:
+
+- Выдать роли **Guests / гость** право **`read`** на данные формы `review_form` (чтобы анонимный SSR-запрос мог прочитать чужие approved-отзывы). Это главное и единственное обязательное действие.
+- Право на **запись (`create`)** гостю **не** выдавать: публикация отзыва идёт из-под авторизации (демо-аккаунты / реальные юзеры) — так и оставить.
+
+После выдачи Guests-read перепроверить через SDK: анонимный `getFormsDataByMarker('review_form', 2, { entityIdentifier: <id>, status: ['approved'] })` должен вернуть `items` вместо 403. Тогда 363 уже засеянных отзыва сразу появятся на карточках. Сид-скрипт: [scripts/seed-reviews.mjs](scripts/seed-reviews.mjs) (идемпотентный, 6 демо-аккаунтов, ~3 отзыва на товар). NB: по аналогии с C.2.7 для части ресурсов право Guests индексируется с лагом / не срабатывает — если после выдачи всё ещё 403, перепроверить позже и убедиться, что право выдано именно на ресурс form-data этой формы.
+
+> ❓ **Уточнить у клиента:** нужна ли пре-модерация отзывов? Сейчас сид и UI пишут сразу `status: 'approved'` (виден без проверки). Если нужна модерация — писать `status: 'new'` и публиковать вручную/правилом в админке.
+
+---
+
 ## C.10. Профиль — Reservations history (Figma 78:1293)
 
 **Открытое для клиента:**

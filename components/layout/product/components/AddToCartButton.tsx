@@ -46,8 +46,6 @@ const AddToCartButton = ({
 }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  // useSyncExternalStore (not useEffect+setState) - to avoid the cascading-render warning
-  // when hydrating the persisted cart: SSR sees "add", the client switches after mount.
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -60,7 +58,6 @@ const AddToCartButton = ({
     (state: { favoritesReducer: { products: number[] } }) => selectFavoritesItems(state)
   );
   const { user } = useContext(AuthContext);
-  // `null` = "no status assigned" = available; only block on an explicit out_of_stock.
   const notInStock = useMemo(
     () => statusIdentifier === PRODUCT_STATUSES.outOfStock,
     [statusIdentifier]

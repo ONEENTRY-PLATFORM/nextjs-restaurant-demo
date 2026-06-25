@@ -12,64 +12,33 @@
 
 ---
 
-## C.2.7. Права на `ProductStatuses` + статус-маркеры (сверка MCP 2026-06-19)
+## C.2.7. Статус-маркеры товаров/заказов — снять хардкод
 
-Чтобы код мог **динамически** читать и валидировать статусы (как требует rule `product-statuses` последней MCP), а не держать их хардкодом, нужно открыть права и подтвердить маркеры.
+- Временный фолбэк в коде: статус-маркеры вынесены в единый источник `PRODUCT_STATUSES` / `ORDER_STATUSES` / `ORDER_HISTORY_STATUSES` в [app/utils/constants.ts](app/utils/constants.ts). Значения: продукт — `out_of_stock`; заказы — `delivered`, `canceled`, `cancelled`, `rejected`, `booking_cancelled`.
 
-- На 2026-06-19 анонимный (app-token) вызов `ProductStatuses.getProductStatuses()` отвечает **403 `Permission data not found. Provide the permission for requested url`**, а `Orders.getAllOrdersStorage()` — **401 Unauthorized** (требует юзер-токен). Поэтому статусы товаров/заказов сейчас нельзя ни прочитать, ни сверить без авторизации.
-- Временный фолбэк в коде: статус-маркеры вынесены в единый источник `PRODUCT_STATUSES` / `ORDER_STATUSES` / `ORDER_HISTORY_STATUSES` в [app/utils/constants.ts](app/utils/constants.ts) (заменили разрозненные строковые литералы по проекту). Значения: продукт — `out_of_stock`; заказы — `delivered`, `canceled`, `cancelled`, `rejected`, `booking_cancelled`.
+Осталось:
+
+1. **Код (разблокировано):** право Guests на `ProductStatuses` выдано — анонимный `getProductStatuses()` отдаёт **200** (сверено 2026-06-25: 2 статуса, `in_stock` id=1 default, `out_of_stock` id=2). Можно заменить хардкод продуктовых статусов на динамический фетч `getProductStatuses()` (кэшированный server fetcher). Это уже не задача админки — дев-доработка.
+2. Сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
+3. (минорно, не блокирует) `Events.getAllEvents` анонимно отдаёт **401** (сверено 2026-06-25; было 403) — открыть группе **Guests** право на `events/all`, чтобы список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
+
+### C.2.8.2. `POST /api/content/user-activity/track` отдаёт 403 анониму (сверка SDK 2026-06-25)
+
+Симптом: в консоли браузера на загрузке (страница товара — событие `product_view`) красная ошибка `POST https://oe-restaurants.oneentry.cloud/api/content/user-activity/track 403 (Forbidden)`. Это те самые события `UserActivity`, что питают рекомендательные блоки из C.2.8 (`recently_viewed` / `trending` / `personal_recommendations` / `cart_complement`).
+
+Диагностика (`.claude/temp/check-user-activity.mjs`, app-token = как на SSR/в браузере у гостя):
+
+- сырой `POST /api/content/user-activity/track` под **app-token** → **403** `{"statusCode":403,"message":"Permission data not found. Provide the permission for requested url"}`.
+- то же с заголовком `x-guest-id` → **403** (та же ошибка). То есть гейт не в guest-id, а в правах группы на URL.
+- Та же семья 403, что прежде была у `ProductStatuses` / similar-products / `review_form` (их клиент уже закрыл, см. C.2.7 / C.2.8 / C.8); из неё открыто только это и `Events` (память `oneentry_anon_apptoken_403_resources`).
 
 Что нужно в админке OneEntry:
 
-1. Открыть группе **Guests** право на чтение `ProductStatuses` (эндпоинт `GET /api/content/product-statuses`), чтобы `getProductStatuses()` отвечал 200.
-   - **Повторная сверка 2026-06-19 (после настройки правила клиентом):** правило **не подействовало на Guests** — анонимный (app-token) `GET /api/content/product-statuses` всё ещё **403**, тогда как под **user-token — 200** (список отдаётся). Значит право выдано залогиненным юзерам / другой группе (или другому ресурсу), а не Guests. Лаг исключён (проверено серией опросов >15 мин). Код читает статусы на SSR под одним app-token (юзера на сервере нет), поэтому нужен именно **Guests** на этот эндпойнт — грант для авторизованных SSR не помогает.
-2. ✅ **Маркеры статусов товаров подтверждены** (под user-token, 2026-06-19): `in_stock` (id=1, `isDefault: true`, «In stock») + `out_of_stock` (id=2, «Out of stock»). Хардкод `out_of_stock` в [app/utils/constants.ts](app/utils/constants.ts) корректен; дефолт — `in_stock`. Остаётся сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
-3. (минорно, не блокирует) Открыть группе **Guests** право на чтение `Events` (эндпоинт `events/all`), чтобы `Events.getAllEvents()` отвечал 200 (сейчас анонимно — 403 `Permission data not found`) и список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
+1. Открыть группе **Guests** право на `POST /api/content/user-activity/track` (эндпоинт `user-activity/track`), чтобы анонимные `product_view` / `search` / `add_to_cart` писались и питали рекомендации. Аналогично выдать право и группе авторизованных пользователей (события залогиненных тоже идут на этот URL).
 
-После открытия прав и сверки через `inspect-api`: заменить хардкод-константы на динамический фетч `getProductStatuses()` (кэшированный server fetcher) и снять пункт.
+**Влияние / код-фолбэк:** на UX **не влияет** — трекинг fire-and-forget, JS-ошибка глотается в [useTrackActivity.ts](app/api/hooks/useTrackActivity.ts) (`.catch(() => {})`). Сама красная строка в консоли — это лог сетевого слоя браузера, из JS его подавить нельзя; уйдёт только после выдачи права. Последствие 403: события активности не копятся → рекомендательные блоки не получают сигналов (закрыто каталог-фолбэками, см. C.2.8). Снять пункт после выдачи права и перепроверки `check-user-activity.mjs` (ожидаем 201/200 вместо 403).
 
-## C.2.8. Рекомендательные блоки (новые BlockType — сверка MCP 2026-06-19)
-
-Последняя версия SDK добавила персональные рекомендации на модуле **Blocks**: `getCartComplement`, `getRecentlyViewed`, `getTrending`, `getPersonalRecommendations` (питаются событиями `UserActivity` — уже отправляются из кода: view/add_to_cart/search/purchase). Код подключён ([getRecommendations.ts](app/api/server/blocks/getRecommendations.ts), секция [RecommendationsSection.tsx](components/layout/product/RecommendationsSection.tsx), на странице товара уже рендерится `recently_viewed`).
-
-Что нужно в админке OneEntry — создать **Blocks новых типов** с такими identifier'ами (маркеры уже прописаны в `BLOCKS`, [app/utils/constants.ts](app/utils/constants.ts)):
-
-| identifier                 | BlockType                          | где используется в коде                          |
-|----------------------------|------------------------------------|--------------------------------------------------|
-| `trending`                 | `trending_block`                   | главная/листинги (kind `trending`)               |
-
-Статус (сверено через SDK 2026-06-19): **все 4 блока созданы ✅** — `cart_complement` (id=14), `recently_viewed` (id=15), `personal_recommendations` (id=17) видны через `getBlockByMarker`; `trending` проверяется своим методом `getTrending` (путь `/api/content/blocks/:marker/trending`) и отвечает `{items:[],total:0}` — валидно (пустой список = трендовых товаров ещё не насчиталось). 404 от generic `getBlockByMarker('trending')` — это норма: trending не отдаётся marker-эндпоинтом `/marker/<marker>`, это вычисляемая витрина с отдельным контроллером.
-
-Право Guests на `Blocks.getBlocks()` (list-all) клиент открыл 2026-06-19 — на момент правки ещё 403 (лаг индексации), перепроверить позже; на работу блоков не влияет.
-
-### C.2.8.1. Блок `recommended` на главной — `similarProducts` отдаёт 403 анониму (сверка SDK 2026-06-20)
-
-Симптом: на главной не выводились товары блока `recommended`. Диагностика через SDK (анонимный app-token = как на SSR главной, страница `force-dynamic`):
-
-- `getBlockByMarker('recommended')` → метаданные ок, но `type: similar_products_block`, `quantity: 8`, **`block.products` отсутствует**, а вложенный `block.similarProducts` приходит как объект ошибки `{ statusCode: 403, message: "Permission data not found. Provide the permission for requested url" }`.
-- Итог: `getBlockProducts` читает `block.products ?? block.similarProducts?.items ?? []` → `[]` → `HomeBlockServer` отдавал `null` (блок исчезал).
-
-Действия на стороне админа:
-
-1. **Право Guests на ресурс similar-products блока `recommended`** — клиент открыл 2026-06-20, **на момент правки ещё 403 (лаг индексации)**, перепроверить позже.
-2. **Тип блока.** `similar_products_block` — контекстно-зависимая витрина («похожие на товар X»), на главной контекст-продукта нет. Даже после снятия 403 такой блок может не вернуть товары без контекста. Если нужны именно рекомендации на главной — рассмотреть смену типа блока `recommended` на статический products-блок с прикреплёнными товарами (тогда `block.products` заполнится) или на рекомендательный тип (`personal_recommendations`, id=17, уже есть).
-
-> ❓ **Перепроверить после лага:** `getBlockByMarker('recommended').similarProducts` — должен вернуть `{ items, total }` вместо 403. Если останется 403 — право выдано не на тот URL ресурса; если вернёт `{items:[]}` — подтверждается, что тип блока неподходящий для контекст-free главной (см. п.2).
-
-Сопутствующее: `getBlocksByPageUrl('home_web')` тоже отдаёт 403 анониму («Permission data not found») — поэтому главная использует хардкод-фолбэк порядка блоков `HOME_BLOCK_ORDER` вместо CMS-порядка. На рендер не влияет (блок `recommended` всё равно в списке), но чтобы порядок/позиции блоков управлялись из CMS — выдать Guests право и на этот ресурс.
-
-**Код-фолбэк (уже сделано 2026-06-20):** `HomeBlockServer` для `recommended` получил `fallbackToCatalog` ([page.tsx](app/page.tsx)) — при пустом/403-блоке секция бэкфилится первыми товарами каталога (анонимный `getProducts` отдаёт 8 товаров, total 123 — проверено), не пустует и автоматически переключится на реальные товары, как только блок их вернёт.
-
-Временный фолбэк в коде (рекомендации на странице товара): пока у блока нет товаров (пусто/403), `getRecommendations` отдаёт первые N товаров каталога — секция не пустует и переключится на реальные рекомендации автоматически. Остаётся только завести dict-маркеры ниже — после этого снять пункт.
-
-Новые dictionary-маркеры для заголовков секций (атрибут-сет `static_content`, см. C.4.1):
-
-| marker                  | type   | title           |
-|-------------------------|--------|-----------------|
-| `recently_viewed_title` | string | Recently viewed |
-| `trending_title`        | string | Trending now    |
-| `recommended_for_you`   | string | Recommended for you |
-| `goes_well_with_title`  | string | Goes well with your order |
+> ⚠️ Побочное: SDK `UserActivity.trackUserActivity` под `isShell: true` возвращает `true` даже на 403 (ошибка не бросается, а возвращается, после чего метод игнорирует её и отдаёт `true`). Полагаться на его результат как на признак успеха нельзя — проверять статус сырым fetch.
 
 ## C.3. Похожие товары (related products)
 
@@ -77,71 +46,9 @@
 
 ---
 
-## C.4. Словарь `static_content` — что осталось
-
-**Тем же механизмом осталось открыть для анонимного app-token** (тот же тип ошибки `Permission data not found`):
-
-- `ProductStatuses` (`GET /api/content/product-statuses`) — всё ещё **403** (см. C.2.7). Нужно для динамического чтения статусов вместо хардкода.
-- `Events.getAllEvents` (`/api/content/events/all`) — теперь **401 Unauthorized** (было 403). Минорно, на подписки товара не влияет (см. C.2.7 #3).
-
 ### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
-
-#### StepPayment — дополнительные фразы
-
-Используется в: [components/cart/steps/StepPayment.tsx](components/cart/steps/StepPayment.tsx).
-
-| marker                    | type   | title                                                         |
-|---------------------------|--------|---------------------------------------------------------------|
-| `loading_payment_text`    | string | Loading payment methods…                                      |
-| `no_payment_methods_text` | string | No payment methods are configured. Please contact support.    |
-| `processing_text`         | string | Processing...                                                 |
-| `apply_coupon_button`     | string | APPLY                                                         |
-| `pay_with_label`          | string | Pay with                                                      |
-| `credit_debit_label`      | string | Credit & Debit Cards                                          |
-| `phone_placeholder`       | string | phone number                                                  |
-
-#### CartWizard — пропущенный шаг «Order»
-
-Используется в: [components/cart/CartWizard.tsx](components/cart/CartWizard.tsx) (STEP_TITLES, шаг перед Payment).
-
-| marker            | type   | title |
-|-------------------|--------|-------|
-| `order_step_text` | string | Order |
-
-#### Cart APPLY — гостевая CTA вместо APPLY
-
-Используется в: [components/layout/cart/index.tsx](components/layout/cart/index.tsx) (нижняя кнопка шага `cart`) и [components/cart/steps/StepOrder.tsx](components/cart/steps/StepOrder.tsx) (нижняя кнопка шага `order`). Для незалогиненных вместо «APPLY» открывается `AuthProviderSelect` и показывается приглашение войти.
-
-| marker               | type   | title                |
-|----------------------|--------|----------------------|
-| `login_to_continue`  | string | Sign in to continue  |
-
-#### ReservationForm — лейбл «Preferences»
-
-Используется в: [components/reservation/ReservationForm.tsx](components/reservation/ReservationForm.tsx) (fallback-лейбл поля гостевых предпочтений).
-
-| marker               | type   | title       |
-|----------------------|--------|-------------|
-| `preferences_label`  | string | Preferences |
-
-#### FilterBottom — префиксы инпутов цены
-
-Используется в: [components/layout/filter/FilterBottom.tsx](components/layout/filter/FilterBottom.tsx) (префикс-лейблы рядом с инпутами min/max цены в фильтре).
-
-| marker             | type   | title |
-|--------------------|--------|-------|
-| `price_from_text`  | string | from  |
-| `price_under_text` | string | Under |
-
-#### ProductDetails — fallback при пустом рейтинге
-
-Используется в: [components/layout/product/product-single/ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx). Рейтинг товара читается из top-level `product.rating.value` (SDK тип `IRating`), а не из `attributeValues.rating` (это рудимент). Если `rating.value` отсутствует — в строке метрик вместо «звезда + число» рендерится текст ниже.
-
-| marker               | type   | title                  |
-|----------------------|--------|------------------------|
-| `rating_not_formed`  | string | Rating not yet formed  |
 
 #### Хедер / навигация / общие (aria-label, кнопки)
 
@@ -174,24 +81,6 @@
 | `return_home_button`          | string | Return home                           |
 | `captcha_loading_text`        | string | Please wait while captcha is loading. |
 | `rating_prefix`               | string | Rating:                               |
-
-Места, где эти маркеры встретились:
-
-- [FilterButton.tsx:27](components/layout/filter/FilterButton.tsx#L27) — `Open filters` (уже учтён выше как `open_filters_button`).
-- [CategoryButton.tsx](components/layout/header/CategoryButton.tsx) — `Open categories` → `open_categories_label`.
-- [CloseSearch.tsx](components/layout/header/search/CloseSearch.tsx) — `Close search results` → `close_search_results_label`.
-- [layout/mobile-menu/components/CloseModal.tsx](components/layout/mobile-menu/components/CloseModal.tsx), [layout/modal/components/CloseModal.tsx](components/layout/modal/components/CloseModal.tsx), [shared/ClosePopupButton.tsx](components/shared/ClosePopupButton.tsx), [bottom-menu/components/CenterCloseButton.tsx](components/layout/bottom-menu/components/CenterCloseButton.tsx) — `Close` / `close menu` → `close_label` / `close_menu_label`.
-- [bottom-menu/components/CenterCartButton.tsx](components/layout/bottom-menu/components/CenterCartButton.tsx), [cart/CartPopup.tsx](components/cart/CartPopup.tsx) — `Open cart` / `Close cart` → `open_cart_label` / `close_cart_label`.
-- [filter/components/header/HistoryBack.tsx](components/layout/filter/components/header/HistoryBack.tsx) — `Go back` → `go_back_label`.
-- [layout/product/components/DecreaseButton.tsx](components/layout/product/components/DecreaseButton.tsx), [IncreaseButton.tsx](components/layout/product/components/IncreaseButton.tsx) — `Decrease quantity` / `Increase quantity`.
-- [layout/cart/components/DeleteButton.tsx](components/layout/cart/components/DeleteButton.tsx) — `Delete item`.
-- [layout/product/product-single/FavoritesButton.tsx](components/layout/product/product-single/FavoritesButton.tsx), [layout/products-grid/components/product-card/HeartCardButton.tsx](components/layout/products-grid/components/product-card/HeartCardButton.tsx) — `Add to favorites` / `Remove from favorites`.
-- [header/nav/NavItemCart.tsx](components/layout/header/nav/NavItemCart.tsx), [NavItemFavorites.tsx](components/layout/header/nav/NavItemFavorites.tsx), [NavItemProfile.tsx](components/layout/header/nav/NavItemProfile.tsx), [bottom-menu/components/NavItemFavorites.tsx](components/layout/bottom-menu/components/NavItemFavorites.tsx) — `Cart` / `Favorites` / `Profile` / `Sign In`.
-- [header/index.tsx](components/layout/header/index.tsx) — `Search` (placeholder), `Home` (link).
-- [home/CategoriesSection.tsx](components/home/CategoriesSection.tsx) — `View all (N)` → `view_all_text` с плейсхолдером `{count}`.
-- [app/not-found.tsx](app/not-found.tsx) — `Return home` → `return_home_button`.
-- [forms/ContactUsForm.tsx](components/forms/ContactUsForm.tsx) — `Please wait while captcha is loading.` → `captcha_loading_text`.
-- [reviews/StarRating.tsx](components/reviews/StarRating.tsx) — `Rating:` → `rating_prefix`. `aria-label` `N stars` (динамический множественный) пока оставить хардкодом — без полноценной i18n с pluralization подмена через словарь даст некрасивые формы.
 
 > **TODO (код):** placeholders для Street/House/Floor в попапе «My Profile» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) сейчас хардкод (`«OneEntry»` / `«40»` / `«27»`). Подтянуть из `additionalFields` соответствующих атрибутов формы `delivery_order` (`delivery_address`, `floor`, `apartment_number`) — это канонический источник placeholder'ов и лейблов для полей форм в OneEntry. Не заводить отдельные dict-маркеры.
 
@@ -226,7 +115,9 @@
 
 **Открытые задачи:**
 
-- **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом. Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
+- **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом.
+
+  🔁 **Повторная проверка 2026-06-25 (после «я подключил Stripe»):** через SDK `Payments.getAccounts()` статус **не изменился** — у `stripe` (id=1) `testMode: true`, `settings.status: "not_connected"` (production), `testSettings.status: "connected"` (`stripeOnboardingComplete: true`, `stripeRedirectUrl: …/setup/s/acct_1TlmVbKILvMsGn2r/…`). Подключён только **test**-онбординг (он и раньше был `connected`), production-блок `settings` так и пуст/`not_connected`. Сервер валидирует именно `settings.status`, поэтому чекаут по-прежнему упадёт. Чтобы заработало — нужно пройти **production** Stripe Connect (live-ключи + KYC) до `settings.status: "connected"`, либо дождаться правки валидации на стороне OneEntry (см. вопрос в support ниже). Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
 
   > ❓ **Уточнить у OneEntry support:** при `testMode: true` сервер `Payments.createSession` должен валидировать `testSettings.status`, а не `settings.status`. Сейчас валидирует production-блок и отвечает `"Your payment account is not connected"`, хотя test-онбординг Stripe Connect завершён (`testSettings.stripeOnboardingComplete: true`, `testSettings.status: "connected"`). Воспроизведение — `Payments.createSession(<orderId>, 'session')` для проекта `oe-restaurants.oneentry.cloud`, account `stripe`. Запросить: либо чтобы на test-mode аккаунтах валидация шла по `testSettings`, либо чтобы сервер возвращал понятную ошибку «account is in testMode, but server requires production-connected account». Параллельно — клиент может временно пройти production Stripe Connect (live-ключи + KYC), это уберёт ошибку, но переведёт оплату на боевые карты.
 
@@ -282,17 +173,21 @@
 
 Последняя версия SDK добавила бонусы на модуле **Discounts**: `getBonusBalance()` → `{ balance }` и `getBonusHistory(...)` → транзакции (обе требуют авторизации). Код подключён: баланс + история показываются в профиле ([BonusSection.tsx](components/profile/BonusSection.tsx)) через RTK-эндпоинты `useGetBonusBalanceQuery` / `useGetBonusHistoryQuery`. Пока программа не настроена, вызовы отдают 403/пусто — секция деградирует до `balance: 0` и «No bonus transactions yet» (graceful, не баг).
 
+🔁 **Повторная проверка 2026-06-26
+
+**программа заведена и баланс работает** — профиль покажет «Bonus balance: 50». Но эндпоинт истории (`GET …/bonus-balance/history`, метод `Discounts.getBonusHistory`) отдаёт 403 из той же семьи permission-гейтов, что и `user-activity/track` (C.2.8.2). `BonusSection` это переживает: баланс показывается, при раскрытии истории список деградирует до «No bonus transactions yet» — код-фикс не нужен.
+
 Что нужно в админке OneEntry:
 
-1. Настроить **бонусную программу** (Discounts → тип `BONUS`): правила начисления (например, % с заказа), лимиты (`maxBonusPaymentPercent`, `minBonusAmount`), срок жизни бонусов.
-2. (Опционально, отдельной задачей) списание бонусов на чекауте — поля `bonusAmount` в `previewOrder`/`createOrder` уже поддержаны SDK; в коде пока **не** подключено к доставочному checkout (см. MISMATCH-LOG D.* — checkout-флоу зафиксирован отдельно). После настройки программы — решить, добавлять ли «оплатить бонусами» в `StepOrder`/`StepPayment`.
+1. Открыть права на эндпоинт **истории бонусов** `GET /bonus-balance/history` (`Discounts.getBonusHistory`) для группы авторизованных пользователей — сейчас **403** «Permission data not found. Provide the permission for requested url». До выдачи права секция истории в профиле пуста, хотя баланс ненулевой. Снять пункт после перепроверки (ожидаем массив транзакций вместо 403).
+1. ✅ ~~(Опционально) списание бонусов на чекауте~~ — **реализовано в коде 2026-06-26**. Сервер списание поддерживает (проверено через SDK: `previewOrder({ bonusAmount: 50 })` на заказе $16.50 → `bonusApplied: 16.5`, `totalDue: 0`; сервер сам капит до суммы к оплате). В доставочном чекауте добавлен тумблер «Pay with bonuses» в [StepOrder.tsx](components/cart/steps/StepOrder.tsx) (виден, только если `getBonusBalance().balance > 0`): включение шлёт весь баланс как `bonusAmount` в [useOrderPreview.ts](app/api/hooks/useOrderPreview.ts) (превью отражает `bonusApplied`/`totalDue`, в тотализаторе появляется строка «Bonuses») и в `createOrder` через [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts). Состояние — `bonusAmount` в `OrderSlice` (сбрасывается в `removeOrder`). **Осталось на админке (опц.):** если нужен лимит — выставить `maxBonusPaymentPercent` / `minBonusAmount` в программе (сейчас бонусами можно закрыть 100% заказа).
 
-Новые dictionary-маркеры (атрибут-сет `static_content`, см. C.4.1):
+Новые dictionary-маркеры для UI списания (атрибут-сет `static_content`, см. C.4.1) — пока работают с английскими дефолтами из кода:
 
-| marker                | type   | title                       |
-|-----------------------|--------|-----------------------------|
-| `bonus_balance_title` | string | Bonus balance               |
-| `bonus_history_empty` | string | No bonus transactions yet.  |
+| marker              | type   | title             |
+|---------------------|--------|-------------------|
+| `bonus_pay_label`   | string | Pay with bonuses  |
+| `bonus_applied_text`| string | Bonuses           |
 
 ## C.7. Аудит соответствия полей коду (inspect-api)
 
@@ -337,22 +232,9 @@ OneEntry для сжатых на сервере изображений отда
 
 ---
 
-## C.8. Отзывы (`review_form`) — публичное чтение отдаёт 403 анониму (сверка SDK 2026-06-25)
+## C.8. Отзывы (`review_form`) — пре-модерация (вопрос клиенту)
 
-Симптом: на карточках товара блок «Reviews» всегда пустой («No reviews yet»), хотя в CMS отзывы есть. Диагностика через SDK (анонимный app-token = как на SSR карточки товара):
-
-- `FormData.getFormsDataByMarker('review_form', 2, …)` **анонимно** → `{ statusCode: 403, message: "Permission data not found. Provide the permission for requested url" }`.
-- Под авторизацией (любой user-token) тот же запрос отдаёт `total: 363`, статусы `approved` — данные на месте и корректны.
-- Конфиг формы `review_form` → `moduleFormConfigs[0]`: **`isGlobal: false`, `isAnonymous: false`, `viewOnlyUserData: false`**.
-
-Причина (подтверждает гипотезу «нет прав»): серверный фетчер сайта [getProductReviews](app/api/server/forms/getProductReviews.ts) и его обёртка [ProductReviewsListServer.tsx](components/reviews/ProductReviewsListServer.tsx) рендерятся на SSR **анонимно** (app-token, без user-сессии). Роль гостя (Guests) не имеет права читать данные формы `review_form` → 403 → graceful-фолбэк в пустой массив → блок пустует. Тот же класс проблемы, что C.2.8.1. (`isGlobal: false` в ответе SDK — лишь отражение этого: отдельного UI-тумблера `isGlobal` у форм нет, доступ регулируется секцией разрешений.)
-
-Действия на стороне админа OneEntry — форма `review_form`, **секция разрешений (permissions)**:
-
-- Выдать роли **Guests / гость** право **`read`** на данные формы `review_form` (чтобы анонимный SSR-запрос мог прочитать чужие approved-отзывы). Это главное и единственное обязательное действие.
-- Право на **запись (`create`)** гостю **не** выдавать: публикация отзыва идёт из-под авторизации (демо-аккаунты / реальные юзеры) — так и оставить.
-
-После выдачи Guests-read перепроверить через SDK: анонимный `getFormsDataByMarker('review_form', 2, { entityIdentifier: <id>, status: ['approved'] })` должен вернуть `items` вместо 403. Тогда 363 уже засеянных отзыва сразу появятся на карточках. Сид-скрипт: [scripts/seed-reviews.mjs](scripts/seed-reviews.mjs) (идемпотентный, 6 демо-аккаунтов, ~3 отзыва на товар). NB: по аналогии с C.2.7 для части ресурсов право Guests индексируется с лагом / не срабатывает — если после выдачи всё ещё 403, перепроверить позже и убедиться, что право выдано именно на ресурс form-data этой формы.
+Публичное чтение отзывов закрыто клиентом: анонимный `FormData.getFormsDataByMarker('review_form')` отдаёт **200, total=363** (сверено 2026-06-25; раньше был 403). Засеянные approved-отзывы появляются на карточках товара. Сид-скрипт: [scripts/seed-reviews.mjs](scripts/seed-reviews.mjs).
 
 > ❓ **Уточнить у клиента:** нужна ли пре-модерация отзывов? Сейчас сид и UI пишут сразу `status: 'approved'` (виден без проверки). Если нужна модерация — писать `status: 'new'` и публиковать вручную/правилом в админке.
 

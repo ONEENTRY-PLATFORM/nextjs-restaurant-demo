@@ -31,12 +31,13 @@ type UseOrderPreviewApi = {
  * Sends the same product list `createOrder` will (selected items + the delivery line) so server-side
  * discounts, bonuses and taxes are reflected before the order is created. Runs only for authenticated
  * users (the endpoint requires auth); returns `null` otherwise so the caller keeps its client-side
- * fallback. Re-previews whenever the selected products or coupon change.
+ * fallback. Re-previews whenever the selected products, coupon, or applied bonus change.
  *
- * @param   {string} [couponCode] - Applied coupon code to include in the preview.
+ * @param   {string} [couponCode]  - Applied coupon code to include in the preview.
+ * @param   {number} [bonusAmount] - Bonus points the user opted to spend (server caps it to the amount due).
  * @returns `{ totals, isLoading }` — server totals (or `null`) plus loading state.
  */
-export const useOrderPreview = (couponCode?: string): UseOrderPreviewApi => {
+export const useOrderPreview = (couponCode?: string, bonusAmount?: number): UseOrderPreviewApi => {
   const { isAuth } = useContext(AuthContext);
   const cartProducts = useAppSelector(selectCartData) as CartEntry[];
 
@@ -54,10 +55,10 @@ export const useOrderPreview = (couponCode?: string): UseOrderPreviewApi => {
     return list;
   }, [cartProducts]);
 
-  // Stable key so the preview only re-runs when product/coupon content actually changes.
+  // Stable key so the preview only re-runs when product/coupon/bonus content actually changes.
   const key = useMemo(
-    () => JSON.stringify({ products, couponCode: couponCode ?? '' }),
-    [products, couponCode]
+    () => JSON.stringify({ products, couponCode: couponCode ?? '', bonusAmount: bonusAmount ?? 0 }),
+    [products, couponCode, bonusAmount]
   );
 
   useEffect(() => {
@@ -72,6 +73,7 @@ export const useOrderPreview = (couponCode?: string): UseOrderPreviewApi => {
       const res = await getApi().Orders.previewOrder({
         products,
         ...(couponCode ? { couponCode } : {}),
+        ...(bonusAmount && bonusAmount > 0 ? { bonusAmount } : {}),
       });
       if (cancelled) return;
       if (isError(res)) {

@@ -7,7 +7,12 @@ import { getApi, isError } from '@/app/api';
 import { trackActivity } from '@/app/api/hooks/useTrackActivity';
 import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';
-import { removeOrder, selectAppliedCoupon, setLastOrderId } from '@/app/store/reducers/OrderSlice';
+import {
+  removeOrder,
+  selectAppliedCoupon,
+  selectBonusAmount,
+  setLastOrderId,
+} from '@/app/store/reducers/OrderSlice';
 import { DELIVERY_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
@@ -52,6 +57,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
     const order = state.orderReducer.order;
     const cartProducts = selectCartData(state) as CartEntry[];
     const appliedCoupon = selectAppliedCoupon(state);
+    const bonusAmount = selectBonusAmount(state);
 
     if (!order?.formIdentifier) {
       const message = 'Order form is not initialised';
@@ -105,6 +111,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         paymentAccountIdentifier,
         formIdentifier: order.formIdentifier || FORMS.deliveryOrder,
         ...(appliedCoupon?.code ? { couponCode: appliedCoupon.code } : {}),
+        ...(bonusAmount && bonusAmount > 0 ? { bonusAmount } : {}),
       });
 
       if (isError(created)) {

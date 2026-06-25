@@ -8,14 +8,26 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
-import { getProductImageUrl, useApplyCoupon, useOrderPreview } from '@/app/api';
+import {
+  getProductImageUrl,
+  useApplyCoupon,
+  useGetBonusBalanceQuery,
+  useOrderPreview,
+} from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
-import { selectAppliedCoupon, setStep } from '@/app/store/reducers/OrderSlice';
+import {
+  clearBonusAmount,
+  selectAppliedCoupon,
+  selectBonusAmount,
+  setBonusAmount,
+  setStep,
+} from '@/app/store/reducers/OrderSlice';
 import { DELIVERY_PRODUCT_ID, PRODUCT_STATUSES } from '@/app/utils/constants';
+import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import Placeholder from '@/components/shared/Placeholder';
 import { UsePrice } from '@/components/utils';
 
@@ -41,6 +53,12 @@ const StepOrder = (): JSX.Element => {
   const products = useAppSelector(state => state.cartReducer.products) as IProductsEntity[];
   const deliveryPrice = useAppSelector(state => state.cartReducer.delivery?.price ?? 0);
   const appliedCoupon = useAppSelector(selectAppliedCoupon);
+  const bonusAmount = useAppSelector(selectBonusAmount);
+
+  // Bonus balance is auth-only; guests skip the query and never see the toggle.
+  const { data: bonusBalance } = useGetBonusBalanceQuery(undefined, { skip: !isAuth });
+  const availableBonus = bonusBalance?.balance ?? 0;
+  const bonusEnabled = (bonusAmount ?? 0) > 0;
 
   const [promoCode, setPromoCode] = useState(appliedCoupon?.code ?? '');
   const { applyCoupon, removeCoupon, isLoading, error } = useApplyCoupon();
@@ -75,12 +93,13 @@ const StepOrder = (): JSX.Element => {
     : clientSubtotal + deliveryPrice;
 
   // Server-authoritative totals (discounts/bonuses/taxes) for authed users; client math is the fallback.
-  const { totals: serverTotals } = useOrderPreview(appliedCoupon?.code);
+  const { totals: serverTotals } = useOrderPreview(appliedCoupon?.code, bonusAmount);
   const display = serverTotals ?? {
     subtotal: clientSubtotal,
     delivery: deliveryPrice,
     discount: clientDiscount,
     total: clientTotal,
+    bonusApplied: 0,
   };
 
   const handleApply = (): void => {
@@ -90,6 +109,15 @@ const StepOrder = (): JSX.Element => {
       return;
     }
     void applyCoupon(promoCode);
+  };
+
+  // Spend the full balance; the server caps `bonusApplied` to the amount due (see preview totals).
+  const handleToggleBonus = (): void => {
+    if (bonusEnabled) {
+      dispatch(clearBonusAmount());
+    } else {
+      dispatch(setBonusAmount(availableBonus));
+    }
   };
 
   // Order row animation: slide-up + fade on mount, reverse on route transition (see CartAnimations).
@@ -247,6 +275,18 @@ const StepOrder = (): JSX.Element => {
         ) : null}
       </div>
 
+      {/* Pay with bonuses (auth-only; hidden when the balance is empty) */}
+      {availableBonus > 0 ? (
+        <label className="step-order-row custom-checkbox flex items-center text-[14px] text-paper">
+          <input type="checkbox" checked={bonusEnabled} onChange={handleToggleBonus} />
+          <span className="checkbox-box mr-2.5">
+            <CheckboxMarkIcon />
+          </span>
+          {t('bonus_pay_label', 'Pay with bonuses')} ({t('bonus_balance_title', 'Bonus balance')}:{' '}
+          {availableBonus})
+        </label>
+      ) : null}
+
       {/* Totals */}
       <div className="step-order-row mt-10 rounded-card border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
@@ -261,6 +301,12 @@ const StepOrder = (): JSX.Element => {
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
             <p>{UsePrice({ amount: display.discount })}</p>
+          </div>
+        ) : null}
+        {display.bonusApplied > 0 ? (
+          <div className="flex gap-1.25 text-brand">
+            <p>{t('bonus_applied_text', 'Bonuses')}:</p>
+            <p>−{UsePrice({ amount: display.bonusApplied })}</p>
           </div>
         ) : null}
         <div className="flex gap-1.25 text-white">

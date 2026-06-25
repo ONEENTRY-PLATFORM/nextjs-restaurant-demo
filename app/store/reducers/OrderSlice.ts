@@ -30,6 +30,9 @@ type InitialStateType = {
   // success screen can render the real id assigned by the CMS.
   lastOrderId?: number;
   appliedCoupon?: AppliedCoupon;
+  // Bonus points the user opted to spend on this order. Sent to `previewOrder`
+  // and `createOrder` as `bonusAmount`; the server caps it to the amount due.
+  bonusAmount?: number;
 };
 
 const initialState: InitialStateType = {
@@ -55,12 +58,23 @@ const orderReducer = createSlice({
     removeOrder(state) {
       state.order = initialState.order;
       delete state.appliedCoupon;
+      delete state.bonusAmount;
     },
     setAppliedCoupon(state, action: PayloadAction<AppliedCoupon>) {
       state.appliedCoupon = action.payload;
     },
     clearAppliedCoupon(state) {
       delete state.appliedCoupon;
+    },
+    setBonusAmount(state, action: PayloadAction<number>) {
+      if (action.payload > 0) {
+        state.bonusAmount = action.payload;
+      } else {
+        delete state.bonusAmount;
+      }
+    },
+    clearBonusAmount(state) {
+      delete state.bonusAmount;
     },
     addData(state, action: PayloadAction<IOrdersFormData & { valid?: boolean }>) {
       if (!state.order) {
@@ -181,6 +195,8 @@ export const {
   setLastOrderId,
   setAppliedCoupon,
   clearAppliedCoupon,
+  setBonusAmount,
+  clearBonusAmount,
 } = orderReducer.actions;
 
 /**
@@ -220,5 +236,15 @@ export const selectLastOrderId = (state: { orderReducer: InitialStateType }): nu
 export const selectAppliedCoupon = (state: {
   orderReducer: InitialStateType;
 }): AppliedCoupon | undefined => state.orderReducer.appliedCoupon;
+
+/**
+ * selectBonusAmount — selector for the bonus points the user opted to spend on the current order.
+ *
+ * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
+ * @returns Bonus amount to apply, or `undefined` when the user is not paying with bonuses.
+ */
+export const selectBonusAmount = (state: {
+  orderReducer: InitialStateType;
+}): number | undefined => state.orderReducer.bonusAmount;
 
 export default orderReducer.reducer;

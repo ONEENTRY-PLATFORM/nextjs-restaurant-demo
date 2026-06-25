@@ -4,7 +4,12 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import {
+  isHeaderAnimationComplete,
+  subscribeHeaderAnimation,
+} from '@/app/animations/headerAnimState';
 
 /**
  * ProductAnimations — fade-in/leaving wrapper for product page blocks with per-block stagger.
@@ -26,25 +31,36 @@ const ProductAnimations = ({
 }): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState('');
+  const [revealed, setRevealed] = useState<boolean>(false);
   const ref = useRef(null);
 
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      paused: true,
-    });
+  useEffect(() => {
+    if (isHeaderAnimationComplete()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRevealed(true);
+      return undefined;
+    }
+    const unsubscribe = subscribeHeaderAnimation(() => setRevealed(true));
+    return unsubscribe;
+  }, []);
 
-    tl.set(ref.current, {
-      autoAlpha: 0,
-    }).to(ref.current, {
+  useGSAP(() => {
+    if (!revealed) {
+      gsap.set(ref.current, { autoAlpha: 0 });
+      return undefined;
+    }
+
+    const tween = gsap.to(ref.current, {
       autoAlpha: 1,
+      duration: 0.5,
       delay: index / 10,
+      ease: 'power2.out',
     });
-    tl.play();
 
     return () => {
-      tl.kill();
+      tween.kill();
     };
-  }, []);
+  }, [revealed, index]);
 
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -65,7 +81,7 @@ const ProductAnimations = ({
   }, [stage]);
 
   return (
-    <div className={className} ref={ref}>
+    <div className={className} ref={ref} data-after-header>
       {children}
     </div>
   );

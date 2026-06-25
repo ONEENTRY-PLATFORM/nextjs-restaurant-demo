@@ -243,8 +243,7 @@ export const selectAppliedCoupon = (state: {
  * @param   {{ orderReducer: InitialStateType }} state - Redux root state.
  * @returns Bonus amount to apply, or `undefined` when the user is not paying with bonuses.
  */
-export const selectBonusAmount = (state: {
-  orderReducer: InitialStateType;
-}): number | undefined => state.orderReducer.bonusAmount;
+export const selectBonusAmount = (state: { orderReducer: InitialStateType }): number | undefined =>
+  state.orderReducer.bonusAmount;
 
 export default orderReducer.reducer;

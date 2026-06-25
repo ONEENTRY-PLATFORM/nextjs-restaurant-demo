@@ -8,7 +8,7 @@
 - Закрытый клиентом пункт — отмечается `✅` рядом или удаляется.
 - Вопросы клиенту — префикс `> ❓ **Уточнить у клиента:**`.
 
-Код уже подключён к существующим сущностям (`services`, `bookings`, `filters`, `menu`, `restaurants`, `blog`, `delivery_order`, `booking_order`, `user`, attribute set `dish` с `images/weight/calories/cooking_time/price/preferences/filter/ingredients/...`, attribute set `restaurant`, attribute set `catalog_page`). Ниже — только то, чего **нет** в админке и нужно для оставшихся функциональных пробелов.
+Ниже — только то, чего **нет** в админке и нужно для оставшихся функциональных пробелов.
 
 ---
 
@@ -18,7 +18,7 @@
 
 Осталось:
 
-1. **Код (разблокировано):** право Guests на `ProductStatuses` выдано — анонимный `getProductStatuses()` отдаёт **200** (сверено 2026-06-25: 2 статуса, `in_stock` id=1 default, `out_of_stock` id=2). Можно заменить хардкод продуктовых статусов на динамический фетч `getProductStatuses()` (кэшированный server fetcher). Это уже не задача админки — дев-доработка.
+1. ✅ **Код (сделано):** хардкод продуктовых статусов снят. Анонимный `getProductStatuses()` отдаёт **200** (сверено 2026-06-26: 2 статуса — `in_stock` id=1 default, `out_of_stock` id=2). Заведён кэшированный server fetcher [getProductStatuses.ts](app/api/server/products/getProductStatuses.ts) (`getProductStatuses()` + резолвер `resolveOutOfStockMarker()` + производный `getOutOfStockMarker()`, `unstable_cache` 300 s). SSR (JSON-LD на странице товара) берёт маркер из `getOutOfStockMarker()`; клиентские потребители (`AddToCartButton`, корзинный `ProductCard`, `StepOrder`, `OrderCard`) читают его через хук `useOutOfStockMarker()` из [ProductStatusContext.tsx](app/store/providers/ProductStatusContext.tsx) (засеян промисом в root layout, зеркало `DictProvider`). `PRODUCT_STATUSES.outOfStock` в [constants.ts](app/utils/constants.ts) оставлен как compiled-in fallback на случай недоступности фетча.
 2. Сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
 3. (минорно, не блокирует) `Events.getAllEvents` анонимно отдаёт **401** (сверено 2026-06-25; было 403) — открыть группе **Guests** право на `events/all`, чтобы список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
 
@@ -49,38 +49,6 @@
 ### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
 Все ниже — `type: string`. Сгруппировано по экранам, чтобы заполнять было удобнее. `title` в таблице ниже — это и текст, который виден в админке как title маркера, и его `initialValue` (английский дефолт). После создания — прокинуть `dict?.<marker>?.value` в соответствующие компоненты (правка кода).
-
-#### Хедер / навигация / общие (aria-label, кнопки)
-
-Прошлись по проекту, нашли хардкод user-facing-фраз, не покрытых выше. Часть — `aria-label` для иконочных кнопок (важно для скринридеров), часть — короткие лейблы и тосты, видимые в UI.
-
-Используется в: [components/layout/header/](components/layout/header/), [components/layout/bottom-menu/](components/layout/bottom-menu/), [components/layout/filter/](components/layout/filter/), [components/layout/mobile-menu/](components/layout/mobile-menu/), [components/layout/modal/](components/layout/modal/), [components/cart/CartPopup.tsx](components/cart/CartPopup.tsx), [components/shared/ClosePopupButton.tsx](components/shared/ClosePopupButton.tsx).
-
-| marker                        | type   | title                                 |
-|-------------------------------|--------|---------------------------------------|
-| `open_menu_label`             | string | Open menu                             |
-| `close_menu_label`            | string | Close menu                            |
-| `open_cart_label`             | string | Open cart                             |
-| `close_cart_label`            | string | Close cart                            |
-| `open_categories_label`       | string | Open categories                       |
-| `close_search_results_label`  | string | Close search results                  |
-| `close_label`                 | string | Close                                 |
-| `go_back_label`               | string | Go back                               |
-| `decrease_quantity_label`     | string | Decrease quantity                     |
-| `increase_quantity_label`     | string | Increase quantity                     |
-| `delete_item_label`           | string | Delete item                           |
-| `add_to_favorites_label`      | string | Add to favorites                      |
-| `remove_from_favorites_label` | string | Remove from favorites                 |
-| `cart_label`                  | string | Cart                                  |
-| `favorites_label`             | string | Favorites                             |
-| `profile_label`               | string | Profile                               |
-| `home_label`                  | string | Home                                  |
-| `menu_label`                  | string | Menu                                  |
-| `search_placeholder_text`     | string | Search                                |
-| `view_all_text`               | string | View all ({count})                    |
-| `return_home_button`          | string | Return home                           |
-| `captcha_loading_text`        | string | Please wait while captcha is loading. |
-| `rating_prefix`               | string | Rating:                               |
 
 > **TODO (код):** placeholders для Street/House/Floor в попапе «My Profile» ([ProfilePopup.tsx:347](components/profile/ProfilePopup.tsx#L347)) сейчас хардкод (`«OneEntry»` / `«40»` / `«27»`). Подтянуть из `additionalFields` соответствующих атрибутов формы `delivery_order` (`delivery_address`, `floor`, `apartment_number`) — это канонический источник placeholder'ов и лейблов для полей форм в OneEntry. Не заводить отдельные dict-маркеры.
 
@@ -117,7 +85,7 @@
 
 - **Stripe payment в delivery-чекауте — сервер отдаёт «Your payment account is not connected».** Подтверждено 2026-05-09 на заказе #96: `Orders.createOrder` с `paymentAccountIdentifier: 'stripe'` проходит, но следом `Payments.createSession(id, 'session')` валится с этим текстом.
 
-  🔁 **Повторная проверка 2026-06-25 (после «я подключил Stripe»):** через SDK `Payments.getAccounts()` статус **не изменился** — у `stripe` (id=1) `testMode: true`, `settings.status: "not_connected"` (production), `testSettings.status: "connected"` (`stripeOnboardingComplete: true`, `stripeRedirectUrl: …/setup/s/acct_1TlmVbKILvMsGn2r/…`). Подключён только **test**-онбординг (он и раньше был `connected`), production-блок `settings` так и пуст/`not_connected`. Сервер валидирует именно `settings.status`, поэтому чекаут по-прежнему упадёт. Чтобы заработало — нужно пройти **production** Stripe Connect (live-ключи + KYC) до `settings.status: "connected"`, либо дождаться правки валидации на стороне OneEntry (см. вопрос в support ниже). Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
+  🔁 **Повторная проверка 2026-06-25:** через SDK `Payments.getAccounts()` статус **не изменился** — у `stripe` (id=1) `testMode: true`, `settings.status: "not_connected"` (production), `testSettings.status: "connected"` (`stripeOnboardingComplete: true`, `stripeRedirectUrl: …/setup/s/acct_1TlmVbKILvMsGn2r/…`). Подключён только **test**-онбординг (он и раньше был `connected`), production-блок `settings` так и пуст/`not_connected`. Сервер валидирует именно `settings.status`, поэтому чекаут по-прежнему упадёт. Чтобы заработало — нужно пройти **production** Stripe Connect (live-ключи + KYC) до `settings.status: "connected"`, либо дождаться правки валидации на стороне OneEntry (см. вопрос в support ниже). Та же причина, что и для booking — Stripe-аккаунт в `Payments.getAccounts()` имеет `settings.status: "not_connected"` (production) при `testSettings.status: "connected"` и `testMode: true` (см. C.6.2 #1). Сервер OneEntry, судя по поведению, валидирует именно `settings.status` независимо от `testMode` — поэтому test-онбординг ситуацию не закрывает. После фикса в [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) ошибка теперь не глушится: wizard уходит на error-шаг с конкретным сообщением, заказ фиксируется в OneEntry, но редиректа на Stripe Checkout не происходит до закрытия пробела на стороне OneEntry/админки.
 
   > ❓ **Уточнить у OneEntry support:** при `testMode: true` сервер `Payments.createSession` должен валидировать `testSettings.status`, а не `settings.status`. Сейчас валидирует production-блок и отвечает `"Your payment account is not connected"`, хотя test-онбординг Stripe Connect завершён (`testSettings.stripeOnboardingComplete: true`, `testSettings.status: "connected"`). Воспроизведение — `Payments.createSession(<orderId>, 'session')` для проекта `oe-restaurants.oneentry.cloud`, account `stripe`. Запросить: либо чтобы на test-mode аккаунтах валидация шла по `testSettings`, либо чтобы сервер возвращал понятную ошибку «account is in testMode, but server requires production-connected account». Параллельно — клиент может временно пройти production Stripe Connect (live-ключи + KYC), это уберёт ошибку, но переведёт оплату на боевые карты.
 
@@ -150,24 +118,7 @@
    **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
 
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
-3. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
-
-### C.6.2.1. Продукт брони без цены → `createOrder` падает «Product's price is not defined»
-
-**Блокирует оформление резервации.** Бронь создаётся с `products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }]` ([ReservationForm.tsx](components/reservation/ReservationForm.tsx), `BOOKING_PRODUCT_ID = 2071`). OneEntry при `Orders.createOrder` валидирует цену каждого продукта и отвечает `"Product's price is not defined"`.
-
-Сверка через SDK (2026-06-21): продукт **id 2071 «Booking»** — `price` (float) = **0**, top-level `price` = **null**, `currency` (string) = **""**. Для сравнения обычный товар (id 3568 «Fruit Plate») — `price` = 6.5, `currency` = `USD`, и заказывается нормально.
-
-Нужно в админке OneEntry — проставить продукту **2071** цену и валюту:
-
-| marker     | type   | title    | value (нужно)        |
-|------------|--------|----------|----------------------|
-| `price`    | float  | Price    | > 0 (напр. депозит)  |
-| `currency` | string | Currency | `USD`                |
-
-> ❓ **Уточнить у клиента:** какова цена брони столика — фиксированный депозит (вернётся/спишется?) или символическая сумма? Бесплатная бронь (price 0) сейчас невозможна: OneEntry не принимает заказ без определённой цены продукта. После простановки цены+валюты у продукта 2071 ошибка уйдёт.
-
----
+1. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
 
 ### C.6.3. Бонусная программа / лояльность (сверка MCP 2026-06-19)
 
@@ -182,42 +133,7 @@
 1. Открыть права на эндпоинт **истории бонусов** `GET /bonus-balance/history` (`Discounts.getBonusHistory`) для группы авторизованных пользователей — сейчас **403** «Permission data not found. Provide the permission for requested url». До выдачи права секция истории в профиле пуста, хотя баланс ненулевой. Снять пункт после перепроверки (ожидаем массив транзакций вместо 403).
 1. ✅ ~~(Опционально) списание бонусов на чекауте~~ — **реализовано в коде 2026-06-26**. Сервер списание поддерживает (проверено через SDK: `previewOrder({ bonusAmount: 50 })` на заказе $16.50 → `bonusApplied: 16.5`, `totalDue: 0`; сервер сам капит до суммы к оплате). В доставочном чекауте добавлен тумблер «Pay with bonuses» в [StepOrder.tsx](components/cart/steps/StepOrder.tsx) (виден, только если `getBonusBalance().balance > 0`): включение шлёт весь баланс как `bonusAmount` в [useOrderPreview.ts](app/api/hooks/useOrderPreview.ts) (превью отражает `bonusApplied`/`totalDue`, в тотализаторе появляется строка «Bonuses») и в `createOrder` через [useCreateOrder.ts](app/api/hooks/useCreateOrder.ts). Состояние — `bonusAmount` в `OrderSlice` (сбрасывается в `removeOrder`). **Осталось на админке (опц.):** если нужен лимит — выставить `maxBonusPaymentPercent` / `minBonusAmount` в программе (сейчас бонусами можно закрыть 100% заказа).
 
-Новые dictionary-маркеры для UI списания (атрибут-сет `static_content`, см. C.4.1) — пока работают с английскими дефолтами из кода:
-
-| marker              | type   | title             |
-|---------------------|--------|-------------------|
-| `bonus_pay_label`   | string | Pay with bonuses  |
-| `bonus_applied_text`| string | Bonuses           |
-
 ## C.7. Аудит соответствия полей коду (inspect-api)
-
-Проверка проведена через `oneentry` SDK напрямую к проекту `oe-restaurants.oneentry.cloud` (lang=`en_US`). Зафиксировано на момент проверки.
-
-### C.7.1. Pages — реальные атрибуты
-
-- **`menu/*`** (`appetizers`, `dinner`, `soup`, `fresh_juice`, …) — `icon` (заполнен), `service_*` (пустые, унаследовано из шаблона).
-- **`filters`** — `cooking_time_filters` (json), `preferences_filters` (json), `price_filters` (string).
-- **`blog/*`** — `bg_image`, `banner`, `description`, `action_type`. См. C.2.3.
-
-### C.7.2. Product (attribute set `dish`)
-
-Реальные атрибуты товара (на 2026-05-26, проверено через `inspect-api`):
-`dish_name` (string), `sku` (string), `category` (string), `ingredients` (**list** `Array<{title,value}>`), `cooking_time` (integer), `weight` (integer), `calories` (integer), `price` (float), `currency` (string), `preferences` (list), **`filter` (list)** — новые маркеры курса/типа блюда для фильтрации (Breakfast/Lunch/Dinner/Soup/…), **`images` (groupOfImages)** — основное изображение(я).
-
-Что изменилось в схеме (миграция уже отражена в коде):
-
-- `cover` (image) → **`images` (groupOfImages)**. Все ридеры идут через `getProductImageUrl(attrs)` ([app/api/hooks/useAttributesData.ts](app/api/hooks/useAttributesData.ts)).
-- `calorrage` → **`calories`** (опечатка в маркере исправлена в админке, использовалось в [ProductDetails.tsx](components/layout/product/product-single/ProductDetails.tsx)).
-- `ingredients` (string) → **list** `Array<{title,value}>`; рендер на странице товара берёт `title` и склеивает через запятую.
-- Добавлен **`filter` (list)** — `listTitles` в attribute set `dish`. Подключён в `?filter=…` ([getSearchParams.ts](app/api/utils/getSearchParams.ts)) и UI-секцию в [FilterBottom.tsx](components/layout/filter/FilterBottom.tsx). OR-семантика мульти-селекта обрабатывается в [getProducts.ts](app/api/server/products/getProducts.ts) / [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts).
-
-- **`statusIdentifier`** — у всех товаров `null` (статус не назначен). Код блокирует покупку только при явном `statusIdentifier === 'out_of_stock'` ([AddToCartButton.tsx:62-65](components/layout/product/components/AddToCartButton.tsx#L62-L65), [JSON-LD availability](app/shop/product/%5Bhandle%5D/page.tsx#L56-L59)). ❓ **Уточнить у клиента:** проставлять ли в админке статусам товаров `in_stock` (для аналитики/SEO) — в текущей логике `null` уже работает как «доступно».
-
-### C.7.4. Dictionary (`static_content`) — что код читает, но в CMS нет
-
-- **`reset_descr`, `send_text`** ([ForgotPasswordForm.tsx](components/forms/ForgotPasswordForm.tsx)) — нет.
-
-> ❓ **Уточнить у клиента:** надо ли расширять `static_content` под все эти UI-строки (для локализации) или достаточно текущих 59 + хардкоды?
 
 ### C.7.5. Inline LQIP-превью изображений — не у всех ассетов (сверка SDK 2026-06-25)
 
@@ -232,21 +148,13 @@ OneEntry для сжатых на сервере изображений отда
 
 ---
 
-## C.8. Отзывы (`review_form`) — пре-модерация (вопрос клиенту)
-
-Публичное чтение отзывов закрыто клиентом: анонимный `FormData.getFormsDataByMarker('review_form')` отдаёт **200, total=363** (сверено 2026-06-25; раньше был 403). Засеянные approved-отзывы появляются на карточках товара. Сид-скрипт: [scripts/seed-reviews.mjs](scripts/seed-reviews.mjs).
-
-> ❓ **Уточнить у клиента:** нужна ли пре-модерация отзывов? Сейчас сид и UI пишут сразу `status: 'approved'` (виден без проверки). Если нужна модерация — писать `status: 'new'` и публиковать вручную/правилом в админке.
-
----
-
 ## C.10. Профиль — Reservations history (Figma 78:1293)
 
 **Открытое для клиента:**
 
 1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
 
-4. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
+1. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
 
 ### C.10.2. Возвраты (refunds) — сверка MCP 2026-06-19
 

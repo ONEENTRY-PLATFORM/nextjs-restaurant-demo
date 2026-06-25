@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { getProductById, getProductImageUrl } from '@/app/api';
-import { PRODUCT_STATUSES } from '@/app/utils/constants';
+import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/api';
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 
@@ -32,6 +31,7 @@ const ProductPageLayout = async ({
   }
 
   const { attributeValues, localizeInfos, additional, statusIdentifier } = product;
+  const outOfStockMarker = await getOutOfStockMarker();
 
   // JSON-LD structured data for the product (https://json-ld.org/) for SEO.
   const descriptionValue = attributeValues.description?.value as
@@ -47,7 +47,7 @@ const ProductPageLayout = async ({
     offers: {
       '@type': 'AggregateOffer',
       availability:
-        statusIdentifier === PRODUCT_STATUSES.outOfStock
+        statusIdentifier === outOfStockMarker
           ? 'https://schema.org/OutOfStock'
           : 'https://schema.org/InStock',
       priceCurrency: attributeValues.currency?.value,

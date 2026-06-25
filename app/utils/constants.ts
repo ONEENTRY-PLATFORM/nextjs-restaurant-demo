@@ -118,12 +118,12 @@ export const BLOCKS = {
 } as const;
 
 /**
- * OneEntry product-status markers (`product.statusIdentifier`).
+ * OneEntry product-status markers (`product.statusIdentifier`) — compiled-in fallback default.
  *
- * ⚠️ Single source of truth — replaces scattered string literals. These cannot
- * yet be fetched/verified dynamically: the Guests group lacks read permission on
- * ProductStatuses (`403 "Permission data not found"`), see ONEENTRY-ADMIN-TODO.
- * Keep in sync with the admin panel until that permission is granted.
+ * The live value is fetched from OneEntry via `getProductStatuses()` / `getOutOfStockMarker()`
+ * (cached server fetcher) and read in client subtrees through `useOutOfStockMarker()`. This constant
+ * is the fallback used by the resolver and the hook when the fetch is unavailable or hasn't resolved,
+ * so consumers never compare against an empty string. Keep in sync with the admin panel as a safety net.
  */
 export const PRODUCT_STATUSES = {
   outOfStock: 'out_of_stock',

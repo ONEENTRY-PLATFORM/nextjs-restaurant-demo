@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { useOutOfStockMarker } from '@/app/store/providers/ProductStatusContext';
 import {
   addProductToCart,
   increaseProductQty,
@@ -24,7 +25,7 @@ import {
 } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID, ORDER_STATUSES, PRODUCT_STATUSES } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID, ORDER_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
@@ -64,6 +65,7 @@ const OrderCard = ({
   const cartItems = useAppSelector(selectCartData);
   const favoritesIds = useAppSelector(selectFavoritesItems);
   const { user } = useContext(AuthContext);
+  const outOfStockMarker = useOutOfStockMarker();
   const { subtotal, delivery, discount, total } = computeTotals(order);
   const created = (order as unknown as { createdDate?: string }).createdDate;
   const canReview = (order.statusIdentifier ?? '').toLowerCase() === ORDER_STATUSES.delivered;
@@ -135,7 +137,7 @@ const OrderCard = ({
 
     for (const p of order.products) {
       const fullProduct = productsById.get(p.id);
-      if (fullProduct?.statusIdentifier === PRODUCT_STATUSES.outOfStock) {
+      if (fullProduct?.statusIdentifier === outOfStockMarker) {
         skipped.push(p.title);
         continue;
       }
@@ -165,7 +167,7 @@ const OrderCard = ({
       await updateUserState({ favorites: favoritesIds, cart: addedItems, user });
       await Promise.all(
         order.products
-          .filter(p => productsById.get(p.id)?.statusIdentifier !== PRODUCT_STATUSES.outOfStock)
+          .filter(p => productsById.get(p.id)?.statusIdentifier !== outOfStockMarker)
           .map(p => onSubscribeEvents(p.id))
       );
     }

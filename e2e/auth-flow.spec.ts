@@ -44,13 +44,28 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     ).toBeVisible({ timeout: 15_000 });
   });
 
-  test('after login the profile menu reveals user sub-items on hover (desktop)', async ({
+  test('after login the profile menu reveals user sub-items (hover dropdown desktop / popup mobile)', async ({
     page,
   }) => {
-    // The hover dropdown is a desktop affordance; on mobile the profile menu is the ProfilePopup.
-    test.skip(isMobile(page), 'profile hover dropdown is desktop-only');
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
+
+    if (isMobile(page)) {
+      // Mobile has no hover dropdown — the profile menu is the slide-up ProfilePopup (`#modalBody`),
+      // opened from the Profile button; it renders `<nav aria-label="Profile menu">` with
+      // `.profile-anim-row` rows sourced from the same `user_menu` children.
+      await page
+        .getByRole('button', { name: /profile/i })
+        .filter({ visible: true })
+        .first()
+        .click();
+      const popup = page.locator('#modalBody');
+      await expect(popup).toBeVisible({ timeout: 15_000 });
+      const nav = popup.locator('nav[aria-label="Profile menu"]');
+      await expect(nav).toBeVisible({ timeout: 10_000 });
+      await expect(nav.locator('.profile-anim-row').first()).toBeVisible();
+      return;
+    }
 
     const profileLink = page
       .locator('header')

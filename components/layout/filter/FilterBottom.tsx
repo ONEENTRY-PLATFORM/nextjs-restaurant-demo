@@ -234,12 +234,16 @@ const FilterBottom = ({
     }
 
     const qs = params.toString();
-    // If the user applied a filter outside `/shop`, send them to `/shop`,
-    // otherwise stay on the current route via replace.
-    const isShopRoute = pathname.startsWith('/shop');
-    const targetPath = isShopRoute ? pathname : '/shop';
+    // Stay on the current route only when it actually renders a filtered listing
+    // (`/shop`, `/shop/<handle>`, `/shop/category/<handle>`). The product page
+    // `/shop/product/<handle>` also starts with `/shop` but ignores `filter`, so
+    // applying a filter there must navigate to `/shop` instead of silently
+    // replacing the URL on a page that won't react to it.
+    const isProductRoute = pathname.startsWith('/shop/product');
+    const isListingRoute = pathname.startsWith('/shop') && !isProductRoute;
+    const targetPath = isListingRoute ? pathname : '/shop';
     const url = qs ? `${targetPath}?${qs}` : targetPath;
-    if (isShopRoute) {
+    if (isListingRoute) {
       router.replace(url);
     } else {
       router.push(url);

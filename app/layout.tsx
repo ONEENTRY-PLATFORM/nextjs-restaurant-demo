@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
+import { getOutOfStockMarker } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { DictProvider } from '@/app/store/providers/DictProvider';
 import { OpenDrawerProvider } from '@/app/store/providers/OpenDrawerContext';
+import { ProductStatusProvider } from '@/app/store/providers/ProductStatusContext';
 import StoreProvider from '@/app/store/providers/StoreProvider';
 import PopupRoot from '@/components/layout/PopupRoot';
 import ServerCartSync from '@/components/layout/ServerCartSync';
@@ -75,6 +77,9 @@ export default function RootLayout({
   // every other server caller (e.g. server-side `t()`) shares this same
   // in-flight promise.
   const dictPromise = getDictionary();
+  // Same parallel-fetch trick as the dictionary: pass the promise (not an awaited
+  // value) so the product-statuses fetch runs alongside every other server call.
+  const outOfStockMarkerPromise = getOutOfStockMarker();
 
   return (
     <html lang="en">
@@ -84,21 +89,23 @@ export default function RootLayout({
         <RegisterGSAP />
         <StoreProvider>
           <DictProvider value={dictPromise}>
-            <AuthProvider>
-              <ServerCartSync />
-              <OpenDrawerProvider>
-                <Header />
-                <TransitionProvider>
-                  <main className="flex flex-col grow overflow-hidden w-full pb-10">
-                    {children}
-                  </main>
-                </TransitionProvider>
-                <HeaderAnimGate delay={0.5}>
-                  <BottomMenu />
-                </HeaderAnimGate>
-                <PopupRoot />
-              </OpenDrawerProvider>
-            </AuthProvider>
+            <ProductStatusProvider value={outOfStockMarkerPromise}>
+              <AuthProvider>
+                <ServerCartSync />
+                <OpenDrawerProvider>
+                  <Header />
+                  <TransitionProvider>
+                    <main className="flex flex-col grow overflow-hidden w-full pb-10">
+                      {children}
+                    </main>
+                  </TransitionProvider>
+                  <HeaderAnimGate delay={0.5}>
+                    <BottomMenu />
+                  </HeaderAnimGate>
+                  <PopupRoot />
+                </OpenDrawerProvider>
+              </AuthProvider>
+            </ProductStatusProvider>
           </DictProvider>
         </StoreProvider>
         <ResponsiveToastContainer />

@@ -81,6 +81,11 @@ export { getProducts } from './server/products/getProducts';
 export { getProductsByPageUrl } from './server/products/getProductsByPageUrl';
 export type { PriceRange } from './server/products/getProductsPriceRange';
 export { getProductsPriceRange } from './server/products/getProductsPriceRange';
+export {
+  getOutOfStockMarker,
+  getProductStatuses,
+  resolveOutOfStockMarker,
+} from './server/products/getProductStatuses';
 export { getRelatedProductsById } from './server/products/getRelatedProductsById';
 export { logInUser } from './server/users/logInUser';
 export { logOutUser } from './server/users/logOutUser';

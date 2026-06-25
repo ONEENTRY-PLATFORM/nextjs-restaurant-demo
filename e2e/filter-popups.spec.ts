@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
-import { gotoAndReady, isMobile } from './fixtures/helpers';
+import { gotoAndReady, isMobile, swipeDownToClose } from './fixtures/helpers';
 
 /**
  * openCategoryFilter — opens the CategoryFilter drawer via the desktop "Open categories" burger.
@@ -105,33 +105,44 @@ test.describe('CategoryFilter drawer', () => {
     await page.waitForURL(/\/restaurants$/);
   });
 
-  test('clicking the backdrop closes the drawer', async ({ page }) => {
-    // On mobile the drawer is `w-full` and covers the backdrop entirely (nothing to click).
-    if (isMobile(page)) test.skip();
-
+  test('closing the drawer (backdrop click on desktop, swipe-down on mobile)', async ({ page }) => {
     await gotoAndReady(page, '/');
     await openCategoryFilter(page);
 
-    // Multiple backdrops with `fixed.inset-0` live in DOM (CategoryFilter + FilterBottom);
-    // when closed they keep `opacity-0 pointer-events-none`. Pick the currently active one.
-    const backdrop = page
-      .locator('div[aria-hidden="true"].fixed.inset-0.pointer-events-auto')
-      .first();
-    await expect(backdrop).toBeVisible();
-    // The CategoryFilter aside occupies the left 400px on `md+`; click well to the right of it.
-    await backdrop.click({ position: { x: 800, y: 100 } });
+    if (isMobile(page)) {
+      // The drawer is `w-full` on mobile (no backdrop to click) — dismiss via the swipe-down gesture.
+      await swipeDownToClose(page.locator('aside').filter({ hasText: 'Category' }).first());
+    } else {
+      // Multiple backdrops with `fixed.inset-0` live in DOM (CategoryFilter + FilterBottom);
+      // when closed they keep `opacity-0 pointer-events-none`. Pick the currently active one.
+      const backdrop = page
+        .locator('div[aria-hidden="true"].fixed.inset-0.pointer-events-auto')
+        .first();
+      await expect(backdrop).toBeVisible();
+      // The CategoryFilter aside occupies the left 400px on `md+`; click well to the right of it.
+      await backdrop.click({ position: { x: 800, y: 100 } });
+      await page.waitForTimeout(600);
+    }
 
-    await page.waitForTimeout(600);
-    const drawerSelector = 'aside';
-    const visible = await page.evaluate(sel => {
-      const list = document.querySelectorAll(sel);
+    // The closed drawer slides off-screen in a viewport-dependent direction — left on desktop
+    // (`md:-translate-x-full`), down on mobile (`translate-y-full`) — so check BOTH axes, not just
+    // horizontal (the earlier horizontal-only check saw the mobile drawer as still on-screen).
+    const visible = await page.evaluate(() => {
+      const list = document.querySelectorAll('aside');
       for (const el of Array.from(list)) {
         if (!el.textContent?.includes('Category')) continue;
         const r = (el as HTMLElement).getBoundingClientRect();
-        if (r.left >= 0 && r.right <= window.innerWidth + 1 && r.width > 0) return true;
+        const inViewport =
+          r.left < window.innerWidth &&
+          r.right > 0 &&
+          r.top < window.innerHeight &&
+          r.bottom > 0 &&
+          r.width > 0 &&
+          r.height > 0;
+        if (inViewport) return true;
       }
       return false;
-    }, drawerSelector);
+    });
     expect(visible).toBeFalsy();
   });
 });
@@ -283,14 +294,19 @@ test.describe('FilterBottom popup', () => {
     await expect.poll(() => isOnScreen(page, '#side-menu'), { timeout: 3_000 }).toBeFalsy();
   });
 
-  test('Close X dismisses the popup (desktop)', async ({ page }) => {
-    if (isMobile(page)) test.skip();
-
+  test('dismissing the filter sheet (Close X on desktop, swipe-down on mobile)', async ({
+    page,
+  }) => {
     await gotoAndReady(page, '/');
     await openFilterPopup(page);
 
-    await page.locator('#side-menu button[aria-label="Close"]').click();
-    await page.waitForTimeout(600);
+    if (isMobile(page)) {
+      // The Close X is `max-md:hidden` on mobile — dismiss via the swipe-down gesture (useSwipeToClose).
+      await swipeDownToClose(page.locator('#side-menu'));
+    } else {
+      await page.locator('#side-menu button[aria-label="Close"]').click();
+      await page.waitForTimeout(600);
+    }
     // The close animation is 500ms; poll instead of asserting immediately.
     await expect.poll(() => isOnScreen(page, '#side-menu'), { timeout: 3_000 }).toBeFalsy();
   });

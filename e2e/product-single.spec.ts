@@ -60,14 +60,18 @@ test.describe('ProductSingle (product page)', () => {
   test('preference-pill click navigates to /shop?preferences=<value>', async ({ page }) => {
     await openFirstProduct(page);
 
+    // The pills sit in a GSAP-revealed block (autoAlpha:0 → visible), so an eager isVisible() races
+    // the reveal and mis-skips a product that DOES have preferences. Use count() to detect a genuinely
+    // preference-less product (no pill in the DOM at all) and wait for the reveal otherwise.
     const pill = page.locator('a.list_item.list_link[href*="/shop?preferences="]').first();
-    if (!(await pill.isVisible().catch(() => false))) {
+    if ((await pill.count()) === 0) {
       test.info().annotations.push({
         type: 'note',
         description: 'product has no preferences — skipped',
       });
       test.skip();
     }
+    await expect(pill).toBeVisible({ timeout: 15_000 });
     const href = await pill.getAttribute('href');
     expect(href).toMatch(/^\/shop\?preferences=/);
     await pill.click();
@@ -78,14 +82,17 @@ test.describe('ProductSingle (product page)', () => {
   test('breadcrumb Category / X navigates to /shop/category/<slug>', async ({ page }) => {
     await openFirstProduct(page);
 
+    // Same eager-isVisible race as the preference-pill test: detect a genuinely category-less product
+    // via count(), otherwise wait for the breadcrumb to reveal before asserting.
     const crumb = page.locator('a[href^="/shop/category/"]').first();
-    if (!(await crumb.isVisible().catch(() => false))) {
+    if ((await crumb.count()) === 0) {
       test.info().annotations.push({
         type: 'note',
         description: 'product has no category — skipped',
       });
       test.skip();
     }
+    await expect(crumb).toBeVisible({ timeout: 15_000 });
     const href = await crumb.getAttribute('href');
     expect(href).toMatch(/^\/shop\/category\/[^/]+$/);
     // The breadcrumb can sit outside the viewport on long product pages and `force: true` still

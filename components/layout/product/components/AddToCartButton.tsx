@@ -10,9 +10,9 @@ import { updateUserState } from '@/app/api/server/users/updateUserState';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
+import { useOutOfStockMarker } from '@/app/store/providers/ProductStatusContext';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
-import { PRODUCT_STATUSES } from '@/app/utils/constants';
 import CartAddIcon from '@/components/icons/cart-add';
 
 import QuantitySelector from './QuantitySelector';
@@ -58,9 +58,10 @@ const AddToCartButton = ({
     (state: { favoritesReducer: { products: number[] } }) => selectFavoritesItems(state)
   );
   const { user } = useContext(AuthContext);
+  const outOfStockMarker = useOutOfStockMarker();
   const notInStock = useMemo(
-    () => statusIdentifier === PRODUCT_STATUSES.outOfStock,
-    [statusIdentifier]
+    () => statusIdentifier === outOfStockMarker,
+    [statusIdentifier, outOfStockMarker]
   );
 
   const updateUserCartState = async () => {

@@ -199,3 +199,39 @@ export const signInAsTestUser = async (page: Page): Promise<void> => {
   }
   await expect(modal).toBeHidden({ timeout: 5_000 });
 };
+
+/**
+ * swipeDownToClose — simulates a downward swipe-to-dismiss on a bottom-sheet / drawer (mobile).
+ *
+ * Dispatches touchstart → touchmove → touchend with a 200px downward delta, satisfying both swipe
+ * implementations in the app: the inline CategoryFilter handler (reads `changedTouches` on touchend,
+ * 80px threshold) and `useSwipeToClose` (reads `touches` on touchmove, 100px threshold, then closes on
+ * the follow-up `transitionend`). Touch-capable Chromium only (the mobile-chrome project).
+ *
+ * @param   {Locator} drawer - Locator for the drawer/sheet root that carries the swipe listeners.
+ * @returns Promise resolving once the gesture is dispatched and the close transition has settled.
+ */
+export const swipeDownToClose = async (drawer: Locator): Promise<void> => {
+  await drawer.evaluate((el: HTMLElement) => {
+    const rect = el.getBoundingClientRect();
+    const x = Math.round(rect.left + Math.min(rect.width / 2, 150));
+    const startY = Math.round(rect.top + 20);
+    const mk = (type: string, y: number): TouchEvent => {
+      const touch = new Touch({ identifier: 1, target: el, clientX: x, clientY: y });
+      const lifted = type === 'touchend';
+      return new TouchEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        touches: lifted ? [] : [touch],
+        targetTouches: lifted ? [] : [touch],
+        changedTouches: [touch],
+      });
+    };
+    el.dispatchEvent(mk('touchstart', startY));
+    el.dispatchEvent(mk('touchmove', startY + 200));
+    el.dispatchEvent(mk('touchend', startY + 200));
+  });
+  // useSwipeToClose finishes the close on a 140–280ms transition → transitionend → React unmount.
+  await drawer.page().waitForTimeout(700);
+};

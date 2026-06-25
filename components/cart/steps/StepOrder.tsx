@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { useOutOfStockMarker } from '@/app/store/providers/ProductStatusContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import {
   clearBonusAmount,
@@ -26,7 +27,7 @@ import {
   setBonusAmount,
   setStep,
 } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID, PRODUCT_STATUSES } from '@/app/utils/constants';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import Placeholder from '@/components/shared/Placeholder';
 import { UsePrice } from '@/components/utils';
@@ -62,6 +63,7 @@ const StepOrder = (): JSX.Element => {
 
   const [promoCode, setPromoCode] = useState(appliedCoupon?.code ?? '');
   const { applyCoupon, removeCoupon, isLoading, error } = useApplyCoupon();
+  const outOfStockMarker = useOutOfStockMarker();
 
   const items = cartData
     .map(entry => ({
@@ -72,7 +74,7 @@ const StepOrder = (): JSX.Element => {
       row =>
         row.product &&
         row.entry.selected &&
-        row.product.statusIdentifier !== PRODUCT_STATUSES.outOfStock &&
+        row.product.statusIdentifier !== outOfStockMarker &&
         // Delivery shows as a separate line in the totals - otherwise it gets double-counted in the subtotal.
         row.entry.id !== DELIVERY_PRODUCT_ID
     ) as Array<{

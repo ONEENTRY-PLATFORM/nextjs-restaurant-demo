@@ -12,15 +12,26 @@ import {
 } from '../utils';
 
 describe('UsePrice', () => {
-  it('formats integers as currency', () => {
+  it('drops the fractional part for whole amounts', () => {
     const out = UsePrice({ amount: 12 });
     // We don't hard-code the symbol — different ICU builds render it slightly
-    // differently — but the digits and the locale-formatted "12.00" must be there.
-    expect(out).toMatch(/12[.,]00/);
+    // differently — but a whole amount must show "12" with no cents (per the JSDoc).
+    expect(out).toMatch(/12/);
+    expect(out).not.toMatch(/12[.,]\d/);
   });
 
-  it('coerces numeric strings', () => {
-    expect(UsePrice({ amount: '7' })).toMatch(/7[.,]00/);
+  it('keeps two digits for amounts with cents', () => {
+    expect(UsePrice({ amount: 16.5 })).toMatch(/16[.,]50/);
+  });
+
+  it('coerces numeric strings (whole → no cents)', () => {
+    const out = UsePrice({ amount: '7' });
+    expect(out).toMatch(/7/);
+    expect(out).not.toMatch(/7[.,]\d/);
+  });
+
+  it('coerces numeric strings with a fractional part', () => {
+    expect(UsePrice({ amount: '7.25' })).toMatch(/7[.,]25/);
   });
 });
 

@@ -25,6 +25,8 @@ export const dictText = (
 /**
  * UsePrice — formats a number as a currency string (project locale + currency).
  *
+ * Whole amounts drop the fractional part (`$11.00` → `$11`); amounts with cents keep two digits (`$16.50`).
+ *
  * @param   {object}            props        - Function props.
  * @param   {number | string}   props.amount - Numeric (or numeric-string) amount to format.
  * @returns Locale-formatted currency string.
@@ -32,10 +34,13 @@ export const dictText = (
 export const UsePrice = ({ amount }: { amount: number | string }): string => {
   const currency = CurrencyEnum['en' as keyof typeof CurrencyEnum];
   const intlEnum = IntlEnum['en' as keyof typeof IntlEnum];
+  const value = Number(amount);
   const formattedPrice = new Intl.NumberFormat(intlEnum, {
     style: 'currency',
     currency: currency,
-  }).format(Number(amount));
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 
   return formattedPrice;
 };

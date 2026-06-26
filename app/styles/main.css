@@ -20,6 +20,17 @@
 }
 
 /*
+ * Hide the browser's native `type="search"` clear button (a ✕ in the OS accent
+ * colour on the right edge of the field). `SearchBar` renders its own clear
+ * button instead so the affordance matches the design system (`CloseXMiniIcon`).
+ */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/*
  * HomePromo entrance: solid `bg-black` overlay that fades from opacity:1 → 0
  * over the hero. The class is added by `HomePromoOverlay` only AFTER the
  * header GSAP timeline reports completion — so the sequence stays

@@ -148,6 +148,23 @@ OneEntry для сжатых на сервере изображений отда
 
 ---
 
+## C.8. `review_form` снова закрыт для анонимного чтения — **РЕГРЕССИЯ** (сверка SDK 2026-06-26)
+
+Отзывы **не отображаются ни на одной странице товара** (везде empty-state «No reviews yet»), хотя в БД лежат **363 одобренных отзыва** (по 3 на товар).
+
+Причина — права доступа, не код. Сверено SDK-скриптом (`.claude/temp/diag-reviews-anon.mjs`, app-token `next-rest` serial 5, как ходит SSR):
+
+- **анонимно** (только app-token, без user-JWT — так работает весь SSR): `FormData.getFormsDataByMarker('review_form', 2, …)` → **403 `Permission data not found. Provide the permission for requested url`**; `Forms.getFormByMarker('review_form').moduleFormConfigs[0].isGlobal === false`;
+- **под user-token** (тот же вызов): **200**, `total=363`, все `status: 'approved'`, `entityIdentifier` = id товаров (3448…), `parentId: null`.
+
+Это **откат** ранее выданного права: 2026-06-25 (`recheck-403-items.mjs`) тот же анонимный вызов отдавал `total=363`. Между 25 и 26 июня право группе **Guests** на чтение данных формы `review_form` слетело (память `oneentry_formdata_isglobal` отмечала, что выдача прав срабатывала с лагом / была нестабильна).
+
+Как стреляет в коде: [getProductReviews.ts](app/api/server/forms/getProductReviews.ts) ловит `isError(403)` и по правилу graceful-fallback возвращает `[]` → [ProductReviewsList](components/reviews/ProductReviewsList.tsx) рисует «No reviews yet». Фикс на стороне кода невозможен — SSR ходит анонимно и иначе как через право Guests эти данные не прочитает.
+
+**Действие для админки:** заново выдать группе **Guests** право **`read`** на данные формы `review_form` (секция разрешений формы; в ответе SDK это отражается как `moduleFormConfigs[0].isGlobal === true`). После выдачи — **обязательно** перепроверить анонимным SDK-вызовом (`node .claude/temp/diag-reviews-anon.mjs` должен дать `200 / total>0`, а не 403), т.к. право срабатывает не сразу. Только после подтверждённого 200 пометить `✅`.
+
+---
+
 ## C.10. Профиль — Reservations history (Figma 78:1293)
 
 **Открытое для клиента:**

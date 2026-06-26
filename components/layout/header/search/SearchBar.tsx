@@ -5,6 +5,7 @@ import type { FormEvent, JSX } from 'react';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
+import CloseXMiniIcon from '@/components/icons/close-x-mini';
 import SearchIcon from '@/components/icons/search';
 
 import SearchResults from './SearchResults';
@@ -33,6 +34,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
   const pathname = usePathname();
   const urlSearchParams = useSearchParams();
   const isShopListing = isShopListingPath(pathname);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState(() => urlSearchParams.get('search') ?? '');
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -100,16 +102,24 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     goToShopWithQuery(inputValue);
   };
 
+  const handleClear = () => {
+    userTypedRef.current = true;
+    setInputValue('');
+    setIsSearchActive(false);
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="relative grow">
       <form className="relative" onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
           value={inputValue}
           onChange={e => handleChange(e.target.value)}
           type="search"
           id="searchInput"
           name="quick-search"
-          className="rounded w-full md:w-62.5 lg:w-83.75 h-9.5 backdrop-blur-card bg-[rgba(106,108,122,0.5)] pl-10 text-paper cursor-pointer"
+          className="rounded w-full md:w-62.5 lg:w-83.75 h-9.5 backdrop-blur-card bg-[rgba(106,108,122,0.5)] pl-10 pr-10 text-paper cursor-pointer"
           placeholder={placeholder}
           aria-label={placeholder}
         />
@@ -117,6 +127,16 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
           <span className="sr-only">{placeholder}</span>
           <SearchIcon />
         </button>
+        {inputValue.length > 0 && (
+          <button
+            type="button"
+            onClick={handleClear}
+            aria-label="Clear search"
+            className="group absolute top-1/2 right-3 -translate-y-1/2"
+          >
+            <CloseXMiniIcon />
+          </button>
+        )}
       </form>
       <Suspense fallback={'...'}>
         <SearchResults

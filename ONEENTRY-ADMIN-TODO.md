@@ -40,6 +40,25 @@
 
 > ⚠️ Побочное: SDK `UserActivity.trackUserActivity` под `isShell: true` возвращает `true` даже на 403 (ошибка не бросается, а возвращается, после чего метод игнорирует её и отдаёт `true`). Полагаться на его результат как на признак успеха нельзя — проверять статус сырым fetch.
 
+## C.2.9. `getProductsByPageUrl` / `getProductsByPageId` отдают 403 анониму — категории на главной и каталог категорий пусты (сверка SDK 2026-06-26)
+
+Симптом: на главной **не рендерится блок категорий** (`home_categories`), а в каталоге пусты страницы категорий (`/shop/category/<handle>`). Структура в админке корректна: под страницей `menu` (id=1, `catalog_page`) есть 8 видимых дочерних `catalog_page` (`soups`, `main-courses`, `appetizers`, `hot-drinks`, `cold-drinks`, `salads`, `desserts`, `kids-menu`), товары привязаны к категориям (`product.categories = ["menu/<handle>"]`), всего 123 товара.
+
+Причина — права доступа, не код. Сверено SDK-скриптом (`.claude/temp/diag-home-categories.mjs`, app-token, как ходит SSR):
+
+- `Products.getProductsByPageUrl('<любой handle>')` → **403** `{"statusCode":403,"message":"Permission data not found. Provide the permission for requested url"}`. 403 для **любого** url (`soups`, `menu`, `home_web`, даже несуществующего) — значит гейт на эндпоинте, а не на конкретной странице.
+- `Products.getProductsByPageId(245)` / `getProductsByPageId(1)` → тот же **403**.
+- При этом `Products.getProducts([], …)` под тем же app-token → **200**, `total=123` (общий список работает).
+- Обходной фильтр работает: `getProducts([{ attributeMarker: 'category', conditionMarker: 'eq', conditionValue: '<Title категории>' }])` → товары категории (напр. `category eq "Soups"` → 10). Но это завязка на локализованный `title` атрибута `category`, не на `pageUrl`.
+
+Та же семья 403, что у `user-activity/track` (C.2.8.2), истории бонусов (C.6.3) и `review_form` (C.8) — память `oneentry_anon_apptoken_403_resources`.
+
+Как стреляет в коде: [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts) ловит ошибку и по graceful-fallback отдаёт `{ isError: true, total: 0 }` → [HomeCategoriesSection](components/home/HomeCategoriesSection.tsx) фильтрует пустые секции и при `populated.length === 0` возвращает `null` (блок исчезает). Фикс на стороне кода без права невозможен — SSR ходит анонимно.
+
+**Действие для админки:** открыть группе **Guests** право на чтение **товаров по странице/каталогу** (эндпоинты products-by-page: `GET /api/content/products/page/url/{url}` и `GET /api/content/products/page/id/{id}`, методы SDK `getProductsByPageUrl` / `getProductsByPageId`, а заодно и парные `getProductsCountByPageUrl` / `getProductsByPageId` count). После выдачи — **обязательно** перепроверить анонимным SDK-вызовом (`node .claude/temp/diag-home-categories.mjs` должен дать `total>0`, а не 403): по C.8 видно, что право Guests срабатывает с лагом и может слетать. Только после подтверждённого 200 пометить `✅`.
+
+> Запасной вариант (если право выдать не удаётся): переписать [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts) на `getProducts` + фильтр по атрибуту `category` (значение = `page.localizeInfos.title`). Минусы — завязка на локализованный title и потеря серверной пагинации/сортировки именно по странице. Брать только если права не решат вопрос.
+
 ## C.3. Похожие товары (related products)
 
 - В админке привязать минимум 4–6 «похожих» через стандартный механизм OneEntry **Product Links**. Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).

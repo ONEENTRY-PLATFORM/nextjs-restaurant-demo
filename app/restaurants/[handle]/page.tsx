@@ -4,12 +4,31 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
-import { getPageByUrl } from '@/app/api';
+import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
+import { PAGES } from '@/app/utils/constants';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
 
+// Every restaurant child page is prerendered via `generateStaticParams` and served from the static
+// cache (keeps the `loading.tsx` skeleton on navigation). `dynamicParams = false` makes Next answer
+// any handle NOT in that list with a real framework HTTP 404 *before* the route renders — so unknown
+// restaurants are hard 404s, not soft-404s (a `force-static` route can never set 404 from
+// `notFound()`). New restaurants become reachable after the next build/revalidate of the params list.
 export const dynamic = 'force-static';
 export const revalidate = 300;
+export const dynamicParams = false;
+
+/**
+ * generateStaticParams — enumerates every restaurant child page handle so each detail page is prerendered.
+ *
+ * Pairs with `dynamicParams = false` so handles outside this list resolve to a framework 404.
+ *
+ * @returns Promise resolving to the list of `{ handle }` route params (one per restaurant `pageUrl`).
+ */
+export async function generateStaticParams(): Promise<Array<{ handle: string }>> {
+  const { pages = [] } = await getChildPagesByParentUrl(PAGES.restaurants);
+  return pages.map(p => ({ handle: p.pageUrl }));
+}
 
 type Photo = { downloadLink?: string };
 type ComfortItem = {
@@ -292,8 +311,11 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
-  const { page } = await getPageByUrl(handle);
-  const title = page?.localizeInfos?.title ?? handle;
+  const { page, isError } = await getPageByUrl(handle);
+  if (isError || !page) {
+    return notFound();
+  }
+  const title = page.localizeInfos?.title ?? handle;
   return {
     title,
     description: title,

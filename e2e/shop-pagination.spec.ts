@@ -28,26 +28,29 @@ test.describe('Catalog pagination (LoadMore)', () => {
       test.skip(true, 'catalog fits on a single page (≤ 8 products) — no LoadMore to exercise');
     }
 
-    // The button auto-triggers on scroll (GSAP ScrollTrigger) and is also a manual click target.
-    // Scroll it into view AND click — whichever fires first wins; both push `?page=2`. Tolerate the
-    // click missing: once the transition is pending the button re-renders into a skeleton and detaches.
-    await loadMore
-      .first()
-      .scrollIntoViewIfNeeded()
-      .catch(() => undefined);
-    await loadMore
-      .first()
-      .click({ timeout: 5_000 })
-      .catch(() => undefined);
-
-    await page.waitForURL(u => u.searchParams.get('page') === '2', { timeout: 20_000 });
+    // `LoadMore` advances the page via a GSAP scroll-trigger AND a manual click; both are racy on
+    // slower browsers — a single attempt can miss entirely (the button re-renders into a skeleton
+    // mid-transition and detaches before the click lands, and the scroll-trigger may not fire). Retry
+    // the scroll-into-view + click until the URL actually advances past page 1. It is an infinite-scroll
+    // trigger too, so it may auto-advance several pages — assert it moved PAST page 1, not an exact page.
+    await expect(async () => {
+      await loadMore
+        .first()
+        .scrollIntoViewIfNeeded()
+        .catch(() => undefined);
+      await loadMore
+        .first()
+        .click({ timeout: 2_000 })
+        .catch(() => undefined);
+      const current = Number(new URL(page.url()).searchParams.get('page') ?? '1');
+      expect(current, 'LoadMore should push ?page>=2').toBeGreaterThanOrEqual(2);
+    }).toPass({ timeout: 20_000 });
     await page.waitForLoadState('networkidle').catch(() => undefined);
 
-    // Page 2 fetches `limit = 2 * 8 = 16`, so the grid grows past the first page and is capped at 16.
+    // The grid must grow beyond the first page once more pages are loaded.
     await expect
       .poll(() => page.locator(REAL_CARDS).count(), { timeout: 20_000 })
       .toBeGreaterThan(initial);
-    expect(await page.locator(REAL_CARDS).count()).toBeLessThanOrEqual(16);
   });
 });
 

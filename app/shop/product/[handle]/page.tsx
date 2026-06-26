@@ -7,8 +7,13 @@ import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/a
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 
-export const dynamic = 'force-static';
-export const revalidate = 300;
+// Product detail renders on demand so an unknown id yields a real framework HTTP 404 from `notFound()`.
+// Prerendering every product instead (`generateStaticParams` + `dynamicParams = false`) makes the build
+// render all ~130 product pages, each generating image LQIP placeholders (sharp) — that CPU storm
+// starves concurrent prerenders, and the home page's category fetch came back empty. Per-request render
+// keeps the build light; product data is still cached via `unstable_cache` in `getProductById`, so
+// OneEntry is not hit per request — only the HTML/RSC render runs on demand.
+export const dynamic = 'force-dynamic';
 
 /**
  * ProductPageLayout — product page layout (Product JSON-LD + `<ProductSingle />`).

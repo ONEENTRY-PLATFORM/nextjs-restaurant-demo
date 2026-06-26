@@ -25,7 +25,7 @@ import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
 import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
-import Spinner from '@/components/shared/Spinner';
+import CartListSkeleton from '@/components/shared/skeletons/CartListSkeleton';
 
 /**
  * CartPage — list of products in the cart + APPLY button (proceed to checkout).
@@ -158,8 +158,10 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     }
   }, [pendingCheckout, isAuth, dispatch]);
 
-  if (isLoading) {
-    return <Spinner />;
+  // While RTK fetches product details, mirror the cart with one skeleton row per persisted item (delivery excluded).
+  const pendingCount = productsCartData.filter(p => p.id !== DELIVERY_PRODUCT_ID).length;
+  if (isLoading && pendingCount > 0) {
+    return <CartListSkeleton count={Math.min(pendingCount, 8)} />;
   }
 
   // Delivery must not be rendered as a product card; drop entries without a stable id (defensive — keys must be unique).

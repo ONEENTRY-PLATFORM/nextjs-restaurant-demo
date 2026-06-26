@@ -7,7 +7,7 @@ import Skeleton from './Skeleton';
  *
  * @returns JSX of a single cart line skeleton.
  */
-const CartLineSkeleton = (): JSX.Element => (
+export const CartLineSkeleton = (): JSX.Element => (
   <div className="flex items-center gap-4 border-b border-paper/10 pb-5">
     <Skeleton className="size-20 shrink-0 rounded-card" />
     <div className="flex grow flex-col gap-2.5">

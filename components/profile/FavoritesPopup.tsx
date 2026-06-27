@@ -49,9 +49,7 @@ const FavoritesPopup = (): JSX.Element => {
   const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
   const addToCartLabel = t('add_to_cart', 'Add to cart');
 
-  // Click-driven leave: animate cards out first, then trigger DrawerAnimations close (cart APPLY idiom).
-  // Backdrop click goes straight to `setTransition('close')` via `ModalBackdrop`, which is also caught
-  // by the parallel `useEffect` watcher below for a stagger in that path.
+  // Click-driven leave.
   const close = (): void => {
     const root = sheetRef.current;
     if (!root) {
@@ -176,9 +174,6 @@ const FavoriteCard = ({
 
   const productHref = `/shop/product/${product.id}`;
 
-  // Mount-based entry stagger — DrawerAnimations unmounts the subtree on close (`<></>`), so each
-  // reopen mounts fresh cards and re-runs this effect. Plain `useEffect` + `gsap.fromTo` avoids
-  // `useGSAP`'s `gsap.context().revert()` cleanup, which has been observed to skip on remount.
   useEffect(() => {
     const node = cardRef.current;
     if (!node) return;

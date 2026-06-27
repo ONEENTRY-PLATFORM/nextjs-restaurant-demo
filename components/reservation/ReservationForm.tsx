@@ -79,8 +79,12 @@ const ReservationForm = ({
 }: ReservationFormProps): JSX.Element => {
   const t = useT();
   const { isAuth } = useContext(AuthContext);
-  const { createReservation, updateReservation, isLoading, error: submitError } =
-    useSubmitReservation();
+  const {
+    createReservation,
+    updateReservation,
+    isLoading,
+    error: submitError,
+  } = useSubmitReservation();
   const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [validationError, setValidationError] = useState('');
@@ -235,7 +239,7 @@ const ReservationForm = ({
       <ReservationAuthStep
         currentValues={values}
         onAuthSuccess={() => {
-          setError('');
+          setValidationError('');
           setStep({ kind: 'payment', formData: step.formData, summary: step.summary });
         }}
         subStep={authSubStep}

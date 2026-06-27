@@ -1,18 +1,17 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { JSX } from 'react';
+import { type JSX, Suspense } from 'react';
 
 import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/api';
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
+import ProductSingleSkeleton from '@/components/shared/skeletons/ProductSingleSkeleton';
 
-// Product detail renders on demand so an unknown id yields a real framework HTTP 404 from `notFound()`.
-// Prerendering every product instead (`generateStaticParams` + `dynamicParams = false`) makes the build
-// render all ~130 product pages, each generating image LQIP placeholders (sharp) — that CPU storm
-// starves concurrent prerenders, and the home page's category fetch came back empty. Per-request render
-// keeps the build light; product data is still cached via `unstable_cache` in `getProductById`, so
-// OneEntry is not hit per request — only the HTML/RSC render runs on demand.
+// force-dynamic — product data is cached via `unstable_cache` in `getProductById`, so only the RSC
+// render runs per request (no per-product prerender). Loading skeleton lives in the sibling
+// `loading.tsx` (ProductSingleSkeleton). Trade-off: that loading boundary flushes a 200 shell before
+// `getProductById` resolves, so an unknown id is a soft-404 (200), not a hard 404 — see MISMATCH-LOG E.1.
 export const dynamic = 'force-dynamic';
 
 /**
@@ -70,7 +69,9 @@ const ProductPageLayout = async ({
         }}
       />
       <TrackProductView productId={product.id} />
-      <ProductSingle product={product as IProductsEntity} />
+      <Suspense fallback={<ProductSingleSkeleton />}>
+        <ProductSingle product={product as IProductsEntity} />
+      </Suspense>
     </>
   );
 };

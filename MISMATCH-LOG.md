@@ -26,6 +26,7 @@
 | A. Автоматические находки | 1 | 0 | 0 | 1 | 0 |
 | B. Ручная сверка по экранам | см. ниже | — | — | — | — |
 | D. Соответствие MCP/SDK (отложенные) | 7 | 0 | 1 | 5 | 1 |
+| E. Роутинг / навигация (SSR, loading.tsx) | 1 | 0 | 0 | 1 | 0 |
 | OneEntry Admin Setup | [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) | — | — | — | — |
 
 ---
@@ -47,6 +48,18 @@
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | B.7.3 | CMS-атрибуты `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` — **существуют в OneEntry, но значения пусты** (см. §C.7.1). Используются хардкоды `'FOOD DELIVERY'`, `'BOOK A TABLE'`, `/shop`, `/reservation` — fallback работает. Действие на стороне админа | [app/service/page.tsx:40-48](app/service/page.tsx#L40-L48) | — |
+
+## Раздел E. Роутинг / навигация (SSR, loading.tsx)
+
+Код-уровневые заметки о поведении переходов и SSR. Правки в **коде** (не вёрстка, не админка).
+
+- 🌐 Симптом: при переходе между страницами (напр. главная → каталог) «всё исчезает и висит пустое место, пока не загрузится страница». `next-transition-router` ([app/animations/TransitionProvider.tsx](app/animations/TransitionProvider.tsx)) гасит текущую страницу в `opacity:0` **до** старта навигации; пока сервер-компонент целевого роута `await`-ит данные наверху, рендерить нечего → пустой экран.
+
+- ✅ Закрыто: всем UI-роутам добавлены `loading.tsx`-скелетоны (каталог → общий [ShopCatalogSkeleton](components/shared/skeletons/ShopCatalogSkeleton.tsx), generic `/[handle]` → [GenericPageSkeleton](components/shared/skeletons/GenericPageSkeleton.tsx)). Скелетон появляется сразу после leave-анимации.
+
+| # | Что не так | Файл | Severity |
+|---|---|---|---|
+| E.1 | **Soft-404 на `notFound()`-роутах под `loading.tsx`-границей.** Побочный эффект скелетонов: на динамических `[handle]`-роутах невалидный handle отдаёт soft-404 (HTTP **200** + not-found UI) вместо жёсткого 404 — Next успевает зафлашить 200-шелл скелетона раньше, чем разрешится `notFound()`. Затронуты `/[handle]`, `/shop/[handle]`, `/shop/category/[handle]`, **и `/shop/product/[handle]`** (+ ранее `restaurants/[handle]`, `promo/[handle]`). Изначально товар держал жёсткий 404 без `loading.tsx`, но `app/shop/loading.tsx` (каталожный скелетон) **протекает** на дочерний роут товара (у него не было своей `loading.tsx`): показывал не тот скелетон (сетка вместо карточки) и уже ронял 404 в soft. Чинено своей `app/shop/product/[handle]/loading.tsx` (`ProductSingleSkeleton`) — скелетон правильный, 404 остаётся soft (как у соседей). Механика — заметка памяти `next16_loading_forcestatic_soft404`. **Чтобы вернуть жёсткий 404 товару:** route-group `app/shop/(catalog)/…` для index/[handle]/category (их `loading.tsx` уезжает в группу и перестаёт накрывать `product`), товар — без `loading.tsx`, скелетон через in-page `<Suspense>` после `notFound()`. | [app/shop/product/[handle]/loading.tsx](app/shop/product/%5Bhandle%5D/loading.tsx), [app/[handle]/loading.tsx](app/%5Bhandle%5D/loading.tsx), [app/shop/[handle]/loading.tsx](app/shop/%5Bhandle%5D/loading.tsx), [app/shop/category/[handle]/loading.tsx](app/shop/category/%5Bhandle%5D/loading.tsx) | P2 |
 
 ## Раздел D. Соответствие MCP/SDK (отложенные code-fixable правки)
 

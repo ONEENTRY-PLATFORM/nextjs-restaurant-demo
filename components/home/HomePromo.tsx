@@ -11,12 +11,6 @@ import HomePromoOverlay from './HomePromoOverlay';
 /**
  * HomePromo — homepage promo strip (desktop carousel + horizontal scroll for mobile).
  *
- * Entrance animation is done by a solid-black overlay that fades from opacity:1 → 0 over the banners (`.home-promo-overlay` in `main.css`, 0.5 s delay + 0.5 s duration). The hero `<img>` itself never animates opacity, so Chrome's LCP heuristic still picks it up at the first paint — visual fade-in without LCP regression. Chrome ignores visual occlusion by sibling elements when computing LCP candidacy, so the overlay is "free".
- *
- * The desktop strip rotates through every promo page (`blog` child pages) that has a desktop image via the client `HomePromoCarousel`; the server keeps the data fetch + LQIP generation and hands the carousel a plain `{ id: blur }` map (the `BannerBlur` type lives in a `server-only` module and must not cross into the client).
- *
- * `getBannerBlurMap` is imported via its direct path (not the `@/app/api` barrel) because `sharp` is Node-only and the barrel reaches the client bundle.
- *
  * @returns Promise resolving to JSX of the promo strip, or `null` when no banners are configured.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {

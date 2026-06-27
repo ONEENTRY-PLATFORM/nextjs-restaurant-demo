@@ -14,12 +14,6 @@ const AUTOPLAY_MS = 6000;
  * HomePromoCarousel — full-width desktop promo rotator: scroll-snap slides with dot indicators
  * and (reduced-motion-aware, hover-paused) autoplay. Each slide links to its `/promo/<pageUrl>` page.
  *
- * Built on native CSS scroll-snap (no Swiper) to keep the home LCP path light and mirror
- * RelatedPromosCarousel. Touch devices swipe via native momentum scroll; desktop adds mouse
- * drag-to-swipe (pointer events, snap temporarily disabled mid-drag). The first slide keeps
- * `priority` so Chrome still picks the hero as the LCP candidate. Dots and autoplay are rendered
- * only when there is more than one banner.
- *
  * @param   {object}                        props         - Component props.
  * @param   {BlogBanner[]}                  props.banners - Banners with a desktop image, in display order.
  * @param   {Record<number, string | null>} props.blur    - base64 LQIP keyed by banner id (desktop preview).
@@ -138,14 +132,13 @@ const HomePromoCarousel = ({
     el.scrollLeft = drag.startScroll - dx;
   };
 
-  const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
+  const endDrag = () => {
     const drag = dragRef.current;
     if (!drag.active) return;
     drag.active = false;
     const el = scrollerRef.current;
     if (el) {
       if (el.hasPointerCapture(drag.pointerId)) el.releasePointerCapture(drag.pointerId);
-      // Re-enable mandatory snap → the browser settles to the nearest slide.
       el.style.scrollSnapType = '';
     }
     setDragging(false);

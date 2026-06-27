@@ -33,31 +33,27 @@
 
 ## Раздел B. Ручная сверка по экранам
 
-### B.7. Поддержка / Service (`service_support.html`, `service.html` ↔ `app/support`, `app/service`)
+### B.8. Промо-детейл (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
 
-#### B.7a. ServicePage (`service.html`)
-
-- 🌐 Live: <http://localhost:3000/service>
+- 🌐 Live: <http://localhost:3000/promo/birthday_offer>
 
 - 📄 Static:
-  [service.html](static-html/service.html)
-  <file:///d:/OneEntry/nextjs-restaurant/static-html/service.html>
+  [pk_promo_BIRTHDAY.html](static-html/pk_promo_BIRTHDAY.html),
+  [pk_promo_day.html](static-html/pk_promo_day.html)
 
-- 📁 Файлы проекта: [app/service/page.tsx](app/service/page.tsx)
+- 📁 Файлы проекта: [app/promo/[handle]/page.tsx](app/promo/[handle]/page.tsx)
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
-| B.7.3 | CMS-атрибуты `service_logo`, `service_bg_image`, `service_primary_cta`, `service_primary_href`, `service_secondary_cta`, `service_secondary_href` — **существуют в OneEntry, но значения пусты** (см. §C.7.1). Используются хардкоды `'FOOD DELIVERY'`, `'BOOK A TABLE'`, `/shop`, `/reservation` — fallback работает. Действие на стороне админа | [app/service/page.tsx:40-48](app/service/page.tsx#L40-L48) | — |
+| B.8.2 | У промо без привязанных товаров (`birthday_offer` — скидка на всё меню) грид показывает пустой блок «Products not found». В дизайне (`pk_promo_BIRTHDAY.html`) на этом месте кнопка **«go to selection»** (CTA на полное меню `/shop`). Нужен условный рендер: товары есть → грид (как `pk_promo_day.html`), нет → CTA-кнопка | [app/promo/[handle]/page.tsx:109-118](app/promo/[handle]/page.tsx#L109-L118) | P1 |
+
+> ℹ️ Тот же плоский rich-text (`mt-3.75 font-normal text-base text-white`) ещё на `app/blog/page.tsx`, `app/restaurants/[handle]/page.tsx`, `app/[handle]/page.tsx`, `app/support/page.tsx` — кандидаты на переход к `.cms_prose`, если контент там тоже многоуровневый.
 
 ## Раздел E. Роутинг / навигация (SSR, loading.tsx)
 
 Код-уровневые заметки о поведении переходов и SSR. Правки в **коде** (не вёрстка, не админка).
 
 - 🌐 Симптом: при переходе между страницами (напр. главная → каталог) «всё исчезает и висит пустое место, пока не загрузится страница». `next-transition-router` ([app/animations/TransitionProvider.tsx](app/animations/TransitionProvider.tsx)) гасит текущую страницу в `opacity:0` **до** старта навигации; пока сервер-компонент целевого роута `await`-ит данные наверху, рендерить нечего → пустой экран.
-
-- ✅ Закрыто: всем UI-роутам добавлены `loading.tsx`-скелетоны (каталог → общий [ShopCatalogSkeleton](components/shared/skeletons/ShopCatalogSkeleton.tsx), generic `/[handle]` → [GenericPageSkeleton](components/shared/skeletons/GenericPageSkeleton.tsx)). Скелетон появляется сразу после leave-анимации.
-
-- ✅ Закрыто: на холодной загрузке/перезагрузке (когда `enter`-твин `next-transition-router` не отрабатывает) скелетоны теперь проявляются мягко — CSS-класс `.skeleton-fade-in` (keyframes в [app/styles/main.css](app/styles/main.css), учитывает `prefers-reduced-motion`) на корне каждого «резкого» скелетона. Каталожный `ProductsGridLoader` не трогали — его карточки и так проявляются GSAP-ом (`CardAnimations`).
 
 | # | Что не так | Файл | Severity |
 |---|---|---|---|

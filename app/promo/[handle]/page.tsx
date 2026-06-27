@@ -100,7 +100,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
         <h1 className="font-bold text-xl uppercase text-brand">{title}</h1>
         {subtitleHtml ? (
           <div
-            className="mt-3.75 font-normal text-base text-white"
+            className="cms_prose mt-3.75"
             dangerouslySetInnerHTML={{ __html: subtitleHtml }}
           />
         ) : null}

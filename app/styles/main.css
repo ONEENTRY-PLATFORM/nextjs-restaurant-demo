@@ -358,11 +358,51 @@ html {
       md:max-w-175
       lg:max-w-250
       xl:max-w-323
-      overflow-hidden 
-      gap-3 
+      overflow-hidden
+      gap-3
       px-4
       pt-6
       pb-7;
+  }
+
+  /*
+   * Typography for OneEntry rich-text payloads (`description` etc.) rendered via
+   * `dangerouslySetInnerHTML`. Tailwind preflight strips heading sizes and list
+   * markers, so CMS articles collapse into one flat block — these rules restore
+   * the hierarchy (brand headings, spaced paragraphs, bulleted lists).
+   */
+  .cms_prose {
+    @apply text-base leading-relaxed text-white;
+  }
+  .cms_prose > * + * {
+    @apply mt-4;
+  }
+  .cms_prose h1 {
+    @apply mt-7 text-2xl font-bold leading-tight text-brand;
+  }
+  .cms_prose h2 {
+    @apply mt-6 text-xl font-bold leading-snug text-paper;
+  }
+  .cms_prose h3 {
+    @apply mt-5 text-lg font-bold text-paper;
+  }
+  .cms_prose ul {
+    @apply list-disc pl-6 marker:text-brand;
+  }
+  .cms_prose ol {
+    @apply list-decimal pl-6 marker:text-brand;
+  }
+  .cms_prose li + li {
+    @apply mt-1.5;
+  }
+  .cms_prose a {
+    @apply text-brand underline underline-offset-2 transition-colors hover:text-brand-hover;
+  }
+  .cms_prose strong {
+    @apply font-bold text-paper;
+  }
+  .cms_prose em {
+    @apply italic;
   }
 
   .shop_section {

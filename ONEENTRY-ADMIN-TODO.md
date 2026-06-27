@@ -111,7 +111,25 @@
    **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
 
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
-1. **Stripe success-redirect URL.** После оплаты Stripe возвращает юзера на success-URL, заданный в OneEntry payments config. Сейчас такого URL нет — после оплаты юзер вернётся на главную или на ошибку. ❓ **Уточнить у клиента:** какой URL использовать (например, `/reservation/success?orderId=…` — потребует роут на нашей стороне), и обернуть его в текст success-экрана из Figma 120:2338.
+1. **Stripe success/cancel redirect URLs.** ✅ Роуты на стороне сайта созданы: `/payment/success` и `/payment/cancel` ([app/payment/success/page.tsx](app/payment/success/page.tsx), [app/payment/cancel/page.tsx](app/payment/cancel/page.tsx), общий [PaymentResult.tsx](components/payment/PaymentResult.tsx)). Success-экран повторяет карточку из Figma 120:2338 (`cart_PAYMENT_masseges.html`); id заказа берётся из query (`?orderId=`), т.к. Redux `lastOrderId` не переживает полный перезагруз со Stripe. Общий URL на платёжный аккаунт — годится и для доставки, и для брони. **Осталось на админке:** в OneEntry payments config (Stripe-аккаунт) прописать:
+
+   - success URL → `https://<host>/payment/success?orderId=<id>` (если подстановка id шаблоном не поддерживается — просто `/payment/success`, экран деградирует до подтверждения без номера);
+   - cancel URL → `https://<host>/payment/cancel`.
+
+   > ⚠️ Корзина чистится **до** редиректа на Stripe ([useCreateOrder.ts](app/api/hooks/useCreateOrder.ts) — `clearCheckoutState()` перед возвратом `paymentUrl`), поэтому при отмене оплаты позиции уже потеряны. Восстановление корзины на cancel — отдельная задача (связано с D.8 в [MISMATCH-LOG.md](MISMATCH-LOG.md)).
+
+   Тексты экранов читаются из словаря `static_content` с англ.-фолбэками (graceful, без ключей работает). Чтобы локализовать — завести в словаре:
+
+   | marker | type | title |
+   | --- | --- | --- |
+   | `payment_success_title` | text | Order Confirmed |
+   | `payment_success_message` | text | Your order has been placed successfully |
+   | `payment_success_outro` | text | See you soon! |
+   | `payment_success_cta` | text | View my orders |
+   | `payment_cancel_title` | text | Payment cancelled |
+   | `payment_cancel_message` | text | Your payment was not completed. You can try again from your cart. |
+   | `payment_cancel_cta` | text | Back to cart |
+   | `payment_back_home` | text | Back to home |
 
 ### C.6.3. Бонусная программа / лояльность (сверка MCP 2026-06-19)
 

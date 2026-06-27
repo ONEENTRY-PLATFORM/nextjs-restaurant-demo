@@ -32,6 +32,7 @@ export {
   useLazyGetMeQuery,
   useLazyGetPaymentSessionByIdQuery,
 } from './api/RTKApi';
+export { logInUser } from './client/logInUser';
 export { useApplyCoupon } from './hooks/useApplyCoupon';
 export { getProductBlurDataURL, getProductImageUrl } from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
@@ -47,6 +48,7 @@ export type { ServerCartApi, ServerWishlistApi } from './hooks/useServerCart';
 export { useServerCart, useServerWishlist } from './hooks/useServerCart';
 export { useServerCartSync } from './hooks/useServerCartSync';
 export { useSetForm } from './hooks/useSetForm';
+export { useSubmitReservation } from './hooks/useSubmitReservation';
 export { trackActivity, useTrackProductView } from './hooks/useTrackActivity';
 export { getAdminsInfo } from './server/admins/getAdminsInfo';
 export { getSingleAttributeByMarkerSet } from './server/attributes/getSingleAttributeByMarkerSet';
@@ -87,6 +89,5 @@ export {
   resolveOutOfStockMarker,
 } from './server/products/getProductStatuses';
 export { getRelatedProductsById } from './server/products/getRelatedProductsById';
-export { logInUser } from './server/users/logInUser';
 export { logOutUser } from './server/users/logOutUser';
 export { oauthLogIn } from './server/users/oauthLogIn';

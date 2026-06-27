@@ -15,8 +15,6 @@ import { trackActivity } from './useTrackActivity';
  * @returns Object `{ loading, products, refetch }` for the current search.
  */
 export const useSearchProducts = ({ name }: { name: string }) => {
-  // Start in `loading` when `name` is non-empty so the first render does not flash "No products found"
-  // before the effect runs.
   const [loading, setLoading] = useState<boolean>(Boolean(name));
   const [products, setProducts] = useState<IProductsEntity[]>([]);
   const [refetch, setRefetch] = useState(false);
@@ -39,8 +37,6 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       if (!isError(vector) && Array.isArray(vector) && vector.length > 0) {
         result = vector;
       } else {
-        // Guard the fallback too — searchProduct may return an IError envelope (not throw),
-        // which would crash the `.filter` below if treated as an array.
         const fallback = await getApi().Products.searchProduct(name);
         result = !isError(fallback) && Array.isArray(fallback) ? fallback : [];
       }
@@ -55,7 +51,6 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       });
       setProducts(unique);
       setLoading(false);
-      // Feeds search-driven recommendations (UserActivity → recommendation Blocks).
       trackActivity({ type: 'search', query: name });
     })();
     return () => {

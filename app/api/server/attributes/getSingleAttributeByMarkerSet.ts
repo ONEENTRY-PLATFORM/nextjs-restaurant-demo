@@ -38,10 +38,6 @@ const fetchSingleAttribute = unstable_cache(
 /**
  * getSingleAttributeByMarkerSet — a single attribute with its data from attribute sets.
  *
- * Composed cache (see {@link import('../pages/getPageByUrl').getPageByUrl}):
- * `unstable_cache` for 300 s cross-request caching (attribute sets change
- * rarely), React `cache()` for in-render deduplication.
- *
  * @param   {HandleProps} props                 - Fetch arguments.
  * @param   {string}      props.attributeMarker - Marker of the attribute inside the set.
  * @param   {string}      props.setMarker       - Marker of the attribute set.

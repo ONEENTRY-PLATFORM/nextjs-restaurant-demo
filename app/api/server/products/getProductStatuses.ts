@@ -18,7 +18,6 @@ const fetchProductStatuses = unstable_cache(
     }
   },
   ['oneentry-getProductStatuses'],
-  // Statuses are project-level config that changes about as rarely as attribute sets — match their 300 s window.
   { revalidate: 300, tags: ['oneentry', 'oneentry-product-statuses'] }
 );
 

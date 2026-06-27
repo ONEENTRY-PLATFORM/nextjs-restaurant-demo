@@ -22,8 +22,6 @@ export const getPagesByIds = cache(
       const results = await Promise.all(
         ids.map(async id => {
           const page = await getApi().Pages.getPageById(id);
-          // Guard per page: Promise.all returns an array, so a global isError
-          // check never fires — an errored page would otherwise leak through.
           return isError(page) ? null : (page as IPagesEntity);
         })
       );

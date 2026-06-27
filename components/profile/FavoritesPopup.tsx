@@ -8,7 +8,7 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import { getProductBlurDataURL, getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -169,6 +169,7 @@ const FavoriteCard = ({
   const cardRef = useRef<HTMLDivElement | null>(null);
   const attrs = product.attributeValues ?? {};
   const imageSrc = getProductImageUrl(attrs);
+  const blurDataURL = getProductBlurDataURL(attrs);
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
@@ -211,6 +212,7 @@ const FavoriteCard = ({
             height={129}
             sizes="122px"
             className="h-32.25 w-30.5 object-cover"
+            {...(blurDataURL ? { placeholder: 'blur' as const, blurDataURL } : {})}
           />
         ) : (
           <div className="flex h-32.25 w-30.5 items-center justify-center">

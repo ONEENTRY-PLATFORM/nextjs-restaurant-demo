@@ -8,9 +8,6 @@ import { getApi } from '@/app/api';
 /**
  * useSetForm — submit form data via the FormData API.
  *
- * `sendData` awaits the SDK call and toggles `loading` around the in-flight
- * request, so consumers get an accurate pending state and a resolved response.
- *
  * @returns Object `{ loading, sendData }` — `sendData(payload)` resolves to the post response or the thrown error.
  */
 export const useSetForm = () => {

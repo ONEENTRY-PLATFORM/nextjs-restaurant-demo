@@ -18,9 +18,6 @@ const getSearchParams = (searchParams?: {
 }) => {
   const expandedFilters: IFilterParams[] = [];
 
-  // Filter out service products that have no SKU. Must be `neq` (scalar "not equal"),
-  // not `nin` (list "not in"): the server returns 0 results for `sku nin null`, while
-  // `sku neq null` correctly keeps every product that has a SKU.
   expandedFilters.push({
     attributeMarker: PRODUCT_ATTRS.sku,
     conditionMarker: 'neq',
@@ -30,9 +27,6 @@ const getSearchParams = (searchParams?: {
   });
 
   if (searchParams?.preferences) {
-    // Multi-select preferences arrive as `?preferences=Meat,Fish`.
-    // `IFilterParams.conditionValue` accepts only a scalar, so each value
-    // becomes its own filter (AND semantics on the OneEntry side).
     const values = searchParams.preferences
       .split(',')
       .map(v => v.trim())
@@ -49,8 +43,6 @@ const getSearchParams = (searchParams?: {
   }
 
   if (searchParams?.filter) {
-    // `?filter=Dinner,Soup` — same shape and semantics as `?preferences=...`. OR semantics across
-    // values is handled in `getProducts` / `getProductsByPageUrl` (one request per value, merged).
     const values = searchParams.filter
       .split(',')
       .map(v => v.trim())

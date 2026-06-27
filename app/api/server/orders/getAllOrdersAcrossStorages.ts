@@ -22,10 +22,6 @@ interface HandleProps {
 /**
  * getAllOrdersAcrossStorages — every order from every order-storage the user has, tagged with its storage.
  *
- * Iterates `getAllOrdersStorage()` (instead of a hard-coded marker) and fetches each storage's orders
- * in parallel, so a storage added in the admin panel surfaces automatically. Degrades gracefully:
- * a failed storage read contributes no orders rather than failing the whole list.
- *
  * @param   {HandleProps} [props]          - Fetch arguments.
  * @param   {number}      [props.offset]   - Page offset per storage (default 0).
  * @param   {number}      [props.limit]    - Page size per storage (default 50).

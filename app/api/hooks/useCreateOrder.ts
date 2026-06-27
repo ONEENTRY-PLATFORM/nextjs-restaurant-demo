@@ -39,8 +39,6 @@ type UseCreateOrderApi = {
 /**
  * useCreateOrder — creates an order via `Orders.createOrder` and opens a payment session for non-cash methods.
  *
- * On success persists the order id via `setLastOrderId`, clears the cart, and resets the order draft in Redux.
- *
  * @returns `{ onConfirmOrder, isLoading, error }` — confirm callback plus loading/error state.
  */
 export const useCreateOrder = (): UseCreateOrderApi => {
@@ -97,13 +95,10 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         return { ok: false, error: message };
       }
 
-      // Append the delivery service product (productId 33) to every order.
       if (!orderProducts.some(p => p.productId === DELIVERY_PRODUCT_ID)) {
         orderProducts.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
       }
 
-      // Storage marker + formIdentifier are resolved from `getOrdersStorageByMarker` (StepPayment →
-      // `setOrderForm`); fall back to the `delivery_order` constant only when resolution failed.
       const storageMarker = order.storageMarker || FORMS.deliveryOrder;
       const created = await getApi().Orders.createOrder(storageMarker, {
         formData: orderFormData,
@@ -127,11 +122,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
       dispatch(setLastOrderId(id));
 
-      // Clear the local cart + order draft ONLY on successful branches (cash or a working
-      // Stripe paymentUrl). On payment-session failure we keep them — the order in OneEntry
-      // is already created, and retrying without losing the cart is less bad than a duplicate order.
       const clearCheckoutState = (): void => {
-        // Purchase signal for recommendations (skip the virtual delivery product).
         orderProducts
           .filter(p => p.productId !== DELIVERY_PRODUCT_ID)
           .forEach(p =>
@@ -151,9 +142,6 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         return { ok: true, orderId: id };
       }
 
-      // For all other methods (Stripe etc.) open the hosted checkout. Do NOT swallow errors:
-      // on IError / paymentUrl=null return ok:false — otherwise the wizard silently moves to success
-      // without redirecting to Stripe (see PaymentsApi.createSession and orders.md).
       let session;
       try {
         session = await getApi().Payments.createSession(id, 'session');

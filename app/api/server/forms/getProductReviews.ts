@@ -63,10 +63,6 @@ const readNumber = (value: unknown): number => {
 /**
  * getProductReviews — approved product reviews from OneEntry FormsData by `entityIdentifier`.
  *
- * `unstable_noStore()` disables the route cache — fresh reviews appear without manual revalidation.
- * The `status: ['approved']` filter matches the publish status written by `OrderReviewPopup` (the only review-submission path).
- * Only top-level entries (`parentId === null`) are returned — the UI does not render nested replies.
- * Graceful fallback to an empty array on any SDK error ("Resource is closed", see MISMATCH-LOG §C).
  * @param   {number}                    productId - Product id (becomes `entityIdentifier`).
  * @returns Top-level reviews, newest first.
  */

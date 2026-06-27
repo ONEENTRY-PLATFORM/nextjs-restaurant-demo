@@ -38,10 +38,6 @@ const fetchContentFilter = unstable_cache(
 /**
  * getContentFilter — a single content filter (items tree) by marker.
  *
- * Composed cache (see {@link import('../pages/getPageByUrl').getPageByUrl}):
- * `unstable_cache` for 300 s cross-request caching, React `cache()` for
- * in-render deduplication.
- *
  * @param   {string} marker     - Filter marker (e.g. `dishes`).
  * @param   {string} [langCode] - Optional explicit locale (defaults to `getLang()`).
  * @returns Promise resolving to `{ isError, error?, filter? }` (graceful fallback on SDK error).
@@ -53,11 +49,6 @@ export const getContentFilter = cache(
 
 /**
  * contentFilterToOptions — flattens a content-filter items tree into chip options.
- *
- * Each top-level `custom` node becomes a group: its localized title labels the bucket and every
- * child leaf becomes an option carrying that group. A flat tree (top-level non-custom nodes that
- * hold their own value) is supported too — those nodes become ungrouped options. Nodes without a
- * usable `value` are skipped.
  *
  * @param   {IContentFilter} [filter] - Content filter returned by {@link getContentFilter}.
  * @returns Ordered array of `{ title, value, group? }` options for filter chips.

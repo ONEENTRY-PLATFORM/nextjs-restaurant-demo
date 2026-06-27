@@ -44,12 +44,6 @@ const fetchByKind = (kind: RecommendationKind, marker: string, lang: string) => 
 /**
  * getRecommendations — products for a recommendation surface (cart upsell, recently viewed, …).
  *
- * Calls the matching recommendation Block (driven by `UserActivity` signals and the
- * guest/user context). Until the recommendation Blocks are configured in the admin
- * panel (see ONEENTRY-ADMIN-TODO C.2.8) the call returns empty, so as a temporary
- * placeholder it falls back to real catalog products — the surface is never empty and
- * swaps to genuine recommendations automatically once the Blocks exist.
- *
  * @param   {RecommendationKind} kind   - Recommendation surface.
  * @param   {object}             [opts] - Options.
  * @param   {number}             [opts.excludeId]         - Product id to exclude (e.g. the current product).

@@ -18,8 +18,6 @@ export type Validators = {
 
 /**
  * validators — collection of OneEntry FormData field validators (`required`, `email`, mask, string-length, password-match).
- *
- * Each member is invoked from `<FormInput />` against the matching `validator` returned by `getFormByMarker`.
  */
 export const validators: Validators = {
   requiredValidator: (value: string) => {

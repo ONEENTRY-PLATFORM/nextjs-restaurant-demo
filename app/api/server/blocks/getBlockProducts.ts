@@ -51,11 +51,6 @@ const fetchBlockProducts = unstable_cache(
 /**
  * getBlockProducts — block by marker plus products and layout config in normalised form.
  *
- * Composed cache (see {@link getPageByUrl}): `unstable_cache` for 60 s
- * cross-request caching, React `cache()` for in-render deduplication.
- *
- * Returns empty `products` on SDK error.
- *
  * @param   {string} marker - Block marker (e.g. `recommended`).
  * @returns Normalised block data.
  */

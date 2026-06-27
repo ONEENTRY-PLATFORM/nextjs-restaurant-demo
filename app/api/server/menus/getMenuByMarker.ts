@@ -30,10 +30,6 @@ const fetchMenuByMarker = unstable_cache(
 /**
  * getMenuByMarker — menu pages by marker.
  *
- * Composed cache (see {@link import('../pages/getPageByUrl').getPageByUrl}):
- * `unstable_cache` for 300 s cross-request caching (menus change rarely),
- * React `cache()` for in-render deduplication.
- *
  * @param   {string} marker - OneEntry menu marker (e.g. `main-menu`).
  * @returns Promise resolving to `{ isError, error?, menu? }` (graceful fallback on SDK error).
  */

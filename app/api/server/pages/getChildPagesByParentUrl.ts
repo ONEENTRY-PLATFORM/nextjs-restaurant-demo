@@ -30,9 +30,6 @@ const fetchChildPagesByParentUrl = unstable_cache(
 /**
  * getChildPagesByParentUrl — child pages by parent url.
  *
- * Composed cache (see {@link getPageByUrl}): `unstable_cache` for 60 s
- * cross-request caching, React `cache()` for in-render deduplication.
- *
  * @param   {string} url - OneEntry `pageUrl` marker of the parent page.
  * @returns Promise resolving to `{ isError, error?, pages? }` (graceful fallback on SDK error).
  */

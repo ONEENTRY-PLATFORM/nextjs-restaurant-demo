@@ -25,17 +25,10 @@ export type ServerWishlistApi = {
 /**
  * useServerCart — cross-device cart stored on the OneEntry server.
  *
- * Works for authenticated users and for anonymous guests (the SDK sends the
- * `x-guest-id` header automatically in the browser). This is the foundation for
- * migrating the local Redux cart to a server-synced one; it is additive and does
- * not touch the existing Redux store. Stores only `{ productId, qty }` — resolve
- * full product data via `Products.getProductsByIds`.
- *
  * @returns Stable `{ get, add, remove, set }` cart operations.
  */
 export const useServerCart = (): ServerCartApi => {
   return useMemo<ServerCartApi>(() => {
-    // getApi() is read lazily inside each call — the instance is recreated on login (reDefine).
     const unwrap = (res: ICartResponse | IError): ICartResponse | null =>
       isError(res) ? null : res;
     return {
@@ -50,8 +43,6 @@ export const useServerCart = (): ServerCartApi => {
 
 /**
  * useServerWishlist — cross-device wishlist stored on the OneEntry server.
- *
- * Same guest/user semantics as {@link useServerCart}. Stores only `{ productId }`.
  *
  * @returns Stable `{ get, add, remove }` wishlist operations.
  */

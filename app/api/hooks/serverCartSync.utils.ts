@@ -4,8 +4,6 @@ type CartEntry = { id: number; quantity: number };
 /**
  * cartToServerCartItems — maps Redux cart entries to the `Users.setCart` body items.
  *
- * Drops zero/negative-quantity entries (treated as "not in cart").
- *
  * @param   {CartEntry[]} productsData - Redux cart entries.
  * @returns `[{ productId, qty }]` for `Users.setCart`.
  */
@@ -52,11 +50,6 @@ type ServerWishlistItem = { productId: number };
 
 /**
  * planCartMerge — computes the Redux dispatches that union a server cart into the local cart on login.
- *
- * Non-destructive: a product only on the server is added with the server quantity; a product in both
- * is bumped up to the larger of the two quantities (so neither device shrinks the other); a product
- * the local cart already holds with an equal-or-greater quantity is left untouched. The caller turns
- * `toAdd` into `addProductToCart` and `toBump` into `setProductQty` dispatches.
  *
  * @param   {CartEntry[]}      local  - Local Redux cart entries.
  * @param   {ServerCartItem[]} server - Server cart items.

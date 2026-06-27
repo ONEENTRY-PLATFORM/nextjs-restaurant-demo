@@ -1,11 +1,11 @@
 import 'server-only';
 
 import type { IAttributeValue, IAttributeValues } from 'oneentry/dist/base/utils';
+import { cache } from 'react';
 
 import { dictText } from '@/components/utils';
 
 import { getAttributesByMarker } from './api/server/attributes/getAttributesByMarker';
-import getCachedData from './api/utils/getCachedData';
 import { ATTRS } from './utils/constants';
 
 /**
@@ -50,8 +50,7 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
  *
  * @returns Promise resolving to the cached normalized dictionary map.
  */
-export const getDictionary = async (): Promise<IAttributeValues> =>
-  getCachedData('dictionary', fetchDictionary);
+export const getDictionary = cache(fetchDictionary);
 
 /**
  * t — server-side counterpart of `useT()`: reads a string from the `static_content` dictionary by marker with a fallback.

@@ -20,18 +20,12 @@ type CartEntry = {
 };
 
 type UseOrderPreviewApi = {
-  /** Server totals, or `null` for guests / empty cart / preview error (caller falls back to client math). */
   totals: ServerOrderTotals | null;
   isLoading: boolean;
 };
 
 /**
  * useOrderPreview — pre-checkout totals from `Orders.previewOrder` instead of client-only Redux math.
- *
- * Sends the same product list `createOrder` will (selected items + the delivery line) so server-side
- * discounts, bonuses and taxes are reflected before the order is created. Runs only for authenticated
- * users (the endpoint requires auth); returns `null` otherwise so the caller keeps its client-side
- * fallback. Re-previews whenever the selected products, coupon, or applied bonus change.
  *
  * @param   {string} [couponCode]  - Applied coupon code to include in the preview.
  * @param   {number} [bonusAmount] - Bonus points the user opted to spend (server caps it to the amount due).
@@ -86,7 +80,6 @@ export const useOrderPreview = (couponCode?: string, bonusAmount?: number): UseO
     return () => {
       cancelled = true;
     };
-    // `key` encodes products + couponCode; depending on it avoids re-running on identical content.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, key]);
 

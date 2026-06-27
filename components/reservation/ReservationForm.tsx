@@ -6,11 +6,10 @@ import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { getApi, isError } from '@/app/api';
+import { useSubmitReservation } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
-import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
 
@@ -80,10 +79,11 @@ const ReservationForm = ({
 }: ReservationFormProps): JSX.Element => {
   const t = useT();
   const { isAuth } = useContext(AuthContext);
+  const { createReservation, updateReservation, isLoading, error: submitError } =
+    useSubmitReservation();
   const [values, setValues] = useState<Record<string, FieldValue>>(initialValues ?? {});
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
@@ -170,7 +170,7 @@ const ReservationForm = ({
   const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (spamAttr && !captcha) {
-      setError('Please wait while captcha is loading.');
+      setValidationError('Please wait while captcha is loading.');
       return;
     }
 
@@ -182,38 +182,24 @@ const ReservationForm = ({
     }
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
-      setError('');
+      setValidationError('');
       return;
     }
 
-    setError('');
+    setValidationError('');
     const payload = buildPayload();
     const summary = formatBookingSummary(values);
 
     if (editingOrder) {
-      setLoading(true);
-      try {
-        const res = await getApi().Orders.updateOrderByMarkerAndId(
-          FORMS.bookingOrder,
-          editingOrder.orderId,
-          {
-            formIdentifier: editingOrder.formIdentifier,
-            paymentAccountIdentifier: editingOrder.paymentAccountIdentifier,
-            formData: payload,
-            products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }],
-          }
-        );
-        setLoading(false);
-        if (isError(res)) {
-          setError((res as { message?: string }).message ?? 'Failed to update reservation');
-          return;
-        }
-        toast(t('booking_updated_toast', 'Reservation updated.'));
-        onClose?.();
-      } catch (err) {
-        setLoading(false);
-        setError((err as Error).message || 'Failed to update reservation');
-      }
+      const res = await updateReservation({
+        orderId: editingOrder.orderId,
+        formIdentifier: editingOrder.formIdentifier,
+        paymentAccountIdentifier: editingOrder.paymentAccountIdentifier,
+        formData: payload,
+      });
+      if (!res.ok) return;
+      toast(t('booking_updated_toast', 'Reservation updated.'));
+      onClose?.();
       return;
     }
 
@@ -227,46 +213,17 @@ const ReservationForm = ({
   // Step 2: the user picked a payment method - create the order.
   const onApplyPayment = async (paymentAccountIdentifier: string) => {
     if (step.kind !== 'payment') return;
-    setLoading(true);
-    setError('');
-    try {
-      const res = await getApi().Orders.createOrder(FORMS.bookingOrder, {
-        formIdentifier: FORMS.bookingOrder,
-        paymentAccountIdentifier,
-        formData: step.formData,
-        products: [{ productId: BOOKING_PRODUCT_ID, quantity: 1 }],
-      });
-      if (isError(res)) {
-        setLoading(false);
-        setError((res as { message?: string }).message ?? 'Failed to submit reservation');
-        return;
-      }
-      const { id } = res as { id: number };
+    const res = await createReservation({ paymentAccountIdentifier, formData: step.formData });
+    if (!res.ok) return;
 
-      // Online -> open a payment session and redirect. Cash accounts return paymentUrl=null
-      // and fall through to the success branch shown inside the popup.
-      if (paymentAccountIdentifier !== 'cash') {
-        try {
-          const session = await getApi().Payments.createSession(id, 'session');
-          if (!isError(session)) {
-            const url = (session as { paymentUrl?: string | null }).paymentUrl;
-            if (url) {
-              window.location.href = url;
-              return;
-            }
-          }
-        } catch {
-          // Swallow - the order is already created, we still proceed to success.
-        }
-      }
-
-      setLoading(false);
-      setStep({ kind: 'success', orderId: id, summary: step.summary });
-      setValues({});
-    } catch (err) {
-      setLoading(false);
-      setError((err as Error).message || 'Failed to submit reservation');
+    // Online -> redirect to the payment session. Cash accounts (and swallowed
+    // session errors) return no paymentUrl and fall through to the success screen.
+    if (res.paymentUrl) {
+      window.location.href = res.paymentUrl;
+      return;
     }
+    setStep({ kind: 'success', orderId: res.orderId, summary: step.summary });
+    setValues({});
   };
 
   if (step.kind === 'success') {
@@ -292,8 +249,8 @@ const ReservationForm = ({
     return (
       <ReservationPaymentStep
         onApply={onApplyPayment}
-        isLoading={loading}
-        error={error}
+        isLoading={isLoading}
+        error={submitError}
         bookingPolicy={selectedRestaurant?.bookingPolicy ?? ''}
       />
     );
@@ -365,14 +322,16 @@ const ReservationForm = ({
       >
         <button
           type="submit"
-          disabled={loading}
+          disabled={isLoading}
           className="flex h-9.25 w-31.25 items-center justify-center rounded-card bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-card hover_btn_transp disabled:opacity-60"
         >
           {t('continue_text', 'Continue')}
         </button>
       </FormFieldAnimations>
 
-      {error ? <ErrorMessage error={error} /> : null}
+      {validationError || submitError ? (
+        <ErrorMessage error={validationError || submitError} />
+      ) : null}
 
       {pickerOpen ? (
         <DateTimePickerSheet

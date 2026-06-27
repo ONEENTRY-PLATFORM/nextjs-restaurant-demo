@@ -17,8 +17,6 @@ export type BlogBanner = {
 /**
  * getBlogBanners — child pages of `blog` rendered as promo banners with desktop/mobile images.
  *
- * Manually sorts results by `position`. LQIP previews are NOT bundled in here — `sharp`/`lqip-modern` are Node-only and this fetcher is re-exported via the `@/app/api` barrel, which client code imports. Call `getBlogBannerBlurMap(banners)` from a server component to attach blur previews.
- *
  * @returns Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {

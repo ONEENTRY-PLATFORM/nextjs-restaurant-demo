@@ -23,9 +23,6 @@ const splitCsv = (value: string | undefined): string[] =>
 /**
  * getProducts — paginated products with filter.
  *
- * For multi-select list attributes (`preferences`, `filter`), fetches each unique value in a separate
- * request and merges unique items (OR semantics).
- *
  * @param   {object} props            - Pagination, locale, and inbound `searchParams` filters.
  * @param   {number} props.limit      - Page size.
  * @param   {number} props.offset     - Page offset.
@@ -52,9 +49,6 @@ export const getProducts = cache(
     const prefList = splitCsv(params?.searchParams?.preferences);
     const filterList = splitCsv(params?.searchParams?.filter);
 
-    // OR semantics for multi-select list attributes: the SDK accepts only a scalar in
-    // `conditionValue`, so each value is fetched in a separate request and unique items are merged.
-    // We expand on whichever list is multi-valued and pin the other side to its original CSV.
     const multiPref = prefList.length > 1;
     const multiFilter = filterList.length > 1;
     if (multiPref || multiFilter) {
@@ -99,12 +93,7 @@ export const getProducts = cache(
     const expandedFilters = getSearchParams(params?.searchParams);
 
     try {
-      const data = await getApi().Products.getProducts(
-        expandedFilters,
-        lang,
-        // Omit sortKey/sortOrder — the server applies the sort chosen in the admin and the position locks.
-        { offset, limit }
-      );
+      const data = await getApi().Products.getProducts(expandedFilters, lang, { offset, limit });
       if (isError(data)) {
         return { isError: true, error: data, total: 0 };
       } else {

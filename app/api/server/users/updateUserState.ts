@@ -27,8 +27,6 @@ export const updateUserState = async ({
   if (!user) {
     return;
   }
-  // user.formData is FormDataType[] (a union that includes Record<string, unknown>);
-  // narrow to entries that actually carry a marker before reshaping into IAuthFormData.
   const hasMarker = (item: unknown): item is { marker: string; value: unknown } =>
     typeof item === 'object' &&
     item !== null &&

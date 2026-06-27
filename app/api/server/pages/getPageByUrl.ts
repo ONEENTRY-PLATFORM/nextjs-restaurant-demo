@@ -30,10 +30,6 @@ const fetchPageByUrl = unstable_cache(
 /**
  * getPageByUrl — page by URL with attached forms, blocks, and menus.
  *
- * Composed cache: `unstable_cache` keeps the OneEntry response in the
- * Next.js data cache for 60 s across requests, and React `cache()` adds
- * in-render deduplication on top.
- *
  * @param   {string} url - OneEntry `pageUrl` marker (NOT the Next.js route path).
  * @returns Promise resolving to `{ isError, error?, page? }` (graceful fallback on SDK error).
  */

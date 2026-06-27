@@ -11,8 +11,6 @@ export type PriceRange = {
 /**
  * getProductsPriceRange — catalog min/max price via `Products.getProductsPriceByPageUrl` (lightweight `{id, price}[]`).
  *
- * Returns `{ min: 0, max: 0 }` on an empty catalog or error.
- *
  * @param   {string}              [pageUrl]  - OneEntry `pageUrl` of the catalog page (default `'services'`).
  * @param   {string}              [langCode] - Optional explicit locale (defaults to `getLang()`).
  * @returns Promise resolving to the catalog price range.

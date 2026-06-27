@@ -13,9 +13,6 @@ type OauthLoginProps = {
 /**
  * oauthLogIn — exchanges an OAuth authorization code for a OneEntry session.
  *
- * Server action only — `client_secret` must not end up in the browser bundle.
- * Analogous to {@link logInUser}, but via `AuthProvider.oauth(...)` (OAuth providers are not bound to a form).
- *
  * @param   {OauthLoginProps} props             - OAuth exchange arguments.
  * @param   {string}          props.marker      - OAuth provider marker (currently `google`).
  * @param   {string}          props.code        - Authorization code returned by the provider's redirect.
@@ -24,10 +21,6 @@ type OauthLoginProps = {
  */
 export const oauthLogIn = async ({ marker, code, redirectUri }: OauthLoginProps) => {
   try {
-    // This server action is wired up only for the Google OAuth callback (the only
-    // OAuth provider with a code-exchange step in this project). The `marker` is
-    // forwarded to `AuthProvider.oauth(marker, body)` so OneEntry knows which
-    // provider entity to authenticate against.
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 

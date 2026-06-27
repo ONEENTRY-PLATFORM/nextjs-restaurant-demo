@@ -19,10 +19,6 @@ export type RefundsApi = {
 /**
  * useRefunds — order refund requests via the Orders API (requires auth).
  *
- * Wraps `getRefunds` / `createRefundRequest` / `cancelRefundRequest`. The set of
- * refund statuses and which order states allow a refund are configured in the
- * admin panel (see ONEENTRY-ADMIN-TODO C.10.2); until then `list` returns `[]`.
- *
  * @returns Stable `{ list, create, cancel }` refund operations.
  */
 export const useRefunds = (): RefundsApi =>

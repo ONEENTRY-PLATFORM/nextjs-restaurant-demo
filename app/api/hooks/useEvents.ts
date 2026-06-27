@@ -36,9 +36,6 @@ export const onUnsubscribeEvents = async (id: number) => {
 /**
  * onSubscribeToForm — subscribe to status changes of a FormData record.
  *
- * For form-driven flows that want push updates when the admin changes a record's
- * status (e.g. review moderation: notify the author when a review is approved).
- *
  * @param   {string} formMarker - Form/event marker.
  * @param   {number} formDataId - FormData record id to watch.
  * @param   {string} [status]   - Optional status to subscribe for.

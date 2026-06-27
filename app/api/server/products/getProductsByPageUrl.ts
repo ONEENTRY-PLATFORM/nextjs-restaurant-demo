@@ -28,10 +28,6 @@ const splitCsv = (value: string | undefined): string[] =>
     .map(v => v.trim())
     .filter(Boolean);
 
-// `unstable_cache` keys are derived from positional args, so the entry point
-// flattens the nested `params` object into a stable signature string. That
-// keeps `unstable_cache(args)` cheap to serialize and avoids accidental cache
-// fragmentation when the caller passes equivalent objects with different
 // property order.
 const buildKey = (
   limit: number,
@@ -67,8 +63,6 @@ const fetchProducts = unstable_cache(
     const prefList = splitCsv(searchParams.preferences);
     const filterList = splitCsv(searchParams.filter);
 
-    // OR semantics for multi-select list attributes (see getProducts.ts): the SDK accepts only a
-    // scalar in `conditionValue` — fetch each value in a separate request and merge.
     const multiPref = prefList.length > 1;
     const multiFilter = filterList.length > 1;
     if (multiPref || multiFilter) {
@@ -123,21 +117,11 @@ const fetchProducts = unstable_cache(
     }
   },
   ['oneentry-getProductsByPageUrl'],
-  // Catalogue churn is slower than blocks/pages, but search-result staleness
-  // is more user-visible — 60 s matches the page-level revalidate.
   { revalidate: 60, tags: ['oneentry', 'oneentry-products'] }
 );
 
 /**
  * getProductsByPageUrl — paginated products of the selected category.
- *
- * Composed cache (see {@link import('../pages/getPageByUrl').getPageByUrl}):
- * `unstable_cache` for 60 s cross-request caching, React `cache()` for
- * in-render deduplication. The cache key includes locale, handle, pagination
- * and every search-param filter so different listings stay independent.
- *
- * For multi-select `preferences`, runs one request per value, merges unique
- * items (OR semantics), then slices to the requested page.
  *
  * @param   {object} props          - Pagination, locale, category handle, and search-param filters.
  * @param   {number} props.limit    - Page size.

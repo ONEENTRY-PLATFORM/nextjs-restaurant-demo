@@ -24,17 +24,11 @@ const fetchAttributesByMarker = unstable_cache(
     }
   },
   ['oneentry-getAttributesByMarker'],
-  // `static_content` (the most common caller) changes only on admin edits — a
-  // long TTL is safe and keeps the dictionary out of the SSR hot path.
   { revalidate: 300, tags: ['oneentry', 'oneentry-attributes'] }
 );
 
 /**
  * getAttributesByMarker — attributes from attribute sets by marker.
- *
- * Composed cache (see {@link import('../pages/getPageByUrl').getPageByUrl}):
- * `unstable_cache` for 300 s cross-request caching, React `cache()` for
- * in-render deduplication.
  *
  * @param   {object} props                 - Fetch arguments.
  * @param   {string} props.attributeMarker - Marker of the attribute set whose attributes are returned.

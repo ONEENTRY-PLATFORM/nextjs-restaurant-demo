@@ -14,27 +14,15 @@ import { FORMS } from '@/app/utils/constants';
 import { filterAllowedAccounts } from './checkout.utils';
 
 export type DeliveryCheckout = {
-  /** Resolved order-storage marker (`createOrder` first arg). */
   storageMarker: string;
-  /** Resolved order form marker (`createOrder` body + `getFormByMarker`). */
   formIdentifier: string;
-  /** Delivery order form (field schema, placeholders, time slots). */
   form?: IFormsEntity | undefined;
-  /** Payment accounts intersected with `storage.paymentAccountIdentifiers` (all visible when none linked). */
   accounts: IAccountsEntity[];
-  /** Whether storage / form / accounts are still loading. */
   isLoading: boolean;
 };
 
 /**
  * useDeliveryCheckout — resolves the delivery checkout config from the order storage, not hard-codes.
- *
- * Reads the `delivery_order` storage (`getOrdersStorageByMarker`) to obtain its real `formIdentifier`
- * and linked `paymentAccountIdentifiers`, then loads that form and intersects the global payment
- * accounts with the storage's linked set (falling back to all visible accounts when none are linked,
- * per the orders rule). The `delivery_order` marker is only a selector for *which* storage — the form
- * identifier and payment methods come from the storage entity. All values degrade gracefully to the
- * `delivery_order` constant / global accounts when the storage read fails (e.g. unauthenticated).
  *
  * @returns Resolved `{ storageMarker, formIdentifier, form, accounts, isLoading }`.
  */

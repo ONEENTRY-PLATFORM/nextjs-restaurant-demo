@@ -27,8 +27,6 @@ type UseApplyCouponApi = {
 /**
  * useApplyCoupon — applies a promo code to the cart via `Orders.previewOrder`.
  *
- * On success stores `{ code, totalSum, totalSumWithDiscount }` in `OrderSlice.appliedCoupon`.
- *
  * @returns `{ applyCoupon, removeCoupon, isLoading, error }` — apply/remove handlers plus loading/error state.
  */
 export const useApplyCoupon = (): UseApplyCouponApi => {
@@ -75,8 +73,6 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
 
       const { totalSum, totalSumWithDiscount, currency } = preview as IOrderPreviewResponse;
 
-      // The server returned success, but the discount is zero — the code exists
-      // but did not apply to this cart (conditions were not met).
       if (totalSumWithDiscount >= totalSum) {
         const message = 'Coupon does not apply to this cart';
         setError(message);

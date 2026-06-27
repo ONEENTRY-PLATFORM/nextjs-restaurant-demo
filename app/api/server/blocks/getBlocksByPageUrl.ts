@@ -30,9 +30,6 @@ const fetchBlocksByPageUrl = unstable_cache(
 /**
  * getBlocksByPageUrl — all blocks for the given page url.
  *
- * Composed cache (see {@link getPageByUrl}): `unstable_cache` for 60 s
- * cross-request caching, React `cache()` for in-render deduplication.
- *
  * @param   {string} pageUrl - OneEntry `pageUrl` marker (NOT the Next.js route path).
  * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
  */

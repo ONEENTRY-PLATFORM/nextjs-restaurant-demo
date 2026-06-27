@@ -1,11 +1,5 @@
 'use client';
 
-// ⚠️ Client-only module. `AuthProvider.auth` attaches the device fingerprint, which is
-// taken from the runtime environment — on the server it would be `Node.js/...` instead of
-// the user's real browser. This file therefore MUST run in the browser; despite living under
-// `server/`, it is invoked from Client Components (e.g. SignInForm). Do NOT convert it to a
-// `'use server'` Server Action — the `'use client'` directive enforces that.
-
 import type {
   IAuthEntity,
   IAuthPostBody,
@@ -23,10 +17,6 @@ type LogInProps = {
 
 /**
  * logInUser — user sign-in via the AuthProvider API.
- *
- * The `authData` markers are not hard-coded: callers derive them from the `user` form's
- * `isLogin` / `isPassword` attribute flags (`getFormByMarker`) and pass them in, so a renamed
- * login/password field or a non-email provider keeps working. They default to `email`/`password`.
  *
  * @param   {LogInProps} props                - Sign-in arguments.
  * @param   {string}     props.method         - Auth-provider marker (e.g. `email`).

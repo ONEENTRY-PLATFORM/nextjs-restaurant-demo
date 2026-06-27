@@ -8,11 +8,6 @@ import { getApi } from '@/app/api';
 /**
  * trackActivity — fire-and-forget user/guest activity event.
  *
- * Works for authorized users and anonymous guests alike (the SDK attaches the
- * `x-guest-id` header in the browser automatically). Errors are swallowed:
- * analytics must never break the UX. These events feed the recommendation
- * Blocks (recently-viewed, trending, personal recommendations).
- *
  * @param   {ITrackActivity} body - Activity event (`type` + optional `productId`/`query`/`meta`).
  * @returns Nothing — the call is intentionally not awaited.
  */

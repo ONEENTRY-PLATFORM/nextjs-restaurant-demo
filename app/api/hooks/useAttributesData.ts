@@ -5,10 +5,6 @@ type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
  * Single image entry inside a OneEntry `image` / `groupOfImages` attribute value.
- *
- * `previewLink` maps a variant name (e.g. `preview`) to a `[base64DataURI, previewSizedUrl]` pair, and
- * `defaultPreview` names which variant to use. Both are present only on server-compressed images — images
- * uploaded before preview generation expose `previewLink` as `''` (legacy form data) or omit it entirely.
  */
 type OneEntryImageValue = {
   downloadLink?: string;
@@ -67,11 +63,6 @@ export const getText = (
 /**
  * getProductImageUrl — first image URL from a product `images` (groupOfImages) attribute.
  *
- * Returns the `downloadLink` of `attributeValues.images.value[0]` — products use a single attribute
- * (`images`, type `groupOfImages`) that always returns an array. Used by every product image render path
- * (grid card, product cover, cart row, favorites, order line item, OG metadata, LQIP) so they all read
- * the same source and stay in sync if the schema changes again.
- *
  * @param   {AttributeValuesInput} attributeValues - OneEntry product `attributeValues` map.
  * @returns First image download URL, or an empty string when no image is configured.
  */
@@ -86,11 +77,6 @@ export const getProductImageUrl = (attributeValues: AttributeValuesInput): strin
 
 /**
  * getProductBlurDataURL — inline base64 LQIP placeholder for a product's first image.
- *
- * OneEntry ships a precomputed blur with every server-compressed image under
- * `images.value[0].previewLink[defaultPreview][0]` (a `data:image/webp;base64,…` URI). Reading it lets the
- * blur map skip fetching the asset and running `sharp`. Returns an empty string for products whose image was
- * uploaded before preview generation — `getProductBlurMap` then falls back to `getLqipPreview`.
  *
  * @param   {AttributeValuesInput} attributeValues - OneEntry product `attributeValues` map.
  * @returns Base64 `data:` URI for the LQIP, or an empty string when OneEntry has no inline preview.

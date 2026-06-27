@@ -6,6 +6,7 @@ import type { JSX } from 'react';
 import { t } from '@/app/dictionaries';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import StarPuffyIcon from '@/components/icons/star-puffy';
+import { UsePrice } from '@/components/utils';
 
 import AddToCartButton from '../components/AddToCartButton';
 
@@ -23,7 +24,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     id,
     statusIdentifier,
     localizeInfos: { title },
-    attributeValues: { weight, calories, cooking_time, preferences, ingredients, price, currency },
+    attributeValues: { weight, calories, cooking_time, preferences, ingredients, price },
   } = product;
 
   const weightVal = weight?.value as number | undefined;
@@ -44,10 +45,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     .filter(Boolean)
     .join(', ');
   const priceVal = price?.value as number | undefined;
-  const currencyVal = (currency?.value as string | undefined) ?? 'USD';
-
-  const priceFormatted =
-    priceVal != null ? (currencyVal === 'USD' ? `$${priceVal}` : `${priceVal} ${currencyVal}`) : '';
+  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal }) : '';
 
   return (
     <div className="flex flex-col gap-3.75">

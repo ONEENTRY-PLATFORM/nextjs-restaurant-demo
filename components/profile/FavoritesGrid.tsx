@@ -13,6 +13,7 @@ import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
 import Spinner from '@/components/shared/Spinner';
+import { UsePrice } from '@/components/utils';
 
 /**
  * FavoritesGrid — favorites grid on the profile dashboard.
@@ -87,7 +88,9 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
         <p className="favorites_title">{title}</p>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}
-          {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
+          {priceRaw !== undefined ? (
+            <p className="favorites_price">{UsePrice({ amount: priceRaw })}</p>
+          ) : null}
         </div>
       </div>
 

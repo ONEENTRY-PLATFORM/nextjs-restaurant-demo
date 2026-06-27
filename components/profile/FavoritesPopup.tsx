@@ -22,6 +22,7 @@ import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Placeholder from '@/components/shared/Placeholder';
 import Spinner from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { UsePrice } from '@/components/utils';
 
 const FAVORITE_CARD_SELECTOR = '.favorite-card';
 
@@ -220,7 +221,9 @@ const FavoriteCard = ({
           <p className="favorites_title">{title}</p>
           <div className="flex items-center justify-start gap-2.5">
             {weight ? <p className="favorites_weight">{weight} g</p> : null}
-            {priceRaw !== undefined ? <p className="favorites_price">$ {priceRaw}</p> : null}
+            {priceRaw !== undefined ? (
+              <p className="favorites_price">{UsePrice({ amount: priceRaw })}</p>
+            ) : null}
           </div>
         </div>
       </Link>

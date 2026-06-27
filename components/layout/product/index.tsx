@@ -3,6 +3,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
+import { UsePrice } from '@/components/utils';
 
 import ProductAnimations from './animations/ProductAnimations';
 import ProductCover from './product-single/ProductCover';
@@ -39,9 +40,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
     : '';
 
   const priceVal = attributeValues?.price?.value as number | undefined;
-  const currencyVal = (attributeValues?.currency?.value as string | undefined) ?? 'USD';
-  const priceFormatted =
-    priceVal != null ? (currencyVal === 'USD' ? `$${priceVal}` : `${priceVal} ${currencyVal}`) : '';
+  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal }) : '';
 
   return (
     <section className="shop_section">

@@ -44,6 +44,14 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
   // "Continue to order after sign-in" flag - otherwise any login from the header would switch cart -> order.
   const [pendingCheckout, setPendingCheckout] = useState(false);
 
+  // Cart contents live in localStorage (redux-persist) - unknown on the server. Gate the
+  // branch decision until the client rehydrates so SSR and the first client render match.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHydrated(true);
+  }, []);
+
   // Mirror delivery state into OrderSlice.formData so the `payment` step submit has delivery_time/address.
   useEffect(() => {
     const date = cartDelivery.date;
@@ -157,6 +165,12 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       setPendingCheckout(false);
     }
   }, [pendingCheckout, isAuth, dispatch]);
+
+  // Before client rehydration, render a stable skeleton: SSR doesn't know the cart yet,
+  // so any content-dependent branch (EmptyCart vs skeleton) would diverge and break hydration.
+  if (!hydrated) {
+    return <CartListSkeleton count={3} />;
+  }
 
   // While RTK fetches product details, mirror the cart with one skeleton row per persisted item (delivery excluded).
   const pendingCount = productsCartData.filter(p => p.id !== DELIVERY_PRODUCT_ID).length;

@@ -10,16 +10,20 @@ import { describe, expect, it } from '@jest/globals';
 import { getImageUrl, isError } from '../api';
 
 describe('isError', () => {
-  it('returns true for SDK error envelopes ({statusCode, message})', () => {
+  it('returns true whenever statusCode is a number (the SDK error discriminator)', () => {
     expect(isError({ statusCode: 404, message: 'Not found' })).toBe(true);
     expect(isError({ statusCode: 500, message: '' })).toBe(true);
+    // Form-validator errors come back with message as string[] — these must be treated as errors.
+    expect(isError({ statusCode: 400, message: ['email is required', 'name is required'] })).toBe(
+      true
+    );
+    // message is intentionally NOT required by the guard — statusCode alone is the discriminator.
+    expect(isError({ statusCode: 404 })).toBe(true);
   });
 
-  it('returns false when one of the required fields is missing or wrong type', () => {
-    expect(isError({ statusCode: 404 })).toBe(false); // no message
+  it('returns false when statusCode is missing or not a number', () => {
     expect(isError({ message: 'm' })).toBe(false); // no statusCode
-    expect(isError({ statusCode: '404', message: 'm' })).toBe(false); // status not a number
-    expect(isError({ statusCode: 404, message: 42 })).toBe(false); // message not a string
+    expect(isError({ statusCode: '404', message: 'm' })).toBe(false); // statusCode not a number
   });
 
   it('returns false for null / undefined / primitives', () => {

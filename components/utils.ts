@@ -1,4 +1,4 @@
-import type { IAttributeValues, IError } from 'oneentry/dist/base/utils';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
@@ -79,33 +79,30 @@ export const UseDate = ({
 /**
  * sortArrayByPosition — in-place ascending sort by the `position` field.
  *
- * @param   {Record<any, any>} array - Array of items, each carrying a numeric `position`.
+ * @param   {T[]} array - Array of items, each carrying a numeric `position`.
  * @returns The same array sorted in ascending `position` order.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sortArrayByPosition = (array: Record<any, any>) => {
-  return array.sort((a: { position: number }, b: { position: number }) => a.position - b.position);
+export const sortArrayByPosition = <T extends { position: number }>(array: T[]): T[] => {
+  return array.sort((a, b) => a.position - b.position);
 };
 
 /**
  * sortObjectFieldsByPosition — returns a copy of the object with keys ordered by each value's `position`.
  *
- * @param   {Record<any, any> | null | undefined} obj - Map whose values carry a numeric `position` (missing → `0`).
+ * @param   {Record<string, T> | null | undefined} obj - Map whose values carry a numeric `position` (missing → `0`).
  * @returns New object with the same keys/values ordered by ascending `position`.
  */
-export const sortObjectFieldsByPosition = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  obj: Record<any, any> | null | undefined
-) => {
+export const sortObjectFieldsByPosition = <T>(
+  obj: Record<string, T> | null | undefined
+): Record<string, T> => {
   if (!obj || typeof obj !== 'object') {
     return {};
   }
   const entries = Object.entries(obj);
-  entries.sort((a, b) => (a[1]?.position ?? 0) - (b[1]?.position ?? 0));
-  const sortedObj = {};
+  const positionOf = (v: T): number => (v as { position?: number })?.position ?? 0;
+  entries.sort((a, b) => positionOf(a[1]) - positionOf(b[1]));
+  const sortedObj: Record<string, T> = {};
   for (const [key, value] of entries) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     sortedObj[key] = value;
   }
   return sortedObj;
@@ -131,19 +128,6 @@ export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | nu
     return r;
   }, []);
 };
-
-/**
- * typeError — type guard for `IError` (based on the presence of `statusCode`).
- *
- * @param   {IError | unknown} res - Value returned by an SDK call.
- * @returns `true` when `res` looks like a OneEntry SDK error envelope.
- */
-export function typeError(res: IError | unknown): res is IError {
-  if ((res as IError)?.statusCode) {
-    return true;
-  }
-  return false;
-}
 
 /**
  * normalizePhoneE164 — normalizes a phone to E.164 (`/^\+[0-9]{10,15}$/`) for OneEntry.

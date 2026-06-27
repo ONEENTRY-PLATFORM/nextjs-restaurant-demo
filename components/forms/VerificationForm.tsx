@@ -6,7 +6,13 @@ import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import { getApi, logInUser, useEmailAuthProviderMarker, useGetAuthProvidersQuery } from '@/app/api';
+import {
+  getApi,
+  isError,
+  logInUser,
+  useEmailAuthProviderMarker,
+  useGetAuthProvidersQuery,
+} from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -14,7 +20,6 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { addField } from '@/app/store/reducers/FormFieldsSlice';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import { findEmailLikeProvider } from '@/components/forms/authProviders';
-import { typeError } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormSubmitButton from './inputs/FormSubmitButton';
@@ -87,7 +92,7 @@ const VerificationForm = ({
           'otp',
           otp
         );
-        if (typeError(result)) {
+        if (isError(result)) {
           const err = result as { statusCode?: number; message?: string };
           setError(err.message || `Error ${err.statusCode ?? ''}`);
           return;
@@ -107,7 +112,7 @@ const VerificationForm = ({
           fields.email?.value || '',
           otp
         );
-        if (typeError(result)) {
+        if (isError(result)) {
           const err = result as { statusCode?: number; message?: string };
           setError(err.message || `Error ${err.statusCode ?? ''}`);
           return;
@@ -164,7 +169,7 @@ const VerificationForm = ({
         fields.email?.value || '',
         'generate_code'
       );
-      if (typeError(result)) {
+      if (isError(result)) {
         const err = result as { statusCode?: number; message?: string };
         setError(err.message || `Error ${err.statusCode ?? ''}`);
       } else {

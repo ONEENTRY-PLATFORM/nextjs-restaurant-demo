@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { JSX } from 'react';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -177,8 +178,7 @@ const ProfileSections = (): JSX.Element => {
         // (same pattern as `updateUserState`). Requiring a session password here broke saves after refresh-token auto-login.
         await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formData: formData as any,
+          formData: formData as unknown as IAuthFormData[],
           notificationData: {
             // For the email provider the email lives in `user.identifier`, not in `formData` - fallback to identifier.
             email: userField('email') || user.identifier || '',
@@ -228,8 +228,7 @@ const ProfileSections = (): JSX.Element => {
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        formData: formData as any,
+        formData: formData as unknown as IAuthFormData[],
         authData: hasPassword
           ? [
               { marker: 'email', value: login },

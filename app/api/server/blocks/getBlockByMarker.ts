@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getBlockByMarker — block by marker.
@@ -22,7 +21,7 @@ export const getBlockByMarker = cache(
     try {
       const data = await getApi().Blocks.getBlockByMarker(marker);
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       } else {
         return { isError: false, block: data };

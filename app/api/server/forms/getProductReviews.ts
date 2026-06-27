@@ -6,10 +6,10 @@ import type {
 } from 'oneentry/dist/forms-data/formsDataInterfaces';
 
 import { getApi, getLang, isError } from '@/app/api';
+import { FORM_MODULE_CONFIG_IDS, FORMS } from '@/app/utils/constants';
 
-const FORM_MARKER = 'review_form';
-// `moduleFormConfigs[0].id` of the `review_form` form = 2 (verified via the SDK).
-const DEFAULT_MODULE_CONFIG_ID = 2;
+const FORM_MARKER = FORMS.reviewForm;
+const DEFAULT_MODULE_CONFIG_ID = FORM_MODULE_CONFIG_IDS.reviewForm;
 const REVIEWS_LIMIT = 50;
 
 /**

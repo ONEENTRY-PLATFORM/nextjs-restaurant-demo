@@ -1,8 +1,7 @@
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api';
 import { PAGES } from '@/app/utils/constants';
-import { typeError } from '@/components/utils';
 
 export type PriceRange = {
   min: number;
@@ -25,7 +24,7 @@ export const getProductsPriceRange = cache(
         pageUrl,
         langCode || getLang()
       );
-      if (typeError(data)) {
+      if (isError(data)) {
         return { min: 0, max: 0 };
       }
       const prices = data.items

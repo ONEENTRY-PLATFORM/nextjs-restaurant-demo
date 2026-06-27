@@ -3,8 +3,7 @@ import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attribu
 import type { IError } from 'oneentry/dist/base/utils';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 interface HandleProps {
   attributeMarker: string;
@@ -24,7 +23,7 @@ const fetchSingleAttribute = unstable_cache(
         setMarker,
         attributeMarker
       );
-      if (typeError(attribute)) {
+      if (isError(attribute)) {
         return { isError: true, error: attribute as IError };
       }
       return { isError: false, attribute };

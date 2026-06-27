@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IOrderByMarkerEntity, IOrdersEntity } from 'oneentry/dist/orders/ordersInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, getLang, isError } from '@/app/api';
 
 // Re-exported from the pure constants module so unit tests can import it without the SDK/api chain.
 export { isBookingStorageMarker } from '@/app/utils/constants';
@@ -42,7 +41,7 @@ export const getAllOrdersAcrossStorages = cache(
     try {
       const lang = langCode || getLang();
       const storages = await getApi().Orders.getAllOrdersStorage(lang);
-      if (typeError(storages)) {
+      if (isError(storages)) {
         return { isError: true, error: storages, orders: [] };
       }
 
@@ -51,7 +50,7 @@ export const getAllOrdersAcrossStorages = cache(
           const marker = storage.identifier;
           if (!marker) return [] as OrderWithStorage[];
           const data = await getApi().Orders.getAllOrdersByMarker(marker, lang, offset, limit);
-          if (typeError(data)) return [] as OrderWithStorage[];
+          if (isError(data)) return [] as OrderWithStorage[];
           const storageFormIdentifier = storage.formIdentifier ?? marker;
           return (data.items ?? []).map(
             (o: IOrderByMarkerEntity): OrderWithStorage => ({

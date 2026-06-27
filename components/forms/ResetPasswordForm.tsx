@@ -4,7 +4,7 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { getApi, useEmailAuthProviderMarker } from '@/app/api';
+import { getApi, isError, useEmailAuthProviderMarker } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -54,7 +54,7 @@ const ResetPasswordForm = ({
   const emailProviderMarker = useEmailAuthProviderMarker();
 
   const [isLoading, setLoading] = useState(false);
-  const [isError, setError] = useState('');
+  const [errorMessage, setError] = useState('');
 
   const onResetSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,13 +71,18 @@ const ResetPasswordForm = ({
         password_confirm?.value || ''
       );
 
-      if (result) {
-        if (onPasswordChanged) {
-          onPasswordChanged();
-        } else {
-          setComponent('SignInForm');
-          setAction('');
-        }
+      // The SDK returns an IError envelope (it does not throw) on failure — and an IError object
+      // is truthy, so the previous `if (result)` reported failed changes as success. Guard explicitly.
+      if (isError(result)) {
+        setError(Array.isArray(result.message) ? result.message.join('; ') : result.message);
+        return;
+      }
+
+      if (onPasswordChanged) {
+        onPasswordChanged();
+      } else {
+        setComponent('SignInForm');
+        setAction('');
       }
     } catch (error: unknown) {
       setError((error as { message?: string })?.message ?? '');
@@ -116,7 +121,7 @@ const ResetPasswordForm = ({
           isLoading={isLoading}
           index={10}
         />
-        {isError && <ErrorMessage error={isError} />}
+        {errorMessage && <ErrorMessage error={errorMessage} />}
       </form>
     </FormAnimations>
   );

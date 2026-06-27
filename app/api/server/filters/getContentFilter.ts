@@ -3,8 +3,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IContentFilter } from 'oneentry/dist/filters/filtersInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, getLang, isError } from '@/app/api';
 
 /** A flattened, group-tagged option derived from a content-filter tree node. */
 export type ContentFilterOption = {
@@ -23,7 +22,7 @@ const fetchContentFilter = unstable_cache(
   async (marker: string, lang: string): Promise<ContentFilterResult> => {
     try {
       const filter = await getApi().Filters.getFilterByMarker(marker, lang);
-      if (typeError(filter)) {
+      if (isError(filter)) {
         return { isError: true, error: filter as IError };
       }
       return { isError: false, filter };

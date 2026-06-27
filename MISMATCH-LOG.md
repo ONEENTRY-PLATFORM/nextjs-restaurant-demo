@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- | --- |
 | A. Автоматические находки | 1 | 0 | 0 | 1 | 0 |
 | B. Ручная сверка по экранам | см. ниже | — | — | — | — |
-| D. Соответствие MCP/SDK (отложенные) | 1 | 0 | 0 | 1 | 0 |
+| D. Соответствие MCP/SDK (отложенные) | 7 | 0 | 1 | 5 | 1 |
 | OneEntry Admin Setup | [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) | — | — | — | — |
 
 ---
@@ -52,9 +52,17 @@
 
 Найдено при сверке кода с последней версией OneEntry MCP (2026-06-19). Правки в **коде** (не вёрстка, не админка). D.1–D.6 выполнены и удалены из таблицы (2026-06-20). Остаётся D.7 — заложен безопасный фундамент, нужен финальный флип источника UI. Остальные находки сверки уже были поправлены ранее (token-handling в `AuthContext`, config-id в `OrderReviewPopup`, типовая гигиена, централизация статус-маркеров в `constants.ts`).
 
+**Аудит соответствия MCP (2026-06-27).** Исправлено в этом проходе: унификация error-guard (`typeError` удалён, `isError` стал суперсетом по `statusCode` — ловит и `message: string[]` от валидаторов форм; 25 файлов + `api.ts` + доки); `isError`-guard добавлен в `changePassword` ([ResetPasswordForm](components/forms/ResetPasswordForm.tsx)) и в fallback-ветку [useSearchProducts](app/api/hooks/useSearchProducts.ts); централизация маркеров `review_form`/`blog` (`FORMS.reviewForm`, `FORM_MODULE_CONFIG_IDS`, `PAGES.blog`); `'use client'` на [logInUser](app/api/server/users/logInUser.ts) (явный fingerprint-контракт); диспетчеризация типа поля в [FormInput](components/forms/inputs/FormInput.tsx) по ключу enum (вместо подстроки маркера) + рендер `hint` из `additionalFields`; удалены 5× `any`. Остаются открытыми D.8–D.13 ниже.
+
 | # | Что не так | Файл | Severity |
 |---|---|---|---|
 | D.7 | **Foundation + sync + merge-on-login (частично).** Добавлен централизованный [useServerCartSync](app/api/hooks/useServerCartSync.ts) (смонтирован [ServerCartSync](components/layout/ServerCartSync.tsx) под `AuthProvider`): зеркалит Redux-корзину → `Users.setCart` и favorites → `Users.setWishlist` (оптимистично/Redux-first, дебаунс 800мс, покрывает add/qty/remove). На логине пушит объединённый Redux-стейт (гостевые + восстановленные пользовательские позиции) в серверный кэш юзера и чистит `setGuestId('')` — результат эквивалентен «read guest cart → setCart merged → clear guest id». **Остаток (эффорт L):** флип источника UI — читать корзину/wishlist из серверного кэша, убрать `redux-persist`/`updateUserState`/`user.state.cart`. Redux вшит в reservations/animations — делать отдельно. | [useServerCartSync.ts](app/api/hooks/useServerCartSync.ts) | P2 |
+| D.8 | **Платёжки: online/offline по хардкоду `identifier === 'cash'`.** Нет whitelist online-провайдеров; PayPal не отличается от Stripe, polling `getSessionByOrderId` не реализован (признано в комментарии). В брони при `paymentUrl: null` показывается success-экран на неоплаченном заказе — латентный P0 для async-гейтвеев (PayPal). Канон `orders.md`: различать по `identifier`, Stripe→`createSession`, PayPal→polling, cash→success. | [useCreateOrder.ts:149](app/api/hooks/useCreateOrder.ts#L149), [ReservationForm.tsx:248-264](components/reservation/ReservationForm.tsx#L248-L264) | P1 |
+| D.9 | **Auth-формы не из Forms API.** Хардкод полей/маркеров вместо динамики: `SignUpForm` (список+порядок), `ResetPasswordForm` (самодельная схема `resetPasswordFormFields`), `ForgotPasswordForm` (маркер `email`), `UserForm` (маппинг в кастомные объекты с потерей `validators`/`additionalFields`). Канон: формы всегда из `getFormByMarker`. | [SignUpForm.tsx:53](components/forms/SignUpForm.tsx#L53), [ResetPasswordForm.tsx:17](components/forms/ResetPasswordForm.tsx#L17), [UserForm.tsx:45](components/forms/UserForm.tsx#L45) | P2 |
+| D.10 | **`type` в payload схлопывается в `'string'`** вместо `attribute.type` — сломается при добавлении date/integer/phone-полей в эти формы. `ContactUsForm` (default-ветка, нет ветки `date`), `SignUpForm`, `UserForm`. | [ContactUsForm.tsx:78](components/forms/ContactUsForm.tsx#L78), [UserForm.tsx:45](components/forms/UserForm.tsx#L45) | P2 |
+| D.11 | **Нет graceful-fallback в двух user-фетчерах.** `updateUserState` без try/catch и с проверкой `(as IError).statusCode` вместо `isError`; `logOutUser` не проверяет ответ `AuthProvider.logout` на IError-объект (ошибка просочится как успех). (`updateUserState` пишет в легаси `user.state.cart` — связано с D.7.) | [updateUserState.ts:48](app/api/server/users/updateUserState.ts#L48), [logOutUser.ts:18](app/api/server/users/logOutUser.ts#L18) | P2 |
+| D.12 | **Валюта зашита в `CurrencyEnum.en = 'USD'`** (`UsePrice`), а `order.currency`/`preview.currency` из ответа до рендера сумм не доходит. Канон `orders.md`: `{order.currency \|\| ''}{...}`. | [utils.ts:34](components/utils.ts#L34), [enum.ts:11](app/types/enum.ts#L11) | P2 |
+| D.13 | **Статусы истории по подстроке.** `BookingsContent` определяет «исторический» заказ эвристикой `includes()` по подстрокам (`cancel`/`complet`/…), а не картой `ORDER_HISTORY_STATUSES` из `constants.ts`. | [BookingsContent.tsx:24](components/profile/BookingsContent.tsx#L24) | P3 |
 
 ---
 

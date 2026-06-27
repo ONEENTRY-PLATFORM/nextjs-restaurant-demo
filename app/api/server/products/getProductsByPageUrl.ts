@@ -3,9 +3,8 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
-import { typeError } from '@/components/utils';
 
 type SearchParams = {
   search?: string;
@@ -85,7 +84,7 @@ const fetchProducts = unstable_cache(
               offset: 0,
               limit: fetchLimit,
             });
-            if (typeError(data)) return [] as IProductsEntity[];
+            if (isError(data)) return [] as IProductsEntity[];
             return data.items;
           })
         );
@@ -115,7 +114,7 @@ const fetchProducts = unstable_cache(
         offset,
         limit,
       });
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data, total: 0 };
       }
       return { isError: false, products: data.items, total: data.total };

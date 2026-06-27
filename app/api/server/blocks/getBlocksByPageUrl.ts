@@ -3,8 +3,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IPositionBlock } from 'oneentry/dist/pages/pagesInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 type BlocksResult = {
   isError: boolean;
@@ -16,7 +15,7 @@ const fetchBlocksByPageUrl = unstable_cache(
   async (pageUrl: string): Promise<BlocksResult> => {
     try {
       const data = await getApi().Pages.getBlocksByPageUrl(pageUrl);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       }
       return { isError: false, blocks: data };

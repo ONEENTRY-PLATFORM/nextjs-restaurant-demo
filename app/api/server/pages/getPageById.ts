@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getPageById — page with attached forms, blocks, and menus.
@@ -22,7 +21,7 @@ export const getPageById = cache(
     try {
       const data = await getApi().Pages.getPageById(id);
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       } else {
         return { isError: false, page: data };

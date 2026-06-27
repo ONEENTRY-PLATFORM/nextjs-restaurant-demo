@@ -3,8 +3,7 @@ import type { IAttributeSetsEntity } from 'oneentry/dist/attribute-sets/attribut
 import type { IError } from 'oneentry/dist/base/utils';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 type AttributesResult = {
   isError: boolean;
@@ -16,7 +15,7 @@ const fetchAttributesByMarker = unstable_cache(
   async (attributeMarker: string): Promise<AttributesResult> => {
     try {
       const data = await getApi().AttributesSets.getAttributesByMarker(attributeMarker);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data as IError };
       }
       return { isError: false, attributes: data };

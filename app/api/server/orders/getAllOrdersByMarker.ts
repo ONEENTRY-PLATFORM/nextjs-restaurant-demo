@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, getLang, isError } from '@/app/api';
 
 interface HandleProps {
   marker: string;
@@ -41,7 +40,7 @@ export const getAllOrdersByMarker = cache(
         limit
       );
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data, total: 0 };
       } else {
         return { isError: false, orders: data.items, total: data.total };

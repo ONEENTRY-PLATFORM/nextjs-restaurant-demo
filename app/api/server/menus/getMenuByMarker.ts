@@ -3,8 +3,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IMenusEntity } from 'oneentry/dist/menus/menusInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 type MenuResult = {
   isError: boolean;
@@ -16,7 +15,7 @@ const fetchMenuByMarker = unstable_cache(
   async (marker: string): Promise<MenuResult> => {
     try {
       const data = await getApi().Menus.getMenusByMarker(marker);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       }
       return { isError: false, menu: data };

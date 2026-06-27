@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getFormByMarker — form by marker.
@@ -22,7 +21,7 @@ export const getFormByMarker = cache(
     try {
       const data = await getApi().Forms.getFormByMarker(marker);
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       } else {
         return { isError: false, form: data };

@@ -18,18 +18,19 @@ import EyeOpenIcon from '@/components/icons/eye-o';
 const FormInput = (field: IFormAttribute & { value?: string; index: number }): JSX.Element => {
   const { localizeInfos } = field;
   const placeholder = String(field.additionalFields?.placeholder?.value ?? '');
+  const hint = String(field.additionalFields?.hint?.value ?? '');
   const [value, setValue] = useState<string>(field.value || '');
   const [type, setType] = useState<string>('');
   const dispatch = useAppDispatch();
   const valid = true;
 
+  // HTML input type is driven by the attribute's `type` and the enum's explicit marker-specific
+  // keys (`password`, `password_confirm`, `email_reg`, `card_cvc`, `phone_reg`, …) — not by fuzzy
+  // substring matching on the marker name.
+  const markerKey = field.marker as keyof typeof FormFieldsEnum;
   const fieldKey: keyof typeof FormFieldsEnum =
-    field.marker.indexOf('password') !== -1
-      ? 'password'
-      : field.marker.indexOf('email') !== -1
-        ? 'email'
-        : (field.type as keyof typeof FormFieldsEnum);
-  const fieldType = FormFieldsEnum[fieldKey];
+    markerKey in FormFieldsEnum ? markerKey : (field.type as keyof typeof FormFieldsEnum);
+  const fieldType = FormFieldsEnum[fieldKey] ?? FormFieldsEnum.string;
 
   const validators = field.validators as Record<string, unknown> | undefined;
   const required =
@@ -117,6 +118,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
           </button>
         )}
       </div>
+      {hint && <span className="mt-1 text-xs text-paper/60">{hint}</span>}
     </FormFieldAnimations>
   );
 };

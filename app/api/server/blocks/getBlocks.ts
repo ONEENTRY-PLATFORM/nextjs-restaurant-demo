@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { BlockType, IBlocksResponse } from 'oneentry/dist/blocks/blocksInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getBlocks — blocks by type.
@@ -25,7 +24,7 @@ export const getBlocks = cache(
     try {
       const data = await getApi().Blocks.getBlocks(type);
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       } else {
         return { isError: false, blocks: data };

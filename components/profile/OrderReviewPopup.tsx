@@ -11,7 +11,7 @@ import { getApi, getLang, getProductImageUrl, isError, useGetFormByMarkerQuery }
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { ORDER_STATUSES } from '@/app/utils/constants';
+import { FORM_MODULE_CONFIG_IDS, FORMS, ORDER_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -24,11 +24,11 @@ import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-const FORM_MARKER = 'review_form';
+const FORM_MARKER = FORMS.reviewForm;
 const FORM_STATUS = 'approved';
 // Fallback only — the live id is resolved from getFormByMarker().moduleFormConfigs[0].id
 // so a recreated config never silently breaks review reads/writes.
-const DEFAULT_MODULE_CONFIG_ID = 2;
+const DEFAULT_MODULE_CONFIG_ID = FORM_MODULE_CONFIG_IDS.reviewForm;
 const RATING_MARKER = 'review_rating';
 const TEXT_MARKER = 'review_text';
 

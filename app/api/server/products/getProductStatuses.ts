@@ -2,15 +2,14 @@ import { unstable_cache } from 'next/cache';
 import type { IProductStatusEntity } from 'oneentry/dist/product-statuses/productStatusesInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api';
 import { PRODUCT_STATUSES } from '@/app/utils/constants';
-import { typeError } from '@/components/utils';
 
 const fetchProductStatuses = unstable_cache(
   async (lang: string): Promise<IProductStatusEntity[]> => {
     try {
       const data = await getApi().ProductStatuses.getProductStatuses(lang);
-      if (typeError(data)) {
+      if (isError(data)) {
         return [];
       }
       return data as IProductStatusEntity[];

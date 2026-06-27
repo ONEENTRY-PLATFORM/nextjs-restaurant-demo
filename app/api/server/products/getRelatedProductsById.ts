@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getRelatedProductsById — all related products by id.
@@ -23,7 +22,7 @@ export const getRelatedProductsById = cache(
     try {
       const data = await getApi().Products.getRelatedProductsById(id);
 
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data as IError, total: 0 };
       } else {
         return {

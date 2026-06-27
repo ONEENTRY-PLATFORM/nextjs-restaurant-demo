@@ -7,7 +7,6 @@ import {
   shuffleArray,
   sortArrayByPosition,
   sortObjectFieldsByPosition,
-  typeError,
   UsePrice,
 } from '../utils';
 
@@ -49,21 +48,6 @@ describe('normalizePhoneE164', () => {
 
   it('keeps single-digit input as +<digit>', () => {
     expect(normalizePhoneE164('5')).toBe('+5');
-  });
-});
-
-describe('typeError', () => {
-  it('returns true for objects with `statusCode`', () => {
-    expect(typeError({ statusCode: 404 })).toBe(true);
-  });
-
-  it('returns false for objects without `statusCode`', () => {
-    expect(typeError({ id: 1, title: 'product' })).toBe(false);
-  });
-
-  it('returns false for null / undefined', () => {
-    expect(typeError(null)).toBe(false);
-    expect(typeError(undefined)).toBe(false);
   });
 });
 

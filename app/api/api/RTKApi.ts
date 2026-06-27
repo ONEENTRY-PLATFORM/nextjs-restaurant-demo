@@ -19,9 +19,9 @@ import type { IAccountsEntity, ISessionEntity } from 'oneentry/dist/payments/pay
 import type { IProductsEntity, IProductsResponse } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
+import { isError } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 import { PAGES } from '@/app/utils/constants';
-import { typeError } from '@/components/utils';
 
 import type { PriceRange } from '../server/products/getProductsPriceRange';
 import { updateUserState } from '../server/users/updateUserState';
@@ -51,7 +51,7 @@ export const RTKApi = createApi({
     getBlocksByPageUrl: build.query<IPositionBlock[], BlocksByPageUrlProps>({
       queryFn: async ({ pageUrl }) => {
         const result = await getApi().Pages.getBlocksByPageUrl(pageUrl);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IPositionBlock[] };
@@ -63,7 +63,7 @@ export const RTKApi = createApi({
     getProducts: build.query<IProductsResponse, { body: [] }>({
       queryFn: async ({ body }) => {
         const result = await getApi().Products.getProducts(body);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IProductsResponse };
@@ -78,7 +78,7 @@ export const RTKApi = createApi({
           return { error: null };
         }
         const result = await getApi().Products.getProductsByPageUrl(url);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IProductsResponse };
@@ -106,7 +106,7 @@ export const RTKApi = createApi({
 
         const result = await getProductsByIds(items.map(item => item)).then(res => res);
 
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: 'Data error' };
         }
         return { data: result };
@@ -121,7 +121,7 @@ export const RTKApi = createApi({
           return { error: null };
         }
         const result = await getApi().Products.getProductById(id);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IProductsEntity };
@@ -138,7 +138,7 @@ export const RTKApi = createApi({
         }
         const result = await getApi().Pages.getPageById(id);
 
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IPagesEntity };
@@ -151,7 +151,7 @@ export const RTKApi = createApi({
     getBlockByMarker: build.query<IBlockEntity, BlockByMarkerProps>({
       queryFn: async ({ marker }) => {
         const result = await getApi().Blocks.getBlockByMarker(marker);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IBlockEntity };
@@ -163,7 +163,7 @@ export const RTKApi = createApi({
     getAuthProviders: build.query<IAuthProvidersEntity[], string>({
       queryFn: async () => {
         const result = await getApi().AuthProvider.getAuthProviders();
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IAuthProvidersEntity[] };
@@ -174,7 +174,7 @@ export const RTKApi = createApi({
     getFormByMarker: build.query<IFormsEntity, { marker: string }>({
       queryFn: async ({ marker }) => {
         const result = await getApi().Forms.getFormByMarker(marker);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IFormsEntity };
@@ -186,7 +186,7 @@ export const RTKApi = createApi({
     getMenuByMarker: build.query<IMenusEntity, { marker: string }>({
       queryFn: async ({ marker }) => {
         const result = await getApi().Menus.getMenusByMarker(marker);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IMenusEntity };
@@ -197,7 +197,7 @@ export const RTKApi = createApi({
     getChildPagesByParentUrl: build.query<IPagesEntity[], { url: string }>({
       queryFn: async ({ url }) => {
         const result = await getApi().Pages.getChildPagesByParentUrl(url);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IPagesEntity[] };
@@ -210,7 +210,7 @@ export const RTKApi = createApi({
       queryFn: async ({ pageUrl = PAGES.services }) => {
         try {
           const result = await getApi().Products.getProductsPriceByPageUrl(pageUrl);
-          if (typeError(result)) {
+          if (isError(result)) {
             return { data: { min: 0, max: 0 } };
           }
           const prices = result.items
@@ -236,7 +236,7 @@ export const RTKApi = createApi({
     getMe: build.query<IUserEntity, string>({
       queryFn: async () => {
         const result = await getApi().Users.getUser();
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IUserEntity };
@@ -248,7 +248,7 @@ export const RTKApi = createApi({
     getBonusBalance: build.query<IBonusBalanceEntity, void>({
       queryFn: async () => {
         const result = await getApi().Discounts.getBonusBalance();
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IBonusBalanceEntity };
@@ -260,7 +260,7 @@ export const RTKApi = createApi({
     getBonusHistory: build.query<IBonusTransactionEntity[], void>({
       queryFn: async () => {
         const result = await getApi().Discounts.getBonusHistory();
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IBonusTransactionEntity[] };
@@ -272,7 +272,7 @@ export const RTKApi = createApi({
     getAccounts: build.query<IAccountsEntity[], object>({
       queryFn: async () => {
         const result = await getApi().Payments.getAccounts();
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IAccountsEntity[] };
@@ -284,7 +284,7 @@ export const RTKApi = createApi({
     getOrderStorageByMarker: build.query<IOrdersEntity, { marker: string }>({
       queryFn: async ({ marker }) => {
         const result = await getApi().Orders.getOrdersStorageByMarker(marker);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IOrdersEntity };
@@ -296,7 +296,7 @@ export const RTKApi = createApi({
     getPaymentSessionById: build.query<ISessionEntity, { id: number }>({
       queryFn: async ({ id }) => {
         const result = await getApi().Payments.getSessionById(id);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as ISessionEntity };
@@ -308,7 +308,7 @@ export const RTKApi = createApi({
     getSingleOrder: build.query<IOrderByMarkerEntity, SingleOrderProps>({
       queryFn: async ({ id, marker }) => {
         const result = await getApi().Orders.getOrderByMarkerAndId(marker, id);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IOrderByMarkerEntity };
@@ -320,7 +320,7 @@ export const RTKApi = createApi({
     updateOrderByMarkerAndId: build.query<IBaseOrdersEntity, SingleOrderProps>({
       queryFn: async ({ id, marker, body }) => {
         const result = await getApi().Orders.updateOrderByMarkerAndId(marker, id, body);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IBaseOrdersEntity };
@@ -346,7 +346,7 @@ export const RTKApi = createApi({
     updateOrder: build.mutation<IBaseOrdersEntity, SingleOrderProps>({
       queryFn: async ({ id, marker, body }) => {
         const result = await getApi().Orders.updateOrderByMarkerAndId(marker, id, body);
-        if (typeError(result)) {
+        if (isError(result)) {
           return { error: result };
         }
         return { data: result as IBaseOrdersEntity };

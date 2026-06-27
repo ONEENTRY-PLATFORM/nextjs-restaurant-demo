@@ -3,8 +3,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, getLang, isError } from '@/app/api';
 
 interface HandleProps {
   body: IFilterParams[];
@@ -36,7 +35,7 @@ export const getAdminsInfo = cache(
   }> => {
     try {
       const data = await getApi().Admins.getAdminsInfo(body, langCode || getLang(), offset, limit);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data as IError };
       } else {
         return { isError: false, admins: data };

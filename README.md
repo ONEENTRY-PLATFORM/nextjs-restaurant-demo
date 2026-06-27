@@ -237,7 +237,7 @@ npm run test:watch  # watch mode
 | [errorHandler.test.ts](app/utils/__tests__/errorHandler.test.ts) | `ApiError`, `formatErrorMessage`, `handleApiError`, `isIError`, `useApiErrorHandler` |
 | [generatePageMetadata.test.ts](app/utils/__tests__/generatePageMetadata.test.ts) | `generatePageMetadata` — title, description, canonical, OG |
 | [headerAnimState.test.ts](app/animations/__tests__/headerAnimState.test.ts) | One-shot header-anim flag and listener semantics |
-| [utils.test.ts](components/__tests__/utils.test.ts) | Shared utils — `UsePrice`, `dictText`, `flatMenuToNested`, `normalizePhoneE164`, `shuffleArray`, sorts, `typeError` |
+| [utils.test.ts](components/__tests__/utils.test.ts) | Shared utils — `UsePrice`, `dictText`, `flatMenuToNested`, `normalizePhoneE164`, `shuffleArray`, sorts |
 | [authProviders.test.ts](components/forms/__tests__/authProviders.test.ts) | `getProviderMeta`, `sortActiveAuthProviders` |
 | [orderUtils.test.ts](components/profile/orders/__tests__/orderUtils.test.ts) | `computeTotals`, `formatOrderNumber`, `statusLabel`, `isHistoryOrder` |
 | [userFields.test.ts](components/cart/steps/step-payment/__tests__/userFields.test.ts) | `findUserField` priority resolution over user profile data |

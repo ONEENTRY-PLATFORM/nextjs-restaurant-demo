@@ -8,14 +8,20 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import { getApi, logInUser, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
+import {
+  getApi,
+  isError,
+  logInUser,
+  useEmailAuthProviderMarker,
+  useGetFormByMarkerQuery,
+} from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
-import { normalizePhoneE164, typeError } from '@/components/utils';
+import { normalizePhoneE164 } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -105,7 +111,7 @@ const SignUpForm = ({
       try {
         const res = await getApi().AuthProvider.signUp(emailProviderMarker, data);
 
-        if (typeError(res)) {
+        if (isError(res)) {
           // Sign-up error — stay on SignUpForm: the user was not created, do not switch to VerificationForm.
           const err = res as { statusCode?: number; message?: string };
           setError(err.message || `Error ${err.statusCode ?? ''}`);

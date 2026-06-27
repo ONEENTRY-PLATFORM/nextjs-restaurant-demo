@@ -4,8 +4,7 @@ import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /** BlockProducts — payload of {@link getBlockProducts}: title, products (sliced to `block.quantity`) and a column-count hint. */
 export interface BlockProducts {
@@ -21,7 +20,7 @@ const fetchBlockProducts = unstable_cache(
   async (marker: string): Promise<BlockProducts> => {
     try {
       const data = await getApi().Blocks.getBlockByMarker(marker);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data, title: '', products: [] };
       }
       const block = data as IBlockEntity;

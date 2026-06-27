@@ -2,8 +2,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 /**
  * getPagesByIds — pages by an array of ids.
@@ -25,7 +24,7 @@ export const getPagesByIds = cache(
           const page = await getApi().Pages.getPageById(id);
           // Guard per page: Promise.all returns an array, so a global isError
           // check never fires — an errored page would otherwise leak through.
-          return typeError(page) ? null : (page as IPagesEntity);
+          return isError(page) ? null : (page as IPagesEntity);
         })
       );
       const pages = results.filter((page): page is IPagesEntity => page !== null);

@@ -17,9 +17,6 @@ const UNDO_TIMEOUT_MS = 5000;
 /**
  * useCartRemoveWithUndo — removes a cart item with an undo toast.
  *
- * Triggers the leaving animation via `setCartTransition` (the actual `removeProduct` fires in
- * `ProductAnimations` after the fade-out); Undo restores the entry from a captured snapshot.
- *
  * @param   {number} productId - Cart product id to remove.
  * @param   {string} title     - Product title used in the toast message.
  * @returns Imperative remove function that displays the undo toast when invoked.
@@ -58,7 +55,7 @@ export const useCartRemoveWithUndo = (productId: number, title: string): (() => 
               }
               closeToast?.();
             }}
-            className="font-bold text-brand hover:underline"
+            className="font-bold text-brand hover:underline min-w-10"
           >
             Undo
           </button>

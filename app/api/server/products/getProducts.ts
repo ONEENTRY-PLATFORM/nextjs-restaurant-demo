@@ -2,9 +2,8 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
-import { getApi, getLang } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api';
 import getSearchParams from '@/app/api/utils/getSearchParams';
-import { typeError } from '@/components/utils';
 
 type SearchParams = {
   search?: string;
@@ -74,7 +73,7 @@ export const getProducts = cache(
               offset: 0,
               limit: fetchLimit,
             });
-            if (typeError(data)) return [] as IProductsEntity[];
+            if (isError(data)) return [] as IProductsEntity[];
             return data.items;
           })
         );
@@ -106,7 +105,7 @@ export const getProducts = cache(
         // Omit sortKey/sortOrder — the server applies the sort chosen in the admin and the position locks.
         { offset, limit }
       );
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data, total: 0 };
       } else {
         return {

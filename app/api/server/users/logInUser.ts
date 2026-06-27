@@ -1,3 +1,11 @@
+'use client';
+
+// ⚠️ Client-only module. `AuthProvider.auth` attaches the device fingerprint, which is
+// taken from the runtime environment — on the server it would be `Node.js/...` instead of
+// the user's real browser. This file therefore MUST run in the browser; despite living under
+// `server/`, it is invoked from Client Components (e.g. SignInForm). Do NOT convert it to a
+// `'use server'` Server Action — the `'use client'` directive enforces that.
+
 import type {
   IAuthEntity,
   IAuthPostBody,

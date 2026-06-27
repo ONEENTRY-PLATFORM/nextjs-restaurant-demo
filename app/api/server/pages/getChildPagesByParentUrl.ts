@@ -3,8 +3,7 @@ import type { IError } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { cache } from 'react';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 type ChildPagesResult = {
   isError: boolean;
@@ -16,7 +15,7 @@ const fetchChildPagesByParentUrl = unstable_cache(
   async (url: string): Promise<ChildPagesResult> => {
     try {
       const data = await getApi().Pages.getChildPagesByParentUrl(url);
-      if (typeError(data)) {
+      if (isError(data)) {
         return { isError: true, error: data };
       }
       return { isError: false, pages: data as IPagesEntity[] };

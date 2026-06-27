@@ -72,7 +72,7 @@ const fetchImpl = unstable_cache(
   async (url: string): Promise<Result> => {
     try {
       const data = await getApi().Pages.getPageByUrl(url);
-      if (typeError(data)) return { isError: true, error: data };
+      if (isError(data)) return { isError: true, error: data };
       return { isError: false, page: data };
     } catch (e) {
       return { isError: true, error: e as IError };

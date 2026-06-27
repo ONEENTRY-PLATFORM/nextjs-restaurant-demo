@@ -23,13 +23,12 @@ Async functions wrapping `getApi()` SDK with React `cache()` (deduplication with
 
 ```typescript
 import { cache } from 'react';
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 export const getPageByUrl = cache(async (url: string) => {
   try {
     const data = await getApi().Pages.getPageByUrl(url);
-    if (typeError(data)) return { isError: true, error: data };
+    if (isError(data)) return { isError: true, error: data };
     return { isError: false, page: data };
   } catch (e) {
     return { isError: true, error: e as IError };
@@ -55,7 +54,7 @@ One centralized `createApi()` with `fakeBaseQuery()`. All query/mutation endpoin
 getBlocksByPageUrl: build.query<IPositionBlock[], { pageUrl: string }>({
   queryFn: async ({ pageUrl }) => {
     const result = await getApi().Pages.getBlocksByPageUrl(pageUrl);
-    if (typeError(result)) return { error: result };
+    if (isError(result)) return { error: result };
     return { data: result as IPositionBlock[] };
   },
   providesTags: ['Blocks'],

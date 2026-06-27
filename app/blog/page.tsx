@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getBlogBanners, getPageByUrl } from '@/app/api';
+import { PAGES } from '@/app/utils/constants';
 
 type DescriptionValue = Array<{
   plainValue?: string;
@@ -15,8 +16,6 @@ type DescriptionValue = Array<{
 export const dynamic = 'force-static';
 export const revalidate = 300;
 
-const BLOG_HANDLE = 'blog';
-
 /**
  * BlogPromoListPage — root promo page listing child pages of `blog`.
  *
@@ -24,7 +23,7 @@ const BLOG_HANDLE = 'blog';
  */
 const BlogPromoListPage = async (): Promise<JSX.Element> => {
   const [{ page, isError }, banners] = await Promise.all([
-    getPageByUrl(BLOG_HANDLE),
+    getPageByUrl(PAGES.blog),
     getBlogBanners(),
   ]);
 
@@ -118,7 +117,7 @@ export default BlogPromoListPage;
  * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl(BLOG_HANDLE);
+  const { page } = await getPageByUrl(PAGES.blog);
   const title = page?.localizeInfos?.title ?? 'Promotions';
   const description = page?.attributeValues?.description?.value as DescriptionValue | undefined;
   const descriptionText = description?.[0]?.plainValue ?? '';

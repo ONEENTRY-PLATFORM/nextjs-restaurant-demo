@@ -1,8 +1,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IBaseOrdersEntity, IOrderData } from 'oneentry/dist/orders/ordersInterfaces';
 
-import { getApi } from '@/app/api';
-import { typeError } from '@/components/utils';
+import { getApi, isError } from '@/app/api';
 
 interface HandleProps {
   marker: string;
@@ -31,7 +30,7 @@ export const updateOrderByMarkerAndId = async ({
   try {
     const orderData = await getApi().Orders.updateOrderByMarkerAndId(marker, id, data);
 
-    if (typeError(orderData)) {
+    if (isError(orderData)) {
       return { isError: true, error: orderData };
     } else {
       return { isError: false, order: orderData };

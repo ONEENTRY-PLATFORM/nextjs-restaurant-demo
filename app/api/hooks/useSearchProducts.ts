@@ -35,15 +35,20 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       // Prefer semantic (vector) search; fall back to substring search when it is
       // not configured for the project (error / empty) so behaviour never regresses.
       const vector = await getApi().Products.getProductsByVectorSearch({ queryText: name });
-      const result =
-        !isError(vector) && Array.isArray(vector) && vector.length > 0
-          ? vector
-          : await getApi().Products.searchProduct(name);
+      let result: IProductsEntity[];
+      if (!isError(vector) && Array.isArray(vector) && vector.length > 0) {
+        result = vector;
+      } else {
+        // Guard the fallback too — searchProduct may return an IError envelope (not throw),
+        // which would crash the `.filter` below if treated as an array.
+        const fallback = await getApi().Products.searchProduct(name);
+        result = !isError(fallback) && Array.isArray(fallback) ? fallback : [];
+      }
       if (cancelled) {
         return;
       }
       const seen = new Set<number>();
-      const unique = (result as IProductsEntity[]).filter(p => {
+      const unique = result.filter(p => {
         if (seen.has(p.id)) return false;
         seen.add(p.id);
         return true;

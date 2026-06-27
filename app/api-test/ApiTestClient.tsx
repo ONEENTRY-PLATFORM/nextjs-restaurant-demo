@@ -467,8 +467,7 @@ export default function ApiTestClient(): JSX.Element {
                   min={1}
                   max={32}
                   value={concurrency}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(e: { target: { value: any } }) =>
+                  onChange={(e: { target: { value: string } }) =>
                     setConcurrency(Math.max(1, Math.min(32, Number(e.target.value) || 1)))
                   }
                   disabled={running}

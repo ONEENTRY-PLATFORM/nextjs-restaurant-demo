@@ -45,6 +45,18 @@ export const FORMS = {
   user: 'user',
   deliveryOrder: 'delivery_order',
   bookingOrder: 'booking_order',
+  reviewForm: 'review_form',
+} as const;
+
+/**
+ * Fallback `moduleFormConfigs[0].id` per form marker.
+ *
+ * The live id is resolved from `getFormByMarker().moduleFormConfigs[0].id` at request time;
+ * this map is used ONLY when that value is unavailable, so review reads/writes never silently
+ * break against a recreated config. Keep in sync with the OneEntry admin panel.
+ */
+export const FORM_MODULE_CONFIG_IDS = {
+  reviewForm: 2,
 } as const;
 
 /**

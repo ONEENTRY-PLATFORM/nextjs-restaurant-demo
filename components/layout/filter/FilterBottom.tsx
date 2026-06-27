@@ -268,14 +268,14 @@ const FilterBottom = ({
         id="side-menu"
         ref={sheetRef}
         className={
-          'fixed flex flex-col bottom-0 left-0 min-h-[80vh] w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-100 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
+          'fixed flex flex-col bottom-0 left-0 min-h-[80vh] max-h-dvh w-full overflow-y-auto bg-ink/80 backdrop-blur-card z-100 py-6.5 px-5 transform transition-transform duration-500 ease-in-out rounded-tl-[20px] rounded-tr-[20px] ' +
           'md:left-auto md:right-0 md:bottom-0 md:top-0 md:w-100 md:max-w-100 md:rounded-tr-none md:rounded-bl-[20px] md:rounded-tl-[20px] md:overflow-y-auto ' +
           (isVisible
             ? 'translate-y-0 md:translate-y-0 md:translate-x-0'
             : 'translate-y-full md:translate-y-0 md:translate-x-full')
         }
       >
-        <div className="w-full flex justify-between items-between mb-8">
+        <div className="w-full flex justify-between items-center mb-8">
           <button
             type="button"
             onClick={close}
@@ -284,13 +284,10 @@ const FilterBottom = ({
           >
             <ArrowBackOrangeIcon />
           </button>
+          {/* Mobile-only spacer balances the close button so the title stays centered (the back arrow is desktop-only). */}
+          <span aria-hidden="true" className="size-5 md:hidden" />
           <p className="font-normal text-2xl text-white">Filter</p>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close"
-            className="group_white max-md:hidden"
-          >
+          <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>
         </div>

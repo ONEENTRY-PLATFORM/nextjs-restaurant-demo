@@ -18,9 +18,8 @@
 
 Осталось:
 
-1. ✅ **Код (сделано):** хардкод продуктовых статусов снят. Анонимный `getProductStatuses()` отдаёт **200** (сверено 2026-06-26: 2 статуса — `in_stock` id=1 default, `out_of_stock` id=2). Заведён кэшированный server fetcher [getProductStatuses.ts](app/api/server/products/getProductStatuses.ts) (`getProductStatuses()` + резолвер `resolveOutOfStockMarker()` + производный `getOutOfStockMarker()`, `unstable_cache` 300 s). SSR (JSON-LD на странице товара) берёт маркер из `getOutOfStockMarker()`; клиентские потребители (`AddToCartButton`, корзинный `ProductCard`, `StepOrder`, `OrderCard`) читают его через хук `useOutOfStockMarker()` из [ProductStatusContext.tsx](app/store/providers/ProductStatusContext.tsx) (засеян промисом в root layout, зеркало `DictProvider`). `PRODUCT_STATUSES.outOfStock` в [constants.ts](app/utils/constants.ts) оставлен как compiled-in fallback на случай недоступности фетча.
-2. Сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
-3. (минорно, не блокирует) `Events.getAllEvents` анонимно отдаёт **401** (сверено 2026-06-25; было 403) — открыть группе **Guests** право на `events/all`, чтобы список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
+1. Сверить order-статусы по сторам `delivery_order` / `booking_order` (см. C.10 #1, требует user-token) — особое внимание написанию `canceled` vs `cancelled` (код сейчас хеджирует оба, после сверки оставить один).
+2. (минорно, не блокирует) `Events.getAllEvents` анонимно отдаёт **401** (сверено 2026-06-25; было 403) — открыть группе **Guests** право на `events/all`, чтобы список событий можно было сверять через `inspect-api`. На подписки товара не влияет — они уже работают (события `catalog_event` / `status_out_of_stock` / `product_price` заведены, subscribe/unsubscribe отвечают 204).
 
 ### C.2.8.2. `POST /api/content/user-activity/track` отдаёт 403 анониму (сверка SDK 2026-06-25)
 
@@ -39,31 +38,6 @@
 **Влияние / код-фолбэк:** на UX **не влияет** — трекинг fire-and-forget, JS-ошибка глотается в [useTrackActivity.ts](app/api/hooks/useTrackActivity.ts) (`.catch(() => {})`). Сама красная строка в консоли — это лог сетевого слоя браузера, из JS его подавить нельзя; уйдёт только после выдачи права. Последствие 403: события активности не копятся → рекомендательные блоки не получают сигналов (закрыто каталог-фолбэками, см. C.2.8). Снять пункт после выдачи права и перепроверки `check-user-activity.mjs` (ожидаем 201/200 вместо 403).
 
 > ⚠️ Побочное: SDK `UserActivity.trackUserActivity` под `isShell: true` возвращает `true` даже на 403 (ошибка не бросается, а возвращается, после чего метод игнорирует её и отдаёт `true`). Полагаться на его результат как на признак успеха нельзя — проверять статус сырым fetch.
-
-## C.2.9. `getProductsByPageUrl` / `getProductsByPageId` отдают 403 анониму — категории на главной и каталог категорий пусты (сверка SDK 2026-06-26)
-
-Симптом: на главной **не рендерится блок категорий** (`home_categories`), а в каталоге пусты страницы категорий (`/shop/category/<handle>`). Структура в админке корректна: под страницей `menu` (id=1, `catalog_page`) есть 8 видимых дочерних `catalog_page` (`soups`, `main-courses`, `appetizers`, `hot-drinks`, `cold-drinks`, `salads`, `desserts`, `kids-menu`), товары привязаны к категориям (`product.categories = ["menu/<handle>"]`), всего 123 товара.
-
-Причина — права доступа, не код. Сверено SDK-скриптом (`.claude/temp/diag-home-categories.mjs`, app-token, как ходит SSR):
-
-- `Products.getProductsByPageUrl('<любой handle>')` → **403** `{"statusCode":403,"message":"Permission data not found. Provide the permission for requested url"}`. 403 для **любого** url (`soups`, `menu`, `home_web`, даже несуществующего) — значит гейт на эндпоинте, а не на конкретной странице.
-- `Products.getProductsByPageId(245)` / `getProductsByPageId(1)` → тот же **403**.
-- При этом `Products.getProducts([], …)` под тем же app-token → **200**, `total=123` (общий список работает).
-- Обходной фильтр работает: `getProducts([{ attributeMarker: 'category', conditionMarker: 'eq', conditionValue: '<Title категории>' }])` → товары категории (напр. `category eq "Soups"` → 10). Но это завязка на локализованный `title` атрибута `category`, не на `pageUrl`.
-
-Та же семья 403, что у `user-activity/track` (C.2.8.2), истории бонусов (C.6.3) и `review_form` (C.8) — память `oneentry_anon_apptoken_403_resources`.
-
-Как стреляет в коде: [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts) ловит ошибку и по graceful-fallback отдаёт `{ isError: true, total: 0 }` → [HomeCategoriesSection](components/home/HomeCategoriesSection.tsx) фильтрует пустые секции и при `populated.length === 0` возвращает `null` (блок исчезает). Фикс на стороне кода без права невозможен — SSR ходит анонимно.
-
-**Действие для админки:** открыть группе **Guests** право на чтение **товаров по странице/каталогу** (эндпоинты products-by-page: `GET /api/content/products/page/url/{url}` и `GET /api/content/products/page/id/{id}`, методы SDK `getProductsByPageUrl` / `getProductsByPageId`, а заодно и парные `getProductsCountByPageUrl` / `getProductsByPageId` count). После выдачи — **обязательно** перепроверить анонимным SDK-вызовом (`node .claude/temp/diag-home-categories.mjs` должен дать `total>0`, а не 403): по C.8 видно, что право Guests срабатывает с лагом и может слетать. Только после подтверждённого 200 пометить `✅`.
-
-> Запасной вариант (если право выдать не удаётся): переписать [getProductsByPageUrl.ts](app/api/server/products/getProductsByPageUrl.ts) на `getProducts` + фильтр по атрибуту `category` (значение = `page.localizeInfos.title`). Минусы — завязка на локализованный title и потеря серверной пагинации/сортировки именно по странице. Брать только если права не решат вопрос.
-
-## C.3. Похожие товары (related products)
-
-- В админке привязать минимум 4–6 «похожих» через стандартный механизм OneEntry **Product Links**. Без этого `getRelatedProductsById` возвращает пустой список и секция не рендерится (graceful fallback).
-
----
 
 ### C.4.1. Завести новые маркеры в админке (атрибут-сет `static_content`)
 
@@ -154,34 +128,18 @@
 
 ## C.7. Аудит соответствия полей коду (inspect-api)
 
-### C.7.5. Inline LQIP-превью изображений — не у всех ассетов (сверка SDK 2026-06-25)
+### C.7.5. Inline LQIP-превью изображений — не у всех ассетов (сверка SDK 2026-06-27)
 
 OneEntry для сжатых на сервере изображений отдаёт готовый base64-плейсхолдер прямо в значении атрибута: `images.value[0].previewLink[defaultPreview]` = `[ "data:image/webp;base64,…", "<preview-sized URL>" ]`. Код теперь читает его через `getProductBlurDataURL(attrs)` ([useAttributesData.ts](app/api/hooks/useAttributesData.ts)) и подставляет в `placeholder="blur"` без `sharp`/скачивания ассета ([getProductBlurMap.ts](app/api/lqip/getProductBlurMap.ts), [ProductCover.tsx](components/layout/product/product-single/ProductCover.tsx)).
 
-Где `previewLink` **отсутствует** (фолбэк на генерацию через `lqip-modern`/`sharp` сохранён, всё работает, но медленнее и грузит билд):
+✅ **Товары — закрыто (сверено 2026-06-27, `.claude/temp/verify-c7-5-previewlink.mjs`):** все **121/121** товаров теперь отдают inline `previewLink` (прежние 25 «дырок» закрыты, изображения перезалиты). Фолбэк на `sharp` для товаров больше не нужен.
 
-- **Товары без inline-превью — 25 из 121** (id: `3523, 3522, 3521, 3520, 3517, 3516, 3514, 3510, 3509, 3508, 3507, 3505, 3502, 3501, 3499, 3497, 3496, 3495, 3484, 3476, 3474, 3473, 3466, 3465, 3463`). У них `images.value[0]` без `previewLink`/`defaultPreview` — изображение, видимо, загружено до включения серверной генерации превью.
-- **Баннеры (страницы `blog/*`, атрибуты `bg_image`/`banner`)** — `previewLink` отсутствует у всех (id `22`, `39`, `40`): значение содержит только `[size, filename, contentType, downloadLink]`.
-- **Фото ресторанов (дочерние страницы `restaurants/*`, атрибут `photos`)** — `previewLink` отсутствует у **всех** изображений всех 3 ресторанов (`burj_lumiere` 5 фото, `skyline_pavilion` 5, `petit_jardin` 3; сверка SDK 2026-06-27): значение содержит только `[size, filename, contentType, downloadLink]`. Галерея ([RestaurantPhotoGallery.tsx](components/restaurants/RestaurantPhotoGallery.tsx)) и листинг ([restaurants/page.tsx](app/restaurants/page.tsx)) получают `placeholder="blur"` через серверный фолбэк [getPhotosBlurMap.ts](app/api/lqip/getPhotosBlurMap.ts) (`lqip-modern`/`sharp`).
+Где `previewLink` **ещё отсутствует** (фолбэк на генерацию через `lqip-modern`/`sharp` сохранён, всё работает, но медленнее и грузит билд):
 
-**Действие для админки:** пере-сохранить/перезалить изображения у перечисленных товаров, баннеров и в атрибуте `photos` всех ресторанов, чтобы OneEntry сгенерировал `previewLink` (сжатую копию + base64-плейсхолдер). После этого фолбэк на `sharp` для них перестанет срабатывать. Не блокирует релиз — фолбэк закрывает пробел.
+- **Баннеры (страницы `blog/*`, атрибуты `bg_image`/`banner`)** — частично закрыто (сверка 2026-06-27): `birthday_offer` (id 22) — `previewLink` есть и у `bg_image`, и у `banner` ✅; `business_lunch` (id 40) — есть у `bg_image`, **нет у `banner`**; `deal_of_the_day` (id 39) — **нет ни у `bg_image`, ни у `banner`**. Перезалить `banner` у id 40 и оба изображения у id 39.
+- **Фото ресторанов (дочерние страницы `restaurants/*`, атрибут `photos`)** — `previewLink` отсутствует у **всех** изображений всех 3 ресторанов (`burj_lumiere` 5 фото, `skyline_pavilion` 5, `petit_jardin` 3; сверка SDK 2026-06-27 — без изменений): значение содержит только `[size, filename, contentType, downloadLink]`. Галерея ([RestaurantPhotoGallery.tsx](components/restaurants/RestaurantPhotoGallery.tsx)) и листинг ([restaurants/page.tsx](app/restaurants/page.tsx)) получают `placeholder="blur"` через серверный фолбэк [getPhotosBlurMap.ts](app/api/lqip/getPhotosBlurMap.ts) (`lqip-modern`/`sharp`).
 
----
-
-## C.8. `review_form` снова закрыт для анонимного чтения — **РЕГРЕССИЯ** (сверка SDK 2026-06-26)
-
-Отзывы **не отображаются ни на одной странице товара** (везде empty-state «No reviews yet»), хотя в БД лежат **363 одобренных отзыва** (по 3 на товар).
-
-Причина — права доступа, не код. Сверено SDK-скриптом (`.claude/temp/diag-reviews-anon.mjs`, app-token `next-rest` serial 5, как ходит SSR):
-
-- **анонимно** (только app-token, без user-JWT — так работает весь SSR): `FormData.getFormsDataByMarker('review_form', 2, …)` → **403 `Permission data not found. Provide the permission for requested url`**; `Forms.getFormByMarker('review_form').moduleFormConfigs[0].isGlobal === false`;
-- **под user-token** (тот же вызов): **200**, `total=363`, все `status: 'approved'`, `entityIdentifier` = id товаров (3448…), `parentId: null`.
-
-Это **откат** ранее выданного права: 2026-06-25 (`recheck-403-items.mjs`) тот же анонимный вызов отдавал `total=363`. Между 25 и 26 июня право группе **Guests** на чтение данных формы `review_form` слетело (память `oneentry_formdata_isglobal` отмечала, что выдача прав срабатывала с лагом / была нестабильна).
-
-Как стреляет в коде: [getProductReviews.ts](app/api/server/forms/getProductReviews.ts) ловит `isError(403)` и по правилу graceful-fallback возвращает `[]` → [ProductReviewsList](components/reviews/ProductReviewsList.tsx) рисует «No reviews yet». Фикс на стороне кода невозможен — SSR ходит анонимно и иначе как через право Guests эти данные не прочитает.
-
-**Действие для админки:** заново выдать группе **Guests** право **`read`** на данные формы `review_form` (секция разрешений формы; в ответе SDK это отражается как `moduleFormConfigs[0].isGlobal === true`). После выдачи — **обязательно** перепроверить анонимным SDK-вызовом (`node .claude/temp/diag-reviews-anon.mjs` должен дать `200 / total>0`, а не 403), т.к. право срабатывает не сразу. Только после подтверждённого 200 пометить `✅`.
+**Действие для админки:** пере-сохранить/перезалить оставшиеся изображения баннеров (`banner` у `business_lunch`, оба у `deal_of_the_day`) и все изображения в атрибуте `photos` всех ресторанов, чтобы OneEntry сгенерировал `previewLink` (сжатую копию + base64-плейсхолдер). После этого фолбэк на `sharp` для них перестанет срабатывать. Не блокирует релиз — фолбэк закрывает пробел.
 
 ---
 

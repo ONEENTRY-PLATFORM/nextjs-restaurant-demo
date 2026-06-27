@@ -18,12 +18,6 @@ const AUTOPLAY_MS = 6000;
 /**
  * HomePromoCarousel — Swiper-driven promo rotator shared across breakpoints via `variant`.
  *
- * Desktop renders one full-width slide per view (the `section_layout` wrapper constrains the width);
- * mobile renders fixed-width `347px` cards with a peek of the next via `slidesPerView="auto"`. Both
- * variants autoplay (paused on hover, resumed after touch) and stop autoplay under
- * `prefers-reduced-motion`. Active state drives the dot tablist; dots call `slideToLoop` so they stay
- * correct with `loop`. Swiper suppresses the click that ends a drag, so a swipe never navigates.
- *
  * @param   {object}                         props         - Component props.
  * @param   {BlogBanner[]}                   props.banners - Banners (already filtered to the variant's image), in display order.
  * @param   {Record<number, string | null>}  props.blur    - base64 LQIP keyed by banner id (matching the variant's image).

@@ -11,7 +11,7 @@ import Skeleton from '@/components/shared/skeletons/Skeleton';
  */
 export default function Loading(): JSX.Element {
   return (
-    <section aria-hidden="true" className="section_layout">
+    <section aria-hidden="true" className="skeleton-fade-in section_layout">
       {/* Heading + description */}
       <Skeleton className="mb-5 h-8 w-2/3 max-w-100 md:h-[32px]" />
       <Skeleton className="mb-8 h-4 w-3/4 max-w-150 rounded-full" />

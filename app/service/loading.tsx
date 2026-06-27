@@ -11,7 +11,10 @@ import Skeleton from '@/components/shared/skeletons/Skeleton';
  */
 export default function Loading(): JSX.Element {
   return (
-    <div aria-hidden="true" className="min-h-screen bg-black bg-cover bg-no-repeat">
+    <div
+      aria-hidden="true"
+      className="skeleton-fade-in min-h-screen bg-black bg-cover bg-no-repeat"
+    >
       <div className="mx-auto max-w-98.25 px-5">
         <Skeleton className="mx-auto mt-41.25 h-52.5 w-62.5 rounded-card" />
         <Skeleton className="mt-42.5 h-15 w-full rounded-card" />

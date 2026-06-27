@@ -35,7 +35,7 @@ const CategoryRowSkeleton = ({ tint = false }: { tint?: boolean }): JSX.Element 
  */
 const HomeSkeleton = (): JSX.Element => {
   return (
-    <div aria-hidden="true" className="flex w-full flex-col">
+    <div aria-hidden="true" className="skeleton-fade-in flex w-full flex-col">
       {/* Promo banner */}
       <div className="section_layout pt-0">
         <Skeleton className="hidden h-60 w-full rounded-panel md:block lg:h-75" />

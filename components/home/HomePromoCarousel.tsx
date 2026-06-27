@@ -1,9 +1,14 @@
 'use client';
 
+import 'swiper/css';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import type { JSX, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
+import { A11y, Autoplay } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import type { Swiper as SwiperType } from 'swiper/types';
 
 import type { BlogBanner } from '@/app/api';
 
@@ -11,186 +16,101 @@ import type { BlogBanner } from '@/app/api';
 const AUTOPLAY_MS = 6000;
 
 /**
- * HomePromoCarousel — full-width desktop promo rotator: scroll-snap slides with dot indicators
- * and (reduced-motion-aware, hover-paused) autoplay. Each slide links to its `/promo/<pageUrl>` page.
+ * HomePromoCarousel — Swiper-driven promo rotator shared across breakpoints via `variant`.
  *
- * @param   {object}                        props         - Component props.
- * @param   {BlogBanner[]}                  props.banners - Banners with a desktop image, in display order.
- * @param   {Record<number, string | null>} props.blur    - base64 LQIP keyed by banner id (desktop preview).
- * @returns JSX of the desktop promo carousel.
+ * Desktop renders one full-width slide per view (the `section_layout` wrapper constrains the width);
+ * mobile renders fixed-width `347px` cards with a peek of the next via `slidesPerView="auto"`. Both
+ * variants autoplay (paused on hover, resumed after touch) and stop autoplay under
+ * `prefers-reduced-motion`. Active state drives the dot tablist; dots call `slideToLoop` so they stay
+ * correct with `loop`. Swiper suppresses the click that ends a drag, so a swipe never navigates.
+ *
+ * @param   {object}                         props         - Component props.
+ * @param   {BlogBanner[]}                   props.banners - Banners (already filtered to the variant's image), in display order.
+ * @param   {Record<number, string | null>}  props.blur    - base64 LQIP keyed by banner id (matching the variant's image).
+ * @param   {'desktop' | 'mobile'}           props.variant - Layout variant: full-width slides vs peeking `347px` cards.
+ * @returns JSX of the promo carousel.
  */
 const HomePromoCarousel = ({
   banners,
   blur,
+  variant,
 }: {
   banners: BlogBanner[];
   blur: Record<number, string | null>;
+  variant: 'desktop' | 'mobile';
 }): JSX.Element => {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeRef = useRef(0);
-  const dragRef = useRef({ active: false, startX: 0, startScroll: 0, moved: false, pointerId: -1 });
-  const [dragging, setDragging] = useState(false);
+  const isDesktop = variant === 'desktop';
   const multiple = banners.length > 1;
+  const [active, setActive] = useState(0);
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
   useEffect(() => {
-    activeRef.current = activeIndex;
-  }, [activeIndex]);
-
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const children = Array.from(el.children) as HTMLElement[];
-      const { scrollLeft } = el;
-      let nearest = 0;
-      let nearestDelta = Infinity;
-      for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (!child) continue;
-        const delta = Math.abs(child.offsetLeft - el.offsetLeft - scrollLeft);
-        if (delta < nearestDelta) {
-          nearest = i;
-          nearestDelta = delta;
-        }
-      }
-      setActiveIndex(nearest);
-    };
-
-    update();
-    el.addEventListener('scroll', update, { passive: true });
-    return () => {
-      el.removeEventListener('scroll', update);
-    };
-  }, [banners.length]);
-
-  useEffect(() => {
-    if (!multiple) return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-
-    const el = scrollerRef.current;
-    let paused = false;
-    const pause = () => {
-      paused = true;
-    };
-    const resume = () => {
-      paused = false;
-    };
-    el?.addEventListener('pointerenter', pause);
-    el?.addEventListener('pointerleave', resume);
-
-    const id = window.setInterval(() => {
-      if (paused || document.hidden || !el) return;
-      const next = (activeRef.current + 1) % banners.length;
-      const child = el.children[next] as HTMLElement | undefined;
-      if (child) {
-        el.scrollTo({ left: child.offsetLeft - el.offsetLeft, behavior: 'smooth' });
-      }
-    }, AUTOPLAY_MS);
-
-    return () => {
-      window.clearInterval(id);
-      el?.removeEventListener('pointerenter', pause);
-      el?.removeEventListener('pointerleave', resume);
-    };
-  }, [multiple, banners.length]);
-
-  const scrollToIndex = (i: number) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const child = el.children[i] as HTMLElement | undefined;
-    if (!child) return;
-    el.scrollTo({ left: child.offsetLeft - el.offsetLeft, behavior: 'smooth' });
-  };
-
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    // Touch/pen keep native horizontal scroll (momentum + snap); only mouse needs JS drag.
-    if (e.pointerType !== 'mouse' || !multiple) return;
-    const el = scrollerRef.current;
-    if (!el) return;
-    dragRef.current = {
-      active: true,
-      startX: e.clientX,
-      startScroll: el.scrollLeft,
-      moved: false,
-      pointerId: e.pointerId,
-    };
-    // Mandatory snap overrides programmatic scrollLeft mid-drag — disable it while dragging.
-    el.style.scrollSnapType = 'none';
-    el.setPointerCapture(e.pointerId);
-    setDragging(true);
-  };
-
-  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const drag = dragRef.current;
-    if (!drag.active) return;
-    const el = scrollerRef.current;
-    if (!el) return;
-    const dx = e.clientX - drag.startX;
-    if (Math.abs(dx) > 5) drag.moved = true;
-    el.scrollLeft = drag.startScroll - dx;
-  };
-
-  const endDrag = () => {
-    const drag = dragRef.current;
-    if (!drag.active) return;
-    drag.active = false;
-    const el = scrollerRef.current;
-    if (el) {
-      if (el.hasPointerCapture(drag.pointerId)) el.releasePointerCapture(drag.pointerId);
-      el.style.scrollSnapType = '';
+    if (!swiper?.autoplay) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      swiper.autoplay.stop();
     }
-    setDragging(false);
-  };
-
-  const onClickCapture = (e: ReactMouseEvent<HTMLDivElement>) => {
-    // Swallow the click that ends a drag so it doesn't navigate to the promo page.
-    if (dragRef.current.moved) {
-      e.preventDefault();
-      e.stopPropagation();
-      dragRef.current.moved = false;
-    }
-  };
+  }, [swiper]);
 
   return (
     <div className="w-full">
-      <div
-        ref={scrollerRef}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onClickCapture={onClickCapture}
-        className={
-          'flex w-full snap-x snap-mandatory overflow-x-auto no-scrollbar select-none ' +
-          (multiple ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : '')
+      <Swiper
+        modules={[Autoplay, A11y]}
+        loop={multiple}
+        autoplay={
+          multiple
+            ? { delay: AUTOPLAY_MS, disableOnInteraction: false, pauseOnMouseEnter: true }
+            : false
         }
+        onSwiper={setSwiper}
+        onSlideChange={s => setActive(s.realIndex)}
+        {...(isDesktop
+          ? { slidesPerView: 1 as const }
+          : { slidesPerView: 'auto' as const, spaceBetween: 10 })}
+        className="w-full cursor-grab active:cursor-grabbing"
       >
         {banners.map((b, i) => (
-          <Link
-            key={b.id}
-            href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
-            title={b.title}
-            draggable={false}
-            className="block w-full shrink-0 snap-start overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]"
-          >
-            <Image
-              src={b.desktopImage as string}
-              alt={b.title}
+          <SwiperSlide key={b.id} className={isDesktop ? '' : 'w-86.75!'}>
+            <Link
+              href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+              title={b.title}
               draggable={false}
-              width={1292}
-              height={192}
-              priority={i === 0}
-              sizes="(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, 700px"
-              className="h-auto w-full object-cover"
-              {...(blur[b.id]
-                ? { placeholder: 'blur' as const, blurDataURL: blur[b.id] as string }
-                : {})}
-            />
-          </Link>
+              className={
+                isDesktop
+                  ? 'block w-full overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]'
+                  : 'relative block h-36.25 w-full overflow-hidden rounded-panel'
+              }
+            >
+              {isDesktop ? (
+                <Image
+                  src={b.desktopImage as string}
+                  alt={b.title}
+                  draggable={false}
+                  width={1292}
+                  height={192}
+                  priority={i === 0}
+                  sizes="(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, 700px"
+                  className="h-auto w-full object-cover"
+                  {...(blur[b.id]
+                    ? { placeholder: 'blur' as const, blurDataURL: blur[b.id] as string }
+                    : {})}
+                />
+              ) : (
+                <Image
+                  src={b.mobileImage as string}
+                  alt={b.title}
+                  fill
+                  draggable={false}
+                  sizes="347px"
+                  className="object-cover"
+                  {...(blur[b.id]
+                    ? { placeholder: 'blur' as const, blurDataURL: blur[b.id] as string }
+                    : {})}
+                />
+              )}
+            </Link>
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
 
       {multiple ? (
         <div
@@ -203,12 +123,12 @@ const HomePromoCarousel = ({
               key={b.id}
               type="button"
               role="tab"
-              aria-selected={i === activeIndex}
+              aria-selected={i === active}
               aria-label={`Promo ${i + 1} of ${banners.length}: ${b.title}`}
-              onClick={() => scrollToIndex(i)}
+              onClick={() => swiper?.slideToLoop(i)}
               className={
                 'h-2.5 w-2.5 rounded-full transition-colors ' +
-                (i === activeIndex ? 'bg-brand' : 'bg-white')
+                (i === active ? 'bg-brand' : 'bg-white')
               }
             />
           ))}

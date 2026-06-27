@@ -5,6 +5,7 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
+import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
 import { PAGES } from '@/app/utils/constants';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
 
@@ -92,6 +93,8 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   const cards: RestaurantCard[] = visiblePages.map((p, idx) => buildCard(p, idx + 1));
+  // One blur map keyed by `downloadLink` is shared across every card's slider.
+  const blurMap = await getPhotosBlurMap(cards.flatMap(c => c.photos));
 
   return (
     <section className="section_layout pt-0">
@@ -113,7 +116,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-7.5 md:grid-cols-2">
           {cards.map(card => (
-            <RestaurantCardView key={card.id} card={card} />
+            <RestaurantCardView key={card.id} card={card} blurMap={blurMap} />
           ))}
         </div>
       )}
@@ -124,16 +127,24 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
 /**
  * RestaurantCardView — single card on the restaurants index (photos + meta + CTA link).
  *
- * @param   {object}          props      - Component props.
- * @param   {RestaurantCard}  props.card - View-model produced by {@link buildCard}.
+ * @param   {object}                  props         - Component props.
+ * @param   {RestaurantCard}          props.card    - View-model produced by {@link buildCard}.
+ * @param   {Record<string, string>}  [props.blurMap] - `{ [downloadLink]: base64DataURI }` LQIP placeholders (see `getPhotosBlurMap`).
  * @returns JSX of one restaurant card.
  */
-const RestaurantCardView = ({ card }: { card: RestaurantCard }): JSX.Element => {
+const RestaurantCardView = ({
+  card,
+  blurMap,
+}: {
+  card: RestaurantCard;
+  blurMap?: Record<string, string>;
+}): JSX.Element => {
   return (
     <div className="flex flex-col items-stretch gap-5">
       <RestaurantPhotoSlider
         photos={card.photos}
         alt={card.title}
+        blurMap={blurMap}
         frameClassName="aspect-[620/440]"
         sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
         priority={false}

@@ -11,7 +11,7 @@ import Skeleton from './Skeleton';
  */
 const RestaurantsIndexSkeleton = (): JSX.Element => {
   return (
-    <section aria-hidden="true" className="section_layout pt-0">
+    <section aria-hidden="true" className="skeleton-fade-in section_layout pt-0">
       <Skeleton className="h-8 w-64 md:h-9" />
       <Skeleton className="mt-3 h-4 w-full max-w-150 rounded-full" />
 

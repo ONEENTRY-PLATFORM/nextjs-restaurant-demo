@@ -28,7 +28,7 @@ export const CartLineSkeleton = (): JSX.Element => (
  */
 const CartSkeleton = (): JSX.Element => {
   return (
-    <section aria-hidden="true" className="min-h-screen bg-black">
+    <section aria-hidden="true" className="skeleton-fade-in min-h-screen bg-black">
       <div className="mx-auto w-full max-w-85 px-4 pt-6 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
         {/* Step heading */}
         <Skeleton className="mb-6 h-7 w-48" />

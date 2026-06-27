@@ -28,12 +28,21 @@ type Photo = { downloadLink?: string };
  * Desktop: Swiper main slide + vertical Swiper thumbs (driven by the `Thumbs` module);
  * click on the main slide opens the lightbox.
  *
- * @param   {object}      props        - Component props.
- * @param   {Photo[]}     props.photos - List of photos with `downloadLink` URLs.
- * @param   {string}      props.alt    - Accessible alt text used for the main image and slides.
+ * @param   {object}                  props          - Component props.
+ * @param   {Photo[]}                 props.photos   - List of photos with `downloadLink` URLs.
+ * @param   {string}                  props.alt      - Accessible alt text used for the main image and slides.
+ * @param   {Record<string, string>}  [props.blurMap] - `{ [downloadLink]: base64DataURI }` LQIP placeholders (see `getPhotosBlurMap`).
  * @returns JSX of the gallery (mobile slider + desktop main+thumbs + lightbox).
  */
-const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string }): JSX.Element => {
+const RestaurantPhotoGallery = ({
+  photos,
+  alt,
+  blurMap,
+}: {
+  photos: Photo[];
+  alt: string;
+  blurMap?: Record<string, string>;
+}): JSX.Element => {
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   // Defer mounting `RestaurantLightbox` (and thus loading its chunk) until the
@@ -59,6 +68,7 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
         <RestaurantPhotoSlider
           photos={photos}
           alt={alt}
+          blurMap={blurMap}
           frameClassName="aspect-956/678"
           sizes="(max-width: 767px) 100vw, 700px"
           onImageClick={openLightbox}
@@ -90,6 +100,9 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
                     className="object-cover pointer-events-none select-none"
                     draggable={false}
                     priority={i === 0}
+                    {...(blurMap?.[p.downloadLink]
+                      ? { placeholder: 'blur' as const, blurDataURL: blurMap[p.downloadLink] }
+                      : {})}
                   />
                 </SwiperSlide>
               ) : null
@@ -122,6 +135,9 @@ const RestaurantPhotoGallery = ({ photos, alt }: { photos: Photo[]; alt: string 
                   sizes="(min-width: 1280px) 278px, 20vw"
                   className="object-cover pointer-events-none select-none"
                   draggable={false}
+                  {...(blurMap?.[p.downloadLink]
+                    ? { placeholder: 'blur' as const, blurDataURL: blurMap[p.downloadLink] }
+                    : {})}
                 />
               </SwiperSlide>
             ) : null

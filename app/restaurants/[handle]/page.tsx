@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
+import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
 import { PAGES } from '@/app/utils/constants';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
@@ -108,6 +109,7 @@ const RestaurantPage = async ({
 
   const attrs = page.attributeValues ?? {};
   const photos = (attrs.photos?.value as Photo[] | undefined) ?? [];
+  const blurMap = await getPhotosBlurMap(photos);
   const address = (attrs.address?.value as string | undefined) ?? '';
   const phone = (attrs.phone?.value as string | undefined) ?? '';
   const whatsapp = (attrs.whatsapp?.value as string | undefined) ?? '';
@@ -144,7 +146,7 @@ const RestaurantPage = async ({
       </h1>
 
       <div className="mt-7.5">
-        <RestaurantPhotoGallery photos={photos} alt={title} />
+        <RestaurantPhotoGallery photos={photos} alt={title} blurMap={blurMap} />
       </div>
 
       {descriptionHtml ? (

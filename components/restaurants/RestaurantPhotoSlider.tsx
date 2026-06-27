@@ -16,19 +16,21 @@ type Photo = { downloadLink?: string };
  *
  * Pass `autoplayMs={null}` to disable autoplay. When `onImageClick` is provided, a tap on the slide invokes it.
  *
- * @param   {object}        props                  - Component props.
- * @param   {Photo[]}       props.photos           - List of photos with `downloadLink` URLs.
- * @param   {string}        props.alt              - Accessible alt text used for the active slide.
- * @param   {string}        [props.frameClassName] - Aspect-ratio class applied to the slider frame.
- * @param   {string}        [props.sizes]          - `<Image sizes>` directive for the slides.
- * @param   {boolean}       [props.priority]       - When `true`, the first slide is loaded with `priority`.
- * @param   {() => void}    [props.onImageClick]   - Invoked when the user taps a slide (Swiper suppresses this after a swipe).
- * @param   {number | null} [props.autoplayMs]     - Autoplay interval in ms (`null` disables autoplay).
+ * @param   {object}                  props                  - Component props.
+ * @param   {Photo[]}                 props.photos           - List of photos with `downloadLink` URLs.
+ * @param   {string}                  props.alt              - Accessible alt text used for the active slide.
+ * @param   {Record<string, string>}  [props.blurMap]        - `{ [downloadLink]: base64DataURI }` LQIP placeholders (see `getPhotosBlurMap`).
+ * @param   {string}                  [props.frameClassName] - Aspect-ratio class applied to the slider frame.
+ * @param   {string}                  [props.sizes]          - `<Image sizes>` directive for the slides.
+ * @param   {boolean}                 [props.priority]       - When `true`, the first slide is loaded with `priority`.
+ * @param   {() => void}              [props.onImageClick]   - Invoked when the user taps a slide (Swiper suppresses this after a swipe).
+ * @param   {number | null}           [props.autoplayMs]     - Autoplay interval in ms (`null` disables autoplay).
  * @returns JSX of the slider with optional dot tablist.
  */
 const RestaurantPhotoSlider = ({
   photos,
   alt,
+  blurMap,
   frameClassName = 'aspect-[16/9] md:aspect-[2.4/1]',
   sizes = '(min-width: 1280px) 1292px, (min-width: 1024px) 1000px, (min-width: 768px) 700px, 100vw',
   priority = true,
@@ -37,6 +39,7 @@ const RestaurantPhotoSlider = ({
 }: {
   photos: Photo[];
   alt: string;
+  blurMap?: Record<string, string> | undefined;
   frameClassName?: string;
   sizes?: string;
   priority?: boolean;
@@ -85,6 +88,9 @@ const RestaurantPhotoSlider = ({
                   className="object-cover pointer-events-none select-none"
                   draggable={false}
                   priority={priority && i === 0}
+                  {...(blurMap?.[p.downloadLink]
+                    ? { placeholder: 'blur' as const, blurDataURL: blurMap[p.downloadLink] }
+                    : {})}
                 />
               </SwiperSlide>
             ) : null

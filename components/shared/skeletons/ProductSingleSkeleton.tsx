@@ -11,7 +11,7 @@ import Skeleton from './Skeleton';
  */
 const ProductSingleSkeleton = (): JSX.Element => {
   return (
-    <section aria-hidden="true" className="shop_section">
+    <section aria-hidden="true" className="skeleton-fade-in shop_section">
       {/* Breadcrumb + title (desktop only) */}
       <div className="hidden flex-col gap-2.5 md:flex">
         <Skeleton className="h-4 w-40 rounded-full" />

@@ -11,7 +11,7 @@ import Skeleton from './Skeleton';
  */
 const RestaurantDetailSkeleton = (): JSX.Element => {
   return (
-    <section aria-hidden="true" className="section_layout pt-0">
+    <section aria-hidden="true" className="skeleton-fade-in section_layout pt-0">
       {/* Back link */}
       <Skeleton className="mb-5 h-4 w-36 rounded-full" />
 

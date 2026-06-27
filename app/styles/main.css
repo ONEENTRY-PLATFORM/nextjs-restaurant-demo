@@ -94,6 +94,26 @@ input[type='search']::-webkit-search-decoration {
   animation: profile-slide-in-left 0.28s ease-out both;
 }
 
+/*
+ * Route loading skeletons (`loading.tsx`) are the streamed Suspense fallback, so on a cold load /
+ * reload they paint as static HTML with no entrance — `next-transition-router`'s `enter` tween only
+ * runs on client-side navigation. This pure-CSS fade gives the skeleton a soft entrance on first
+ * paint without waiting for hydration; `animate-pulse` on the inner blocks keeps running underneath.
+ * (The catalog grid skeleton opts out — its cards reveal via GSAP `CardAnimations` instead.)
+ */
+@keyframes skeleton-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.skeleton-fade-in {
+  animation: skeleton-fade-in 0.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-fade-in {
+    animation: none;
+  }
+}
+
 input[type="radio"] {
   display: none;
 }

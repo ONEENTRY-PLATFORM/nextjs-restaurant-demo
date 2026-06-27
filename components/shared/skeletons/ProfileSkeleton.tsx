@@ -11,7 +11,7 @@ import Skeleton from './Skeleton';
  */
 const ProfileSkeleton = (): JSX.Element => {
   return (
-    <div aria-hidden="true" className="md:flex md:justify-between md:gap-15">
+    <div aria-hidden="true" className="skeleton-fade-in md:flex md:justify-between md:gap-15">
       {/* Content column */}
       <div className="flex w-full flex-col gap-5 md:w-1/2">
         {Array.from({ length: 5 }).map((_, i) => (

@@ -14,6 +14,7 @@ import {
   sortActiveAuthProviders,
   startGoogleOAuth,
 } from '@/components/forms/authProviders';
+import LogoIcon from '@/components/icons/logo';
 
 /**
  * redirectToOAuth — full-page redirect to an OAuth provider's authorization URL.
@@ -67,14 +68,7 @@ const AuthProviderSelect = ({
     <FormAnimations isLoading={isLoading} className={className} isActive={isActive}>
       <div className="mx-auto flex w-full flex-col">
         <FormFieldAnimations index={0} from="above" className="mx-auto">
-          <Image
-            src="/images/logo.svg"
-            alt="OneEntry Restaurant"
-            width={171}
-            height={143}
-            className="mx-auto h-auto w-42.5"
-            priority
-          />
+          <LogoIcon fill="#FFFFFF" className="mx-auto block w-42.5" />
         </FormFieldAnimations>
         <div className="mt-10 flex flex-col">
           {active.map((p, i) => {

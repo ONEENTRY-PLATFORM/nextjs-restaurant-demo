@@ -57,11 +57,11 @@ const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
           <div className="mb-4 w-full">
             <Image
               src={'/images/logo.svg'}
-              width={140}
+              width={82}
               height={40}
-              alt={'OneEntry'}
+              alt={'Oasis'}
               loading="lazy"
-              className="aspect-[3.57] max-w-full shrink-0 max-sm:mb-5"
+              className="aspect-[2.05] max-w-full shrink-0 max-sm:mb-5"
             />
           </div>
           <MobileMenu menu={mainMenu} />

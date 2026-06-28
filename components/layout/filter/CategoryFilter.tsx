@@ -68,10 +68,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         // no local fallback by design (icons must come from CMS).
         const cmsIcon = getImageUrl(
           p.attributeValues?.menu_icon?.value as
-            | Array<{ downloadLink?: string }>
-            | { downloadLink?: string }
-            | null
-            | undefined
+            Array<{ downloadLink?: string }> | { downloadLink?: string } | null | undefined
         );
         return {
           label: (p.localizeInfos?.title ?? p.pageUrl).toUpperCase(),
@@ -102,10 +99,10 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex justify-center items-center pt-6">
-          <p className="font-normal text-xl tracking-fine text-paper">Category</p>
+        <div className="flex items-center justify-center pt-6">
+          <p className="text-xl font-normal tracking-fine text-paper">Category</p>
         </div>
-        <div className="max-w-80 mx-auto pb-25 md:pb-12 pt-6 grid grid-cols-2 gap-x-15 gap-y-6">
+        <div className="mx-auto grid max-w-80 grid-cols-2 gap-x-15 gap-y-6 pt-6 pb-25 md:pb-12">
           {categories.map(cat => (
             <Link
               key={cat.label}
@@ -113,9 +110,9 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
               onClick={close}
               className="group flex flex-col items-center"
             >
-              <div className="w-27.5 h-27.5 rounded-full flex items-center justify-center bg-paper transition-colors duration-200 group-hover:bg-brand">
+              <div className="flex size-27.5 items-center justify-center rounded-full bg-paper transition-colors duration-200 group-hover:bg-brand">
                 {cat.icon ? (
-                  <div className="relative w-15 h-15">
+                  <div className="relative size-15">
                     <Image
                       src={cat.icon}
                       alt={cat.label}
@@ -126,7 +123,7 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
                   </div>
                 ) : null}
               </div>
-              <p className="font-bold uppercase text-base text-paper mt-2.5 leading-4 text-center whitespace-pre-line">
+              <p className="mt-2.5 text-center text-base leading-4 font-bold whitespace-pre-line text-paper uppercase">
                 {cat.label}
               </p>
             </Link>

@@ -19,7 +19,7 @@ const NotFound = async (): Promise<JSX.Element> => {
 
   if (isError || !page) {
     return (
-      <div className="mx-auto flex min-h-80 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
+      <div className="mx-auto flex min-h-80 w-full max-w-85 flex-col items-center justify-center px-4 py-8 text-paper xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
         <h1 className="mb-10 text-6xl">404</h1>
         <Link href="/">{returnHome}</Link>
       </div>
@@ -29,7 +29,7 @@ const NotFound = async (): Promise<JSX.Element> => {
   const { localizeInfos, attributeValues } = page;
 
   return (
-    <div className="mx-auto flex min-h-96 w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col items-center justify-center px-4 py-8 text-paper">
+    <div className="mx-auto flex min-h-96 w-full max-w-85 flex-col items-center justify-center px-4 py-8 text-paper xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
       <h1 className="mb-10 text-6xl">{localizeInfos?.title}</h1>
       <p className="mb-4">
         {
@@ -40,7 +40,7 @@ const NotFound = async (): Promise<JSX.Element> => {
       </p>
       <Link
         href="/"
-        className="rounded-card border border-brand text-brand font-normal px-4 py-2 hover_btn_brand"
+        className="hover_btn_brand rounded-card border border-brand px-4 py-2 font-normal text-brand"
       >
         {returnHome}
       </Link>

@@ -32,7 +32,7 @@ const PaymentMethodsList = ({ accounts, isLoading, identifier, onSelect }: Props
     <div className="step-payment-row mt-5 flex flex-col gap-5">
       <div className="flex items-center gap-2.5">
         <Image src="/images/icons/card-line.svg" alt="" width={23} height={15} />
-        <p className="font-normal text-xl text-paper">{t('select_payment_text', 'Payment')}</p>
+        <p className="text-xl font-normal text-paper">{t('select_payment_text', 'Payment')}</p>
       </div>
 
       {isLoading ? (

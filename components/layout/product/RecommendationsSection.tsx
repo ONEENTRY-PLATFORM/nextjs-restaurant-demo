@@ -53,9 +53,9 @@ const RecommendationsSection = async ({
   ]);
 
   return (
-    <section className="flex flex-col max-md:max-w-full pt-15">
+    <section className="flex flex-col pt-15 max-md:max-w-full">
       <ProductAnimations className={''} index={0}>
-        <h3 className="title_name mb-3 max-md:max-w-full text-paper!">{title}</h3>
+        <h3 className="title_name mb-3 text-paper! max-md:max-w-full">{title}</h3>
       </ProductAnimations>
       <CardsGridAnimations className="menu_items">
         {items.map((product, i) => {

@@ -101,10 +101,10 @@ const Modal = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-dvh min-h-140 w-full flex-col overflow-y-auto no-scrollbar rounded-t-[20px] bg-ink/80 backdrop-blur-card p-6 px-16 pt-24 pb-25 shadow-xl max-sm:px-8 sm:px-16 md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-182.5 md:max-w-[95vw] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:pb-6 md:pt-24 lg:h-auto lg:p-10 lg:px-33.5 lg:pt-24"
+        className="no-scrollbar fixed inset-x-0 bottom-0 z-20 flex max-h-dvh min-h-140 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 p-6 px-16 pt-24 pb-25 shadow-xl backdrop-blur-card max-sm:px-8 sm:px-16 md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:max-h-[90vh] md:w-182.5 md:max-w-[95vw] md:-translate-1/2 md:rounded-[20px] md:pt-24 md:pb-6 lg:h-auto lg:p-10 lg:px-33.5 lg:pt-24"
       >
         {/* Popup header: back / title / close. */}
-        <header className="absolute left-0 top-0 flex w-full items-center justify-between gap-5 px-8 py-6 max-sm:px-8 lg:px-12">
+        <header className="absolute top-0 left-0 flex w-full items-center justify-between gap-5 px-8 py-6 max-sm:px-8 lg:px-12">
           {isAuthSubStep ? (
             <button
               type="button"
@@ -117,7 +117,7 @@ const Modal = (): JSX.Element => {
           ) : (
             <div className="size-7" />
           )}
-          <p className="font-semibold text-2xl text-brand">{title}</p>
+          <p className="text-2xl font-semibold text-brand">{title}</p>
           {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
           <CloseModal className="max-md:hidden" />
           <span aria-hidden="true" className="size-12.5 md:hidden" />

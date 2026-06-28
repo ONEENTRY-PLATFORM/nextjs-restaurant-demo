@@ -14,7 +14,7 @@ const BODY_LINES = ['w-full', 'w-11/12', 'w-10/12', 'w-9/12', 'w-11/12', 'w-7/12
  */
 export default function GenericPageSkeleton(): JSX.Element {
   return (
-    <article className="skeleton-fade-in mx-auto flex w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
+    <article className="skeleton-fade-in mx-auto flex w-full max-w-85 flex-col gap-6 px-4 py-10 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
       <Skeleton className="h-8 w-2/3 md:h-10" />
       <div className="flex flex-col gap-3">
         {BODY_LINES.map((w, i) => (

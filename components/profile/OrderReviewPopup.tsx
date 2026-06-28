@@ -274,7 +274,7 @@ const ReviewableItem = ({
 
   return (
     <div className="flex flex-col gap-3.75">
-      <p className="text-sm font-normal leading-4.25 text-paper">{product.title}</p>
+      <p className="text-sm leading-4.25 font-normal text-paper">{product.title}</p>
       <div className="flex gap-3.75">
         {previewSrc ? (
           <Image
@@ -282,13 +282,10 @@ const ReviewableItem = ({
             alt={product.title}
             width={69}
             height={69}
-            className="h-17.25 w-17.25 shrink-0 rounded-card object-cover"
+            className="size-17.25 shrink-0 rounded-card object-cover"
           />
         ) : (
-          <div
-            aria-hidden="true"
-            className="h-17.25 w-17.25 shrink-0 rounded-card bg-custom_gray_pk"
-          />
+          <div aria-hidden="true" className="size-17.25 shrink-0 rounded-card bg-custom_gray_pk" />
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-3.75">
           <StarRating
@@ -420,7 +417,7 @@ const OrderReviewPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[90vh] md:max-w-182 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed inset-x-0 bottom-0 z-20 flex max-h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 shadow-xl backdrop-blur-card md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:h-auto md:max-h-[90vh] md:max-w-182 md:-translate-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
           <button
@@ -431,7 +428,7 @@ const OrderReviewPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-bold text-2xl leading-7.5 text-brand">
+          <p className="text-2xl leading-7.5 font-bold text-brand">
             {t('leave_review', 'Leave a review')}
           </p>
           {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}
@@ -449,7 +446,7 @@ const OrderReviewPopup = (): JSX.Element => {
           </div>
         ) : (
           <>
-            <p className="mt-7.5 text-center font-normal text-xl text-paper">
+            <p className="mt-7.5 text-center text-xl font-normal text-paper">
               {t('please_leave_review_text', 'Please, leave a review!')}
             </p>
 

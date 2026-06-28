@@ -34,13 +34,13 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
     <div className="relative">
       <HomePromoOverlay />
       {desktopBanners.length > 0 ? (
-        <div className="section_layout hidden md:block pt-0">
+        <div className="section_layout hidden pt-0 md:block">
           <HomePromoCarousel variant="desktop" banners={desktopBanners} blur={desktopBlur} />
         </div>
       ) : null}
 
       {mobileBanners.length > 0 ? (
-        <section className="md:hidden pt-3">
+        <section className="pt-3 md:hidden">
           <h2 className="title_name mx-auto px-4">Promotions</h2>
           <div className="mt-3.75">
             <HomePromoCarousel variant="mobile" banners={mobileBanners} blur={mobileBlur} />

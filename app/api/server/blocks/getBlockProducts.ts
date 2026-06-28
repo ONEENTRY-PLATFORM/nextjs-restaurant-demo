@@ -54,6 +54,6 @@ const fetchBlockProducts = unstable_cache(
  * @param   {string} marker - Block marker (e.g. `recommended`).
  * @returns Normalised block data.
  */
-export const getBlockProducts = cache(
-  async (marker: string): Promise<BlockProducts> => fetchBlockProducts(marker)
+export const getBlockProducts = cache(async (marker: string): Promise<BlockProducts> =>
+  fetchBlockProducts(marker)
 );

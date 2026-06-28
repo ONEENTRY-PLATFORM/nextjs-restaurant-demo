@@ -25,8 +25,7 @@ export const useCartRemoveWithUndo = (productId: number, title: string): (() => 
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const entry = useAppSelector(state => selectCartItemWithIdLength(state, productId)) as
-    | { id: number; quantity: number; selected: boolean }
-    | undefined;
+    { id: number; quantity: number; selected: boolean } | undefined;
 
   return () => {
     const snapshot = entry
@@ -55,7 +54,7 @@ export const useCartRemoveWithUndo = (productId: number, title: string): (() => 
               }
               closeToast?.();
             }}
-            className="font-bold text-brand hover:underline min-w-10"
+            className="min-w-10 font-bold text-brand hover:underline"
           >
             Undo
           </button>

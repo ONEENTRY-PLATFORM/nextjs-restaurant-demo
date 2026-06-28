@@ -83,8 +83,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   const parent = parentRes.page;
   const title = parent.localizeInfos?.title ?? 'Welcome to our restaurant chain';
   const descriptionRaw = parent.attributeValues?.description?.value as
-    | Array<{ htmlValue?: string; plainValue?: string }>
-    | undefined;
+    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
   const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
   const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
 
@@ -98,7 +97,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
 
   return (
     <section className="section_layout pt-0">
-      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-fine text-brand">{title}</h1>
+      <h1 className="text-2xl font-bold tracking-fine text-brand uppercase md:text-3xl">{title}</h1>
       {descriptionHtml ? (
         <div
           className="mt-3.75 text-base text-paper/90"
@@ -150,7 +149,7 @@ const RestaurantCardView = ({
         priority={false}
       />
       <div className="flex items-center justify-center gap-5">
-        <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full border border-brand text-base text-brand">
+        <div className="flex size-9.5 shrink-0 items-center justify-center rounded-full border border-brand text-base text-brand">
           {card.index}
         </div>
         <div className="flex flex-col text-center">

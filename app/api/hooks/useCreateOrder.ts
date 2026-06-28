@@ -16,6 +16,8 @@ import {
 import { DELIVERY_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
+import { isOnlinePaymentAccount } from './paymentAccountKind';
+
 type CartEntry = {
   id: number;
   quantity?: number;
@@ -23,11 +25,12 @@ type CartEntry = {
 };
 
 export type ConfirmOrderResult =
-  | { ok: true; orderId: number; paymentUrl?: string }
-  | { ok: false; error: string };
+  { ok: true; orderId: number; paymentUrl?: string } | { ok: false; error: string };
 
 type ConfirmOrderArgs = {
   paymentAccountIdentifier: string;
+  /** SDK `type` of the selected account; drives online-vs-offline routing (see {@link isOnlinePaymentAccount}). */
+  paymentAccountType?: 'stripe' | 'custom' | undefined;
 };
 
 type UseCreateOrderApi = {
@@ -50,6 +53,7 @@ export const useCreateOrder = (): UseCreateOrderApi => {
 
   const onConfirmOrder = async ({
     paymentAccountIdentifier,
+    paymentAccountType,
   }: ConfirmOrderArgs): Promise<ConfirmOrderResult> => {
     const state = store.getState();
     const order = state.orderReducer.order;
@@ -136,8 +140,12 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         dispatch(removeOrder());
       };
 
-      // Cash — paid offline, no paymentUrl needed.
-      if (createdPayment === 'cash') {
+      // Offline account (cash / pay-on-site) — settled without a hosted checkout, no paymentUrl needed.
+      const isOnline = isOnlinePaymentAccount({
+        type: paymentAccountType,
+        identifier: createdPayment ?? paymentAccountIdentifier,
+      });
+      if (!isOnline) {
         clearCheckoutState();
         return { ok: true, orderId: id };
       }

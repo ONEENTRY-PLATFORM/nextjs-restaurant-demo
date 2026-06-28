@@ -67,7 +67,7 @@ const BonusSection = (): JSX.Element | null => {
       {open && (
         <div className="mt-5 flex flex-col gap-2.5">
           {txns.length === 0 ? (
-            <p className="font-normal text-base text-muted-text">
+            <p className="text-base font-normal text-muted-text">
               {t('bonus_history_empty', 'No bonus transactions yet.')}
             </p>
           ) : (
@@ -76,11 +76,11 @@ const BonusSection = (): JSX.Element | null => {
                 key={`${txn.balanceId}-${i}`}
                 className="profile-anim-row flex items-center justify-between gap-2.5"
               >
-                <span className="font-normal text-base text-white">{txn.comment || txn.type}</span>
-                <span className="font-normal text-base text-muted-text">
+                <span className="text-base font-normal text-white">{txn.comment || txn.type}</span>
+                <span className="text-base font-normal text-muted-text">
                   {txn.createdAt ? formatDate(txn.createdAt) : ''}
                 </span>
-                <span className="font-bold text-base text-brand">
+                <span className="text-base font-bold text-brand">
                   {SIGN_BY_TYPE[txn.type] ?? ''}
                   {txn.amount}
                 </span>

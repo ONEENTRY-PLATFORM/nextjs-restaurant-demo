@@ -32,7 +32,7 @@ const DeliveryRow = ({ delivery }: { delivery: IProductsEntity }): JSX.Element =
       <div className="td w-8/12 px-5 align-middle">
         <div className="mt-2 flex flex-col self-start">
           <div className="mb-4 text-base max-sm:mb-2">{delivery?.localizeInfos?.title}</div>
-          <div className="mb-2 text-xl font-bold leading-8">
+          <div className="mb-2 text-xl leading-8 font-bold">
             {UsePrice({
               amount: delivery?.price || 0,
             })}

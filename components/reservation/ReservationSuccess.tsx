@@ -28,8 +28,8 @@ const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.
   return (
     <div className="flex w-full flex-col items-center gap-5 px-5 md:px-19">
       <div className="flex flex-col items-center gap-0">
-        <p className="text-center font-light text-[32px] leading-10 text-brand">№ {orderId}</p>
-        <p className="mt-2.5 text-center font-light text-[32px] leading-10 text-brand whitespace-pre-line">
+        <p className="text-center text-[32px] leading-10 font-light text-brand">№ {orderId}</p>
+        <p className="mt-2.5 text-center text-[32px] leading-10 font-light whitespace-pre-line text-brand">
           {confirmedText}
         </p>
       </div>
@@ -37,7 +37,7 @@ const ReservationSuccess = ({ orderId, summary }: ReservationSuccessProps): JSX.
       {summary ? (
         <>
           <span className="block h-px w-45.75 bg-paper" aria-hidden="true" />
-          <p className="text-center font-normal text-xl tracking-fine text-paper">{summary}</p>
+          <p className="text-center text-xl font-normal tracking-fine text-paper">{summary}</p>
         </>
       ) : null}
     </div>

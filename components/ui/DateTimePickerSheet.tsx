@@ -330,16 +330,16 @@ const DateTimePickerSheet = ({
   if (!mounted) return null;
 
   return createPortal(
-    <div ref={wrapperRef} className="z-500 fixed inset-0 flex h-screen w-full">
+    <div ref={wrapperRef} className="fixed inset-0 z-500 flex h-screen w-full">
       <div
         id="modalBg"
-        className="fixed inset-0 size-full min-w-full min-h-full bg-black/50"
+        className="fixed inset-0 size-full min-h-full min-w-full bg-black/50"
         onClick={handleClose}
         aria-hidden="true"
       />
       <div
         id="modalBody"
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-dvh w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed inset-x-0 bottom-0 z-20 flex max-h-dvh w-full flex-col rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 shadow-xl backdrop-blur-card md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="mb-5 flex items-center justify-between gap-5">
           {isDateStep ? (
@@ -354,7 +354,7 @@ const DateTimePickerSheet = ({
               <ArrowBackIcon className="hover-target text-paper" />
             </button>
           )}
-          <h2 className="flex-1 text-center font-bold text-xl uppercase text-brand">
+          <h2 className="flex-1 text-center text-xl font-bold text-brand uppercase">
             {isDateStep ? dateTitle : timeTitle}
           </h2>
           {onClose ? (
@@ -363,11 +363,11 @@ const DateTimePickerSheet = ({
             // Reservation popup), which closes the host instead of just the picker.
             <ClosePopupButton onClose={handleClose} ariaLabel="Close date and time picker" />
           ) : (
-            <span className="h-5 w-5" aria-hidden="true" />
+            <span className="size-5" aria-hidden="true" />
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto">
           {isDateStep ? (
             <div className="mx-auto w-full max-w-87.5">
               <div className="grid grid-cols-7">
@@ -402,7 +402,7 @@ const DateTimePickerSheet = ({
                   );
                 })}
               </div>
-              <div className="mb-5 mt-4 flex items-center justify-around">
+              <div className="mt-4 mb-5 flex items-center justify-around">
                 <button
                   type="button"
                   onClick={goPrev}
@@ -412,8 +412,8 @@ const DateTimePickerSheet = ({
                   <ChevronMiniLeftIcon />
                 </button>
                 <div className="flex gap-3.75">
-                  <h2 className="font-semibold text-xl text-brand">{MONTH_NAMES[month]}</h2>
-                  <h3 className="font-light text-xl text-brand">{year}</h3>
+                  <h2 className="text-xl font-semibold text-brand">{MONTH_NAMES[month]}</h2>
+                  <h3 className="text-xl font-light text-brand">{year}</h3>
                 </div>
                 <button type="button" onClick={goNext} aria-label="Next month" className="group">
                   <ChevronMiniRightIcon />
@@ -462,7 +462,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canContinue}
               onClick={() => setStepName('time')}
-              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_brand disabled:opacity-60"
+              className="hover_btn_brand block rounded-card border border-brand px-3.75 py-1.25 text-xl font-bold text-brand disabled:opacity-60"
             >
               {continueText}
             </button>
@@ -471,7 +471,7 @@ const DateTimePickerSheet = ({
               type="button"
               disabled={!canApply}
               onClick={handleApply}
-              className="block rounded-card border border-brand px-3.75 py-1.25 font-bold text-xl text-brand hover_btn_brand disabled:opacity-60"
+              className="hover_btn_brand block rounded-card border border-brand px-3.75 py-1.25 text-xl font-bold text-brand disabled:opacity-60"
             >
               {applyText}
             </button>

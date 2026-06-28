@@ -33,7 +33,7 @@ const ResetPasswordButton = ({
     <button
       onClick={handleClick}
       type="button"
-      className="w-auto font-semibold text-xl text-brand underline cursor-pointer"
+      className="w-auto cursor-pointer text-xl font-semibold text-brand underline"
     >
       {title}
     </button>

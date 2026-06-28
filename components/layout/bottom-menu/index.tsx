@@ -50,9 +50,9 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
   const rightItems = navItems.slice(half);
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 z-600 w-full h-19 bg-cover bg-center">
-      <div className="max-w-[90vw] sm:max-w-[70vw] mx-auto flex justify-between h-19">
-        <div className="relative flex justify-start gap-11.25 mobile_wide:gap-12 items-center mx-auto w-1/3 z-50">
+    <div className="fixed bottom-0 left-0 z-600 h-19 w-full bg-cover bg-center md:hidden">
+      <div className="mx-auto flex h-19 max-w-[90vw] justify-between sm:max-w-[70vw]">
+        <div className="relative z-50 mx-auto flex w-1/3 items-center justify-start gap-11.25 mobile_wide:gap-12">
           {leftItems.map(({ page, Component, groupClass }) => (
             <div key={page.pageUrl} className={groupClass}>
               <Component item={page} />
@@ -60,15 +60,15 @@ const BottomMobileMenu = async (): Promise<JSX.Element> => {
           ))}
         </div>
 
-        <div className="relative w-1/3 flex justify-center items-start -mt-5 p-5 z-50">
+        <div className="relative z-50 -mt-5 flex w-1/3 items-start justify-center p-5">
           {/* Cart/close stack - crossfade via opacity+rotate+scale driven by `OpenDrawerContext.open`. */}
-          <div className="relative w-11.5 h-11.5 -mt-2.5">
+          <div className="relative -mt-2.5 size-11.5">
             <CenterCartButton />
             <CenterCloseButton />
           </div>
         </div>
 
-        <div className="relative flex justify-end gap-11.25 md:gap-20 mobile_wide:gap-12 items-center mx-auto w-1/3 z-50">
+        <div className="relative z-50 mx-auto flex w-1/3 items-center justify-end gap-11.25 mobile_wide:gap-12 md:gap-20">
           {rightItems.map(({ page, Component, groupClass }) => (
             <div key={page.pageUrl} className={groupClass}>
               <Component item={page} />

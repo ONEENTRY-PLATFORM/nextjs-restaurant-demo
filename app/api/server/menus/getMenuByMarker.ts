@@ -33,6 +33,6 @@ const fetchMenuByMarker = unstable_cache(
  * @param   {string} marker - OneEntry menu marker (e.g. `main-menu`).
  * @returns Promise resolving to `{ isError, error?, menu? }` (graceful fallback on SDK error).
  */
-export const getMenuByMarker = cache(
-  async (marker: string): Promise<MenuResult> => fetchMenuByMarker(marker)
+export const getMenuByMarker = cache(async (marker: string): Promise<MenuResult> =>
+  fetchMenuByMarker(marker)
 );

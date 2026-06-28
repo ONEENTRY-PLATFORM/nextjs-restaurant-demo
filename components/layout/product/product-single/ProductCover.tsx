@@ -46,7 +46,7 @@ const ProductCover = async ({
           <Placeholder />
         </div>
       )}
-      <div className="absolute bottom-2.5 right-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-card">
+      <div className="absolute right-2.5 bottom-2.5 z-10 flex size-12.5 items-center justify-center rounded-full bg-custom_header backdrop-blur-card">
         <FavoritesButton {...product} />
       </div>
     </div>

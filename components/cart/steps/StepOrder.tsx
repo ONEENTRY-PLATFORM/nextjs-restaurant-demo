@@ -103,6 +103,9 @@ const StepOrder = (): JSX.Element => {
     total: clientTotal,
     bonusApplied: 0,
   };
+  // Real currency only exists on the server preview (ServerOrderTotals.currency); the client
+  // fallback object has none, so UsePrice falls back to the project default (USD).
+  const displayCurrency = serverTotals?.currency;
 
   const handleApply = (): void => {
     if (appliedCoupon && appliedCoupon.code === promoCode.trim()) {
@@ -224,10 +227,10 @@ const StepOrder = (): JSX.Element => {
                   )}
                 </div>
                 <div className="flex min-w-0 flex-col justify-between gap-1">
-                  <p className="font-normal text-sm text-white">{title}</p>
+                  <p className="text-sm font-normal text-white">{title}</p>
                   <div className="flex items-center gap-2.5">
-                    {weight ? <p className="font-normal text-sm text-white">{weight} g</p> : null}
-                    <p className="font-bold text-xl text-brand">{UsePrice({ amount: unit })}</p>
+                    {weight ? <p className="text-sm font-normal text-white">{weight} g</p> : null}
+                    <p className="text-xl font-bold text-brand">{UsePrice({ amount: unit })}</p>
                   </div>
                 </div>
               </div>
@@ -248,13 +251,13 @@ const StepOrder = (): JSX.Element => {
             onChange={e => setPromoCode(e.currentTarget.value)}
             disabled={isLoading}
             placeholder={t('promo_code_text', 'Promo Code')}
-            className="h-8 w-2/3 rounded-card border border-brand bg-transparent text-center text-base uppercase text-white placeholder:text-center placeholder:text-base placeholder:uppercase placeholder:text-white focus:outline-none disabled:opacity-60"
+            className="h-8 w-2/3 rounded-card border border-brand bg-transparent text-center text-base text-white uppercase placeholder:text-center placeholder:text-base placeholder:text-white placeholder:uppercase focus:outline-none disabled:opacity-60"
           />
           <button
             type="button"
             onClick={handleApply}
             disabled={isLoading || (!appliedCoupon && !promoCode.trim())}
-            className="h-8 w-1/3 rounded-card border-none bg-brand px-2.5 text-[13px] font-normal uppercase text-black hover_btn_transp disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
+            className="hover_btn_transp h-8 w-1/3 rounded-card border-none bg-brand px-2.5 text-[13px] font-normal text-black uppercase disabled:cursor-not-allowed disabled:opacity-60 lg:text-[14px]"
           >
             {isLoading
               ? t('applying_text', 'Applying')
@@ -293,34 +296,34 @@ const StepOrder = (): JSX.Element => {
       <div className="step-order-row mt-10 rounded-card border border-brand p-2.5">
         <div className="flex gap-1.25 text-white">
           <p>{t('subtotal_text', 'Subtotal')}:</p>
-          <p>{UsePrice({ amount: display.subtotal })}</p>
+          <p>{UsePrice({ amount: display.subtotal, currency: displayCurrency })}</p>
         </div>
         <div className="flex gap-1.25 text-brand">
           <p>{t('delivery_text', 'Delivery')}:</p>
-          <p>{UsePrice({ amount: display.delivery })}</p>
+          <p>{UsePrice({ amount: display.delivery, currency: displayCurrency })}</p>
         </div>
         {display.discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>Discount:</p>
-            <p>{UsePrice({ amount: display.discount })}</p>
+            <p>{UsePrice({ amount: display.discount, currency: displayCurrency })}</p>
           </div>
         ) : null}
         {display.bonusApplied > 0 ? (
           <div className="flex gap-1.25 text-brand">
             <p>{t('bonus_applied_text', 'Bonuses')}:</p>
-            <p>−{UsePrice({ amount: display.bonusApplied })}</p>
+            <p>−{UsePrice({ amount: display.bonusApplied, currency: displayCurrency })}</p>
           </div>
         ) : null}
         <div className="flex gap-1.25 text-white">
           <p>{t('total_amount_text', 'Total Amount')}:</p>
-          <p>{UsePrice({ amount: display.total })}</p>
+          <p>{UsePrice({ amount: display.total, currency: displayCurrency })}</p>
         </div>
       </div>
 
       <button
         type="button"
         onClick={handleProceedToPayment}
-        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center font-normal text-base text-white transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
+        className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center text-base font-normal text-white transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
       >
         {isAuth ? 'APPLY' : t('login_to_continue', 'Sign in to continue')}
       </button>

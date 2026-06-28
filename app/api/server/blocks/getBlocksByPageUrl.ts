@@ -33,6 +33,6 @@ const fetchBlocksByPageUrl = unstable_cache(
  * @param   {string} pageUrl - OneEntry `pageUrl` marker (NOT the Next.js route path).
  * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
  */
-export const getBlocksByPageUrl = cache(
-  async (pageUrl: string): Promise<BlocksResult> => fetchBlocksByPageUrl(pageUrl)
+export const getBlocksByPageUrl = cache(async (pageUrl: string): Promise<BlocksResult> =>
+  fetchBlocksByPageUrl(pageUrl)
 );

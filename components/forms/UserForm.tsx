@@ -49,7 +49,7 @@ const UserForm = (): JSX.Element => {
           return {
             marker: field.marker,
             value: fields[field.marker as keyof typeof fields]?.value || '',
-            type: 'string',
+            type: field.type,
           };
         }
         return undefined;

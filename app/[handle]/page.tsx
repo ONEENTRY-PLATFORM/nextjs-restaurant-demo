@@ -25,14 +25,13 @@ const PageLayout = async ({
 
   const title = page.localizeInfos?.title ?? '';
   const descriptionRaw = page.attributeValues?.description?.value as
-    | Array<{ htmlValue?: string; plainValue?: string }>
-    | undefined;
+    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
   const html = descriptionRaw?.[0]?.htmlValue ?? '';
 
   return (
-    <article className="mx-auto flex w-full max-w-85 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323 flex-col gap-6 px-4 py-10">
+    <article className="mx-auto flex w-full max-w-85 flex-col gap-6 px-4 py-10 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
       {title ? (
-        <h1 className="font-bold text-2xl md:text-[32px] uppercase tracking-fine text-brand">
+        <h1 className="text-2xl font-bold tracking-fine text-brand uppercase md:text-[32px]">
           {title}
         </h1>
       ) : null}

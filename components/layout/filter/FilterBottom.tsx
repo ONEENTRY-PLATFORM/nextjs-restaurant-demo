@@ -86,7 +86,7 @@ const FilterChipGroups = ({
       {groups.map(group => (
         <div key={group.name || '_'} className="flex flex-col gap-1.75">
           {group.name ? (
-            <p className="text-xs uppercase tracking-wide text-paper/80">{group.name}</p>
+            <p className="text-xs tracking-wide text-paper/80 uppercase">{group.name}</p>
           ) : null}
           <div className="flex flex-wrap gap-1.75">
             {group.items.map(option => (
@@ -275,7 +275,7 @@ const FilterBottom = ({
             : 'translate-y-full md:translate-y-0 md:translate-x-full')
         }
       >
-        <div className="w-full flex justify-between items-center mb-8">
+        <div className="mb-8 flex w-full items-center justify-between">
           <button
             type="button"
             onClick={close}
@@ -286,13 +286,13 @@ const FilterBottom = ({
           </button>
           {/* Mobile-only spacer balances the close button so the title stays centered (the back arrow is desktop-only). */}
           <span aria-hidden="true" className="size-5 md:hidden" />
-          <p className="font-normal text-2xl text-white">Filter</p>
+          <p className="text-2xl font-normal text-white">Filter</p>
           <button type="button" onClick={close} aria-label="Close" className="group_white">
             <CloseXIcon />
           </button>
         </div>
         <div className="w-full md:order-2">
-          <div className="flex flex-wrap mt-9.25 md:mt-0 gap-1.75">
+          <div className="mt-9.25 flex flex-wrap gap-1.75 md:mt-0">
             <p className="filter_title">{waitingTitle}</p>
             {WAITING_TIME.map(({ label }) => (
               <button
@@ -314,9 +314,9 @@ const FilterBottom = ({
               itemClass={itemClass}
             />
           ) : null}
-          <div className="flex flex-wrap mt-5.25 gap-1.75 pb-7.5">
+          <div className="mt-5.25 flex flex-wrap gap-1.75 pb-7.5">
             <p className="filter_title">Price $</p>
-            <label className="filter_item flex items-center gap-1.5 hover:bg-transparent active:bg-transparent hover:border-paper">
+            <label className="filter_item flex items-center gap-1.5 hover:border-paper hover:bg-transparent active:bg-transparent">
               <span>{fromLabel}</span>
               <input
                 type="text"
@@ -326,10 +326,10 @@ const FilterBottom = ({
                 onChange={e => setPriceMin(sanitizePriceInput(e.target.value))}
                 placeholder={priceRange?.min ? String(priceRange.min) : '0'}
                 aria-label={`${fromLabel} price`}
-                className="bg-transparent border-0 outline-none w-12 text-paper placeholder:text-paper/50"
+                className="w-12 border-0 bg-transparent text-paper outline-none placeholder:text-paper/50"
               />
             </label>
-            <label className="filter_item flex items-center gap-1.5 hover:bg-transparent active:bg-transparent hover:border-paper">
+            <label className="filter_item flex items-center gap-1.5 hover:border-paper hover:bg-transparent active:bg-transparent">
               <span>{underLabel}</span>
               <input
                 type="text"
@@ -339,28 +339,28 @@ const FilterBottom = ({
                 onChange={e => setPriceMax(sanitizePriceInput(e.target.value))}
                 placeholder={priceRange?.max ? String(priceRange.max) : '0'}
                 aria-label={`${underLabel} price`}
-                className="bg-transparent border-0 outline-none w-12 text-paper placeholder:text-paper/50"
+                className="w-12 border-0 bg-transparent text-paper outline-none placeholder:text-paper/50"
               />
             </label>
           </div>
         </div>
-        <div className="w-full mt-auto md:mt-0 md:mb-8 md:order-1 flex justify-between items-center">
+        <div className="mt-auto flex w-full items-center justify-between md:order-1 md:mt-0 md:mb-8">
           <button
             type="button"
             onClick={reset}
-            className="filter_btn text-base border-b border-white pb-0.75 transition-colors duration-200 hover:text-brand hover:border-brand"
+            className="filter_btn border-b border-white pb-0.75 text-base transition-colors duration-200 hover:border-brand hover:text-brand"
           >
             {clearAllLabel}
           </button>
           <button
             type="button"
             onClick={apply}
-            className="filter_btn text-brand border border-brand rounded-card px-5 hover_btn_brand"
+            className="filter_btn hover_btn_brand rounded-card border border-brand px-5 text-brand"
           >
             Apply
           </button>
         </div>
-        <div className="h-25 bg-transparent border-none md:hidden"></div>
+        <div className="h-25 border-none bg-transparent md:hidden"></div>
       </div>
     </>
   );

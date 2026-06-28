@@ -76,8 +76,7 @@ export async function generateMetadata({
   // `menu_icon` (image) is normalized by the SDK into a `{type, value: Array<{downloadLink}>}` shape
   // on Pages — unwrap the first element for the OG image.
   const menuIconAttr = attributeValues?.menu_icon as
-    | { value?: { downloadLink?: string } | Array<{ downloadLink?: string }> | null }
-    | undefined;
+    { value?: { downloadLink?: string } | Array<{ downloadLink?: string }> | null } | undefined;
   const menuIconValue = menuIconAttr?.value;
   const {
     url,

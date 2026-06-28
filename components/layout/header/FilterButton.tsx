@@ -27,7 +27,7 @@ const FilterButton = (): JSX.Element => {
       type="button"
       onClick={handleClick}
       aria-label={label}
-      className="cursor-pointer group bg-transparent border-0 p-0"
+      className="group cursor-pointer border-0 bg-transparent p-0"
     >
       <FilterIcon />
     </button>

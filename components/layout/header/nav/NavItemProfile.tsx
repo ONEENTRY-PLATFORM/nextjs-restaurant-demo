@@ -92,7 +92,7 @@ const NavItemProfile = (): JSX.Element => {
         <ul
           role="menu"
           // `pt-2` - gap so the hover zone doesn't break when the cursor moves from the icon to the sub-menu.
-          className="absolute right-0 top-6 z-30 w-48 pt-2"
+          className="absolute top-6 right-0 z-30 w-48 pt-2"
         >
           <div className="rounded-panel bg-ink/80 px-4 py-2 text-paper shadow-lg backdrop-blur-card">
             {profileChildren.map(page => {

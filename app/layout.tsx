@@ -84,7 +84,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lato.variable} ${latoItalic.variable} font-main bg-black text-paper antialiased flex flex-col min-h-screen w-full relative pb-19 md:pb-0`}
+        className={`${lato.variable} ${latoItalic.variable} relative flex min-h-screen w-full flex-col bg-black pb-19 font-main text-paper antialiased md:pb-0`}
       >
         <RegisterGSAP />
         <StoreProvider>
@@ -95,7 +95,7 @@ export default function RootLayout({
                 <OpenDrawerProvider>
                   <Header />
                   <TransitionProvider>
-                    <main className="flex flex-col grow overflow-hidden w-full pb-10">
+                    <main className="flex w-full grow flex-col overflow-hidden pb-10">
                       {children}
                     </main>
                   </TransitionProvider>

@@ -41,7 +41,7 @@ export const BarChart = ({ results }: { results: RequestResult[] }): JSX.Element
     <svg
       viewBox={`0 0 ${viewW} ${CHART_HEIGHT}`}
       preserveAspectRatio="none"
-      className="block w-full h-55"
+      className="block h-55 w-full"
       role="img"
       aria-label="Per-request latency bar chart"
     >
@@ -140,7 +140,7 @@ export const Histogram = ({ results }: { results: RequestResult[] }): JSX.Elemen
     <svg
       viewBox={`0 0 ${viewW} ${HIST_HEIGHT}`}
       preserveAspectRatio="none"
-      className="block w-full h-50"
+      className="block h-50 w-full"
       role="img"
       aria-label="Latency histogram"
     >

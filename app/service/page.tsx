@@ -48,7 +48,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         {primaryHref && primaryCta ? (
           <Link
             href={primaryHref}
-            className="mt-42.5 flex h-15 w-full items-center justify-center rounded-card bg-custom_transparent backdrop-blur-card font-bold text-[17px] uppercase text-brand hover_btn_transp"
+            className="hover_btn_transp mt-42.5 flex h-15 w-full items-center justify-center rounded-card bg-custom_transparent text-[17px] font-bold text-brand uppercase backdrop-blur-card"
           >
             {primaryCta}
           </Link>
@@ -56,7 +56,7 @@ const ServicePage = async (): Promise<JSX.Element> => {
         {secondaryHref && secondaryCta ? (
           <Link
             href={secondaryHref}
-            className="mt-5 flex h-15 w-full items-center justify-center rounded-card bg-custom_btnorange backdrop-blur-card font-bold text-[18px] uppercase text-custom_white hover_btn_transp"
+            className="hover_btn_transp mt-5 flex h-15 w-full items-center justify-center rounded-card bg-custom_btnorange text-[18px] font-bold text-custom_white uppercase backdrop-blur-card"
           >
             {secondaryCta}
           </Link>

@@ -41,16 +41,16 @@ const SupportPopup = ({
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 w-full rounded-t-[20px] bg-ink/80 backdrop-blur-card pt-5 px-5 pb-25 shadow-xl"
+        className="fixed inset-x-0 bottom-0 z-20 w-full rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 shadow-xl backdrop-blur-card"
       >
         <div className="mx-auto max-w-88.75">
           <div className="flex justify-center">
-            <p className="text-center text-xl font-normal leading-150 text-paper">Support</p>
+            <p className="text-center text-xl leading-150 font-normal text-paper">Support</p>
           </div>
 
           {telHref || whatsappUrl ? (
             <div className="mt-6.25 rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
-              <p className="text-center text-xl font-normal leading-150 text-paper">{callPrompt}</p>
+              <p className="text-center text-xl leading-150 font-normal text-paper">{callPrompt}</p>
               <div className="mt-4 flex justify-center gap-15">
                 {whatsappUrl ? (
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={close}>
@@ -68,7 +68,7 @@ const SupportPopup = ({
 
           {whatsappUrl ? (
             <div className="mt-6.25 rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
-              <p className="text-center text-xl font-normal leading-150 text-paper">
+              <p className="text-center text-xl leading-150 font-normal text-paper">
                 {questionPrompt}
               </p>
               <a

@@ -99,8 +99,7 @@ const ReservationForm = ({
 
   const spamAttr = useMemo(() => attrs.find(a => a.type === 'spam'), [attrs]);
   const spamSettings = spamAttr?.settings as
-    | { captcha?: { key?: string; action?: string } }
-    | undefined;
+    { captcha?: { key?: string; action?: string } } | undefined;
   const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
 
   const onChange = (marker: string, value: FieldValue) => {
@@ -215,13 +214,20 @@ const ReservationForm = ({
   };
 
   // Step 2: the user picked a payment method - create the order.
-  const onApplyPayment = async (paymentAccountIdentifier: string) => {
+  const onApplyPayment = async (
+    paymentAccountIdentifier: string,
+    paymentAccountType?: 'stripe' | 'custom'
+  ) => {
     if (step.kind !== 'payment') return;
-    const res = await createReservation({ paymentAccountIdentifier, formData: step.formData });
+    const res = await createReservation({
+      paymentAccountIdentifier,
+      paymentAccountType,
+      formData: step.formData,
+    });
     if (!res.ok) return;
 
-    // Online -> redirect to the payment session. Cash accounts (and swallowed
-    // session errors) return no paymentUrl and fall through to the success screen.
+    // Online -> redirect to the payment session. Offline accounts return no paymentUrl
+    // and fall through to the success screen; online accounts without a URL now fail in the hook.
     if (res.paymentUrl) {
       window.location.href = res.paymentUrl;
       return;
@@ -270,7 +276,7 @@ const ReservationForm = ({
           if (attr.type === 'entity') {
             if (attr.marker !== RESTAURANT_MARKER || restaurants.length === 0) return null;
             return (
-              <FormFieldAnimations key={attr.marker} index={i} className="flex flex-col gap-1 z-50">
+              <FormFieldAnimations key={attr.marker} index={i} className="z-50 flex flex-col gap-1">
                 <RestaurantSelect
                   options={restaurants}
                   value={values[RESTAURANT_MARKER] ?? ''}
@@ -327,7 +333,7 @@ const ReservationForm = ({
         <button
           type="submit"
           disabled={isLoading}
-          className="flex h-9.25 w-31.25 items-center justify-center rounded-card bg-custom_btnorange font-normal text-[17px] text-custom_white backdrop-blur-card hover_btn_transp disabled:opacity-60"
+          className="hover_btn_transp flex h-9.25 w-31.25 items-center justify-center rounded-card bg-custom_btnorange text-[17px] font-normal text-custom_white backdrop-blur-card disabled:opacity-60"
         >
           {t('continue_text', 'Continue')}
         </button>

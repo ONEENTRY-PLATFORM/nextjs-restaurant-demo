@@ -32,7 +32,7 @@ const resolveVisualKind = (account: IAccountsEntity): PaymentVisualKind => {
 };
 
 type ReservationPaymentStepProps = {
-  onApply: (paymentAccountIdentifier: string) => void;
+  onApply: (paymentAccountIdentifier: string, paymentAccountType?: 'stripe' | 'custom') => void;
   isLoading: boolean;
   error: string;
   bookingPolicy?: string;
@@ -42,7 +42,7 @@ type ReservationPaymentStepProps = {
  * ReservationPaymentStep — payment-method selection step for the booking.
  *
  * @param   {ReservationPaymentStepProps}  props                 - Component props.
- * @param   {(id: string) => void}         props.onApply         - Called with the selected `paymentAccountIdentifier` when the user confirms.
+ * @param   {(id: string, type?: 'stripe' | 'custom') => void} props.onApply - Called with the selected `paymentAccountIdentifier` (and its SDK `type`) when the user confirms.
  * @param   {boolean}                      props.isLoading       - When `true`, disables the apply button.
  * @param   {string}                       props.error           - Error message displayed under the radio list.
  * @param   {string}                       [props.bookingPolicy] - `booking_policy` attribute of the selected restaurant; falls back to the dict text.
@@ -88,9 +88,9 @@ const ReservationPaymentStep = ({
     <div className="flex w-full flex-col items-center gap-6.25 px-5 md:px-19">
       <FormFieldAnimations
         index={0}
-        className="flex w-full items-center justify-center rounded-card bg-ink/50 px-2.5 py-2.5 backdrop-blur-card"
+        className="flex w-full items-center justify-center rounded-card bg-ink/50 p-2.5 backdrop-blur-card"
       >
-        <p className="text-center font-normal text-base leading-5 text-brand">
+        <p className="text-center text-base leading-5 font-normal text-brand">
           {bookingPolicy ||
             t('booking_deposit_text', 'Deposit is required to confirm your booking')}
         </p>
@@ -129,9 +129,11 @@ const ReservationPaymentStep = ({
       <FormFieldAnimations index={applyIndex} className="mt-2.5 flex items-center justify-center">
         <button
           type="button"
-          onClick={() => selected && onApply(selected)}
+          onClick={() =>
+            selected && onApply(selected, accounts.find(a => a.identifier === selected)?.type)
+          }
           disabled={isLoading || !selected}
-          className="flex h-9 w-23.75 items-center justify-center rounded-card border border-brand font-normal text-base text-brand transition-colors duration-200 hover:bg-brand/10 active:bg-brand/10 disabled:opacity-60"
+          className="flex h-9 w-23.75 items-center justify-center rounded-card border border-brand text-base font-normal text-brand transition-colors duration-200 hover:bg-brand/10 active:bg-brand/10 disabled:opacity-60"
         >
           {isLoading ? '...' : t('apply_text', 'Apply')}
         </button>
@@ -170,7 +172,7 @@ const PaymentRow = ({
   return (
     <label
       htmlFor={id}
-      className="flex cursor-pointer select-none items-center gap-2.25 text-paper"
+      className="flex cursor-pointer items-center gap-2.25 text-paper select-none"
     >
       <input
         type="radio"
@@ -178,7 +180,7 @@ const PaymentRow = ({
         name="reservation-payment"
         checked={checked}
         onChange={onSelect}
-        className="hidden peer"
+        className="peer hidden"
       />
       <span
         className={
@@ -186,9 +188,9 @@ const PaymentRow = ({
           (checked ? 'border-brand' : 'border-paper')
         }
       >
-        {checked ? <span className="h-2.5 w-2.5 rounded-full bg-brand" /> : null}
+        {checked ? <span className="size-2.5 rounded-full bg-brand" /> : null}
       </span>
-      <span className="font-normal text-base text-paper">{label}</span>
+      <span className="text-base font-normal text-paper">{label}</span>
       <PaymentLogos kind={kind} fallback={account.localizeInfos?.title || account.identifier} />
     </label>
   );

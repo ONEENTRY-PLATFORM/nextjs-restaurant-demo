@@ -75,7 +75,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
   };
 
   return (
-    <div className="flex h-17.5 w-8.75 flex-col items-stretch rounded-card border border-white font-normal text-xl text-paper opacity-90">
+    <div className="flex h-17.5 w-8.75 flex-col items-stretch rounded-card border border-white text-xl font-normal text-paper opacity-90">
       <button
         type="button"
         onClick={onIncrease}

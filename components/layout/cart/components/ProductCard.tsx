@@ -47,7 +47,7 @@ const ProductCard = ({
 
   return (
     <ProductAnimations
-      className="product-in-cart relative flex items-center justify-between gap-2.5 p-2.5 rounded-card border border-transparent transition-colors duration-200 hover:border-brand active:border-brand"
+      className="product-in-cart relative flex items-center justify-between gap-2.5 rounded-card border border-transparent p-2.5 transition-colors duration-200 hover:border-brand active:border-brand"
       product={product}
       index={index}
     >
@@ -85,10 +85,10 @@ const ProductCard = ({
         </div>
 
         <div className="pointer-events-none flex grow flex-col justify-between gap-2 self-center text-white/90">
-          <h2 className="max-w-35 font-normal text-[14px] opacity-90">{title}</h2>
+          <h2 className="max-w-35 text-[14px] font-normal opacity-90">{title}</h2>
           <div className="flex items-center gap-2.5">
             {weightValue ? (
-              <p className="font-normal text-[14px] text-brand">{weightValue} g</p>
+              <p className="text-[14px] font-normal text-brand">{weightValue} g</p>
             ) : null}
             <PriceDisplay
               currentPrice={(sale?.value as number) ?? 0}

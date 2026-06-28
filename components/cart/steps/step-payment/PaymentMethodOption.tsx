@@ -32,9 +32,9 @@ const PaymentMethodOption = ({
         name="payment-method"
         checked={checked}
         onChange={onSelect}
-        className="hidden peer"
+        className="peer hidden"
       />
-      <label htmlFor={id} className="radio-custom flex cursor-pointer select-none items-center">
+      <label htmlFor={id} className="radio-custom flex cursor-pointer items-center select-none">
         <span className="ml-2 text-paper capitalize">{label}</span>
       </label>
       {type === 'paypal' && (

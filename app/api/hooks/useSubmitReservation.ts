@@ -6,8 +6,12 @@ import { useState } from 'react';
 import { getApi, isError } from '@/app/api';
 import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 
+import { isOnlinePaymentAccount } from './paymentAccountKind';
+
 type CreateReservationArgs = {
   paymentAccountIdentifier: string;
+  /** SDK `type` of the selected account; drives online-vs-offline routing (see {@link isOnlinePaymentAccount}). */
+  paymentAccountType?: 'stripe' | 'custom' | undefined;
   formData: IOrdersFormData[];
 };
 
@@ -19,8 +23,7 @@ type UpdateReservationArgs = {
 };
 
 type CreateReservationResult =
-  | { ok: true; orderId: number; paymentUrl?: string }
-  | { ok: false; error: string };
+  { ok: true; orderId: number; paymentUrl?: string } | { ok: false; error: string };
 
 type UpdateReservationResult = { ok: true } | { ok: false; error: string };
 
@@ -42,6 +45,7 @@ export const useSubmitReservation = (): UseSubmitReservationApi => {
 
   const createReservation = async ({
     paymentAccountIdentifier,
+    paymentAccountType,
     formData,
   }: CreateReservationArgs): Promise<CreateReservationResult> => {
     setIsLoading(true);
@@ -60,22 +64,39 @@ export const useSubmitReservation = (): UseSubmitReservationApi => {
       }
       const { id } = res as { id: number };
 
-      // Online -> open a payment session and redirect. Cash accounts return paymentUrl=null
-      // and fall through to the success branch shown inside the popup.
-      if (paymentAccountIdentifier !== 'cash') {
-        try {
-          const session = await getApi().Payments.createSession(id, 'session');
-          if (!isError(session)) {
-            const url = (session as { paymentUrl?: string | null }).paymentUrl;
-            if (url) {
-              return { ok: true, orderId: id, paymentUrl: url };
-            }
-          }
-        } catch {
-          // Swallow - the order is already created, we still proceed to success.
-        }
+      // Offline account (cash / pay-on-site) — no hosted checkout, go straight to success.
+      const isOnline = isOnlinePaymentAccount({
+        type: paymentAccountType,
+        identifier: paymentAccountIdentifier,
+      });
+      if (!isOnline) {
+        return { ok: true, orderId: id };
       }
-      return { ok: true, orderId: id };
+
+      // Online -> open a payment session and redirect to its URL.
+      let session;
+      try {
+        session = await getApi().Payments.createSession(id, 'session');
+      } catch (e) {
+        const message = `Reservation #${id} created, but payment session failed: ${(e as Error).message}`;
+        setError(message);
+        return { ok: false, error: message };
+      }
+      if (isError(session)) {
+        const sErr = session as { message?: string; statusCode?: number };
+        const message = `Reservation #${id} created, but payment session failed: ${sErr.message || `HTTP ${sErr.statusCode ?? '?'}`}`;
+        setError(message);
+        return { ok: false, error: message };
+      }
+      const url = (session as { paymentUrl?: string | null }).paymentUrl;
+      if (url) {
+        return { ok: true, orderId: id, paymentUrl: url };
+      }
+      // paymentUrl null for an online account = unconfigured account or an async provider
+      // (PayPal needs getSessionByOrderId polling — deferred). Do NOT show success on an unpaid order.
+      const message = `Reservation #${id} created, but the payment provider returned no checkout URL.`;
+      setError(message);
+      return { ok: false, error: message };
     } catch (err) {
       const message = (err as Error).message || 'Failed to submit reservation';
       setError(message);

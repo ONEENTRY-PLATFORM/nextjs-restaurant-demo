@@ -169,7 +169,7 @@ const ScreenHeader = ({
     >
       <ArrowBackIcon className="hover-target text-paper" />
     </button>
-    <p className="font-semibold text-2xl text-brand">{SCREEN_TITLES[screen]}</p>
+    <p className="text-2xl font-semibold text-brand">{SCREEN_TITLES[screen]}</p>
     <span className="size-7" aria-hidden="true" />
   </div>
 );
@@ -244,7 +244,7 @@ const ProfilePopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 top-0 left-0 right-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 backdrop-blur-card shadow-xl md:bottom-auto md:left-auto md:right-0 md:top-37.5 md:h-auto md:max-h-screen md:min-w-85 md:max-w-100 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
+        className="fixed inset-0 z-20 h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-7.25 shadow-xl backdrop-blur-card md:top-37.5 md:right-0 md:bottom-auto md:left-auto md:h-auto md:max-h-screen md:max-w-100 md:min-w-85 md:rounded-l-[20px] md:rounded-tr-none md:pb-7.25 lg:top-37.5 xl:top-46.25"
       >
         <div className="hidden w-full items-center justify-between gap-5 md:flex">
           <button
@@ -255,7 +255,7 @@ const ProfilePopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="fill-paper group-hover:fill-brand" />
           </button>
-          <p className="my-auto whitespace-nowrap font-bold text-2xl text-paper">
+          <p className="my-auto text-2xl font-bold whitespace-nowrap text-paper">
             {t('profile_text', 'Profile')}
           </p>
           <button
@@ -268,7 +268,7 @@ const ProfilePopup = (): JSX.Element => {
           </button>
         </div>
 
-        <div className="mx-auto h-full max-w-87.5 overflow-x-hidden overflow-y-auto pb-25 no-scrollbar md:pb-0">
+        <div className="no-scrollbar mx-auto h-full max-w-87.5 overflow-x-hidden overflow-y-auto pb-25 md:pb-0">
           <StaggerScreenAnimations
             screenKey={activeScreen}
             closing={closing}

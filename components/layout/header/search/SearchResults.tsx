@@ -81,13 +81,13 @@ const SearchResults = ({
   const hasResults = !isBusy && visibleProducts.length > 0;
 
   return (
-    <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-panel bg-ink/80 p-5 shadow-lg backdrop-blur-card">
+    <div className="absolute top-full left-0 z-30 mt-px flex w-full flex-col gap-1 rounded-panel bg-ink/80 p-5 shadow-lg backdrop-blur-card">
       {hasResults && onOpenInShop ? (
         <button
           type="button"
           onClick={onOpenInShop}
           aria-label="Open all results in shop"
-          className="absolute right-9 top-2.5 size-6 cursor-pointer transition-opacity hover:opacity-80"
+          className="absolute top-2.5 right-9 size-6 cursor-pointer transition-opacity hover:opacity-80"
         >
           <SearchIcon />
         </button>

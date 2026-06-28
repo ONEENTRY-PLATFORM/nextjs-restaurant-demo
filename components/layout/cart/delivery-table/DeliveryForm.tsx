@@ -31,7 +31,7 @@ const DeliveryForm = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.
     >
       <DeliveryTable delivery={deliveryData as IProductsEntity} />
       <div id="total" className="mt-4 flex w-full flex-col">
-        <TotalAmount className="flex self-center text-lg font-bold leading-6 text-white lg:self-end" />
+        <TotalAmount className="flex self-center text-lg leading-6 font-bold text-white lg:self-end" />
         <PaymentButton text={t('go_to_pay_placeholder', 'Go to payment')} />
       </div>
     </form>

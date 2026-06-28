@@ -119,7 +119,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
           type="search"
           id="searchInput"
           name="quick-search"
-          className="rounded w-full md:w-62.5 lg:w-83.75 h-9.5 backdrop-blur-card bg-[rgba(106,108,122,0.5)] pl-10 pr-10 text-paper cursor-pointer"
+          className="h-9.5 w-full cursor-pointer rounded bg-disabled-bg px-10 text-paper backdrop-blur-card md:w-62.5 lg:w-83.75"
           placeholder={placeholder}
           aria-label={placeholder}
         />

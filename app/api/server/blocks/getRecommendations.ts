@@ -7,10 +7,7 @@ import { BLOCKS } from '@/app/utils/constants';
 
 /** Recommendation surfaces backed by the new OneEntry recommendation Blocks. */
 export type RecommendationKind =
-  | 'cartComplement'
-  | 'recentlyViewed'
-  | 'trending'
-  | 'personalRecommendations';
+  'cartComplement' | 'recentlyViewed' | 'trending' | 'personalRecommendations';
 
 const MARKER_BY_KIND: Record<RecommendationKind, string> = {
   cartComplement: BLOCKS.cartComplement,

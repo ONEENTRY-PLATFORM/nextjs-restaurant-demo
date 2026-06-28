@@ -37,14 +37,14 @@ const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => 
   return !productInCart || !inCart ? (
     <button
       onClick={() => addToCartHandle()}
-      className="rounded-card border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold transition-colors duration-200 hover:text-paper active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
+      className="mt-auto rounded-card border border-brand px-4 py-1.5 text-sm font-bold text-brand transition-colors duration-200 hover:text-paper active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
     >
       {t('apply_text', 'Apply')}
     </button>
   ) : (
     <button
       onClick={() => removeFromCartHandle()}
-      className="rounded-card border border-brand text-brand px-4 py-1.5 mt-auto text-sm font-bold transition-colors duration-200 hover:text-paper active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
+      className="mt-auto rounded-card border border-brand px-4 py-1.5 text-sm font-bold text-brand transition-colors duration-200 hover:text-paper active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
     >
       {t('cancel_text', '')}
     </button>

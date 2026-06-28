@@ -206,7 +206,11 @@ const StepPayment = (): JSX.Element => {
     });
 
     dispatch(addPaymentMethod(identifier));
-    const result = await onConfirmOrder({ paymentAccountIdentifier: identifier });
+    const selectedType = accounts.find(a => a.identifier === identifier)?.type;
+    const result = await onConfirmOrder({
+      paymentAccountIdentifier: identifier,
+      paymentAccountType: selectedType,
+    });
     if (!result.ok) {
       dispatch(setStepError(result.error));
       return;
@@ -257,7 +261,7 @@ const StepPayment = (): JSX.Element => {
           value={comment}
           onChange={e => setComment(e.currentTarget.value)}
           placeholder={fieldPlaceholder('comment')}
-          className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
+          className="step-payment-row rounded-card border border-paper bg-transparent p-1.25 text-base text-paper placeholder:text-muted-text focus:outline-none focus:placeholder:text-transparent"
         />
       ) : null}
 
@@ -282,7 +286,7 @@ const StepPayment = (): JSX.Element => {
               value={altPhone}
               onChange={e => setAltPhone(e.currentTarget.value)}
               placeholder={fieldPlaceholder('alt_phone')}
-              className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
+              className="step-payment-row rounded-card border border-paper bg-transparent p-1.25 text-base text-paper placeholder:text-muted-text focus:outline-none focus:placeholder:text-transparent"
             />
           )}
         </>
@@ -295,7 +299,7 @@ const StepPayment = (): JSX.Element => {
           value={extra[attr.marker] ?? ''}
           onChange={e => setExtra(prev => ({ ...prev, [attr.marker]: e.currentTarget.value }))}
           placeholder={fieldPlaceholder(attr.marker) || attr.localizeInfos?.title || attr.marker}
-          className="step-payment-row text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent border border-paper p-1.25 rounded-card bg-transparent focus:outline-none"
+          className="step-payment-row rounded-card border border-paper bg-transparent p-1.25 text-base text-paper placeholder:text-muted-text focus:outline-none focus:placeholder:text-transparent"
         />
       ))}
 
@@ -308,7 +312,7 @@ const StepPayment = (): JSX.Element => {
           (addressRequired && !address.trim()) ||
           (altReceiver && !altPhone.trim())
         }
-        className="step-payment-row cart_btn mt-3.75 mx-auto w-60 disabled:opacity-60"
+        className="step-payment-row cart_btn mx-auto mt-3.75 w-60 disabled:opacity-60"
       >
         {isLoading ? t('processing_text', 'Processing...') : t('apply_coupon_button', 'APPLY')}
       </button>

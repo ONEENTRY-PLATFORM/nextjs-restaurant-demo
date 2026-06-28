@@ -33,6 +33,6 @@ const fetchChildPagesByParentUrl = unstable_cache(
  * @param   {string} url - OneEntry `pageUrl` marker of the parent page.
  * @returns Promise resolving to `{ isError, error?, pages? }` (graceful fallback on SDK error).
  */
-export const getChildPagesByParentUrl = cache(
-  async (url: string): Promise<ChildPagesResult> => fetchChildPagesByParentUrl(url)
+export const getChildPagesByParentUrl = cache(async (url: string): Promise<ChildPagesResult> =>
+  fetchChildPagesByParentUrl(url)
 );

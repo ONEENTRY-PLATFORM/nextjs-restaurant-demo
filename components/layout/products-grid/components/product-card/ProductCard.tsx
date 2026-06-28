@@ -84,13 +84,13 @@ const ProductCard = ({
 
       <CartButton id={id} title={title}>
         <p className="counter">x1</p>
-        <CartAddIcon className="w-5 h-4.75 md:w-7.25 md:h-6.75" />
+        <CartAddIcon className="h-4.75 w-5 md:h-6.75 md:w-7.25" />
         {formattedPrice ? <p className="text-base md:text-[22px]">{formattedPrice}</p> : null}
       </CartButton>
 
       <Link
         href={'/shop/product/' + id}
-        className="absolute left-0 top-0 z-0 flex size-full p-px"
+        className="absolute top-0 left-0 z-0 flex size-full p-px"
         aria-label={title}
       />
     </CardAnimations>

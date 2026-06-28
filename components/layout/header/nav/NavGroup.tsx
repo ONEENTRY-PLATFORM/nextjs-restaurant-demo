@@ -27,8 +27,8 @@ const NavGroup = async (): Promise<JSX.Element> => {
   return (
     // `z-60` — keep nav drop-downs (e.g. profile sub-menu) above the search
     // row, which sits in its own `z-50` stacking context below.
-    <div className="flex justify-between relative z-60 self-end cursor-pointer">
-      <div data-header-anim="top-nav" className="gap-8 max-md:gap-6 max-sm:gap-4 flex">
+    <div className="relative z-60 flex cursor-pointer justify-between self-end">
+      <div data-header-anim="top-nav" className="flex gap-8 max-md:gap-6 max-sm:gap-4">
         {topLevel.length === 0 ? (
           // Fallback: menu did not load — default icon set.
           <>
@@ -115,7 +115,7 @@ const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => 
         alt=""
         width={24}
         height={24}
-        className="object-contain hover-target"
+        className="hover-target object-contain"
         unoptimized
       />
     </Link>

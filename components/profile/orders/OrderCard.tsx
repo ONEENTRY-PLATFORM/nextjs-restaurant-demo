@@ -206,7 +206,7 @@ const OrderCard = ({
             <button
               type="button"
               onClick={openContactCourier}
-              className="order-body-row mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+              className="order-body-row hover_btn_transp mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
             >
               {t('contact_courier_button', 'Contact with the courier')}
             </button>
@@ -220,28 +220,29 @@ const OrderCard = ({
                   product={p}
                   first={idx === 0}
                   fullProduct={productsById.get(p.id)}
+                  currency={order.currency}
                 />
               ))}
             <div className="order-body-row mt-5 flex items-center justify-between rounded-card border border-brand p-2.5">
               <div>
                 <div className="flex gap-1.25 text-white">
                   <p>{t('subtotal_text', 'Subtotal:')}</p>
-                  <p>{UsePrice({ amount: subtotal })}</p>
+                  <p>{UsePrice({ amount: subtotal, currency: order.currency })}</p>
                 </div>
                 <div className="flex gap-1.25 text-brand">
                   <p>{t('delivery_text', 'Delivery:')}</p>
-                  <p>{UsePrice({ amount: delivery })}</p>
+                  <p>{UsePrice({ amount: delivery, currency: order.currency })}</p>
                 </div>
                 {discount > 0 ? (
                   <div className="flex gap-1.25 text-brand">
                     <p>Discount:</p>
-                    <p>−{UsePrice({ amount: discount })}</p>
+                    <p>−{UsePrice({ amount: discount, currency: order.currency })}</p>
                   </div>
                 ) : null}
               </div>
               <div className="flex gap-3.75 text-xl font-bold text-white">
                 <p>{t('total_amount_text', 'Total Amount:')}</p>
-                <p>{UsePrice({ amount: total })}</p>
+                <p>{UsePrice({ amount: total, currency: order.currency })}</p>
               </div>
             </div>
             {(isHistory || canReview) && (
@@ -250,7 +251,7 @@ const OrderCard = ({
                   <button
                     type="button"
                     onClick={repeatOrder}
-                    className="block w-32.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+                    className="hover_btn_transp block w-32.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
                   >
                     {t('repeat_order_button', 'Repeat order')}
                   </button>

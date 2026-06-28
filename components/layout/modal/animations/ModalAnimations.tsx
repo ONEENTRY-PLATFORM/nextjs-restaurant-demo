@@ -138,7 +138,7 @@ const ModalAnimations = ({
   }
 
   return (
-    <div ref={ref} className="z-500 fixed inset-0 flex h-screen w-full">
+    <div ref={ref} className="fixed inset-0 z-500 flex h-screen w-full">
       {children}
     </div>
   );

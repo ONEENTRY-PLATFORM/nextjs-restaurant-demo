@@ -77,7 +77,7 @@ const RestaurantPhotoGallery = ({
 
       {/* Desktop — main slide + vertical thumbs. */}
       <div className="hidden md:grid md:aspect-1294/678 md:grid-cols-[956fr_278fr] md:gap-15">
-        <div className="relative h-full w-full py-0.5! overflow-hidden rounded-panel bg-ink/40 select-none cursor-grab active:cursor-grabbing transition-opacity hover:opacity-95">
+        <div className="relative size-full cursor-grab overflow-hidden rounded-panel bg-ink/40 py-0.5! transition-opacity select-none hover:opacity-95 active:cursor-grabbing">
           <Swiper
             modules={[Thumbs]}
             thumbs={{
@@ -87,7 +87,7 @@ const RestaurantPhotoGallery = ({
             slidesPerView={1}
             onSlideChange={s => setActive(s.activeIndex)}
             onClick={() => openLightbox()}
-            className="h-full w-full"
+            className="size-full"
           >
             {photos.map((p, i) =>
               p?.downloadLink ? (
@@ -97,7 +97,7 @@ const RestaurantPhotoGallery = ({
                     alt={alt}
                     fill
                     sizes="(min-width: 1280px) 956px, 60vw"
-                    className="object-cover pointer-events-none select-none"
+                    className="pointer-events-none object-cover select-none"
                     draggable={false}
                     priority={i === 0}
                     {...(blurMap?.[p.downloadLink]
@@ -119,13 +119,13 @@ const RestaurantPhotoGallery = ({
           freeMode
           mousewheel
           watchSlidesProgress
-          className="h-full w-full p-0.5! -mr-0.5! cursor-grab active:cursor-grabbing"
+          className="-mr-0.5! size-full cursor-grab p-0.5! active:cursor-grabbing"
         >
           {photos.map((p, i) =>
             p?.downloadLink ? (
               <SwiperSlide
                 key={i}
-                className="h-auto! relative aspect-278/197 w-full overflow-hidden rounded-panel bg-ink/40 cursor-pointer opacity-70 transition-all hover:opacity-100 [&.swiper-slide-thumb-active]:opacity-100 [&.swiper-slide-thumb-active]:ring-2 [&.swiper-slide-thumb-active]:ring-brand"
+                className="relative aspect-278/197 h-auto! w-full cursor-pointer overflow-hidden rounded-panel bg-ink/40 opacity-70 transition-all hover:opacity-100 [&.swiper-slide-thumb-active]:opacity-100 [&.swiper-slide-thumb-active]:ring-2 [&.swiper-slide-thumb-active]:ring-brand"
                 aria-label={`Show photo ${i + 1}`}
               >
                 <Image
@@ -133,7 +133,7 @@ const RestaurantPhotoGallery = ({
                   alt={`${alt} ${i + 1}`}
                   fill
                   sizes="(min-width: 1280px) 278px, 20vw"
-                  className="object-cover pointer-events-none select-none"
+                  className="pointer-events-none object-cover select-none"
                   draggable={false}
                   {...(blurMap?.[p.downloadLink]
                     ? { placeholder: 'blur' as const, blurDataURL: blurMap[p.downloadLink] }

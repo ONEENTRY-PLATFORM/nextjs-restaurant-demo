@@ -90,10 +90,11 @@
 
 - Аккаунты тянутся через `useGetAccountsQuery` (= `Payments.getAccounts()`), фильтр `isVisible && isUsed`, **дополнительно пересекаются** с `storage.paymentAccountIdentifiers` из `useGetOrderStorageByMarkerQuery({ marker: 'booking_order' })` — иначе при выборе непривязанного к storage аккаунта `createOrder` валится в 400 «Your payment account is not connected». Если у storage нет привязанных аккаунтов — fallback на полный список (плюс предупреждение в UI), как написано в `orders.md` rule.
 
-**Поведение createOrder/payment:**
+**Поведение createOrder/payment (обновлено 2026-06-28, D.8):**
 
-- `paymentAccountIdentifier === 'cash'` → success-экран в попапе.
-- иначе → `Payments.createSession(orderId, 'session')` → `window.location.href = paymentUrl`. Если `paymentUrl` не пришёл (PayPal-async, ошибка) — fallback на success в попапе.
+- Online/offline определяется классификатором [isOnlinePaymentAccount](app/api/hooks/paymentAccountKind.ts) (`type==='stripe'` + whitelist online-`custom`), а не хардкодом `=== 'cash'`.
+- Offline-аккаунт (cash / pay-on-site) → success-экран в попапе.
+- Online → `Payments.createSession(orderId, 'session')` → `window.location.href = paymentUrl`. Если `paymentUrl` не пришёл (PayPal-async без polling, неподключённый/мисконфиг-гейтвей) — теперь **ошибка** (`ok:false`), а НЕ success: латентный P0 (success на неоплаченном заказе) закрыт. PayPal `getSessionByOrderId` polling остаётся отложенным (D.8a).
 
 **Открытые задачи на стороне клиента/админки:**
 
@@ -107,8 +108,6 @@
    `testMode: true` и `settings.status` — независимы (у cash оба статуса `connected` при том же `testMode`). У Stripe выполнен только test-онбординг (`testSettings.stripeOnboardingComplete: true`, `pk_test_...`, незавершённый `stripeRedirectUrl: .../setup/s/<account>/...` — это setup-link от Stripe для админа аккаунта, **не** checkout-URL покупателя). Сервер OneEntry, судя по поведению, при `createSession` валидирует именно `settings.status`, игнорируя `testMode`.
 
    > ❓ **Уточнить у OneEntry support:** должна ли валидация `Payments.createSession` при `testMode: true` смотреть на `testSettings.status` вместо `settings.status`? Воспроизведение — проект `oe-restaurants.oneentry.cloud`, account `stripe` (id=1): `testMode: true`, `testSettings.status: "connected"`, `settings.status: "not_connected"` → `Payments.createSession(<orderId>, 'session')` → `400 "Your payment account is not connected"`. Запрос: либо корректировать валидацию на test-mode аккаунтах (смотреть `testSettings`), либо возвращать понятную ошибку (`"account is in testMode but server requires production-connected account"`).
-
-   **Альтернатива на стороне клиента:** Payment accounts → Stripe → пройти **production**-онбординг Stripe Connect (live-ключи + KYC), `settings.status` станет `connected` и оплата заработает на реальных картах. Подходит, если проект не должен оставаться в test-mode.
 
    Cash работает потому, что у него оба статуса `connected`. Код [ReservationPaymentStep.tsx](components/reservation/ReservationPaymentStep.tsx) дополнительно фильтрует список аккаунтов по `storage.paymentAccountIdentifiers` (если массив пустой — UI показывает все + предупреждение «storage has no configured payment methods»), но это не закрывает Stripe-not-connected.
 1. **Stripe success/cancel redirect URLs.** ✅ Роуты на стороне сайта созданы: `/payment/success` и `/payment/cancel` ([app/payment/success/page.tsx](app/payment/success/page.tsx), [app/payment/cancel/page.tsx](app/payment/cancel/page.tsx), общий [PaymentResult.tsx](components/payment/PaymentResult.tsx)). Success-экран повторяет карточку из Figma 120:2338 (`cart_PAYMENT_masseges.html`); id заказа берётся из query (`?orderId=`), т.к. Redux `lastOrderId` не переживает полный перезагруз со Stripe. Общий URL на платёжный аккаунт — годится и для доставки, и для брони. **Осталось на админке:** в OneEntry payments config (Stripe-аккаунт) прописать:
@@ -194,3 +193,4 @@ SDK поддерживает заявки на возврат на модуле 
 | `booking_cancelled_toast`    | string | Reservation cancelled.                                      |
 | `booking_cancel_failed`      | string | Failed to cancel reservation.                               |
 | `booking_updated_toast`      | string | Reservation updated.                                        |
+| `promo_go_to_selection`      | string | Go to selection                                             |

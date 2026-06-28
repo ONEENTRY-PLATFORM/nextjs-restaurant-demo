@@ -68,12 +68,17 @@ const SignUpForm = ({
 
   const formData = useMemo(
     () =>
-      formFields.map(field => ({
-        marker: field,
-        type: 'string',
-        value: fields[field]?.value || '',
-      })),
-    [fields, formFields]
+      formFields.map(marker => {
+        // formFields is a hardcoded marker list (no attribute.type at hand); join to the fetched
+        // schema so the payload carries the real attribute.type instead of a flat 'string'.
+        const attribute = data?.attributes.find((f: IFormAttribute) => f.marker === marker);
+        return {
+          marker,
+          type: attribute?.type ?? 'string',
+          value: fields[marker]?.value || '',
+        };
+      }),
+    [data?.attributes, fields, formFields]
   );
 
   const onSignUpHandle = useCallback(
@@ -155,7 +160,7 @@ const SignUpForm = ({
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form onSubmit={onSignUpHandle} className="mx-auto flex w-full max-w-100 flex-col gap-5">
-        <p className="font-normal text-xl text-white leading-150">
+        <p className="text-xl leading-150 font-normal text-white">
           {t('sign_up_subtitle', 'Sign in or create account to quickly manage order')}
         </p>
         <div className="box-border flex shrink-0 flex-col gap-5">

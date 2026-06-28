@@ -51,14 +51,14 @@ const DeliveryTableRow = ({
           id={'label-' + placeholder}
           name={placeholder}
           onClick={openCalendar}
-          className="w-full bg-transparent text-paper focus:outline-none cursor-pointer"
+          className="w-full cursor-pointer bg-transparent text-paper focus:outline-none"
         />
       </div>
       <button
         type="button"
         onClick={openCalendar}
         aria-label={label}
-        className="td w-1/12 pl-5 align-middle cursor-pointer"
+        className="td w-1/12 cursor-pointer pl-5 align-middle"
       >
         {icon}
       </button>

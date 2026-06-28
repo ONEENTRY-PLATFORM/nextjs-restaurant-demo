@@ -54,10 +54,10 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
       </nav>
 
       <div>
-        <h1 className="font-bold text-xl uppercase text-brand">{title}</h1>
+        <h1 className="text-xl font-bold text-brand uppercase">{title}</h1>
         {subtitleHtml ? (
           <div
-            className="mt-3.75 font-normal text-base text-white"
+            className="mt-3.75 text-base font-normal text-white"
             dangerouslySetInnerHTML={{ __html: subtitleHtml }}
           />
         ) : null}

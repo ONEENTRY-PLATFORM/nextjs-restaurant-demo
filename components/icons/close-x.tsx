@@ -8,7 +8,7 @@ import type { JSX } from 'react';
 const CloseXIcon = (): JSX.Element => {
   return (
     <svg
-      className="stroke-brand hover-target"
+      className="hover-target stroke-brand"
       width="20"
       height="20"
       viewBox="0 0 20 20"

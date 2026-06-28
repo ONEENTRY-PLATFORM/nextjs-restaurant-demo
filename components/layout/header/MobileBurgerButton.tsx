@@ -24,7 +24,7 @@ const MobileBurgerButton = (): JSX.Element => {
       type="button"
       onClick={handleClick}
       aria-label="Open categories"
-      className="cursor-pointer group_stroke bg-transparent border-0 p-0"
+      className="group_stroke cursor-pointer border-0 bg-transparent p-0"
     >
       <BurgerIcon />
     </button>

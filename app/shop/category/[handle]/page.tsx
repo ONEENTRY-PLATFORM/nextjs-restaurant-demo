@@ -112,10 +112,7 @@ export async function generateMetadata({
     // getImageUrl normalises both shapes.
     url: getImageUrl(
       (attributeValues.icon as { value?: unknown } | undefined)?.value as
-        | { downloadLink?: string }
-        | Array<{ downloadLink?: string }>
-        | null
-        | undefined
+        { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined
     ),
     width: 300,
     height: 300,

@@ -29,7 +29,7 @@ const ClosePopupButton = ({
       type="button"
       onClick={onClose}
       aria-label={ariaLabel ?? t('close_label', 'Close')}
-      className={`group flex h-11.5 w-11.5 items-center justify-center rounded-full border border-paper transition-colors duration-200 hover:border-brand active:border-brand ${className}`}
+      className={`group flex size-11.5 items-center justify-center rounded-full border border-paper transition-colors duration-200 hover:border-brand active:border-brand ${className}`}
     >
       <CloseXBoldIcon className="hover-target" />
     </button>

@@ -48,13 +48,11 @@ export const getAllOrdersAcrossStorages = cache(
           const data = await getApi().Orders.getAllOrdersByMarker(marker, lang, offset, limit);
           if (isError(data)) return [] as OrderWithStorage[];
           const storageFormIdentifier = storage.formIdentifier ?? marker;
-          return (data.items ?? []).map(
-            (o: IOrderByMarkerEntity): OrderWithStorage => ({
-              ...o,
-              storageMarker: marker,
-              storageFormIdentifier,
-            })
-          );
+          return (data.items ?? []).map((o: IOrderByMarkerEntity): OrderWithStorage => ({
+            ...o,
+            storageMarker: marker,
+            storageFormIdentifier,
+          }));
         })
       );
 

@@ -8,7 +8,7 @@ import type { JSX } from 'react';
 const CloseXMiniIcon = (): JSX.Element => {
   return (
     <svg
-      className="rounded-full stroke-current text-paper hover-target"
+      className="hover-target rounded-full stroke-current text-paper"
       width="15"
       height="15"
       viewBox="0 0 15 15"

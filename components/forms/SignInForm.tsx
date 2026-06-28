@@ -114,7 +114,7 @@ const SignInForm = ({
   return (
     <FormAnimations isLoading={isLoading || !formFields} className={className} isActive={isActive}>
       <form
-        className="relative mx-auto mb-6 mt-2 box-border flex shrink-0 flex-col gap-3"
+        className="relative mx-auto mt-2 mb-6 box-border flex shrink-0 flex-col gap-3"
         onSubmit={onSignIn}
       >
         <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">

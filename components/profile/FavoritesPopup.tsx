@@ -91,17 +91,17 @@ const FavoritesPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-w-[80vw] min-h-[50vh] max-h-dvh right-0 z-20 flex w-full flex-col overflow-y-auto no-scrollbar rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[80vh] md:w-auto md:max-w-275 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="no-scrollbar fixed inset-x-0 bottom-0 z-20 flex max-h-dvh min-h-[50vh] w-full min-w-[80vw] flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 shadow-xl backdrop-blur-card md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:size-auto md:max-h-[80vh] md:max-w-275 md:-translate-1/2 md:rounded-[20px] md:p-10"
       >
         {/* sticky so it does not scroll with the list. Hidden on md+. */}
-        <div className="-mx-5 -mt-5 -top-5 z-10 flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
-          <p className="font-normal text-2xl text-white">Favorites</p>
+        <div className="-top-5 z-10 -mx-5 -mt-5 flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
+          <p className="text-2xl font-normal text-white">Favorites</p>
         </div>
 
         {/* Desktop header: spacer / title / X - keeps the title centered. */}
         <div className="hidden items-center justify-between md:flex">
-          <span aria-hidden="true" className="h-11.5 w-11.5" />
-          <p className="font-semibold text-2xl text-brand">Favorites</p>
+          <span aria-hidden="true" className="size-11.5" />
+          <p className="text-2xl font-semibold text-brand">Favorites</p>
           <ClosePopupButton onClose={close} ariaLabel="Close favorites" />
         </div>
 
@@ -123,7 +123,7 @@ const FavoritesPopup = (): JSX.Element => {
             </div>
           </div>
         ) : (
-          <div className="mt-8 md:mt-15 flex w-full flex-wrap justify-center gap-7.5">
+          <div className="mt-8 flex w-full flex-wrap justify-center gap-7.5 md:mt-15">
             {products.map((product, index) => (
               <FavoriteCard
                 key={product.id}
@@ -190,13 +190,13 @@ const FavoriteCard = ({
   return (
     <div
       ref={cardRef}
-      className="favorite-card flex relative transition-colors duration-200 hover:border-brand active:border-brand w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 md:w-half-gap"
+      className="favorite-card relative flex w-full min-w-92.5 items-center justify-between rounded-card border border-paper/30 p-2.5 transition-colors duration-200 hover:border-brand active:border-brand md:w-half-gap"
     >
       <Link
         href={productHref}
         onClick={onNavigate}
         aria-label={title}
-        className="flex gap-4 w-full shrink-0"
+        className="flex w-full shrink-0 gap-4"
         title={title}
       >
         {imageSrc ? (
@@ -225,7 +225,7 @@ const FavoriteCard = ({
         </div>
       </Link>
 
-      <div className="flex right-2 absolute h-30.5 shrink-0 flex-col justify-between">
+      <div className="absolute right-2 flex h-30.5 shrink-0 flex-col justify-between">
         <button
           type="button"
           onClick={() => {

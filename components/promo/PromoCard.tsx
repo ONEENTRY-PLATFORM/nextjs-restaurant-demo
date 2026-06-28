@@ -22,8 +22,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
   const title = page.localizeInfos?.title ?? '';
 
   const descriptionValue = attrs.description?.value as
-    | Array<{ plainValue?: string; htmlValue?: string; mdValue?: string }>
-    | undefined;
+    Array<{ plainValue?: string; htmlValue?: string; mdValue?: string }> | undefined;
   const subtitleText = descriptionValue?.[0]?.plainValue ?? '';
 
   const actionType = attrs.action_type?.value as Array<{ title?: string }> | undefined;
@@ -45,9 +44,9 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
       }
     >
       <div className="flex min-h-48 flex-col justify-end gap-2 bg-linear-to-t from-black/70 via-black/20 to-transparent p-5">
-        <h3 className="font-bold text-xl uppercase tracking-fine text-brand">{title}</h3>
-        {subtitleText ? <p className="text-sm text-paper/90 line-clamp-2">{subtitleText}</p> : null}
-        <span className="mt-2 inline-flex w-fit rounded-panel bg-custom-gradient px-4 py-1.5 text-xs font-bold uppercase text-white">
+        <h3 className="text-xl font-bold tracking-fine text-brand uppercase">{title}</h3>
+        {subtitleText ? <p className="line-clamp-2 text-sm text-paper/90">{subtitleText}</p> : null}
+        <span className="mt-2 inline-flex w-fit rounded-panel bg-custom-gradient px-4 py-1.5 text-xs font-bold text-white uppercase">
           {cta}
         </span>
       </div>

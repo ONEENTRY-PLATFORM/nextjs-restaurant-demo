@@ -58,7 +58,7 @@ const ProductImage = ({
           height={340}
           sizes="(min-width: 1240px) 278px, (min-width: 1020px) 220px, (min-width: 768px) 340px, 164px"
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
           {...(blurDataURL ? { placeholder: 'blur' as const, blurDataURL } : {})}
         />
       ) : null}

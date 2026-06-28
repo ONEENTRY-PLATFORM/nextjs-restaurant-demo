@@ -104,7 +104,7 @@ const AddToCartButton = ({
       disabled={notInStock}
       className={
         notInStock
-          ? `${className} bg-none bg-disabled-bg backdrop-blur-card cursor-not-allowed`
+          ? `${className} cursor-not-allowed bg-disabled-bg bg-none backdrop-blur-card`
           : className
       }
       aria-label={
@@ -114,7 +114,7 @@ const AddToCartButton = ({
       }
     >
       {notInStock ? outOfStockLabel : addToCartLabel}
-      {!notInStock && <CartAddIcon className="w-5 h-4.5" />}
+      {!notInStock && <CartAddIcon className="h-4.5 w-5" />}
     </button>
   );
 };

@@ -111,7 +111,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
           aria-pressed={inCart}
           className={
             inCart
-              ? 'group_white is-active flex h-10 w-10 items-center justify-center rounded-full bg-brand'
+              ? 'group_white is-active flex size-10 items-center justify-center rounded-full bg-brand'
               : 'group_white'
           }
           disabled={inCart}

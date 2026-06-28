@@ -76,7 +76,9 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
             value: [{ plainValue: value }],
           };
         default:
-          return { marker, type: 'string', value };
+          // Forward the real attribute type (not a hardcoded 'string') so numeric/date
+          // fields added in the admin serialize with their actual type per the forms rule.
+          return { marker, type, value };
       }
     });
 

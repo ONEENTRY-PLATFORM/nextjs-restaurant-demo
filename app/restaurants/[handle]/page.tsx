@@ -141,7 +141,7 @@ const RestaurantPage = async ({
       </div>
 
       {/* Title */}
-      <h1 className="text-center md:text-left font-bold text-xl md:text-xl uppercase tracking-fine text-brand">
+      <h1 className="text-center text-xl font-bold tracking-fine text-brand uppercase md:text-left md:text-xl">
         {title}
       </h1>
 
@@ -151,11 +151,11 @@ const RestaurantPage = async ({
 
       {descriptionHtml ? (
         <div
-          className="mt-10 text-base text-paper/90 text-justify md:text-left"
+          className="mt-10 text-justify text-base text-paper/90 md:text-left"
           dangerouslySetInnerHTML={{ __html: descriptionHtml }}
         />
       ) : descriptionPlain ? (
-        <p className="mt-10 text-base text-paper/90 text-justify md:text-left">
+        <p className="mt-10 text-justify text-base text-paper/90 md:text-left">
           {descriptionPlain}
         </p>
       ) : null}
@@ -164,25 +164,25 @@ const RestaurantPage = async ({
         <div className="mt-5 grid grid-cols-1 gap-5 text-base text-paper sm:grid-cols-2 md:grid-cols-4">
           {cuisine ? (
             <div className="flex flex-col gap-1">
-              <span className="uppercase text-brand">Cuisine</span>
+              <span className="text-brand uppercase">Cuisine</span>
               <span>{cuisine}</span>
             </div>
           ) : null}
           {parking ? (
             <div className="flex flex-col gap-1">
-              <span className="uppercase text-brand">Parking</span>
+              <span className="text-brand uppercase">Parking</span>
               <span>{parking}</span>
             </div>
           ) : null}
           {bookingPolicy ? (
             <div className="flex flex-col gap-1">
-              <span className="uppercase text-brand">Booking policy</span>
+              <span className="text-brand uppercase">Booking policy</span>
               <span>{bookingPolicy}</span>
             </div>
           ) : null}
           {liveEvents ? (
             <div className="flex flex-col gap-1">
-              <span className="uppercase text-brand">Live events</span>
+              <span className="text-brand uppercase">Live events</span>
               <span>{liveEvents}</span>
             </div>
           ) : null}
@@ -196,7 +196,7 @@ const RestaurantPage = async ({
             {comforts.map((c, i) => (
               <div
                 key={`${c.title}-${i}`}
-                className="flex h-25 w-25 shrink-0 flex-col items-center justify-center gap-1.5 rounded-full border border-brand p-3 text-center text-xs leading-3 text-brand"
+                className="flex size-25 shrink-0 flex-col items-center justify-center gap-1.5 rounded-full border border-brand p-3 text-center text-xs leading-3 text-brand"
               >
                 {c.iconUrl ? (
                   <Image
@@ -204,7 +204,7 @@ const RestaurantPage = async ({
                     alt=""
                     width={40}
                     height={40}
-                    className="h-10 w-10 object-contain"
+                    className="size-10 object-contain"
                     unoptimized
                   />
                 ) : null}
@@ -227,11 +227,11 @@ const RestaurantPage = async ({
       {/* Contacts */}
       <div className="mt-12 grid grid-cols-1 gap-7.5 md:grid-cols-[338fr_953fr] md:gap-10">
         <div className="flex flex-col gap-2.5">
-          <p className="font-bold text-xl uppercase text-brand">Contacts</p>
+          <p className="text-xl font-bold text-brand uppercase">Contacts</p>
           {phone ? (
             <a
               href={`tel:${phone}`}
-              className="font-bold text-xl uppercase text-paper hover:text-brand"
+              className="text-xl font-bold text-paper uppercase hover:text-brand"
             >
               {phone}
             </a>
@@ -243,13 +243,13 @@ const RestaurantPage = async ({
               rel="noopener noreferrer"
               className="text-base text-paper hover:text-brand"
             >
-              <span className="uppercase text-brand">WhatsApp: </span>
+              <span className="text-brand uppercase">WhatsApp: </span>
               {whatsapp}
             </a>
           ) : null}
           {email ? (
             <a href={`mailto:${email}`} className="text-base text-paper hover:text-brand">
-              <span className="uppercase text-brand">Email: </span>
+              <span className="text-brand uppercase">Email: </span>
               {email}
             </a>
           ) : null}
@@ -260,12 +260,12 @@ const RestaurantPage = async ({
               rel="noopener noreferrer"
               className="text-base text-paper hover:text-brand"
             >
-              <span className="uppercase text-brand">Instagram: </span>
+              <span className="text-brand uppercase">Instagram: </span>
               {instagram}
             </a>
           ) : null}
-          {address ? <p className="font-bold text-xl text-paper">{address}</p> : null}
-          <p className="mt-3.75 font-bold text-xl uppercase text-brand">Opening hours</p>
+          {address ? <p className="text-xl font-bold text-paper">{address}</p> : null}
+          <p className="mt-3.75 text-xl font-bold text-brand uppercase">Opening hours</p>
           {openingHoursHtml ? (
             <div
               className="text-base text-paper [&_p]:leading-snug"

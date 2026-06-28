@@ -32,7 +32,7 @@ const CreateAccountButton = ({
     <button
       onClick={handleClick}
       type="button"
-      className="rounded-panel w-full h-14 font-semibold text-[17px] text-center flex justify-center items-center gap-6.25 text-brand bg-transparent border border-brand hover_btn_brand active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
+      className="hover_btn_brand flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border border-brand bg-transparent text-center text-[17px] font-semibold text-brand active:bg-brand-soft-active active:text-white disabled:border-ink disabled:text-ink"
     >
       {title}
     </button>

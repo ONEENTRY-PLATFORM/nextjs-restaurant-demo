@@ -42,29 +42,29 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
   return (
     <div className="mt-5 w-full">
       <div className="flex items-center justify-between gap-2.5">
-        <div className="group_white flex items-center justify-start gap-1.25 font-normal text-[17px] text-brand">
+        <div className="group_white flex items-center justify-start gap-1.25 text-[17px] font-normal text-brand">
           Reviews
           <ChatDotsIcon className="hover-target" />
         </div>
       </div>
 
       {reviews.length === 0 ? (
-        <p className="mt-5 font-normal text-[14px] text-paper/70">
+        <p className="mt-5 text-[14px] font-normal text-paper/70">
           No reviews yet — be the first to share your experience.
         </p>
       ) : (
-        <div className="relative flex items-stretch gap-3.75 mt-2.5 px-8 overflow-hidden">
+        <div className="relative mt-2.5 flex items-stretch gap-3.75 overflow-hidden px-8">
           <button
             type="button"
             onClick={goPrev}
             aria-label="Previous review"
-            className="flex shrink-0 items-center absolute left-0 top-1/2 -translate-y-1/2 z-10"
+            className="absolute top-1/2 left-0 z-10 flex shrink-0 -translate-y-1/2 items-center"
           >
             <Image src="/images/icons/chevron-pager-left.svg" alt="" width={16} height={27} />
           </button>
 
           <div
-            className="relative w-full min-w-0 overflow-hidden touch-pan-y"
+            className="relative w-full min-w-0 touch-pan-y overflow-hidden"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -75,7 +75,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
               {reviews.map((review, i) => (
                 <div
                   key={review.id}
-                  className="w-full shrink-0 grow-0 basis-full flex flex-col gap-2.5 overflow-hidden"
+                  className="flex w-full shrink-0 grow-0 basis-full flex-col gap-2.5 overflow-hidden"
                   aria-hidden={i !== index}
                 >
                   <div className="flex justify-between">
@@ -87,11 +87,11 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
                         <StarCardIcon size={11} filled={review.rating >= 4} />
                         <StarCardIcon size={11} filled={review.rating >= 5} />
                       </div>
-                      <p className="font-normal text-[14px] text-paper">{review.author}</p>
+                      <p className="text-[14px] font-normal text-paper">{review.author}</p>
                     </div>
-                    <p className="font-normal text-[12px] text-paper">{review.date}</p>
+                    <p className="text-[12px] font-normal text-paper">{review.date}</p>
                   </div>
-                  <p className="mt-2.5 font-normal text-[14px] text-paper">{review.text}</p>
+                  <p className="mt-2.5 text-[14px] font-normal text-paper">{review.text}</p>
                 </div>
               ))}
             </div>
@@ -101,7 +101,7 @@ const ProductReviewsList = ({ reviews }: { reviews: ProductReview[] }): JSX.Elem
             type="button"
             onClick={goNext}
             aria-label="Next review"
-            className="flex shrink-0 items-center absolute right-0 top-1/2 -translate-y-1/2 z-10"
+            className="absolute top-1/2 right-0 z-10 flex shrink-0 -translate-y-1/2 items-center"
           >
             <Image src="/images/icons/chevron-pager-right.svg" alt="" width={16} height={27} />
           </button>

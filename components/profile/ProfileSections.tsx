@@ -346,7 +346,7 @@ const ProfileSections = (): JSX.Element => {
               <button
                 type="submit"
                 disabled={saving || !user?.formIdentifier}
-                className="profile-anim-row hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand font-bold text-base text-brand disabled:opacity-60"
+                className="profile-anim-row hover_btn_transp mt-5 flex h-6.75 w-20.5 items-center justify-center rounded-card border border-brand text-base font-bold text-brand disabled:opacity-60"
               >
                 {saving ? '' : t('submit_text', 'Save')}
               </button>
@@ -381,7 +381,7 @@ const ProfileSections = (): JSX.Element => {
                 key={addr.id}
                 className="profile-anim-row mt-2.5 flex items-center justify-between gap-2.5"
               >
-                <label className="flex items-center gap-2.5 cursor-pointer flex-1">
+                <label className="flex flex-1 cursor-pointer items-center gap-2.5">
                   <input
                     type="radio"
                     name="user-address"
@@ -389,7 +389,7 @@ const ProfileSections = (): JSX.Element => {
                     onChange={() => onSelectAddress(addr.id)}
                   />
                   <span className="radio-custom" />
-                  <span className="font-normal text-xl text-white">
+                  <span className="text-xl font-normal text-white">
                     {addr.street} str., {addr.house}
                     {addr.floor ? `, fl. ${addr.floor}` : ''}
                   </span>
@@ -397,7 +397,7 @@ const ProfileSections = (): JSX.Element => {
                 <button
                   type="button"
                   onClick={() => onDeleteAddress(addr.id)}
-                  className="hover_btn_transp flex items-center justify-center rounded-card border border-brand px-5 py-1.25 font-bold text-base text-brand"
+                  className="hover_btn_transp flex items-center justify-center rounded-card border border-brand px-5 py-1.25 text-base font-bold text-brand"
                 >
                   {t('delete_button', 'Delete')}
                 </button>
@@ -407,7 +407,7 @@ const ProfileSections = (): JSX.Element => {
             <button
               type="button"
               onClick={() => setAddAddressOpen(v => !v)}
-              className="profile-anim-row hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
+              className="profile-anim-row hover_btn_paper mt-7.5 rounded-card border border-paper px-5 py-1.25 text-base font-semibold text-paper"
             >
               {t('add_address_button', '+ Add Address')}
             </button>
@@ -420,7 +420,7 @@ const ProfileSections = (): JSX.Element => {
               }}
             >
               <div className="w-full">
-                <label className="font-normal text-base text-paper">
+                <label className="text-base font-normal text-paper">
                   {t('street_label', 'Street')}
                 </label>
                 <input
@@ -432,7 +432,7 @@ const ProfileSections = (): JSX.Element => {
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-base text-paper">
+                <label className="text-base font-normal text-paper">
                   {t('house_label', 'House')}
                 </label>
                 <input
@@ -444,7 +444,7 @@ const ProfileSections = (): JSX.Element => {
                 />
               </div>
               <div className="flex w-1/6 flex-col gap-2.5">
-                <label className="font-normal text-base text-paper">
+                <label className="text-base font-normal text-paper">
                   {t('floor_label', 'Floor')}
                 </label>
                 <input
@@ -457,7 +457,7 @@ const ProfileSections = (): JSX.Element => {
               </div>
               <button
                 type="submit"
-                className="hover_btn_transp flex h-6.75 items-center justify-center self-end rounded-card border border-brand px-5 py-1.25 font-bold text-base text-brand"
+                className="hover_btn_transp flex h-6.75 items-center justify-center self-end rounded-card border border-brand px-5 py-1.25 text-base font-bold text-brand"
               >
                 {t('apply_text', 'Apply')}
               </button>

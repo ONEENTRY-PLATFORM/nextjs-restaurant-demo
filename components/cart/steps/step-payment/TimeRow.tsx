@@ -39,20 +39,20 @@ const TimeRow = ({
     <div className="step-payment-row mt-5 flex flex-col gap-5">
       <div className="flex items-center gap-2.5 text-paper">
         <ClockCircleIcon variant="paper" />
-        <p className="font-normal text-xl text-paper">{t('time_text', 'Time')}</p>
+        <p className="text-xl font-normal text-paper">{t('time_text', 'Time')}</p>
       </div>
       <div className="flex items-center gap-2.5 text-paper">
         <input
           type="radio"
           id="time-asap"
           name="delivery-time"
-          className="hidden peer"
+          className="peer hidden"
           checked={mode === 'asap'}
           onChange={() => onModeChange('asap')}
         />
         <label
           htmlFor="time-asap"
-          className="radio-custom flex cursor-pointer select-none items-center"
+          className="radio-custom flex cursor-pointer items-center select-none"
         >
           <span className="ml-2 text-paper">40-45 min</span>
         </label>
@@ -62,13 +62,13 @@ const TimeRow = ({
           type="radio"
           id="time-scheduled"
           name="delivery-time"
-          className="hidden peer"
+          className="peer hidden"
           checked={mode === 'scheduled'}
           onChange={() => onModeChange('scheduled')}
         />
         <label
           htmlFor="time-scheduled"
-          className="radio-custom flex cursor-pointer select-none items-center"
+          className="radio-custom flex cursor-pointer items-center select-none"
         >
           <span className="ml-2 text-paper">{t('by_the_time', 'by the time')}</span>
         </label>

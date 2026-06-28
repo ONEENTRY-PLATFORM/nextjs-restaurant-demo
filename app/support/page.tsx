@@ -30,8 +30,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
     page?.localizeInfos?.title ??
     (dict.support_default_title?.value as string);
   const description = attrs.support_description?.value as
-    | Array<{ htmlValue?: string; plainValue?: string }>
-    | undefined;
+    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
   const descriptionHtml = description?.[0]?.htmlValue ?? '';
   const phone = attrs.support_phone?.value as string | undefined;
   const whatsapp = attrs.support_whatsapp_url?.value as string | undefined;
@@ -39,7 +38,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
 
   return (
     <section className="section_layout">
-      <h1 className="mb-5 font-bold text-2xl md:text-[32px] uppercase tracking-fine text-brand">
+      <h1 className="mb-5 text-2xl font-bold tracking-fine text-brand uppercase md:text-[32px]">
         {title}
       </h1>
       {descriptionHtml ? (
@@ -52,7 +51,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
       <div className="mb-8 flex flex-col gap-6.25">
         {phone || whatsapp ? (
           <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
-            <p className="text-center text-xl font-normal leading-150 text-paper">
+            <p className="text-center text-xl leading-150 font-normal text-paper">
               Would you like to call?
             </p>
             <div className="mt-4 flex justify-center gap-15">
@@ -71,7 +70,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
         ) : null}
         {email || whatsapp ? (
           <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
-            <p className="text-center text-xl font-normal leading-150 text-paper">
+            <p className="text-center text-xl leading-150 font-normal text-paper">
               Would you like to ask a question?
             </p>
             <a
@@ -87,7 +86,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
       </div>
 
       <div className="rounded-xl bg-ink/40 p-5">
-        <h2 className="mb-4 font-bold text-[18px] uppercase text-brand">{formHeading}</h2>
+        <h2 className="mb-4 text-[18px] font-bold text-brand uppercase">{formHeading}</h2>
         <ContactUsForm className="" />
       </div>
     </section>

@@ -94,11 +94,11 @@ const HeartCardButton = ({ product }: { product: IProductsEntity }): JSX.Element
           : t('add_to_favorites_label', 'Add to favorites')
       }
       aria-pressed={isFav}
-      className="absolute top-3.75 md:top-5 right-2.5 md:right-3.75 z-10 bg-transparent border-0 p-0 cursor-pointer"
+      className="absolute top-3.75 right-2.5 z-10 cursor-pointer border-0 bg-transparent p-0 md:top-5 md:right-3.75"
     >
       <HeartCardIcon
         filled={isFav}
-        className="w-6.5 h-5.25 md:w-9.5 md:h-7.5 transition-colors duration-200 hover:fill-white focus:fill-white"
+        className="h-5.25 w-6.5 transition-colors duration-200 hover:fill-white focus:fill-white md:h-7.5 md:w-9.5"
       />
     </button>
   );

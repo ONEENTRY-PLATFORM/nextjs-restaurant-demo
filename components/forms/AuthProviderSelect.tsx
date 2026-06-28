@@ -79,9 +79,9 @@ const AuthProviderSelect = ({
                 <button
                   type="button"
                   onClick={() => onProviderClick(p)}
-                  className={`mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none ${isEmail ? 'bg-brand' : 'bg-disabled-bg'} backdrop-blur-card text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`}
+                  className={`mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none ${isEmail ? 'bg-brand' : 'bg-disabled-bg'} text-center text-[17px] font-semibold text-white backdrop-blur-card transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink`}
                 >
-                  <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+                  <div className="flex w-50 items-center justify-start gap-5 text-base font-bold">
                     <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
                     <span>{meta.label}</span>
                   </div>

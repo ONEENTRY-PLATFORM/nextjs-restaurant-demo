@@ -1,8 +1,7 @@
 import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IError } from 'oneentry/dist/base/utils';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
-import { getApi } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
 import { normalizePhoneE164 } from '@/components/utils';
 
@@ -43,36 +42,36 @@ export const updateUserState = async ({
   const email = user.formData.find(item => item.marker === 'email');
   const phone = user.formData.find(item => item.marker === 'phone');
 
-  const fresh = (await getApi().Users.getUser()) as IUserEntity | IError;
-  if (!fresh || (fresh as IError)?.statusCode) {
+  try {
+    const fresh = await getApi().Users.getUser();
+    if (!fresh || isError(fresh)) {
+      return false;
+    }
+    const freshUser = fresh as IUserEntity;
+
+    const res = await getApi().Users.updateUser({
+      formIdentifier: freshUser.formIdentifier,
+      formData: [...formData],
+      state: {
+        ...freshUser.state,
+        favorites,
+        cart,
+      },
+      notificationData: {
+        email: email?.value as string,
+        phonePush: [],
+        phoneSMS: normalizePhoneE164(phone?.value as string | undefined),
+      },
+    });
+
+    if (!res || isError(res)) {
+      return false;
+    }
+
+    return res === true;
+  } catch {
     return false;
   }
-  const freshUser = fresh as IUserEntity;
-
-  const res = await getApi().Users.updateUser({
-    formIdentifier: freshUser.formIdentifier,
-    formData: [...formData],
-    state: {
-      ...freshUser.state,
-      favorites,
-      cart,
-    },
-    notificationData: {
-      email: email?.value as string,
-      phonePush: [],
-      phoneSMS: normalizePhoneE164(phone?.value as string | undefined),
-    },
-  });
-
-  if (!res || (res as IError)?.statusCode) {
-    return false;
-  }
-
-  if (res === true) {
-    return true;
-  }
-
-  return false;
 };
 
 /**

@@ -46,8 +46,7 @@ const CartButton = ({
   const t = useT();
   const dispatch = useAppDispatch();
   const item = useAppSelector(state => selectCartItemWithIdLength(state, id)) as
-    | { quantity?: number }
-    | undefined;
+    { quantity?: number } | undefined;
   const qty = item?.quantity ?? 0;
   const titleSlot = (template: string) => template.replace('{title}', title);
 

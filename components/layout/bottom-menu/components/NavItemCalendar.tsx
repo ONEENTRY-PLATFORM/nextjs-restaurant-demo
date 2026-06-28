@@ -29,7 +29,7 @@ const NavItemCalendar = ({ item }: { item: IMenusPages }): JSX.Element => {
     >
       <HeartScriptIcon />
       {cartCount && (
-        <div className="absolute -right-1 -top-1 z-10 size-4 rounded-full bg-brand text-center text-sm leading-4">
+        <div className="absolute -top-1 -right-1 z-10 size-4 rounded-full bg-brand text-center text-sm leading-4">
           {cartCount}
         </div>
       )}

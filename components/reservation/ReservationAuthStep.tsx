@@ -87,7 +87,7 @@ const ReservationAuthStep = ({
     const active = sortActiveAuthProviders(providers ?? []);
     return (
       <div className="flex w-full flex-col items-center px-5 md:px-19">
-        <p className="text-center font-normal text-base leading-5 text-paper">
+        <p className="text-center text-base leading-5 font-normal text-paper">
           {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
         </p>
         <div className="mt-2.5 flex w-full flex-col">
@@ -99,9 +99,9 @@ const ReservationAuthStep = ({
                 type="button"
                 onClick={() => onProviderClick(p)}
                 disabled={isProvidersLoading}
-                className="mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-disabled-bg backdrop-blur-card text-center font-semibold text-[17px] text-white transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink"
+                className="mt-6.5 flex h-14 w-full items-center justify-center gap-6.25 rounded-panel border-none bg-disabled-bg text-center text-[17px] font-semibold text-white backdrop-blur-card transition-all duration-700 hover:bg-brand active:bg-brand-active disabled:bg-disabled-bg-soft disabled:text-ink"
               >
-                <div className="flex w-50 items-center justify-start gap-5 font-bold text-base">
+                <div className="flex w-50 items-center justify-start gap-5 text-base font-bold">
                   <Image src={meta.icon} alt="" width={meta.iconWidth} height={meta.iconHeight} />
                   <span>{meta.label}</span>
                 </div>
@@ -115,7 +115,7 @@ const ReservationAuthStep = ({
 
   return (
     <div className="flex w-full flex-col gap-5 px-5 md:px-19">
-      <p className="text-center font-normal text-base leading-5 text-paper">
+      <p className="text-center text-base leading-5 font-normal text-paper">
         {t('booking_signin_prompt', 'Please sign in to confirm your booking.')}
       </p>
 

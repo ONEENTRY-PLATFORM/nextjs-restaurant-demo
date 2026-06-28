@@ -14,14 +14,23 @@ import { getAllOrdersAcrossStorages, getApi, isBookingStorageMarker, isError } f
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import { BOOKING_PRODUCT_ID, FORMS, ORDER_STATUSES } from '@/app/utils/constants';
+import {
+  BOOKING_PRODUCT_ID,
+  FORMS,
+  ORDER_HISTORY_STATUSES,
+  ORDER_STATUSES,
+} from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
 import { setPendingReservationEdit } from '@/components/reservation/reservationEditState';
 import { TIME_SLOT_MARKER } from '@/components/reservation/reservationFormUtils';
 import Spinner from '@/components/shared/Spinner';
 
 const CANCELLED_STATUS = ORDER_STATUSES.bookingCancelled;
-const HISTORY_STATUS_KEYWORDS = ['cancel', 'complet', 'deliver', 'reject', 'refund'];
+
+// Terminal statuses that move a reservation into history. Mirrors the orders dashboard
+// (orderUtils.ts) plus `booking_cancelled` — the marker the cancel flow writes here, which
+// is booking-specific and not part of the shared ORDER_HISTORY_STATUSES set.
+const HISTORY_STATUSES = new Set<string>([...ORDER_HISTORY_STATUSES, CANCELLED_STATUS]);
 
 /**
  * parseDateLoose — extracts a `Date` from heterogeneous OneEntry value shapes.
@@ -79,17 +88,17 @@ const getBookingDate = (o: IOrderByMarkerEntity): Date | null => {
 };
 
 /**
- * isHistoryOrder — whether the booking order is in history (past date / completed / cancelled / rejected / refunded).
+ * isHistoryOrder — whether the booking order is in history (completed / terminal status / past reservation date).
  *
- * Any booking whose reservation moment (`time_slot`) already lies in the past is treated as history regardless of status.
+ * Matches the order's `statusIdentifier` against the terminal-status set exactly (case-insensitive); any
+ * booking whose reservation moment (`time_slot`) already lies in the past is treated as history regardless of status.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `true` when the booking belongs to history.
  */
 const isHistoryOrder = (o: IOrderByMarkerEntity): boolean => {
   if (o.isCompleted === true) return true;
-  const id = (o.statusIdentifier ?? '').toLowerCase();
-  if (id && HISTORY_STATUS_KEYWORDS.some(k => id.includes(k))) return true;
+  if (HISTORY_STATUSES.has((o.statusIdentifier ?? '').toLowerCase())) return true;
   const bookingDate = getBookingDate(o);
   if (bookingDate && bookingDate.getTime() < Date.now()) return true;
   return false;
@@ -280,7 +289,7 @@ const BookingsContent = (): JSX.Element => {
         ))
       )}
 
-      <p className="profile-anim-row mt-2.5 text-center font-bold text-xl tracking-fine text-brand">
+      <p className="profile-anim-row mt-2.5 text-center text-xl font-bold tracking-fine text-brand">
         Reservation History
       </p>
 
@@ -322,9 +331,9 @@ const ActiveBookingCard = ({
   return (
     <div className="profile-anim-row flex flex-col gap-5">
       <div className="flex items-center justify-between rounded-card border border-brand px-3.75 py-1.25">
-        <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
-        <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
-        <p className="font-normal text-base text-paper">{when}</p>
+        <p className="text-base font-bold text-paper">№{formatOrderNumber(order)}</p>
+        <p className="text-base font-normal text-paper">{statusLabel(order)}</p>
+        <p className="text-base font-normal text-paper">{when}</p>
       </div>
       <div className="flex items-center justify-between gap-3.75">
         <button
@@ -360,9 +369,9 @@ const HistoryBookingCard = ({ order }: { order: IOrderByMarkerEntity }): JSX.Ele
   const date = dateRaw ? formatDate(dateRaw) : '';
   return (
     <div className="profile-anim-row flex items-center justify-between rounded-card border border-paper px-3.75 py-1.25">
-      <p className="font-bold text-base text-paper">№{formatOrderNumber(order)}</p>
-      <p className="font-normal text-base text-paper">{statusLabel(order)}</p>
-      <p className="font-normal text-base text-paper">{date}</p>
+      <p className="text-base font-bold text-paper">№{formatOrderNumber(order)}</p>
+      <p className="text-base font-normal text-paper">{statusLabel(order)}</p>
+      <p className="text-base font-normal text-paper">{date}</p>
     </div>
   );
 };

@@ -137,12 +137,12 @@ const Stat = ({
     className="group relative rounded-card border border-paper/10 bg-white/5 px-3 py-2 outline-none focus-visible:border-paper/40"
     tabIndex={tooltip ? 0 : -1}
   >
-    <div className="text-[10px] uppercase tracking-fine text-paper/50">{label}</div>
+    <div className="text-[10px] tracking-fine text-paper/50 uppercase">{label}</div>
     <div className={`mt-0.5 font-semibold tabular-nums ${tone ?? 'text-paper'}`}>{value}</div>
     {tooltip && (
       <div
         role="tooltip"
-        className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-card border border-paper/15 bg-black/95 px-3 py-2 text-[11px] font-normal leading-snug tracking-normal text-paper/90 opacity-0 shadow-lg transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-card border border-paper/15 bg-black/95 px-3 py-2 text-[11px] leading-snug font-normal tracking-normal text-paper/90 opacity-0 shadow-lg transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
       >
         {tooltip}
       </div>
@@ -176,13 +176,13 @@ const Th = ({
   <th className={`px-2 py-1 font-normal ${align === 'right' ? 'text-right' : ''}`}>
     {tooltip ? (
       <span
-        className="group relative inline-flex cursor-help items-center gap-1 underline decoration-dotted decoration-paper/30 underline-offset-2 outline-none focus-visible:decoration-paper/70"
+        className="group relative inline-flex cursor-help items-center gap-1 underline decoration-paper/30 decoration-dotted underline-offset-2 outline-none focus-visible:decoration-paper/70"
         tabIndex={0}
       >
         {children}
         <span
           role="tooltip"
-          className={`pointer-events-none invisible absolute top-full z-20 mt-2 w-56 rounded-card border border-paper/15 bg-black/95 px-3 py-2 text-[11px] font-normal leading-snug tracking-normal text-paper/90 normal-case opacity-0 shadow-lg transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 ${
+          className={`pointer-events-none invisible absolute top-full z-20 mt-2 w-56 rounded-card border border-paper/15 bg-black/95 px-3 py-2 text-[11px] leading-snug font-normal tracking-normal text-paper/90 normal-case opacity-0 shadow-lg transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
         >
@@ -361,7 +361,7 @@ export default function ApiTestClient(): JSX.Element {
 
       <section className="grid gap-4 rounded-panel border border-paper/10 bg-white/5 p-4 md:grid-cols-2">
         <div>
-          <div className="text-xs uppercase tracking-fine text-paper/50">Preset</div>
+          <div className="text-xs tracking-fine text-paper/50 uppercase">Preset</div>
           <div className="mt-2 flex flex-wrap gap-2">
             {PRESET_OPTIONS.map(opt => {
               const active = preset === opt.value;
@@ -388,7 +388,7 @@ export default function ApiTestClient(): JSX.Element {
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-fine text-paper/50" htmlFor="marker">
+          <label className="text-xs tracking-fine text-paper/50 uppercase" htmlFor="marker">
             Marker / pageUrl
           </label>
           <input
@@ -403,7 +403,7 @@ export default function ApiTestClient(): JSX.Element {
         </div>
 
         <div>
-          <div className="text-xs uppercase tracking-fine text-paper/50">Cache mode</div>
+          <div className="text-xs tracking-fine text-paper/50 uppercase">Cache mode</div>
           <div className="mt-2 flex gap-2">
             <button
               type="button"
@@ -433,7 +433,7 @@ export default function ApiTestClient(): JSX.Element {
         </div>
 
         <div>
-          <div className="text-xs uppercase tracking-fine text-paper/50">Execution</div>
+          <div className="text-xs tracking-fine text-paper/50 uppercase">Execution</div>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button
               type="button"
@@ -478,9 +478,9 @@ export default function ApiTestClient(): JSX.Element {
           </div>
         </div>
 
-        <div className="md:col-span-2 flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end justify-between gap-3 md:col-span-2">
           <div>
-            <div className="text-xs uppercase tracking-fine text-paper/50">Requests</div>
+            <div className="text-xs tracking-fine text-paper/50 uppercase">Requests</div>
             <div className="mt-2 flex flex-wrap gap-2">
               {COUNT_OPTIONS.map(n => (
                 <button
@@ -607,7 +607,7 @@ export default function ApiTestClient(): JSX.Element {
 
       <section className="mt-6 rounded-panel border border-paper/10 bg-white/5 p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-fine text-paper/70">
+          <h2 className="text-sm font-semibold tracking-fine text-paper/70 uppercase">
             Latency per request
           </h2>
           <Legend />
@@ -616,7 +616,7 @@ export default function ApiTestClient(): JSX.Element {
       </section>
 
       <section className="mt-4 rounded-panel border border-paper/10 bg-white/5 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-fine text-paper/70">
+        <h2 className="mb-2 text-sm font-semibold tracking-fine text-paper/70 uppercase">
           Distribution
         </h2>
         <Histogram results={orderedResults} />
@@ -625,7 +625,7 @@ export default function ApiTestClient(): JSX.Element {
       {orderedResults.length > 0 && (
         <section className="mt-4 rounded-panel border border-paper/10 bg-white/5 p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold uppercase tracking-fine text-paper/70">
+            <h2 className="text-sm font-semibold tracking-fine text-paper/70 uppercase">
               Per-request details
             </h2>
             <div className="flex flex-wrap gap-3 text-xs">
@@ -668,7 +668,7 @@ export default function ApiTestClient(): JSX.Element {
           <div className="overflow-x-auto">
             <table className="w-full min-w-225 text-left text-xs tabular-nums">
               <thead>
-                <tr className="text-paper/50 uppercase tracking-fine">
+                <tr className="tracking-fine text-paper/50 uppercase">
                   <Th
                     align="right"
                     tooltip="Original 1-based index of the request in the run. Sort or filter can reorder rows, but the # stays tied to the original probe."
@@ -751,7 +751,7 @@ export default function ApiTestClient(): JSX.Element {
                         {new Date(r.startedAt).toLocaleTimeString()}
                       </td>
                       <td
-                        className="px-2 py-1 max-w-80 truncate text-red-300"
+                        className="max-w-80 truncate px-2 py-1 text-red-300"
                         title={r.error ?? ''}
                       >
                         {r.error ?? ''}
@@ -789,7 +789,7 @@ export default function ApiTestClient(): JSX.Element {
       {runs.length > 0 && (
         <section className="mt-6 rounded-panel border border-paper/10 bg-white/5 p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-fine text-paper/70">
+            <h2 className="text-sm font-semibold tracking-fine text-paper/70 uppercase">
               Recent runs
             </h2>
             <button
@@ -803,7 +803,7 @@ export default function ApiTestClient(): JSX.Element {
           <div className="overflow-x-auto">
             <table className="w-full min-w-180 text-left text-xs tabular-nums">
               <thead>
-                <tr className="text-paper/50 uppercase tracking-fine">
+                <tr className="tracking-fine text-paper/50 uppercase">
                   <th className="px-2 py-1 font-normal">Time</th>
                   <th className="px-2 py-1 font-normal">Preset</th>
                   <th className="px-2 py-1 font-normal">Marker</th>

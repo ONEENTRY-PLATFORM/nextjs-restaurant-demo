@@ -39,8 +39,7 @@ const ProductPageLayout = async ({
 
   // JSON-LD structured data for the product (https://json-ld.org/) for SEO.
   const descriptionValue = attributeValues.description?.value as
-    | Array<{ plainValue?: string }>
-    | undefined;
+    Array<{ plainValue?: string }> | undefined;
   const imageUrl = getProductImageUrl(attributeValues);
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -100,8 +99,7 @@ export async function generateMetadata({
   const downloadLink = getProductImageUrl(product.attributeValues);
   const alt = product.localizeInfos?.title ?? 'alt';
   const descValue = product.attributeValues.description?.value as
-    | Array<{ plainValue?: string }>
-    | undefined;
+    Array<{ plainValue?: string }> | undefined;
   const indexable = product.isVisible;
 
   return {

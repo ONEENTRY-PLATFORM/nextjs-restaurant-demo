@@ -32,7 +32,7 @@ const BookingsPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 flex max-h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed inset-x-0 bottom-0 z-20 flex max-h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-10 shadow-xl backdrop-blur-card md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-1/2 md:rounded-[20px] md:p-10"
       >
         {/* Header: back / title / X */}
         <div className="flex items-center justify-between gap-5">
@@ -44,7 +44,7 @@ const BookingsPopup = (): JSX.Element => {
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="font-semibold text-2xl text-brand">Active reservation</p>
+          <p className="text-2xl font-semibold text-brand">Active reservation</p>
           <ClosePopupButton onClose={close} ariaLabel="Close bookings" className="max-md:hidden" />
           <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>

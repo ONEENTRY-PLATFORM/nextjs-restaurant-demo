@@ -35,7 +35,7 @@ const UserProfileMenu = ({ userMenu }: { userMenu: IMenusEntity }): JSX.Element 
       <ProfileMenuAnimations
         state={isOpen}
         setState={setIsOpen}
-        className="absolute right-0 top-8 h-0 w-48 overflow-hidden rounded-panel bg-ink/80 px-4 text-paper shadow-lg backdrop-blur-card"
+        className="absolute top-8 right-0 h-0 w-48 overflow-hidden rounded-panel bg-ink/80 px-4 text-paper shadow-lg backdrop-blur-card"
       >
         <ul className="my-4 text-paper">
           {pages.map((page, index) => (

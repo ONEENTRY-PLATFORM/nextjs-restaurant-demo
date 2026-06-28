@@ -19,7 +19,7 @@ export default function Loading(): JSX.Element {
       {/* Contact CTA cards */}
       <div className="mb-8 flex flex-col gap-6.25">
         {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="rounded-[20px] border border-paper/30 px-5 pb-5 pt-3">
+          <div key={i} className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
             <Skeleton className="mx-auto h-5 w-2/3 max-w-72 rounded-full" />
             <div className="mt-4 flex justify-center gap-15">
               <Skeleton className="size-11 rounded-full" />

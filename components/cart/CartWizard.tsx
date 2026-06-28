@@ -166,7 +166,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
           <Link href="/" className="group_white" aria-label={t('go_back_label', 'Go back')}>
             <ArrowBackOrangeIcon />
           </Link>
-          <p className="font-normal text-2xl text-white">{STEP_TITLES.cart}</p>
+          <p className="text-2xl font-normal text-white">{STEP_TITLES.cart}</p>
           <div className="group_white">
             <BurgerOrangeIcon />
           </div>
@@ -187,7 +187,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
             <Link
               href="/"
               aria-label={t('home_label', 'Home')}
-              className="group inline-flex h-4 w-4 items-center justify-center"
+              className="group inline-flex size-4 items-center justify-center"
             >
               <HomeIcon />
             </Link>
@@ -216,7 +216,7 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
         </div>
 
         {/* Stacked on mobile, 2 columns (50/50) on md+ */}
-        <div className="px-5 pt-10 pb-5 md:flex md:justify-between gap-8 lg:gap-15 md:px-0 md:pt-13">
+        <div className="gap-8 px-5 pt-10 pb-5 md:flex md:justify-between md:px-0 md:pt-13 lg:gap-15">
           <div className="flex flex-col gap-4 md:w-1/2">
             <div className={isCartStep ? 'contents' : 'md:hidden'}>
               <CartPage deliveryData={deliveryData} />
@@ -229,25 +229,25 @@ const CartWizard = ({ deliveryData, promoSidebar }: CartWizardProps): JSX.Elemen
 
       {showPopup && (
         <div className="relative mx-auto flex w-full max-w-98.25 flex-col gap-6 px-5 pt-3.75 md:fixed md:inset-0 md:z-50 md:mx-0 md:max-w-none md:flex-row md:items-center md:justify-center md:bg-black/40 md:p-0 md:px-4 md:backdrop-blur-card">
-          <div className="flex w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 min-h-140 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-card">
+          <div className="flex min-h-140 w-full flex-col gap-6 md:relative md:max-h-[90vh] md:max-w-150 md:overflow-y-auto md:rounded-[20px] md:bg-ink/80 md:p-7.5 md:backdrop-blur-card">
             {/* Popup header - back / title / close */}
             <div className="flex items-center justify-between md:mb-2">
               <button
                 type="button"
                 onClick={() => dispatch(goBackStep())}
                 aria-label={t('go_back_label', 'Go back')}
-                className="group flex h-9 w-9 items-center justify-center"
+                className="group flex size-9 items-center justify-center"
               >
                 <ArrowBackIcon className="hover-target" />
               </button>
-              <p className="font-normal text-2xl text-paper md:font-semibold md:uppercase md:text-brand">
+              <p className="text-2xl font-normal text-paper md:font-semibold md:text-brand md:uppercase">
                 {STEP_TITLES[step]}
               </p>
               <ClosePopupButton
                 onClose={() => dispatch(setStep('cart'))}
                 className="hidden md:flex"
               />
-              <span className="md:hidden w-9" aria-hidden="true" />
+              <span className="w-9 md:hidden" aria-hidden="true" />
             </div>
 
             {/* Step content panel. */}

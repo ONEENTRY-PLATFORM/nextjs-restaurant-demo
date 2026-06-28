@@ -54,7 +54,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
     return (
       <div className="flex flex-col gap-6.25">
         {/* Order number */}
-        <div className="mx-auto font-medium text-xl text-brand">{orderNumber}</div>
+        <div className="mx-auto text-xl font-medium text-brand">{orderNumber}</div>
 
         {/* Items */}
         {cartData
@@ -65,7 +65,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
             const qty = entry.quantity ?? 1;
             return (
               <div key={entry.id} className="flex items-center justify-between gap-3">
-                <p className="max-w-42.5 font-normal text-base text-white opacity-90">{title}</p>
+                <p className="max-w-42.5 text-base font-normal text-white opacity-90">{title}</p>
                 <div className="rounded-card border border-white px-2 py-1.5 text-base text-brand">
                   x{qty}
                 </div>
@@ -74,7 +74,7 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
           })}
 
         {/* Delivery stamp */}
-        <p className="mt-6.25 text-center font-normal text-base text-brand">
+        <p className="mt-6.25 text-center text-base font-normal text-brand">
           Get delivery by: {deliveryStamp}
         </p>
 
@@ -82,11 +82,11 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
         <div className="mx-auto mt-6.25 h-px w-56.25 bg-brand" />
 
         {/* Headings */}
-        <p className="text-center font-semibold text-[27px] text-brand">Order Confirmed</p>
-        <p className="text-center font-light text-[18px] text-paper">
+        <p className="text-center text-[27px] font-semibold text-brand">Order Confirmed</p>
+        <p className="text-center text-[18px] font-light text-paper">
           Your order has been placed successfully
         </p>
-        <p className="text-center font-normal text-[23px] text-brand">See you soon!</p>
+        <p className="text-center text-[23px] font-normal text-brand">See you soon!</p>
 
         {/* CTA */}
         <Link
@@ -104,11 +104,11 @@ const StepResult = ({ variant }: { variant: 'success' | 'error' }): JSX.Element 
   }
 
   return (
-    <div className="flex flex-col items-center gap-6.25 py-10 px-2.5">
-      <p className="text-center font-light text-[32px] text-white opacity-90">
+    <div className="flex flex-col items-center gap-6.25 px-2.5 py-10">
+      <p className="text-center text-[32px] font-light text-white opacity-90">
         Something went wrong.
       </p>
-      <p className="text-center font-light text-[32px] text-brand opacity-90">Please try again.</p>
+      <p className="text-center text-[32px] font-light text-brand opacity-90">Please try again.</p>
       {stepError ? <p className="text-center text-sm text-paper/70">{stepError}</p> : null}
       <button type="button" onClick={() => dispatch(setStep('cart'))} className="cart_btn mt-4">
         Back to cart

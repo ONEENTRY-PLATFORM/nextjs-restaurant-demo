@@ -75,7 +75,7 @@ const RestaurantPhotoSlider = ({
           onSwiper={setSwiper}
           onSlideChange={s => setActive(s.realIndex)}
           {...(onImageClick ? { onClick: () => onImageClick() } : {})}
-          className="h-full w-full"
+          className="size-full"
         >
           {photos.map((p, i) =>
             p?.downloadLink ? (
@@ -85,7 +85,7 @@ const RestaurantPhotoSlider = ({
                   alt={i === active ? alt : ''}
                   fill
                   sizes={sizes}
-                  className="object-cover pointer-events-none select-none"
+                  className="pointer-events-none object-cover select-none"
                   draggable={false}
                   priority={priority && i === 0}
                   {...(blurMap?.[p.downloadLink]

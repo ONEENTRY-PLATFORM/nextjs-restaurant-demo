@@ -6,7 +6,7 @@ import type { JSX } from 'react';
 import { memo, Suspense } from 'react';
 
 import { getBlogBanners, getImageUrl, getPageByUrl } from '@/app/api';
-import { getDictionary } from '@/app/dictionaries';
+import { getDictionary, t } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
@@ -59,6 +59,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const title = page.localizeInfos?.title ?? '';
   const description = attrs.description?.value as DescriptionValue | undefined;
   const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const goToSelectionLabel = await t('promo_go_to_selection', 'Go to selection');
 
   return (
     <section className="section_layout">
@@ -97,12 +98,9 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
       ) : null}
 
       <div className="mt-11.25">
-        <h1 className="font-bold text-xl uppercase text-brand">{title}</h1>
+        <h1 className="text-xl font-bold text-brand uppercase">{title}</h1>
         {subtitleHtml ? (
-          <div
-            className="cms_prose mt-3.75"
-            dangerouslySetInnerHTML={{ __html: subtitleHtml }}
-          />
+          <div className="cms_prose mt-3.75" dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
         ) : null}
       </div>
 
@@ -113,6 +111,14 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
             searchParams={searchParams ?? {}}
             productsLimit={productsLimit}
             isCategory={true}
+            emptyFallback={
+              <Link
+                href="/shop"
+                className="mx-auto flex h-12.5 w-full max-w-154 items-center justify-center rounded-panel bg-custom-gradient text-base font-bold text-white uppercase transition-all duration-200 hover:bg-gradient-to-r-hover active:bg-gradient-to-r-hover"
+              >
+                {goToSelectionLabel}
+              </Link>
+            }
           />
         </Suspense>
       </div>
@@ -122,13 +128,13 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
           {relatedPromos.length >= 3 ? (
             <RelatedPromosCarousel promos={relatedPromos} />
           ) : (
-            <div className="flex flex-col lg:flex-row justify-between gap-15">
+            <div className="flex flex-col justify-between gap-15 lg:flex-row">
               {relatedPromos.map(b => (
                 <Link
                   key={b.id}
                   href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
                   title={b.title}
-                  className="block flex-1 min-w-0 overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.02]"
+                  className="block min-w-0 flex-1 overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.02]"
                 >
                   <Image
                     src={b.mobileImage as string}

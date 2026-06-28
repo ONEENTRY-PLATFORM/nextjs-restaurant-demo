@@ -119,7 +119,7 @@ export default function TransitionProvider({ children }: { children: ReactNode }
         };
       }}
     >
-      <div ref={ref} className="relative flex flex-col grow justify-between">
+      <div ref={ref} className="relative flex grow flex-col justify-between">
         {children}
       </div>
     </TransitionRouter>

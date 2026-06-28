@@ -126,9 +126,9 @@ const CartPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-20 max-h-dvh overflow-y-auto bg-ink/80 backdrop-blur-card rounded-t-[20px] shadow-xl md:left-auto md:right-0 md:top-[5vh] md:h-auto md:max-h-[90vh] md:w-95 md:rounded-l-[20px] md:rounded-t-none"
+        className="fixed inset-x-0 bottom-0 z-20 max-h-dvh overflow-y-auto rounded-t-[20px] bg-ink/80 shadow-xl backdrop-blur-card md:top-[5vh] md:right-0 md:left-auto md:h-auto md:max-h-[90vh] md:w-95 md:rounded-t-none md:rounded-l-[20px]"
       >
-        <div className="max-w-97.5 mx-auto p-5 pb-24">
+        <div className="mx-auto max-w-97.5 p-5 pb-24">
           {/* Header: back / title / spacer (close is via swipe / backdrop). */}
           <div className="z-10 flex items-center justify-between">
             {canGoBack ? (
@@ -136,19 +136,19 @@ const CartPopup = (): JSX.Element => {
                 type="button"
                 onClick={() => dispatch(goBackStep())}
                 aria-label={t('go_back_label', 'Go back')}
-                className="group flex h-9 w-9 items-center justify-center"
+                className="group flex size-9 items-center justify-center"
               >
                 <ArrowBackIcon className="hover-target" />
               </button>
             ) : (
-              <span aria-hidden="true" className="h-9 w-9" />
+              <span aria-hidden="true" className="size-9" />
             )}
-            <p className="font-normal text-2xl text-white">{stepTitles[step]}</p>
-            <span aria-hidden="true" className="h-9 w-9" />
+            <p className="text-2xl font-normal text-white">{stepTitles[step]}</p>
+            <span aria-hidden="true" className="size-9" />
           </div>
 
           {isCartStep ? (
-            <div className="max-w-88.75 mx-auto mt-10 mb-10 flex flex-col gap-3.75">
+            <div className="mx-auto my-10 flex max-w-88.75 flex-col gap-3.75">
               {isLoading ? (
                 <Spinner />
               ) : products.length === 0 ? (
@@ -166,7 +166,7 @@ const CartPopup = (): JSX.Element => {
                   <button
                     type="button"
                     onClick={handleCartApply}
-                    className="cart_btn mt-7.5 mx-auto"
+                    className="cart_btn mx-auto mt-7.5"
                   >
                     {t('apply_coupon_button', 'APPLY')}
                   </button>

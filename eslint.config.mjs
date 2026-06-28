@@ -65,6 +65,11 @@ const eslintConfig = defineConfig([
       react: {
         version: 'detect',
       },
+      // eslint-plugin-tailwindcss v4 reads the theme from the Tailwind v4 CSS
+      // entry. Default is 'src/style.css'; this project's entry is app/globals.css.
+      tailwindcss: {
+        cssConfigPath: 'app/globals.css',
+      },
       // import/resolver settings are useful if you use path aliases (adjust if needed)
       'import/resolver': {
         node: {
@@ -89,8 +94,15 @@ const eslintConfig = defineConfig([
       ...nextPlugin.configs.recommended.rules,
       ...reactPlugin.configs.flat.rules,
       ...reactHooksPlugin.configs['recommended-latest'].rules,
-      ...tailwindcssPlugin.configs['flat/recommended'].rules,
+      ...tailwindcssPlugin.configs.recommended.rules,
       // ...jsdocPlugin.configs['flat/recommended'].rules,
+
+      // Tailwind: this project intentionally uses custom component classes
+      // (.menu_item, .cart_btn, hover_btn_brand, …) declared via @layer in
+      // app/styles/main.css (CLAUDE.md §3.1). no-custom-classname can't see
+      // @layer/plain selectors and would flag every one of them — disable it.
+      // The rest of the recommended Tailwind rules stay on.
+      'tailwindcss/no-custom-classname': 'off',
 
       // Prettier
       'prettier/prettier': [

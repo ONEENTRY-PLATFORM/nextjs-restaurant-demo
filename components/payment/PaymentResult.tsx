@@ -36,17 +36,17 @@ const PaymentResult = ({ variant }: PaymentResultProps): JSX.Element => {
   if (variant === 'success') {
     return (
       <div className="mx-auto flex w-full max-w-97.5 flex-col gap-6.25 rounded-[20px] bg-ink/80 p-5 backdrop-blur-card">
-        {orderId ? <p className="mx-auto font-medium text-xl text-brand">№ {orderId}</p> : null}
+        {orderId ? <p className="mx-auto text-xl font-medium text-brand">№ {orderId}</p> : null}
 
         <div className="mx-auto h-px w-56.25 bg-brand" />
 
-        <p className="text-center font-semibold text-[27px] text-brand">
+        <p className="text-center text-[27px] font-semibold text-brand">
           {t('payment_success_title', 'Order Confirmed')}
         </p>
-        <p className="text-center font-light text-[18px] text-paper">
+        <p className="text-center text-[18px] font-light text-paper">
           {t('payment_success_message', 'Your order has been placed successfully')}
         </p>
-        <p className="text-center font-normal text-[23px] text-brand">
+        <p className="text-center text-[23px] font-normal text-brand">
           {t('payment_success_outro', 'See you soon!')}
         </p>
 
@@ -55,7 +55,7 @@ const PaymentResult = ({ variant }: PaymentResultProps): JSX.Element => {
         </Link>
         <Link
           href="/"
-          className="text-center font-normal text-base text-paper/80 transition-colors hover:text-brand"
+          className="text-center text-base font-normal text-paper/80 transition-colors hover:text-brand"
         >
           {t('payment_back_home', 'Back to home')}
         </Link>
@@ -65,10 +65,10 @@ const PaymentResult = ({ variant }: PaymentResultProps): JSX.Element => {
 
   return (
     <div className="mx-auto flex w-full max-w-97.5 flex-col gap-6.25 rounded-[20px] bg-ink/80 p-5 backdrop-blur-card">
-      <p className="text-center font-semibold text-[27px] text-brand">
+      <p className="text-center text-[27px] font-semibold text-brand">
         {t('payment_cancel_title', 'Payment cancelled')}
       </p>
-      <p className="text-center font-light text-[18px] text-paper">
+      <p className="text-center text-[18px] font-light text-paper">
         {t(
           'payment_cancel_message',
           'Your payment was not completed. You can try again from your cart.'
@@ -80,7 +80,7 @@ const PaymentResult = ({ variant }: PaymentResultProps): JSX.Element => {
       </Link>
       <Link
         href="/"
-        className="text-center font-normal text-base text-paper/80 transition-colors hover:text-brand"
+        className="text-center text-base font-normal text-paper/80 transition-colors hover:text-brand"
       >
         {t('payment_back_home', 'Back to home')}
       </Link>

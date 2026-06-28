@@ -43,8 +43,7 @@ export const validateField = (attr: IFormAttribute, value: string, t: Translate)
   if (!value.length) return null;
 
   const strCfg = v.stringInspectionValidator as
-    | { stringMin?: number; stringMax?: number; stringLength?: number }
-    | undefined;
+    { stringMin?: number; stringMax?: number; stringLength?: number } | undefined;
   if (strCfg && (strCfg.stringMin || strCfg.stringMax || strCfg.stringLength)) {
     if (!validators.stringInspectionValidator(value, strCfg)) {
       const { stringMin, stringMax, stringLength } = strCfg;

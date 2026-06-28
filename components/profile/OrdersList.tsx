@@ -151,7 +151,7 @@ const OrdersList = ({
         <p>{t('no_orders_text', 'You have no orders yet.')}</p>
         <Link
           href="/shop"
-          className="inline-flex items-center justify-center rounded-card bg-brand px-3.75 py-1.5 text-base text-white hover_btn_transp"
+          className="hover_btn_transp inline-flex items-center justify-center rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
         >
           {t('go_shopping_button', 'Go to shopping')}
         </Link>

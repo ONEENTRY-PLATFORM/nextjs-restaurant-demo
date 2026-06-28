@@ -35,7 +35,7 @@ const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
 
         <div className="flex w-[63%] flex-row justify-between">
           {pic1 ? <ProductImage imageSrc={pic1} /> : <Placeholder className="min-h-27.5" />}
-          <div className="my-auto aspect-square w-4 shrink-0 text-white/90 text-center">+</div>
+          <div className="my-auto aspect-square w-4 shrink-0 text-center text-white/90">+</div>
           {pic2 ? <ProductImage imageSrc={pic2} /> : <Placeholder className="min-h-27.5" />}
         </div>
       </div>

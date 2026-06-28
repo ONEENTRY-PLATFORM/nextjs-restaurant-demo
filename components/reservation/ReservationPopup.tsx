@@ -217,7 +217,7 @@ const ReservationPopup = (): JSX.Element => {
       <div
         id="modalBody"
         ref={sheetRef}
-        className="fixed bottom-0 left-0 min-h-162.5 right-0 z-20 flex max-h-dvh w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 backdrop-blur-card shadow-xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[20px] md:p-10"
+        className="fixed inset-x-0 bottom-0 z-20 flex max-h-dvh min-h-162.5 w-full flex-col overflow-y-auto rounded-t-[20px] bg-ink/80 px-5 pt-5 pb-25 shadow-xl backdrop-blur-card md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:h-auto md:max-h-[90vh] md:max-w-150 md:-translate-1/2 md:rounded-[20px] md:p-10"
       >
         <div className="flex items-center justify-between gap-5">
           {step.kind === 'form' ? (
@@ -232,7 +232,7 @@ const ReservationPopup = (): JSX.Element => {
               <ArrowBackIcon className="hover-target text-paper" />
             </button>
           )}
-          <p className="font-semibold text-2xl text-brand">
+          <p className="text-2xl font-semibold text-brand">
             {t('reservation_default_title', 'Reservation')}
           </p>
           {/* Close lives in the bottom-menu on mobile (CenterCloseButton); show only md+. */}

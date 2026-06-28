@@ -17,7 +17,7 @@ const Placeholder = ({ className }: { className?: string }): JSX.Element => {
         (className ?? '')
       }
     >
-      <LogoIcon className="w-1/2 max-w-32 h-auto" />
+      <LogoIcon className="h-auto w-1/2 max-w-32" />
     </div>
   );
 };

@@ -235,7 +235,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         <button
           type="button"
           onClick={onApply}
-          className="cart-apply-btn flex h-15 w-full items-center justify-center rounded-panel bg-custom_btnorange text-center font-normal text-base text-white hover_btn_transp md:h-11.25"
+          className="cart-apply-btn hover_btn_transp flex h-15 w-full items-center justify-center rounded-panel bg-custom_btnorange text-center text-base font-normal text-white md:h-11.25"
         >
           {isAuth ? 'APPLY' : t('login_to_continue', 'Sign in to continue')}
         </button>

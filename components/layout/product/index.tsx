@@ -49,12 +49,12 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
         {categoryLabel ? (
           <Link
             href={'/shop/category/' + categorySlug}
-            className="font-normal text-base text-muted-text hover:text-brand"
+            className="text-base font-normal text-muted-text hover:text-brand"
           >
             Category / {categoryLabel}
           </Link>
         ) : null}
-        <p className="font-bold text-xl tracking-fine text-paper">{localizeInfos.title}</p>
+        <p className="text-xl font-bold tracking-fine text-paper">{localizeInfos.title}</p>
       </div>
 
       <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-15">
@@ -72,15 +72,15 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
               {categoryLabel ? (
                 <Link
                   href={'/shop/category/' + categorySlug}
-                  className="font-normal text-base text-muted-text"
+                  className="text-base font-normal text-muted-text"
                 >
                   Category / {categoryLabel}
                 </Link>
               ) : null}
-              <p className="font-bold text-xl tracking-fine text-paper">{localizeInfos.title}</p>
+              <p className="text-xl font-bold tracking-fine text-paper">{localizeInfos.title}</p>
             </div>
             {priceFormatted ? (
-              <div className="flex h-13 w-18 shrink-0 items-center justify-center rounded-panel bg-custom-gradient font-bold text-xl text-white">
+              <div className="flex h-13 w-18 shrink-0 items-center justify-center rounded-panel bg-custom-gradient text-xl font-bold text-white">
                 {priceFormatted}
               </div>
             ) : null}

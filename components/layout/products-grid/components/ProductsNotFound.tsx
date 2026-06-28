@@ -19,13 +19,13 @@ const ProductsNotFound = (): JSX.Element => {
           className="opacity-80"
         />
       </div>
-      <h2 className="font-semibold text-2xl text-paper">Products not found</h2>
+      <h2 className="text-2xl font-semibold text-paper">Products not found</h2>
       <p className="text-base text-muted-text">
         Try adjusting your filters or search query - nothing matched this combination.
       </p>
       <Link
         href="/shop"
-        className="mt-2 rounded-panel bg-custom-gradient py-2.5 font-bold text-base uppercase text-white transition-all duration-200 hover:bg-gradient-to-r-hover active:bg-gradient-to-r-hover px-5"
+        className="mt-2 rounded-panel bg-custom-gradient px-5 py-2.5 text-base font-bold text-white uppercase transition-all duration-200 hover:bg-gradient-to-r-hover active:bg-gradient-to-r-hover"
       >
         Reset & browse all
       </Link>

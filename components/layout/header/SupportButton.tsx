@@ -17,7 +17,7 @@ const SupportButton = ({ disabled }: { disabled: boolean }): JSX.Element => {
 
   if (disabled) {
     return (
-      <span className="w-4.5 h-4.5 opacity-60" aria-hidden="true">
+      <span className="size-4.5 opacity-60" aria-hidden="true">
         <PhoneIcon />
       </span>
     );
@@ -34,7 +34,7 @@ const SupportButton = ({ disabled }: { disabled: boolean }): JSX.Element => {
       type="button"
       onClick={handleClick}
       aria-label="Open support"
-      className="w-4.5 h-4.5 bg-transparent border-0 p-0 cursor-pointer"
+      className="size-4.5 cursor-pointer border-0 bg-transparent p-0"
     >
       <PhoneIcon title="call" />
     </button>

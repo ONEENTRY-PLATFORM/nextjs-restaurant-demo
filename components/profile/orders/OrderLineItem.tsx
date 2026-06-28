@@ -14,16 +14,19 @@ import { UsePrice } from '@/components/utils';
  * @param   {IOrderProducts}               props.product     - Order line-item entity.
  * @param   {boolean}                      props.first       - Whether this is the first row (drops the top margin).
  * @param   {IProductsEntity | undefined}  [props.fullProduct] - Optional full product entity used to resolve a fallback image.
+ * @param   {string}                       [props.currency]  - Parent order currency (line items carry none); falls back to USD when empty.
  * @returns JSX of the line-item row.
  */
 const OrderLineItem = ({
   product,
   first,
   fullProduct,
+  currency,
 }: {
   product: IOrderProducts;
   first: boolean;
   fullProduct?: IProductsEntity | undefined;
+  currency?: string;
 }): JSX.Element => {
   const fallbackFromEntity = getProductImageUrl(fullProduct?.attributeValues);
   const previewSrc = product.previewImage?.previewLink ?? fallbackFromEntity ?? null;
@@ -38,13 +41,10 @@ const OrderLineItem = ({
               alt={product.title}
               width={69}
               height={69}
-              className="h-17.25 w-17.25 object-cover"
+              className="size-17.25 object-cover"
             />
           ) : (
-            <div
-              aria-hidden="true"
-              className="h-17.25 w-17.25 shrink-0 rounded bg-custom_gray_pk"
-            />
+            <div aria-hidden="true" className="size-17.25 shrink-0 rounded bg-custom_gray_pk" />
           )}
         </Link>
         <div className="flex min-w-0 flex-1 flex-col justify-between">
@@ -55,7 +55,9 @@ const OrderLineItem = ({
             {product.title}
           </Link>
           <div className="flex items-center gap-2.5">
-            <p className="text-xl font-bold text-brand">{UsePrice({ amount: product.price })}</p>
+            <p className="text-xl font-bold text-brand">
+              {UsePrice({ amount: product.price, currency })}
+            </p>
           </div>
         </div>
         <div className="flex h-11.25 w-8.75 items-center justify-center rounded-card border border-white text-base font-normal text-white">

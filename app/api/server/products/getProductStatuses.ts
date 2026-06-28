@@ -56,7 +56,6 @@ export const resolveOutOfStockMarker = (statuses: IProductStatusEntity[]): strin
  * @param   {string} [langCode] - Optional explicit locale (defaults to `getLang()`).
  * @returns Promise resolving to the out-of-stock status identifier.
  */
-export const getOutOfStockMarker = cache(
-  async (langCode?: string): Promise<string> =>
-    resolveOutOfStockMarker(await getProductStatuses(langCode))
+export const getOutOfStockMarker = cache(async (langCode?: string): Promise<string> =>
+  resolveOutOfStockMarker(await getProductStatuses(langCode))
 );

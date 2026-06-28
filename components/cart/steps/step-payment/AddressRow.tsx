@@ -80,7 +80,7 @@ const AddressRow = ({
     <div className={`step-payment-row flex flex-col gap-5 ${menuOpen ? 'relative z-20' : ''}`}>
       <div className="flex items-center gap-2.5 text-paper">
         <Image src="/images/icons/pin.svg" alt="" width={17} height={19} />
-        <p className="font-normal text-xl text-paper">{t('address_text', 'Address')}</p>
+        <p className="text-xl font-normal text-paper">{t('address_text', 'Address')}</p>
       </div>
       <div ref={boxRef} className="relative flex items-center text-paper">
         <input
@@ -88,21 +88,21 @@ const AddressRow = ({
           value={address}
           onChange={e => onAddressChange(e.currentTarget.value)}
           placeholder={placeholder}
-          className="w-full rounded-card border border-paper bg-transparent p-1.25 pr-8.75 text-base text-paper placeholder:text-muted-text focus:placeholder:text-transparent focus:outline-none"
+          className="w-full rounded-card border border-paper bg-transparent p-1.25 pr-8.75 text-base text-paper placeholder:text-muted-text focus:outline-none focus:placeholder:text-transparent"
         />
         <button
           type="button"
           onClick={() => setMenuOpen(v => !v)}
           aria-label={t('change_address_text', 'Change address') || 'Change address'}
           aria-expanded={menuOpen}
-          className="absolute right-1.75 top-1.75"
+          className="absolute top-1.75 right-1.75"
         >
           <PencilIcon />
         </button>
         {menuOpen && (
-          <div className="absolute left-0 right-0 top-full z-10 mt-1.25 flex flex-col gap-1.25 rounded-card border border-paper bg-ink/95 p-2.5 backdrop-blur-card shadow-xl">
+          <div className="absolute inset-x-0 top-full z-10 mt-1.25 flex flex-col gap-1.25 rounded-card border border-paper bg-ink/95 p-2.5 shadow-xl backdrop-blur-card">
             {savedAddresses.length === 0 ? (
-              <p className="px-1.25 py-1.25 text-base text-paper/70">
+              <p className="p-1.25 text-base text-paper/70">
                 {t('no_saved_addresses_text', 'No saved addresses')}
               </p>
             ) : (
@@ -113,7 +113,7 @@ const AddressRow = ({
                     key={a.id}
                     type="button"
                     onClick={() => handlePick(line)}
-                    className="rounded-card px-1.25 py-1.25 text-left text-base text-paper transition-colors hover:text-brand"
+                    className="rounded-card p-1.25 text-left text-base text-paper transition-colors hover:text-brand"
                   >
                     {line}
                   </button>
@@ -123,7 +123,7 @@ const AddressRow = ({
             <button
               type="button"
               onClick={handleAdd}
-              className="hover_btn_paper mt-2.5 self-start rounded-card border border-paper px-5 py-1.25 font-semibold text-base text-paper"
+              className="hover_btn_paper mt-2.5 self-start rounded-card border border-paper px-5 py-1.25 text-base font-semibold text-paper"
             >
               + {t('add_address_text', 'Add Address')}
             </button>

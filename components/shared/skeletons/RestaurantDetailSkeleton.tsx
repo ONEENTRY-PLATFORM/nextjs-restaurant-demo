@@ -19,7 +19,7 @@ const RestaurantDetailSkeleton = (): JSX.Element => {
       <Skeleton className="mx-auto h-6 w-2/3 max-w-100 md:mx-0" />
 
       {/* Photo gallery */}
-      <Skeleton className="mt-7.5 aspect-[16/9] w-full rounded-panel" />
+      <Skeleton className="mt-7.5 aspect-video w-full rounded-panel" />
 
       {/* Description */}
       <div className="mt-10 flex flex-col gap-3">

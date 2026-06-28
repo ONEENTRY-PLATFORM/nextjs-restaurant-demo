@@ -8,7 +8,7 @@ import type { JSX } from 'react';
 const BurgerOrangeIcon = (): JSX.Element => {
   return (
     <svg
-      className="stroke-brand hover-target"
+      className="hover-target stroke-brand"
       width="21"
       height="17"
       viewBox="0 0 21 17"

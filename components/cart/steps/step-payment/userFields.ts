@@ -14,8 +14,7 @@ export const findUserField = (
   if (!formData) return '';
   for (const marker of markers) {
     const entry = formData.find(el => (el as { marker?: string }).marker === marker) as
-      | { value?: unknown }
-      | undefined;
+      { value?: unknown } | undefined;
     if (typeof entry?.value === 'string' && entry.value) return entry.value;
   }
   return '';

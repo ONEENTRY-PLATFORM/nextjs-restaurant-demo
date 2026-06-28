@@ -16,14 +16,14 @@ type Props = LoaderProps & {
  */
 export const SkeletonBody = (): ReactNode => (
   <>
-    <div className="absolute right-2.5 top-3.75 z-10 h-5.25 w-6.5 animate-pulse rounded-md bg-paper/15 md:right-3.75 md:top-5 md:h-7.5 md:w-9.5" />
+    <div className="absolute top-3.75 right-2.5 z-10 h-5.25 w-6.5 animate-pulse rounded-md bg-paper/15 md:top-5 md:right-3.75 md:h-7.5 md:w-9.5" />
     <div className="relative aspect-square w-full animate-pulse overflow-hidden rounded-card bg-paper/10" />
     <div className="relative z-10 -mt-8 flex h-8.5 items-center justify-around bg-custom_black px-2.5 md:-mt-10.75 md:h-11">
       <div className="h-3 w-12 animate-pulse rounded-full bg-paper/20" />
       <div className="h-3 w-10 animate-pulse rounded-full bg-paper/20" />
       <div className="h-3 w-10 animate-pulse rounded-full bg-paper/20" />
     </div>
-    <div className="mb-2 mt-3 flex grow flex-col gap-2 md:mb-3 md:mt-4.25">
+    <div className="mt-3 mb-2 flex grow flex-col gap-2 md:mt-4.25 md:mb-3">
       <div className="h-3.5 w-11/12 animate-pulse rounded-full bg-paper/20" />
       <div className="h-3.5 w-3/4 animate-pulse rounded-full bg-paper/20" />
     </div>

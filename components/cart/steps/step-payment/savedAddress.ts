@@ -21,8 +21,7 @@ export const parseSavedAddresses = (
 ): SavedAddress[] => {
   if (!formData) return [];
   const entry = formData.find(el => (el as { marker?: string }).marker === 'user_address') as
-    | { value?: unknown }
-    | undefined;
+    { value?: unknown } | undefined;
   let raw: unknown = entry?.value;
   if (typeof raw === 'string') {
     if (!raw) return [];

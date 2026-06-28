@@ -9,7 +9,7 @@ const HeartScriptIcon = (): JSX.Element => {
   return (
     <svg
       id="head-heart"
-      className="fill-paper hover-target w-7.25 h-6"
+      className="hover-target h-6 w-7.25 fill-paper"
       x="0px"
       y="0px"
       viewBox="0 0 25.8 23.2"

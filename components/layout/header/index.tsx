@@ -58,8 +58,7 @@ const Header = async (): Promise<JSX.Element> => {
 
   const supportPhone = supportPage?.attributeValues?.support_phone?.value as string | undefined;
   const supportWhatsappUrl = supportPage?.attributeValues?.support_whatsapp_url?.value as
-    | string
-    | undefined;
+    string | undefined;
 
   const populatedPages = ((pages ?? []) as IPagesEntity[])
     .filter(p => p.isVisible !== false)
@@ -84,16 +83,16 @@ const Header = async (): Promise<JSX.Element> => {
   return (
     <div id="header">
       <HeaderAnimations>
-        <header className="hidden md:block md:pt-15.5 md:pr-4 md:pb-4 md:pl-4 xl:pr-0 xl:pb-0 xl:pl-0">
-          <div className="container px-4 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto flex flex-col">
+        <header className="hidden md:block md:px-4 md:pt-15.5 md:pb-4 xl:px-0 xl:pb-0">
+          <div className="container mx-auto flex flex-col px-4 md:max-w-175 lg:max-w-250 xl:max-w-323">
             <NavGroup />
-            <div className="flex justify-between items-center  md:gap-15 lg:gap-0">
-              <div className="flex items-center justify-start md:gap-7.5 gap-15">
+            <div className="flex items-center justify-between  md:gap-15 lg:gap-0">
+              <div className="flex items-center justify-start gap-15 md:gap-7.5">
                 <Logo />
                 <h1
                   data-header-anim="slogan"
                   style={{ fontFamily: 'var(--font-lato-italic)' }}
-                  className="italic font-bold md:text-hero-md lg:text-[40px] xl:text-hero-xl leading-hero tracking-fine text-white md:max-w-100 lg:max-w-120"
+                  className="leading-hero font-bold tracking-fine text-white italic md:max-w-100 md:text-hero-md lg:max-w-120 lg:text-[40px] xl:text-hero-xl"
                 >
                   Excellent taste
                   <br /> in <span className="text-brand">every bite</span>
@@ -101,7 +100,7 @@ const Header = async (): Promise<JSX.Element> => {
               </div>
               <div
                 data-header-anim="search"
-                className="relative z-50 flex justify-between items-center md:gap-5 gap-9.5 lg:-mt-11.25"
+                className="relative z-50 flex items-center justify-between gap-9.5 md:gap-5 lg:-mt-11.25"
               >
                 <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
                   <SearchBar placeholder={searchPlaceholder} />
@@ -114,8 +113,8 @@ const Header = async (): Promise<JSX.Element> => {
 
         <div className="relative">
           <div className="relative">
-            <header className="header_mobile pt-7.5 px-2.5 max-w-85 mx-auto flex flex-col md:hidden">
-              <div data-header-anim="top-nav" className="flex justify-between items-center">
+            <header className="header_mobile mx-auto flex max-w-85 flex-col px-2.5 pt-7.5 md:hidden">
+              <div data-header-anim="top-nav" className="flex items-center justify-between">
                 <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
                 <a href="/" aria-label={homeLabel} data-header-anim="logo-mobile">
                   <LogoMobileIcon title="logo" />
@@ -125,7 +124,7 @@ const Header = async (): Promise<JSX.Element> => {
 
               <div
                 data-header-anim="search"
-                className="relative z-50 max-w-120 w-full mx-auto mt-4.25 gap-4 flex justify-between items-center md:hidden"
+                className="relative z-50 mx-auto mt-4.25 flex w-full max-w-120 items-center justify-between gap-4 md:hidden"
               >
                 <Suspense fallback={<SearchFallback placeholder={searchPlaceholder} />}>
                   <SearchBar placeholder={searchPlaceholder} />
@@ -135,7 +134,7 @@ const Header = async (): Promise<JSX.Element> => {
             </header>
 
             {/* Navigation */}
-            <section className="navigation max-w-auto px-4 md:py-4 xl:py-0 md:max-w-175 lg:max-w-250 xl:max-w-323 mx-auto md:pb-14.75 xl:pb-14.75 flex justify-between items-end overflow-visible">
+            <section className="navigation max-w-auto mx-auto flex items-end justify-between overflow-visible px-4 md:max-w-175 md:py-4 md:pb-14.75 lg:max-w-250 xl:max-w-323 xl:py-0 xl:pb-14.75">
               <CategoryButton />
               <Suspense fallback={null}>
                 <CategoriesScroller preferences={preferenceOptions} />

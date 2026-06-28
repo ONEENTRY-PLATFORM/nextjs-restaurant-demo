@@ -44,7 +44,7 @@ const ReservationField = ({
           onClick={() => onOpenPicker()}
           className={`flex flex-col border-b text-left ${borderClass}`}
         >
-          <span className="font-normal text-base text-paper">{label}</span>
+          <span className="text-base font-normal text-paper">{label}</span>
           <span className="cart_input block">{v || 'Select date & time'}</span>
         </button>
         {errorNode}
@@ -56,7 +56,7 @@ const ReservationField = ({
     return (
       <div className="flex flex-1 flex-col">
         <div className={`flex flex-col border-b ${borderClass}`}>
-          <label htmlFor={attr.marker} className="font-normal text-base text-paper">
+          <label htmlFor={attr.marker} className="text-base font-normal text-paper">
             {label}
           </label>
           <textarea
@@ -64,7 +64,7 @@ const ReservationField = ({
             name={attr.marker}
             value={values[attr.marker] ?? ''}
             onChange={ev => onChange(attr.marker, ev.currentTarget.value)}
-            className="cart_input resize-none w-full"
+            className="cart_input w-full resize-none"
             rows={3}
           />
         </div>
@@ -76,7 +76,7 @@ const ReservationField = ({
   return (
     <div className="flex flex-1 flex-col">
       <div className={`flex flex-col border-b ${borderClass}`}>
-        <label htmlFor={attr.marker} className="font-normal text-base text-paper">
+        <label htmlFor={attr.marker} className="text-base font-normal text-paper">
           {label}
         </label>
         <input

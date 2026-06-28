@@ -36,7 +36,7 @@ const ProfilePageHeader = (): JSX.Element => {
         <Link
           href="/"
           aria-label="Home"
-          className="group inline-flex h-4 w-4 items-center justify-center"
+          className="group inline-flex size-4 items-center justify-center"
         >
           <HomeIcon />
         </Link>
@@ -53,7 +53,7 @@ const ProfilePageHeader = (): JSX.Element => {
           <span className="text-paper">{meta.title}</span>
         </p>
       </div>
-      <h1 className="font-bold text-2xl md:text-3xl uppercase tracking-fine text-brand">
+      <h1 className="text-2xl font-bold tracking-fine text-brand uppercase md:text-3xl">
         {meta.title}
       </h1>
     </div>

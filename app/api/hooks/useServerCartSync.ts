@@ -2,7 +2,6 @@
 
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { setGuestId } from '@/app/api';
 import { useServerCart, useServerWishlist } from '@/app/api/hooks/useServerCart';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
@@ -55,7 +54,6 @@ export const useServerCartSync = (): void => {
 
     let cancelled = false;
     void (async () => {
-      setGuestId('');
       const [serverCart, serverWishlist] = await Promise.all([cart.get(), wishlist.get()]);
       if (cancelled) return;
 

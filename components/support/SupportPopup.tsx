@@ -45,7 +45,9 @@ const SupportPopup = ({
       >
         <div className="mx-auto max-w-88.75">
           <div className="flex justify-center">
-            <p className="text-center text-xl leading-150 font-normal text-paper">Support</p>
+            <p className="text-center text-xl leading-150 font-normal text-paper">
+              {t('support_title', 'Support')}
+            </p>
           </div>
 
           {telHref || whatsappUrl ? (

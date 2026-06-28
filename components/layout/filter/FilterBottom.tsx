@@ -133,7 +133,7 @@ const FilterBottom = ({
   const [priceMax, setPriceMax] = useState<string>('');
 
   const waitingTitle = t('order_waiting_time', 'Order waiting time');
-  const filtersTitle = t('filters_text', 'Preferences');
+  const filtersTitle = t('preferences_text', 'Preferences');
   const clearAllLabel = t('clear_all_filters_text', 'Clear all filters');
   const fromLabel = t('price_from_text', 'from');
   const underLabel = t('price_under_text', 'Under');
@@ -279,15 +279,20 @@ const FilterBottom = ({
           <button
             type="button"
             onClick={close}
-            aria-label="Back"
+            aria-label={t('back_text', 'Back')}
             className="group_white max-md:hidden"
           >
             <ArrowBackOrangeIcon />
           </button>
           {/* Mobile-only spacer balances the close button so the title stays centered (the back arrow is desktop-only). */}
           <span aria-hidden="true" className="size-5 md:hidden" />
-          <p className="text-2xl font-normal text-white">Filter</p>
-          <button type="button" onClick={close} aria-label="Close" className="group_white">
+          <p className="text-2xl font-normal text-white">{t('filter_panel_title', 'Filter')}</p>
+          <button
+            type="button"
+            onClick={close}
+            aria-label={t('close_label', 'Close')}
+            className="group_white"
+          >
             <CloseXIcon />
           </button>
         </div>
@@ -315,7 +320,7 @@ const FilterBottom = ({
             />
           ) : null}
           <div className="mt-5.25 flex flex-wrap gap-1.75 pb-7.5">
-            <p className="filter_title">Price $</p>
+            <p className="filter_title">{t('filter_price_title', 'Price $')}</p>
             <label className="filter_item flex items-center gap-1.5 hover:border-paper hover:bg-transparent active:bg-transparent">
               <span>{fromLabel}</span>
               <input
@@ -357,7 +362,7 @@ const FilterBottom = ({
             onClick={apply}
             className="filter_btn hover_btn_brand rounded-card border border-brand px-5 text-brand"
           >
-            Apply
+            {t('apply_text', 'Apply')}
           </button>
         </div>
         <div className="h-25 border-none bg-transparent md:hidden"></div>

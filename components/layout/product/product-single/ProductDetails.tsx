@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductCurrency } from '@/app/api';
 import { t } from '@/app/dictionaries';
 import ClockCircleIcon from '@/components/icons/clock-circle';
 import StarPuffyIcon from '@/components/icons/star-puffy';
@@ -33,6 +34,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
   const cookingVal = cooking_time?.value as number | undefined;
 
   const ratingNotFormedText = await t('rating_not_formed', 'Rating not yet formed');
+  const ingredientsLabel = await t('ingredients_text', 'Ingredients:');
 
   const prefs =
     (preferences?.value as Array<{ title: string; value: string }>)?.filter(
@@ -45,7 +47,8 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
     .filter(Boolean)
     .join(', ');
   const priceVal = price?.value as number | undefined;
-  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal }) : '';
+  const currency = getProductCurrency(product.attributeValues);
+  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal, currency }) : '';
 
   return (
     <div className="flex flex-col gap-3.75">
@@ -114,7 +117,7 @@ const ProductDetails = async ({ product }: { product: IProductsEntity }): Promis
       {/* Ingredients */}
       {ingredientsText ? (
         <h3 className="text-[14px] font-normal tracking-fine text-white opacity-90">
-          <span className="text-brand">Ingredients:</span> {ingredientsText}
+          <span className="text-brand">{ingredientsLabel}</span> {ingredientsText}
         </h3>
       ) : null}
 

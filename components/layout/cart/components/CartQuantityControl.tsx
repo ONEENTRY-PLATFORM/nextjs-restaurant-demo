@@ -4,6 +4,7 @@ import type { ChangeEvent, JSX, KeyboardEvent } from 'react';
 import { useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   decreaseProductQty,
   increaseProductQty,
@@ -29,6 +30,7 @@ type CartQuantityControlProps = {
  * @returns JSX of the vertical +/qty/− control.
  */
 const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => selectCartItemWithIdLength(state, id));
   const qty = (data?.quantity as number | undefined) ?? 1;
@@ -79,7 +81,7 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
       <button
         type="button"
         onClick={onIncrease}
-        aria-label="Increase quantity"
+        aria-label={t('increase_quantity_label', 'Increase quantity')}
         className="flex flex-1 cursor-pointer items-center justify-center leading-none transition-colors duration-200 hover:text-brand active:text-brand"
       >
         +
@@ -92,13 +94,13 @@ const CartQuantityControl = ({ id, units, title }: CartQuantityControlProps): JS
         onBlur={commit}
         onKeyDown={onKeyDown}
         onFocus={e => e.currentTarget.select()}
-        aria-label="Quantity"
+        aria-label={t('quantity_label', 'Quantity')}
         className="w-full shrink-0 bg-transparent text-center leading-none outline-none focus:text-brand"
       />
       <button
         type="button"
         onClick={onDecrease}
-        aria-label="Decrease quantity"
+        aria-label={t('decrease_quantity_label', 'Decrease quantity')}
         className="flex flex-1 cursor-pointer items-center justify-center leading-none transition-colors duration-200 hover:text-brand active:text-brand"
       >
         -

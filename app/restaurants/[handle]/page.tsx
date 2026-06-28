@@ -6,6 +6,7 @@ import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
+import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
@@ -132,11 +133,26 @@ const RestaurantPage = async ({
   const waNumber = whatsapp.replace(/[^\d]/g, '');
   const instagramHandle = instagram.replace(/^@/, '');
 
+  const labels = {
+    back: await t('restaurants_back_link', '← All restaurants'),
+    cuisine: await t('cuisine_label', 'Cuisine'),
+    parking: await t('parking_label', 'Parking'),
+    bookingPolicy: await t('booking_policy_label', 'Booking policy'),
+    liveEvents: await t('live_events_label', 'Live events'),
+    bookTable: await t('book_button', 'Book a table'),
+    contacts: await t('contacts_title', 'Contacts'),
+    whatsapp: await t('whatsapp_label', 'WhatsApp:'),
+    email: await t('email_label', 'Email:'),
+    instagram: await t('instagram_label', 'Instagram:'),
+    openingHours: await t('opening_hours_title', 'Opening hours'),
+    mapUnavailable: await t('map_unavailable_text', 'Map unavailable'),
+  };
+
   return (
     <section className="section_layout pt-0">
       <div className="mb-5 flex items-center justify-between gap-4 text-sm text-paper/70">
         <Link href="/restaurants" className="hover:text-brand">
-          ← All restaurants
+          {labels.back}
         </Link>
       </div>
 
@@ -164,25 +180,25 @@ const RestaurantPage = async ({
         <div className="mt-5 grid grid-cols-1 gap-5 text-base text-paper sm:grid-cols-2 md:grid-cols-4">
           {cuisine ? (
             <div className="flex flex-col gap-1">
-              <span className="text-brand uppercase">Cuisine</span>
+              <span className="text-brand uppercase">{labels.cuisine}</span>
               <span>{cuisine}</span>
             </div>
           ) : null}
           {parking ? (
             <div className="flex flex-col gap-1">
-              <span className="text-brand uppercase">Parking</span>
+              <span className="text-brand uppercase">{labels.parking}</span>
               <span>{parking}</span>
             </div>
           ) : null}
           {bookingPolicy ? (
             <div className="flex flex-col gap-1">
-              <span className="text-brand uppercase">Booking policy</span>
+              <span className="text-brand uppercase">{labels.bookingPolicy}</span>
               <span>{bookingPolicy}</span>
             </div>
           ) : null}
           {liveEvents ? (
             <div className="flex flex-col gap-1">
-              <span className="text-brand uppercase">Live events</span>
+              <span className="text-brand uppercase">{labels.liveEvents}</span>
               <span>{liveEvents}</span>
             </div>
           ) : null}
@@ -220,14 +236,14 @@ const RestaurantPage = async ({
           restaurantHandle={handle}
           className="cart_btn text-uppercase hidden md:flex md:max-w-114.5"
         >
-          Book a table
+          {labels.bookTable}
         </BookATableButton>
       </div>
 
       {/* Contacts */}
       <div className="mt-12 grid grid-cols-1 gap-7.5 md:grid-cols-[338fr_953fr] md:gap-10">
         <div className="flex flex-col gap-2.5">
-          <p className="text-xl font-bold text-brand uppercase">Contacts</p>
+          <p className="text-xl font-bold text-brand uppercase">{labels.contacts}</p>
           {phone ? (
             <a
               href={`tel:${phone}`}
@@ -243,14 +259,12 @@ const RestaurantPage = async ({
               rel="noopener noreferrer"
               className="text-base text-paper hover:text-brand"
             >
-              <span className="text-brand uppercase">WhatsApp: </span>
-              {whatsapp}
+              <span className="text-brand uppercase">{labels.whatsapp}</span> {whatsapp}
             </a>
           ) : null}
           {email ? (
             <a href={`mailto:${email}`} className="text-base text-paper hover:text-brand">
-              <span className="text-brand uppercase">Email: </span>
-              {email}
+              <span className="text-brand uppercase">{labels.email}</span> {email}
             </a>
           ) : null}
           {instagram ? (
@@ -260,12 +274,11 @@ const RestaurantPage = async ({
               rel="noopener noreferrer"
               className="text-base text-paper hover:text-brand"
             >
-              <span className="text-brand uppercase">Instagram: </span>
-              {instagram}
+              <span className="text-brand uppercase">{labels.instagram}</span> {instagram}
             </a>
           ) : null}
           {address ? <p className="text-xl font-bold text-paper">{address}</p> : null}
-          <p className="mt-3.75 text-xl font-bold text-brand uppercase">Opening hours</p>
+          <p className="mt-3.75 text-xl font-bold text-brand uppercase">{labels.openingHours}</p>
           {openingHoursHtml ? (
             <div
               className="text-base text-paper [&_p]:leading-snug"
@@ -283,7 +296,7 @@ const RestaurantPage = async ({
           />
         ) : (
           <div className="flex h-45 w-full items-center justify-center rounded-card bg-ink/40 text-paper/60 md:h-78">
-            Map unavailable
+            {labels.mapUnavailable}
           </div>
         )}
       </div>
@@ -291,7 +304,7 @@ const RestaurantPage = async ({
       {/* Mobile CTA - on desktop the button already sits in the comforts row. */}
       <div className="mt-10 md:hidden">
         <BookATableButton restaurantHandle={handle} className="cart_btn">
-          Book a table
+          {labels.bookTable}
         </BookATableButton>
       </div>
     </section>

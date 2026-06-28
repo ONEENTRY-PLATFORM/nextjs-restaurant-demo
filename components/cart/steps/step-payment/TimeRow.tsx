@@ -54,7 +54,7 @@ const TimeRow = ({
           htmlFor="time-asap"
           className="radio-custom flex cursor-pointer items-center select-none"
         >
-          <span className="ml-2 text-paper">40-45 min</span>
+          <span className="ml-2 text-paper">{t('delivery_asap_text', '40-45 min')}</span>
         </label>
       </div>
       <div className="flex items-center gap-2.5 text-paper">

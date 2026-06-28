@@ -9,6 +9,7 @@ import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
 import {
+  getProductCurrency,
   getProductImageUrl,
   useApplyCoupon,
   useGetBonusBalanceQuery,
@@ -203,7 +204,7 @@ const StepOrder = (): JSX.Element => {
       {/* Items */}
       <div className="flex flex-col gap-5">
         {items.map(({ entry, product }) => {
-          const title = product.localizeInfos?.title ?? 'Item';
+          const title = product.localizeInfos?.title ?? t('item_fallback_text', 'Item');
           const weight = product.attributeValues?.weight?.value as string | number | undefined;
           const unit = product.price ?? 0;
           const imgSrc = getProductImageUrl(product.attributeValues);
@@ -230,7 +231,12 @@ const StepOrder = (): JSX.Element => {
                   <p className="text-sm font-normal text-white">{title}</p>
                   <div className="flex items-center gap-2.5">
                     {weight ? <p className="text-sm font-normal text-white">{weight} g</p> : null}
-                    <p className="text-xl font-bold text-brand">{UsePrice({ amount: unit })}</p>
+                    <p className="text-xl font-bold text-brand">
+                      {UsePrice({
+                        amount: unit,
+                        currency: displayCurrency ?? getProductCurrency(product.attributeValues),
+                      })}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -304,7 +310,7 @@ const StepOrder = (): JSX.Element => {
         </div>
         {display.discount > 0 ? (
           <div className="flex gap-1.25 text-brand">
-            <p>Discount:</p>
+            <p>{t('discount_text', 'Discount')}:</p>
             <p>{UsePrice({ amount: display.discount, currency: displayCurrency })}</p>
           </div>
         ) : null}
@@ -325,7 +331,9 @@ const StepOrder = (): JSX.Element => {
         onClick={handleProceedToPayment}
         className="step-order-row mx-auto mt-7.5 flex w-full items-center justify-center rounded-panel bg-brand py-2.5 text-center text-base font-normal text-white transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
       >
-        {isAuth ? 'APPLY' : t('login_to_continue', 'Sign in to continue')}
+        {isAuth
+          ? t('proceed_payment_button', 'APPLY')
+          : t('login_to_continue', 'Sign in to continue')}
       </button>
     </div>
   );

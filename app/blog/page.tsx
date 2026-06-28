@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getBlogBanners, getPageByUrl } from '@/app/api';
+import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 
 type DescriptionValue = Array<{
@@ -31,7 +32,8 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
     return notFound();
   }
 
-  const title = page.localizeInfos?.title ?? 'Promotions';
+  const title = page.localizeInfos?.title ?? (await t('promotions_title', 'Promotions'));
+  const homeLabel = await t('home_label', 'Home');
   const description = page.attributeValues?.description?.value as DescriptionValue | undefined;
   const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
 
@@ -43,7 +45,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-text">
           <li>
             <Link href="/" className="transition-colors hover:text-brand">
-              Home
+              {homeLabel}
             </Link>
           </li>
           <li aria-hidden="true">/</li>

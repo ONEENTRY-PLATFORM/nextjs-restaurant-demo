@@ -53,6 +53,7 @@ const ProfileNavMenu = ({
   onNavigate: () => void;
   onSelectScreen: (screen: ProfileScreen) => void;
 }): JSX.Element | null => {
+  const t = useT();
   const { isAuth, authenticate } = useContext(AuthContext);
   const router = useTransitionRouter();
   const { data: menu } = useGetMenuByMarkerQuery({ marker: MENUS.userMenu }, { skip: !isAuth });
@@ -126,12 +127,12 @@ const ProfileNavMenu = ({
           onClick={() => onSelectScreen('personal')}
           className={PROFILE_NAV_ITEM_CLASS}
         >
-          <span>My Profile</span>
+          <span>{t('my_profile', 'My Profile')}</span>
           <ChevronMiniRightIcon className="hover-target" />
         </button>
       )}
       <button type="button" onClick={handleLogout} className={PROFILE_NAV_ITEM_CLASS}>
-        <span>Logout</span>
+        <span>{t('logout_text', 'Logout')}</span>
         <ChevronMiniRightIcon className="hover-target" />
       </button>
     </nav>
@@ -256,7 +257,7 @@ const ProfilePopup = (): JSX.Element => {
             <ArrowBackIcon className="fill-paper group-hover:fill-brand" />
           </button>
           <p className="my-auto text-2xl font-bold whitespace-nowrap text-paper">
-            {t('profile_text', 'Profile')}
+            {t('profile_label', 'Profile')}
           </p>
           <button
             type="button"

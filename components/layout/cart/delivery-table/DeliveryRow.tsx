@@ -2,6 +2,7 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductCurrency } from '@/app/api';
 import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
@@ -35,6 +36,7 @@ const DeliveryRow = ({ delivery }: { delivery: IProductsEntity }): JSX.Element =
           <div className="mb-2 text-xl leading-8 font-bold">
             {UsePrice({
               amount: delivery?.price || 0,
+              currency: getProductCurrency(delivery?.attributeValues),
             })}
           </div>
         </div>

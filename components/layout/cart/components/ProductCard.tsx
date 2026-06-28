@@ -3,8 +3,9 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
-import { getProductImageUrl } from '@/app/api';
+import { getProductCurrency, getProductImageUrl } from '@/app/api';
 import { useAppDispatch } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { useOutOfStockMarker } from '@/app/store/providers/ProductStatusContext';
 import { deselectProduct } from '@/app/store/reducers/CartSlice';
 import Placeholder from '@/components/shared/Placeholder';
@@ -32,6 +33,7 @@ const ProductCard = ({
   selected: boolean;
   index: number;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const outOfStockMarker = useOutOfStockMarker();
   const {
@@ -40,6 +42,7 @@ const ProductCard = ({
     localizeInfos,
   } = product;
   const imgSrc = getProductImageUrl(product.attributeValues);
+  const currency = getProductCurrency(product.attributeValues);
   const title = localizeInfos?.title ?? '';
   const weightValue = weight?.value as string | number | undefined;
   const outOfStock = product.statusIdentifier === outOfStockMarker;
@@ -65,7 +68,11 @@ const ProductCard = ({
           id={'deselectProduct-' + id}
           checked={checkboxChecked}
           disabled={outOfStock}
-          aria-label={outOfStock ? `${title} - out of stock` : `Select ${title}`}
+          aria-label={
+            outOfStock
+              ? t('out_of_stock_aria_template', '{title} is out of stock').replace('{title}', title)
+              : t('select_item_aria_template', 'Select {title}').replace('{title}', title)
+          }
           className="pointer-events-auto size-5 shrink-0 accent-brand disabled:cursor-not-allowed disabled:opacity-50"
         />
 
@@ -93,6 +100,7 @@ const ProductCard = ({
             <PriceDisplay
               currentPrice={(sale?.value as number) ?? 0}
               originalPrice={(price?.value as number) ?? 0}
+              currency={currency}
             />
           </div>
         </div>

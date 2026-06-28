@@ -60,6 +60,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const description = attrs.description?.value as DescriptionValue | undefined;
   const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
   const goToSelectionLabel = await t('promo_go_to_selection', 'Go to selection');
+  const homeLabel = await t('home_label', 'Home');
 
   return (
     <section className="section_layout">
@@ -67,7 +68,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-text">
           <li>
             <Link href="/" className="transition-colors hover:text-brand">
-              Home
+              {homeLabel}
             </Link>
           </li>
           <li aria-hidden="true">/</li>

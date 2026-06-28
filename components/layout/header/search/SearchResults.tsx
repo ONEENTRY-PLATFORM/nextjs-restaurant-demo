@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 import { getPageById } from '@/app/api';
 import { useSearchProducts } from '@/app/api/hooks/useSearchProducts';
+import { useT } from '@/app/store/providers/DictProvider';
 import SearchIcon from '@/components/icons/search';
 import Spinner from '@/components/shared/Spinner';
 
@@ -37,6 +38,7 @@ const SearchResults = ({
   setState: Dispatch<React.SetStateAction<boolean>>;
   onOpenInShop: (() => void) | null;
 }): JSX.Element => {
+  const t = useT();
   const [pages, setPages] = useState<{
     [key: number]: {
       page?: IPagesEntity;
@@ -105,7 +107,7 @@ const SearchResults = ({
           );
         })
       ) : (
-        <p>No products found</p>
+        <p>{t('no_products_found_text', 'No products found')}</p>
       )}
     </div>
   );

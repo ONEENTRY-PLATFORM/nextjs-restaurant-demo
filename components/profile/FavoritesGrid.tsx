@@ -5,8 +5,9 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { toast } from 'react-toastify';
 
-import { getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import { getProductCurrency, getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
 import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import CartOrangeIcon from '@/components/icons/cart-orange';
@@ -21,6 +22,7 @@ import { UsePrice } from '@/components/utils';
  * @returns JSX of the favorites grid (loader, empty state, or list of `FavoriteCard` entries).
  */
 const FavoritesGrid = (): JSX.Element => {
+  const t = useT();
   const favoriteIds = useAppSelector(selectFavoritesItems);
   const { data, isLoading } = useGetProductsByIdsQuery(
     { items: favoriteIds },
@@ -37,7 +39,7 @@ const FavoritesGrid = (): JSX.Element => {
   if (favoriteIds.length === 0 || products.length === 0) {
     return (
       <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        You have no favorites yet.
+        {t('no_favorites_text', 'You have no favorites yet.')}
       </div>
     );
   }
@@ -59,6 +61,7 @@ const FavoritesGrid = (): JSX.Element => {
  * @returns JSX of the favorite card with add-to-cart and remove buttons.
  */
 const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const attrs = product.attributeValues ?? {};
@@ -66,6 +69,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
+  const currency = getProductCurrency(attrs);
 
   return (
     <div className="profile-anim-row flex w-full items-center justify-between rounded-card border border-gray-300 p-2.5">
@@ -89,7 +93,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
         <div className="flex items-center justify-start gap-2.5">
           {weight ? <p className="favorites_weight">{weight} g</p> : null}
           {priceRaw !== undefined ? (
-            <p className="favorites_price">{UsePrice({ amount: priceRaw })}</p>
+            <p className="favorites_price">{UsePrice({ amount: priceRaw, currency })}</p>
           ) : null}
         </div>
       </div>
@@ -105,9 +109,14 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
                 quantity: 1,
               })
             );
-            toast('Product ' + title + ' added to cart!');
+            toast(
+              t('product_added_cart_toast', 'Product {title} added to cart!').replace(
+                '{title}',
+                title
+              )
+            );
           }}
-          aria-label={inCart ? 'In cart' : 'Add to cart'}
+          aria-label={inCart ? t('in_cart_label', 'In cart') : t('add_to_cart', 'Add to cart')}
           aria-pressed={inCart}
           className={
             inCart
@@ -121,7 +130,7 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
         <button
           type="button"
           onClick={() => dispatch(removeFavorites(product.id))}
-          aria-label="Remove from favorites"
+          aria-label={t('remove_from_favorites_label', 'Remove from favorites')}
           className="group"
         >
           <TrashIcon />

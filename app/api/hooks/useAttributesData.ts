@@ -76,6 +76,17 @@ export const getProductImageUrl = (attributeValues: AttributeValuesInput): strin
 };
 
 /**
+ * getProductCurrency — ISO-4217 currency code from a product `currency` (string) attribute.
+ *
+ * @param   {AttributeValuesInput} attributeValues - OneEntry product `attributeValues` map.
+ * @returns Currency code (e.g. `USD`), or an empty string when not set (callers fall back to the project default).
+ */
+export const getProductCurrency = (attributeValues: AttributeValuesInput): string => {
+  const value = attributeValues?.currency?.value;
+  return typeof value === 'string' ? value.trim() : '';
+};
+
+/**
  * getProductBlurDataURL — inline base64 LQIP placeholder for a product's first image.
  *
  * @param   {AttributeValuesInput} attributeValues - OneEntry product `attributeValues` map.

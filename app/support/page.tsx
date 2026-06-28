@@ -6,6 +6,7 @@ import { getFormByMarker, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { FORMS, PAGES } from '@/app/utils/constants';
 import ContactUsForm from '@/components/forms/ContactUsForm';
+import { dictText } from '@/components/utils';
 
 export const dynamic = 'force-static';
 export const revalidate = 300;
@@ -35,6 +36,12 @@ const SupportPage = async (): Promise<JSX.Element> => {
   const phone = attrs.support_phone?.value as string | undefined;
   const whatsapp = attrs.support_whatsapp_url?.value as string | undefined;
   const email = attrs.support_email?.value as string | undefined;
+  const callPrompt = dictText(dict, 'support_call_prompt', 'Would you like to call?');
+  const questionPrompt = dictText(
+    dict,
+    'support_question_prompt',
+    'Would you like to ask a question?'
+  );
 
   return (
     <section className="section_layout">
@@ -51,9 +58,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
       <div className="mb-8 flex flex-col gap-6.25">
         {phone || whatsapp ? (
           <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
-            <p className="text-center text-xl leading-150 font-normal text-paper">
-              Would you like to call?
-            </p>
+            <p className="text-center text-xl leading-150 font-normal text-paper">{callPrompt}</p>
             <div className="mt-4 flex justify-center gap-15">
               {whatsapp ? (
                 <a href={whatsapp} target="_blank" rel="noopener noreferrer">
@@ -71,7 +76,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
         {email || whatsapp ? (
           <div className="rounded-[20px] border border-paper/30 px-5 pt-3 pb-5">
             <p className="text-center text-xl leading-150 font-normal text-paper">
-              Would you like to ask a question?
+              {questionPrompt}
             </p>
             <a
               href={whatsapp ?? 'mailto:' + email}

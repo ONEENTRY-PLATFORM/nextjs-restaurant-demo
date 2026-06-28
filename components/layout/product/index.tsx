@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductCurrency } from '@/app/api';
+import { t } from '@/app/dictionaries';
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
 import { UsePrice } from '@/components/utils';
 
@@ -40,7 +42,9 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
     : '';
 
   const priceVal = attributeValues?.price?.value as number | undefined;
-  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal }) : '';
+  const currency = getProductCurrency(attributeValues);
+  const priceFormatted = priceVal != null ? UsePrice({ amount: priceVal, currency }) : '';
+  const categoryWord = await t('category_label', 'Category');
 
   return (
     <section className="shop_section">
@@ -51,7 +55,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
             href={'/shop/category/' + categorySlug}
             className="text-base font-normal text-muted-text hover:text-brand"
           >
-            Category / {categoryLabel}
+            {categoryWord} / {categoryLabel}
           </Link>
         ) : null}
         <p className="text-xl font-bold tracking-fine text-paper">{localizeInfos.title}</p>
@@ -74,7 +78,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
                   href={'/shop/category/' + categorySlug}
                   className="text-base font-normal text-muted-text"
                 >
-                  Category / {categoryLabel}
+                  {categoryWord} / {categoryLabel}
                 </Link>
               ) : null}
               <p className="text-xl font-bold tracking-fine text-paper">{localizeInfos.title}</p>

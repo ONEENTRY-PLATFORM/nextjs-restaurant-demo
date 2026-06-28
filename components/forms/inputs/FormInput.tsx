@@ -25,7 +25,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
   const valid = true;
 
   // HTML input type is driven by the attribute's `type` and the enum's explicit marker-specific
-  // keys (`password`, `password_confirm`, `email_reg`, `card_cvc`, `phone_reg`, …) — not by fuzzy
+  // keys (`password`, `repeat_password`, `email_reg`, `card_cvc`, `phone_reg`, …) — not by fuzzy
   // substring matching on the marker name.
   const markerKey = field.marker as keyof typeof FormFieldsEnum;
   const fieldKey: keyof typeof FormFieldsEnum =

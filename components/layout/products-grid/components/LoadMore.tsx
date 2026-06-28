@@ -8,6 +8,8 @@ import type { JSX } from 'react';
 import { useLayoutEffect, useRef, useTransition } from 'react';
 import { useCallback } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
+
 import CardAnimations from '../animations/CardAnimations';
 import { SkeletonBody } from './ProductsGridLoader';
 
@@ -29,6 +31,7 @@ const LoadMore = ({
   productsLimit: number;
   total: number;
 }): JSX.Element => {
+  const t = useT();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -104,7 +107,7 @@ const LoadMore = ({
     <button
       onClick={goToNextPage}
       ref={ref}
-      aria-label="Load more"
+      aria-label={t('load_more_label', 'Load more')}
       className="relative mx-auto flex h-6 w-20"
     />
   );

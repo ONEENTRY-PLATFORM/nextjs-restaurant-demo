@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductCurrency } from '@/app/api';
 import CartAddIcon from '@/components/icons/cart-add';
 import HeartCardButton from '@/components/layout/products-grid/components/product-card/HeartCardButton';
 import { UsePrice } from '@/components/utils';
@@ -56,7 +57,9 @@ const ProductCard = ({
   const rating = ratingValue != null ? String(ratingValue) : PLACEHOLDER_RATING;
 
   const priceValue = (attrs.price?.value ?? product.price) as number | undefined;
-  const formattedPrice = priceValue != null ? UsePrice({ amount: priceValue as number }) : null;
+  const currency = getProductCurrency(attrs);
+  const formattedPrice =
+    priceValue != null ? UsePrice({ amount: priceValue as number, currency }) : null;
 
   return (
     <CardAnimations className="menu_item group" index={index} productsLimit={productsLimit}>

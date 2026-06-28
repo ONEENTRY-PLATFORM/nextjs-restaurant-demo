@@ -8,7 +8,12 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { getProductBlurDataURL, getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import {
+  getProductBlurDataURL,
+  getProductCurrency,
+  getProductImageUrl,
+  useGetProductsByIdsQuery,
+} from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
@@ -95,13 +100,13 @@ const FavoritesPopup = (): JSX.Element => {
       >
         {/* sticky so it does not scroll with the list. Hidden on md+. */}
         <div className="-top-5 z-10 -mx-5 -mt-5 flex items-center justify-center px-5 pt-5 pb-2.5 md:hidden">
-          <p className="text-2xl font-normal text-white">Favorites</p>
+          <p className="text-2xl font-normal text-white">{t('favorites_label', 'Favorites')}</p>
         </div>
 
         {/* Desktop header: spacer / title / X - keeps the title centered. */}
         <div className="hidden items-center justify-between md:flex">
           <span aria-hidden="true" className="size-11.5" />
-          <p className="text-2xl font-semibold text-brand">Favorites</p>
+          <p className="text-2xl font-semibold text-brand">{t('favorites_label', 'Favorites')}</p>
           <ClosePopupButton onClose={close} ariaLabel="Close favorites" />
         </div>
 
@@ -112,13 +117,15 @@ const FavoritesPopup = (): JSX.Element => {
         ) : products.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="flex flex-col items-center gap-5 p-6 text-center">
-              <p className="text-paper/90">You have no favorites yet.</p>
+              <p className="text-paper/90">
+                {t('no_favorites_text', 'You have no favorites yet.')}
+              </p>
               <Link
                 href="/shop"
                 onClick={() => setOpen(false)}
                 className="rounded-card bg-brand px-3.75 py-1.5 text-base text-paper transition-colors duration-200 hover:bg-brand-hover active:bg-brand-active"
               >
-                Go to shop
+                {t('go_to_shop', 'Go to shop')}
               </Link>
             </div>
           </div>
@@ -162,6 +169,7 @@ const FavoriteCard = ({
   addToCartLabel: string;
   onNavigate: () => void;
 }): JSX.Element => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -171,6 +179,7 @@ const FavoriteCard = ({
   const title = product.localizeInfos?.title ?? '';
   const weight = attrs.weight?.value as string | number | undefined;
   const priceRaw = (attrs.price?.value ?? product.price) as number | undefined;
+  const currency = getProductCurrency(attrs);
 
   const productHref = `/shop/product/${product.id}`;
 
@@ -219,7 +228,7 @@ const FavoriteCard = ({
           <div className="flex items-center justify-start gap-2.5">
             {weight ? <p className="favorites_weight">{weight} g</p> : null}
             {priceRaw !== undefined ? (
-              <p className="favorites_price">{UsePrice({ amount: priceRaw })}</p>
+              <p className="favorites_price">{UsePrice({ amount: priceRaw, currency })}</p>
             ) : null}
           </div>
         </div>
@@ -236,21 +245,26 @@ const FavoriteCard = ({
                 quantity: 1,
               })
             );
-            toast('Product ' + title + ' added to cart!');
+            toast(
+              t('product_added_cart_toast', 'Product {title} added to cart!').replace(
+                '{title}',
+                title
+              )
+            );
           }}
-          aria-label={inCart ? 'In cart' : addToCartLabel}
+          aria-label={inCart ? t('in_cart_label', 'In cart') : addToCartLabel}
           className="group_white"
           disabled={inCart}
-          title={inCart ? 'In cart' : addToCartLabel}
+          title={inCart ? t('in_cart_label', 'In cart') : addToCartLabel}
         >
           <CartOrangeIcon />
         </button>
         <button
           type="button"
           onClick={() => dispatch(removeFavorites(product.id))}
-          aria-label="Remove from favorites"
+          aria-label={t('remove_from_favorites_label', 'Remove from favorites')}
           className="group"
-          title="Remove from favorites"
+          title={t('remove_from_favorites_label', 'Remove from favorites')}
         >
           <TrashIcon />
         </button>

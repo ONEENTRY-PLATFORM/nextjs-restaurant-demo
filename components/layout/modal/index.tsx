@@ -12,7 +12,6 @@ import ForgotPasswordForm from '@/components/forms/ForgotPasswordForm';
 import ResetPasswordForm from '@/components/forms/ResetPasswordForm';
 import SignInForm from '@/components/forms/SignInForm';
 import SignUpForm from '@/components/forms/SignUpForm';
-import UserForm from '@/components/forms/UserForm';
 import VerificationForm from '@/components/forms/VerificationForm';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalAnimations from '@/components/layout/modal/animations/ModalAnimations';
@@ -27,7 +26,6 @@ const FORMS = {
   ResetPasswordForm,
   SignInForm,
   SignUpForm,
-  UserForm,
   VerificationForm,
 };
 
@@ -44,12 +42,12 @@ const useTitleData = (component: string): string => {
   const t = useT();
   const titlesData: Record<string, string> = {
     AuthProviderSelect: '',
-    CalendarForm: 'Calendar',
+    CalendarForm: t('calendar_title', 'Calendar'),
     ForgotPasswordForm: t('forgot_password_text', ''),
     ResetPasswordForm: t('reset_password_text', ''),
     SignInForm: t('sign_in_text', ''),
     SignUpForm: t('sign_up_text', ''),
-    VerificationForm: t('verification', ''),
+    VerificationForm: t('verification_text', ''),
   };
   return titlesData[component] ?? '';
 };

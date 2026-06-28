@@ -5,6 +5,7 @@ import type { FormEvent, JSX } from 'react';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import CloseXMiniIcon from '@/components/icons/close-x-mini';
 import SearchIcon from '@/components/icons/search';
 
@@ -30,6 +31,7 @@ const isShopListingPath = (pathname: string): boolean =>
  * @returns JSX of the search input with suspended results panel.
  */
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
+  const t = useT();
   const router = useRouter();
   const pathname = usePathname();
   const urlSearchParams = useSearchParams();
@@ -131,7 +133,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
           <button
             type="button"
             onClick={handleClear}
-            aria-label="Clear search"
+            aria-label={t('clear_search_label', 'Clear search')}
             className="group absolute top-1/2 right-3 -translate-y-1/2"
           >
             <CloseXMiniIcon />

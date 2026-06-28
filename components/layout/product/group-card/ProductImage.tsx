@@ -1,5 +1,9 @@
+'use client';
+
 import Image from 'next/image';
 import type { JSX } from 'react';
+
+import { useT } from '@/app/store/providers/DictProvider';
 
 /**
  * ProductImage — product image inside the group card.
@@ -9,8 +13,13 @@ import type { JSX } from 'react';
  * @returns JSX of the image tile.
  */
 const ProductImage = ({ imageSrc }: { imageSrc: string }): JSX.Element => {
+  const t = useT();
   return (
-    <div className="relative h-32.5 w-27.5 shrink-0" role="img" aria-label="Product image">
+    <div
+      className="relative h-32.5 w-27.5 shrink-0"
+      role="img"
+      aria-label={t('product_image_alt', 'Product image')}
+    >
       <Image
         fill
         sizes="(min-width: 600px) 66vw, 100vw"

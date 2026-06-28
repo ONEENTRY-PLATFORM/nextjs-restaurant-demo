@@ -1,6 +1,7 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 
+import { getProductCurrency } from '@/app/api';
 import Placeholder from '@/components/shared/Placeholder';
 
 import ApplyButton from './ApplyButton';
@@ -29,6 +30,7 @@ const GroupCard = ({ product }: { product: IProductsEntity }): JSX.Element => {
           <PriceDisplay
             currentPrice={(attributeValues?.sale?.value as number) ?? 0}
             originalPrice={product.price as number}
+            currency={getProductCurrency(attributeValues)}
           />
           <ApplyButton product={product} />
         </div>

@@ -125,7 +125,7 @@ const AddressRow = ({
               onClick={handleAdd}
               className="hover_btn_paper mt-2.5 self-start rounded-card border border-paper px-5 py-1.25 text-base font-semibold text-paper"
             >
-              + {t('add_address_text', 'Add Address')}
+              + {t('add_address_button', 'Add Address')}
             </button>
           </div>
         )}

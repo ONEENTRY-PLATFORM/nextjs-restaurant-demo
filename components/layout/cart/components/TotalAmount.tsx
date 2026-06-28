@@ -4,6 +4,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useMemo } from 'react';
 
+import { getProductCurrency } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
@@ -53,9 +54,15 @@ const TotalAmount = ({ className }: { className: string }): JSX.Element => {
     return subtotal + deliveryPrice;
   }, [productsData, products, deliveryPrice]);
 
+  // All cart products share one currency (single-currency project); take the first non-empty.
+  const currency = useMemo(
+    () => products.map(p => getProductCurrency(p.attributeValues)).find(Boolean),
+    [products]
+  );
+
   return (
     <TableRowAnimations className={className} index={12}>
-      {t('total_amount_text', 'Total')}: {UsePrice({ amount: cartTotal })}
+      {t('total_amount_text', 'Total')}: {UsePrice({ amount: cartTotal, currency })}
     </TableRowAnimations>
   );
 };

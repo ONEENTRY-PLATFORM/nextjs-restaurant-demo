@@ -6,6 +6,7 @@ import type { JSX } from 'react';
 
 import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
+import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
 
@@ -81,7 +82,9 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   }
 
   const parent = parentRes.page;
-  const title = parent.localizeInfos?.title ?? 'Welcome to our restaurant chain';
+  const title =
+    parent.localizeInfos?.title ??
+    (await t('restaurants_title_fallback', 'Welcome to our restaurant chain'));
   const descriptionRaw = parent.attributeValues?.description?.value as
     Array<{ htmlValue?: string; plainValue?: string }> | undefined;
   const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
@@ -94,6 +97,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   const cards: RestaurantCard[] = visiblePages.map((p, idx) => buildCard(p, idx + 1));
   // One blur map keyed by `downloadLink` is shared across every card's slider.
   const blurMap = await getPhotosBlurMap(cards.flatMap(c => c.photos));
+  const moreLabel = await t('restaurant_more_button', 'More about restaurant');
 
   return (
     <section className="section_layout pt-0">
@@ -115,7 +119,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-7.5 md:grid-cols-2">
           {cards.map(card => (
-            <RestaurantCardView key={card.id} card={card} blurMap={blurMap} />
+            <RestaurantCardView key={card.id} card={card} blurMap={blurMap} moreLabel={moreLabel} />
           ))}
         </div>
       )}
@@ -134,9 +138,11 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
 const RestaurantCardView = ({
   card,
   blurMap,
+  moreLabel,
 }: {
   card: RestaurantCard;
   blurMap?: Record<string, string>;
+  moreLabel: string;
 }): JSX.Element => {
   return (
     <div className="flex flex-col items-stretch gap-5">
@@ -162,7 +168,7 @@ const RestaurantCardView = ({
         </div>
       </div>
       <Link href={card.href} className="cart_btn text-uppercase">
-        More about restaurant
+        {moreLabel}
       </Link>
     </div>
   );

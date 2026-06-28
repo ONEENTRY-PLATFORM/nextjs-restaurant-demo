@@ -55,30 +55,38 @@ const SignUpForm = ({
 
   const fields = useAppSelector(state => state.formFieldsReducer.fields);
 
-  // Form fields per pk_sing_up.html markup, in the markup order.
-  const formFields = useMemo(
-    () => ['username', 'surname', 'password', 'repeat_password', 'email', 'phone'],
+  // Sign-up field selection (the rest of the `user` schema — `user_address` json,
+  // `email_notifications` — is profile-only); render and payload order come from the schema
+  // `position`, not a hardcoded markup order.
+  const signUpMarkers = useMemo(
+    () => new Set(['email', 'username', 'surname', 'phone', 'password', 'repeat_password']),
     []
   );
 
+  const formAttributes = useMemo(
+    () =>
+      (data?.attributes ?? [])
+        .filter((f: IFormAttribute) => signUpMarkers.has(f.marker))
+        .slice()
+        .sort((a: IFormAttribute, b: IFormAttribute) => (a.position ?? 0) - (b.position ?? 0)),
+    [data?.attributes, signUpMarkers]
+  );
+
+  const formFields = useMemo(() => formAttributes.map(f => f.marker), [formAttributes]);
+
   const canSubmit = useMemo(
-    () => formFields.every(field => fields[field]?.valid),
+    () => formFields.length > 0 && formFields.every(field => fields[field]?.valid),
     [fields, formFields]
   );
 
   const formData = useMemo(
     () =>
-      formFields.map(marker => {
-        // formFields is a hardcoded marker list (no attribute.type at hand); join to the fetched
-        // schema so the payload carries the real attribute.type instead of a flat 'string'.
-        const attribute = data?.attributes.find((f: IFormAttribute) => f.marker === marker);
-        return {
-          marker,
-          type: attribute?.type ?? 'string',
-          value: fields[marker]?.value || '',
-        };
-      }),
-    [data?.attributes, fields, formFields]
+      formAttributes.map(attribute => ({
+        marker: attribute.marker,
+        type: attribute.type,
+        value: fields[attribute.marker]?.value || '',
+      })),
+    [formAttributes, fields]
   );
 
   const onSignUpHandle = useCallback(
@@ -164,12 +172,9 @@ const SignUpForm = ({
           {t('sign_up_subtitle', 'Sign in or create account to quickly manage order')}
         </p>
         <div className="box-border flex shrink-0 flex-col gap-5">
-          {formFields
-            .map(marker => data?.attributes.find((f: IFormAttribute) => f.marker === marker))
-            .filter((f): f is IFormAttribute => Boolean(f))
-            .map((field, index) => (
-              <FormInput key={field.marker} index={index} {...field} />
-            ))}
+          {formAttributes.map((field, index) => (
+            <FormInput key={field.marker} index={index} {...field} />
+          ))}
         </div>
         <SubmitButton title={t('sign_up_text', '')} isLoading={loading || isLoading} index={10} />
         {error && <ErrorMessage error={error} />}

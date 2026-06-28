@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
+import { useT } from '@/app/store/providers/DictProvider';
 import {
   addProductToCart,
   selectCartItemWithIdLength,
@@ -22,6 +23,7 @@ const UNDO_TIMEOUT_MS = 5000;
  * @returns Imperative remove function that displays the undo toast when invoked.
  */
 export const useCartRemoveWithUndo = (productId: number, title: string): (() => void) => {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const entry = useAppSelector(state => selectCartItemWithIdLength(state, productId)) as
@@ -44,7 +46,12 @@ export const useCartRemoveWithUndo = (productId: number, title: string): (() => 
     const toastId = toast(
       ({ closeToast }) => (
         <div className="flex items-center gap-3">
-          <span>Product {title} removed from cart</span>
+          <span>
+            {t('product_removed_cart_toast', 'Product {title} removed from cart!').replace(
+              '{title}',
+              title
+            )}
+          </span>
           <button
             type="button"
             onClick={() => {
@@ -56,7 +63,7 @@ export const useCartRemoveWithUndo = (productId: number, title: string): (() => 
             }}
             className="min-w-10 font-bold text-brand hover:underline"
           >
-            Undo
+            {t('undo_button', 'Undo')}
           </button>
         </div>
       ),

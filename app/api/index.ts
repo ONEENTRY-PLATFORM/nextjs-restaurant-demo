@@ -34,7 +34,11 @@ export {
 } from './api/RTKApi';
 export { logInUser } from './client/logInUser';
 export { useApplyCoupon } from './hooks/useApplyCoupon';
-export { getProductBlurDataURL, getProductImageUrl } from './hooks/useAttributesData';
+export {
+  getProductBlurDataURL,
+  getProductCurrency,
+  getProductImageUrl,
+} from './hooks/useAttributesData';
 export { useEmailAuthProviderMarker } from './hooks/useAuthProviderMarker';
 export { useCreateOrder } from './hooks/useCreateOrder';
 export type { DeliveryCheckout } from './hooks/useDeliveryCheckout';

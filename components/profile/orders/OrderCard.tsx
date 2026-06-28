@@ -208,7 +208,7 @@ const OrderCard = ({
               onClick={openContactCourier}
               className="order-body-row hover_btn_transp mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
             >
-              {t('contact_courier_button', 'Contact with the courier')}
+              {t('contact_courier', 'Contact with the courier')}
             </button>
           )}
           <div className="mt-5 flex flex-col">
@@ -235,7 +235,7 @@ const OrderCard = ({
                 </div>
                 {discount > 0 ? (
                   <div className="flex gap-1.25 text-brand">
-                    <p>Discount:</p>
+                    <p>{t('discount_text', 'Discount:')}</p>
                     <p>−{UsePrice({ amount: discount, currency: order.currency })}</p>
                   </div>
                 ) : null}
@@ -253,7 +253,7 @@ const OrderCard = ({
                     onClick={repeatOrder}
                     className="hover_btn_transp block w-32.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
                   >
-                    {t('repeat_order_button', 'Repeat order')}
+                    {t('repeat_order', 'Repeat order')}
                   </button>
                 )}
                 {canReview && (

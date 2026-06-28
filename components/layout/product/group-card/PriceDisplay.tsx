@@ -8,21 +8,25 @@ import { UsePrice } from '../../../utils';
  * @param   {object}      props               - Component props.
  * @param   {number}      props.currentPrice  - Current (sale) price.
  * @param   {number}      props.originalPrice - Original (pre-sale) price.
+ * @param   {string}      [props.currency]    - ISO-4217 currency code from the product `currency` attribute.
  * @returns JSX of the price block (or empty when both are zero/missing).
  */
 const PriceDisplay = ({
   currentPrice,
   originalPrice,
+  currency,
 }: {
   currentPrice: number;
   originalPrice: number;
+  currency?: string;
 }): JSX.Element => {
   if (!currentPrice && !originalPrice) {
     return <></>;
   }
-  const price = UsePrice({ amount: currentPrice });
+  const price = UsePrice({ amount: currentPrice, currency });
   const oldPrice = UsePrice({
     amount: originalPrice,
+    currency,
   });
 
   return (

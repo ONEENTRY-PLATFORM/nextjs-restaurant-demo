@@ -98,10 +98,19 @@ test.describe('Category page (/shop/category/<handle>)', () => {
     await expect(page.locator(REAL_GRID).first()).toBeVisible({ timeout: 20_000 });
   });
 
-  test('unknown category handle returns 404', async ({ page }) => {
+  test('unknown category handle renders the not-found view', async ({ page }) => {
     const res = await page.goto('/shop/category/__no_such_category_xyz__', {
       waitUntil: 'domcontentloaded',
     });
-    expect(res?.status()).toBe(404);
+    // The category route sits under a `loading.tsx` boundary, so Next 16 flushes a 200 shell before
+    // `notFound()` resolves — an unknown handle is a soft-404 (200), not a hard 404 (MISMATCH-LOG E.1).
+    // Assert the not-found view rendered rather than the HTTP status.
+    expect([200, 404]).toContain(res?.status());
+    await expect(
+      page
+        .getByRole('link', { name: /return home/i })
+        .filter({ visible: true })
+        .first()
+    ).toBeVisible({ timeout: 15_000 });
   });
 });

@@ -65,10 +65,19 @@ test.describe('Catalog & product page', () => {
     await expect(addToCart).toBeVisible();
   });
 
-  test('nonexistent product page -> 404', async ({ page }) => {
+  test('nonexistent product page renders the not-found view', async ({ page }) => {
     const response = await page.goto('/shop/product/999999999', {
       waitUntil: 'domcontentloaded',
     });
-    expect(response?.status()).toBe(404);
+    // The product route flushes a 200 loading-skeleton shell before `getProductById` resolves and
+    // `notFound()` fires, so an unknown id is a soft-404 (200), not a hard 404 — see MISMATCH-LOG E.1.
+    // Assert the not-found view rendered rather than the HTTP status.
+    expect([200, 404]).toContain(response?.status());
+    await expect(
+      page
+        .getByRole('link', { name: /return home/i })
+        .filter({ visible: true })
+        .first()
+    ).toBeVisible({ timeout: 15_000 });
   });
 });

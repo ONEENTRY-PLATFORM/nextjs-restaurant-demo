@@ -107,9 +107,10 @@ test.describe('Restaurant detail (/restaurants/<handle>)', () => {
     await gotoFirstRestaurant(page);
 
     // The CTA is rendered twice (desktop comforts-row copy `hidden md:flex`, mobile copy `md:hidden`);
-    // pick the one visible in the active viewport.
+    // pick the one visible in the active viewport. The label is dictionary-driven (`book_button`):
+    // OneEntry serves "Book", the compiled fallback is "Book a table" — match either.
     const book = page
-      .getByRole('button', { name: /book a table/i })
+      .getByRole('button', { name: /^book( a table)?$/i })
       .filter({ visible: true })
       .first();
     await expect(book).toBeVisible({ timeout: 15_000 });

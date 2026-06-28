@@ -22,8 +22,10 @@ const openBookingForm = async (page: Page): Promise<void> => {
   await page.goto(href!, { waitUntil: 'domcontentloaded' });
   await page.waitForLoadState('networkidle').catch(() => undefined);
 
+  // The CTA label is dictionary-driven (`book_button`): OneEntry currently serves "Book", but the
+  // compiled fallback is "Book a table" — match either so the test tracks the CMS label, not a literal.
   const book = page
-    .getByRole('button', { name: /book a table/i })
+    .getByRole('button', { name: /^book( a table)?$/i })
     .filter({ visible: true })
     .first();
   await expect(book).toBeVisible({ timeout: 20_000 });
@@ -169,7 +171,19 @@ test.describe('Reservation (booking) form', () => {
       .first()
       .click();
 
-    // Authenticated → straight to the payment step. A method auto-selects; confirm with Apply.
+    // Authenticated → straight to the payment step. It defaults to the online "Credit & Debit Cards"
+    // (Stripe) method, whose order hook now returns an error when the payment session yields no
+    // checkout URL — and the test aborts `/sessions`, so that path can never reach the confirmation
+    // screen (it stops at "Reservation #… created, but the payment provider returned no checkout URL").
+    // Pick the offline "Pay with cash" method instead: it creates the order with no payment session
+    // and lands on the success screen. The booking order POST asserted below is identical either way.
+    const cashMethod = page
+      .locator('#modalBody label')
+      .filter({ hasText: /pay with/i })
+      .first();
+    await expect(cashMethod).toBeVisible({ timeout: FORM_SETTLE_MS });
+    await cashMethod.click();
+
     const applyBtn = page.locator('#modalBody').first().getByRole('button', { name: /apply/i });
     await expect(applyBtn).toBeVisible({ timeout: FORM_SETTLE_MS });
     await applyBtn.click();

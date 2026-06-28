@@ -167,9 +167,15 @@ test.describe('Auth modal', () => {
       .filter({ visible: true })
       .first();
     if ((await close.count()) === 0) {
+      // The filter drawer (`#side-menu`) carries its own "Close" button and, while shut, sits
+      // `translate-y-full` below the viewport — still in the DOM with a layout box, so Playwright
+      // reports it as `visible`. A bare `.first()` over every visible "Close" resolves to that
+      // off-screen button and the click times out ("outside of the viewport"). Exclude the filter
+      // sheet so the fallback lands on the on-screen bottom-nav close.
       close = page
         .getByRole('button', { name: /^close$/i })
         .filter({ visible: true })
+        .and(page.locator('button:not(#side-menu button)'))
         .first();
     }
     await expect(close).toBeVisible({ timeout: MODAL_SETTLE_MS });

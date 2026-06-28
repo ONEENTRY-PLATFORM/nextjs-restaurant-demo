@@ -11,7 +11,7 @@ type PopupLoader = () => Promise<unknown>;
  */
 export const popupLoaders = {
   CartPopup: () => import('@/components/cart/CartPopup'),
-  FavoritesPopup: () => import('@/components/profile/FavoritesPopup'),
+  FavoritesPopup: () => import('@/components/profile/favorites/FavoritesPopup'),
   ProfilePopup: () => import('@/components/profile/ProfilePopup'),
   BookingsPopup: () => import('@/components/profile/BookingsPopup'),
   ReservationPopup: () => import('@/components/reservation/ReservationPopup'),

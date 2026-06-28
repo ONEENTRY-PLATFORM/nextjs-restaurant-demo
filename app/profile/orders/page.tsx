@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
-import OrdersList from '@/components/profile/OrdersList';
+import OrdersList from '@/components/profile/orders/OrdersList';
 
 export const dynamic = 'force-dynamic';
 

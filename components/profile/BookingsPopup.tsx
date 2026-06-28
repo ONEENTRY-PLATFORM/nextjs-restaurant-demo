@@ -13,10 +13,7 @@ import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 import BookingsContent from './BookingsContent';
 
 /**
- * BookingsPopup — «Bookings» popup (Active reservation + History). Body lives in
- * {@link BookingsContent}; this wrapper handles the drawer chrome (close button,
- * swipe-to-close, transition state from `OpenDrawerContext`).
- *
+ * BookingsPopup — «Bookings» popup (Active reservation + History).
  * @returns JSX of the bookings drawer.
  */
 const BookingsPopup = (): JSX.Element => {

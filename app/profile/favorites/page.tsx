@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
-import FavoritesGrid from '@/components/profile/FavoritesGrid';
+import FavoritesGrid from '@/components/profile/favorites/FavoritesGrid';
 
 export const dynamic = 'force-dynamic';
 

@@ -75,9 +75,7 @@ const FavoritesPopup = (): JSX.Element => {
     });
   };
 
-  // Backdrop-click fallback: when transition flips to 'close' without going through `close()`, run the
-  // stagger in parallel with the popup body reverse so the cards visibly fly out instead of dropping
-  // statically with the sheet.
+  // Backdrop-click fallback
   useEffect(() => {
     if (transition !== 'close' || !sheetRef.current) return;
     const targets = sheetRef.current.querySelectorAll(FAVORITE_CARD_SELECTOR);

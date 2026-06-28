@@ -5,53 +5,15 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { toast } from 'react-toastify';
 
-import { getProductCurrency, getProductImageUrl, useGetProductsByIdsQuery } from '@/app/api';
+import { getProductCurrency, getProductImageUrl } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, selectIsInCart } from '@/app/store/reducers/CartSlice';
-import { removeFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
+import { removeFavorites } from '@/app/store/reducers/FavoritesSlice';
 import CartOrangeIcon from '@/components/icons/cart-orange';
 import TrashIcon from '@/components/icons/trash';
 import Placeholder from '@/components/shared/Placeholder';
-import Spinner from '@/components/shared/Spinner';
 import { UsePrice } from '@/components/utils';
-
-/**
- * FavoritesGrid — favorites grid on the profile dashboard.
- *
- * @returns JSX of the favorites grid (loader, empty state, or list of `FavoriteCard` entries).
- */
-const FavoritesGrid = (): JSX.Element => {
-  const t = useT();
-  const favoriteIds = useAppSelector(selectFavoritesItems);
-  const { data, isLoading } = useGetProductsByIdsQuery(
-    { items: favoriteIds },
-    { skip: !favoriteIds || favoriteIds.length === 0 }
-  );
-
-  const favoriteIdSet = new Set(favoriteIds);
-  const products = ((data ?? []) as IProductsEntity[]).filter(p => favoriteIdSet.has(p.id));
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  if (favoriteIds.length === 0 || products.length === 0) {
-    return (
-      <div className="rounded-xl bg-ink/60 p-6 text-center text-paper/90">
-        {t('no_favorites_text', 'You have no favorites yet.')}
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      {products.map(product => (
-        <FavoriteCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-};
 
 /**
  * FavoriteCard — single favorite card in the desktop grid.
@@ -140,4 +102,4 @@ const FavoriteCard = ({ product }: { product: IProductsEntity }): JSX.Element =>
   );
 };
 
-export default FavoritesGrid;
+export default FavoriteCard;

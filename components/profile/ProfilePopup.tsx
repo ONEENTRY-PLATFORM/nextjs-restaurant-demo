@@ -20,8 +20,8 @@ import StaggerScreenAnimations from '@/components/shared/animations/StaggerScree
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
 import BookingsContent from './BookingsContent';
-import FavoritesGrid from './FavoritesGrid';
-import OrdersList from './OrdersList';
+import FavoritesGrid from './favorites/FavoritesGrid';
+import OrdersList from './orders/OrdersList';
 import ProfileSections from './ProfileSections';
 
 const PROFILE_NAV_ITEM_CLASS =

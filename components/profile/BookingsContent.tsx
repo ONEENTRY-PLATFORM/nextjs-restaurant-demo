@@ -28,16 +28,10 @@ import Spinner from '@/components/shared/Spinner';
 
 const CANCELLED_STATUS = ORDER_STATUSES.bookingCancelled;
 
-// Terminal statuses that move a reservation into history. Mirrors the orders dashboard
-// (orderUtils.ts) plus the booking-storage terminal markers confirmed in the admin panel:
-// `booking_cancelled` (also what the cancel flow writes) and `booking_success`.
 const HISTORY_STATUSES = new Set<string>([...ORDER_HISTORY_STATUSES, ...BOOKING_HISTORY_STATUSES]);
 
 /**
  * parseDateLoose — extracts a `Date` from heterogeneous OneEntry value shapes.
- *
- * Handles ISO strings, `{ fullDate }` date-attribute objects, and `[fromIso, toIso]`
- * tuples used by `timeInterval` (we use the `from` boundary as the booking moment).
  *
  * @param   {unknown} raw - Value from `IOrdersFormData.value`.
  * @returns Parsed `Date` or `null` when the input cannot be interpreted.
@@ -67,9 +61,6 @@ const parseDateLoose = (raw: unknown): Date | null => {
 /**
  * getBookingDate — reservation moment extracted from the order's `formData`.
  *
- * Prefers the `time_slot` (timeInterval) field used by `ReservationForm`; falls back to any
- * `timeInterval` / `date`-typed field if the canonical marker is absent.
- *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `Date` of the booking, or `null` when no date field is present.
  */
@@ -90,9 +81,6 @@ const getBookingDate = (o: IOrderByMarkerEntity): Date | null => {
 
 /**
  * isHistoryOrder — whether the booking order is in history (completed / terminal status / past reservation date).
- *
- * Matches the order's `statusIdentifier` against the terminal-status set exactly (case-insensitive); any
- * booking whose reservation moment (`time_slot`) already lies in the past is treated as history regardless of status.
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns `true` when the booking belongs to history.
@@ -120,9 +108,6 @@ const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
 /**
  * formatBookingWhen — actual reservation moment as `DD.MM.YY HH:MM` (from `time_slot`), with a
  * fallback to the order's creation date when no slot is set.
- *
- * Read in UTC to match how `ReservationForm` stores/displays the picked slot (the picker writes
- * via `setUTCHours`, the popup reads back via `getUTCHours`).
  *
  * @param   {IOrderByMarkerEntity} o - OneEntry order entity.
  * @returns Formatted date + time string, empty when neither source is parseable.
@@ -169,10 +154,6 @@ const BookingsContent = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Edit: pending -> side-channel, open ReservationPopup; submit will call `Orders.updateOrderByMarkerAndId` instead of `createOrder`.
-  // formIdentifier is optional on the list-endpoint response (IOrderByMarkerEntity), so default
-  // to the storage marker — booking_order storage is bound to the form with the same identifier.
-  // setOpen(true) is required when invoked from the /profile/bookings route (no drawer is open yet);
-  // inside BookingsPopup/ProfilePopup `open` is already true and the call is a no-op.
   const onEdit = (order: OrderWithStorage) => {
     setPendingReservationEdit({
       orderId: order.id,
@@ -185,10 +166,6 @@ const BookingsContent = (): JSX.Element => {
   };
 
   // Cancel: re-submit the order via `updateOrderByMarkerAndId` with `statusIdentifier`
-  // overridden to the admin-configured cancellation marker. The SDK's `IOrderData` does
-  // not type `statusIdentifier`, but the underlying PUT accepts it (verified against the
-  // live project). After success the order's status flips client-side so `isHistoryOrder`
-  // routes it into Reservation History without a refetch.
   const onCancel = async (order: OrderWithStorage) => {
     const ok = window.confirm(
       t('booking_cancel_confirm', 'Cancel reservation #{id}?').replace(
@@ -241,8 +218,6 @@ const BookingsContent = (): JSX.Element => {
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    // Iterate every order-storage and keep the booking ones — a new booking-type storage in the
-    // admin panel surfaces automatically instead of being missed by a single hard-coded marker.
     getAllOrdersAcrossStorages({ offset: 0, limit: 50 })
       .then(res => {
         if (cancelled) return;

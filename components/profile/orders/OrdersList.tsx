@@ -18,8 +18,8 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
 
-import OrderCard from './orders/OrderCard';
-import { isHistoryOrder } from './orders/orderUtils';
+import OrderCard from './OrderCard';
+import { isHistoryOrder } from './orderUtils';
 
 /**
  * OrdersList — orders dashboard: "Active orders" + "Orders History" + promo sidebar on md+.

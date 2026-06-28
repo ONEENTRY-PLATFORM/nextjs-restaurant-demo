@@ -66,7 +66,7 @@ const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Elemen
         {promos.map(b => (
           <Link
             key={b.id}
-            href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+            href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
             title={b.title}
             className="block w-full shrink-0 snap-start overflow-hidden transition-transform duration-500 hover:scale-[1.02] md:w-[calc((100%-60px)/2)]"
           >

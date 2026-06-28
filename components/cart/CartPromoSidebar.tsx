@@ -33,7 +33,7 @@ const PromoBanner = ({ banner }: { banner: BlogBanner }): JSX.Element => {
 
   return (
     <Link
-      href={banner.pageUrl ? `/promo/${banner.pageUrl}` : '#'}
+      href={banner.pageUrl ? `/promotions/${banner.pageUrl}` : '#'}
       title={banner.title}
       className="relative block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
     >
@@ -54,7 +54,7 @@ const PromoBanner = ({ banner }: { banner: BlogBanner }): JSX.Element => {
 };
 
 /**
- * CartPromoSidebar — desktop sidebar next to the cart, sourced from OneEntry `blog` pages.
+ * CartPromoSidebar — desktop sidebar next to the cart, sourced from OneEntry `promotions` pages.
  *
  * @param   {object}        props         - Component props.
  * @param   {BlogBanner[]}  props.banners - List of banners from the CMS.

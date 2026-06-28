@@ -17,7 +17,7 @@ export const PAGES = {
   home: 'home_web',
   support: 'support',
   notFound: '404',
-  blog: 'blog',
+  promotions: 'promotions',
   restaurants: 'restaurants',
   services: 'services',
   filters: 'filters',
@@ -144,22 +144,33 @@ export const PRODUCT_STATUSES = {
 /**
  * OneEntry order-status markers (`order.statusIdentifier`).
  *
- * ⚠️ Order statuses require user auth to read, so they cannot be verified
+ * ⚠️ Food-order statuses require user auth to read, so they cannot be verified
  * anonymously — confirm against the admin panel (see ONEENTRY-ADMIN-TODO).
  * `canceled`/`cancelled` are both kept because the marker spelling is unverified.
+ *
+ * Booking-storage statuses are confirmed (admin panel, 2026-06-28): `booking_accepted`
+ * (default → Active), `booking_cancelled` and `booking_success` (terminal → History).
  */
 export const ORDER_STATUSES = {
   delivered: 'delivered',
   canceled: 'canceled',
   cancelled: 'cancelled',
   rejected: 'rejected',
+  bookingAccepted: 'booking_accepted',
   bookingCancelled: 'booking_cancelled',
+  bookingSuccess: 'booking_success',
 } as const;
 
-/** Order statuses that move an order into the "history" tab (`isHistoryOrder`). */
+/** Food-order statuses that move an order into the "history" tab (`isHistoryOrder`). */
 export const ORDER_HISTORY_STATUSES = [
   ORDER_STATUSES.delivered,
   ORDER_STATUSES.canceled,
   ORDER_STATUSES.cancelled,
   ORDER_STATUSES.rejected,
+] as const;
+
+/** Booking-storage terminal statuses that move a reservation into Reservation History. */
+export const BOOKING_HISTORY_STATUSES = [
+  ORDER_STATUSES.bookingCancelled,
+  ORDER_STATUSES.bookingSuccess,
 ] as const;

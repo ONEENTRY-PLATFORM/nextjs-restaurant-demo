@@ -18,13 +18,13 @@ export const dynamic = 'force-static';
 export const revalidate = 300;
 
 /**
- * BlogPromoListPage — root promo page listing child pages of `blog`.
+ * PromotionsListPage — root promo page listing child pages of `promotions`.
  *
  * @returns Promise resolving to JSX of the root promo page (intro + vertical list of promo banners).
  */
-const BlogPromoListPage = async (): Promise<JSX.Element> => {
+const PromotionsListPage = async (): Promise<JSX.Element> => {
   const [{ page, isError }, banners] = await Promise.all([
-    getPageByUrl(PAGES.blog),
+    getPageByUrl(PAGES.promotions),
     getBlogBanners(),
   ]);
 
@@ -72,7 +72,7 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
             return (
               <Link
                 key={b.id}
-                href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
                 title={b.title}
                 className="block overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]"
               >
@@ -111,15 +111,15 @@ const BlogPromoListPage = async (): Promise<JSX.Element> => {
   );
 };
 
-export default BlogPromoListPage;
+export default PromotionsListPage;
 
 /**
- * generateMetadata — metadata for the root promo page from the CMS `blog` page title/description.
+ * generateMetadata — metadata for the root promo page from the CMS `promotions` page title/description.
  *
  * @returns Promise resolving to the page metadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getPageByUrl(PAGES.blog);
+  const { page } = await getPageByUrl(PAGES.promotions);
   const title = page?.localizeInfos?.title ?? 'Promotions';
   const description = page?.attributeValues?.description?.value as DescriptionValue | undefined;
   const descriptionText = description?.[0]?.plainValue ?? '';

@@ -212,7 +212,7 @@ const OrdersList = ({
           .map(b => (
             <Link
               key={b.id}
-              href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+              href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
               title={b.title}
               className="orders-row profile-anim-row block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
             >

@@ -15,12 +15,12 @@ export type BlogBanner = {
 };
 
 /**
- * getBlogBanners — child pages of `blog` rendered as promo banners with desktop/mobile images.
+ * getBlogBanners — child pages of `promotions` rendered as promo banners with desktop/mobile images.
  *
  * @returns Banner list (empty on CMS error).
  */
 export const getBlogBanners = cache(async (): Promise<BlogBanner[]> => {
-  const { isError, pages } = await getChildPagesByParentUrl(PAGES.blog);
+  const { isError, pages } = await getChildPagesByParentUrl(PAGES.promotions);
   if (isError || !pages) return [];
 
   type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;

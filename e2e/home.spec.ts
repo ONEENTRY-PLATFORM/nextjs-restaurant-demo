@@ -52,14 +52,14 @@ test.describe('Home page', () => {
     // dealing with scroll/viewport quirks.
     const menuLink = page
       .locator(
-        'main a[href^="/shop/category/"], main a[href*="/restaurants"], main a[href*="/blog"]'
+        'main a[href^="/shop/category/"], main a[href*="/restaurants"], main a[href*="/promotions"]'
       )
       .first();
     await expect(menuLink).toBeVisible({ timeout: 15_000 });
     const href = await menuLink.getAttribute('href');
     expect(href).toBeTruthy();
     await page.goto(href!);
-    await expect(page).toHaveURL(/\/(shop|restaurants|blog)/);
+    await expect(page).toHaveURL(/\/(shop|restaurants|promotions)/);
   });
 
   test('DOM has no multipart prerender artifacts (Next 16.2.6 bug)', async ({ page }) => {

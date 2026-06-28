@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { getImageUrl } from '@/app/api';
 
 /**
- * PromoCard — single promo card from a OneEntry `blog` child page (set: `blog_page`).
+ * PromoCard — single promo card from a OneEntry `promotions` child page (set: `blog_page`).
  *
  * @param   {object}        props      - Component props.
  * @param   {IPagesEntity}  props.page - Promo page entity from OneEntry.
@@ -30,7 +30,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
 
   return (
     <Link
-      href={'/promo/' + page.pageUrl}
+      href={'/promotions/' + page.pageUrl}
       title={title}
       className="group relative block overflow-hidden rounded-panel bg-ink/60 transition-transform duration-500 hover:scale-[1.02]"
       style={

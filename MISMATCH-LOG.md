@@ -33,17 +33,17 @@
 
 ## Раздел B. Ручная сверка по экранам
 
-### B.8. Промо-детейл (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promo/[handle]`)
+### B.8. Промо-детейл (`pk_promo_BIRTHDAY.html`, `pk_promo_day.html` ↔ `app/promotions/[handle]`)
 
-- 🌐 Live: <http://localhost:3000/promo/birthday_offer>
+- 🌐 Live: <http://localhost:3000/promotions/birthday_offer>
 
 - 📄 Static:
   [pk_promo_BIRTHDAY.html](static-html/pk_promo_BIRTHDAY.html),
   [pk_promo_day.html](static-html/pk_promo_day.html)
 
-- 📁 Файлы проекта: [app/promo/[handle]/page.tsx](app/promo/[handle]/page.tsx)
+- 📁 Файлы проекта: [app/promotions/[handle]/page.tsx](app/promotions/[handle]/page.tsx)
 
-> ℹ️ Тот же плоский rich-text (`mt-3.75 font-normal text-base text-white`) ещё на `app/blog/page.tsx`, `app/restaurants/[handle]/page.tsx`, `app/[handle]/page.tsx`, `app/support/page.tsx` — кандидаты на переход к `.cms_prose`, если контент там тоже многоуровневый.
+> ℹ️ Тот же плоский rich-text (`mt-3.75 font-normal text-base text-white`) ещё на `app/promotions/page.tsx`, `app/restaurants/[handle]/page.tsx`, `app/[handle]/page.tsx`, `app/support/page.tsx` — кандидаты на переход к `.cms_prose`, если контент там тоже многоуровневый.
 
 ## Раздел E. Роутинг / навигация (SSR, loading.tsx)
 

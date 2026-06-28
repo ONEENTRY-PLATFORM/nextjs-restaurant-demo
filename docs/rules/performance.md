@@ -11,7 +11,7 @@ Apply to every new page / component built on OneEntry. If a page doesn't follow 
 **Rule.** Any page whose data comes only from OneEntry CMS and doesn't depend on the user session must use **ISR**, not `force-dynamic`. At minimum — `revalidate`, preferably with `force-static` as a runtime safety net.
 
 ```typescript
-// app/page.tsx, app/shop/page.tsx, app/promo/[handle]/page.tsx — pattern
+// app/page.tsx, app/shop/page.tsx, app/promotions/[handle]/page.tsx — pattern
 export const dynamic = 'force-static';
 export const revalidate = 300; // or 60 for fast-moving listings
 ```
@@ -24,7 +24,7 @@ export const revalidate = 300; // or 60 for fast-moving listings
 
 **How to apply.**
 
-- Home, category listings, restaurant page, blog/promo pages — `force-static`, `revalidate=300`.
+- Home, category listings, restaurant page, promotions pages — `force-static`, `revalidate=300`.
 - Catalog with filters (`/shop`) — `revalidate=60` (URL params are handled separately via RTK Query / Suspense, see rule 2).
 - DO NOT apply to: `/profile`, `/cart`, `/auth/*` — those have per-request personalization.
 
@@ -99,7 +99,7 @@ export const getPageByUrl = cache(
 |---|---|---|
 | Pages, blocks, product listings | 60s | `oneentry-pages` / `oneentry-blocks` / `oneentry-products` |
 | Menus, attributes (`static_content`, `preferences`) | 300s | `oneentry-menus` / `oneentry-attributes` |
-| Categories, blog banners | 60s | `oneentry-pages` |
+| Categories, promo banners | 60s | `oneentry-pages` |
 
 **Cache key.** A function's arguments automatically become part of the key. For functions with an **object** argument — serialize into a stable string (`buildKey()` in [getProductsByPageUrl.ts](../../app/api/server/products/getProductsByPageUrl.ts#L32-L53)) and pass it as a separate first parameter: otherwise a different object key order = a different cache.
 

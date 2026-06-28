@@ -119,14 +119,14 @@ Values that are project-wide but **not** sensitive (so they don't belong in `.en
 
 | Constant | Purpose |
 | --- | --- |
-| `SHOP_PAGE_LIMIT` | Product cards per catalog page (`/shop`, `/shop/category/*`, `/shop/[handle]`, `/promo/[handle]`). |
+| `SHOP_PAGE_LIMIT` | Product cards per catalog page (`/shop`, `/shop/category/*`, `/shop/[handle]`, `/promotions/[handle]`). |
 | `DELIVERY_PRODUCT_ID` | Id of the OneEntry product that represents delivery cost. Hidden from the cart list, added as a separate line to totals and to `orderProducts` on order creation. |
 
 **2. OneEntry markers** — string identifiers that mirror what is configured in the OneEntry admin panel. Centralised so a renamed page/form/attribute is a one-line edit, not a project-wide grep. Use these everywhere instead of inline string literals.
 
 | Map | Used by | Members |
 | --- | --- | --- |
-| `PAGES` | `getPageByUrl` / `getChildPagesByParentUrl` / `getBlocksByPageUrl` / `getProductsByPageUrl`; also matched against `page.pageUrl` returned by the Menus API in navigation dispatchers | `home`, `support`, `notFound`, `blog`, `restaurants`, `services`, `filters`, `menu`, `profile`, `cart`, `favorites`, `bookings` |
+| `PAGES` | `getPageByUrl` / `getChildPagesByParentUrl` / `getBlocksByPageUrl` / `getProductsByPageUrl`; also matched against `page.pageUrl` returned by the Menus API in navigation dispatchers | `home`, `support`, `notFound`, `promotions`, `restaurants`, `services`, `filters`, `menu`, `profile`, `cart`, `favorites`, `bookings` |
 | `MENUS` | `getMenuByMarker` | `bottomWeb`, `userMenu` |
 | `FORMS` | `getFormByMarker`, `postFormsData` (`formIdentifier`), `Orders.getAllOrdersByMarker`, `Orders.createOrder`, `Orders.updateOrderByMarkerAndId` | `contactUs`, `user`, `deliveryOrder`, `bookingOrder` |
 | `ATTR_SETS` | `setMarker` of `getSingleAttributeByMarkerSet` | `dish`, `product` |

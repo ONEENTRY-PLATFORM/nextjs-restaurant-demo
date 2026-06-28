@@ -1,25 +1,25 @@
 import { expect, type Page, test } from '@playwright/test';
 
 /**
- * gotoBlogOrSkip — navigates to `/blog` and skips the test when the OneEntry `blog` page is absent (404).
+ * gotoPromotionsOrSkip — navigates to `/promotions` and skips the test when the OneEntry `promotions` page is absent (404).
  *
  * @param   {Page}   page - Playwright page.
- * @returns Promise resolving once `/blog` has loaded; otherwise the test is skipped.
+ * @returns Promise resolving once `/promotions` has loaded; otherwise the test is skipped.
  */
-const gotoBlogOrSkip = async (page: Page): Promise<void> => {
-  const res = await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+const gotoPromotionsOrSkip = async (page: Page): Promise<void> => {
+  const res = await page.goto('/promotions', { waitUntil: 'domcontentloaded' });
   if (res?.status() === 404) {
-    test.skip(true, 'OneEntry `blog` page is not configured (404) — see ONEENTRY-ADMIN-TODO');
+    test.skip(true, 'OneEntry `promotions` page is not configured (404) — see ONEENTRY-ADMIN-TODO');
   }
   await page.waitForLoadState('networkidle').catch(() => undefined);
 };
 
-test.describe('Blog / promotions list (/blog)', () => {
+test.describe('Promotions list (/promotions)', () => {
   test('renders the breadcrumb and a non-empty title', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(e.message));
 
-    await gotoBlogOrSkip(page);
+    await gotoPromotionsOrSkip(page);
 
     const crumbs = page.locator('nav[aria-label="Breadcrumbs"]');
     await expect(crumbs).toBeVisible({ timeout: 15_000 });
@@ -33,7 +33,7 @@ test.describe('Blog / promotions list (/blog)', () => {
   });
 
   test('breadcrumb Home link returns to the home page', async ({ page }) => {
-    await gotoBlogOrSkip(page);
+    await gotoPromotionsOrSkip(page);
 
     await page
       .locator('nav[aria-label="Breadcrumbs"]')
@@ -42,23 +42,25 @@ test.describe('Blog / promotions list (/blog)', () => {
     await page.waitForURL(u => u.pathname === '/' || u.pathname === '');
   });
 
-  test('promo banners link to /promo/<handle> and open the promo detail page', async ({ page }) => {
-    await gotoBlogOrSkip(page);
+  test('promo banners link to /promotions/<handle> and open the promo detail page', async ({
+    page,
+  }) => {
+    await gotoPromotionsOrSkip(page);
 
-    // Banners render as `<Link href="/promo/<pageUrl>">` wrapping an `<Image>` (no text). A banner
-    // without a `pageUrl` falls back to `href="#"`, so anchoring on the `/promo/` prefix also filters
+    // Banners render as `<Link href="/promotions/<pageUrl>">` wrapping an `<Image>` (no text). A banner
+    // without a `pageUrl` falls back to `href="#"`, so anchoring on the `/promotions/` prefix also filters
     // those out.
-    const banners = page.locator('section.section_layout a[href^="/promo/"]');
+    const banners = page.locator('section.section_layout a[href^="/promotions/"]');
     if ((await banners.count()) === 0) {
-      test.skip(true, 'no promo banners configured under `blog` — see ONEENTRY-ADMIN-TODO');
+      test.skip(true, 'no promo banners configured under `promotions` — see ONEENTRY-ADMIN-TODO');
     }
 
     const first = banners.first();
     const href = await first.getAttribute('href');
-    expect(href).toMatch(/^\/promo\/[^/?#]+$/);
+    expect(href).toMatch(/^\/promotions\/[^/?#]+$/);
 
     await first.click();
-    await page.waitForURL(/\/promo\/[^/?#]+$/);
+    await page.waitForURL(/\/promotions\/[^/?#]+$/);
 
     // Promo detail breadcrumb carries three levels (Home / Promotions / <title>); the current page is
     // the only `<li aria-current="page">`.

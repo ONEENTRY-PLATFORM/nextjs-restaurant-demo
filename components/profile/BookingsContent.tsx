@@ -15,6 +15,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import {
+  BOOKING_HISTORY_STATUSES,
   BOOKING_PRODUCT_ID,
   FORMS,
   ORDER_HISTORY_STATUSES,
@@ -28,9 +29,9 @@ import Spinner from '@/components/shared/Spinner';
 const CANCELLED_STATUS = ORDER_STATUSES.bookingCancelled;
 
 // Terminal statuses that move a reservation into history. Mirrors the orders dashboard
-// (orderUtils.ts) plus `booking_cancelled` — the marker the cancel flow writes here, which
-// is booking-specific and not part of the shared ORDER_HISTORY_STATUSES set.
-const HISTORY_STATUSES = new Set<string>([...ORDER_HISTORY_STATUSES, CANCELLED_STATUS]);
+// (orderUtils.ts) plus the booking-storage terminal markers confirmed in the admin panel:
+// `booking_cancelled` (also what the cancel flow writes) and `booking_success`.
+const HISTORY_STATUSES = new Set<string>([...ORDER_HISTORY_STATUSES, ...BOOKING_HISTORY_STATUSES]);
 
 /**
  * parseDateLoose — extracts a `Date` from heterogeneous OneEntry value shapes.

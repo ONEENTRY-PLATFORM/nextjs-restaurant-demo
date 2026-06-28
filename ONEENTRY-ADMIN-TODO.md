@@ -14,7 +14,7 @@
 
 ## C.2.7. Статус-маркеры товаров/заказов — снять хардкод
 
-- Временный фолбэк в коде: статус-маркеры вынесены в единый источник `PRODUCT_STATUSES` / `ORDER_STATUSES` / `ORDER_HISTORY_STATUSES` в [app/utils/constants.ts](app/utils/constants.ts). Значения: продукт — `out_of_stock`; заказы — `delivered`, `canceled`, `cancelled`, `rejected`, `booking_cancelled`.
+- Временный фолбэк в коде: статус-маркеры вынесены в единый источник `PRODUCT_STATUSES` / `ORDER_STATUSES` / `ORDER_HISTORY_STATUSES` / `BOOKING_HISTORY_STATUSES` в [app/utils/constants.ts](app/utils/constants.ts). Значения: продукт — `out_of_stock`; заказы (food) — `delivered`, `canceled`, `cancelled`, `rejected`; booking (подтверждено по админке 2026-06-28) — `booking_accepted` (default), `booking_cancelled`, `booking_success`.
 
 Осталось:
 
@@ -143,14 +143,14 @@ OneEntry для сжатых на сервере изображений отда
 
 Где `previewLink` **ещё отсутствует** (фолбэк на генерацию через `lqip-modern`/`sharp` сохранён, всё работает, но медленнее и грузит билд):
 
-- **Баннеры (страницы `blog/*`, атрибуты `bg_image`/`banner`)** — частично закрыто (сверка 2026-06-27): `birthday_offer` (id 22) — `previewLink` есть и у `bg_image`, и у `banner` ✅; `business_lunch` (id 40) — есть у `bg_image`, **нет у `banner`**; `deal_of_the_day` (id 39) — **нет ни у `bg_image`, ни у `banner`**. Перезалить `banner` у id 40 и оба изображения у id 39.
+- **Баннеры (страницы `promotions/*`, атрибуты `bg_image`/`banner`)** — частично закрыто (сверка 2026-06-27): `birthday_offer` (id 22) — `previewLink` есть и у `bg_image`, и у `banner` ✅; `business_lunch` (id 40) — есть у `bg_image`, **нет у `banner`**; `deal_of_the_day` (id 39) — **нет ни у `bg_image`, ни у `banner`**. Перезалить `banner` у id 40 и оба изображения у id 39.
 - **Фото ресторанов (дочерние страницы `restaurants/*`, атрибут `photos`)** — `previewLink` отсутствует у **всех** изображений всех 3 ресторанов (`burj_lumiere` 5 фото, `skyline_pavilion` 5, `petit_jardin` 3; сверка SDK 2026-06-27 — без изменений): значение содержит только `[size, filename, contentType, downloadLink]`. Галерея ([RestaurantPhotoGallery.tsx](components/restaurants/RestaurantPhotoGallery.tsx)) и листинг ([restaurants/page.tsx](app/restaurants/page.tsx)) получают `placeholder="blur"` через серверный фолбэк [getPhotosBlurMap.ts](app/api/lqip/getPhotosBlurMap.ts) (`lqip-modern`/`sharp`).
 
 **Действие для админки:** пере-сохранить/перезалить оставшиеся изображения баннеров (`banner` у `business_lunch`, оба у `deal_of_the_day`) и все изображения в атрибуте `photos` всех ресторанов, чтобы OneEntry сгенерировал `previewLink` (сжатую копию + base64-плейсхолдер). После этого фолбэк на `sharp` для них перестанет срабатывать. Не блокирует релиз — фолбэк закрывает пробел.
 
 ---
 
-### C.7.6. Форма `user` — неполные флаги полей (`isSignUp`/`isPassword`/`isNotification*`) (сверка SDK 2026-06-28)
+### C.7.6. Форма `user` — неполные флаги полей (`isSignUp`/`isPassword`/`isNotification*`)
 
 Основной рефактор auth-форм (MISMATCH-LOG **D.9**: флаг-роутинг `authData`/`formData`/`notificationData`) должен выводить роль каждого поля из его флагов в форме `user`, а не из хардкод-списков в коде. Сверка живой схемы показала, что флаги проставлены непоследовательно — роутинг по ним сейчас даст битую форму (например, на регистрации окажется только `surname`).
 
@@ -172,15 +172,13 @@ OneEntry для сжатых на сервере изображений отда
 
 ---
 
-## C.10. Профиль — Reservations history (Figma 78:1293)
+## C.10. Профиль — Reservations history
 
 **Открытое для клиента:**
 
-1. **Order statuses для booking_order**. ❓ Какие markers статусов завести в OneEntry admin → Orders → Statuses → Storage `booking_order`? По Figma минимум `Reserved` (default) + `Canceled`. Хорошо бы ещё `InProgress` и `Completed`. Без этого `BookingsPopup` фильтрует Active/History по дефолтному списку (`HISTORY_STATUSES = {delivered, canceled, cancelled, completed, rejected}`) — могут быть mis-classifications.
-
 1. **Status colors / labels** — построить map `{ statusIdentifier → label, color }` на клиенте, как в `OrdersList.tsx` (см. правило `orders.md`).
 
-### C.10.2. Возвраты (refunds) — сверка MCP 2026-06-19
+### C.10.2. Возвраты (refunds)
 
 SDK поддерживает заявки на возврат на модуле **Orders**: `getRefunds(id)`, `createRefundRequest(id, { products, note? })`, `cancelRefundRequest(id)`. Код-фундамент готов — хук [useRefunds.ts](app/api/hooks/useRefunds.ts) (`list`/`create`/`cancel`, graceful). UI на карточке заказа ([OrderCard.tsx](components/profile/orders/OrderCard.tsx)) пока не добавлен — это остаток.
 

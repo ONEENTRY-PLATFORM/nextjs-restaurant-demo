@@ -4,7 +4,7 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 import Skeleton from '@/components/shared/skeletons/Skeleton';
 
 /**
- * Loading — skeleton shown while a promo detail page (`/promo/[handle]`) loads.
+ * Loading — skeleton shown while a promo detail page (`/promotions/[handle]`) loads.
  *
  * Reproduces breadcrumbs, the banner image, heading + subtitle and reuses the product-card grid skeleton for the promo products.
  *
@@ -23,7 +23,7 @@ export default function Loading(): JSX.Element {
       </div>
 
       {/* Banner image */}
-      <Skeleton className="aspect-[2/1] w-full rounded-panel md:aspect-[1292/192]" />
+      <Skeleton className="aspect-2/1 w-full rounded-panel md:aspect-1292/192" />
 
       {/* Title + subtitle */}
       <div className="mt-11.25 flex flex-col gap-3.75">

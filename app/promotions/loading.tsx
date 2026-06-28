@@ -3,11 +3,11 @@ import type { JSX } from 'react';
 import Skeleton from '@/components/shared/skeletons/Skeleton';
 
 /**
- * Loading — skeleton shown while the blog / promotions index (`/blog`) loads.
+ * Loading — skeleton shown while the promotions index (`/promotions`) loads.
  *
  * Reproduces breadcrumbs, heading + subtitle and the vertical stack of promo banners.
  *
- * @returns JSX of the blog loading skeleton.
+ * @returns JSX of the promotions loading skeleton.
  */
 export default function Loading(): JSX.Element {
   return (

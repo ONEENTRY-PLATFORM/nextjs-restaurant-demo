@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 export const revalidate = 3600;
 
 /** Canonical static content routes (path segments appended to the site origin). */
-const STATIC_PATHS = ['', '/shop', '/service', '/blog', '/support', '/restaurants'] as const;
+const STATIC_PATHS = ['', '/shop', '/service', '/promotions', '/support', '/restaurants'] as const;
 
 /**
  * sitemap — XML sitemap of canonical, indexable URLs only.

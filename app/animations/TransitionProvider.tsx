@@ -40,7 +40,7 @@ function hasCardLeave(pathname: string): boolean {
     pathname === '/cart' ||
     pathname === '/shop' ||
     pathname.startsWith('/shop/') ||
-    pathname.startsWith('/promo/') ||
+    pathname.startsWith('/promotions/') ||
     pathname === '/profile/orders'
   );
 }

@@ -25,7 +25,7 @@ type DescriptionValue = Array<{
 }>;
 
 /**
- * PromoDetailPage — promo detail page (`/promo/<pageUrl>`).
+ * PromoDetailPage — promo detail page (`/promotions/<pageUrl>`).
  *
  * @param   {PageProps}              props - Dynamic route props (`params`, `searchParams`).
  * @returns Promise resolving to JSX of the promo detail page.
@@ -39,7 +39,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   const [{ page, isError }, banners, parentResp] = await Promise.all([
     getPageByUrl(handle),
     getBlogBanners(),
-    getPageByUrl(PAGES.blog),
+    getPageByUrl(PAGES.promotions),
   ]);
 
   if (isError || !page) {
@@ -47,7 +47,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   }
 
   const parentTitle = parentResp.page?.localizeInfos?.title ?? 'Promotions';
-  const parentUrl = parentResp.page?.pageUrl ?? 'blog';
+  const parentUrl = parentResp.page?.pageUrl ?? 'promotions';
 
   const productsLimit = SHOP_PAGE_LIMIT;
   const relatedPromos = banners.filter(b => b.pageUrl !== handle && b.mobileImage);
@@ -133,7 +133,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
               {relatedPromos.map(b => (
                 <Link
                   key={b.id}
-                  href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+                  href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
                   title={b.title}
                   className="block min-w-0 flex-1 overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.02]"
                 >

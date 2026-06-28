@@ -65,7 +65,7 @@ const HomePromoCarousel = ({
         {banners.map((b, i) => (
           <SwiperSlide key={b.id} className={isDesktop ? '' : 'w-86.75!'}>
             <Link
-              href={b.pageUrl ? `/promo/${b.pageUrl}` : '#'}
+              href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
               title={b.title}
               draggable={false}
               className={

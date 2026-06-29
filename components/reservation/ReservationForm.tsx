@@ -173,7 +173,7 @@ const ReservationForm = ({
   const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (spamAttr && !captcha) {
-      setValidationError('Please wait while captcha is loading.');
+      setValidationError(t('captcha_loading_text', 'Please wait while captcha is loading.'));
       return;
     }
 

@@ -19,7 +19,7 @@ import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import StaggerScreenAnimations from '@/components/shared/animations/StaggerScreenAnimations';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
 
-import BookingsContent from './BookingsContent';
+import BookingsContent from './bookings/BookingsContent';
 import FavoritesGrid from './favorites/FavoritesGrid';
 import OrdersList from './orders/OrdersList';
 import ProfileSections from './ProfileSections';
@@ -178,13 +178,6 @@ const ScreenHeader = ({
 /**
  * ProfilePopup — profile drawer (slide-up on mobile, side panel on md+).
  *
- * Mobile flow: the popup hosts inline sub-screens (menu / orders / favorites /
- * bookings / personal). Switching screens runs an exit stagger on the current
- * `.profile-anim-row` rows, then swaps `displayedScreen`, then the wrapper's
- * entry stagger plays on the new rows. Closing the popup (X / backdrop click —
- * both flip `transition === 'close'`) runs the same exit stagger in parallel with
- * `DrawerAnimations` reverse-playing the sheet.
- *
  * @returns JSX of the profile drawer (or empty fragment when not active).
  */
 const ProfilePopup = (): JSX.Element => {
@@ -232,8 +225,6 @@ const ProfilePopup = (): JSX.Element => {
   }, [pendingScreen]);
 
   // `closing` drives the exit stagger inside the wrapper. Both screen-swap (pendingScreen)
-  // and full popup close (transition === 'close') trigger it; only the first calls back
-  // into `handleExited` to swap content — on full close DrawerAnimations unmounts the subtree.
   const closing = transition === 'close' || pendingScreen !== null;
 
   if (!isOpen) {

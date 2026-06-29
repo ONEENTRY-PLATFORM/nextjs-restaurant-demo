@@ -3,12 +3,18 @@
  * staggers in, so the page renders blank until GSAP takes over and reveals them
  * via inline `opacity` / `visibility` (which override these rules).
  *
+ * The logo groups are scoped under `#header` on purpose — the same `LogoIcon` emblem is
+ * reused outside the header (`Placeholder`, the auth form), where nothing reveals it, so a
+ * global pre-hide would leave it invisible there.
+ *
  * `[data-header-anim="top-nav"]` is a stagger CONTAINER, not a target — hiding it
  * would cascade `visibility: hidden` to its children and block GSAP's reveal.
  */
-.logo-top path,
-.logo-bottom path,
-.logo-text path,
+#header .logo-ring,
+#header .logo-cutlery,
+#header .logo-waves,
+#header .logo-oasis path,
+#header .logo-restaurant path,
 [data-header-anim='logo-mobile'],
 [data-header-anim='slogan'],
 [data-header-anim='search'],
@@ -97,19 +103,29 @@ input[type='search']::-webkit-search-decoration {
 /*
  * Route loading skeletons (`loading.tsx`) are the streamed Suspense fallback, so on a cold load /
  * reload they paint as static HTML with no entrance — `next-transition-router`'s `enter` tween only
- * runs on client-side navigation. This pure-CSS fade gives the skeleton a soft entrance on first
- * paint without waiting for hydration; `animate-pulse` on the inner blocks keeps running underneath.
- * (The catalog grid skeleton opts out — its cards reveal via GSAP `CardAnimations` instead.)
+ * runs on client-side navigation. This pure-CSS fade gives the skeleton a soft entrance.
+ * (The catalog grid skeleton opts out of this class — its cards reveal via GSAP `CardAnimations`,
+ *  which gates on the same header-ready signal, so it waits for the header too.)
+ *
+ * On a cold load the skeleton stays hidden until the header reveal finishes: `HeaderAnimations`
+ * sets `data-header-ready` on <html> when its GSAP timeline completes, so the skeleton fades in
+ * AFTER the header rather than underneath it. On later client navigations the attribute is already
+ * present, so the skeleton fades in at once; `animate-pulse` on the inner blocks keeps running underneath.
  */
 @keyframes skeleton-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 .skeleton-fade-in {
+  opacity: 0;
+}
+:root[data-header-ready] .skeleton-fade-in {
   animation: skeleton-fade-in 0.4s ease-out both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-fade-in {
+  .skeleton-fade-in,
+  :root[data-header-ready] .skeleton-fade-in {
+    opacity: 1;
     animation: none;
   }
 }

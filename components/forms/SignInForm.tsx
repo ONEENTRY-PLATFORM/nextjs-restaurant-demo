@@ -92,7 +92,7 @@ const SignInForm = ({
 
       authenticate();
       setError('');
-      toast('You signed in!');
+      toast(t('signed_in_toast', 'You signed in!'));
       if (onSuccess) {
         onSuccess();
       } else if (postAuthComponent) {

@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
-import BookingsContent from '@/components/profile/BookingsContent';
+import BookingsContent from '@/components/profile/bookings/BookingsContent';
 
 export const dynamic = 'force-dynamic';
 

@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 import { useContext, useRef } from 'react';
 
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackIcon from '@/components/icons/arrow-back';
 import ModalBackdrop from '@/components/layout/modal/components/ModalBackdrop';
@@ -18,6 +19,7 @@ import BookingsContent from './BookingsContent';
  */
 const BookingsPopup = (): JSX.Element => {
   const { setOpen, setTransition } = useContext(OpenDrawerContext);
+  const t = useT();
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
   useSwipeToClose(sheetRef, () => setOpen(false));
@@ -36,12 +38,14 @@ const BookingsPopup = (): JSX.Element => {
           <button
             type="button"
             onClick={close}
-            aria-label="Back"
+            aria-label={t('back_text', 'Back')}
             className="group flex items-center justify-center"
           >
             <ArrowBackIcon className="hover-target text-paper" />
           </button>
-          <p className="text-2xl font-semibold text-brand">Active reservation</p>
+          <p className="text-2xl font-semibold text-brand">
+            {t('active_reservation_title', 'Active reservation')}
+          </p>
           <ClosePopupButton onClose={close} ariaLabel="Close bookings" className="max-md:hidden" />
           <span aria-hidden="true" className="size-11.5 md:hidden" />
         </div>

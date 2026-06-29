@@ -68,6 +68,7 @@ const AUTH_FLOW_SUB_STEPS = new Set([
  */
 const Modal = (): JSX.Element => {
   const { component, setComponent, setTransition, setOpen } = useContext(OpenDrawerContext);
+  const t = useT();
 
   // Form components have heterogeneous props (some ignore className/isActive); cast to a
   // common subset for the screen-swap container, which only forwards className/isActive.
@@ -107,7 +108,7 @@ const Modal = (): JSX.Element => {
             <button
               type="button"
               onClick={handleBack}
-              aria-label="Back"
+              aria-label={t('back_text', 'Back')}
               className="group flex items-center justify-center"
             >
               <ArrowBackIcon className="hover-target text-paper" />

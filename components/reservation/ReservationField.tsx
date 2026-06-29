@@ -37,6 +37,8 @@ const ReservationField = ({
 
   if (attr.type === 'timeInterval' || attr.marker === 'time_slot') {
     const v = values[attr.marker];
+    const placeholder =
+      String(attr.additionalFields?.placeholder?.value ?? '') || 'Select date & time';
     return (
       <div className="flex flex-1 flex-col">
         <button
@@ -45,7 +47,7 @@ const ReservationField = ({
           className={`flex flex-col border-b text-left ${borderClass}`}
         >
           <span className="text-base font-normal text-paper">{label}</span>
-          <span className="cart_input block">{v || 'Select date & time'}</span>
+          <span className="cart_input block">{v || placeholder}</span>
         </button>
         {errorNode}
       </div>

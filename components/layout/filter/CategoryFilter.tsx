@@ -6,6 +6,7 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { getImageUrl } from '@/app/api';
+import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 
 type Category = {
@@ -32,6 +33,7 @@ const BOOKING_TILE: Category = {
 const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
   const { open, component, transition, setOpen, setComponent, setTransition } =
     useContext(OpenDrawerContext);
+  const t = useT();
 
   const isVisible = open && component === 'CategoryFilter';
 
@@ -100,7 +102,9 @@ const CategoryFilter = ({ pages }: { pages: IPagesEntity[] }): JSX.Element => {
         onTouchEnd={handleTouchEnd}
       >
         <div className="flex items-center justify-center pt-6">
-          <p className="text-xl font-normal tracking-fine text-paper">Category</p>
+          <p className="text-xl font-normal tracking-fine text-paper">
+            {t('category_label', 'Category')}
+          </p>
         </div>
         <div className="mx-auto grid max-w-80 grid-cols-2 gap-x-15 gap-y-6 pt-6 pb-25 md:pb-12">
           {categories.map(cat => (

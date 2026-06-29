@@ -2,6 +2,7 @@ import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
 import getBannerBlurMap from '@/app/api/lqip/getBannerBlurMap';
+import { t } from '@/app/dictionaries';
 
 import HomePromoCarousel from './HomePromoCarousel';
 import HomePromoOverlay from './HomePromoOverlay';
@@ -30,6 +31,8 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
     mobileBanners.map(b => [b.id, blurMap[b.id]?.mobile ?? null])
   );
 
+  const promotionsTitle = await t('promotions_title', 'Promotions');
+
   return (
     <div className="relative">
       <HomePromoOverlay />
@@ -41,7 +44,7 @@ const HomePromo = async (): Promise<JSX.Element | null> => {
 
       {mobileBanners.length > 0 ? (
         <section className="pt-3 md:hidden">
-          <h2 className="title_name mx-auto px-4">Promotions</h2>
+          <h2 className="title_name mx-auto px-4">{promotionsTitle}</h2>
           <div className="mt-3.75">
             <HomePromoCarousel variant="mobile" banners={mobileBanners} blur={mobileBlur} />
           </div>

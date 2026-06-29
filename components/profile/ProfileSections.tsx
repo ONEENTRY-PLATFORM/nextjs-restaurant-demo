@@ -135,8 +135,6 @@ const ProfileSections = (): JSX.Element => {
 
   const fieldValue = useCallback(
     (marker: string): string => {
-      // Password is never prefilled — `userField('password')` returns '' anyway (user.formData has no password),
-      // and the previous session-store fallback leaked the password typed on the login screen into the profile form.
       if (marker.includes('password')) return edits[marker] ?? '';
       return edits[marker] !== undefined ? edits[marker]! : userField(marker);
     },
@@ -175,12 +173,10 @@ const ProfileSections = (): JSX.Element => {
         const phone = normalizePhoneE164(userField('phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
         // No `authData` — updateUser without credentials is permitted for the currently authenticated user
-        // (same pattern as `updateUserState`). Requiring a session password here broke saves after refresh-token auto-login.
         await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
           formData: formData as unknown as IAuthFormData[],
           notificationData: {
-            // For the email provider the email lives in `user.identifier`, not in `formData` - fallback to identifier.
             email: userField('email') || user.identifier || '',
             phonePush: [],
             ...(phoneValid ? { phoneSMS: phone } : {}),
@@ -243,7 +239,7 @@ const ProfileSections = (): JSX.Element => {
         state: {},
       });
       refreshUser();
-      toast('Data saved!');
+      toast(t('data_saved_toast', 'Data saved!'));
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : 'Failed to save');
     } finally {
@@ -259,7 +255,6 @@ const ProfileSections = (): JSX.Element => {
       street: newStreet.trim(),
       house: newHouse.trim(),
       floor: newFloor.trim(),
-      // The first added address is auto-selected.
       selected: addresses.length === 0,
     };
     const next = [...addresses, newEntry];
@@ -274,7 +269,6 @@ const ProfileSections = (): JSX.Element => {
 
   const onDeleteAddress = async (id: string) => {
     const next = addresses.filter(a => a.id !== id);
-    // Deleted the selected one - auto-select the first remaining.
     if (next.length > 0 && !next.some(a => a.selected)) {
       next[0]!.selected = true;
     }

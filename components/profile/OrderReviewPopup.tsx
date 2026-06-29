@@ -423,7 +423,7 @@ const OrderReviewPopup = (): JSX.Element => {
           <button
             type="button"
             onClick={close}
-            aria-label="Back"
+            aria-label={t('back_text', 'Back')}
             className="group flex items-center justify-center"
           >
             <ArrowBackIcon className="hover-target text-paper" />

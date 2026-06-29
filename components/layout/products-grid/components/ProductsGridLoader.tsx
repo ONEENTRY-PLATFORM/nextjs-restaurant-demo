@@ -53,6 +53,7 @@ const ProductsGridLoader = ({ productsLimit = 8 }: Props): JSX.Element => {
             className="menu_item relative flex flex-col"
             index={item}
             productsLimit={productsLimit}
+            gateOnHeader
           >
             <SkeletonBody />
           </CardAnimations>

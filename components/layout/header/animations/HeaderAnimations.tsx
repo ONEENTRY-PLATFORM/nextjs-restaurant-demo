@@ -21,9 +21,11 @@ const HeaderAnimations = ({ children }: { children: ReactNode }): JSX.Element =>
 
     const q = (sel: string): Element[] => Array.from(root.querySelectorAll(sel));
 
-    const logoParts = q(
-      '.logo-top path, .logo-bottom path, .logo-text path, [data-header-anim="logo-mobile"]'
-    );
+    const logoRing = q('.logo-ring');
+    const logoCutlery = q('.logo-cutlery');
+    const logoLetters = [...q('.logo-oasis path'), ...q('.logo-restaurant path')];
+    const logoWaves = q('.logo-waves');
+    const logoMobile = q('[data-header-anim="logo-mobile"]');
     const slogan = q('[data-header-anim="slogan"]');
     const search = q('[data-header-anim="search"]');
     const topNavItems = q('[data-header-anim="top-nav"] > *:not([data-header-anim])');
@@ -32,24 +34,58 @@ const HeaderAnimations = ({ children }: { children: ReactNode }): JSX.Element =>
     initialTags.forEach(el => handledTags.add(el));
 
     const ctx = gsap.context(() => {
-      const preset = [...logoParts, ...slogan, ...search, ...topNavItems];
+      const preset = [
+        ...logoRing,
+        ...logoCutlery,
+        ...logoLetters,
+        ...logoWaves,
+        ...logoMobile,
+        ...slogan,
+        ...search,
+        ...topNavItems,
+      ];
       gsap.set(preset, { autoAlpha: 0 });
+      // svgOrigin (viewBox coords of the circle centre) instead of transformOrigin: avoids a
+      // getBBox() call, which can throw on the desktop emblem while it is `display:none` on mobile.
+      gsap.set(logoRing, { scale: 0.85, svgOrigin: '106.54 119.46' });
+      gsap.set(logoCutlery, { y: -16 });
+      gsap.set(logoLetters, { y: 12 });
       gsap.set([...slogan, ...search], { y: 20 });
       gsap.set(topNavItems, { y: -16 });
 
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out' },
-        onComplete: markHeaderAnimationComplete,
+        onComplete: () => {
+          // Flag the document so `.skeleton-fade-in` route skeletons reveal only AFTER the header
+          // finishes on a cold load. Later client navigations already have the attribute set, so
+          // their skeleton fades in immediately (see app/styles/main.css).
+          document.documentElement.dataset.headerReady = 'true';
+          markHeaderAnimationComplete();
+        },
       });
 
-      // 1. Logo — single fade.
-      if (logoParts.length > 0) {
-        tl.to(logoParts, { autoAlpha: 1, duration: 0.6 }, 0);
+      // 1. Desktop logo — staggered build-up: ring scales in, cutlery drops, letters rise, waves fade.
+      if (logoRing.length > 0) {
+        tl.to(logoRing, { autoAlpha: 1, scale: 1, duration: 0.5 }, 0);
+      }
+      if (logoCutlery.length > 0) {
+        tl.to(logoCutlery, { autoAlpha: 1, y: 0, duration: 0.4 }, 0.28);
+      }
+      if (logoLetters.length > 0) {
+        tl.to(logoLetters, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.02 }, 0.5);
+      }
+      if (logoWaves.length > 0) {
+        tl.to(logoWaves, { autoAlpha: 1, duration: 0.35, stagger: 0.06 }, 0.72);
       }
 
-      // 2. Slogan.
+      // Mobile logo — single fade, parallel with the build-up.
+      if (logoMobile.length > 0) {
+        tl.to(logoMobile, { autoAlpha: 1, duration: 0.5 }, 0);
+      }
+
+      // 2. Slogan — enters alongside the logo build-up (absolute anchor, not chained off the logo).
       if (slogan.length > 0) {
-        tl.to(slogan, { autoAlpha: 1, y: 0, duration: 0.5 }, '>-0.2');
+        tl.to(slogan, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.15);
       }
 
       // 3. Search row.

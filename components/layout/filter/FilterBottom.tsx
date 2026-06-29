@@ -8,103 +8,14 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';
 import CloseXIcon from '@/components/icons/close-x';
+import {
+  buildFilterParams,
+  sanitizePriceInput,
+  WAITING_TIME,
+} from '@/components/layout/filter/filterBottomUtils';
+import FilterChipGroups from '@/components/layout/filter/FilterChipGroups';
 import type { PreferenceOption } from '@/components/layout/header/CategoriesScroller';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
-
-const WAITING_TIME: Array<{ label: string; max: number | null }> = [
-  { label: 'Under 30 mins', max: 30 },
-  { label: 'Under 60 mins', max: 60 },
-  { label: 'doesn’t matter', max: null },
-];
-
-/**
- * groupByExtended — partitions chip options into ordered groups by their `group` field.
- *
- * Preserves the input order (which mirrors `listTitles[].position` from OneEntry) both inside each
- * group and across groups (a group's bucket appears at the position of its first option). Options
- * without a group fall into a synthetic `''` bucket rendered last and without a subheader.
- *
- * @param   {PreferenceOption[]} options - Chip options from OneEntry.
- * @returns Ordered array of `{ name, items }` buckets.
- */
-const groupByExtended = (
-  options: PreferenceOption[]
-): Array<{ name: string; items: PreferenceOption[] }> => {
-  const order: string[] = [];
-  const buckets = new Map<string, PreferenceOption[]>();
-  for (const option of options) {
-    const key = option.group ?? '';
-    if (!buckets.has(key)) {
-      order.push(key);
-      buckets.set(key, []);
-    }
-    buckets.get(key)!.push(option);
-  }
-  // If at least one option carries a group, push the ungrouped bucket to the end so it doesn't
-  // visually split the named sections; otherwise the natural ordering is preserved.
-  const hasNamed = order.some(k => k !== '');
-  const finalOrder = hasNamed
-    ? [...order.filter(k => k !== ''), ...order.filter(k => k === '')]
-    : order;
-  return finalOrder
-    .map(name => ({ name, items: buckets.get(name) ?? [] }))
-    .filter(g => g.items.length > 0);
-};
-
-/**
- * FilterChipGroups — chip list grouped by `option.group` for the OneEntry `filter` attribute.
- *
- * Renders the section title once at the top, then for each group emits a small uppercase subheader
- * (`option.group`) followed by a row of toggleable chips. When no option declares a group, falls
- * back to a single ungrouped row to stay compatible with flat list attributes.
- *
- * @param   {object}              props           - Component props.
- * @param   {string}              props.title     - Parent section title (e.g. "Categories").
- * @param   {PreferenceOption[]}  props.options   - All chip options.
- * @param   {string[]}            props.selected  - Currently selected `value`s.
- * @param   {(v: string) => void} props.onToggle  - Toggle handler for a chip.
- * @param   {(active: boolean) => string} props.itemClass - Class builder for chip active/idle state.
- * @returns JSX of the grouped chip block.
- */
-const FilterChipGroups = ({
-  title,
-  options,
-  selected,
-  onToggle,
-  itemClass,
-}: {
-  title: string;
-  options: PreferenceOption[];
-  selected: string[];
-  onToggle: (value: string) => void;
-  itemClass: (active: boolean) => string;
-}): JSX.Element => {
-  const groups = groupByExtended(options);
-  return (
-    <div className="mt-5.25 flex flex-col gap-3.75">
-      <p className="filter_title">{title}</p>
-      {groups.map(group => (
-        <div key={group.name || '_'} className="flex flex-col gap-1.75">
-          {group.name ? (
-            <p className="text-xs tracking-wide text-paper/80 uppercase">{group.name}</p>
-          ) : null}
-          <div className="flex flex-wrap gap-1.75">
-            {group.items.map(option => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => onToggle(option.value)}
-                className={itemClass(selected.includes(option.value))}
-              >
-                {option.title}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 /**
  * FilterBottom — bottom filter sheet (mobile) / right-side panel (md+), toggled via `OpenDrawerContext`.
@@ -183,14 +94,6 @@ const FilterBottom = ({
     setFilters(prev => (prev.includes(item) ? prev.filter(x => x !== item) : [...prev, item]));
   };
 
-  /**
-   * sanitizePriceInput — keeps only digits in a free-text price input.
-   *
-   * @param   {string} raw - The raw input value from the user.
-   * @returns Digit-only string (may be empty).
-   */
-  const sanitizePriceInput = (raw: string): string => raw.replace(/[^0-9]/g, '');
-
   const reset = (): void => {
     setWaitingTime(null);
     setFilters([]);
@@ -201,38 +104,7 @@ const FilterBottom = ({
   // Serialize selected chips into the URL and update the route;
   // `/shop/...` page components are already `force-dynamic`.
   const apply = (): void => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    // Changing filters invalidates the current page offset — drop `page` so the
-    // grid reloads from the first page (see LoadMore/Pagination `?page=` writers).
-    params.delete('page');
-
-    const time = WAITING_TIME.find(t => t.label === waitingTime);
-    if (time?.max != null) {
-      params.set('cooking_time_max', String(time.max));
-    } else {
-      params.delete('cooking_time_max');
-    }
-
-    if (filters.length > 0) {
-      params.set('filter', filters.join(','));
-    } else {
-      params.delete('filter');
-    }
-
-    const minValue = Number(priceMin);
-    if (priceMin && Number.isFinite(minValue) && minValue > 0) {
-      params.set('minPrice', String(minValue));
-    } else {
-      params.delete('minPrice');
-    }
-    const maxValue = Number(priceMax);
-    if (priceMax && Number.isFinite(maxValue) && maxValue > 0) {
-      params.set('maxPrice', String(maxValue));
-    } else {
-      params.delete('maxPrice');
-    }
-
+    const params = buildFilterParams(searchParams, { waitingTime, filters, priceMin, priceMax });
     const qs = params.toString();
     // Stay on the current route only when it actually renders a filtered listing
     // (`/shop`, `/shop/<handle>`, `/shop/category/<handle>`). The product page

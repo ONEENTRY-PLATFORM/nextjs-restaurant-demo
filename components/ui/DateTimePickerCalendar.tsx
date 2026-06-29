@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 
 import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
 import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
-import { MONTH_NAMES, WEEK, type DayCell } from '@/components/ui/dateTimePickerUtils';
+import { type DayCell, MONTH_NAMES, WEEK } from '@/components/ui/dateTimePickerUtils';
 
 type DateTimePickerCalendarProps = {
   grid: DayCell[];

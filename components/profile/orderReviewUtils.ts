@@ -3,8 +3,6 @@ import { FORM_MODULE_CONFIG_IDS, FORMS } from '@/app/utils/constants';
 
 export const FORM_MARKER = FORMS.reviewForm;
 export const FORM_STATUS = 'approved';
-// Fallback only — the live id is resolved from getFormByMarker().moduleFormConfigs[0].id
-// so a recreated config never silently breaks review reads/writes.
 export const DEFAULT_MODULE_CONFIG_ID = FORM_MODULE_CONFIG_IDS.reviewForm;
 export const RATING_MARKER = 'review_rating';
 export const TEXT_MARKER = 'review_text';
@@ -19,9 +17,7 @@ export type ItemState = {
   rating: number;
   text: string;
   loading: boolean;
-  /** Id of the already submitted FormsData record - null = nothing saved yet. */
   existingId: number | null;
-  /** True = row is in edit mode. */
   isEditing: boolean;
   error: string;
 };
@@ -123,7 +119,6 @@ export const fetchUserReview = async (
       }
     ).items;
     if (!items || items.length === 0) return null;
-    // Extra client-side filter (in case the server userIdentifier did not apply) + take the latest record (max id).
     const mine = items
       .filter(i => i.parentId === null && i.userIdentifier === userId)
       .sort((a, b) => b.id - a.id)[0];

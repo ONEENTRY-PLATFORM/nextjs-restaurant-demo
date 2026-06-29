@@ -17,10 +17,10 @@ import {
 } from '@/components/profile/orderReviewStore';
 import {
   DEFAULT_MODULE_CONFIG_ID,
+  type ExistingReview,
   fetchUserReview,
   FORM_MARKER,
   formatOrderNumber,
-  type ExistingReview,
 } from '@/components/profile/orderReviewUtils';
 import ReviewableItem from '@/components/profile/ReviewableItem';
 import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';

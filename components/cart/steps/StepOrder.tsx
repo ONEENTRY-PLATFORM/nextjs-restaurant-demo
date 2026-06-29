@@ -2,19 +2,12 @@
 
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import Image from 'next/image';
 import { useTransitionState } from 'next-transition-router';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
-import {
-  getProductCurrency,
-  getProductImageUrl,
-  useApplyCoupon,
-  useGetBonusBalanceQuery,
-  useOrderPreview,
-} from '@/app/api';
+import { useApplyCoupon, useGetBonusBalanceQuery, useOrderPreview } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
@@ -28,18 +21,15 @@ import {
   setBonusAmount,
   setStep,
 } from '@/app/store/reducers/OrderSlice';
-import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
+import OrderItemsList from '@/components/cart/steps/OrderItemsList';
+import OrderTotals from '@/components/cart/steps/OrderTotals';
+import {
+  type CartEntry,
+  computeClientTotals,
+  ORDER_ROW_SELECTOR,
+  selectOrderItems,
+} from '@/components/cart/steps/stepOrderUtils';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
-import Placeholder from '@/components/shared/Placeholder';
-import { UsePrice } from '@/components/utils';
-
-const ORDER_ROW_SELECTOR = '.step-order-row';
-
-type CartEntry = {
-  id: number;
-  quantity?: number;
-  selected?: boolean;
-};
 
 /**
  * StepOrder — checkout step: items + promo code + summary + APPLY → `payment` (or opens auth picker for guests).
@@ -66,44 +56,11 @@ const StepOrder = (): JSX.Element => {
   const { applyCoupon, removeCoupon, isLoading, error } = useApplyCoupon();
   const outOfStockMarker = useOutOfStockMarker();
 
-  const items = cartData
-    .map(entry => ({
-      entry,
-      product: products.find(p => p.id === entry.id),
-    }))
-    .filter(
-      row =>
-        row.product &&
-        row.entry.selected &&
-        row.product.statusIdentifier !== outOfStockMarker &&
-        // Delivery shows as a separate line in the totals - otherwise it gets double-counted in the subtotal.
-        row.entry.id !== DELIVERY_PRODUCT_ID
-    ) as Array<{
-    entry: CartEntry;
-    product: IProductsEntity;
-  }>;
-
-  const clientSubtotal = items.reduce((sum, { entry, product }) => {
-    const price = product.price ?? 0;
-    return sum + price * (entry.quantity ?? 1);
-  }, 0);
-  const clientDiscount = appliedCoupon
-    ? Math.max(0, appliedCoupon.totalSum - appliedCoupon.totalSumWithDiscount)
-    : 0;
-  // "To Entire Order" coupon: `totalSumWithDiscount` already includes delivery - do not add it again, otherwise it gets double-counted.
-  const clientTotal = appliedCoupon
-    ? appliedCoupon.totalSumWithDiscount
-    : clientSubtotal + deliveryPrice;
+  const items = selectOrderItems(cartData, products, outOfStockMarker);
 
   // Server-authoritative totals (discounts/bonuses/taxes) for authed users; client math is the fallback.
   const { totals: serverTotals } = useOrderPreview(appliedCoupon?.code, bonusAmount);
-  const display = serverTotals ?? {
-    subtotal: clientSubtotal,
-    delivery: deliveryPrice,
-    discount: clientDiscount,
-    total: clientTotal,
-    bonusApplied: 0,
-  };
+  const display = serverTotals ?? computeClientTotals(items, appliedCoupon, deliveryPrice);
   // Real currency only exists on the server preview (ServerOrderTotals.currency); the client
   // fallback object has none, so UsePrice falls back to the project default (USD).
   const displayCurrency = serverTotals?.currency;
@@ -201,52 +158,7 @@ const StepOrder = (): JSX.Element => {
 
   return (
     <div ref={containerRef} className="flex flex-col gap-5">
-      {/* Items */}
-      <div className="flex flex-col gap-5">
-        {items.map(({ entry, product }) => {
-          const title = product.localizeInfos?.title ?? t('item_fallback_text', 'Item');
-          const weight = product.attributeValues?.weight?.value as string | number | undefined;
-          const unit = product.price ?? 0;
-          const imgSrc = getProductImageUrl(product.attributeValues);
-          return (
-            <div
-              key={entry.id}
-              className="step-order-row flex items-center justify-between gap-2.5"
-            >
-              <div className="flex min-w-0 items-center gap-4">
-                <div className="relative size-17.25 shrink-0 overflow-hidden rounded">
-                  {imgSrc ? (
-                    <Image
-                      src={imgSrc}
-                      alt={title}
-                      width={69}
-                      height={69}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <Placeholder />
-                  )}
-                </div>
-                <div className="flex min-w-0 flex-col justify-between gap-1">
-                  <p className="text-sm font-normal text-white">{title}</p>
-                  <div className="flex items-center gap-2.5">
-                    {weight ? <p className="text-sm font-normal text-white">{weight} g</p> : null}
-                    <p className="text-xl font-bold text-brand">
-                      {UsePrice({
-                        amount: unit,
-                        currency: displayCurrency ?? getProductCurrency(product.attributeValues),
-                      })}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex h-11.25 w-8.75 shrink-0 items-center justify-center rounded-card border border-white text-base font-normal text-brand">
-                x{entry.quantity ?? 1}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <OrderItemsList items={items} displayCurrency={displayCurrency} />
 
       {/* Promo code */}
       <div className="step-order-row mt-5 flex w-full flex-col gap-1.5">
@@ -298,33 +210,7 @@ const StepOrder = (): JSX.Element => {
         </label>
       ) : null}
 
-      {/* Totals */}
-      <div className="step-order-row mt-10 rounded-card border border-brand p-2.5">
-        <div className="flex gap-1.25 text-white">
-          <p>{t('subtotal_text', 'Subtotal')}:</p>
-          <p>{UsePrice({ amount: display.subtotal, currency: displayCurrency })}</p>
-        </div>
-        <div className="flex gap-1.25 text-brand">
-          <p>{t('delivery_text', 'Delivery')}:</p>
-          <p>{UsePrice({ amount: display.delivery, currency: displayCurrency })}</p>
-        </div>
-        {display.discount > 0 ? (
-          <div className="flex gap-1.25 text-brand">
-            <p>{t('discount_text', 'Discount')}:</p>
-            <p>{UsePrice({ amount: display.discount, currency: displayCurrency })}</p>
-          </div>
-        ) : null}
-        {display.bonusApplied > 0 ? (
-          <div className="flex gap-1.25 text-brand">
-            <p>{t('bonus_applied_text', 'Bonuses')}:</p>
-            <p>−{UsePrice({ amount: display.bonusApplied, currency: displayCurrency })}</p>
-          </div>
-        ) : null}
-        <div className="flex gap-1.25 text-white">
-          <p>{t('total_amount_text', 'Total Amount')}:</p>
-          <p>{UsePrice({ amount: display.total, currency: displayCurrency })}</p>
-        </div>
-      </div>
+      <OrderTotals display={display} displayCurrency={displayCurrency} />
 
       <button
         type="button"

@@ -81,7 +81,9 @@ const MyProfileSection = ({
         .filter(attr => hasPassword || !attr.isLogin)
         .map(attr => {
           const isHidden = HIDDEN_PROFILE_MARKERS.has(attr.marker);
-          let value: unknown = isHidden ? getUserRawField(user, attr.marker) : fieldValue(attr.marker);
+          let value: unknown = isHidden
+            ? getUserRawField(user, attr.marker)
+            : fieldValue(attr.marker);
           if ((attr.type as string) === 'json') {
             if (typeof value !== 'string') {
               value = JSON.stringify(value ?? null);

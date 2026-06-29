@@ -10,21 +10,18 @@ import { useState } from 'react';
 import { getApi, getProductImageUrl, isError } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import {
+  type ExistingReview,
   FORM_MARKER,
   FORM_STATUS,
   initialItemState,
+  type ItemState,
   RATING_MARKER,
   TEXT_MARKER,
-  type ExistingReview,
-  type ItemState,
 } from '@/components/profile/orderReviewUtils';
 import StarRating from '@/components/reviews/StarRating';
 
 /**
  * ReviewableItem — popup row: product + stars + input + Apply/Edit.
- *
- * Apply creates `postFormsData` or updates via `updateFormsDataByid`. When `initialReview` is provided,
- * the row starts in read-only mode and switches to edit on demand.
  *
  * @param   {object}                     props               - Component props.
  * @param   {IOrderProducts}             props.product       - Order line-item entity.
@@ -71,7 +68,6 @@ const ReviewableItem = ({
     ];
     try {
       if (state.existingId !== null) {
-        // Edit: PUT `/api/content/form-data/{id}` - same body as in `postFormsData`, id in the URL. Requires auth.
         const res = await getApi().FormData.updateFormsDataByid(state.existingId, {
           formIdentifier: FORM_MARKER,
           formModuleConfigId: moduleConfigId,

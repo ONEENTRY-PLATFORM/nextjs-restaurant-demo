@@ -8,82 +8,10 @@ import { createPortal } from 'react-dom';
 
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import ArrowBackIcon from '@/components/icons/arrow-back';
-import ChevronMiniLeftIcon from '@/components/icons/chevron-mini-left.svg';
-import ChevronMiniRightIcon from '@/components/icons/chevron-mini-right.svg';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
-
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-
-type DayCell = {
-  day: number;
-  monthOffset: -1 | 0 | 1;
-  iso: string;
-};
-
-/**
- * buildMonthGrid — builds a rectangular 6×7 day grid for the month, padded with tails of neighboring months.
- *
- * @param   {number} year  - Calendar year.
- * @param   {number} month - Zero-based month index.
- * @returns Array of 42 day cells (previous-month tail + current month + next-month head).
- */
-const buildMonthGrid = (year: number, month: number): DayCell[] => {
-  const first = new Date(year, month, 1);
-  const firstDow = (first.getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const daysInPrev = new Date(year, month, 0).getDate();
-
-  const cells: DayCell[] = [];
-
-  for (let i = firstDow - 1; i >= 0; i -= 1) {
-    const day = daysInPrev - i;
-    cells.push({
-      day,
-      monthOffset: -1,
-      iso: toLocalIsoDate(new Date(year, month - 1, day)),
-    });
-  }
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    cells.push({
-      day,
-      monthOffset: 0,
-      iso: toLocalIsoDate(new Date(year, month, day)),
-    });
-  }
-  let nextDay = 1;
-  while (cells.length < 42) {
-    cells.push({
-      day: nextDay,
-      monthOffset: 1,
-      iso: toLocalIsoDate(new Date(year, month + 1, nextDay)),
-    });
-    nextDay += 1;
-  }
-  return cells;
-};
-
-/**
- * formatHour — formats a 24h hour as `HH.00`.
- *
- * @param   {number} h - Hour (0–23).
- * @returns Slot label string.
- */
-const formatHour = (h: number): string => `${String(h).padStart(2, '0')}.00`;
+import DateTimePickerCalendar from '@/components/ui/DateTimePickerCalendar';
+import DateTimePickerTimeGrid from '@/components/ui/DateTimePickerTimeGrid';
+import { buildMonthGrid, formatHour } from '@/components/ui/dateTimePickerUtils';
 
 type DateTimePickerSheetProps = {
   date?: string;
@@ -369,90 +297,24 @@ const DateTimePickerSheet = ({
 
         <div className="flex-1 overflow-x-hidden overflow-y-auto">
           {isDateStep ? (
-            <div className="mx-auto w-full max-w-87.5">
-              <div className="grid grid-cols-7">
-                {WEEK.map(w => (
-                  <div key={w} data-anim="dt-item" className="calend_mon">
-                    {w}
-                  </div>
-                ))}
-                {grid.map(cell => {
-                  const disabled = (minDate && cell.iso < minDate) || cell.monthOffset !== 0;
-                  // Suppress the active highlight on disabled cells so a pre-selected past date
-                  // doesn't appear "selected but dimmed" — past dates should look unambiguously
-                  // non-selectable, even if `selectedDate` still points at one (Apply is blocked
-                  // by `canApply` elsewhere).
-                  const active = cell.iso === selectedDate && cell.monthOffset === 0 && !disabled;
-                  return (
-                    <button
-                      key={cell.iso + cell.monthOffset}
-                      type="button"
-                      data-anim="dt-item"
-                      data-disabled={disabled || undefined}
-                      disabled={disabled}
-                      onClick={() => setSelectedDate(cell.iso)}
-                      className={
-                        'calend_days ' +
-                        (active ? 'bg-brand text-white font-bold ' : '') +
-                        (disabled ? 'opacity-40 pointer-events-none ' : '')
-                      }
-                    >
-                      {String(cell.day).padStart(2, '0')}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="mt-4 mb-5 flex items-center justify-around">
-                <button
-                  type="button"
-                  onClick={goPrev}
-                  aria-label="Previous month"
-                  className="group"
-                >
-                  <ChevronMiniLeftIcon />
-                </button>
-                <div className="flex gap-3.75">
-                  <h2 className="text-xl font-semibold text-brand">{MONTH_NAMES[month]}</h2>
-                  <h3 className="text-xl font-light text-brand">{year}</h3>
-                </div>
-                <button type="button" onClick={goNext} aria-label="Next month" className="group">
-                  <ChevronMiniRightIcon />
-                </button>
-              </div>
-            </div>
+            <DateTimePickerCalendar
+              grid={grid}
+              selectedDate={selectedDate}
+              minDate={minDate}
+              month={month}
+              year={year}
+              onSelectDate={setSelectedDate}
+              onPrevMonth={goPrev}
+              onNextMonth={goNext}
+            />
           ) : (
-            <div className="mx-auto w-full max-w-87.5">
-              {slots.length === 0 ? (
-                <p className="py-5 text-center text-base text-paper/80">{noTimeText}</p>
-              ) : (
-                <div className="grid grid-cols-4 gap-2.5">
-                  {slots.map(slot => {
-                    const past = isSlotPast(slot);
-                    // Suppress active highlight on past slots: a pre-selected past time (e.g. 10:00
-                    // when it's already 17:00) would otherwise render highlighted-but-dimmed and
-                    // look picked. Apply is also blocked via `canApply`.
-                    const active = slot === selectedTime && !past;
-                    return (
-                      <button
-                        key={slot}
-                        type="button"
-                        data-anim="dt-item"
-                        data-disabled={past || undefined}
-                        disabled={past}
-                        onClick={() => setSelectedTime(slot)}
-                        className={
-                          'service_time ' +
-                          (active ? 'border-brand text-brand font-extrabold ' : '') +
-                          (past ? 'opacity-40 pointer-events-none ' : '')
-                        }
-                      >
-                        {slot}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <DateTimePickerTimeGrid
+              slots={slots}
+              selectedTime={selectedTime}
+              isSlotPast={isSlotPast}
+              onSelectTime={setSelectedTime}
+              noTimeText={noTimeText}
+            />
           )}
         </div>
 

@@ -10,7 +10,10 @@ const createJestConfig = nextJest({ dir: './' });
 /** @type {import('jest').Config} */
 const config = {
   testEnvironment: 'jest-environment-jsdom',
-  testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
+  // Unit tests live in tests/jest/ (jsdom). Integration tests (tests/integration/, live network) run
+  // separately via `npm run test:integration` and are excluded by this match — keeping them out of
+  // the `prebuild` hook so a build never creates real OneEntry orders.
+  testMatch: ['**/tests/jest/**/*.test.{ts,tsx}'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },

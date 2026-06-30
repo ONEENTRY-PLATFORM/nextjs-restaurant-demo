@@ -121,6 +121,21 @@ These commands are launched by the user after their own edits. Claude **must not
 - **Exception:** only if the user explicitly asks ("run lint", "check the build").
 - **IDE TypeScript diagnostics** already flow through hooks and land in context automatically — this covers a basic sanity check without explicitly running `tsc`.
 
+## 7. Tests — all under `tests/`, split into three
+
+Every test lives under [tests/](tests/) (no co-located `__tests__/` folders). Three sibling buckets, each with its own runner/config:
+
+| Folder | Kind | Env | Config | Run |
+| --- | --- | --- | --- | --- |
+| [tests/jest/](tests/jest/) | Unit (pure helpers, reducers, utils) | jsdom | [jest.config.mjs](jest.config.mjs) | `npm test` (also on `prebuild`) |
+| [tests/integration/](tests/integration/) | Live OneEntry/Stripe SDK (real network, no mocks) | node | [jest.integration.config.mjs](jest.integration.config.mjs) | `npm run test:integration` |
+| [tests/e2e/](tests/e2e/) | Playwright (`*.spec.ts` + `fixtures/`) | browser | [playwright.config.ts](playwright.config.ts) | `npm run test:e2e:prod` / `npx playwright test` |
+
+- **Unit tests import source via the `@/` alias** (e.g. `@/app/store/reducers/CartSlice`), never relative paths — they are not co-located with the source.
+- **Integration tests are deliberately excluded from `npm test` / `prebuild`** (separate folder + config): they sign in and create real test-mode orders / Stripe sessions, which must not run on every build. Naming: `*.integration.test.ts`.
+- **Don't reintroduce `__tests__/`** next to source; add new unit tests to `tests/jest/`, new live-SDK tests to `tests/integration/`, new browser flows to `tests/e2e/`.
+- The "real data, no SDK mocks" convention still holds (see personal memory): API-layer behaviour is covered by `tests/integration/`, pure helpers by `tests/jest/`.
+
 ---
 
 ## Quick pre-commit check

@@ -1,4 +1,4 @@
-import './e2e/fixtures/loadEnv';
+import './tests/e2e/fixtures/loadEnv';
 
 import { defineConfig, devices } from '@playwright/test';
 
@@ -21,7 +21,7 @@ const PORT = Number(process.env.PORT ?? (PROD ? 3100 : 3000));
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './tests/e2e',
   testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

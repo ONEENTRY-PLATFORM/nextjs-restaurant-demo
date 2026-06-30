@@ -13,7 +13,7 @@ import HomeBlockSection from './HomeBlockSection';
  * catalog products so the section never disappears (same "never empty" approach as
  * `getRecommendations`). This matters for the home `recommended` block: it is a
  * `similar_products_block` whose `similarProducts` payload returns `403` to the anonymous
- * app-token used during home SSR (see ONEENTRY-ADMIN-TODO C.2.8), so the real products are
+ * app-token used during home SSR, so the real products are
  * unavailable until the Guests permission / block type is fixed in the admin panel — the
  * fallback keeps the surface populated and swaps to real recommendations automatically once
  * the block returns them.

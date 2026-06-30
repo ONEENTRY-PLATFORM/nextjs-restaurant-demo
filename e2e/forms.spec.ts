@@ -24,7 +24,7 @@ test.describe('ContactUsForm (/support)', () => {
 
     // The submit button is only rendered when the OneEntry schema includes a `button`-type field
     // (see ContactUsForm/FormSubmitButton). The current `contact_us` form has none, so the form
-    // renders without a submit control — assert it only when present (see ONEENTRY-ADMIN-TODO C.11.3).
+    // renders without a submit control — assert it only when present.
     const submit = form.locator('button[type="submit"], button.cart_btn');
     if ((await submit.count()) > 0) {
       await expect(submit.first()).toBeVisible({ timeout: FORM_SETTLE_MS });
@@ -50,7 +50,7 @@ test.describe('ContactUsForm (/support)', () => {
 
     // The asterisk only renders for fields whose OneEntry schema carries a `requiredValidator`
     // (see FormInput). If contact_us has no required fields configured there is nothing to assert —
-    // skip rather than fail (see ONEENTRY-ADMIN-TODO: mark contact_us fields required).
+    // skip rather than fail.
     const asterisks = form.locator('span.text-red-500');
     const count = await asterisks.count();
     if (count === 0) {
@@ -129,7 +129,7 @@ test.describe('ContactUsForm (/support)', () => {
     await emailInput.fill('not-an-email');
 
     // No submit button → the form cannot be submitted, so there is nothing to validate. The current
-    // `contact_us` schema has no `button`-type field (see ONEENTRY-ADMIN-TODO C.11.3).
+    // `contact_us` schema has no `button`-type field.
     const submit = form.locator('button[type="submit"], button.cart_btn').first();
     if ((await submit.count()) === 0) {
       test.skip(true, 'contact_us has no submit button (no button-type field) — cannot submit');

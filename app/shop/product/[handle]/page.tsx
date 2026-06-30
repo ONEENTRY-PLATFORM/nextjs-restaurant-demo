@@ -11,7 +11,7 @@ import ProductSingleSkeleton from '@/components/shared/skeletons/ProductSingleSk
 // force-dynamic — product data is cached via `unstable_cache` in `getProductById`, so only the RSC
 // render runs per request (no per-product prerender). Loading skeleton lives in the sibling
 // `loading.tsx` (ProductSingleSkeleton). Trade-off: that loading boundary flushes a 200 shell before
-// `getProductById` resolves, so an unknown id is a soft-404 (200), not a hard 404 — see MISMATCH-LOG E.1.
+// `getProductById` resolves, so an unknown id is a soft-404 (200), not a hard 404.
 export const dynamic = 'force-dynamic';
 
 /**

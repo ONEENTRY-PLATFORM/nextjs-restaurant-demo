@@ -103,7 +103,7 @@ test.describe('Category page (/shop/category/<handle>)', () => {
       waitUntil: 'domcontentloaded',
     });
     // The category route sits under a `loading.tsx` boundary, so Next 16 flushes a 200 shell before
-    // `notFound()` resolves — an unknown handle is a soft-404 (200), not a hard 404 (MISMATCH-LOG E.1).
+    // `notFound()` resolves — an unknown handle is a soft-404 (200), not a hard 404.
     // Assert the not-found view rendered rather than the HTTP status.
     expect([200, 404]).toContain(res?.status());
     await expect(

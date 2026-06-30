@@ -12,7 +12,7 @@ const gotoRestaurantsOrSkip = async (page: Page): Promise<void> => {
   if (res?.status() === 404) {
     test.skip(
       true,
-      'OneEntry `restaurants` page is not configured (404) — see ONEENTRY-ADMIN-TODO'
+      'OneEntry `restaurants` page is not configured (404)'
     );
   }
   await page.waitForLoadState('networkidle').catch(() => undefined);
@@ -42,7 +42,7 @@ test.describe('Restaurants index (/restaurants)', () => {
     await expect(title).not.toBeEmpty();
 
     const href = await firstRestaurantHref(page);
-    test.skip(href === null, 'no restaurant child pages configured — see ONEENTRY-ADMIN-TODO');
+    test.skip(href === null, 'no restaurant child pages configured');
 
     const cards = page.locator('a[href^="/restaurants/"]');
     expect(await cards.count()).toBeGreaterThan(0);
@@ -52,7 +52,7 @@ test.describe('Restaurants index (/restaurants)', () => {
   test('"More about restaurant" navigates to the restaurant detail page', async ({ page }) => {
     await gotoRestaurantsOrSkip(page);
     const href = await firstRestaurantHref(page);
-    test.skip(href === null, 'no restaurant child pages configured — see ONEENTRY-ADMIN-TODO');
+    test.skip(href === null, 'no restaurant child pages configured');
 
     expect(href).toMatch(/^\/restaurants\/[^/?#]+$/);
     await page.goto(href!, { waitUntil: 'domcontentloaded' });
@@ -83,7 +83,7 @@ test.describe('Restaurant detail (/restaurants/<handle>)', () => {
   const gotoFirstRestaurant = async (page: Page): Promise<void> => {
     await gotoRestaurantsOrSkip(page);
     const href = await firstRestaurantHref(page);
-    test.skip(href === null, 'no restaurant child pages configured — see ONEENTRY-ADMIN-TODO');
+    test.skip(href === null, 'no restaurant child pages configured');
     await page.goto(href!, { waitUntil: 'domcontentloaded' });
     await page.waitForLoadState('networkidle').catch(() => undefined);
     await expect(page.locator('section.section_layout h1').first()).toBeVisible({

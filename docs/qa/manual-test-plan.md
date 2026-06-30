@@ -1,7 +1,7 @@
 # Чек-лист ручной проверки — nextjs-restaurant
 
 Пошаговый сценарий ручного QA приложения (Next.js + OneEntry CMS).
-Проставляй `[x]` по мере прохождения. Сломанные пункты заводи в [MISMATCH-LOG.md](../../MISMATCH-LOG.md) (код) или [ONEENTRY-ADMIN-TODO.md](../../ONEENTRY-ADMIN-TODO.md) (данные/админка).
+Проставляй `[x]` по мере прохождения.
 
 ---
 

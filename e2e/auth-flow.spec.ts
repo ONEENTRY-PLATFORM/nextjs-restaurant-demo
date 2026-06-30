@@ -108,14 +108,14 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
 
     // Data-dependent: the assertion needs the E2E user to have at least one order. Wait for either
     // the empty state or the order sections, and skip (don't fail) when OneEntry has no orders for
-    // this account — seeding an order is admin/data work (see ONEENTRY-ADMIN-TODO).
+    // this account — seeding an order is admin/data work.
     const empty = page.getByText(/you have no orders yet/i);
     const sections = page.getByText(/active orders|orders history/i);
     await expect(empty.or(sections.first())).toBeVisible({ timeout: 15_000 });
     if (await empty.isVisible().catch(() => false)) {
       test.skip(
         true,
-        'E2E user has no orders in OneEntry — seed an order (see ONEENTRY-ADMIN-TODO)'
+        'E2E user has no orders in OneEntry — seed an order'
       );
     }
 
@@ -133,7 +133,7 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     // so this is the most stable cross-state assertion.
     //
     // Data-dependent: needs ≥1 booking for the E2E user. Skip (don't fail) when there are none —
-    // seeding a booking is admin/data work (see ONEENTRY-ADMIN-TODO C.11.2).
+    // seeding a booking is admin/data work.
     const bookingRow = page.locator('text=/^№\\s*\\d+/').first();
     const hasBooking = await bookingRow
       .waitFor({ state: 'visible', timeout: 20_000 })
@@ -142,7 +142,7 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     if (!hasBooking) {
       test.skip(
         true,
-        'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)'
+        'E2E user has no bookings in OneEntry — seed a booking'
       );
     }
 
@@ -178,7 +178,7 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
 
     await gotoAndReady(page, '/profile/bookings');
 
-    // Data-dependent: skip when the E2E user has no bookings (see ONEENTRY-ADMIN-TODO C.11.2).
+    // Data-dependent: skip when the E2E user has no bookings.
     const bookingRow = page.locator('text=/^№\\s*\\d+/').first();
     const hasBooking = await bookingRow
       .waitFor({ state: 'visible', timeout: 20_000 })
@@ -187,7 +187,7 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     if (!hasBooking) {
       test.skip(
         true,
-        'E2E user has no bookings in OneEntry — seed a booking (see ONEENTRY-ADMIN-TODO)'
+        'E2E user has no bookings in OneEntry — seed a booking'
       );
     }
 

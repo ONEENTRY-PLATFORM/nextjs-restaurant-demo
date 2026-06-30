@@ -26,7 +26,7 @@ const SIGN_BY_TYPE: Record<IBonusTransactionType, '+' | '-'> = {
  * Reads the loyalty balance and transaction history via the Discounts API (auth-only;
  * the queries are skipped for guests, and history loads lazily when the row is opened).
  * Degrades gracefully to a `0` balance / empty list when the bonus program is not yet
- * configured in the admin panel (see ONEENTRY-ADMIN-TODO C.6.3).
+ * configured in the admin panel.
  *
  * @returns JSX of the bonus section, or `null` for unauthenticated users.
  */

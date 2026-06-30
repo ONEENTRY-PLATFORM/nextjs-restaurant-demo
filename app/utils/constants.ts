@@ -144,10 +144,6 @@ export const PRODUCT_STATUSES = {
 /**
  * OneEntry order-status markers (`order.statusIdentifier`).
  *
- * ⚠️ Food-order statuses require user auth to read, so they cannot be verified
- * anonymously — confirm against the admin panel (see ONEENTRY-ADMIN-TODO).
- * `canceled`/`cancelled` are both kept because the marker spelling is unverified.
- *
  * Booking-storage statuses are confirmed (admin panel, 2026-06-28): `booking_accepted`
  * (default → Active), `booking_cancelled` and `booking_success` (terminal → History).
  */

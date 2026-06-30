@@ -47,7 +47,7 @@ const AuthProviderSelect = ({
   const onProviderClick = (p: IAuthProvidersEntity) => {
     if (p.identifier === 'email' || p.identifier === 'phone') {
       // Route the phone provider through the same email/login flow in SignInForm
-      // (a dedicated PhoneAuthForm is not used - see MISMATCH-LOG.md §C.8.2).
+      // (a dedicated PhoneAuthForm is not used).
       setComponent('SignInForm');
       return;
     }

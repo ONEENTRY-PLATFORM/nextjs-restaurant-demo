@@ -61,8 +61,6 @@ For repository-specific guidance, see:
 - [docs/rules/styles.md](docs/rules/styles.md) — Tailwind v4 tokens, theme, content padding scheme.
 - [docs/rules/icons.md](docs/rules/icons.md) — three icon storage forms and selection rules.
 - [docs/rules/jsdoc.md](docs/rules/jsdoc.md) — JSDoc contract for components, hooks, utilities.
-- [MISMATCH-LOG.md](MISMATCH-LOG.md) — running journal of design ↔ implementation gaps.
-- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — backlog of admin-panel content tasks.
 - [products-mismatch.md](products-mismatch.md) — seed catalog (titles, weights, prices, image links).
 - [GIT-SETUP.md](GIT-SETUP.md) — local git setup.
 
@@ -337,16 +335,6 @@ This is the central hub for the in-repo working rules and operational journals.
 
 - [docs/rules/jsdoc.md](docs/rules/jsdoc.md)
 - JSDoc contract for components, hooks, utilities.
-
-### Mismatch Journal
-
-- [MISMATCH-LOG.md](MISMATCH-LOG.md)
-- Design ↔ implementation gaps, severity P0–P3.
-
-### Admin Backlog
-
-- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md)
-- Admin-panel content tasks (pages, dictionary markers, forms, payments).
 
 ---
 

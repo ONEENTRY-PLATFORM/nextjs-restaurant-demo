@@ -68,7 +68,7 @@ const ReservationAuthStep = ({
     if (p.identifier === 'google') {
       persistResumeBeforeOAuth();
       if (!startGoogleOAuth(p)) {
-        // Google OAuth is not configured (MISMATCH-LOG §C.8.1) - fall back to the email form. Clear resume.
+        // Google OAuth is not configured - fall back to the email form. Clear resume.
         clearPendingReservationResume();
         setSubStep('sign-in');
       }

@@ -70,7 +70,7 @@ test.describe('Catalog & product page', () => {
       waitUntil: 'domcontentloaded',
     });
     // The product route flushes a 200 loading-skeleton shell before `getProductById` resolves and
-    // `notFound()` fires, so an unknown id is a soft-404 (200), not a hard 404 — see MISMATCH-LOG E.1.
+    // `notFound()` fires, so an unknown id is a soft-404 (200), not a hard 404.
     // Assert the not-found view rendered rather than the HTTP status.
     expect([200, 404]).toContain(response?.status());
     await expect(

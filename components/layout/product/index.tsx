@@ -110,7 +110,7 @@ const ProductSingle = async ({ product }: { product: DishProduct }): Promise<JSX
       <RelatedItems productId={id} {...(blocks ? { blocks } : {})} />
 
       {/* "Recently viewed" recommendation surface (UserActivity-driven Block;
-          falls back to catalog until the Block is configured — see ADMIN-TODO C.2.8). */}
+          falls back to catalog until the Block is configured). */}
       <RecommendationsSection
         kind="recentlyViewed"
         titleMarker="recently_viewed_title"

@@ -22,28 +22,6 @@ When implementing each component:
 3. **Don't leave components empty** or with `TODO: hook up data later`. Either OneEntry or a mock — always a working render.
 4. The mock must visually match the markup (rule 1): if `index.html` has 8 dish cards in a section — the mock returns 8 too.
 
-## 3. Missing OneEntry entities → [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md)
-
-When during the work it turns out that the OneEntry admin panel doesn't have a needed page, block, attribute, form, product, etc.:
-
-- Open [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) and **add** a concrete item: what exactly needs to be created (entity, path, fields, relations), for which screen/component it's required, and what fallback temporarily closed the gap.
-- After the user reports that the admin panel is configured, and you have verified it via MCP — **mark with `✅`** next to it.
-- Don't break the file's structure, keep the existing subsection split (C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history).
-- Phrase new items as **actionable**: "create a page in Pages with URL `menu`, type `Category`, locales ru/en" — not "add a menu".
-- **Attribute / form fields** — only as a markdown table with columns `marker | type | title` (at minimum). Add `required`, `default`, `notes` columns if needed — but `marker`/`type`/`title` columns are mandatory and come first. Plain text like "we need fields name, email, message" is not allowed, only a table. Example:
-
-  ```markdown
-  | marker     | type    | title       |
-  |------------|---------|-------------|
-  | `email`    | email   | Your email  |
-  | `message`  | text    | Message     |
-  | `spam`     | spam    | reCAPTCHA   |
-  ```
-
-### 3.1. Questions for the client → same file
-
-If during the work a question arises that must be decided by the **client/customer** (mismatch between mockup and spec, ambiguous behavior, choice between implementation options, missing requirements) — record it **in [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) next to the relevant item**, marking it with the prefix `> ❓ **Ask the client:**`. Describe: what in the markup/spec doesn't add up, what options are possible, which one is temporarily chosen in code. Don't keep such questions only in chat — they get lost. After the client answers — update the item and mark `✅` or remove.
-
 ## 3.1. Styles, theme, and code hygiene → [docs/rules/styles.md](docs/rules/styles.md)
 
 Full rules for working with styles (Tailwind v4, `@theme` tokens, arbitrary values, content side padding, cleanup of commented-out blocks) — in [docs/rules/styles.md](docs/rules/styles.md).
@@ -116,7 +94,7 @@ Strictly follow the rules and patterns of the OneEntry MCP server (`@oneentry/mc
 - Before implementing any CMS-driven feature, call `mcp__oneentry__load-context` / `mcp__oneentry__get-skill` / `mcp__oneentry__get-project-config` and follow the returned recommendations (request structure, naming, argument order, error handling).
 - Use the exact SDK methods and signatures the MCP prescribes — do not invent your own `fetch` wrappers when MCP recommends the `oneentry` npm package.
 - OneEntry response types (Products / Pages / Blocks / Forms / Orders / Attributes) must be brought to the shape MCP dictates (SDK types and interfaces), not an arbitrary one.
-- Graceful fallback on `"Resource is closed"` and empty collections is mandatory, as described in [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
+- Graceful fallback on `"Resource is closed"` and empty collections is mandatory.
 - If an MCP recommendation contradicts the local rules (1–4), the local rules win — but such a conflict must be raised as a question to the user, not resolved silently.
 
 ### 5.3. OneEntry diagnostics — first via MCP/SDK, not curl
@@ -143,42 +121,10 @@ These commands are launched by the user after their own edits. Claude **must not
 - **Exception:** only if the user explicitly asks ("run lint", "check the build").
 - **IDE TypeScript diagnostics** already flow through hooks and land in context automatically — this covers a basic sanity check without explicitly running `tsc`.
 
-## 7. Mismatch and admin-task logs
-
-Two related files:
-
-- [MISMATCH-LOG.md](MISMATCH-LOG.md) — discrepancies between the reference [static-html/](static-html/) and the current Next.js implementation (fixed by editing **code**).
-- [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — gaps in the OneEntry data (what needs to be set up in the **admin panel**).
-
-Earlier everything lived in a single MISMATCH-LOG (section C); now it's split so the admin team doesn't have to scroll through developer code-debt.
-
-- **Structure of [MISMATCH-LOG.md](MISMATCH-LOG.md):**
-  - **Summary** — a "Section / Open / P0–P3" table (overall progress picture).
-  - **Severity** — description of levels.
-  - **Section A. Automated findings** — mass findings by rules (commented code per §3.2, arbitrary `[Npx]` values per §3.1.1, etc.), aggregated per file.
-  - **Section B. Manual screen-by-screen audit** — items of the form `B.{section}.{n}` with links to the corresponding `static-html/*.html`, project files, and Severity.
-- **Structure of [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md):** C.2 Pages, C.3 Related products, C.4 Dictionary, C.5 Profile popup, C.6 Payments, C.7 Audit, C.9 Auth menu, C.10 Reservations history. For C items, rule 3 applies (how to phrase, formatting via `marker | type | title` tables, `✅` marks).
-- **Severity (MISMATCH-LOG only):**
-  - `P0` — DOM structure / functionality is broken (block missing, button doesn't work).
-  - `P1` — noticeable visual mismatch (brand colors, paddings, wrong classes).
-  - `P2` — small things (px tokens instead of named ones, fonts, hover effects).
-  - `P3` — code hygiene (inline SVG → `components/icons/`, remove commented-out).
-  - ONEENTRY-ADMIN-TODO items go without a P mark — tracked as "open / ✅ closed".
-- **When to update:**
-  - Spotted a new mismatch with static-html that you're not fixing right now — add an item to the appropriate section B.x in [MISMATCH-LOG.md](MISMATCH-LOG.md) with a unique id, links to file/lines, and Severity.
-  - Fixed an item — either delete it from the log, or move it to `—` Severity with a note like **Improved** / **Documented** (as already done for B.4.6, B.5.3, B.7.1, etc.). Don't leave outdated items with the old Severity.
-  - A new OneEntry gap surfaced — add an item to [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) per rule 3.
-  - The client closed item C.x in the admin (verified via MCP) — mark `✅` or delete.
-  - On bulk cleanup (e.g. converting arbitrary `[Npx]` → tokens) — update the counters in the Summary and in section A.
-- **Work priority:** when there's free tech-debt budget — first P0/P1 from section B, then mass findings from section A. ONEENTRY-ADMIN-TODO is asynchronous client work, it doesn't block code releases.
-
 ---
 
 ## Quick pre-commit check
 
 - [ ] The component visually matches the corresponding `.html` from [static-html/](static-html/).
 - [ ] Data: OneEntry (via the MCP-compatible layer) or a mock of the right shape — not empty.
-- [ ] If new OneEntry entities were needed — they're added to [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md).
-- [ ] Previously completed items from [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — removed or marked `✅`.
-- [ ] If the change closes an item from [MISMATCH-LOG.md](MISMATCH-LOG.md) (section A/B) or [ONEENTRY-ADMIN-TODO.md](ONEENTRY-ADMIN-TODO.md) — the item is removed or moved to `—` Severity (rule 7).
 - [ ] Lint/build: the user runs them themselves (rule 6).

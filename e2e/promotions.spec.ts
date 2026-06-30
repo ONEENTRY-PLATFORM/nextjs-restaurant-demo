@@ -9,7 +9,7 @@ import { expect, type Page, test } from '@playwright/test';
 const gotoPromotionsOrSkip = async (page: Page): Promise<void> => {
   const res = await page.goto('/promotions', { waitUntil: 'domcontentloaded' });
   if (res?.status() === 404) {
-    test.skip(true, 'OneEntry `promotions` page is not configured (404) — see ONEENTRY-ADMIN-TODO');
+    test.skip(true, 'OneEntry `promotions` page is not configured (404)');
   }
   await page.waitForLoadState('networkidle').catch(() => undefined);
 };
@@ -52,7 +52,7 @@ test.describe('Promotions list (/promotions)', () => {
     // those out.
     const banners = page.locator('section.section_layout a[href^="/promotions/"]');
     if ((await banners.count()) === 0) {
-      test.skip(true, 'no promo banners configured under `promotions` — see ONEENTRY-ADMIN-TODO');
+      test.skip(true, 'no promo banners configured under `promotions`');
     }
 
     const first = banners.first();

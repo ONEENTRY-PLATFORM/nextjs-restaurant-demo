@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 // Any unknown top-level slug falls through to `app/[handle]/page.tsx`, which calls `notFound()` →
 // renders `app/not-found.tsx`. On routes under a `loading.tsx` boundary Next 16 flushes a 200 shell
-// before `notFound()` resolves, so the status is a soft-404 (200), not a hard 404 — see MISMATCH-LOG
-// E.1. The behaviour that matters is that the not-found view renders, so assert the UI, not the code.
+// before `notFound()` resolves, so the status is a soft-404 (200), not a hard 404. The behaviour that
+// matters is that the not-found view renders, so assert the UI, not the code.
 const UNKNOWN_ROUTE = '/__definitely_not_a_real_page_xyz__';
 
 test.describe('404 / not-found', () => {

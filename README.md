@@ -61,8 +61,6 @@ For repository-specific guidance, see:
 - [docs/rules/styles.md](docs/rules/styles.md) — Tailwind v4 tokens, theme, content padding scheme.
 - [docs/rules/icons.md](docs/rules/icons.md) — three icon storage forms and selection rules.
 - [docs/rules/jsdoc.md](docs/rules/jsdoc.md) — JSDoc contract for components, hooks, utilities.
-- [products-mismatch.md](products-mismatch.md) — seed catalog (titles, weights, prices, image links).
-- [GIT-SETUP.md](GIT-SETUP.md) — local git setup.
 
 ## Getting Started with OneEntry
 
@@ -119,6 +117,7 @@ Values that are project-wide but **not** sensitive (so they don't belong in `.en
 | --- | --- |
 | `SHOP_PAGE_LIMIT` | Product cards per catalog page (`/shop`, `/shop/category/*`, `/shop/[handle]`, `/promotions/[handle]`). |
 | `DELIVERY_PRODUCT_ID` | Id of the OneEntry product that represents delivery cost. Hidden from the cart list, added as a separate line to totals and to `orderProducts` on order creation. |
+| `BOOKING_PRODUCT_ID` | Id of the OneEntry product that represents a table reservation. Sent as the order product when a booking order is created. |
 
 **2. OneEntry markers** — string identifiers that mirror what is configured in the OneEntry admin panel. Centralised so a renamed page/form/attribute is a one-line edit, not a project-wide grep. Use these everywhere instead of inline string literals.
 
@@ -126,10 +125,15 @@ Values that are project-wide but **not** sensitive (so they don't belong in `.en
 | --- | --- | --- |
 | `PAGES` | `getPageByUrl` / `getChildPagesByParentUrl` / `getBlocksByPageUrl` / `getProductsByPageUrl`; also matched against `page.pageUrl` returned by the Menus API in navigation dispatchers | `home`, `support`, `notFound`, `promotions`, `restaurants`, `services`, `filters`, `menu`, `profile`, `cart`, `favorites`, `bookings` |
 | `MENUS` | `getMenuByMarker` | `bottomWeb`, `userMenu` |
-| `FORMS` | `getFormByMarker`, `postFormsData` (`formIdentifier`), `Orders.getAllOrdersByMarker`, `Orders.createOrder`, `Orders.updateOrderByMarkerAndId` | `contactUs`, `user`, `deliveryOrder`, `bookingOrder` |
+| `FORMS` | `getFormByMarker`, `postFormsData` (`formIdentifier`), `Orders.getAllOrdersByMarker`, `Orders.createOrder`, `Orders.updateOrderByMarkerAndId` | `contactUs`, `user`, `deliveryOrder`, `bookingOrder`, `reviewForm` |
+| `FORM_MODULE_CONFIG_IDS` | fallback `moduleFormConfigs[0].id` per form, used only when the live value from `getFormByMarker` is unavailable | `reviewForm` |
 | `ATTR_SETS` | `setMarker` of `getSingleAttributeByMarkerSet` | `dish`, `product` |
-| `ATTRS` | `attributeMarker` field on attribute / filter requests | `preferences`, `staticContent`, `sku`, `price`, `cookingTime` |
-| `BLOCKS` | matched against `block.identifier` from `getBlocksByPageUrl`; passed as marker to `Blocks.getBlockByMarker` / `getBlockProducts` | `homePromo`, `recommended`, `homeCategories`, `similarDishes` |
+| `PRODUCT_ATTRS` | keys into a product's `attributeValues`; `attributeMarker` for `getSingleAttributeByMarkerSet` and product `IFilterParams` (search, preferences, filter, price) | `dishName`, `category`, `description`, `images`, `morePic`, `sku`, `price`, `currency`, `sale`, `weight`, `calories`, `cookingTime`, `ingredients`, `preferences`, `filter` |
+| `ATTRS` | `attributeMarker` for non-product attributes | `staticContent` |
+| `CONTENT_FILTERS` | `Filters.getFilterByMarker` (curated grouped filter trees) | `dishes` |
+| `BLOCKS` | matched against `block.identifier` from `getBlocksByPageUrl`; passed as marker to `Blocks.getBlockByMarker` / `getBlockProducts` | `homePromo`, `recommended`, `homeCategories`, `similarDishes`, `cartComplement`, `recentlyViewed`, `trending`, `personalRecommendations` |
+| `PRODUCT_STATUSES` | `product.statusIdentifier` fallback default (live via `getProductStatuses()` / `useOutOfStockMarker()`) | `outOfStock` |
+| `ORDER_STATUSES` | `order.statusIdentifier`; feed the `ORDER_HISTORY_STATUSES` / `BOOKING_HISTORY_STATUSES` tab-routing arrays | `delivered`, `canceled`, `cancelled`, `rejected`, `bookingAccepted`, `bookingCancelled`, `bookingSuccess` |
 
 > Orders share the form's marker — that's why `FORMS.deliveryOrder` is used both for `useGetFormByMarkerQuery({ marker })` and for `getAllOrdersByMarker({ marker })`.
 
@@ -178,16 +182,16 @@ Open <http://localhost:3000> with your browser to see the result.
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Next.js dev server. |
-| `npm run build` | Production build. |
+| `npm run build` | Production build. Runs `npm test` first via the `prebuild` hook. |
 | `npm run start` | Serve the production build. |
 | `npm run lint` | ESLint over the whole repo. |
 | `npm run lint-fix` | ESLint with `--fix`. |
 | `npm run tsc` | One-shot TypeScript check (`tsc --noEmit`). |
 | `npm test` | Jest unit / component tests. |
 | `npm run test:watch` | Jest in watch mode. |
-| `npm run test:e2e` | Playwright end-to-end suite (auto-starts `npm run dev` if no `PLAYWRIGHT_BASE_URL`). |
-| `npm run test:e2e:ui` | Playwright in interactive UI mode. |
-| `npm run test:e2e:headed` | Playwright with a visible browser. |
+| `npm run test:e2e:prod` | Playwright against a production build (`next build` + `next start` on port 3100) — the full-suite entry point. |
+| `npm run test:e2e:ui` | Playwright in interactive UI mode (against `next dev` on 3000). |
+| `npm run test:e2e:headed` | Playwright with a visible browser (against `next dev` on 3000). |
 | `npm run test:e2e:report` | Open the last Playwright HTML report. |
 
 ## Project Structure
@@ -218,7 +222,7 @@ npm test            # run once
 npm run test:watch  # watch mode
 ```
 
-22 suites, ~296 cases. Files live next to the source in `__tests__/` folders.
+31 suites, ~365 cases. Files live next to the source in `__tests__/` folders.
 
 | Suite | Under test |
 | --- | --- |
@@ -244,17 +248,26 @@ npm run test:watch  # watch mode
 | [reservationFormUtils.test.ts](components/reservation/__tests__/reservationFormUtils.test.ts) | `buildFormRows`, `buildTimeIntervalValue`, `formatBookingSummary`, `getAvailableSlotsForDate`, `validateField`, `resolveInputType`, … |
 | [reservationOAuthResumeState.test.ts](components/reservation/__tests__/reservationOAuthResumeState.test.ts) | `set/peek/consume/clearPendingReservationResume` (sessionStorage) |
 | [reservationEditState.test.ts](components/reservation/__tests__/reservationEditState.test.ts) | Module-scoped pending-edit slot (isolated reloads) |
+| [deliverySlots.test.ts](components/cart/steps/step-payment/__tests__/deliverySlots.test.ts) | `parseDeliverySchedule`, `makeGetSlots`, `buildDeliveryTimeInterval` — ASAP and scheduled delivery slots |
+| [deliveryFields.test.ts](components/cart/steps/step-payment/__tests__/deliveryFields.test.ts) | `inputTypeForAttribute`, `selectGenericFields` — delivery form field assembly |
+| [checkout.utils.test.ts](app/api/hooks/__tests__/checkout.utils.test.ts) | `filterAllowedAccounts`, `derivePreviewTotals` — payment-account filtering and order-preview totals |
+| [serverCartSync.utils.test.ts](app/api/hooks/__tests__/serverCartSync.utils.test.ts) | `planCartMerge` / `planWishlistMerge` and cart/wishlist content keys — guest ↔ server sync |
+| [getAllOrdersAcrossStorages.test.ts](app/api/server/orders/__tests__/getAllOrdersAcrossStorages.test.ts) | Order-storage routing between delivery and booking flows (`isBookingStorageMarker`) |
+| [constants.test.ts](app/utils/__tests__/constants.test.ts) | `isBookingStorageMarker` and marker-map invariants |
+| [authMarkers.test.ts](components/forms/__tests__/authMarkers.test.ts) | `pickAuthMarkers` — auth form field-role routing |
+| [shopCrawlMeta.test.ts](app/utils/__tests__/shopCrawlMeta.test.ts) | `isFilteredShopView`, `shopCrawlMeta` — robots/canonical metadata for catalog views |
+| [statsUtils.test.ts](app/api-test/__tests__/statsUtils.test.ts) | `computeStats`, `bucketFor`, `formatMs`, `formatBytes` — api-test diagnostics helpers |
 
 ### End-to-end tests (Playwright)
 
 ```bash
-npm run test:e2e             # run the full suite
-npm run test:e2e:ui          # interactive UI mode
-npm run test:e2e:headed      # visible browser
+npm run test:e2e:prod        # full suite against a production build
+npm run test:e2e:ui          # interactive UI mode (dev server)
+npm run test:e2e:headed      # visible browser (dev server)
 npm run test:e2e:report      # open the last HTML report
 ```
 
-10 spec files, 66 cases × 4 projects (chromium, firefox, webkit, mobile-chrome `Pixel 7`). The config auto-starts `npm run dev` unless `PLAYWRIGHT_BASE_URL` is set, and reuses an already-running dev server outside CI.
+16 spec files, ~95 cases × 4 projects (chromium, firefox, webkit, mobile-chrome `Pixel 7`). `npm run test:e2e:prod` builds and serves a production app on port 3100 (stable memory for the full run); a bare `npx playwright test` — and `:ui` / `:headed` — runs against `next dev` on 3000 and reuses an already-running dev server outside CI. Setting `PLAYWRIGHT_BASE_URL` skips the managed server and targets that origin.
 
 | Spec | What it covers |
 | --- | --- |
@@ -268,6 +281,12 @@ npm run test:e2e:report      # open the last HTML report
 | [forms.spec.ts](e2e/forms.spec.ts) | `/support` ContactUs form — schema render, required asterisks, persisted state, HTML5 email validation; Reset-password flow (open from sign-in, generate code) |
 | [auth.spec.ts](e2e/auth.spec.ts) | Auth modal — open from header / bottom menu, Email provider form, empty / invalid submits, switch to Create account, registration email validation, modal close |
 | [auth-flow.spec.ts](e2e/auth-flow.spec.ts) | Authenticated flow against a real OneEntry test user — sign in → Profile, `/profile`, `/profile/orders`, `/profile/bookings`, expand/collapse, booking row interaction |
+| [header-search.spec.ts](e2e/header-search.spec.ts) | Header search bar — visible input, dropdown opens off-listing, Enter → `/shop?search=`, debounced mirror into `?search=` on `/shop` (no dropdown there), URL ↔ input sync, no-match message, clear closes |
+| [reservation.spec.ts](e2e/reservation.spec.ts) | Booking form — opens from a restaurant page, required-field guard, guest fill advances to the auth step, authed payment submit posts a booking order with the booking product |
+| [not-found.spec.ts](e2e/not-found.spec.ts) | Unknown top-level slug renders the not-found view and offers a working return-home link |
+| [shop-pagination.spec.ts](e2e/shop-pagination.spec.ts) | LoadMore appends `?page=2` and grows the grid; category page injects BreadcrumbList JSON-LD; unknown category handle → not-found view |
+| [promotions.spec.ts](e2e/promotions.spec.ts) | Promotions list — breadcrumb + non-empty title, Home link, promo banners link to `/promotions/<handle>` and open the detail page |
+| [restaurants.spec.ts](e2e/restaurants.spec.ts) | Restaurants index — title + cards, unknown handle → 404; restaurant detail shows the Contacts block and a back link to the index |
 
 Shared helpers (header / bottom-menu triggers, cookie banner dismissal, sign-in) live in [e2e/fixtures/helpers.ts](e2e/fixtures/helpers.ts); [e2e/fixtures/loadEnv.ts](e2e/fixtures/loadEnv.ts) reads `.env.local` so specs can pick up `PLAYWRIGHT_TEST_USER_EMAIL` / `…_PASSWORD` for `auth-flow`.
 

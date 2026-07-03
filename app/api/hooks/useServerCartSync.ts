@@ -5,9 +5,19 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useServerCart, useServerWishlist } from '@/app/api/hooks/useServerCart';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import { addProductToCart, selectCartData, setProductQty } from '@/app/store/reducers/CartSlice';
-import { addFavorites, selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
+import {
+  addProductToCart,
+  removeProduct,
+  selectCartData,
+  setProductQty,
+} from '@/app/store/reducers/CartSlice';
+import {
+  addFavorites,
+  removeFavorites,
+  selectFavoritesItems,
+} from '@/app/store/reducers/FavoritesSlice';
 
+import { errorGuard } from './errorGuard';
 import {
   cartContentKey,
   cartToServerCartItems,
@@ -79,23 +89,29 @@ export const useServerCartSync = (): void => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, isLoading]);
 
-  // Mirror the Redux cart → server cart
+  // Mirror the Redux cart → server cart. errorGuard heals the "Some products do not exist"
+  // rejection: stale ids (deleted in the CMS, still in redux-persist) are pruned from the cart
+  // and the write is retried with the survivors.
   useEffect(() => {
     if (!isAuth || !cartSynced) return;
     const items = cartToServerCartItems(productsData);
     const handle = setTimeout(() => {
-      void cart.set(items);
+      void errorGuard(items, cart.set, phantomIds =>
+        phantomIds.forEach(id => dispatch(removeProduct(id)))
+      );
     }, SYNC_DEBOUNCE_MS);
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, cartSynced, cartKey]);
 
-  // Mirror favorites → server wishlist (same gating as the cart).
+  // Mirror favorites → server wishlist (same gating and stale-id healing as the cart).
   useEffect(() => {
     if (!isAuth || !favSynced) return;
     const items = favoritesToWishlistItems(favorites);
     const handle = setTimeout(() => {
-      void wishlist.set(items);
+      void errorGuard(items, wishlist.set, phantomIds =>
+        phantomIds.forEach(id => dispatch(removeFavorites(id)))
+      );
     }, SYNC_DEBOUNCE_MS);
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps

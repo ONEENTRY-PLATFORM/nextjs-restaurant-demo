@@ -201,6 +201,122 @@ export const signInAsTestUser = async (page: Page): Promise<void> => {
 };
 
 /**
+ * waitForAuthedHeader — waits until the header shows the authenticated Profile link.
+ *
+ * After a full reload `isAuth` is restored asynchronously from the stored token; acting before it
+ * settles lands on the guest path (e.g. cart APPLY opens the auth modal). Gate on the Profile link.
+ *
+ * @param   {Page}   page - Playwright page.
+ * @returns Promise resolving once the Profile link is visible.
+ */
+export const waitForAuthedHeader = async (page: Page): Promise<void> => {
+  await expect(
+    page
+      .locator('header')
+      .getByRole('link', { name: /profile/i })
+      .first()
+  ).toBeVisible({ timeout: 15_000 });
+};
+
+/**
+ * addInStockProductToCart — adds a guaranteed in-stock product to the cart via its product page.
+ *
+ * The catalog grid runs a GSAP entrance animation; when the authed cart state hydrates it can
+ * re-trigger and leave cards transiently hidden, so clicking an in-card add button is flaky in the
+ * checkout flow. Instead this collects product links from `/shop` (hrefs read from the DOM, so
+ * hidden cards are fine), then opens each product page and adds the first one whose CTA is enabled
+ * (out-of-stock CTAs are disabled). Mirrors the product-page approach in `payment-stripe.spec.ts`.
+ *
+ * @param   {Page}   page - Playwright page.
+ * @returns Promise resolving once a product has been added (its CTA swapped to the quantity selector).
+ */
+export const addInStockProductToCart = async (page: Page): Promise<void> => {
+  await gotoAndReady(page, '/shop');
+  const hrefs: string[] = await page
+    .locator('.menu_item a[href^="/shop/product/"]')
+    .evaluateAll(els =>
+      Array.from(
+        new Set(els.map(e => (e as HTMLAnchorElement).getAttribute('href') ?? ''))
+      ).filter(Boolean)
+    );
+  if (hrefs.length === 0) throw new Error('no product links found on /shop');
+
+  for (const href of hrefs.slice(0, 8)) {
+    await page.goto(href, { waitUntil: 'domcontentloaded' });
+    await page.waitForLoadState('networkidle').catch(() => undefined);
+    await expect(page.locator('.shop_section')).toBeVisible({ timeout: 20_000 });
+
+    // A product already in the cart (the authed user's synced cart) renders the QuantitySelector
+    // instead of the add CTA — that already satisfies "cart is non-empty", so we're done.
+    const decrease = page.getByRole('button', { name: /decrease/i }).first();
+    if (await decrease.isVisible().catch(() => false)) return;
+
+    const cta = page.getByRole('button', { name: /to cart|out of stock/i }).first();
+    if (!(await cta.isVisible().catch(() => false))) continue;
+    if (await cta.isDisabled()) continue; // out of stock — try the next candidate
+
+    await cta.click();
+    // The CTA swaps to the QuantitySelector (a decrease button) once the item is in the cart.
+    await expect(decrease).toBeVisible({ timeout: 10_000 });
+    return;
+  }
+  throw new Error('no addable product found among the first candidates');
+};
+
+/**
+ * openOrderStep — drives an already signed-in user to the checkout `order` step.
+ *
+ * The authed test user's server-synced cart is typically already populated, so this opens `/cart`
+ * and uses the existing rows; only if the cart is empty does it add an in-stock product first (via
+ * a product page, resilient to the grid animation). It then clicks the cart APPLY button (authed →
+ * dispatches `setStep('order')`) and waits for the order rows to mount.
+ *
+ * @param   {Page}   page - Playwright page (must already be signed in).
+ * @returns Promise resolving once the `order` step (`.step-order-row`) is visible.
+ */
+export const openOrderStep = async (page: Page): Promise<void> => {
+  await gotoAndReady(page, '/cart');
+  await waitForAuthedHeader(page);
+
+  const cartHasItem = await page
+    .locator('.product-in-cart')
+    .first()
+    .isVisible({ timeout: 8_000 })
+    .catch(() => false);
+  if (!cartHasItem) {
+    await addInStockProductToCart(page);
+    await gotoAndReady(page, '/cart');
+    await waitForAuthedHeader(page);
+    await expect(page.locator('.product-in-cart').first()).toBeVisible({ timeout: 20_000 });
+  }
+
+  const apply = page.locator('button.cart-apply-btn').first();
+  await expect(apply).toBeVisible({ timeout: 20_000 });
+  await apply.click();
+
+  await expect(page.locator('.step-order-row').first()).toBeVisible({ timeout: 20_000 });
+};
+
+/**
+ * openPaymentStep — drives an already signed-in user through `order` to the `payment` step.
+ *
+ * Extends {@link openOrderStep} by clicking StepOrder's proceed button (the only `step-order-row`
+ * that is also `bg-brand`) and waiting for the payment rows to mount.
+ *
+ * @param   {Page}   page - Playwright page (must already be signed in).
+ * @returns Promise resolving once the `payment` step (`.step-payment-row`) is visible.
+ */
+export const openPaymentStep = async (page: Page): Promise<void> => {
+  await openOrderStep(page);
+
+  const proceed = page.locator('button.step-order-row.bg-brand').first();
+  await expect(proceed).toBeVisible({ timeout: 20_000 });
+  await proceed.click();
+
+  await expect(page.locator('.step-payment-row').first()).toBeVisible({ timeout: 20_000 });
+};
+
+/**
  * swipeDownToClose — simulates a downward swipe-to-dismiss on a bottom-sheet / drawer (mobile).
  *
  * Dispatches touchstart → touchmove → touchend with a 200px downward delta, satisfying both swipe

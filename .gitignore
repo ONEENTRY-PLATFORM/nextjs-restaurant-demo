@@ -58,3 +58,4 @@ static-html
 .playwright-mcp
 .env*.local
 .mcp.json
+

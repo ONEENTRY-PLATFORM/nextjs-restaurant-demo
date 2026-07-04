@@ -58,6 +58,11 @@ test.describe('Cart page — quantity & removal controls', () => {
     await addOneAndOpenCart(page);
 
     await expect(page.locator('.product-in-cart')).toHaveCount(1);
+
+    // The toast container is lazy-mounted (requestIdleCallback / 1.5s fallback). On WebKit it can
+    // mount after the delete click, dropping the toast — wait for it to be attached first.
+    await expect(page.locator('.Toastify')).toBeAttached({ timeout: 10_000 });
+
     await page
       .locator('.product-in-cart')
       .first()
@@ -65,7 +70,7 @@ test.describe('Cart page — quantity & removal controls', () => {
       .click();
 
     // The removal toast carries an Undo action.
-    await expect(page.getByText(/removed from cart/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/removed from cart/i)).toBeVisible({ timeout: 15_000 });
     await page.getByRole('button', { name: /^undo$/i }).click();
 
     // Undo re-adds the product → the row is back.

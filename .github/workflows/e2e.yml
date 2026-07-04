@@ -1,9 +1,9 @@
 name: E2E
 
+# Manual-only: auto-triggers (push/pull_request) removed to avoid consuming
+# GitHub Actions minutes. Run from the Actions tab via "Run workflow", or
+# locally with `npm run test:e2e:prod`.
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
 
 # Cancel superseded runs on the same ref.

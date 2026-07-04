@@ -35,13 +35,15 @@ test.describe.serial('Authenticated user flow (orders / bookings)', () => {
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
 
-    // After successful login the header swaps the "Sign in" button for a "Profile" link/button.
-    await expect(
-      page
-        .locator('header')
-        .getByRole('link', { name: /profile/i })
-        .first()
-    ).toBeVisible({ timeout: 15_000 });
+    // After successful login the header swaps the "Sign in" button for a "Profile" link. On mobile the
+    // desktop header (which hosts that link) is `display:none`, so the authed link is present in the
+    // DOM but not visible — assert accordingly per viewport.
+    const profileLink = page.locator('header a[href="/profile"]').first();
+    if (isMobile(page)) {
+      await expect(profileLink).toBeAttached({ timeout: 15_000 });
+    } else {
+      await expect(profileLink).toBeVisible({ timeout: 15_000 });
+    }
   });
 
   test('after login the profile menu reveals user sub-items (hover dropdown desktop / popup mobile)', async ({

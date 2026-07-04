@@ -142,7 +142,13 @@ export const openAuthModal = async (page: Page): Promise<void> => {
     .locator('header')
     .getByRole('button', { name: /sign in|profile/i })
     .first();
-  const anyBtn = page.getByRole('button', { name: /sign in|profile/i }).first();
+  // On mobile the desktop-header "Sign in" button (first in DOM) is `display:none`, while the visible
+  // trigger is the bottom-menu "Profile" button — filter to the visible one, otherwise `.first()`
+  // targets the hidden desktop button and the click hangs until timeout.
+  const anyBtn = page
+    .getByRole('button', { name: /sign in|profile/i })
+    .filter({ visible: true })
+    .first();
 
   if (!isMobile(page) && (await desktopBtn.isVisible().catch(() => false))) {
     await desktopBtn.click();
@@ -183,39 +189,42 @@ export const signInAsTestUser = async (page: Page): Promise<void> => {
 
   await modal.getByRole('button', { name: /sign in|log in/i }).click();
 
-  // Either the modal closes (success) or an error message appears.
+  // Success = the sign-in form leaves the modal. On desktop the modal closes; on MOBILE the drawer
+  // does NOT close — NavItemProfile sets `postAuthComponent='ProfilePopup'`, so on success the drawer
+  // swaps to the ProfilePopup and `#modalBody` stays mounted. "Modal hidden" is therefore not a
+  // portable signal; the password field is gone on success and stays (with an error) on failure.
   const authFailed = modal.getByText(/authentication failed|invalid|incorrect/i);
-  const closed = modal
-    .waitFor({ state: 'hidden', timeout: 20_000 })
-    .then(() => 'closed' as const)
+  const passwordField = modal.locator('input[type="password"]');
+  const succeeded = passwordField
+    .first()
+    .waitFor({ state: 'detached', timeout: 20_000 })
+    .then(() => 'ok' as const)
     .catch(() => 'pending' as const);
   const errored = authFailed
     .waitFor({ state: 'visible', timeout: 20_000 })
     .then(() => 'errored' as const)
     .catch(() => 'pending' as const);
-  const winner = await Promise.race([closed, errored]);
+  const winner = await Promise.race([succeeded, errored]);
   if (winner === 'errored') {
     throw new Error('OneEntry auth failed for E2E_USER_EMAIL — verify credentials in .env.local');
   }
-  await expect(modal).toBeHidden({ timeout: 5_000 });
+  await expect(passwordField).toHaveCount(0, { timeout: 5_000 });
 };
 
 /**
- * waitForAuthedHeader — waits until the header shows the authenticated Profile link.
+ * waitForAuthedHeader — waits until the header renders the authenticated Profile link.
  *
  * After a full reload `isAuth` is restored asynchronously from the stored token; acting before it
- * settles lands on the guest path (e.g. cart APPLY opens the auth modal). Gate on the Profile link.
+ * settles lands on the guest path (e.g. cart APPLY opens the auth modal). The desktop header's
+ * `a[href="/profile"]` link renders ONLY when authenticated — but on mobile that header is
+ * `display:none`, so gate on `toBeAttached` (present in the DOM) rather than `toBeVisible`, which is a
+ * portable auth signal on both viewports.
  *
  * @param   {Page}   page - Playwright page.
- * @returns Promise resolving once the Profile link is visible.
+ * @returns Promise resolving once the authed Profile link is in the DOM.
  */
 export const waitForAuthedHeader = async (page: Page): Promise<void> => {
-  await expect(
-    page
-      .locator('header')
-      .getByRole('link', { name: /profile/i })
-      .first()
-  ).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('header a[href="/profile"]').first()).toBeAttached({ timeout: 15_000 });
 };
 
 /**

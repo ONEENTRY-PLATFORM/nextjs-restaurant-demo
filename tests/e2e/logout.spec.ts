@@ -53,7 +53,11 @@ const logoutViaMenu = async (page: Page): Promise<void> => {
 
     const logout = popup.getByRole('button', { name: /log ?out/i }).first();
     await expect(logout).toBeVisible({ timeout: 10_000 });
-    await logout.click();
+    // The ProfilePopup rows keep re-animating (GSAP `profile-anim-row`), so a normal click races the
+    // stability check ("not stable" → "detached"). Dispatch the click directly — it fires the React
+    // onClick without waiting for actionability.
+    await logout.scrollIntoViewIfNeeded().catch(() => undefined);
+    await logout.dispatchEvent('click');
     return;
   }
 
@@ -88,12 +92,10 @@ test.describe.serial('Logout flow', () => {
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
 
-    // Confirm the authenticated state before logging out. On mobile the desktop header (which hosts
-    // the Profile link) is `display:none`, so the ProfilePopup opened inside `logoutViaMenu` is the
-    // proof of auth there; on desktop assert the header Profile link is present.
-    if (!isMobile(page)) {
-      await waitForAuthedHeader(page);
-    }
+    // Wait until auth is ready before opening the profile menu — otherwise the profile trigger takes
+    // the guest path (auth picker) instead of the ProfilePopup/menu. `waitForAuthedHeader` gates on the
+    // authed Profile link being in the DOM, which works on both desktop and mobile.
+    await waitForAuthedHeader(page);
 
     await logoutViaMenu(page);
 

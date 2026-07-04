@@ -13,6 +13,7 @@ import {
   selectBonusAmount,
   setLastOrderId,
 } from '@/app/store/reducers/OrderSlice';
+import { saveCheckoutCartSnapshot } from '@/app/utils/checkoutCartSnapshot';
 import { DELIVERY_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
@@ -180,6 +181,16 @@ export const useCreateOrder = (): UseCreateOrderApi => {
         };
       }
 
+      // The cart is wiped before leaving for the hosted checkout; snapshot it so
+      // /payment/cancel can put the items back if the user aborts the payment.
+      saveCheckoutCartSnapshot(
+        cartProducts.map(p => ({
+          id: p.id,
+          quantity: p.quantity ?? 1,
+          selected: p.selected !== false,
+        })),
+        id
+      );
       clearCheckoutState();
       return { ok: true, orderId: id, paymentUrl };
     } catch (e) {

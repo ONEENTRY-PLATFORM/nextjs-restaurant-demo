@@ -5,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 
-type ProductCartEntry = {
+export type ProductCartEntry = {
   id: number;
   quantity: number;
   selected: boolean;
@@ -167,6 +167,16 @@ export const cartSlice = createSlice({
       state.productsData = initialState.productsData;
       state.products = initialState.products;
     },
+    restoreCartProducts(state, action: PayloadAction<ProductCartEntry[]>) {
+      action.payload.forEach(entry => {
+        const index = state.productsData.findIndex(product => product.id === entry.id);
+        if (index === -1) {
+          state.productsData.push(entry);
+        } else if ((state.productsData[index]?.quantity ?? 0) <= 0) {
+          state.productsData[index] = entry;
+        }
+      });
+    },
     addDeliveryToCart(state, action: PayloadAction<IProductsEntity>) {
       state.delivery = action.payload;
     },
@@ -207,6 +217,7 @@ export const {
   deselectProduct,
   removeAllReservations,
   removeAllProducts,
+  restoreCartProducts,
   setCartVersion,
   addProductToCart,
   removeProduct,

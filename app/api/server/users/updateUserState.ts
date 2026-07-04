@@ -3,7 +3,6 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import { getApi, isError } from '@/app/api';
 import type { IProducts } from '@/app/types/global';
-import { normalizePhoneE164 } from '@/components/utils';
 
 /**
  * updateUserState — updates the user's state via the Users API.
@@ -39,8 +38,6 @@ export const updateUserState = async ({
       type: 'string',
       value: String(item.value ?? ''),
     }));
-  const email = user.formData.find(item => item.marker === 'email');
-  const phone = user.formData.find(item => item.marker === 'phone');
 
   try {
     const fresh = await getApi().Users.getUser();
@@ -49,6 +46,8 @@ export const updateUserState = async ({
     }
     const freshUser = fresh as IUserEntity;
 
+    // No notificationData: a state-only sync must not touch notification prefs, and
+    // OAuth-created users have no notification record server-side — PUT /me 500s on it.
     const res = await getApi().Users.updateUser({
       formIdentifier: freshUser.formIdentifier,
       formData: [...formData],
@@ -56,11 +55,6 @@ export const updateUserState = async ({
         ...freshUser.state,
         favorites,
         cart,
-      },
-      notificationData: {
-        email: email?.value as string,
-        phonePush: [],
-        phoneSMS: normalizePhoneE164(phone?.value as string | undefined),
       },
     });
 

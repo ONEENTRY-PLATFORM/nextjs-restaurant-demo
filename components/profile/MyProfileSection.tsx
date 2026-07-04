@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 
 import { getApi } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { userHasPasswordAuth } from '@/components/forms/authProviders';
 import EyeIcon from '@/components/icons/eye';
 import EyeOpenIcon from '@/components/icons/eye-o';
 import ProfileIcon from '@/components/icons/profile';
@@ -46,7 +47,10 @@ type MyProfileSectionProps = {
  *
  * Renders the `user`-form attributes (minus hidden markers), marks required ones with a red
  * asterisk, validates values against the form validators on submit (highlighting failed fields),
- * and saves edits via `updateUser`.
+ * and saves edits via `updateUser`. For OAuth-provider sessions (no password credentials)
+ * password attributes are not rendered, the login field is read-only and back-filled into
+ * `formData` from `user.identifier` (parity with email-provider records — same `user` form),
+ * and the update payload carries neither `authData` nor `notificationData`.
  *
  * @param   {MyProfileSectionProps}   props             - Component props.
  * @param   {IUserEntity | undefined} props.user        - Current authenticated user.
@@ -69,13 +73,18 @@ const MyProfileSection = ({
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
+  // OAuth accounts (google, …) have no password credentials: password inputs are
+  // meaningless for them and PUT /me rejects password authData for such users.
+  const passwordAuth = userHasPasswordAuth(user);
+
   const profileAttributes = useMemo<IFormAttribute[]>(
     () =>
       (userForm?.attributes ?? [])
         .filter(attr => !HIDDEN_PROFILE_MARKERS.has(attr.marker))
+        .filter(attr => passwordAuth || !(attr.isPassword || attr.marker.includes('password')))
         .slice()
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0)),
-    [userForm]
+    [userForm, passwordAuth]
   );
 
   const fieldValue = useCallback(
@@ -111,12 +120,15 @@ const MyProfileSection = ({
     setSaving(true);
     setSaveError('');
     try {
-      const password = fieldValue('password');
-      const login = fieldValue('email') || user.identifier || '';
+      const password = passwordAuth ? fieldValue('password') : '';
       const hasPassword = Boolean(password);
+      // isLogin attrs: for password providers the email row rides along only with a password
+      // change (login-change semantics); for OAuth sessions it is always included — the server
+      // creates such users WITHOUT an email row (the address lives in `user.identifier`), and
+      // sending it backfills the record to parity with email-provider users (same `user` form).
       const formData = (userForm?.attributes ?? [])
         .filter(attr => !attr.isPassword)
-        .filter(attr => hasPassword || !attr.isLogin)
+        .filter(attr => hasPassword || !attr.isLogin || !passwordAuth)
         .map(attr => {
           const isHidden = HIDDEN_PROFILE_MARKERS.has(attr.marker);
           let value: unknown = isHidden
@@ -139,20 +151,25 @@ const MyProfileSection = ({
         })
         // Do not send hidden fields without a value - the server rejects required even for an empty string.
         .filter(entry => !(HIDDEN_PROFILE_MARKERS.has(entry.marker) && entry.value === ''));
+      // PUT /me accepts at most ONE authData item — password change is `[{ marker: 'password' }]`,
+      // never the legacy `[email, password]` pair (server: `"authData" must contain <= 1 items`);
+      // an EMPTY authData array is also rejected ("Login or password values are missed"), so the
+      // key is omitted entirely unless a password change is in flight.
+      // notificationData is only sent for password-provider accounts: OAuth-created users have
+      // no notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
       await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
         formData: formData as unknown as IAuthFormData[],
-        authData: hasPassword
-          ? [
-              { marker: 'email', value: login },
-              { marker: 'password', value: password },
-            ]
-          : [],
-        notificationData: {
-          email: fieldValue('email') || user.identifier || '',
-          phonePush: [],
-          phoneSMS: normalizePhoneE164(fieldValue('phone')),
-        },
+        ...(hasPassword ? { authData: [{ marker: 'password', value: password }] } : {}),
+        ...(passwordAuth
+          ? {
+              notificationData: {
+                email: fieldValue('email') || user.identifier || '',
+                phonePush: [],
+                phoneSMS: normalizePhoneE164(fieldValue('phone')),
+              },
+            }
+          : {}),
         state: {},
       });
       refreshUser();
@@ -187,8 +204,6 @@ const MyProfileSection = ({
         <div className="mt-5">
           <form
             className="flex flex-col gap-3.75"
-            // Browser autofill is disabled: the form is prefilled from OneEntry
-            // user data, and autofilled values would be indistinguishable from it.
             autoComplete="off"
             onSubmit={e => {
               e.preventDefault();
@@ -201,8 +216,10 @@ const MyProfileSection = ({
               const shown = Boolean(shownPasswords[attr.marker]);
               const placeholder = String(attr.additionalFields?.placeholder?.value ?? '');
               const error = errors[attr.marker];
-              // Password is exempt from the required mark: empty means "keep the current one".
               const showRequiredMark = isRequiredAttr(attr) && !isPassword;
+              // The login field of an OAuth account belongs to the provider (Google) and
+              // is not persistable via PUT /me — render it read-only to avoid silent loss.
+              const loginLocked = attr.isLogin === true && !passwordAuth;
               return (
                 <div key={attr.marker} className="profile-anim-row flex flex-col">
                   <div className="flex gap-5">
@@ -214,11 +231,10 @@ const MyProfileSection = ({
                       id={attr.marker}
                       className={`input${error ? ' input-error' : ''}`}
                       type={isPassword && shown ? 'text' : inputType}
-                      // `new-password` for password fields: Chrome ignores plain
-                      // `off` on credential inputs and keeps autofilling them.
                       autoComplete={isPassword ? 'new-password' : 'off'}
                       placeholder={placeholder}
                       aria-invalid={Boolean(error)}
+                      readOnly={loginLocked}
                       value={fieldValue(attr.marker)}
                       onChange={e => {
                         setEdits(prev => ({

@@ -8,6 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { getApi } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { userHasPasswordAuth } from '@/components/forms/authProviders';
 import {
   getUserField,
   getUserRawField,
@@ -28,6 +29,8 @@ type AddressSectionProps = {
  * AddressSection — collapsible "Address" block: saved addresses + add-address form.
  *
  * Selecting / deleting / adding an address re-serializes `user_address` and persists it via `updateUser`.
+ * For OAuth sessions the payload omits `notificationData` and back-fills the missing `email`
+ * row from `user.identifier` (parity with email-provider records).
  *
  * @param   {AddressSectionProps}     props                       - Component props.
  * @param   {IUserEntity | undefined} props.user                  - Current authenticated user.
@@ -66,8 +69,11 @@ const AddressSection = ({
       if (!user?.formIdentifier || !Array.isArray(user.formData)) return;
       setAddressError('');
       const serialized = JSON.stringify(next);
+      const passwordAuth = userHasPasswordAuth(user);
       const allowedMarkers = new Set(
-        (userForm?.attributes ?? []).filter(a => !a.isLogin && !a.isPassword).map(a => a.marker)
+        (userForm?.attributes ?? [])
+          .filter(a => (!a.isLogin || !passwordAuth) && !a.isPassword)
+          .map(a => a.marker)
       );
       const formData = (user.formData as Array<{ marker: string; type?: string; value: unknown }>)
         .filter(f => f.marker !== 'otp_code' && allowedMarkers.has(f.marker))
@@ -79,19 +85,37 @@ const AddressSection = ({
       if (allowedMarkers.has('user_address') && !formData.some(f => f.marker === 'user_address')) {
         formData.push({ marker: 'user_address', type: 'json', value: serialized });
       }
+      // OAuth-created users have no `email` row in formData (the address lives in
+      // `user.identifier`) — backfill it so their record reaches parity with
+      // email-provider users (both providers share the same `user` form).
+      const loginAttr = (userForm?.attributes ?? []).find(a => a.isLogin);
+      if (
+        !passwordAuth &&
+        loginAttr &&
+        !formData.some(f => f.marker === loginAttr.marker) &&
+        user.identifier?.includes('@')
+      ) {
+        formData.push({ marker: loginAttr.marker, type: 'string', value: user.identifier });
+      }
       try {
         // phoneSMS is optional and validated server-side against /^\+[0-9]{10,15}$/ - do not send a malformed phone in formData, otherwise it blocks saving addresses.
         const phone = normalizePhoneE164(getUserField(user, 'phone'));
         const phoneValid = /^\+[0-9]{10,15}$/.test(phone);
-        // No `authData` — updateUser without credentials is permitted for the currently authenticated user
+        // No `authData` — updateUser without credentials is permitted for the currently authenticated user.
+        // notificationData only for password-provider accounts: OAuth-created users have no
+        // notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
         await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
           formData: formData as unknown as IAuthFormData[],
-          notificationData: {
-            email: getUserField(user, 'email') || user.identifier || '',
-            phonePush: [],
-            ...(phoneValid ? { phoneSMS: phone } : {}),
-          },
+          ...(userHasPasswordAuth(user)
+            ? {
+                notificationData: {
+                  email: getUserField(user, 'email') || user.identifier || '',
+                  phonePush: [],
+                  ...(phoneValid ? { phoneSMS: phone } : {}),
+                },
+              }
+            : {}),
           state: {},
         });
         refreshUser();

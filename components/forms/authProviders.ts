@@ -1,4 +1,5 @@
 import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 // Fallback for when the OneEntry admin leaves the `google` provider's
 // `config.oauthAuthUrl` empty — the provider itself is the source of truth
@@ -81,6 +82,23 @@ export const sortActiveAuthProviders = (
       return ra - rb;
     });
 };
+
+/** Providers whose accounts carry password credentials (see {@link findEmailLikeProvider}). */
+const PASSWORD_AUTH_PROVIDERS = new Set(['email', 'phone']);
+
+/**
+ * userHasPasswordAuth — whether the user's account is backed by password credentials.
+ *
+ * OAuth-created users (`authProviderIdentifier: 'google'`, …) have no password, and the
+ * OneEntry PUT `/me` schema for them is stricter: password `authData` is not applicable and
+ * sending `notificationData` crashes the server with 500 "Cannot read properties of null
+ * (reading 'en_US')" because their notification record was never initialized at signup.
+ *
+ * @param   {IUserEntity | undefined} user - Current authenticated user.
+ * @returns `true` when the user signed up through a password-capable provider (email/phone).
+ */
+export const userHasPasswordAuth = (user: IUserEntity | undefined): boolean =>
+  PASSWORD_AUTH_PROVIDERS.has(user?.authProviderIdentifier ?? '');
 
 /**
  * findEmailLikeProvider — picks the active provider that the email/password flow should

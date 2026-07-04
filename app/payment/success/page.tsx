@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { JSX } from 'react';
 import { Suspense } from 'react';
 
+import PaymentCartRecovery from '@/components/payment/PaymentCartRecovery';
 import PaymentResult from '@/components/payment/PaymentResult';
 
 // Force-dynamic: reads `searchParams` (order id) on the client and the shared
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 const PaymentSuccessPage = (): JSX.Element => {
   return (
     <section className="flex min-h-[70vh] items-center justify-center bg-black px-4 py-10">
+      <PaymentCartRecovery variant="success" />
       <Suspense fallback={<div className="min-h-75 w-full max-w-97.5" />}>
         <PaymentResult variant="success" />
       </Suspense>

@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { oauthLogIn, syncTokens } from '@/app/api';
+import { getLang, oauthLogIn, reDefine, saveAuthProviderMarker, syncTokens } from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { GOOGLE_OAUTH_MARKER_STORAGE_KEY } from '@/components/forms/authProviders';
@@ -82,7 +82,7 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const toastId = toast.loading('Signing you in…');
     router.replace(returnTo);
 
-    oauthLogIn({ marker: providerMarker, code, redirectUri }).then(res => {
+    oauthLogIn({ marker: providerMarker, code, redirectUri }).then(async res => {
       if (res?.error || !res?.data) {
         toast.update(toastId, {
           render: res?.error ?? 'Google sign-in failed.',
@@ -94,6 +94,11 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
         return;
       }
       localStorage.setItem('refresh-token', res.data.refreshToken);
+      // The refresh endpoint is provider-scoped: the marker must be persisted and
+      // the SDK re-created with it, otherwise the next token refresh goes to the
+      // default `email` provider and kills the session (400 → 401 → logout).
+      saveAuthProviderMarker(providerMarker);
+      await reDefine(res.data.refreshToken, getLang());
       syncTokens(res.data.accessToken, res.data.refreshToken);
       authenticate();
       toast.update(toastId, {

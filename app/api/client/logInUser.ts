@@ -5,7 +5,7 @@ import type {
   IAuthPostBody,
 } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-import { getApi, isError, syncTokens } from '@/app/api';
+import { getApi, isError, saveAuthProviderMarker, syncTokens } from '@/app/api';
 
 type LogInProps = {
   method: string;
@@ -44,6 +44,7 @@ export const logInUser = async ({
     if (!isError(result)) {
       const auth = result as IAuthEntity;
       if (auth.accessToken && auth.refreshToken) {
+        saveAuthProviderMarker(method);
         syncTokens(auth.accessToken, auth.refreshToken);
         return { data: auth };
       }

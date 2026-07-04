@@ -3,9 +3,11 @@ export {
   getApi,
   getImageUrl,
   getLang,
+  getStoredAuthProviderMarker,
   hasActiveSession,
   isError,
   reDefine,
+  saveAuthProviderMarker,
   setGuestId,
   syncTokens,
 } from './api/api';

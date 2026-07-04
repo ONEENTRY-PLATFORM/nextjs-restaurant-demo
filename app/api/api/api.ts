@@ -7,18 +7,59 @@ const APP_TOKEN = (process.env.NEXT_PUBLIC_ONEENTRY_TOKEN ||
   process.env.NEXT_PUBLIC_APP_TOKEN) as string;
 
 const DEFAULT_LANG = 'en_US';
+const AUTH_PROVIDER_MARKER_KEY = 'auth-provider-marker';
+
+/**
+ * getStoredAuthProviderMarker — auth-provider marker the current session was created with.
+ *
+ * The OneEntry refresh endpoint is provider-scoped (`/marker/<provider>/users/refresh`):
+ * refreshing a `google`-issued token via the default `email` marker returns
+ * `400 "Provided token is incorrect"`, so the marker must survive reloads
+ * alongside the refresh token.
+ *
+ * @returns Stored provider marker, or `'email'` when nothing is stored (incl. on the server).
+ */
+export const getStoredAuthProviderMarker = (): string => {
+  if (typeof window === 'undefined') {
+    return 'email';
+  }
+  return localStorage.getItem(AUTH_PROVIDER_MARKER_KEY) || 'email';
+};
+
+/**
+ * saveAuthProviderMarker — persists the auth-provider marker of the active session.
+ *
+ * @param   {string} marker - Provider marker (`email`, `google`, …), or `''` to clear it.
+ * @returns Nothing.
+ */
+export const saveAuthProviderMarker = (marker: string): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  if (!marker) {
+    localStorage.removeItem(AUTH_PROVIDER_MARKER_KEY);
+    return;
+  }
+  localStorage.setItem(AUTH_PROVIDER_MARKER_KEY, marker);
+};
 
 /**
  * saveFunction — persists the refreshToken to localStorage on every SDK rotation.
  *
- * @param   {string}        refreshToken - Fresh refreshToken issued by the SDK.
+ * On rotation stores the fresh token; an empty string (the SDK sends it from
+ * `logout`/`logoutAll`) removes the stored token and provider marker instead —
+ * keeping the revoked token would feed refresh(400)/me(401) retry loops after sign-out.
+ *
+ * @param   {string}        refreshToken - Fresh refreshToken issued by the SDK, or `''` to clear it.
  * @returns Promise that resolves once the token has been written (no-op on the server).
  */
 const saveFunction = async (refreshToken: string): Promise<void> => {
-  if (!refreshToken) {
+  if (typeof window === 'undefined') {
     return;
   }
-  if (typeof window === 'undefined') {
+  if (!refreshToken) {
+    localStorage.removeItem('refresh-token');
+    localStorage.removeItem(AUTH_PROVIDER_MARKER_KEY);
     return;
   }
   localStorage.setItem('refresh-token', refreshToken);
@@ -44,6 +85,10 @@ export const getApi = (): ReturnType<typeof defineOneEntry> => api;
 /**
  * reDefine — recreates the SDK instance with a (possibly) new refreshToken and langCode.
  *
+ * The stored auth-provider marker is passed along so token refresh hits the
+ * provider the session was created with (a `google` token dies on the default
+ * `email` refresh endpoint with `400 "Provided token is incorrect"`).
+ *
  * @param   {string}        refreshToken - Refresh token from localStorage.
  * @param   {string}        [langCode]   - Current language (defaults to `en_US`).
  * @returns Promise that resolves after the SDK instance has been recreated.
@@ -57,6 +102,7 @@ export async function reDefine(refreshToken: string, langCode?: string): Promise
     token: APP_TOKEN,
     auth: {
       refreshToken,
+      providerMarker: getStoredAuthProviderMarker(),
       saveFunction,
     },
   });

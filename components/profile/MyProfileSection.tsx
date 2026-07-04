@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 
 import { getApi } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import EyeIcon from '@/components/icons/eye';
+import EyeOpenIcon from '@/components/icons/eye-o';
 import ProfileIcon from '@/components/icons/profile';
 import {
   getUserField,
@@ -18,7 +20,19 @@ import {
   resolveInputType,
   type UserFormData,
 } from '@/components/profile/profileSectionsUtils';
+import { validateField } from '@/components/reservation/reservationFormUtils';
 import { normalizePhoneE164 } from '@/components/utils';
+
+/**
+ * isRequiredAttr — checks whether a OneEntry form attribute carries a strict required validator.
+ *
+ * @param   {IFormAttribute} attr - OneEntry form attribute.
+ * @returns `true` when the attribute is required.
+ */
+const isRequiredAttr = (attr: IFormAttribute): boolean => {
+  const v = (attr.validators ?? {}) as Record<string, unknown>;
+  return (v.requiredValidator as { strict?: boolean } | undefined)?.strict === true;
+};
 
 type MyProfileSectionProps = {
   user: IUserEntity | undefined;
@@ -30,7 +44,9 @@ type MyProfileSectionProps = {
 /**
  * MyProfileSection — collapsible "My Profile" form in the profile drawer.
  *
- * Renders the `user`-form attributes (minus hidden markers) and saves edits via `updateUser`.
+ * Renders the `user`-form attributes (minus hidden markers), marks required ones with a red
+ * asterisk, validates values against the form validators on submit (highlighting failed fields),
+ * and saves edits via `updateUser`.
  *
  * @param   {MyProfileSectionProps}   props             - Component props.
  * @param   {IUserEntity | undefined} props.user        - Current authenticated user.
@@ -48,6 +64,8 @@ const MyProfileSection = ({
   const t = useT();
   const [profileOpen, setProfileOpen] = useState(defaultOpen);
   const [edits, setEdits] = useState<Record<string, string>>({});
+  const [shownPasswords, setShownPasswords] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
@@ -63,13 +81,33 @@ const MyProfileSection = ({
   const fieldValue = useCallback(
     (marker: string): string => {
       if (marker.includes('password')) return edits[marker] ?? '';
-      return edits[marker] !== undefined ? edits[marker]! : getUserField(user, marker);
+      if (edits[marker] !== undefined) return edits[marker]!;
+      const stored = getUserField(user, marker);
+      // OAuth-created users may have no `email` row in formData — the address
+      // lives only in `user.identifier`; fall back so the field is not empty.
+      if (!stored && marker === 'email' && user?.identifier?.includes('@')) {
+        return user.identifier;
+      }
+      return stored;
     },
     [edits, user]
   );
 
   const onSaveProfile = useCallback(async () => {
     if (!user?.formIdentifier) return;
+
+    // Client-side pass over the OneEntry validators. Password fields are exempt when left
+    // empty - a blank password means "keep the current one", not a missing required value.
+    const nextErrors: Record<string, string> = {};
+    for (const attr of profileAttributes) {
+      const value = fieldValue(attr.marker);
+      if (attr.marker.includes('password') && !value) continue;
+      const message = validateField(attr, value, t);
+      if (message) nextErrors[attr.marker] = message;
+    }
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     setSaving(true);
     setSaveError('');
     try {
@@ -125,7 +163,7 @@ const MyProfileSection = ({
       setSaving(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [edits, fieldValue, refreshUser, user, userForm]);
+  }, [edits, fieldValue, profileAttributes, refreshUser, t, user, userForm]);
 
   return (
     <div className="profile-anim-row">
@@ -149,6 +187,9 @@ const MyProfileSection = ({
         <div className="mt-5">
           <form
             className="flex flex-col gap-3.75"
+            // Browser autofill is disabled: the form is prefilled from OneEntry
+            // user data, and autofilled values would be indistinguishable from it.
+            autoComplete="off"
             onSubmit={e => {
               e.preventDefault();
               onSaveProfile();
@@ -156,25 +197,59 @@ const MyProfileSection = ({
           >
             {profileAttributes.map(attr => {
               const inputType = resolveInputType(attr);
+              const isPassword = inputType === 'password';
+              const shown = Boolean(shownPasswords[attr.marker]);
               const placeholder = String(attr.additionalFields?.placeholder?.value ?? '');
+              const error = errors[attr.marker];
+              // Password is exempt from the required mark: empty means "keep the current one".
+              const showRequiredMark = isRequiredAttr(attr) && !isPassword;
               return (
-                <div key={attr.marker} className="profile-anim-row flex gap-5">
-                  <label className="label" htmlFor={attr.marker}>
-                    {attr.localizeInfos?.title ?? attr.marker}
-                  </label>
-                  <input
-                    id={attr.marker}
-                    className="input"
-                    type={inputType}
-                    placeholder={placeholder}
-                    value={fieldValue(attr.marker)}
-                    onChange={e =>
-                      setEdits(prev => ({
-                        ...prev,
-                        [attr.marker]: e.target.value,
-                      }))
-                    }
-                  />
+                <div key={attr.marker} className="profile-anim-row flex flex-col">
+                  <div className="flex gap-5">
+                    <label className="label" htmlFor={attr.marker}>
+                      {attr.localizeInfos?.title ?? attr.marker}
+                      {showRequiredMark && <span className="text-red-500"> *</span>}
+                    </label>
+                    <input
+                      id={attr.marker}
+                      className={`input${error ? ' input-error' : ''}`}
+                      type={isPassword && shown ? 'text' : inputType}
+                      // `new-password` for password fields: Chrome ignores plain
+                      // `off` on credential inputs and keeps autofilling them.
+                      autoComplete={isPassword ? 'new-password' : 'off'}
+                      placeholder={placeholder}
+                      aria-invalid={Boolean(error)}
+                      value={fieldValue(attr.marker)}
+                      onChange={e => {
+                        setEdits(prev => ({
+                          ...prev,
+                          [attr.marker]: e.target.value,
+                        }));
+                        setErrors(prev => {
+                          if (!prev[attr.marker]) return prev;
+                          const rest = { ...prev };
+                          delete rest[attr.marker];
+                          return rest;
+                        });
+                      }}
+                    />
+                    {isPassword && (
+                      <button
+                        type="button"
+                        aria-label={shown ? 'Hide password' : 'Show password'}
+                        onClick={() =>
+                          setShownPasswords(prev => ({
+                            ...prev,
+                            [attr.marker]: !prev[attr.marker],
+                          }))
+                        }
+                        className="-ml-11.5 flex size-4.5 shrink-0 items-center self-center"
+                      >
+                        {shown ? <EyeOpenIcon /> : <EyeIcon />}
+                      </button>
+                    )}
+                  </div>
+                  {error && <span className="mt-1 text-sm text-red-500">{error}</span>}
                 </div>
               );
             })}

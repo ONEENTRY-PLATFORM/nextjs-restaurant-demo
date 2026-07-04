@@ -705,18 +705,27 @@ html {
     w-27.5;
 }
 .input {
-  @apply 
-    border 
-    border-muted 
-    rounded-[3px] 
-    w-42.5 
-    h-6.75 
-    px-2.5 
-    bg-transparent 
-    text-paper 
-    focus:border-muted 
-    active:border-muted 
+  @apply
+    border
+    border-muted
+    rounded-[3px]
+    w-42.5
+    h-6.75
+    px-2.5
+    bg-transparent
+    text-paper
+    focus:border-muted
+    active:border-muted
     focus:outline-muted;
+}
+/* Invalid state for `.input` — must live in this un-layered file (after `.input`) so it
+   overrides the base border; a bare `border-red-500` utility loses to un-layered CSS. */
+.input-error {
+  @apply
+    border-red-500
+    focus:border-red-500
+    active:border-red-500
+    focus:outline-red-500;
 }
 @layer components {
   .cart_btn {

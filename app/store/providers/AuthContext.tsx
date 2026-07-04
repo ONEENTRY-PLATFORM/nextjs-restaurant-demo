@@ -5,7 +5,13 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
-import { getLang, hasActiveSession, reDefine, useLazyGetMeQuery } from '@/app/api';
+import {
+  getLang,
+  hasActiveSession,
+  reDefine,
+  saveAuthProviderMarker,
+  useLazyGetMeQuery,
+} from '@/app/api';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -70,6 +76,13 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
    * intact, so a server hiccup never silently signs the user out.
    */
   const checkToken = useCallback(async () => {
+    // Fully signed out (no SDK session, no stored token) — drop the state
+    // without probing getMe: the probe would only produce a guaranteed 401.
+    if (!hasActiveSession() && !localStorage.getItem('refresh-token')) {
+      setUser(undefined);
+      setIsAuth(false);
+      return;
+    }
     const evaluate = async (allowRetry: boolean): Promise<void> => {
       try {
         const res = await trigger(getLang());
@@ -93,6 +106,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
           return;
         }
         localStorage.removeItem('refresh-token');
+        saveAuthProviderMarker('');
+        setUser(undefined);
         setIsAuth(false);
       } catch {
         // Thrown (network) — transient, do not destroy the session.

@@ -3,8 +3,8 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 /**
  * Markers rendered by bespoke UI (or sourced from the profile) — excluded from the generic pass so
  * the designed checkout layout is preserved: `delivery_address`/`delivery_time`/`comment`/`alt_phone`
- * have dedicated rows, `contact_phone` is auto-filled from the profile, `addresses` is an internal
- * json bag.
+ * have dedicated rows, `contact_phone` is pre-filled from the profile with a visible fallback input
+ * when the profile has no phone (OAuth sign-up), `addresses` is an internal json bag.
  */
 export const HANDLED_MARKERS = new Set([
   'delivery_address',

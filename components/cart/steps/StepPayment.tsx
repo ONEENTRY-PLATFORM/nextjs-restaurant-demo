@@ -110,6 +110,17 @@ const StepPayment = (): JSX.Element => {
   const userAddress = formatAddressLine(initialPickedAddress) || userAddressFlat;
   const userPhone = findUserField(user?.formData, PHONE_MARKERS);
 
+  // OAuth-registered users have no phone in `formData`, while `contact_phone` is a required form
+  // field — without a visible input the order request fails with 400. The input mirrors the profile
+  // phone once it arrives async and stops syncing after a manual edit (same pattern as the address).
+  const [phone, setPhone] = useState(userPhone);
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  useEffect(() => {
+    if (phoneTouched || !userPhone) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPhone(userPhone);
+  }, [phoneTouched, userPhone]);
+
   const [address, setAddress] = useState((delivery?.address as string | undefined) || userAddress);
   // `user.formData` arrives async - empty on the first render; if the user has not edited the input manually, pull it in once available.
   const [addressTouched, setAddressTouched] = useState<boolean>(
@@ -177,10 +188,14 @@ const StepPayment = (): JSX.Element => {
   usePaymentStepAnimations(containerRef);
 
   const addressRequired = hasField('delivery_address');
+  const phoneRequired =
+    hasField('contact_phone') &&
+    attrByMarker.get('contact_phone')?.validators?.requiredValidator?.strict === true;
 
   const onNext = async () => {
     if (!identifier) return;
     if (addressRequired && !address.trim()) return;
+    if (phoneRequired && !phone.trim()) return;
 
     const deliveryTime = mode === 'asap' ? '40-45 min' : scheduleAt || '';
     const deliveryInterval = buildDeliveryTimeInterval(mode, scheduleAt, schedule);
@@ -188,8 +203,8 @@ const StepPayment = (): JSX.Element => {
     if (hasField('delivery_address')) {
       dispatch(addData({ marker: 'delivery_address', type: 'string', value: address }));
     }
-    if (hasField('contact_phone') && userPhone) {
-      dispatch(addData({ marker: 'contact_phone', type: 'string', value: userPhone }));
+    if (hasField('contact_phone') && phone.trim()) {
+      dispatch(addData({ marker: 'contact_phone', type: 'string', value: phone.trim() }));
     }
     if (hasField('delivery_time') && deliveryInterval) {
       dispatch(addData({ marker: 'delivery_time', type: 'timeInterval', value: deliveryInterval }));
@@ -232,6 +247,24 @@ const StepPayment = (): JSX.Element => {
           onPickSaved={onPickSavedAddress}
           onAddAddressClick={onAddAddressClick}
           placeholder={fieldPlaceholder('delivery_address')}
+        />
+      ) : null}
+
+      {hasField('contact_phone') && (!userPhone || phoneTouched) ? (
+        <input
+          type="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={e => {
+            setPhone(e.currentTarget.value);
+            setPhoneTouched(true);
+          }}
+          placeholder={
+            fieldPlaceholder('contact_phone') ||
+            attrByMarker.get('contact_phone')?.localizeInfos?.title ||
+            'Contact phone'
+          }
+          className="step-payment-row rounded-card border border-paper bg-transparent p-1.25 text-base text-paper placeholder:text-muted-text focus:outline-none focus:placeholder:text-transparent"
         />
       ) : null}
 
@@ -310,6 +343,7 @@ const StepPayment = (): JSX.Element => {
           isLoading ||
           !identifier ||
           (addressRequired && !address.trim()) ||
+          (phoneRequired && !phone.trim()) ||
           (altReceiver && !altPhone.trim())
         }
         className="step-payment-row cart_btn mx-auto mt-3.75 w-60 disabled:opacity-60"

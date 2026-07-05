@@ -141,10 +141,7 @@ test.describe.serial('Order card actions (/profile/orders)', () => {
     await expect(popup.getByText(/leave a review/i).first()).toBeVisible({ timeout: 10_000 });
 
     // Close via the popup's back control (always present; the md+ Close button is hidden on mobile).
-    await popup
-      .getByRole('button', { name: /back/i })
-      .first()
-      .click();
+    await popup.getByRole('button', { name: /back/i }).first().click();
     await expect(popup).toBeHidden({ timeout: 10_000 });
 
     // Closing the popup must not navigate away from the orders dashboard.

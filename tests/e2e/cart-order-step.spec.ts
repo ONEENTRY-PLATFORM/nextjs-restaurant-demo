@@ -1,6 +1,11 @@
 import { expect, type Page, test } from '@playwright/test';
 
-import { getTestUserCreds, gotoAndReady, openOrderStep, signInAsTestUser } from './fixtures/helpers';
+import {
+  getTestUserCreds,
+  gotoAndReady,
+  openOrderStep,
+  signInAsTestUser,
+} from './fixtures/helpers';
 
 /**
  * cart-order-step.spec.ts — the checkout `order` step (`StepOrder`): promo code + bonuses + totals.
@@ -24,7 +29,13 @@ const DELIVERY_PRODUCT_ID = 1828;
  * @param   {number} opts.bonus    - Bonus points applied by the server.
  * @returns A minimal `IOrderPreviewResponse`-shaped object.
  */
-const previewBody = ({ discount = 0, bonus = 0 }: { discount?: number; bonus?: number }): object => ({
+const previewBody = ({
+  discount = 0,
+  bonus = 0,
+}: {
+  discount?: number;
+  bonus?: number;
+}): object => ({
   orderPreview: [
     { id: 999, price: 30, quantity: 1 },
     { id: DELIVERY_PRODUCT_ID, price: 10, quantity: 1 },
@@ -126,7 +137,9 @@ test.describe.serial('Checkout order step — promo & bonuses', () => {
     await expect(page.locator('p[role="alert"].text-red-500')).toBeVisible({ timeout: 15_000 });
   });
 
-  test('Pay with bonuses toggle appears with a balance and reflects in totals', async ({ page }) => {
+  test('Pay with bonuses toggle appears with a balance and reflects in totals', async ({
+    page,
+  }) => {
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
 

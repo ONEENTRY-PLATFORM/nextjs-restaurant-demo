@@ -1,6 +1,8 @@
 'use server';
 
+import { defineOneEntry } from 'oneentry';
 import type { IAuthEntity, IOauthData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type { IError } from 'oneentry/dist/base/utils';
 
 const PROJECT_URL = (process.env.NEXT_PUBLIC_ONEENTRY_URL ||
   process.env.NEXT_PUBLIC_PROJECT_URL) as string;
@@ -17,12 +19,11 @@ type OauthLoginProps = {
 /**
  * oauthLogIn — exchanges an OAuth authorization code for a OneEntry session.
  *
- * Deliberately a raw fetch instead of the SDK: the exchange runs server-side
- * (the client secret must not reach the browser), but OneEntry binds the issued
- * refresh token to the `x-device-metadata` fingerprint of the request. The SDK
- * would stamp the server's fingerprint, making the token impossible to refresh
- * from the browser (400 "Provided token is incorrect" on reload) — so the
- * browser's metadata string is forwarded instead.
+ * Runs server-side (the client secret must not reach the browser) on a fresh
+ * SDK instance configured with the browser's `deviceMetadata`: OneEntry binds
+ * the issued refresh token to the `x-device-metadata` fingerprint, so a
+ * server-stamped fingerprint would make the token impossible to refresh from
+ * the browser (400 "Provided token is incorrect" on reload).
  *
  * @param   {OauthLoginProps} props                  - OAuth exchange arguments.
  * @param   {string}          props.marker           - OAuth provider marker (currently `google`).
@@ -53,23 +54,19 @@ export const oauthLogIn = async ({
       redirect_uri: redirectUri,
     };
 
-    const response = await fetch(
-      `${PROJECT_URL}/api/content/users-auth-providers/marker/${marker}/oauth`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-app-token': APP_TOKEN,
-          ...(deviceMetadata ? { 'x-device-metadata': deviceMetadata } : {}),
-        },
-        body: JSON.stringify(body),
-      }
-    );
-    const result = (await response.json()) as IAuthEntity & { message?: string };
-    if (response.ok && result?.accessToken && result?.refreshToken) {
-      return { data: result as IAuthEntity };
+    // per-request instance: deviceMetadata is per-visitor state and must not
+    // leak between concurrent exchanges through a shared singleton
+    const { AuthProvider } = defineOneEntry(PROJECT_URL, {
+      token: APP_TOKEN,
+      ...(deviceMetadata !== undefined && { deviceMetadata }),
+    });
+
+    const result = await AuthProvider.oauth(marker, body);
+    const auth = result as IAuthEntity;
+    if (auth?.accessToken && auth?.refreshToken) {
+      return { data: auth };
     }
-    return { error: result?.message || 'OAuth authentication failed' };
+    return { error: (result as IError)?.message || 'OAuth authentication failed' };
   } catch (e: unknown) {
     return { error: (e as Error).message };
   }

@@ -53,7 +53,9 @@ test.describe.serial('Product favorites → event subscriptions (auth, network)'
     }
   });
 
-  test('authed heart on the product page fires an Events (un)subscribe request', async ({ page }) => {
+  test('authed heart on the product page fires an Events (un)subscribe request', async ({
+    page,
+  }) => {
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
 
@@ -101,7 +103,8 @@ test.describe.serial('Product favorites → event subscriptions (auth, network)'
     if (!toastSeen) {
       test.info().annotations.push({
         type: 'note',
-        description: 'favorites toast not observed (auto-dismissed / timing) — network assertion holds',
+        description:
+          'favorites toast not observed (auto-dismissed / timing) — network assertion holds',
       });
     }
   });

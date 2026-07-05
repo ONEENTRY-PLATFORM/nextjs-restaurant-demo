@@ -158,12 +158,7 @@ export const setGuestId = (guestId: string): void => {
  * @returns Metadata string of the current SDK instance (stable per browser via
  *          the persistent `oneentry_device_id` in localStorage).
  */
-export const getDeviceMetadata = (): string => {
-  const provider = api.AuthProvider as unknown as {
-    _getDeviceMetadata?: () => string;
-  };
-  return provider._getDeviceMetadata?.() ?? '';
-};
+export const getDeviceMetadata = (): string => api.AuthProvider.getDeviceMetadata();
 
 /**
  * getLang — current langCode of the SDK instance.

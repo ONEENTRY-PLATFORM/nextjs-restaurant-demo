@@ -78,7 +78,10 @@ test.describe.serial('Bookings — cancel / edit (auth, data-dependent)', () => 
     // seeding an active reservation is admin/data work.
     const cancelBtn = await firstActiveActionButton(page, /cancel/i);
     if (!cancelBtn) {
-      test.skip(true, 'E2E user has no active booking with a Cancel action — seed an active booking');
+      test.skip(
+        true,
+        'E2E user has no active booking with a Cancel action — seed an active booking'
+      );
     }
 
     // Accept the `window.confirm("Cancel reservation #<id>?")` dialog — must be armed before the click.
@@ -117,7 +120,10 @@ test.describe.serial('Bookings — cancel / edit (auth, data-dependent)', () => 
     // Data-dependent: needs an active booking exposing an Edit button. Skip otherwise.
     const editBtn = await firstActiveActionButton(page, /edit/i);
     if (!editBtn) {
-      test.skip(true, 'E2E user has no active booking with an Edit action — seed an active booking');
+      test.skip(
+        true,
+        'E2E user has no active booking with an Edit action — seed an active booking'
+      );
     }
 
     // `onEdit` stashes the pending edit and opens `ReservationPopup` (`#modalBody`) with the booking

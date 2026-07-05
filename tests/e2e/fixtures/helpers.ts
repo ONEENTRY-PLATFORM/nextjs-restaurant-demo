@@ -244,9 +244,9 @@ export const addInStockProductToCart = async (page: Page): Promise<void> => {
   const hrefs: string[] = await page
     .locator('.menu_item a[href^="/shop/product/"]')
     .evaluateAll(els =>
-      Array.from(
-        new Set(els.map(e => (e as HTMLAnchorElement).getAttribute('href') ?? ''))
-      ).filter(Boolean)
+      Array.from(new Set(els.map(e => (e as HTMLAnchorElement).getAttribute('href') ?? ''))).filter(
+        Boolean
+      )
     );
   if (hrefs.length === 0) throw new Error('no product links found on /shop');
 

@@ -77,7 +77,10 @@ test.describe.serial('Bookings — edit submit (auth, data-dependent)', () => {
     // popup *opening*; here we drive the submit that actually persists the update.
     const editBtn = await firstActiveActionButton(page, /edit/i);
     if (!editBtn) {
-      test.skip(true, 'E2E user has no active booking with an Edit action — seed an active booking');
+      test.skip(
+        true,
+        'E2E user has no active booking with an Edit action — seed an active booking'
+      );
     }
 
     // `onEdit` stashes the pending edit and opens `ReservationPopup` (`#modalBody`) pre-filled from the
@@ -135,7 +138,10 @@ test.describe.serial('Bookings — edit submit (auth, data-dependent)', () => {
 
     const winner = await Promise.race([toastSeen, modalClosed, invalid]);
     if (winner === 'invalid') {
-      test.skip(true, 'seeded booking is missing a valid pre-filled field — cannot submit the edit');
+      test.skip(
+        true,
+        'seeded booking is missing a valid pre-filled field — cannot submit the edit'
+      );
     }
     expect(winner).toBe('ok');
 

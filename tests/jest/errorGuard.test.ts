@@ -85,9 +85,7 @@ describe('errorGuard', () => {
       .mockResolvedValueOnce(MISSING_ERR)
       .mockResolvedValueOnce(ok);
     const onPhantom = jest.fn();
-    const validate = jest
-      .fn<(ids: number[]) => Promise<number[]>>()
-      .mockResolvedValue([999]);
+    const validate = jest.fn<(ids: number[]) => Promise<number[]>>().mockResolvedValue([999]);
 
     const res = await errorGuard(items, write, onPhantom, validate);
 
@@ -103,9 +101,7 @@ describe('errorGuard', () => {
   });
 
   it('gives up (no prune, no retry) when no id can be confirmed missing — avoids a loop', async () => {
-    const write = jest
-      .fn<(i: CartItem[]) => Promise<unknown>>()
-      .mockResolvedValue(MISSING_ERR);
+    const write = jest.fn<(i: CartItem[]) => Promise<unknown>>().mockResolvedValue(MISSING_ERR);
     const onPhantom = jest.fn();
     const validate = jest.fn<(ids: number[]) => Promise<number[]>>().mockResolvedValue([]);
 

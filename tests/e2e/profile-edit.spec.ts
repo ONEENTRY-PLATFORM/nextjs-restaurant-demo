@@ -1,6 +1,11 @@
 import { expect, type Page, test } from '@playwright/test';
 
-import { getTestUserCreds, gotoAndReady, signInAsTestUser, waitForAuthedHeader } from './fixtures/helpers';
+import {
+  getTestUserCreds,
+  gotoAndReady,
+  signInAsTestUser,
+  waitForAuthedHeader,
+} from './fixtures/helpers';
 
 // Minimal user-shaped body returned by the stubbed `updateUser` PUT. It deliberately omits
 // `statusCode` so the SDK/RTK `isError` guard treats it as a successful save (and the "Data saved!"
@@ -24,7 +29,10 @@ const signInOrSkip = async (page: Page): Promise<void> => {
   try {
     await signInAsTestUser(page);
   } catch (err) {
-    test.skip(true, err instanceof Error ? err.message : 'OneEntry auth failed for the configured E2E user');
+    test.skip(
+      true,
+      err instanceof Error ? err.message : 'OneEntry auth failed for the configured E2E user'
+    );
   }
 };
 
@@ -53,7 +61,9 @@ test.describe.serial('Profile sections (My Profile / Address / Bonus)', () => {
     }
   });
 
-  test('My Profile: editing a field and saving surfaces the "Data saved!" toast', async ({ page }) => {
+  test('My Profile: editing a field and saving surfaces the "Data saved!" toast', async ({
+    page,
+  }) => {
     await gotoProfile(page);
 
     // MyProfileSection opens by default on a direct visit; guard by expanding if the form is collapsed.
@@ -88,7 +98,9 @@ test.describe.serial('Profile sections (My Profile / Address / Bonus)', () => {
     ).toBeVisible({ timeout: 15_000 });
   });
 
-  test('Bonus balance: mocked balance renders and expanding shows history or the empty state', async ({ page }) => {
+  test('Bonus balance: mocked balance renders and expanding shows history or the empty state', async ({
+    page,
+  }) => {
     await gotoAndReady(page, '/');
     await signInOrSkip(page);
 
@@ -150,7 +162,9 @@ test.describe.serial('Profile sections (My Profile / Address / Bonus)', () => {
     // Assert the mutation was actually issued. The row-appearance check is intentionally omitted: the new
     // address is added optimistically but then reverts on the follow-up `refreshUser` refetch (the stubbed
     // PUT never persisted it), so asserting the row would be flaky.
-    const putMe = page.waitForRequest(req => req.method() === 'PUT' && /\/me(\?|$)/.test(req.url()));
+    const putMe = page.waitForRequest(
+      req => req.method() === 'PUT' && /\/me(\?|$)/.test(req.url())
+    );
 
     await addrForm.getByRole('button', { name: /apply/i }).click();
 

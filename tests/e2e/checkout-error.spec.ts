@@ -71,7 +71,10 @@ test.describe.serial('Delivery checkout — payment error step', () => {
     // Requires an online (stripe) method — the whole error branch only fires for online accounts.
     const stripeRadio = page.locator('#pay-stripe');
     if ((await stripeRadio.count()) === 0) {
-      test.skip(true, 'No online (stripe) payment method configured — cannot assert the error path.');
+      test.skip(
+        true,
+        'No online (stripe) payment method configured — cannot assert the error path.'
+      );
     }
     await page.locator('label[for="pay-stripe"]').click();
     await expect(stripeRadio).toBeChecked();

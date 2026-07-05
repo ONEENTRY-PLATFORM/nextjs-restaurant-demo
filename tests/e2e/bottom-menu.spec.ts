@@ -68,10 +68,7 @@ test.describe('Mobile bottom menu', () => {
     // NavItemCatalog carries no aria-label and no stable text (icon-only). Within the bottom menu it is
     // the only <button> with the `flex-col` class: Home/Calendar are <a>, Favorites/Cart/Close are
     // <button> but each has an aria-label, and Profile is a <button> without `flex-col`.
-    const catalog = bottomMenu(page)
-      .locator('button.flex-col')
-      .filter({ visible: true })
-      .first();
+    const catalog = bottomMenu(page).locator('button.flex-col').filter({ visible: true }).first();
     await expect(catalog).toBeVisible();
     await catalog.click();
 

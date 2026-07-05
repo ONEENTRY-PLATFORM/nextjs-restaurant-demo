@@ -1,6 +1,11 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
-import { addFirstProductToCart, firstProductCard, gotoAndReady, isMobile } from './fixtures/helpers';
+import {
+  addFirstProductToCart,
+  firstProductCard,
+  gotoAndReady,
+  isMobile,
+} from './fixtures/helpers';
 
 /**
  * bottomMenu — locator for the mobile bottom-navigation root (fixed bar, `md:hidden`, `z-600`).

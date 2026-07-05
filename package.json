@@ -1,6 +1,6 @@
 {
   "name": "oneentry-next-restaurant",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "private": true,
   "engines": {
     "node": ">=20.9.0 <20.19.0 || >=22.0.0 <22.15.0"
@@ -26,7 +26,7 @@
     "html-react-parser": "^6.1.3",
     "next": "^16.2.9",
     "next-transition-router": "^0.2.11",
-    "oneentry": "^1.0.154",
+    "oneentry": "^1.0.155",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-otp-input": "^3.1.1",

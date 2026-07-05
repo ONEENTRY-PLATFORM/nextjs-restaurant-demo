@@ -1,6 +1,7 @@
 export {
   api,
   getApi,
+  getDeviceMetadata,
   getImageUrl,
   getLang,
   getStoredAuthProviderMarker,

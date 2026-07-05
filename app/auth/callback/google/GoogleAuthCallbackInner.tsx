@@ -5,7 +5,14 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { getLang, oauthLogIn, reDefine, saveAuthProviderMarker, syncTokens } from '@/app/api';
+import {
+  getDeviceMetadata,
+  getLang,
+  oauthLogIn,
+  reDefine,
+  saveAuthProviderMarker,
+  syncTokens,
+} from '@/app/api';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { GOOGLE_OAUTH_MARKER_STORAGE_KEY } from '@/components/forms/authProviders';
@@ -82,7 +89,14 @@ const GoogleAuthCallbackInner = (): JSX.Element => {
     const toastId = toast.loading('Signing you in…');
     router.replace(returnTo);
 
-    oauthLogIn({ marker: providerMarker, code, redirectUri }).then(async res => {
+    // The browser's device fingerprint rides along so the server-side code
+    // exchange issues a refresh token this browser can actually refresh later.
+    oauthLogIn({
+      marker: providerMarker,
+      code,
+      redirectUri,
+      deviceMetadata: getDeviceMetadata(),
+    }).then(async res => {
       if (res?.error || !res?.data) {
         toast.update(toastId, {
           render: res?.error ?? 'Google sign-in failed.',

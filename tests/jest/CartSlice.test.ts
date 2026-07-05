@@ -6,6 +6,7 @@ import cartReducer, {
   increaseProductQty,
   removeAllProducts,
   removeProduct,
+  restoreCartProducts,
   setProductQty,
 } from '@/app/store/reducers/CartSlice';
 
@@ -113,6 +114,46 @@ describe('CartSlice — removeProduct / removeAllProducts', () => {
     let state = cartReducer(initial(), addProductToCart({ id: 1, quantity: 1, selected: true }));
     state = cartReducer(state, addProductToCart({ id: 2, quantity: 1, selected: true }));
     state = cartReducer(state, removeAllProducts());
+    expect(state.productsData).toEqual([]);
+  });
+});
+
+describe('CartSlice — restoreCartProducts (payment-cancel snapshot)', () => {
+  it('restores snapshot entries into an empty (wiped) cart', () => {
+    const state = cartReducer(
+      initial(),
+      restoreCartProducts([
+        { id: 1, quantity: 2, selected: true },
+        { id: 7, quantity: 1, selected: false },
+      ])
+    );
+    expect(state.productsData).toEqual([
+      { id: 1, quantity: 2, selected: true },
+      { id: 7, quantity: 1, selected: false },
+    ]);
+  });
+
+  it('keeps a live entry the user added after the redirect (no overwrite)', () => {
+    let state = cartReducer(initial(), addProductToCart({ id: 1, quantity: 5, selected: true }));
+    state = cartReducer(state, restoreCartProducts([{ id: 1, quantity: 2, selected: false }]));
+    expect(state.productsData).toEqual([{ id: 1, quantity: 5, selected: true }]);
+  });
+
+  it('replaces a corrupted quantity<=0 entry with the snapshot copy', () => {
+    let state = initial();
+    state = { ...state, productsData: [{ id: 1, quantity: 0, selected: true }] };
+    state = cartReducer(state, restoreCartProducts([{ id: 1, quantity: 3, selected: true }]));
+    expect(state.productsData).toEqual([{ id: 1, quantity: 3, selected: true }]);
+  });
+
+  it('merges snapshot entries with unrelated live entries', () => {
+    let state = cartReducer(initial(), addProductToCart({ id: 9, quantity: 1, selected: true }));
+    state = cartReducer(state, restoreCartProducts([{ id: 1, quantity: 2, selected: true }]));
+    expect(state.productsData.map(p => p.id).sort()).toEqual([1, 9]);
+  });
+
+  it('is a no-op for an empty snapshot', () => {
+    const state = cartReducer(initial(), restoreCartProducts([]));
     expect(state.productsData).toEqual([]);
   });
 });

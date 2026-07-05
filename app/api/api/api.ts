@@ -148,6 +148,24 @@ export const setGuestId = (guestId: string): void => {
 };
 
 /**
+ * getDeviceMetadata — device-fingerprint string the SDK sends as `x-device-metadata`.
+ *
+ * OneEntry binds refresh tokens to this fingerprint: a token issued under one
+ * metadata string cannot be refreshed with another (400 "Provided token is
+ * incorrect"). Server-side flows that issue tokens for the browser (OAuth code
+ * exchange) must therefore forward the browser's string, not their own.
+ *
+ * @returns Metadata string of the current SDK instance (stable per browser via
+ *          the persistent `oneentry_device_id` in localStorage).
+ */
+export const getDeviceMetadata = (): string => {
+  const provider = api.AuthProvider as unknown as {
+    _getDeviceMetadata?: () => string;
+  };
+  return provider._getDeviceMetadata?.() ?? '';
+};
+
+/**
  * getLang — current langCode of the SDK instance.
  *
  * @returns Language code currently configured on the SDK (e.g. `en_US`).

@@ -24,11 +24,7 @@ const fetchDictionary = async (): Promise<IAttributeValues> => {
     }
 
     const dict = {} as IAttributeValues;
-    for (const raw of attributes as unknown as Array<{
-      marker: string;
-      value?: unknown;
-      initialValue?: string;
-    }>) {
+    for (const raw of attributes) {
       const isEmpty =
         raw.value == null ||
         (typeof raw.value === 'object' && Object.keys(raw.value as object).length === 0);

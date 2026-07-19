@@ -7,6 +7,7 @@ import { getApi, isError } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { clearAppliedCoupon, setAppliedCoupon } from '@/app/store/reducers/OrderSlice';
+import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import { handleApiError } from '@/app/utils/errorHandler';
 
 type CartEntry = {
@@ -53,6 +54,12 @@ export const useApplyCoupon = (): UseApplyCouponApi => {
       const message = 'Cart is empty';
       setError(message);
       return { ok: false, error: message };
+    }
+
+    // Include the virtual delivery line so the coupon preview total covers delivery, matching
+    // `useOrderPreview`/`useCreateOrder` — otherwise `computeClientTotals` drops the delivery fee.
+    if (!products.some(p => p.productId === DELIVERY_PRODUCT_ID)) {
+      products.push({ productId: DELIVERY_PRODUCT_ID, quantity: 1 });
     }
 
     setIsLoading(true);

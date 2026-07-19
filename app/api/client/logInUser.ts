@@ -5,7 +5,7 @@ import type {
   IAuthPostBody,
 } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
 
-import { getApi, isError, saveAuthProviderMarker, syncTokens } from '@/app/api';
+import { getApi, isError, saveAuthProviderMarker } from '@/app/api';
 
 type LogInProps = {
   method: string;
@@ -44,8 +44,9 @@ export const logInUser = async ({
     if (!isError(result)) {
       const auth = result as IAuthEntity;
       if (auth.accessToken && auth.refreshToken) {
+        // `auth()` already stores both tokens in the SDK instance and calls saveFunction —
+        // manual syncTokens is only needed on the oauth() path.
         saveAuthProviderMarker(method);
-        syncTokens(auth.accessToken, auth.refreshToken);
         return { data: auth };
       }
     }

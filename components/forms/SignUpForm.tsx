@@ -111,11 +111,13 @@ const SignUpForm = ({
         formData,
         notificationData: (() => {
           const phone = normalizePhoneE164(fields.phone?.value);
-          return {
+          const nd: ISignUpData['notificationData'] = {
             email: fields.email?.value || '',
             phonePush: phone ? [phone] : [],
-            phoneSMS: phone,
           };
+          // Empty `phoneSMS` ('') makes the server reject signUp with 400 — only send it when present.
+          if (phone) nd.phoneSMS = phone;
+          return nd;
         })(),
       };
 

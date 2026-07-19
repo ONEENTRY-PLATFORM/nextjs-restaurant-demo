@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IAttributeSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
+import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 import { cache } from 'react';
 
@@ -8,7 +8,7 @@ import { getApi, isError } from '@/app/api';
 type AttributesResult = {
   isError: boolean;
   error?: IError;
-  attributes?: IAttributeSetsEntity[];
+  attributes?: IAttributesSetsEntity[];
 };
 
 const fetchAttributesByMarker = unstable_cache(
@@ -18,7 +18,9 @@ const fetchAttributesByMarker = unstable_cache(
       if (isError(data)) {
         return { isError: true, error: data as IError };
       }
-      return { isError: false, attributes: data };
+      // SDK d.ts mistypes this method as `IAttributeSetsEntity[]` (a set), but it returns
+      // attributes (`IAttributesSetsEntity[]`) — cast once here at the SDK boundary.
+      return { isError: false, attributes: data as unknown as IAttributesSetsEntity[] };
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }

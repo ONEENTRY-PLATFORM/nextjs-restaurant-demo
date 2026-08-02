@@ -13,6 +13,7 @@ import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
+import { getFormAttributes } from '@/components/utils';
 
 import { pickAuthMarkers } from './authMarkers';
 import CreateAccountButton from './inputs/CreateAccountButton';
@@ -60,9 +61,9 @@ const SignInForm = ({
 
   const formFields = useMemo(
     () =>
-      data?.attributes
-        .slice()
-        .sort((a: { position: number }, b: { position: number }) => a.position - b.position),
+      getFormAttributes(data).sort(
+        (a: { position: number }, b: { position: number }) => a.position - b.position
+      ),
     [data]
   );
 

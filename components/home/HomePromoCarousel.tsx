@@ -10,7 +10,7 @@ import { A11y, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper/types';
 
-import type { BlogBanner } from '@/app/api';
+import type { BlogBanner } from '@/components/promo/blogBanner';
 
 /** Autoplay interval between slides (ms). */
 const AUTOPLAY_MS = 6000;
@@ -70,7 +70,7 @@ const HomePromoCarousel = ({
               draggable={false}
               className={
                 isDesktop
-                  ? 'block w-full overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]'
+                  ? 'block w-full overflow-hidden rounded-panel transition-transform duration-500 hover:scale-101'
                   : 'relative block h-36.25 w-full overflow-hidden rounded-panel'
               }
             >

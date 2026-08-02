@@ -21,7 +21,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
-import { normalizePhoneE164 } from '@/components/utils';
+import { getFormAttributes, normalizePhoneE164 } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -65,11 +65,10 @@ const SignUpForm = ({
 
   const formAttributes = useMemo(
     () =>
-      (data?.attributes ?? [])
+      getFormAttributes(data)
         .filter((f: IFormAttribute) => signUpMarkers.has(f.marker))
-        .slice()
         .sort((a: IFormAttribute, b: IFormAttribute) => (a.position ?? 0) - (b.position ?? 0)),
-    [data?.attributes, signUpMarkers]
+    [data, signUpMarkers]
   );
 
   const formFields = useMemo(() => formAttributes.map(f => f.marker), [formAttributes]);
@@ -163,6 +162,7 @@ const SignUpForm = ({
         setLoading(false);
       }
     },
+    // Callback identities (authenticate/logInUser/drawer setters) are stable — fields/formData/canSubmit are the real triggers.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [fields, formData, canSubmit]
   );

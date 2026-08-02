@@ -144,7 +144,8 @@ export const syncTokens = (accessToken: string, refreshToken: string): void => {
  * @returns Nothing.
  */
 export const setGuestId = (guestId: string): void => {
-  (api as unknown as { setGuestId?: (id: string) => unknown }).setGuestId?.(guestId);
+  // The method lives on every SDK module (shared instance state), not on the root object.
+  api.Users.setGuestId(guestId);
 };
 
 /**

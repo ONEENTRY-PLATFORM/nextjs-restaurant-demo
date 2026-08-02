@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     },
     optimizePackageImports: [
       'gsap',
+      '@gsap/react',
       'react-toastify',
       'swiper',
       'oneentry',

@@ -12,6 +12,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
+import { getFormAttributes } from '@/components/utils';
 
 import FormFieldAnimations from '../forms/animations/FormFieldAnimations';
 import ErrorMessage from '../forms/inputs/ErrorMessage';
@@ -91,7 +92,7 @@ const ReservationForm = ({
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const attrs = useMemo<IFormAttribute[]>(
-    () => (form?.attributes ? [...form.attributes].sort((a, b) => a.position - b.position) : []),
+    () => getFormAttributes(form).sort((a, b) => a.position - b.position),
     [form]
   );
 

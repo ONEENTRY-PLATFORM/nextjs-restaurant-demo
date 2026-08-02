@@ -1,11 +1,33 @@
 'use client';
 
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type {
+  IProductSearchResult,
+  IProductsEntity,
+} from 'oneentry/dist/products/productsInterfaces';
 import { useEffect, useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
 
 import { trackActivity } from './useTrackActivity';
+
+/**
+ * isFullProducts — narrows the `searchProduct` union to full product entities.
+ *
+ * Checks the first element for `attributeValues` (short `IProductSearchResult` cards carry only
+ * `{ id, title, pageId }`); an empty array counts as full.
+ *
+ * @param   {IProductsEntity[] | IProductSearchResult[]} arr - Result array from `Products.searchProduct`.
+ * @returns `true` when the array holds full `IProductsEntity` items.
+ */
+const isFullProducts = (
+  arr: IProductsEntity[] | IProductSearchResult[]
+): arr is IProductsEntity[] => {
+  const first = arr[0];
+  return first === undefined || 'attributeValues' in first;
+};
+
+/** Stable empty result — a fresh `[]` each render would break memo consumers. */
+const EMPTY_PRODUCTS: IProductsEntity[] = [];
 
 /**
  * useSearchProducts — product search via the Products API.
@@ -15,19 +37,25 @@ import { trackActivity } from './useTrackActivity';
  * @returns Object `{ loading, products, refetch }` for the current search.
  */
 export const useSearchProducts = ({ name }: { name: string }) => {
-  const [loading, setLoading] = useState<boolean>(Boolean(name));
-  const [products, setProducts] = useState<IProductsEntity[]>([]);
-  const [refetch, setRefetch] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  /**
+   * Results are stored together with the request they answer, so "still
+   * loading" is derived by comparing keys instead of being written into state
+   * synchronously from the effect body (which would cascade re-renders).
+   */
+  const [result, setResult] = useState<{ key: string; products: IProductsEntity[] }>({
+    key: '',
+    products: EMPTY_PRODUCTS,
+  });
+
+  /** Identity of the request the current arguments ask for. */
+  const requestKey = name ? `${attempt}|${name}` : '';
 
   useEffect(() => {
     if (!name) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoading(false);
-      setProducts([]);
+      // Nothing to fetch: the empty-query result is derived at return time.
       return;
     }
-    setLoading(true);
-    setProducts([]);
     let cancelled = false;
     (async () => {
       // Prefer semantic (vector) search; fall back to substring search when it is
@@ -38,7 +66,16 @@ export const useSearchProducts = ({ name }: { name: string }) => {
         result = vector;
       } else {
         const fallback = await getApi().Products.searchProduct(name);
-        result = !isError(fallback) && Array.isArray(fallback) ? fallback : [];
+        if (isError(fallback) || !Array.isArray(fallback)) {
+          result = [];
+        } else if (isFullProducts(fallback)) {
+          result = fallback;
+        } else {
+          // traficLimit mode returns short cards — hydrate them into full entities
+          // so consumers keep receiving `IProductsEntity[]`.
+          const full = await getApi().Products.getProductsByIds(fallback.map(p => p.id).join(','));
+          result = !isError(full) && Array.isArray(full) ? full : [];
+        }
       }
       if (cancelled) {
         return;
@@ -49,20 +86,27 @@ export const useSearchProducts = ({ name }: { name: string }) => {
         seen.add(p.id);
         return true;
       });
-      setProducts(unique);
-      setLoading(false);
+      // The only state write of the hook, and it happens after `await` —
+      // never synchronously inside the effect body.
+      setResult({ key: requestKey, products: unique });
       trackActivity({ type: 'search', query: name });
     })();
     return () => {
       cancelled = true;
     };
-  }, [refetch, name]);
+  }, [requestKey, name]);
 
+  /**
+   * Both outputs are derived: a non-empty query is "loading" until the stored
+   * result carries its own key, and results from a previous query are never
+   * shown for the current one. An empty query has no results and never loads.
+   */
+  const isCurrent = result.key === requestKey;
   return {
-    loading,
-    products,
+    loading: Boolean(name) && !isCurrent,
+    products: isCurrent ? result.products : EMPTY_PRODUCTS,
     refetch() {
-      setRefetch(!refetch);
+      setAttempt(value => value + 1);
     },
   };
 };

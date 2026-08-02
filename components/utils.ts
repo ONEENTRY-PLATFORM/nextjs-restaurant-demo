@@ -1,7 +1,77 @@
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
+import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
+import type { ScheduleSlotEntry } from '@/components/reservation/RestaurantSelect';
+
+/**
+ * getFormAttributes — normalizes `form.attributes` from `Forms.getFormByMarker` into an array.
+ *
+ * The API returns an array of fields for a populated form but an empty object (`{}`) for a form
+ * without fields, so calling array methods on `form.attributes` directly throws. Copies the value
+ * into a fresh array when it is already an array (safe to sort in place — the RTK cache entity is
+ * frozen), unwraps an object map via `Object.values`, and falls back to an empty list for a
+ * missing form.
+ *
+ * @param   {{ attributes?: unknown } | undefined | null} form - Form entity from `getFormByMarker` (or any object carrying `attributes`).
+ * @returns Fresh array of form attributes (empty when the form has no fields).
+ */
+export const getFormAttributes = (
+  form: { attributes?: unknown } | undefined | null
+): IFormAttribute[] => {
+  const attrs: unknown = form?.attributes;
+  if (Array.isArray(attrs)) return [...attrs] as IFormAttribute[];
+  if (attrs && typeof attrs === 'object') return Object.values(attrs) as IFormAttribute[];
+  return [];
+};
+
+/** RichTextBlock — one block of a OneEntry `text` attribute value. */
+export type RichTextBlock = { htmlValue?: string; plainValue?: string; mdValue?: string };
+
+/**
+ * unwrapRichText — first block of a OneEntry `text` attribute value.
+ *
+ * The API may deliver the value as an array of blocks or as a single object — unwraps both shapes
+ * universally (`Array.isArray(raw) ? raw[0] : raw`) and returns `undefined` for anything else.
+ *
+ * @param   {unknown} raw - Raw `attributeValues.<marker>.value` of a `text` attribute.
+ * @returns First rich-text block, or `undefined` when the value carries none.
+ */
+export const unwrapRichText = (raw: unknown): RichTextBlock | undefined => {
+  const block: unknown = Array.isArray(raw) ? raw[0] : raw;
+  return block && typeof block === 'object' ? (block as RichTextBlock) : undefined;
+};
+
+/**
+ * pickRichTextHtml — extracts meaningful HTML from a OneEntry `text` attribute value.
+ *
+ * Unwraps the value via {@link unwrapRichText}, then treats `<p><br></p>` and similar empty
+ * rich-text payloads as no content (returns `''`), so callers can short-circuit rendering of the
+ * surrounding section.
+ *
+ * @param   {unknown} raw - Raw attribute value (OneEntry rich-text array or single block object).
+ * @returns HTML string, or `''` when the value is missing/empty/whitespace-only.
+ */
+export const pickRichTextHtml = (raw: unknown): string => {
+  const html = unwrapRichText(raw)?.htmlValue ?? '';
+  return /\S/.test(html.replace(/<[^>]*>/g, '')) ? html : '';
+};
+
+/**
+ * parseScheduleSlots — unwraps a raw `timeInterval` attribute value (e.g. the restaurant `schedule`)
+ * into a flat list of slot entries.
+ *
+ * Accepts the SDK v1.0.157 shape `[{ values: ScheduleSlotEntry[] }, …]`, flattens `values` across all
+ * groups, and returns an empty list for a missing or non-array value.
+ *
+ * @param   {unknown} raw - Raw `schedule.value` from `attributeValues`.
+ * @returns Flat array of schedule slot entries (empty when nothing parseable is present).
+ */
+export const parseScheduleSlots = (raw: unknown): ScheduleSlotEntry[] =>
+  Array.isArray(raw)
+    ? (raw as Array<{ values?: ScheduleSlotEntry[] }>).flatMap(group => group?.values ?? [])
+    : [];
 
 /**
  * dictText — pulls a string value from the `static_content` dictionary by marker with a fallback.

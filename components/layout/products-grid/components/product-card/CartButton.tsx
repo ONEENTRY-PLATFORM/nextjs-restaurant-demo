@@ -1,7 +1,7 @@
 'use client';
 
 import type { JSX, MouseEvent, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -50,11 +50,16 @@ const CartButton = ({
   const qty = item?.quantity ?? 0;
   const titleSlot = (template: string) => template.replace('{title}', title);
 
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHydrated(true);
-  }, []);
+  // Persisted Redux cart rehydrates on the client — gate the quantity branch via a
+  // mount-gate so SSR and the first client render match.
+  const hydrated = useSyncExternalStore(
+    cb => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false
+  );
 
   if (hydrated && qty > 0) {
     return (

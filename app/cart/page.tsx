@@ -5,6 +5,7 @@ import { getBlogBanners, getProductById } from '@/app/api';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';
+import { blogBannerFromPage } from '@/components/promo/blogBanner';
 
 // Force-dynamic: the layout chain uses `useSearchParams()`, which would
 // otherwise require Suspense wrapping for prerender.
@@ -25,9 +26,13 @@ type ProductResponse = {
  * @returns Promise resolving to JSX of the cart page layout (wizard with promo sidebar).
  */
 const CartPageLayout = async (): Promise<JSX.Element> => {
-  const response = await getProductById(DELIVERY_PRODUCT_ID);
+  // Independent fetches — run in parallel instead of a waterfall.
+  const [response, bannersRes] = await Promise.all([
+    getProductById(DELIVERY_PRODUCT_ID),
+    getBlogBanners(),
+  ]);
   const deliveryData = response.isError ? undefined : (response as ProductResponse).product;
-  const banners = await getBlogBanners();
+  const banners = (bannersRes.pages ?? []).map(blogBannerFromPage);
 
   return (
     <section className="min-h-screen bg-black">

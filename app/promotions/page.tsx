@@ -7,12 +7,8 @@ import type { JSX } from 'react';
 import { getBlogBanners, getPageByUrl } from '@/app/api';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
-
-type DescriptionValue = Array<{
-  plainValue?: string;
-  htmlValue?: string;
-  mdValue?: string;
-}>;
+import { blogBannerFromPage } from '@/components/promo/blogBanner';
+import { unwrapRichText } from '@/components/utils';
 
 export const dynamic = 'force-static';
 export const revalidate = 300;
@@ -23,7 +19,7 @@ export const revalidate = 300;
  * @returns Promise resolving to JSX of the root promo page (intro + vertical list of promo banners).
  */
 const PromotionsListPage = async (): Promise<JSX.Element> => {
-  const [{ page, isError }, banners] = await Promise.all([
+  const [{ page, isError }, bannersRes] = await Promise.all([
     getPageByUrl(PAGES.promotions),
     getBlogBanners(),
   ]);
@@ -32,10 +28,12 @@ const PromotionsListPage = async (): Promise<JSX.Element> => {
     return notFound();
   }
 
+  const banners = (bannersRes.pages ?? []).map(blogBannerFromPage);
+
   const title = page.localizeInfos?.title ?? (await t('promotions_title', 'Promotions'));
   const homeLabel = await t('home_label', 'Home');
-  const description = page.attributeValues?.description?.value as DescriptionValue | undefined;
-  const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const description = unwrapRichText(page.attributeValues?.description?.value);
+  const subtitleHtml = description?.htmlValue ?? description?.plainValue ?? '';
 
   const visibleBanners = banners.filter(b => b.desktopImage || b.mobileImage);
 
@@ -74,7 +72,7 @@ const PromotionsListPage = async (): Promise<JSX.Element> => {
                 key={b.id}
                 href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
                 title={b.title}
-                className="block overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.01]"
+                className="block overflow-hidden rounded-panel transition-transform duration-500 hover:scale-101"
               >
                 {b.desktopImage ? (
                   <Image
@@ -121,8 +119,8 @@ export default PromotionsListPage;
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageByUrl(PAGES.promotions);
   const title = page?.localizeInfos?.title ?? 'Promotions';
-  const description = page?.attributeValues?.description?.value as DescriptionValue | undefined;
-  const descriptionText = description?.[0]?.plainValue ?? '';
+  const descriptionText =
+    unwrapRichText(page?.attributeValues?.description?.value)?.plainValue ?? '';
   return {
     title,
     description: descriptionText,

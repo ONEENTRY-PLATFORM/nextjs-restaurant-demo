@@ -1,6 +1,8 @@
 import parse from 'html-react-parser';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 
+import { unwrapRichText } from '@/components/utils';
+
 type AttributeValuesInput = IAttributeValues | undefined;
 
 /**
@@ -41,16 +43,10 @@ export const getText = (
   type: 'html' | 'plain' = 'plain'
 ): string | ReturnType<typeof parse> => {
   const data = attributeValues?.[name];
-  if (
-    data &&
-    typeof data === 'object' &&
-    'value' in data &&
-    Array.isArray(data.value) &&
-    data.value.length > 0
-  ) {
-    const text = data.value[0] as { htmlValue?: string; plainValue?: string };
-
-    if (text && typeof text === 'object' && ('htmlValue' in text || 'plainValue' in text)) {
+  if (data && typeof data === 'object' && 'value' in data) {
+    // The API may deliver text as an array of blocks or a single block object — unwrap both.
+    const text = unwrapRichText(data.value);
+    if (text && ('htmlValue' in text || 'plainValue' in text)) {
       if (type === 'html' && typeof text.htmlValue === 'string') {
         return parse(text.htmlValue);
       }

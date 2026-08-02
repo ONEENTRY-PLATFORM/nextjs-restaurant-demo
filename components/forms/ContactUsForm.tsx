@@ -4,11 +4,13 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
 
-import { getApi, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, isError, useGetFormByMarkerQuery } from '@/app/api';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { FORMS } from '@/app/utils/constants';
+import { normalizeErrorMessage } from '@/app/utils/errorHandler';
+import { getFormAttributes } from '@/components/utils';
 
 import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
@@ -30,24 +32,27 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
   const t = useT();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
+  // Bumped after a successful submit: re-keys the inputs so they remount empty.
+  const [formEpoch, setFormEpoch] = useState<number>(0);
 
   const { data, isLoading } = useGetFormByMarkerQuery({ marker: FORMS.contactUs });
 
   const fieldsData = useAppSelector(state => state.formFieldsReducer.fields);
 
-  const formFields = data?.attributes
+  const formFields = getFormAttributes(data)
     .slice()
     .sort((a: { position: number }, b: { position: number }) => a.position - b.position);
 
   // captchaKey/action come from OneEntry in `settings.captcha.{key,action}`.
-  const spamField = useMemo(() => formFields?.find(f => f.type === 'spam'), [formFields]);
+  const spamField = useMemo(() => formFields.find(f => f.type === 'spam'), [formFields]);
   const spamSettings = spamField?.settings as SpamCaptchaSettings | undefined;
   const captcha = useEnterpriseCaptcha(spamSettings?.captcha?.key, spamSettings?.captcha?.action);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formFields) return;
+    if (!data) return;
     if (spamField && !captcha) {
       setError(t('captcha_loading_text', 'Please wait while captcha is loading.'));
       return;
@@ -84,7 +89,9 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
 
     try {
       setLoading(true);
-      await getApi().FormData.postFormsData({
+      setError('');
+      setSuccess('');
+      const res = await getApi().FormData.postFormsData({
         formIdentifier: FORMS.contactUs,
         formData: transformedFormData,
         formModuleConfigId: data?.moduleFormConfigs?.[0]?.id ?? 0,
@@ -92,6 +99,19 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
         replayTo: null,
         status: '',
       });
+      // The SDK returns an IError envelope instead of throwing — the API `message`
+      // may arrive as a string array; fall back to the form's own unsuccessMessage.
+      if (isError(res)) {
+        setError(
+          normalizeErrorMessage(
+            (res as { message?: string | string[] }).message,
+            data?.localizeInfos?.unsuccessMessage || t('submit_failed_text', 'Submit failed')
+          )
+        );
+        return;
+      }
+      setSuccess(data?.localizeInfos?.successMessage || t('form_success_text', 'Message sent'));
+      setFormEpoch(epoch => epoch + 1);
     } catch (error: unknown) {
       setError(
         (error as { message?: string })?.message ?? t('submit_failed_text', 'Submit failed')
@@ -111,7 +131,7 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
       onSubmit={handleSubmit}
     >
       <div className="relative mb-4 box-border flex shrink-0 flex-col gap-4">
-        {formFields?.map((field: IFormAttribute, index: number) => {
+        {formFields.map((field: IFormAttribute, index: number) => {
           switch (field.type) {
             case 'button':
               return (
@@ -125,11 +145,12 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
             case 'spam':
               return null;
             default:
-              return <FormInput key={index} index={index} {...field} />;
+              return <FormInput key={`${formEpoch}-${index}`} index={index} {...field} />;
           }
         })}
       </div>
 
+      {success && <p className="text-sm text-green-500">{success}</p>}
       {error && <ErrorMessage error={error} />}
     </form>
   );

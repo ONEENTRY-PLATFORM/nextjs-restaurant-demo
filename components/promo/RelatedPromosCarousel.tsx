@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { BlogBanner } from '@/app/api';
+import type { BlogBanner } from '@/components/promo/blogBanner';
 
 /**
  * RelatedPromosCarousel — horizontal scroll-snap rail of "related promos" with dot indicators.
@@ -67,8 +67,9 @@ const RelatedPromosCarousel = ({ promos }: { promos: BlogBanner[] }): JSX.Elemen
           <Link
             key={b.id}
             href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
+            prefetch={false}
             title={b.title}
-            className="block w-full shrink-0 snap-start overflow-hidden transition-transform duration-500 hover:scale-[1.02] md:w-[calc((100%-60px)/2)]"
+            className="block w-full shrink-0 snap-start overflow-hidden transition-transform duration-500 hover:scale-102 md:w-[calc((100%-60px)/2)]"
           >
             <Image
               src={b.mobileImage as string}

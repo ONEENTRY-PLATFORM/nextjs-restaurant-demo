@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { gsap } from 'gsap';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useSyncExternalStore } from 'react';
 
 import { getApi, useGetProductsByIdsQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -25,6 +24,7 @@ import CartAnimations from '@/components/layout/cart/animations/CartAnimations';
 import TableRowAnimations from '@/components/layout/cart/animations/TableRowAnimations';
 import EmptyCart from '@/components/layout/cart/components/EmptyCart';
 import ProductCard from '@/components/layout/cart/components/ProductCard';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 import CartListSkeleton from '@/components/shared/skeletons/CartListSkeleton';
 
 /**
@@ -46,11 +46,14 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
 
   // Cart contents live in localStorage (redux-persist) - unknown on the server. Gate the
   // branch decision until the client rehydrates so SSR and the first client render match.
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHydrated(true);
-  }, []);
+  const hydrated = useSyncExternalStore(
+    cb => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false
+  );
 
   // Mirror delivery state into OrderSlice.formData so the `payment` step submit has delivery_time/address.
   useEffect(() => {
@@ -97,7 +100,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
     if (deliveryData) {
       dispatch(addDeliveryToCart(deliveryData));
     }
-  }, [deliveryData]);
+  }, [deliveryData, dispatch]);
 
   // Drop stale ids from the persisted cart: products removed in OneEntry would otherwise spam 404s on every mount.
   useEffect(() => {
@@ -108,10 +111,15 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         dispatch(removeProduct(entry.id));
       }
     }
-  }, [data]);
+    // `productsCartData` omitted on purpose: pruning must run only against a fresh RTK response —
+    // reacting to cart changes would drop a just-added item while `data` is still stale.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, dispatch]);
 
   useEffect(() => {
     if (data) {
+      // Sync-with-async-data: mirror the fresh RTK response into local state so WS
+      // price/status pushes can patch individual rows without refetching.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setProducts(data);
 
@@ -126,14 +134,24 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
                 attributeValues: res.product?.attributes,
               };
               const index = data.findIndex((p: IProductsEntity) => p.id === product.id);
-              const newPrice = parseInt(product?.attributeValues?.price?.value, 10);
+              // `price` is a float attribute (fractional values like 6.5) and arrives as
+              // `number | null` — do not truncate via parseInt; an unfilled/unparseable
+              // price keeps the previous value.
+              const rawPrice: unknown = product?.attributeValues?.price?.value;
+              const newPrice =
+                typeof rawPrice === 'number'
+                  ? rawPrice
+                  : rawPrice == null || rawPrice === ''
+                    ? NaN
+                    : Number(rawPrice);
 
               setProducts(prevProducts => {
                 const newProducts = [...prevProducts];
-                if (newProducts[index]) {
+                const prevProduct = newProducts[index];
+                if (prevProduct) {
                   newProducts[index] = {
-                    ...newProducts[index],
-                    price: newPrice,
+                    ...prevProduct,
+                    price: Number.isFinite(newPrice) ? newPrice : prevProduct.price,
                     statusIdentifier: res?.product?.status?.identifier,
                   };
                 }
@@ -149,13 +167,13 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
       }
     }
     return undefined;
-  }, [data]);
+  }, [data, isAuth]);
 
   useEffect(() => {
     if (products) {
       dispatch(addProductsToCart(products));
     }
-  }, [products]);
+  }, [products, dispatch]);
 
   // After auth completes (via the shared modal) - auto-advance to the order step if checkout was started here.
   useEffect(() => {
@@ -235,6 +253,9 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         <button
           type="button"
           onClick={onApply}
+          // Guests are routed to the auth modal — warm its chunk before the click.
+          onPointerEnter={() => !isAuth && prefetchPopup('AuthProviderSelect')}
+          onFocus={() => !isAuth && prefetchPopup('AuthProviderSelect')}
           className="cart-apply-btn hover_btn_transp flex h-15 w-full items-center justify-center rounded-panel bg-custom_btnorange text-center text-base font-normal text-white md:h-11.25"
         >
           {isAuth

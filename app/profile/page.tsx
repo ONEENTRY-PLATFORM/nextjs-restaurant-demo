@@ -2,6 +2,7 @@ import type { JSX } from 'react';
 
 import { getBlogBanners } from '@/app/api';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
+import { blogBannerFromPage } from '@/components/promo/blogBanner';
 
 import ProfilePageClient from './ProfilePageClient';
 
@@ -13,7 +14,8 @@ export const dynamic = 'force-dynamic';
  * @returns Promise resolving to JSX of the personal data page.
  */
 const ProfilePage = async (): Promise<JSX.Element> => {
-  const banners = await getBlogBanners();
+  const { pages } = await getBlogBanners();
+  const banners = (pages ?? []).map(blogBannerFromPage);
   return (
     <div className="md:flex md:justify-between md:gap-15">
       <div className="md:w-1/2">

@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { useTransitionRouter } from 'next-transition-router';
 import type { FormEvent, JSX } from 'react';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
 import {
@@ -146,20 +145,17 @@ const VerificationForm = ({
     }
   };
 
-  const onSubmitHandle = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if (otp.length === 6) {
-        setLoading(true);
-        setError('');
-        await handleVerification();
-      }
-    },
-    [otp, handleVerification]
-  );
+  const onSubmitHandle = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (otp.length === 6) {
+      setLoading(true);
+      setError('');
+      await handleVerification();
+    }
+  };
 
   // Resend the OTP code.
-  const onResendHandle = useCallback(async () => {
+  const onResendHandle = async () => {
     if (cooldown > 0) return;
     try {
       setLoading(true);
@@ -180,7 +176,7 @@ const VerificationForm = ({
     } finally {
       setLoading(false);
     }
-  }, [fields.email, cooldown, ttl]);
+  };
 
   return (
     <FormAnimations className={''} isLoading={isLoading} isActive={true}>

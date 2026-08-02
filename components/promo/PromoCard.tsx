@@ -3,6 +3,7 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { JSX } from 'react';
 
 import { getImageUrl } from '@/app/api';
+import { unwrapRichText } from '@/components/utils';
 
 /**
  * PromoCard — single promo card from a OneEntry `promotions` child page (set: `blog_page`).
@@ -21,9 +22,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
 
   const title = page.localizeInfos?.title ?? '';
 
-  const descriptionValue = attrs.description?.value as
-    Array<{ plainValue?: string; htmlValue?: string; mdValue?: string }> | undefined;
-  const subtitleText = descriptionValue?.[0]?.plainValue ?? '';
+  const subtitleText = unwrapRichText(attrs.description?.value)?.plainValue ?? '';
 
   const actionType = attrs.action_type?.value as Array<{ title?: string }> | undefined;
   const cta = actionType?.[0]?.title ?? 'Learn more';
@@ -32,7 +31,7 @@ const PromoCard = ({ page }: { page: IPagesEntity }): JSX.Element => {
     <Link
       href={'/promotions/' + page.pageUrl}
       title={title}
-      className="group relative block overflow-hidden rounded-panel bg-ink/60 transition-transform duration-500 hover:scale-[1.02]"
+      className="group relative block overflow-hidden rounded-panel bg-ink/60 transition-transform duration-500 hover:scale-102"
       style={
         image
           ? {

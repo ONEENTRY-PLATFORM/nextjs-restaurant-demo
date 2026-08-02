@@ -5,6 +5,7 @@ import { type JSX, useContext } from 'react';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FilterIcon from '@/components/icons/filter';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * FilterButton — header trigger that opens `FilterBottom` via `OpenDrawerContext` (sets `component='FilterForm'`).
@@ -26,6 +27,8 @@ const FilterButton = (): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup('FilterForm')}
+      onFocus={() => prefetchPopup('FilterForm')}
       aria-label={label}
       className="group cursor-pointer border-0 bg-transparent p-0"
     >

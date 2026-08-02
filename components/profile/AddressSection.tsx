@@ -6,8 +6,9 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
-import { getApi } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import { userHasPasswordAuth } from '@/components/forms/authProviders';
 import {
   getUserField,
@@ -16,7 +17,7 @@ import {
   type SavedAddress,
   type UserFormData,
 } from '@/components/profile/profileSectionsUtils';
-import { normalizePhoneE164 } from '@/components/utils';
+import { getFormAttributes, normalizePhoneE164 } from '@/components/utils';
 
 type AddressSectionProps = {
   user: IUserEntity | undefined;
@@ -71,7 +72,7 @@ const AddressSection = ({
       const serialized = JSON.stringify(next);
       const passwordAuth = userHasPasswordAuth(user);
       const allowedMarkers = new Set(
-        (userForm?.attributes ?? [])
+        getFormAttributes(userForm)
           .filter(a => (!a.isLogin || !passwordAuth) && !a.isPassword)
           .map(a => a.marker)
       );
@@ -88,7 +89,7 @@ const AddressSection = ({
       // OAuth-created users have no `email` row in formData (the address lives in
       // `user.identifier`) — backfill it so their record reaches parity with
       // email-provider users (both providers share the same `user` form).
-      const loginAttr = (userForm?.attributes ?? []).find(a => a.isLogin);
+      const loginAttr = getFormAttributes(userForm).find(a => a.isLogin);
       if (
         !passwordAuth &&
         loginAttr &&
@@ -104,7 +105,7 @@ const AddressSection = ({
         // No `authData` — updateUser without credentials is permitted for the currently authenticated user.
         // notificationData only for password-provider accounts: OAuth-created users have no
         // notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
-        await getApi().Users.updateUser({
+        const res = await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
           formData: formData as unknown as IAuthFormData[],
           ...(userHasPasswordAuth(user)
@@ -118,12 +119,23 @@ const AddressSection = ({
             : {}),
           state: {},
         });
+        // The SDK returns an IError envelope instead of throwing — a failed save must
+        // not refresh the user as if it succeeded.
+        if (isError(res)) {
+          setAddressError(
+            normalizeErrorMessage(
+              (res as { message?: string | string[] }).message,
+              'Failed to save address'
+            )
+          );
+          return;
+        }
         refreshUser();
       } catch (e) {
         setAddressError(e instanceof Error ? e.message : 'Failed to save address');
       }
     },
-    [refreshUser, user, userForm?.attributes]
+    [refreshUser, user, userForm]
   );
 
   const onApplyAddress = async () => {

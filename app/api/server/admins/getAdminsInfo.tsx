@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
@@ -12,6 +13,35 @@ interface HandleProps {
   langCode?: string;
 }
 
+type AdminsResult = {
+  isError: boolean;
+  error?: IError;
+  admins?: IAdminEntity[];
+};
+
+const fetchAdminsInfo = unstable_cache(
+  async (
+    _signature: string,
+    body: IFilterParams[],
+    offset: number,
+    limit: number,
+    lang: string
+  ): Promise<AdminsResult> => {
+    try {
+      const data = await getApi().Admins.getAdminsInfo(body, lang, offset, limit);
+      if (isError(data)) {
+        return { isError: true, error: data as IError };
+      } else {
+        return { isError: false, admins: data };
+      }
+    } catch (e: unknown) {
+      return { isError: true, error: e as IError };
+    }
+  },
+  ['oneentry-getAdminsInfo'],
+  { revalidate: 300, tags: ['oneentry', 'oneentry-admins'] }
+);
+
 /**
  * getAdminsInfo — paginated list of admins with filter.
  *
@@ -23,25 +53,10 @@ interface HandleProps {
  * @returns Promise resolving to `{ isError, error?, admins? }` (graceful fallback on SDK error).
  */
 export const getAdminsInfo = cache(
-  async ({
-    body,
-    offset,
-    limit,
-    langCode,
-  }: HandleProps): Promise<{
-    isError: boolean;
-    error?: IError;
-    admins?: IAdminEntity[];
-  }> => {
-    try {
-      const data = await getApi().Admins.getAdminsInfo(body, langCode || getLang(), offset, limit);
-      if (isError(data)) {
-        return { isError: true, error: data as IError };
-      } else {
-        return { isError: false, admins: data };
-      }
-    } catch (e: unknown) {
-      return { isError: true, error: e as IError };
-    }
+  async ({ body, offset, limit, langCode }: HandleProps): Promise<AdminsResult> => {
+    const lang = langCode || getLang();
+    // Filter objects are serialized into a stable signature so property order cannot fork the key.
+    const signature = JSON.stringify([offset, limit, lang, body]);
+    return fetchAdminsInfo(signature, body, offset, limit, lang);
   }
 );

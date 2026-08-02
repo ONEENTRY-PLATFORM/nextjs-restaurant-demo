@@ -11,6 +11,7 @@ import { selectDeliveryData } from '@/app/store/reducers/CartSlice';
 import { addData } from '@/app/store/reducers/OrderSlice';
 import { FORMS } from '@/app/utils/constants';
 import CalendarIcon from '@/components/icons/calendar';
+import { getFormAttributes } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';
 import AddressRow from './AddressRow';
@@ -36,7 +37,7 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
 
   const timeText = t('time_text', 'Time');
 
-  const attrs = data?.attributes.filter((attr: IFormAttribute) => attr.marker !== 'time2');
+  const attrs = getFormAttributes(data).filter((attr: IFormAttribute) => attr.marker !== 'time2');
   const addressReg = user?.formData.find(el => el.marker === 'address_reg')?.value || '';
 
   useEffect(() => {
@@ -69,6 +70,7 @@ const DeliveryTable = ({ delivery }: { delivery: IProductsEntity }): JSX.Element
         valid: address ? true : false,
       })
     );
+    // Seed the order draft once per delivery change — `addressReg` is a login-time constant and `dispatch` is stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deliveryData]);
 

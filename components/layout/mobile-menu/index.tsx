@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import Image from 'next/image';
@@ -36,11 +35,11 @@ const OffscreenModal = ({ menu }: { menu: IMenusEntity }): JSX.Element => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [open]);
+  }, [setOpen]);
 
   useEffect(() => {
     setOpen(false);
-  }, [pathname]);
+  }, [pathname, setOpen]);
 
   if (!open || component !== 'MobileMenu') {
     return <></>;

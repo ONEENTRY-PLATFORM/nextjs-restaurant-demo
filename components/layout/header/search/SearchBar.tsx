@@ -68,6 +68,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputValue(urlSearch);
     userTypedRef.current = false;
+    // Keyed to the URL only — `inputValue` is the user's in-flight text and must not re-trigger the mirror.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlSearch]);
 

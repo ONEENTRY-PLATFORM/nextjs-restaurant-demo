@@ -58,6 +58,7 @@ const renderItem = (page: IMenusPages): JSX.Element | null => {
         <Link
           key={page.id}
           href="/"
+          prefetch={false}
           aria-label={page.localizeInfos?.menuTitle ?? page.localizeInfos?.title ?? 'Home'}
           className="group relative my-auto box-border flex shrink-0"
         >
@@ -106,6 +107,7 @@ const NavGenericIcon = ({ page }: { page: IMenusPages }): JSX.Element | null => 
   return (
     <Link
       href={href}
+      prefetch={false}
       title={title}
       aria-label={title}
       className="group relative my-auto box-border flex size-6 shrink-0"

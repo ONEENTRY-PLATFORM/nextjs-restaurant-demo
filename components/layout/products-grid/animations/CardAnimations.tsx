@@ -5,12 +5,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useSearchParams } from 'next/navigation';
 import type { CSSProperties, JSX, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-import {
-  isHeaderAnimationComplete,
-  subscribeHeaderAnimation,
-} from '@/app/animations/headerAnimState';
+import { useHeaderAnimationComplete } from '@/app/animations/useHeaderAnimationComplete';
 
 const HIDDEN_STYLE: CSSProperties = {
   opacity: 0,
@@ -49,22 +46,11 @@ const CardAnimations = ({
 }): JSX.Element => {
   const searchParams = useSearchParams();
   const [currentPageOnMount] = useState(() => Number(searchParams.get('page')) || 1);
-  const [headerReady, setHeaderReady] = useState<boolean>(
-    () => !gateOnHeader || isHeaderAnimationComplete()
-  );
+  /** Cards outside the header-gated grid start revealed; the rest follow the flag. */
+  const headerReady = useHeaderAnimationComplete() || !gateOnHeader;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const delay = Math.max(0, (index - (currentPageOnMount - 1) * productsLimit) / 10);
-
-  useEffect(() => {
-    if (headerReady) return undefined;
-    if (isHeaderAnimationComplete()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHeaderReady(true);
-      return undefined;
-    }
-    return subscribeHeaderAnimation(() => setHeaderReady(true));
-  }, [headerReady]);
 
   useGSAP(
     () => {

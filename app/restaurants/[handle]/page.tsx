@@ -10,6 +10,7 @@ import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
+import { pickRichTextHtml, unwrapRichText } from '@/components/utils';
 
 // Every restaurant child page is prerendered via `generateStaticParams` and served from the static
 // cache (keeps the `loading.tsx` skeleton on navigation). `dynamicParams = false` makes Next answer
@@ -42,22 +43,6 @@ type ComfortItem = {
   };
 };
 type Comfort = { title: string; iconUrl?: string };
-type RichTextValue = Array<{ htmlValue?: string; plainValue?: string }>;
-
-/**
- * pickRichTextHtml — extracts meaningful HTML from a OneEntry `text` attribute value.
- *
- * Treats `<p><br></p>` and similar empty rich-text payloads as no content (returns `''`),
- * so callers can short-circuit rendering of the surrounding section.
- *
- * @param   {unknown} raw - Raw attribute value (OneEntry rich-text array of `{ htmlValue, plainValue }`).
- * @returns Trimmed HTML string, or `''` when the value is missing/empty/whitespace-only.
- */
-const pickRichTextHtml = (raw: unknown): string => {
-  if (!Array.isArray(raw)) return '';
-  const html = (raw as RichTextValue)[0]?.htmlValue ?? '';
-  return /\S/.test(html.replace(/<[^>]*>/g, '')) ? html : '';
-};
 
 /**
  * normalizeComforts — flattens the `comforts` attribute (with optional image extension) to `{ title, iconUrl? }[]`.
@@ -122,12 +107,15 @@ const RestaurantPage = async ({
   const liveEvents = (attrs.live_events?.value as string | undefined) ?? '';
   const openingHoursHtml = pickRichTextHtml(attrs.opening_hours?.value);
   const comforts = normalizeComforts(attrs.comforts?.value);
-  const lat = Number(attrs.lat?.value);
-  const lng = Number(attrs.long?.value);
+  // Unfilled string attributes arrive as `null` and Number(null) === 0 — check
+  // "not filled" before coercion so empty coords fall through to the map placeholder.
+  const latRaw = attrs.lat?.value;
+  const lngRaw = attrs.long?.value;
+  const lat = latRaw == null || latRaw === '' ? NaN : Number(latRaw);
+  const lng = lngRaw == null || lngRaw === '' ? NaN : Number(lngRaw);
   const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
   const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
-  const descriptionRaw = attrs.description?.value as RichTextValue | undefined;
-  const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
+  const descriptionPlain = unwrapRichText(attrs.description?.value)?.plainValue ?? '';
   const descriptionHtml = pickRichTextHtml(attrs.description?.value);
 
   const waNumber = whatsapp.replace(/[^\d]/g, '');

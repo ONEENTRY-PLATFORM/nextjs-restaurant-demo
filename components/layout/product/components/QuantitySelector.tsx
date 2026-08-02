@@ -1,8 +1,8 @@
 'use client';
 
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
 
+import { useHydrated } from '@/app/hooks/useHydrated';
 import { useAppSelector } from '@/app/store/hooks';
 import { selectCartItemWithIdLength } from '@/app/store/reducers/CartSlice';
 
@@ -34,20 +34,18 @@ const QuantitySelector = ({
   className?: string;
   height: number;
 }): JSX.Element => {
-  const [qty, setQty] = useState(0);
-
   const data = useAppSelector(state => selectCartItemWithIdLength(state, id));
   const quantity = data?.quantity || 0;
 
-  useEffect(() => {
-    if (!quantity) {
-      return;
-    }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setQty(quantity);
-  }, [quantity]);
+  /**
+   * The quantity lives in the (persisted) cart store — it is read straight
+   * from there instead of being mirrored into local state by an effect. The
+   * hydration gate keeps the first client render identical to SSR, where the
+   * persisted cart is not yet known.
+   */
+  const qty = useHydrated() ? quantity : 0;
 
-  if (qty < 1 || !quantity) {
+  if (qty < 1) {
     return <></>;
   }
 

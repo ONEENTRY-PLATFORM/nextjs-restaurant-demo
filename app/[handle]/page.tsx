@@ -3,6 +3,11 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
+import { unwrapRichText } from '@/components/utils';
+
+// Pure CMS content (no searchParams/cookies) — ISR per docs/rules/performance.md §1.
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 /**
  * PageLayout — generic renderer for CMS pages without a dedicated route.
@@ -24,9 +29,7 @@ const PageLayout = async ({
   }
 
   const title = page.localizeInfos?.title ?? '';
-  const descriptionRaw = page.attributeValues?.description?.value as
-    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
-  const html = descriptionRaw?.[0]?.htmlValue ?? '';
+  const html = unwrapRichText(page.attributeValues?.description?.value)?.htmlValue ?? '';
 
   return (
     <article className="mx-auto flex w-full max-w-85 flex-col gap-6 px-4 py-10 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">

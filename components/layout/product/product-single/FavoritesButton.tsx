@@ -3,7 +3,7 @@
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 
 import { onSubscribeEvents, onUnsubscribeEvents } from '@/app/api/hooks/useEvents';
@@ -30,11 +30,15 @@ const FavoritesButton = (product: IProductsEntity): JSX.Element => {
   const { user, isAuth } = useContext(AuthContext);
   const { id } = product;
   const isFavStored = useAppSelector(state => selectIsFavorites(state, id));
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  // Persisted Redux favorites rehydrate on the client — gate the heart state via a mount-gate.
+  const mounted = useSyncExternalStore(
+    cb => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false
+  );
   const isFav = mounted ? isFavStored : false;
 
   const titleSlot = (template: string) => template.replace('{title}', product.localizeInfos.title);

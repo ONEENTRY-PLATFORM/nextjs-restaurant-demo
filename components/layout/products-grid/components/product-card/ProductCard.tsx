@@ -93,6 +93,7 @@ const ProductCard = ({
 
       <Link
         href={'/shop/product/' + id}
+        prefetch={false}
         className="absolute top-0 left-0 z-0 flex size-full p-px"
         aria-label={title}
       />

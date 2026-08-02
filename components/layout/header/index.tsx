@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
+import Link from 'next/link';
 import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type JSX, Suspense } from 'react';
@@ -116,9 +116,14 @@ const Header = async (): Promise<JSX.Element> => {
             <header className="header_mobile mx-auto flex max-w-85 flex-col px-2.5 pt-7.5 md:hidden">
               <div data-header-anim="top-nav" className="flex items-center justify-between">
                 <SupportButton disabled={!supportPhone && !supportWhatsappUrl} />
-                <a href="/" aria-label={homeLabel} data-header-anim="logo-mobile">
+                <Link
+                  href="/"
+                  prefetch={false}
+                  aria-label={homeLabel}
+                  data-header-anim="logo-mobile"
+                >
                   <LogoMobileIcon title="logo" />
-                </a>
+                </Link>
                 <MobileBurgerButton />
               </div>
 

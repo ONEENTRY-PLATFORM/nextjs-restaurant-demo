@@ -5,6 +5,7 @@ import { type JSX, useContext } from 'react';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import BurgerIcon from '@/components/icons/burger';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * MobileBurgerButton — burger in the mobile header that opens `CategoryFilter`.
@@ -25,6 +26,8 @@ const MobileBurgerButton = (): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup('CategoryFilter')}
+      onFocus={() => prefetchPopup('CategoryFilter')}
       aria-label={t('open_categories_label', 'Open categories')}
       className="group_stroke cursor-pointer border-0 bg-transparent p-0"
     >

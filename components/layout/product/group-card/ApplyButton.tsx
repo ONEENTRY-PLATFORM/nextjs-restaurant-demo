@@ -2,8 +2,8 @@
 
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
 
+import { useHydrated } from '@/app/hooks/useHydrated';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/reducers/CartSlice';
@@ -18,13 +18,13 @@ import { addProductToCart, removeProduct, selectIsInCart } from '@/app/store/red
 const ApplyButton = ({ product }: { product: IProductsEntity }): JSX.Element => {
   const t = useT();
   const dispatch = useAppDispatch();
-  const [productInCart, setInCart] = useState(false);
   const inCart = useAppSelector(state => selectIsInCart(state, product.id));
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setInCart(inCart);
-  }, [inCart]);
+  /**
+   * Hydration gate: the persisted cart is unknown during SSR, so the button
+   * renders its "Apply" state until hydration and only then reflects the real
+   * cart — derived instead of mirrored into state from an effect.
+   */
+  const productInCart = useHydrated() && inCart;
 
   const addToCartHandle = () => {
     dispatch(addProductToCart({ id: product.id, selected: true, quantity: 1 }));

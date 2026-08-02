@@ -20,7 +20,6 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
   const placeholder = String(field.additionalFields?.placeholder?.value ?? '');
   const hint = String(field.additionalFields?.hint?.value ?? '');
   const [value, setValue] = useState<string>(field.value || '');
-  const [type, setType] = useState<string>('');
   const dispatch = useAppDispatch();
   const valid = true;
 
@@ -42,22 +41,39 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
     validators?.['stringInspectionValidator'] as { stringMax?: number } | undefined
   )?.stringMax;
 
-  useEffect(() => {
-    dispatch(
-      addField({
-        [field.marker]: {
-          valid: valid,
-          value: value,
-        },
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, valid]);
+  /**
+   * The rendered input type follows the schema, except while the user has
+   * toggled a password field's visibility with the eye button. Resetting the
+   * override when the schema type changes happens during render (React's
+   * documented alternative to a setState inside an effect body).
+   */
+  const [typeOverride, setTypeOverride] = useState<string | null>(null);
+  const [prevFieldType, setPrevFieldType] = useState(fieldType);
+  if (prevFieldType !== fieldType) {
+    setPrevFieldType(fieldType);
+    setTypeOverride(null);
+  }
+  const type = typeOverride ?? fieldType ?? 'text';
 
+  /** Register the field's initial value in the store once per mount. */
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setType(fieldType || 'text');
-  }, [fieldType]);
+    dispatch(addField({ [field.marker]: { valid: true, value: field.value || '' } }));
+    // Mount-only registration — later values go through `handleChange`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, field.marker]);
+
+  /**
+   * handleChange — the single write path for the field: updates local state
+   * and mirrors it into the store within the same event, so typing costs one
+   * render pass instead of a render → effect → dispatch → render cascade.
+   *
+   * @param   {string} next - New input value.
+   * @returns Void.
+   */
+  const handleChange = (next: string): void => {
+    setValue(next);
+    dispatch(addField({ [field.marker]: { valid, value: next } }));
+  };
 
   if (!field || !type) {
     return <></>;
@@ -75,7 +91,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
             className="cart_input"
             required={required}
             value={value}
-            onChange={val => setValue(val.currentTarget.value)}
+            onChange={val => handleChange(val.currentTarget.value)}
           >
             {field.listTitles.map((option, i: Key) => (
               <option key={i} value={option.value as string}>
@@ -90,7 +106,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
             placeholder={placeholder}
             className="cart_input"
             required={required}
-            onChange={val => setValue(val.currentTarget.value)}
+            onChange={val => handleChange(val.currentTarget.value)}
             value={value}
           />
         )}
@@ -101,7 +117,7 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
             placeholder={placeholder}
             className="cart_input"
             required={required}
-            onChange={val => setValue(val.currentTarget.value)}
+            onChange={val => handleChange(val.currentTarget.value)}
             autoComplete={fieldType === 'password' ? 'password' : ''}
             minLength={minLength}
             maxLength={maxLength}
@@ -111,7 +127,9 @@ const FormInput = (field: IFormAttribute & { value?: string; index: number }): J
         {fieldType === 'password' && (
           <button
             type="button"
-            onClick={() => setType(prev => (prev === 'password' ? 'text' : 'password'))}
+            onClick={() =>
+              setTypeOverride(prev => ((prev ?? fieldType) === 'password' ? 'text' : 'password'))
+            }
             className="-ml-6.25 flex size-6 shrink-0 items-center"
           >
             {type === 'password' ? <EyeIcon /> : <EyeOpenIcon />}

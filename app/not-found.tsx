@@ -4,6 +4,7 @@ import type { JSX } from 'react';
 import { getPageByUrl } from '@/app/api';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
+import { unwrapRichText } from '@/components/utils';
 
 // Force-dynamic: the layout chain uses `useSearchParams()`.
 export const dynamic = 'force-dynamic';
@@ -32,11 +33,7 @@ const NotFound = async (): Promise<JSX.Element> => {
     <div className="mx-auto flex min-h-96 w-full max-w-85 flex-col items-center justify-center px-4 py-8 text-paper xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">
       <h1 className="mb-10 text-6xl">{localizeInfos?.title}</h1>
       <p className="mb-4">
-        {
-          (
-            attributeValues?.error_description?.value as Array<{ plainValue?: string }> | undefined
-          )?.[0]?.plainValue
-        }
+        {unwrapRichText(attributeValues?.error_description?.value)?.plainValue}
       </p>
       <Link
         href="/"

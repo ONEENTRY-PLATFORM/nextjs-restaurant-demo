@@ -25,17 +25,17 @@ export const useNearViewport = (
   ref: RefObject<Element | null>,
   { rootMargin = '200px' }: { rootMargin?: string } = {}
 ): boolean => {
-  const [visible, setVisible] = useState(false);
+  // No IntersectionObserver (legacy browsers/jsdom) — degrade to "visible"
+  // straight from the initializer instead of a setState inside the effect
+  // body. The server branch stays `false` so SSR matches the hydrated state.
+  const [visible, setVisible] = useState(
+    () => typeof window !== 'undefined' && typeof IntersectionObserver === 'undefined'
+  );
 
   useEffect(() => {
     if (visible) return;
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === 'undefined') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setVisible(true);
-      return;
-    }
     const io = new IntersectionObserver(
       entries => {
         if (entries.some(e => e.isIntersecting)) {

@@ -96,6 +96,7 @@ const BookingsContent = (): JSX.Element => {
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
+    // Mark "loading" synchronously before the async bookings fetch starts.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     getAllOrdersAcrossStorages({ offset: 0, limit: 50 })

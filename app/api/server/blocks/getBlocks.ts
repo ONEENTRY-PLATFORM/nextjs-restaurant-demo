@@ -1,26 +1,18 @@
+import { unstable_cache } from 'next/cache';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { BlockType, IBlocksResponse } from 'oneentry/dist/blocks/blocksInterfaces';
 import { cache } from 'react';
 
 import { getApi, isError } from '@/app/api';
 
-/**
- * getBlocks — blocks by type.
- *
- * @param   {object}    props      - Fetch arguments.
- * @param   {BlockType} props.type - OneEntry block type filter.
- * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
- */
-export const getBlocks = cache(
-  async ({
-    type,
-  }: {
-    type: BlockType;
-  }): Promise<{
-    isError: boolean;
-    error?: IError;
-    blocks?: IBlocksResponse;
-  }> => {
+type BlocksResult = {
+  isError: boolean;
+  error?: IError;
+  blocks?: IBlocksResponse;
+};
+
+const fetchBlocks = unstable_cache(
+  async (type: BlockType): Promise<BlocksResult> => {
     try {
       const data = await getApi().Blocks.getBlocks(type);
 
@@ -32,5 +24,18 @@ export const getBlocks = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  }
+  },
+  ['oneentry-getBlocks'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-blocks'] }
+);
+
+/**
+ * getBlocks — blocks by type.
+ *
+ * @param   {object}    props      - Fetch arguments.
+ * @param   {BlockType} props.type - OneEntry block type filter.
+ * @returns Promise resolving to `{ isError, error?, blocks? }` (graceful fallback on SDK error).
+ */
+export const getBlocks = cache(async ({ type }: { type: BlockType }): Promise<BlocksResult> =>
+  fetchBlocks(type)
 );

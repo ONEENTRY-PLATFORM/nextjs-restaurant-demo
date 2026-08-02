@@ -35,8 +35,15 @@ export const useOrderPreview = (couponCode?: string, bonusAmount?: number): UseO
   const { isAuth } = useContext(AuthContext);
   const cartProducts = useAppSelector(selectCartData) as CartEntry[];
 
-  const [totals, setTotals] = useState<ServerOrderTotals | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  /**
+   * Totals are stored together with the request signature they answer, so
+   * "still loading" is derived by comparing keys instead of being written into
+   * state synchronously from the effect body (which would cascade renders).
+   */
+  const [result, setResult] = useState<{
+    key: string;
+    totals: ServerOrderTotals | null;
+  }>({ key: '', totals: null });
 
   const products = useMemo(() => {
     const anySelectionFlag = cartProducts.some(p => typeof p.selected === 'boolean');
@@ -55,14 +62,15 @@ export const useOrderPreview = (couponCode?: string, bonusAmount?: number): UseO
     [products, couponCode, bonusAmount]
   );
 
+  // Signing out or emptying the cart means "no totals" — derived at return
+  // time below, so the effect has nothing to reset here.
+  const hasPreview = isAuth && products.length > 0;
+
   useEffect(() => {
-    if (!isAuth || products.length === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTotals(null);
+    if (!hasPreview) {
       return;
     }
     let cancelled = false;
-    setIsLoading(true);
     (async () => {
       const res = await getApi().Orders.previewOrder({
         products,
@@ -70,18 +78,30 @@ export const useOrderPreview = (couponCode?: string, bonusAmount?: number): UseO
         ...(bonusAmount && bonusAmount > 0 ? { bonusAmount } : {}),
       });
       if (cancelled) return;
-      if (isError(res)) {
-        setTotals(null);
-      } else {
-        setTotals(derivePreviewTotals(res as IOrderPreviewResponse, DELIVERY_PRODUCT_ID));
-      }
-      setIsLoading(false);
+      // The only state write of the hook, and it happens after `await`.
+      setResult({
+        key,
+        totals: isError(res)
+          ? null
+          : derivePreviewTotals(res as IOrderPreviewResponse, DELIVERY_PRODUCT_ID),
+      });
     })();
     return () => {
       cancelled = true;
     };
+    // `key` is the content signature of products/coupon/bonus — object identities would re-run the preview every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuth, key]);
+  }, [hasPreview, key]);
 
-  return { totals, isLoading };
+  /**
+   * Both outputs are derived. Without an authenticated user or a non-empty
+   * cart there are no server totals at all; otherwise the preview is "loading"
+   * until the stored result carries the signature of the current request, so
+   * totals from a previous cart are never shown for the current one.
+   */
+  const isCurrent = result.key === key;
+  return {
+    totals: hasPreview && isCurrent ? result.totals : null,
+    isLoading: hasPreview && !isCurrent,
+  };
 };

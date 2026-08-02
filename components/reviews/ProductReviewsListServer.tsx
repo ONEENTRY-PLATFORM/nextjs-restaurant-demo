@@ -2,6 +2,7 @@ import type { JSX } from 'react';
 
 import { getProductReviews } from '@/app/api';
 
+import { productReviewFromFormData } from './productReview';
 import ProductReviewsList from './ProductReviewsList';
 
 /**
@@ -16,8 +17,8 @@ const ProductReviewsListServer = async ({
 }: {
   productId: number;
 }): Promise<JSX.Element> => {
-  const reviews = await getProductReviews(productId);
-  return <ProductReviewsList reviews={reviews} />;
+  const items = await getProductReviews(productId);
+  return <ProductReviewsList reviews={items.map(productReviewFromFormData)} />;
 };
 
 export default ProductReviewsListServer;

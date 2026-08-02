@@ -32,6 +32,7 @@ const AddressRow = ({ placeholder }: { placeholder: string }): JSX.Element => {
         valid: address ? true : false,
       })
     );
+    // Seed the order draft once per delivery change — `addressReg` is a login-time constant and `dispatch` is stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deliveryData]);
 

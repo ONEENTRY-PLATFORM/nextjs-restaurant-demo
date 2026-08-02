@@ -4,6 +4,7 @@ import { type JSX, useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import PhoneIcon from '@/components/icons/phone.svg';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * SupportButton — phone icon in the mobile header that opens the `SupportPopup`.
@@ -33,6 +34,8 @@ const SupportButton = ({ disabled }: { disabled: boolean }): JSX.Element => {
     <button
       type="button"
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup('SupportPopup')}
+      onFocus={() => prefetchPopup('SupportPopup')}
       aria-label="Open support"
       className="size-4.5 cursor-pointer border-0 bg-transparent p-0"
     >

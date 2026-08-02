@@ -4,10 +4,11 @@ import Image from 'next/image';
 import type { JSX } from 'react';
 import { useRef, useState } from 'react';
 
-import type { ProductReview } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import ChatDotsIcon from '@/components/icons/chat-dots.svg';
 import StarCardIcon from '@/components/icons/star-card';
+
+import type { ProductReview } from './productReview';
 
 const SWIPE_THRESHOLD_PX = 40;
 

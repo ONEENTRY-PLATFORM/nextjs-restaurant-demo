@@ -13,60 +13,16 @@ const DEFAULT_MODULE_CONFIG_ID = FORM_MODULE_CONFIG_IDS.reviewForm;
 const REVIEWS_LIMIT = 50;
 
 /**
- * readField — value of a `formData` entry by marker.
+ * getProductReviews — approved product review records from OneEntry FormsData by `entityIdentifier`.
  *
- * @param   {IFormByMarkerDataEntity} item   - Review record.
- * @param   {string}                  marker - Field marker (e.g. `review_rating`).
- * @returns Raw field value, or `undefined` when the marker is absent.
- */
-const readField = (item: IFormByMarkerDataEntity, marker: string): unknown => {
-  const fields = item.formData as unknown as Array<{ marker?: unknown; value?: unknown }>;
-  return fields?.find(f => f.marker === marker)?.value;
-};
-
-/** ProductReview — normalised review record for `<ProductReviewsList />`. */
-export interface ProductReview {
-  id: string;
-  author: string;
-  date: string;
-  rating: number;
-  text: string;
-}
-
-/**
- * readPlainText — plain text from the polymorphic `formData[].value` (SDK returns `[{ plainValue }]` for `text` and a string for primitives).
- * @param   {unknown} value - Raw `formData[].value`.
- * @returns Plain text.
- */
-const readPlainText = (value: unknown): string => {
-  if (Array.isArray(value)) {
-    const first = value[0] as { plainValue?: unknown } | undefined;
-    return typeof first?.plainValue === 'string' ? first.plainValue : '';
-  }
-  return typeof value === 'string' ? value : '';
-};
-
-/**
- * readNumber — coerces `formData[].value` to a number for the rating (`0` for non-numeric).
- * @param   {unknown} value - Raw `formData[].value`.
- * @returns Numeric rating.
- */
-const readNumber = (value: unknown): number => {
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string') {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : 0;
-  }
-  return 0;
-};
-
-/**
- * getProductReviews — approved product reviews from OneEntry FormsData by `entityIdentifier`.
+ * Returns the SDK entities untouched (top-level filter + newest-first sort only) — field values are
+ * read at the point of use via `productReviewFromFormData` (`components/reviews/productReview.ts`).
+ * Deliberately uncached (`unstable_noStore`): user-generated reviews must be fresh.
  *
  * @param   {number}                    productId - Product id (becomes `entityIdentifier`).
- * @returns Top-level reviews, newest first.
+ * @returns Promise resolving to top-level review records, newest first (empty on SDK error).
  */
-export const getProductReviews = async (productId: number): Promise<ProductReview[]> => {
+export const getProductReviews = async (productId: number): Promise<IFormByMarkerDataEntity[]> => {
   unstable_noStore();
 
   try {
@@ -97,16 +53,7 @@ export const getProductReviews = async (productId: number): Promise<ProductRevie
 
     const items: IFormByMarkerDataEntity[] = (data as IFormsByMarkerDataEntity).items ?? [];
 
-    return items
-      .filter(item => item.parentId === null)
-      .map<ProductReview>(item => ({
-        id: String(item.id),
-        author: item.userIdentifier?.trim() || 'Anonymous',
-        date: item.time ? new Date(item.time).toLocaleDateString('en-US') : '',
-        rating: readNumber(readField(item, 'review_rating')),
-        text: readPlainText(readField(item, 'review_text')),
-      }))
-      .sort((a, b) => Number(b.id) - Number(a.id));
+    return items.filter(item => item.parentId === null).sort((a, b) => b.id - a.id);
   } catch {
     return [];
   }

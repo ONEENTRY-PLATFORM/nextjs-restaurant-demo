@@ -1,12 +1,8 @@
 'use client';
 
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
 
-import {
-  isHeaderAnimationComplete,
-  subscribeHeaderAnimation,
-} from '@/app/animations/headerAnimState';
+import { useHeaderAnimationComplete } from '@/app/animations/useHeaderAnimationComplete';
 
 /**
  * HomePromoOverlay — solid-black overlay positioned absolutely over the HomePromo banners.
@@ -20,17 +16,7 @@ import {
  * @returns JSX overlay element sitting inside the HomePromo wrapper.
  */
 const HomePromoOverlay = (): JSX.Element => {
-  const [fading, setFading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (isHeaderAnimationComplete()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFading(true);
-      return undefined;
-    }
-    const unsubscribe = subscribeHeaderAnimation(() => setFading(true));
-    return unsubscribe;
-  }, []);
+  const fading = useHeaderAnimationComplete();
 
   return (
     <div

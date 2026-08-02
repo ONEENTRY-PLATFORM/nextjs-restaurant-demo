@@ -31,6 +31,30 @@ export function isIError(error: unknown): error is IError {
 }
 
 /**
+ * normalizeErrorMessage — flattens the polymorphic `IError.message` into a display string.
+ *
+ * `postFormsData` validators deliver `message` as a `string[]` — joins array entries with `'; '`;
+ * plain strings pass through; everything else falls back to `defaultMessage`.
+ *
+ * @param   {unknown}    message        - Raw `message` from an SDK `IError`.
+ * @param   {string}     defaultMessage - Fallback when the message is missing or empty.
+ * @returns User-facing error string.
+ */
+export function normalizeErrorMessage(
+  message: unknown,
+  defaultMessage: string = 'An error occurred'
+): string {
+  if (Array.isArray(message)) {
+    const joined = message.map(String).join('; ');
+    return joined || defaultMessage;
+  }
+  if (typeof message === 'string' && message) {
+    return message;
+  }
+  return defaultMessage;
+}
+
+/**
  * handleApiError — centralized API error handler.
  *
  * @param   {string}     handle - Name of the calling handler for logging.
@@ -46,7 +70,7 @@ export function handleApiError(handle: string, error: unknown): ApiError {
       timestamp: new Date().toISOString(),
     });
 
-    return new ApiError(error.message || 'An error occurred', error.statusCode || 500, error);
+    return new ApiError(normalizeErrorMessage(error.message), error.statusCode || 500, error);
   }
 
   if (error instanceof Error) {
@@ -105,7 +129,7 @@ export function formatErrorMessage(
       case 500:
         return 'Internal Server Error: Please try again later';
       default:
-        return error.message || defaultMessage;
+        return normalizeErrorMessage(error.message, defaultMessage);
     }
   }
 

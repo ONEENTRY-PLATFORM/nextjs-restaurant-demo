@@ -7,6 +7,7 @@ import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/a
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 import ProductSingleSkeleton from '@/components/shared/skeletons/ProductSingleSkeleton';
+import { unwrapRichText } from '@/components/utils';
 
 // force-dynamic — product data is cached via `unstable_cache` in `getProductById`, so only the RSC
 // render runs per request (no per-product prerender). Loading skeleton lives in the sibling
@@ -38,14 +39,12 @@ const ProductPageLayout = async ({
   const outOfStockMarker = await getOutOfStockMarker();
 
   // JSON-LD structured data for the product (https://json-ld.org/) for SEO.
-  const descriptionValue = attributeValues.description?.value as
-    Array<{ plainValue?: string }> | undefined;
   const imageUrl = getProductImageUrl(attributeValues);
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: localizeInfos.title,
-    description: descriptionValue?.[0]?.plainValue,
+    description: unwrapRichText(attributeValues.description?.value)?.plainValue,
     image: imageUrl || undefined,
     offers: {
       '@type': 'AggregateOffer',

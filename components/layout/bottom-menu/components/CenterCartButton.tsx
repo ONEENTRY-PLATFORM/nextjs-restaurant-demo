@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image';
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
@@ -51,7 +51,13 @@ const CenterCartButton = (): JSX.Element => {
           : 'scale-100 rotate-0 opacity-100')
       }
     >
-      <img className="h-5.75 w-6.25" src="/images/icons/cart_black.svg" alt="cart" />
+      <Image
+        src="/images/icons/cart_black.svg"
+        width={25}
+        height={23}
+        alt=""
+        className="h-5.75 w-6.25"
+      />
       {mounted && count > 0 && (
         <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full border border-brand bg-white px-1">
           <p className="text-[10px] leading-none font-bold text-black">{count}</p>

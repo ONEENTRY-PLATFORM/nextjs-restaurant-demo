@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import { cache } from 'react';
 
@@ -38,6 +39,35 @@ const fetchByKind = (kind: RecommendationKind, marker: string, lang: string) => 
   }
 };
 
+const fetchRecommendations = unstable_cache(
+  async (
+    kind: RecommendationKind,
+    excludeId: number | null,
+    limit: number,
+    fallbackToCatalog: boolean,
+    lang: string
+  ): Promise<IProductsEntity[]> => {
+    try {
+      const res = await fetchByKind(kind, MARKER_BY_KIND[kind], lang);
+      let items = isError(res) ? [] : (res as IProductsEntity[]);
+      if (excludeId != null) {
+        items = items.filter(p => p.id !== excludeId);
+      }
+
+      if (items.length === 0 && fallbackToCatalog) {
+        const all = await getProducts({ limit: limit + 1, offset: 0, langCode: lang });
+        items = (all.products ?? []).filter(p => p.id !== excludeId);
+      }
+
+      return items.slice(0, limit);
+    } catch {
+      return [];
+    }
+  },
+  ['oneentry-getRecommendations'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-blocks'] }
+);
+
 /**
  * getRecommendations — products for a recommendation surface (cart upsell, recently viewed, …).
  *
@@ -52,26 +82,12 @@ export const getRecommendations = cache(
   async (
     kind: RecommendationKind,
     opts?: { excludeId?: number; limit?: number; fallbackToCatalog?: boolean }
-  ): Promise<IProductsEntity[]> => {
-    const limit = opts?.limit ?? 8;
-    const excludeId = opts?.excludeId;
-    const lang = getLang();
-
-    try {
-      const res = await fetchByKind(kind, MARKER_BY_KIND[kind], lang);
-      let items = isError(res) ? [] : (res as IProductsEntity[]);
-      if (excludeId != null) {
-        items = items.filter(p => p.id !== excludeId);
-      }
-
-      if (items.length === 0 && (opts?.fallbackToCatalog ?? true)) {
-        const all = await getProducts({ limit: limit + 1, offset: 0, langCode: lang });
-        items = (all.products ?? []).filter(p => p.id !== excludeId);
-      }
-
-      return items.slice(0, limit);
-    } catch {
-      return [];
-    }
-  }
+  ): Promise<IProductsEntity[]> =>
+    fetchRecommendations(
+      kind,
+      opts?.excludeId ?? null,
+      opts?.limit ?? 8,
+      opts?.fallbackToCatalog ?? true,
+      getLang()
+    )
 );

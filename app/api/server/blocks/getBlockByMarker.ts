@@ -1,23 +1,18 @@
+import { unstable_cache } from 'next/cache';
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IBlockEntity } from 'oneentry/dist/blocks/blocksInterfaces';
 import { cache } from 'react';
 
 import { getApi, isError } from '@/app/api';
 
-/**
- * getBlockByMarker — block by marker.
- *
- * @param   {string} marker - OneEntry block marker.
- * @returns Promise resolving to `{ isError, error?, block? }` (graceful fallback on SDK error).
- */
-export const getBlockByMarker = cache(
-  async (
-    marker: string
-  ): Promise<{
-    isError: boolean;
-    error?: IError;
-    block?: IBlockEntity;
-  }> => {
+type BlockResult = {
+  isError: boolean;
+  error?: IError;
+  block?: IBlockEntity;
+};
+
+const fetchBlockByMarker = unstable_cache(
+  async (marker: string): Promise<BlockResult> => {
     try {
       const data = await getApi().Blocks.getBlockByMarker(marker);
 
@@ -29,5 +24,17 @@ export const getBlockByMarker = cache(
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }
-  }
+  },
+  ['oneentry-getBlockByMarker'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-blocks'] }
+);
+
+/**
+ * getBlockByMarker — block by marker.
+ *
+ * @param   {string} marker - OneEntry block marker.
+ * @returns Promise resolving to `{ isError, error?, block? }` (graceful fallback on SDK error).
+ */
+export const getBlockByMarker = cache(async (marker: string): Promise<BlockResult> =>
+  fetchBlockByMarker(marker)
 );

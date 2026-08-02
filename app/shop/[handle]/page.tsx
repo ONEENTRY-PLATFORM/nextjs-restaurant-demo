@@ -15,6 +15,10 @@ import { getDictionary } from '../../dictionaries';
 
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
+// Force-dynamic: the grid is driven by awaited `searchParams` (filters/pagination) —
+// declared explicitly instead of relying on implicit dynamic detection.
+export const dynamic = 'force-dynamic';
+
 /**
  * ShopCatalogPage — shop catalog page rendered as a single category by `handle`.
  *

@@ -53,6 +53,7 @@ const OrderReviewPopup = (): JSX.Element => {
   useEffect(() => {
     if (!isOpen) {
       clearOrderReviewTarget();
+      // Reset-on-close: a reopened popup must prefill from scratch.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setExistingReviews(new Map());
     }
@@ -78,6 +79,7 @@ const OrderReviewPopup = (): JSX.Element => {
   useEffect(() => {
     if (!isOpen || !orderId || !userId || productIds.length === 0) return;
     let cancelled = false;
+    // Mark "prefilling" synchronously before the async reviews fetch starts.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefilling(true);
     (async () => {

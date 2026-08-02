@@ -4,12 +4,9 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useTransitionState } from 'next-transition-router';
 import type { JSX, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-import {
-  isHeaderAnimationComplete,
-  subscribeHeaderAnimation,
-} from '@/app/animations/headerAnimState';
+import { useHeaderAnimationComplete } from '@/app/animations/useHeaderAnimationComplete';
 
 /**
  * ProductAnimations — fade-in/leaving wrapper for product page blocks with per-block stagger.
@@ -31,18 +28,8 @@ const ProductAnimations = ({
 }): JSX.Element => {
   const { stage } = useTransitionState();
   const [prevStage, setPrevStage] = useState('');
-  const [revealed, setRevealed] = useState<boolean>(false);
+  const revealed = useHeaderAnimationComplete();
   const ref = useRef(null);
-
-  useEffect(() => {
-    if (isHeaderAnimationComplete()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRevealed(true);
-      return undefined;
-    }
-    const unsubscribe = subscribeHeaderAnimation(() => setRevealed(true));
-    return unsubscribe;
-  }, []);
 
   useGSAP(() => {
     if (!revealed) {

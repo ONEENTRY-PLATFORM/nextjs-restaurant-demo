@@ -69,7 +69,6 @@ export { getRecommendations } from './server/blocks/getRecommendations';
 export type { ContentFilterOption } from './server/filters/getContentFilter';
 export { contentFilterToOptions, getContentFilter } from './server/filters/getContentFilter';
 export { getFormByMarker } from './server/forms/getFormByMarker';
-export type { ProductReview } from './server/forms/getProductReviews';
 export { getProductReviews } from './server/forms/getProductReviews';
 export { getMenuByMarker } from './server/menus/getMenuByMarker';
 export type { OrderWithStorage } from './server/orders/getAllOrdersAcrossStorages';
@@ -79,7 +78,6 @@ export {
 } from './server/orders/getAllOrdersAcrossStorages';
 export { getAllOrdersByMarker } from './server/orders/getAllOrdersByMarker';
 export { updateOrderByMarkerAndId } from './server/orders/updateOrderByMarkerAndId';
-export type { BlogBanner } from './server/pages/getBlogBanners';
 export { getBlogBanners } from './server/pages/getBlogBanners';
 export { getChildPagesByParentUrl } from './server/pages/getChildPagesByParentUrl';
 export { getPageById } from './server/pages/getPageById';

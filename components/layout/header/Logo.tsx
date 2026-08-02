@@ -10,7 +10,11 @@ import LogoIcon from '@/components/icons/logo';
  */
 const Logo = (): JSX.Element => {
   return (
-    <Link href={'/'} className="logo focus:outline-none md:w-33.75 lg:w-43.5 xl:w-53.5">
+    <Link
+      href={'/'}
+      prefetch={false}
+      className="logo focus:outline-none md:w-33.75 lg:w-43.5 xl:w-53.5"
+    >
       <LogoIcon className={'max-w-full'} fill={'#FFFFFF'} />
     </Link>
   );

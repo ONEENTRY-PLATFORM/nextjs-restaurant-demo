@@ -13,6 +13,10 @@ import ProductsGridLoader from '@/components/layout/products-grid/components/Pro
 
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
+// Force-dynamic: the grid is driven by awaited `searchParams` (filters/pagination) —
+// declared explicitly instead of relying on implicit dynamic detection.
+export const dynamic = 'force-dynamic';
+
 /**
  * ShopCategoryLayout — shop category page layout under `/shop/category/<handle>`.
  *

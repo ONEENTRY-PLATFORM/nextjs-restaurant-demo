@@ -3,6 +3,7 @@ import type { JSX } from 'react';
 import { getBlogBanners } from '@/app/api';
 import getBannerBlurMap from '@/app/api/lqip/getBannerBlurMap';
 import { t } from '@/app/dictionaries';
+import { blogBannerFromPage } from '@/components/promo/blogBanner';
 
 import HomePromoCarousel from './HomePromoCarousel';
 import HomePromoOverlay from './HomePromoOverlay';
@@ -13,7 +14,8 @@ import HomePromoOverlay from './HomePromoOverlay';
  * @returns Promise resolving to JSX of the promo strip, or `null` when no banners are configured.
  */
 const HomePromo = async (): Promise<JSX.Element | null> => {
-  const banners = await getBlogBanners();
+  const { pages } = await getBlogBanners();
+  const banners = (pages ?? []).map(blogBannerFromPage);
   const desktopBanners = banners.filter(b => b.desktopImage);
   const mobileBanners = banners.filter(b => b.mobileImage);
 

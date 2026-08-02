@@ -3,7 +3,7 @@
 import type { IError } from 'oneentry/dist/base/utils';
 import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 import type { JSX, ReactNode } from 'react';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   getLang,
@@ -116,14 +116,26 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     await evaluate(true);
   }, [trigger]);
 
+  // StrictMode guard (tokens rule): dev double-invokes the mount effect, and the second run
+  // would reDefine a second SDK instance before the first proactive /refresh flips
+  // hasActiveSession(). Stores the last-seen `refetch` value so the duplicate invocation of
+  // the same mount is skipped, while an `authenticate()` toggle still re-runs onInit.
+  const lastRefetchRef = useRef<boolean | null>(null);
+
   useEffect(() => {
+    if (lastRefetchRef.current === refetch) {
+      return;
+    }
+    lastRefetchRef.current = refetch;
     // Synchronous setState in the effect body — mark "loading" before the
     // asynchronous onInit starts.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setIsLoading(true);
     onInit().then(() => {
       setIsLoading(false);
     });
+    // `onInit` is re-created per render — the effect must run only on the `refetch`
+    // toggle (explicit re-auth), not on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 
@@ -140,6 +152,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     }
     const refresh = localStorage.getItem('refresh-token');
     if (refresh) {
+      // Sync toggle of the re-auth flag in response to the poll error (external event).
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRefetch(prev => !prev);
     }
@@ -149,6 +162,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     if (isAuth) {
       checkToken();
     }
+    // `checkToken` is stable per `trigger`; `refetch`/`refetchUser` are the explicit
+    // re-probe signals — reacting to the callback identity would double-probe getMe.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch, refetchUser, isAuth]);
 

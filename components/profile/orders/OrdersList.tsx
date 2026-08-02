@@ -7,7 +7,7 @@ import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import type { BlogBanner, OrderWithStorage } from '@/app/api';
+import type { OrderWithStorage } from '@/app/api';
 import {
   getAllOrdersAcrossStorages,
   isBookingStorageMarker,
@@ -17,6 +17,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import OrdersAnimations from '@/components/profile/animations/OrdersAnimations';
+import type { BlogBanner } from '@/components/promo/blogBanner';
 
 import OrderCard from './OrderCard';
 import { isHistoryOrder } from './orderUtils';
@@ -46,6 +47,8 @@ const OrdersList = ({
 
   useEffect(() => {
     if (!isAuth) {
+      // Reset-on-prop-change: a guest has no orders to load — the spinner must stop
+      // synchronously before the early return skips the async fetch.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
@@ -91,6 +94,7 @@ const OrdersList = ({
 
   useEffect(() => {
     if (active.length === 0 && history.length === 0) return;
+    // Sync-with-async-data: auto-expand the first active/history order once the fetch lands (no-op afterwards).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setExpandedIds(prev => {
       if (prev.size > 0) return prev;
@@ -214,7 +218,7 @@ const OrdersList = ({
               key={b.id}
               href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
               title={b.title}
-              className="orders-row profile-anim-row block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
+              className="orders-row profile-anim-row block overflow-hidden transition-transform duration-500 hover:scale-102"
             >
               <Image
                 src={b.mobileImage as string}

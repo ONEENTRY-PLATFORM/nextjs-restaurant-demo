@@ -8,8 +8,9 @@ import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { getApi } from '@/app/api';
+import { getApi, isError } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import { userHasPasswordAuth } from '@/components/forms/authProviders';
 import EyeIcon from '@/components/icons/eye';
 import EyeOpenIcon from '@/components/icons/eye-o';
@@ -22,7 +23,7 @@ import {
   type UserFormData,
 } from '@/components/profile/profileSectionsUtils';
 import { validateField } from '@/components/reservation/reservationFormUtils';
-import { normalizePhoneE164 } from '@/components/utils';
+import { getFormAttributes, normalizePhoneE164 } from '@/components/utils';
 
 /**
  * isRequiredAttr — checks whether a OneEntry form attribute carries a strict required validator.
@@ -79,10 +80,9 @@ const MyProfileSection = ({
 
   const profileAttributes = useMemo<IFormAttribute[]>(
     () =>
-      (userForm?.attributes ?? [])
+      getFormAttributes(userForm)
         .filter(attr => !HIDDEN_PROFILE_MARKERS.has(attr.marker))
         .filter(attr => passwordAuth || !(attr.isPassword || attr.marker.includes('password')))
-        .slice()
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0)),
     [userForm, passwordAuth]
   );
@@ -126,7 +126,7 @@ const MyProfileSection = ({
       // change (login-change semantics); for OAuth sessions it is always included — the server
       // creates such users WITHOUT an email row (the address lives in `user.identifier`), and
       // sending it backfills the record to parity with email-provider users (same `user` form).
-      const formData = (userForm?.attributes ?? [])
+      const formData = getFormAttributes(userForm)
         .filter(attr => !attr.isPassword)
         .filter(attr => hasPassword || !attr.isLogin || !passwordAuth)
         .map(attr => {
@@ -157,7 +157,7 @@ const MyProfileSection = ({
       // key is omitted entirely unless a password change is in flight.
       // notificationData is only sent for password-provider accounts: OAuth-created users have
       // no notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
-      await getApi().Users.updateUser({
+      const res = await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
         formData: formData as unknown as IAuthFormData[],
         ...(hasPassword ? { authData: [{ marker: 'password', value: password }] } : {}),
@@ -172,6 +172,14 @@ const MyProfileSection = ({
           : {}),
         state: {},
       });
+      // The SDK returns an IError envelope instead of throwing — a failed save must not
+      // refresh the user or show the success toast.
+      if (isError(res)) {
+        setSaveError(
+          normalizeErrorMessage((res as { message?: string | string[] }).message, 'Failed to save')
+        );
+        return;
+      }
       refreshUser();
       toast(t('data_saved_toast', 'Data saved!'));
     } catch (e) {
@@ -179,6 +187,7 @@ const MyProfileSection = ({
     } finally {
       setSaving(false);
     }
+    // `passwordAuth` derives from `user` and the helpers are module-scope — the listed deps are the real triggers.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edits, fieldValue, profileAttributes, refreshUser, t, user, userForm]);
 

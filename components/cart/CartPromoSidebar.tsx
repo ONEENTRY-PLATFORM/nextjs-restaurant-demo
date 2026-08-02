@@ -8,7 +8,7 @@ import { useTransitionState } from 'next-transition-router';
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { BlogBanner } from '@/app/api';
+import type { BlogBanner } from '@/components/promo/blogBanner';
 
 import PromoBannerAnimations from './animations/PromoBannerAnimations';
 
@@ -35,7 +35,7 @@ const PromoBanner = ({ banner }: { banner: BlogBanner }): JSX.Element => {
     <Link
       href={banner.pageUrl ? `/promotions/${banner.pageUrl}` : '#'}
       title={banner.title}
-      className="relative block overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
+      className="relative block overflow-hidden transition-transform duration-500 hover:scale-102"
     >
       {!loaded && (
         <span aria-hidden="true" className="absolute inset-0 z-0 animate-pulse bg-paper/15" />

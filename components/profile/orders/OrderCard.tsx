@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
 import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { JSX } from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { onSubscribeEvents } from '@/app/api/hooks/useEvents';
@@ -27,6 +27,7 @@ import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';
 import { setStep } from '@/app/store/reducers/OrderSlice';
 import { DELIVERY_PRODUCT_ID, ORDER_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 import { setOrderReviewTarget } from '@/components/profile/orderReviewStore';
 import { UsePrice } from '@/components/utils';
 
@@ -71,12 +72,16 @@ const OrderCard = ({
   const canReview = (order.statusIdentifier ?? '').toLowerCase() === ORDER_STATUSES.delivered;
 
   const bodyRef = useRef<HTMLDivElement>(null);
+  /**
+   * Lazy-mount gate: the collapsible body is rendered only after the first
+   * expand and then stays mounted. The latch is flipped during render (React's
+   * documented alternative to a setState inside an effect body), so the body
+   * exists in the very render that expands it.
+   */
   const [rendered, setRendered] = useState(expanded);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (expanded) setRendered(true);
-  }, [expanded]);
+  if (expanded && !rendered) {
+    setRendered(true);
+  }
 
   useGSAP(
     () => {
@@ -206,6 +211,8 @@ const OrderCard = ({
             <button
               type="button"
               onClick={openContactCourier}
+              onPointerEnter={() => prefetchPopup('ContactUsForm')}
+              onFocus={() => prefetchPopup('ContactUsForm')}
               className="order-body-row hover_btn_transp mt-5 block w-52.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
             >
               {t('contact_courier', 'Contact with the courier')}
@@ -251,6 +258,8 @@ const OrderCard = ({
                   <button
                     type="button"
                     onClick={repeatOrder}
+                    onPointerEnter={() => prefetchPopup('CartPopup')}
+                    onFocus={() => prefetchPopup('CartPopup')}
                     className="hover_btn_transp block w-32.5 rounded-card bg-brand px-3.75 py-1.5 text-base text-white"
                   >
                     {t('repeat_order', 'Repeat order')}
@@ -260,6 +269,8 @@ const OrderCard = ({
                   <button
                     type="button"
                     onClick={openReviewPopup}
+                    onPointerEnter={() => prefetchPopup('OrderReviewPopup')}
+                    onFocus={() => prefetchPopup('OrderReviewPopup')}
                     className="hover_btn_transp block rounded-card border border-brand px-3.75 py-1.5 text-base text-brand"
                   >
                     {t('leave_review_button', 'Leave a review')}

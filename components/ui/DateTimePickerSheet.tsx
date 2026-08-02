@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import type { JSX } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 
 import { toLocalIsoDate } from '@/app/utils/formatDate';
@@ -81,11 +81,15 @@ const DateTimePickerSheet = ({
   const [stepName, setStepName] = useState<'date' | 'time'>('date');
 
   // Portal to document.body so the fixed-positioned overlay escapes any ancestor that creates a containing block (transform / filter / backdrop-filter - e.g. CartPopup, ReservationPopup).
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  // Mount-gate via useSyncExternalStore: `document.body` exists only on the client.
+  const mounted = useSyncExternalStore(
+    cb => {
+      cb();
+      return () => {};
+    },
+    () => true,
+    () => false
+  );
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);

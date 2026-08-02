@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -8,20 +9,10 @@ export type PriceRange = {
   max: number;
 };
 
-/**
- * getProductsPriceRange — catalog min/max price via `Products.getProductsPriceByPageUrl` (lightweight `{id, price}[]`).
- *
- * @param   {string}              [pageUrl]  - OneEntry `pageUrl` of the catalog page (default `'services'`).
- * @param   {string}              [langCode] - Optional explicit locale (defaults to `getLang()`).
- * @returns Promise resolving to the catalog price range.
- */
-export const getProductsPriceRange = cache(
-  async (pageUrl: string = PAGES.menu, langCode?: string): Promise<PriceRange> => {
+const fetchProductsPriceRange = unstable_cache(
+  async (pageUrl: string, lang: string): Promise<PriceRange> => {
     try {
-      const data = await getApi().Products.getProductsPriceByPageUrl(
-        pageUrl,
-        langCode || getLang()
-      );
+      const data = await getApi().Products.getProductsPriceByPageUrl(pageUrl, lang);
       if (isError(data)) {
         return { min: 0, max: 0 };
       }
@@ -38,5 +29,19 @@ export const getProductsPriceRange = cache(
     } catch {
       return { min: 0, max: 0 };
     }
-  }
+  },
+  ['oneentry-getProductsPriceRange'],
+  { revalidate: 60, tags: ['oneentry', 'oneentry-products'] }
+);
+
+/**
+ * getProductsPriceRange — catalog min/max price via `Products.getProductsPriceByPageUrl` (lightweight `{id, price}[]`).
+ *
+ * @param   {string}              [pageUrl]  - OneEntry `pageUrl` of the catalog page (default `'services'`).
+ * @param   {string}              [langCode] - Optional explicit locale (defaults to `getLang()`).
+ * @returns Promise resolving to the catalog price range.
+ */
+export const getProductsPriceRange = cache(
+  async (pageUrl: string = PAGES.menu, langCode?: string): Promise<PriceRange> =>
+    fetchProductsPriceRange(pageUrl, langCode || getLang())
 );

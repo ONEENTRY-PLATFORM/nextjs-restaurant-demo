@@ -51,10 +51,11 @@ export const OpenDrawerProvider = ({ children }: { children: ReactNode }): JSX.E
 
   // Drop the post-auth intent whenever the drawer fully closes — otherwise a stale value
   // (e.g. user opened auth, closed it without signing in) would hijack the next auth flow.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!open && postAuthComponent) setPostAuthComponent('');
-  }, [open, postAuthComponent]);
+  // Cleared during render (React's documented alternative to a setState inside
+  // an effect body) so no consumer ever observes the stale intent.
+  if (!open && postAuthComponent) {
+    setPostAuthComponent('');
+  }
 
   // Lock background scroll while a popup is open
   useEffect(() => {

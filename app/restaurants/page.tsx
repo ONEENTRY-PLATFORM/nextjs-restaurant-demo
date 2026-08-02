@@ -9,12 +9,12 @@ import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
+import { parseScheduleSlots, unwrapRichText } from '@/components/utils';
 
 export const dynamic = 'force-static';
 export const revalidate = 300;
 
 type RestaurantPhoto = { downloadLink?: string };
-type ScheduleInterval = { from?: string; to?: string };
 
 type RestaurantCard = {
   id: number;
@@ -27,19 +27,34 @@ type RestaurantCard = {
 };
 
 /**
- * formatSchedule — renders the OneEntry `timeInterval` value as `from - to`.
+ * formatSchedule — renders the OneEntry `timeInterval` value as an `HH:MM - HH:MM` opening window.
  *
- * @param   {unknown} raw - Raw attribute value (string, object, or array of intervals).
- * @returns Formatted `from - to` string, or empty when no interval is present.
+ * Passes plain strings through, otherwise flattens the interval groups via
+ * {@link parseScheduleSlots}, takes the earliest slot start and the latest slot end across all
+ * entries, and formats them as `HH:MM - HH:MM`. Returns an empty string when no slot is parseable.
+ *
+ * @param   {unknown} raw - Raw `schedule` attribute value (string or `timeInterval` groups array).
+ * @returns Formatted `HH:MM - HH:MM` string, or empty when no interval is present.
  */
 const formatSchedule = (raw: unknown): string => {
-  if (!raw) return '';
   if (typeof raw === 'string') return raw;
-  // `timeInterval` comes as an object or array - take the first interval.
-  const arr = Array.isArray(raw) ? (raw as ScheduleInterval[]) : null;
-  const first = arr ? arr[0] : (raw as ScheduleInterval);
-  if (!first || (!first.from && !first.to)) return '';
-  return `${first.from ?? ''} - ${first.to ?? ''}`;
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  let startMin: number | null = null;
+  let endMin: number | null = null;
+  for (const entry of parseScheduleSlots(raw)) {
+    for (const pair of entry.times ?? []) {
+      const from = pair[0];
+      const to = pair[1];
+      if (!from || !to) continue;
+      const fromMin = from.hours * 60 + from.minutes;
+      const toMin = to.hours * 60 + to.minutes;
+      if (startMin === null || fromMin < startMin) startMin = fromMin;
+      if (endMin === null || toMin > endMin) endMin = toMin;
+    }
+  }
+  if (startMin === null || endMin === null) return '';
+  const fmt = (min: number): string => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
+  return `${fmt(startMin)} - ${fmt(endMin)}`;
 };
 
 /**
@@ -85,10 +100,9 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
   const title =
     parent.localizeInfos?.title ??
     (await t('restaurants_title_fallback', 'Welcome to our restaurant chain'));
-  const descriptionRaw = parent.attributeValues?.description?.value as
-    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
-  const descriptionHtml = descriptionRaw?.[0]?.htmlValue ?? '';
-  const descriptionPlain = descriptionRaw?.[0]?.plainValue ?? '';
+  const descriptionBlock = unwrapRichText(parent.attributeValues?.description?.value);
+  const descriptionHtml = descriptionBlock?.htmlValue ?? '';
+  const descriptionPlain = descriptionBlock?.plainValue ?? '';
 
   const visiblePages = (childrenRes.pages ?? [])
     .filter(p => p.isVisible !== false)

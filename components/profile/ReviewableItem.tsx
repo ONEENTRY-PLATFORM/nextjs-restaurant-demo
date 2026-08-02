@@ -9,6 +9,7 @@ import { useState } from 'react';
 
 import { getApi, getProductImageUrl, isError } from '@/app/api';
 import { useT } from '@/app/store/providers/DictProvider';
+import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import {
   type ExistingReview,
   FORM_MARKER,
@@ -80,7 +81,10 @@ const ReviewableItem = ({
           setState(s => ({
             ...s,
             loading: false,
-            error: (res as { message?: string }).message || 'Failed to update review',
+            error: normalizeErrorMessage(
+              (res as { message?: string | string[] }).message,
+              'Failed to update review'
+            ),
           }));
           return;
         }
@@ -99,7 +103,10 @@ const ReviewableItem = ({
         setState(s => ({
           ...s,
           loading: false,
-          error: (res as { message?: string }).message || 'Failed to submit review',
+          error: normalizeErrorMessage(
+            (res as { message?: string | string[] }).message,
+            'Failed to submit review'
+          ),
         }));
         return;
       }

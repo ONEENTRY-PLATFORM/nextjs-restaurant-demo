@@ -12,17 +12,17 @@ import type { MetadataParams, PageProps } from '@/app/types/global';
 import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
+import { blogBannerFromPage } from '@/components/promo/blogBanner';
 import RelatedPromosCarousel from '@/components/promo/RelatedPromosCarousel';
+import { unwrapRichText } from '@/components/utils';
 
 const MemoizedProductsGridLoader = memo(ProductsGridLoader);
 
-type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
+// Force-dynamic: the promo products grid is driven by awaited `searchParams`
+// (filters/pagination) — declared explicitly instead of relying on implicit dynamic detection.
+export const dynamic = 'force-dynamic';
 
-type DescriptionValue = Array<{
-  plainValue?: string;
-  htmlValue?: string;
-  mdValue?: string;
-}>;
+type ImageValue = { downloadLink?: string } | Array<{ downloadLink?: string }> | null | undefined;
 
 /**
  * PromoDetailPage — promo detail page (`/promotions/<pageUrl>`).
@@ -36,7 +36,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
 
   ServerProvider('dict', await getDictionary());
 
-  const [{ page, isError }, banners, parentResp] = await Promise.all([
+  const [{ page, isError }, bannersRes, parentResp] = await Promise.all([
     getPageByUrl(handle),
     getBlogBanners(),
     getPageByUrl(PAGES.promotions),
@@ -45,6 +45,8 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
   if (isError || !page) {
     return notFound();
   }
+
+  const banners = (bannersRes.pages ?? []).map(blogBannerFromPage);
 
   const parentTitle = parentResp.page?.localizeInfos?.title ?? 'Promotions';
   const parentUrl = parentResp.page?.pageUrl ?? 'promotions';
@@ -57,8 +59,8 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
     getImageUrl(attrs.bg_image?.value as ImageValue) ||
     getImageUrl(attrs.banner?.value as ImageValue);
   const title = page.localizeInfos?.title ?? '';
-  const description = attrs.description?.value as DescriptionValue | undefined;
-  const subtitleHtml = description?.[0]?.htmlValue ?? description?.[0]?.plainValue ?? '';
+  const description = unwrapRichText(attrs.description?.value);
+  const subtitleHtml = description?.htmlValue ?? description?.plainValue ?? '';
   const goToSelectionLabel = await t('promo_go_to_selection', 'Go to selection');
   const homeLabel = await t('home_label', 'Home');
 
@@ -135,7 +137,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
                   key={b.id}
                   href={b.pageUrl ? `/promotions/${b.pageUrl}` : '#'}
                   title={b.title}
-                  className="block min-w-0 flex-1 overflow-hidden rounded-panel transition-transform duration-500 hover:scale-[1.02]"
+                  className="block min-w-0 flex-1 overflow-hidden rounded-panel transition-transform duration-500 hover:scale-102"
                 >
                   <Image
                     src={b.mobileImage as string}
@@ -173,8 +175,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
   }
   const attrs = page.attributeValues ?? {};
   const title = page.localizeInfos?.title ?? defaultTitle;
-  const description = attrs.description?.value as DescriptionValue | undefined;
-  const descriptionText = description?.[0]?.plainValue ?? '';
+  const descriptionText = unwrapRichText(attrs.description?.value)?.plainValue ?? '';
   return {
     title,
     description: descriptionText,

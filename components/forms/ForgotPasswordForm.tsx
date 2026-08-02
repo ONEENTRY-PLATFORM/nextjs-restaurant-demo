@@ -4,12 +4,19 @@ import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { getApi, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
+import {
+  getApi,
+  isError as isSdkError,
+  useEmailAuthProviderMarker,
+  useGetFormByMarkerQuery,
+} from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
+import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
+import { getFormAttributes } from '@/components/utils';
 
 import Loader from '../shared/Loader';
 import ErrorMessage from './inputs/ErrorMessage';
@@ -39,11 +46,28 @@ export const ForgotPasswordForm = ({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await getApi().AuthProvider.generateCode(
+      const res = await getApi().AuthProvider.generateCode(
         emailProviderMarker,
         fields.email?.value || '',
         'generate_otp'
       );
+      // The SDK returns an IError envelope instead of throwing — without this check a
+      // rejected request would silently advance to the OTP form as if the code was sent.
+      if (isSdkError(res)) {
+        const err = res as { message?: string | string[]; statusCode?: number };
+        setError(normalizeErrorMessage(err.message, t('submit_failed_text', 'Submit failed')));
+        // 400 = a still-valid code was already generated — advance to the OTP form anyway.
+        if (err.statusCode === 400) {
+          setTimeout(() => {
+            if (onCodeSent) {
+              onCodeSent();
+            } else {
+              setComponent('VerificationForm');
+            }
+          }, 800);
+        }
+        return;
+      }
       if (onCodeSent) {
         onCodeSent();
       } else {
@@ -51,19 +75,8 @@ export const ForgotPasswordForm = ({
         setAction('checkCode');
       }
     } catch (error: unknown) {
-      const err = error as { message?: string; statusCode?: number };
-      setError(err?.message ?? '');
-      if (err?.statusCode === 400) {
-        if (onCodeSent) {
-          setTimeout(() => {
-            onCodeSent();
-          }, 800);
-        } else {
-          setTimeout(() => {
-            setComponent('VerificationForm');
-          }, 800);
-        }
-      }
+      // Non-SDK throws only (network/runtime) — SDK errors arrive via the envelope above.
+      setError((error as { message?: string })?.message ?? '');
     }
   };
 
@@ -87,7 +100,7 @@ export const ForgotPasswordForm = ({
         </div>
 
         <div className="relative mb-8 box-border flex shrink-0 flex-col gap-4">
-          {data.attributes
+          {getFormAttributes(data)
             .filter((field: IFormAttribute) => field.marker === 'email')
             .map((field: IFormAttribute, index: number) => (
               <FormInput key={index} index={index} {...field} />

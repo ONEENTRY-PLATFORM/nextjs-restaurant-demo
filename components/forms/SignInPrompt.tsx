@@ -5,6 +5,7 @@ import { useContext } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * SignInPrompt — auth gate for unauthenticated users: a dictionary phrase with an inline
@@ -47,6 +48,8 @@ const SignInPrompt = ({
           setComponent('AuthProviderSelect');
           setOpen(true);
         }}
+        onPointerEnter={() => prefetchPopup('AuthProviderSelect')}
+        onFocus={() => prefetchPopup('AuthProviderSelect')}
         className="cursor-pointer text-brand underline underline-offset-2 hover:no-underline"
       >
         {signInLabel}

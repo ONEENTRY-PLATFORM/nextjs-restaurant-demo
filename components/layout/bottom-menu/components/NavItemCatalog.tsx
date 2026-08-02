@@ -6,6 +6,7 @@ import { useContext } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import LinesBulletsIcon from '@/components/icons/lines-bullets';
+import { prefetchPopup } from '@/components/layout/popupRegistry';
 
 /**
  * NavItemCatalog — catalog nav-item button in the mobile bottom menu; toggles the `CategoryFilter` drawer.
@@ -32,6 +33,8 @@ const NavItemCatalog = ({ item: { localizeInfos } }: { item: IMenusPages }): JSX
       type="button"
       title={localizeInfos.menuTitle ?? undefined}
       onClick={handleClick}
+      onPointerEnter={() => prefetchPopup('CategoryFilter')}
+      onFocus={() => prefetchPopup('CategoryFilter')}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >
       <LinesBulletsIcon />

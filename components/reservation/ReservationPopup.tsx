@@ -19,6 +19,7 @@ import DrawerAnimations from '@/components/shared/animations/DrawerAnimations';
 import ClosePopupButton from '@/components/shared/ClosePopupButton';
 import Spinner from '@/components/shared/Spinner';
 import { useSwipeToClose } from '@/components/shared/useSwipeToClose';
+import { parseScheduleSlots, unwrapRichText } from '@/components/utils';
 
 import { consumePendingReservationEdit, type PendingReservationEdit } from './reservationEditState';
 import ReservationForm from './ReservationForm';
@@ -70,8 +71,7 @@ const buildInitialValuesFromOrder = (
     if (type === 'string' || type === 'integer' || type === 'real' || type === 'float') {
       result[marker] = value == null ? '' : String(value);
     } else if (type === 'text') {
-      const arr = Array.isArray(value) ? (value as Array<{ plainValue?: string }>) : [];
-      result[marker] = arr[0]?.plainValue ?? '';
+      result[marker] = unwrapRichText(value)?.plainValue ?? '';
     } else if (type === 'entity') {
       const ids = Array.isArray(value) ? (value as number[]) : [];
       const id = ids[0];
@@ -125,12 +125,9 @@ const ReservationPopup = (): JSX.Element => {
   const restaurants: RestaurantOption[] = useMemo(
     () =>
       (pages ?? []).map((p: IPagesEntity) => {
-        const scheduleRaw = p.attributeValues?.schedule?.value;
-        const scheduleEntries: ScheduleSlotEntry[] = Array.isArray(scheduleRaw)
-          ? (scheduleRaw as Array<{ values?: ScheduleSlotEntry[] }>).flatMap(
-              group => group?.values ?? []
-            )
-          : [];
+        const scheduleEntries: ScheduleSlotEntry[] = parseScheduleSlots(
+          p.attributeValues?.schedule?.value
+        );
         return {
           value: p.pageUrl ?? String(p.id),
           id: p.id,
@@ -154,6 +151,7 @@ const ReservationPopup = (): JSX.Element => {
   const [authSubStep, setAuthSubStep] = useState<AuthSubStep>('providers');
   useEffect(() => {
     if (isOpen) {
+      // One-shot consume of the pending edit intent when the popup opens.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setEditing(consumePendingReservationEdit());
       setResume(consumePendingReservationResume());

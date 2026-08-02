@@ -10,6 +10,7 @@ import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
+import { getFormAttributes } from '@/components/utils';
 
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
@@ -38,11 +39,10 @@ const ResetPasswordForm = ({
 
   const passwordFields = useMemo(
     () =>
-      (data?.attributes ?? [])
+      getFormAttributes(data)
         .filter((f: IFormAttribute) => f.marker === 'password' || f.marker === 'repeat_password')
-        .slice()
         .sort((a: IFormAttribute, b: IFormAttribute) => (a.position ?? 0) - (b.position ?? 0)),
-    [data?.attributes]
+    [data]
   );
 
   const [isLoading, setLoading] = useState(false);

@@ -20,6 +20,7 @@ import {
 import { toLocalIsoDate } from '@/app/utils/formatDate';
 import CheckboxMarkIcon from '@/components/icons/checkbox-mark.svg';
 import DateTimePickerSheet from '@/components/ui/DateTimePickerSheet';
+import { getFormAttributes } from '@/components/utils';
 
 import AddressRow from './step-payment/AddressRow';
 import { ADDRESS_MARKERS, type DeliveryMode, PHONE_MARKERS } from './step-payment/constants';
@@ -75,7 +76,7 @@ const StepPayment = (): JSX.Element => {
 
   const attrByMarker = useMemo(() => {
     const map = new Map<string, IFormAttribute>();
-    (form?.attributes ?? []).forEach(a => map.set(a.marker, a));
+    getFormAttributes(form).forEach(a => map.set(a.marker, a));
     return map;
   }, [form]);
 
@@ -101,7 +102,7 @@ const StepPayment = (): JSX.Element => {
   const getSlots = useMemo(() => makeGetSlots(schedule), [schedule]);
 
   // Extra visible attributes not covered by the bespoke rows — rendered generically (by type/position).
-  const genericFields = useMemo(() => selectGenericFields(form?.attributes), [form]);
+  const genericFields = useMemo(() => selectGenericFields(getFormAttributes(form)), [form]);
 
   // Structured `user_address` (street+house+floor) takes priority over flat markers - otherwise the input only contains the street.
   const savedAddresses = useMemo(() => parseSavedAddresses(user?.formData), [user?.formData]);
@@ -117,6 +118,8 @@ const StepPayment = (): JSX.Element => {
   const [phoneTouched, setPhoneTouched] = useState(false);
   useEffect(() => {
     if (phoneTouched || !userPhone) return;
+    // Sync-with-async-data: the profile phone arrives after mount and must seed the
+    // input until the user edits it — a useState initializer cannot see later updates.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPhone(userPhone);
   }, [phoneTouched, userPhone]);
@@ -129,6 +132,7 @@ const StepPayment = (): JSX.Element => {
   useEffect(() => {
     if (addressTouched) return;
     const next = formatAddressLine(initialPickedAddress) || userAddressFlat;
+    // Sync-with-async-data: the saved address arrives after mount (same pattern as the phone).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (next) setAddress(next);
   }, [addressTouched, initialPickedAddress, userAddressFlat]);
@@ -179,6 +183,8 @@ const StepPayment = (): JSX.Element => {
 
   useEffect(() => {
     if (!identifier && accounts.length > 0) {
+      // Sync-with-async-data: payment accounts load async — pick the first as the
+      // default selection once, without clobbering a user choice.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIdentifier(accounts[0]!.identifier);
     }

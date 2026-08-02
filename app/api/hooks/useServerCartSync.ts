@@ -49,14 +49,29 @@ export const useServerCartSync = (): void => {
   const cartKey = useMemo(() => cartContentKey(productsData), [productsData]);
   const favKey = useMemo(() => favoritesKey(favorites), [favorites]);
 
+  /**
+   * Reset-on-logout, done by adjusting state during render (React's documented
+   * alternative to a setState inside an effect body): signing out must clear
+   * the sync flags so the next login re-runs the merge before mirroring
+   * resumes. Doing it here means the flags are already false in the very
+   * render that observes the logout, with no cascading re-render. The
+   * `mergeStartedRef` latch is reset by the merge effect below — refs must not
+   * be mutated during render.
+   */
+  const [prevAuth, setPrevAuth] = useState(isAuth);
+  if (prevAuth !== isAuth) {
+    setPrevAuth(isAuth);
+    if (!isAuth) {
+      setCartSynced(false);
+      setFavSynced(false);
+    }
+  }
+
   // Merge-on-login.
   useEffect(() => {
     if (isLoading) return;
     if (!isAuth) {
       mergeStartedRef.current = false;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCartSynced(false);
-      setFavSynced(false);
       return;
     }
     if (mergeStartedRef.current) return;
@@ -86,6 +101,7 @@ export const useServerCartSync = (): void => {
     return () => {
       cancelled = true;
     };
+    // Merge runs once per login-state change — reacting to cart/favorites content would re-merge on every edit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, isLoading]);
 
@@ -101,6 +117,7 @@ export const useServerCartSync = (): void => {
       );
     }, SYNC_DEBOUNCE_MS);
     return () => clearTimeout(handle);
+    // `cartKey` is the content signature — raw `productsData`/`dispatch` identities would re-schedule the debounce every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, cartSynced, cartKey]);
 
@@ -114,6 +131,7 @@ export const useServerCartSync = (): void => {
       );
     }, SYNC_DEBOUNCE_MS);
     return () => clearTimeout(handle);
+    // `favKey` is the content signature — raw `favorites`/`dispatch` identities would re-schedule the debounce every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, favSynced, favKey]);
 };

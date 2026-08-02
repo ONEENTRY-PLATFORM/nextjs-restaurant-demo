@@ -2,12 +2,9 @@
 
 import { gsap } from 'gsap';
 import type { JSX, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-import {
-  isHeaderAnimationComplete,
-  subscribeHeaderAnimation,
-} from '@/app/animations/headerAnimState';
+import { useHeaderAnimationComplete } from '@/app/animations/useHeaderAnimationComplete';
 
 /**
  * HeaderAnimGate — defers fading in its children until `HeaderAnimations` finishes
@@ -29,17 +26,8 @@ const HeaderAnimGate = ({
   delay?: number;
 }): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
-  const [revealed, setRevealed] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (isHeaderAnimationComplete()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRevealed(true);
-      return undefined;
-    }
-    const unsubscribe = subscribeHeaderAnimation(() => setRevealed(true));
-    return unsubscribe;
-  }, []);
+  const revealed = useHeaderAnimationComplete();
 
   // Plain `useEffect` (not `useLayoutEffect`/`useGSAP`) so GSAP only mutates inline
   // styles after the whole tree has hydrated — otherwise React reports a hydration

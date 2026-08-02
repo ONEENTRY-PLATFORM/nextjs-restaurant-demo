@@ -6,7 +6,7 @@ import { getFormByMarker, getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/dictionaries';
 import { FORMS, PAGES } from '@/app/utils/constants';
 import ContactUsForm from '@/components/forms/ContactUsForm';
-import { dictText } from '@/components/utils';
+import { dictText, unwrapRichText } from '@/components/utils';
 
 export const dynamic = 'force-static';
 export const revalidate = 300;
@@ -30,9 +30,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
     (attrs.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??
     (dict.support_default_title?.value as string);
-  const description = attrs.support_description?.value as
-    Array<{ htmlValue?: string; plainValue?: string }> | undefined;
-  const descriptionHtml = description?.[0]?.htmlValue ?? '';
+  const descriptionHtml = unwrapRichText(attrs.support_description?.value)?.htmlValue ?? '';
   const phone = attrs.support_phone?.value as string | undefined;
   const whatsapp = attrs.support_whatsapp_url?.value as string | undefined;
   const email = attrs.support_email?.value as string | undefined;

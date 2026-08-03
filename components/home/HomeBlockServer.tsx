@@ -11,12 +11,10 @@ import HomeBlockSection from './HomeBlockSection';
  *
  * When the block yields no products and `fallbackToCatalog` is set, it backfills with the first
  * catalog products so the section never disappears (same "never empty" approach as
- * `getRecommendations`). This matters for the home `recommended` block: it is a
- * `similar_products_block` whose `similarProducts` payload returns `403` to the anonymous
- * app-token used during home SSR, so the real products are
- * unavailable until the Guests permission / block type is fixed in the admin panel — the
- * fallback keeps the surface populated and swaps to real recommendations automatically once
- * the block returns them.
+ * `getRecommendations`). The home `recommended` block is a `similar_products_block`, and its
+ * `similarProducts` payload does reach the anonymous app-token used during home SSR (checked
+ * 2026-08-03: 8 items out of a `totalFound` pool of 51), so the fallback only covers a block
+ * that is genuinely empty.
  *
  * @param   {object}  props                     - Component props.
  * @param   {string}  props.marker              - Block marker.

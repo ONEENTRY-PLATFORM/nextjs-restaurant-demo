@@ -9,10 +9,10 @@ import type { ScheduleSlotEntry } from '@/components/reservation/RestaurantSelec
  * getFormAttributes — normalizes `form.attributes` from `Forms.getFormByMarker` into an array.
  *
  * The API returns an array of fields for a populated form but an empty object (`{}`) for a form
- * without fields, so calling array methods on `form.attributes` directly throws. Copies the value
- * into a fresh array when it is already an array (safe to sort in place — the RTK cache entity is
- * frozen), unwraps an object map via `Object.values`, and falls back to an empty list for a
- * missing form.
+ * without fields — since SDK 1.0.158 the SDK normalizes that empty object to `[]` itself, leaving
+ * this helper the shapes it does not cover. Copies the value into a fresh array when it is already
+ * an array (safe to sort in place — the RTK cache entity is frozen), unwraps an object map via
+ * `Object.values`, and falls back to an empty list for a missing form.
  *
  * @param   {{ attributes?: unknown } | undefined | null} form - Form entity from `getFormByMarker` (or any object carrying `attributes`).
  * @returns Fresh array of form attributes (empty when the form has no fields).
@@ -62,7 +62,7 @@ export const pickRichTextHtml = (raw: unknown): string => {
  * parseScheduleSlots — unwraps a raw `timeInterval` attribute value (e.g. the restaurant `schedule`)
  * into a flat list of slot entries.
  *
- * Accepts the SDK v1.0.157 shape `[{ values: ScheduleSlotEntry[] }, …]`, flattens `values` across all
+ * Accepts the SDK shape `[{ values: ScheduleSlotEntry[] }, …]`, flattens `values` across all
  * groups, and returns an empty list for a missing or non-array value.
  *
  * @param   {unknown} raw - Raw `schedule.value` from `attributeValues`.

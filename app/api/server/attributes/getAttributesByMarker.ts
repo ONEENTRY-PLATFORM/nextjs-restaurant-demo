@@ -18,9 +18,7 @@ const fetchAttributesByMarker = unstable_cache(
       if (isError(data)) {
         return { isError: true, error: data as IError };
       }
-      // SDK d.ts mistypes this method as `IAttributeSetsEntity[]` (a set), but it returns
-      // attributes (`IAttributesSetsEntity[]`) — cast once here at the SDK boundary.
-      return { isError: false, attributes: data as unknown as IAttributesSetsEntity[] };
+      return { isError: false, attributes: data };
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }

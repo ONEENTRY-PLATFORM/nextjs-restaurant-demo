@@ -98,7 +98,7 @@ export async function generateMetadata({
 
   return {
     title: localizeInfos?.title,
-    description: (localizeInfos as { plainContent?: string } | undefined)?.plainContent,
+    description: localizeInfos?.plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

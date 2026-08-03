@@ -137,7 +137,9 @@ const ContactUsForm = ({ className }: { className: string }): JSX.Element => {
               return (
                 <FormSubmitButton
                   key={index}
-                  title={field.localizeInfos.title}
+                  // The API omits `title` when the form carries no localization
+                  // for the requested language — keep the button labelled.
+                  title={field.localizeInfos.title ?? 'Submit'}
                   isLoading={loading}
                   index={10}
                 />

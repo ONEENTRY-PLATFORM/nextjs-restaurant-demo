@@ -23,7 +23,7 @@ const MARKER_BY_KIND: Record<RecommendationKind, string> = {
  * @param   {RecommendationKind} kind   - Recommendation surface.
  * @param   {string}             marker - Block marker for that surface.
  * @param   {string}             lang   - Language code.
- * @returns Promise resolving to the SDK result (`IProductsEntity[]` or `IError`).
+ * @returns Promise resolving to the SDK result (`IProductsResponse` or `IError`).
  */
 const fetchByKind = (kind: RecommendationKind, marker: string, lang: string) => {
   const blocks = getApi().Blocks;
@@ -49,7 +49,12 @@ const fetchRecommendations = unstable_cache(
   ): Promise<IProductsEntity[]> => {
     try {
       const res = await fetchByKind(kind, MARKER_BY_KIND[kind], lang);
-      let items = isError(res) ? [] : (res as IProductsEntity[]);
+      /**
+       * The recommendation endpoints answer with a container, not a bare list:
+       * `{ items, total, totalFound? }`. Take `items` — reading the response as
+       * an array yielded an empty surface on every request.
+       */
+      let items = isError(res) ? [] : res.items;
       if (excludeId != null) {
         items = items.filter(p => p.id !== excludeId);
       }

@@ -1,17 +1,4 @@
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
-
-/**
- * Localized info.
- * @property {string} content   - Page content.
- * @property {string} menuTitle - Page title shown in the menu.
- * @property {string} title     - Page title.
- */
-declare type LocalizeInfo = {
-  content: string;
-  menuTitle: string;
-  title: string;
-};
 
 /**
  * Page props.
@@ -25,20 +12,6 @@ declare type PageProps = {
     page?: string;
     filters?: IFilterParams[];
   }>;
-};
-
-/**
- * Simplified page props.
- * @property {IPagesEntity} page  - Page object.
- * @property {string}       lang  - Language code.
- * @property {object}       dict  - Dictionary object.
- * @property {object}       [key] - Additional key-value pair.
- */
-declare type SimplePageProps = {
-  page?: IPagesEntity;
-  lang?: string;
-  dict?: IAttributeValues;
-  [key: string]: unknown;
 };
 
 /**
@@ -96,47 +69,6 @@ export type IProducts = {
   selected: boolean;
   quantity: number;
 };
-
-/**
- * Product metadata.
- * @property {string} title       - Product name.
- * @property {string} description - Product description.
- * @property {string} url         - Product URL.
- * @property {number} width       - Product image width.
- * @property {number} height      - Product image height.
- * @property {string} alt         - Product image alt text.
- */
-interface IProductMetadata {
-  title: string;
-  description: string;
-  url: string;
-  width: number;
-  height: number;
-  alt: string;
-}
-
-/**
- * Page metadata.
- * @property {string}           title           - Page title.
- * @property {string}           description     - Page description.
- * @property {boolean}          isVisible       - Whether the page is visible.
- * @property {IAttributeValues} attributeValues - Page attribute values.
- * @property {LocalizeInfo}     localizeInfos   - Localized page info.
- */
-interface IPageMetadata {
-  title: string;
-  description: string;
-  isVisible: boolean;
-  attributeValues: {
-    icon?: {
-      downloadLink: string;
-    };
-  };
-  localizeInfos: {
-    title: string;
-    plainContent: string;
-  };
-}
 
 /**
  * Product in an order.

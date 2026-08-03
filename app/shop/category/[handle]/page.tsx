@@ -125,7 +125,7 @@ export async function generateMetadata({
 
   return {
     title: localizeInfos.title,
-    description: (localizeInfos as { plainContent?: string }).plainContent,
+    description: localizeInfos.plainContent,
     robots: {
       index: isVisible,
       follow: isVisible,

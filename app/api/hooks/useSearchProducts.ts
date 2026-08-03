@@ -61,9 +61,11 @@ export const useSearchProducts = ({ name }: { name: string }) => {
       // Prefer semantic (vector) search; fall back to substring search when it is
       // not configured for the project (error / empty) so behaviour never regresses.
       const vector = await getApi().Products.getProductsByVectorSearch({ queryText: name });
+      // The endpoint answers with a container (`{ items, total }`), not a bare list.
+      const vectorItems = isError(vector) ? [] : vector.items;
       let result: IProductsEntity[];
-      if (!isError(vector) && Array.isArray(vector) && vector.length > 0) {
-        result = vector;
+      if (vectorItems.length > 0) {
+        result = vectorItems;
       } else {
         const fallback = await getApi().Products.searchProduct(name);
         if (isError(fallback) || !Array.isArray(fallback)) {

@@ -24,8 +24,7 @@ const SupportPage = async (): Promise<JSX.Element> => {
   ]);
   const attrs = page?.attributeValues ?? {};
   const formHeading: string =
-    (formRes.form?.localizeInfos?.title as string | undefined) ??
-    (dict.support_form_heading?.value as string);
+    formRes.form?.localizeInfos?.title ?? (dict.support_form_heading?.value as string);
   const title =
     (attrs.support_title?.value as string | undefined) ??
     page?.localizeInfos?.title ??

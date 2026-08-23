@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAuthFormData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
+import type { IAuthFormData, IUserEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 

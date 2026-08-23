@@ -1,7 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
+import type { IAdminEntity, IError, IFilterParams } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -31,9 +29,12 @@ const fetchAdminsInfo = unstable_cache(
       const data = await getApi().Admins.getAdminsInfo(body, lang, offset, limit);
       if (isError(data)) {
         return { isError: true, error: data as IError };
-      } else {
-        return { isError: false, admins: data };
       }
+      // `{}` instead of a list — the SDK's empty/unparsable-body fallback; treat it as "no data".
+      if (!Array.isArray(data)) {
+        return { isError: false, admins: [] };
+      }
+      return { isError: false, admins: data };
     } catch (e: unknown) {
       return { isError: true, error: e as IError };
     }

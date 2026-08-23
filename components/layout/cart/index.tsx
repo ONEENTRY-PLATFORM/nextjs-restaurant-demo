@@ -1,7 +1,7 @@
 'use client';
 
 import { gsap } from 'gsap';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useState, useSyncExternalStore } from 'react';
 

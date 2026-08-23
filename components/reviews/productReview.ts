@@ -1,7 +1,4 @@
-import type {
-  FormDataType,
-  IFormByMarkerDataEntity,
-} from 'oneentry/dist/forms-data/formsDataInterfaces';
+import type { FormDataType, IFormByMarkerDataEntity } from 'oneentry/types';
 
 /** ProductReview — normalised review record for `<ProductReviewsList />`. */
 export interface ProductReview {

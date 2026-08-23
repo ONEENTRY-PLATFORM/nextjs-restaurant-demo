@@ -1,6 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IError, IPagesEntity } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, isError } from '@/app/api';
@@ -17,6 +16,14 @@ const fetchChildPagesByParentUrl = unstable_cache(
       const data = await getApi().Pages.getChildPagesByParentUrl(url);
       if (isError(data)) {
         return { isError: true, error: data };
+      }
+      /**
+       * The SDK swallows an empty / unparsable body into `{}` (`_parseJson`), so a hiccup on the
+       * children endpoint reaches us as an object instead of a list. Without this guard the `{}`
+       * gets cached and `pages.map(...)` throws in `generateStaticParams`.
+       */
+      if (!Array.isArray(data)) {
+        return { isError: false, pages: [] };
       }
       return { isError: false, pages: data as IPagesEntity[] };
     } catch (e: unknown) {

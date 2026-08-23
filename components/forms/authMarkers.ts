@@ -1,4 +1,4 @@
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute } from 'oneentry/types';
 
 /** Login / password field markers resolved from a form's `isLogin` / `isPassword` flags. */
 export type AuthFieldMarkers = {

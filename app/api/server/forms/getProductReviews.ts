@@ -1,9 +1,9 @@
 import { unstable_noStore } from 'next/cache';
-import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
 import type {
   IFormByMarkerDataEntity,
   IFormsByMarkerDataEntity,
-} from 'oneentry/dist/forms-data/formsDataInterfaces';
+  IFormsEntity,
+} from 'oneentry/types';
 
 import { getApi, getLang, isError } from '@/app/api';
 import { FORM_MODULE_CONFIG_IDS, FORMS } from '@/app/utils/constants';

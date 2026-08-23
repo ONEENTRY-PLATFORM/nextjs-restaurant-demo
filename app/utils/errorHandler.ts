@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { IError } from 'oneentry/dist/base/utils';
+import type { IError } from 'oneentry/types';
 import { toast } from 'react-toastify';
 
 /**

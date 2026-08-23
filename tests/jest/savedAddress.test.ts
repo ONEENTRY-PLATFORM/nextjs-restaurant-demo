@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
+import type { FormDataType } from 'oneentry/types';
 
 import {
   formatAddressLine,

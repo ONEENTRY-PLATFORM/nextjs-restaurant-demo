@@ -132,6 +132,25 @@ Where is the data needed?
 
 ---
 
+## SDK types — only from `oneentry/types`
+
+Since SDK 1.0.160 every public interface is re-exported from the package root and from the
+types-only entry point, so deep paths are no longer needed:
+
+```typescript
+// no
+import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+
+// yes
+import type { IProductsEntity } from 'oneentry/types';
+```
+
+- Types — always `import type … from 'oneentry/types'` (one import per file, all names merged).
+- Runtime — only `import { defineOneEntry } from 'oneentry'` in [app/api/api/api.ts](../../app/api/api/api.ts) (plus the server-side OAuth exchange and tests). The package ships an ESM build with `sideEffects: false`, so the bundler tree-shakes it; Zod and `socket.io-client` are loaded lazily (only under `validation.enabled` / `WS.connect()`) — don't switch validation on without a reason.
+- Deep imports (`oneentry/dist/**`) still resolve, but are not used in this project — don't reintroduce them.
+
+---
+
 ## Anti-patterns
 
 - **Server fetcher in a Client Component.** Server fetchers (`getPageByUrl`, `getProducts`, ...) can be imported into a client, but on first render the browser will make the API call from the client, losing the SSR benefit. If client-side loading is needed — use RTK Query.

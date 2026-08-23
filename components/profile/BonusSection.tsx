@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IBonusTransactionType } from 'oneentry/dist/discounts/discountsInterfaces';
+import type { IBonusTransactionType } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
 

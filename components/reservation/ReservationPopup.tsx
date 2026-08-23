@@ -1,8 +1,6 @@
 'use client';
 
-import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
+import type { IOrdersFormData, IPagesEntity, IUserEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 

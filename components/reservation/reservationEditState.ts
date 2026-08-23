@@ -1,4 +1,4 @@
-import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrdersFormData } from 'oneentry/types';
 
 /**
  * Side channel for passing the pending-edit payload between BookingsPopup and ReservationPopup.

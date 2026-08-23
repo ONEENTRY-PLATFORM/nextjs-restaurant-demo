@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
+import type { FormDataType } from 'oneentry/types';
 
 import { ADDRESS_MARKERS, PHONE_MARKERS } from '@/components/cart/steps/step-payment/constants';
 import { findUserField } from '@/components/cart/steps/step-payment/userFields';

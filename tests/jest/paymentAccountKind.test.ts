@@ -6,7 +6,7 @@
  * it wrong either skips Stripe for a card payment or fires a session for a cash order.
  */
 import { describe, expect, it } from '@jest/globals';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity } from 'oneentry/types';
 
 import {
   isOnlinePaymentAccount,
@@ -16,7 +16,7 @@ import {
 /**
  * acct — builds a minimal payment-account input for the classifier (only `type` + `identifier` are read).
  *
- * @param   {PaymentAccountKindInput['type']} type         - SDK account type (`'stripe' | 'custom'`).
+ * @param   {PaymentAccountKindInput['type']} type         - SDK account type (`'stripe' | 'yookassa' | 'midtrans' | 'xendit' | 'custom'`).
  * @param   {string}                          [identifier] - Account marker (used to whitelist `custom` online gateways).
  * @returns A {@link PaymentAccountKindInput} for `isOnlinePaymentAccount`.
  */
@@ -33,6 +33,14 @@ describe('isOnlinePaymentAccount — Stripe', () => {
     expect(
       isOnlinePaymentAccount({ type: 'stripe', identifier: 'stripe' } as IAccountsEntity)
     ).toBe(true);
+  });
+});
+
+describe('isOnlinePaymentAccount — named gateway types', () => {
+  it('classifies every non-custom gateway type as online', () => {
+    expect(isOnlinePaymentAccount(acct('yookassa', 'yookassa'))).toBe(true);
+    expect(isOnlinePaymentAccount(acct('midtrans', 'midtrans'))).toBe(true);
+    expect(isOnlinePaymentAccount(acct('xendit', 'xendit'))).toBe(true);
   });
 });
 

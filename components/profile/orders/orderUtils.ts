@@ -1,4 +1,4 @@
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID, ORDER_HISTORY_STATUSES } from '@/app/utils/constants';
 

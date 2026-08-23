@@ -1,7 +1,6 @@
 'use client';
 
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IOrderByMarkerEntity, IProductsEntity } from 'oneentry/types';
 import { useSyncExternalStore } from 'react';
 
 /**

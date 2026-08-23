@@ -1,4 +1,4 @@
-import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
+import type { FormDataType } from 'oneentry/types';
 
 /**
  * findUserField — finds the first non-empty string value among the candidate markers in `user.formData`.

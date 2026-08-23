@@ -1,10 +1,6 @@
 'use client';
 
-import type {
-  ISignUpData,
-  ISignUpEntity,
-} from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute, ISignUpData, ISignUpEntity } from 'oneentry/types';
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 

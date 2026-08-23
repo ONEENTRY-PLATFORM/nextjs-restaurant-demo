@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { toast } from 'react-toastify';
 

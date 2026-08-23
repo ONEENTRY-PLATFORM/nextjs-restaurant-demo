@@ -1,4 +1,4 @@
-import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
+import type { IMenusPages } from 'oneentry/types';
 
 import MobileMenuItem from './MobileMenuItem';
 

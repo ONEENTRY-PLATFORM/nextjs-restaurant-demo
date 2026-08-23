@@ -1,5 +1,4 @@
-import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
+import type { IAuthProvidersEntity, IUserEntity } from 'oneentry/types';
 
 // Fallback for when the OneEntry admin leaves the `google` provider's
 // `config.oauthAuthUrl` empty — the provider itself is the source of truth

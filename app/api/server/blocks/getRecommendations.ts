@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -20,22 +20,27 @@ const MARKER_BY_KIND: Record<RecommendationKind, string> = {
 /**
  * fetchByKind — dispatches to the matching `Blocks.*` recommendation method.
  *
+ * `limit` is the query parameter the endpoints gained in SDK 1.0.162: the block's own
+ * quantity setting applies when it is omitted, so the surface asks for exactly what it renders
+ * instead of trimming an oversized response.
+ *
  * @param   {RecommendationKind} kind   - Recommendation surface.
  * @param   {string}             marker - Block marker for that surface.
  * @param   {string}             lang   - Language code.
+ * @param   {number}             limit  - Max products to request from the endpoint.
  * @returns Promise resolving to the SDK result (`IProductsResponse` or `IError`).
  */
-const fetchByKind = (kind: RecommendationKind, marker: string, lang: string) => {
+const fetchByKind = (kind: RecommendationKind, marker: string, lang: string, limit: number) => {
   const blocks = getApi().Blocks;
   switch (kind) {
     case 'cartComplement':
-      return blocks.getCartComplement(marker, lang);
+      return blocks.getCartComplement(marker, lang, undefined, limit);
     case 'recentlyViewed':
-      return blocks.getRecentlyViewed(marker, lang);
+      return blocks.getRecentlyViewed(marker, lang, undefined, limit);
     case 'trending':
-      return blocks.getTrending(marker, lang);
+      return blocks.getTrending(marker, lang, undefined, limit);
     case 'personalRecommendations':
-      return blocks.getPersonalRecommendations(marker, lang);
+      return blocks.getPersonalRecommendations(marker, lang, undefined, limit);
   }
 };
 
@@ -48,7 +53,13 @@ const fetchRecommendations = unstable_cache(
     lang: string
   ): Promise<IProductsEntity[]> => {
     try {
-      const res = await fetchByKind(kind, MARKER_BY_KIND[kind], lang);
+      // One spare item covers the excluded product, so the surface still fills up after filtering.
+      const res = await fetchByKind(
+        kind,
+        MARKER_BY_KIND[kind],
+        lang,
+        excludeId != null ? limit + 1 : limit
+      );
       /**
        * The recommendation endpoints answer with a container, not a bare list:
        * `{ items, total, totalFound? }`. Take `items` — reading the response as

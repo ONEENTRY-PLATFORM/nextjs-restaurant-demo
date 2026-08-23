@@ -1,5 +1,4 @@
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
-import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
+import type { IFormAttribute, IUserEntity } from 'oneentry/types';
 
 export type SavedAddress = {
   id: string;

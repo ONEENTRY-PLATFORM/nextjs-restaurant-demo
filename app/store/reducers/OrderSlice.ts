@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderProductData, IOrdersFormData } from 'oneentry/types';
 
 import type { IAppOrder } from '@/app/types/global';
 import { FORMS } from '@/app/utils/constants';

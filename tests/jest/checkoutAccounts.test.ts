@@ -5,7 +5,7 @@
  * connected", so this filter both hides unused accounts and intersects with the storage whitelist.
  */
 import { describe, expect, it } from '@jest/globals';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity } from 'oneentry/types';
 
 import { filterAllowedAccounts } from '@/app/api/hooks/checkout.utils';
 

@@ -22,7 +22,7 @@
  */
 import { beforeAll, describe, expect, it } from '@jest/globals';
 import { defineOneEntry } from 'oneentry';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 

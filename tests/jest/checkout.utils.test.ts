@@ -1,6 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { IOrderPreviewResponse } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity, IOrderPreviewResponse } from 'oneentry/types';
 
 import { derivePreviewTotals, filterAllowedAccounts } from '@/app/api/hooks/checkout.utils';
 

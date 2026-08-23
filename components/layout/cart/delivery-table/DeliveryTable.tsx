@@ -1,5 +1,4 @@
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IFormAttribute, IProductsEntity } from 'oneentry/types';
 import type { JSX, Key } from 'react';
 import { useContext, useEffect } from 'react';
 

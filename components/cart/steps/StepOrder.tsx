@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { useTransitionState } from 'next-transition-router';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 

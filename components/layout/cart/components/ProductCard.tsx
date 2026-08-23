@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
 import { getProductCurrency, getProductImageUrl } from '@/app/api';

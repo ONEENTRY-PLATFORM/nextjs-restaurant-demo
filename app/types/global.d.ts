@@ -1,4 +1,4 @@
-import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
+import type { IFilterParams } from 'oneentry/types';
 
 /**
  * Page props.

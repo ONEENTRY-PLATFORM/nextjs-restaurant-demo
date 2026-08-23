@@ -127,6 +127,21 @@ describe('flatMenuToNested', () => {
     const tree = flatMenuToNested(flat as never, null);
     expect(tree[0]).not.toHaveProperty('children');
   });
+
+  it('disambiguates overlapping page / custom ids via parentType', () => {
+    const flat = [
+      { id: 1, parentId: null, itemType: 'page', parentType: null },
+      { id: 1, parentId: null, itemType: 'custom', parentType: null },
+      { id: 10, parentId: 1, parentType: 'page' },
+      { id: 11, parentId: 1, parentType: 'custom' },
+    ] as never[];
+    const tree = flatMenuToNested(flat as never, null) as Array<{
+      itemType: string;
+      children?: Array<{ id: number }>;
+    }>;
+    expect(tree[0]?.children?.map(n => n.id)).toEqual([10]);
+    expect(tree[1]?.children?.map(n => n.id)).toEqual([11]);
+  });
 });
 
 describe('shuffleArray', () => {

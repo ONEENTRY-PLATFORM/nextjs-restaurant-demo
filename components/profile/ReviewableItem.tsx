@@ -1,9 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
-import type { IOrderProducts } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { FormDataType, IOrderProducts, IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useState } from 'react';
 

@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import type { IListTitle } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IListTitle, IPagesEntity } from 'oneentry/types';
 import { type JSX, Suspense } from 'react';
 
 import {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 
 import { getProductBlurDataURL, getProductImageUrl } from '@/app/api';
 import getLqipPreview from '@/app/api/lqip/getLqipPreview';

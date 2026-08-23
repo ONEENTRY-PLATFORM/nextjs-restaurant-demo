@@ -2,8 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IOrderByMarkerEntity, IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 

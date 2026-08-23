@@ -1,4 +1,4 @@
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 

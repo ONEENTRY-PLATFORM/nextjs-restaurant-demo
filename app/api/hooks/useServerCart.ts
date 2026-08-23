@@ -1,7 +1,6 @@
 'use client';
 
-import type { IError } from 'oneentry/dist/base/utils';
-import type { ICartResponse, IWishlistResponse } from 'oneentry/dist/users/usersInterfaces';
+import type { ICartResponse, IError, IWishlistResponse } from 'oneentry/types';
 import { useMemo } from 'react';
 
 import { getApi, isError } from '@/app/api';

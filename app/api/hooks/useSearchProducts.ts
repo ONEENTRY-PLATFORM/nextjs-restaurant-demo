@@ -1,9 +1,6 @@
 'use client';
 
-import type {
-  IProductSearchResult,
-  IProductsEntity,
-} from 'oneentry/dist/products/productsInterfaces';
+import type { IProductSearchResult, IProductsEntity } from 'oneentry/types';
 import { useEffect, useState } from 'react';
 
 import { getApi, isError } from '@/app/api';

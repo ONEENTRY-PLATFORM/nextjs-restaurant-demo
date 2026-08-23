@@ -1,7 +1,6 @@
 'use client';
 
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IError, IProductsEntity } from 'oneentry/types';
 
 import { getApi, getLang, isError } from '@/app/api/api/api';
 

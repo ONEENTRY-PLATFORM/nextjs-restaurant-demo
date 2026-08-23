@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -32,7 +32,7 @@ const resolveVisualKind = (account: IAccountsEntity): PaymentVisualKind => {
 };
 
 type ReservationPaymentStepProps = {
-  onApply: (paymentAccountIdentifier: string, paymentAccountType?: 'stripe' | 'custom') => void;
+  onApply: (paymentAccountIdentifier: string, paymentAccountType?: IAccountsEntity['type']) => void;
   isLoading: boolean;
   error: string;
   bookingPolicy?: string;
@@ -42,7 +42,7 @@ type ReservationPaymentStepProps = {
  * ReservationPaymentStep — payment-method selection step for the booking.
  *
  * @param   {ReservationPaymentStepProps}  props                 - Component props.
- * @param   {(id: string, type?: 'stripe' | 'custom') => void} props.onApply - Called with the selected `paymentAccountIdentifier` (and its SDK `type`) when the user confirms.
+ * @param   {(id: string, type?: IAccountsEntity['type']) => void} props.onApply - Called with the selected `paymentAccountIdentifier` (and its SDK `type`) when the user confirms.
  * @param   {boolean}                      props.isLoading       - When `true`, disables the apply button.
  * @param   {string}                       props.error           - Error message displayed under the radio list.
  * @param   {string}                       [props.bookingPolicy] - `booking_policy` attribute of the selected restaurant; falls back to the dict text.

@@ -1,6 +1,6 @@
 'use client';
 
-import type { IOrderPreviewResponse } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderPreviewResponse } from 'oneentry/types';
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';

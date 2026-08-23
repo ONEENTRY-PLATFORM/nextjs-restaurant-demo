@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IPagesEntity, IProductsEntity } from 'oneentry/types';
 import type { Dispatch, JSX, SetStateAction } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';

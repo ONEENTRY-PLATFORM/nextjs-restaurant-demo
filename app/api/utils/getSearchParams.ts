@@ -1,4 +1,4 @@
-import type { IFilterParams } from 'oneentry/dist/products/productsInterfaces';
+import type { IFilterParams } from 'oneentry/types';
 
 import { PRODUCT_ATTRS } from '@/app/utils/constants';
 

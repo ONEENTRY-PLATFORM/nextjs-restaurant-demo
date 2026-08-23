@@ -1,5 +1,4 @@
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IOrderByMarkerEntity, IOrdersEntity } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IError, IOrderByMarkerEntity, IOrdersEntity } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -39,6 +38,10 @@ export const getAllOrdersAcrossStorages = cache(
       const storages = await getApi().Orders.getAllOrdersStorage(lang);
       if (isError(storages)) {
         return { isError: true, error: storages, orders: [] };
+      }
+      // `{}` instead of a list — the SDK's empty/unparsable-body fallback; treat it as "no storages".
+      if (!Array.isArray(storages)) {
+        return { isError: false, orders: [] };
       }
 
       const perStorage = await Promise.all(

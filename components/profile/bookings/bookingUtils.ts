@@ -1,4 +1,4 @@
-import type { IOrderByMarkerEntity, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity, IOrdersFormData } from 'oneentry/types';
 
 import { BOOKING_HISTORY_STATUSES, ORDER_HISTORY_STATUSES } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/formatDate';

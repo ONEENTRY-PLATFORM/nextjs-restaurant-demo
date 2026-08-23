@@ -1,6 +1,6 @@
 'use client';
 
-import type { ITrackActivity } from 'oneentry/dist/user-activity/userActivityInterfaces';
+import type { ITrackActivity } from 'oneentry/types';
 import { useEffect } from 'react';
 
 import { getApi } from '@/app/api';

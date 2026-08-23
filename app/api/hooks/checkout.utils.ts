@@ -1,5 +1,4 @@
-import type { IOrderPreviewResponse } from 'oneentry/dist/orders/ordersInterfaces';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity, IOrderPreviewResponse } from 'oneentry/types';
 
 /** Server-authoritative order totals derived from `Orders.previewOrder`. */
 export type ServerOrderTotals = {

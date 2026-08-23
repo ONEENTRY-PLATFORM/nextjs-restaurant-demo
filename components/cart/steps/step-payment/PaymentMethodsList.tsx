@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';

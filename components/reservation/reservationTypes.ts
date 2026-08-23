@@ -1,5 +1,4 @@
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
-import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IFormAttribute, IOrdersFormData } from 'oneentry/types';
 
 /** Single form field value — always a string in this form. */
 export type FieldValue = string;

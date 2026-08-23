@@ -1,7 +1,11 @@
 'use client';
 
-import type { IFormAttribute, IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
-import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type {
+  IAccountsEntity,
+  IFormAttribute,
+  IFormsEntity,
+  IOrdersFormData,
+} from 'oneentry/types';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -217,7 +221,7 @@ const ReservationForm = ({
   // Step 2: the user picked a payment method - create the order.
   const onApplyPayment = async (
     paymentAccountIdentifier: string,
-    paymentAccountType?: 'stripe' | 'custom'
+    paymentAccountType?: IAccountsEntity['type']
   ) => {
     if (step.kind !== 'payment') return;
     const res = await createReservation({

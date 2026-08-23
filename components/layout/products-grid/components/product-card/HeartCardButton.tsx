@@ -1,7 +1,6 @@
 'use client';
 
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
-import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
+import type { IProductsEntity, IUserEntity } from 'oneentry/types';
 import { type JSX, useContext, useSyncExternalStore } from 'react';
 import { toast } from 'react-toastify';
 

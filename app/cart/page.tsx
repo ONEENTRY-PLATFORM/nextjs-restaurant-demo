@@ -1,4 +1,4 @@
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
 import { getBlogBanners, getProductById } from '@/app/api';

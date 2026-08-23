@@ -1,6 +1,4 @@
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
-import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
+import type { IAttributeValues, IFormAttribute, IMenusPages } from 'oneentry/types';
 
 import { CurrencyEnum, IntlEnum } from '@/app/types/enum';
 import type { ScheduleSlotEntry } from '@/components/reservation/RestaurantSelect';
@@ -189,17 +187,28 @@ export const sortObjectFieldsByPosition = <T>(
 };
 
 /**
- * flatMenuToNested — turns a flat menu list into a tree keyed by `parentId`.
+ * flatMenuToNested — turns a flat menu list into a tree keyed by `parentId` + `parentType`.
  *
- * @param   {[] | Array<IMenusPages>} data - Flat array of menu pages from the OneEntry SDK.
- * @param   {number | null}           pid  - Parent id to root the tree at (`null` for top-level).
+ * Page ids and custom-item ids come from different sequences and overlap, so `parentId` alone
+ * addresses a parent ambiguously: a child declares which kind of parent it points at in
+ * `parentType`, matching the parent's own `itemType`. Both fields are optional in the SDK
+ * response — when either side omits one, matching falls back to `parentId` only.
+ *
+ * @param   {[] | Array<IMenusPages>}       data    - Flat array of menu pages from the OneEntry SDK.
+ * @param   {number | null}                 pid     - Parent id to root the tree at (`null` for top-level).
+ * @param   {'page' | 'custom' | undefined} [ptype] - `itemType` of the parent the children must point at.
  * @returns Array of nested menu pages with populated `children`.
  */
-export const flatMenuToNested = (data: [] | Array<IMenusPages>, pid: number | null) => {
+export const flatMenuToNested = (
+  data: [] | Array<IMenusPages>,
+  pid: number | null,
+  ptype?: IMenusPages['itemType']
+) => {
   return data.reduce((r: IMenusPages[], element: IMenusPages) => {
-    if (pid == element.parentId) {
+    const typeMatches = !ptype || !element.parentType || element.parentType === ptype;
+    if (pid == element.parentId && typeMatches) {
       const object = { ...element };
-      const children = flatMenuToNested(data, element.id);
+      const children = flatMenuToNested(data, element.id, element.itemType);
       if (children.length) {
         object.children = children;
       }

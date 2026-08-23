@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
+import type { IMenusPages } from 'oneentry/types';
 import { useContext, useState } from 'react';
 
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

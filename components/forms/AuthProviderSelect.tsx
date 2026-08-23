@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type { IAuthProvidersEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 

@@ -1,6 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IContentFilter } from 'oneentry/dist/filters/filtersInterfaces';
+import type { IContentFilter, IError } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';

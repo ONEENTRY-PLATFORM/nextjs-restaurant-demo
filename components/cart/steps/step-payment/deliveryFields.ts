@@ -1,4 +1,4 @@
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute } from 'oneentry/types';
 
 /**
  * Markers rendered by bespoke UI (or sourced from the profile) — excluded from the generic pass so

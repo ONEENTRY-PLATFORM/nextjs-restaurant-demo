@@ -2,8 +2,7 @@
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IPagesEntity, IProductsEntity } from 'oneentry/types';
 
 export type ProductCartEntry = {
   id: number;

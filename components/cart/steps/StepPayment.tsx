@@ -1,6 +1,6 @@
 'use client';
 
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 

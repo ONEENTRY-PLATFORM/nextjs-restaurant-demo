@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IProductStatusEntity } from 'oneentry/dist/product-statuses/productStatusesInterfaces';
+import type { IProductStatusEntity } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, getLang, isError } from '@/app/api';
@@ -9,7 +9,8 @@ const fetchProductStatuses = unstable_cache(
   async (lang: string): Promise<IProductStatusEntity[]> => {
     try {
       const data = await getApi().ProductStatuses.getProductStatuses(lang);
-      if (isError(data)) {
+      // `{}` instead of a list — the SDK's empty/unparsable-body fallback; treat it as "no data".
+      if (isError(data) || !Array.isArray(data)) {
         return [];
       }
       return data as IProductStatusEntity[];

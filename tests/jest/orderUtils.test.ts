@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { IOrderData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderData, IOrdersFormData } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IPagesEntity } from 'oneentry/types';
 import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { getImageUrl } from '@/app/api';

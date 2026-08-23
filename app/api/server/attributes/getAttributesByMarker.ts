@@ -1,6 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import type { IAttributesSetsEntity } from 'oneentry/dist/attribute-sets/attributeSetsInterfaces';
-import type { IError } from 'oneentry/dist/base/utils';
+import type { IAttributesSetsEntity, IError } from 'oneentry/types';
 import { cache } from 'react';
 
 import { getApi, isError } from '@/app/api';
@@ -17,6 +16,10 @@ const fetchAttributesByMarker = unstable_cache(
       const data = await getApi().AttributesSets.getAttributesByMarker(attributeMarker);
       if (isError(data)) {
         return { isError: true, error: data as IError };
+      }
+      // `{}` instead of a list — the SDK's empty/unparsable-body fallback; treat it as "no data".
+      if (!Array.isArray(data)) {
+        return { isError: false, attributes: [] };
       }
       return { isError: false, attributes: data };
     } catch (e: unknown) {

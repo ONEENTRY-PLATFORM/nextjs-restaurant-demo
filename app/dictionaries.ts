@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { IAttributeValue, IAttributeValues } from 'oneentry/dist/base/utils';
+import type { IAttributeValue, IAttributeValues } from 'oneentry/types';
 import { cache } from 'react';
 
 import { dictText } from '@/components/utils';

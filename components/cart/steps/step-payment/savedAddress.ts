@@ -1,4 +1,4 @@
-import type { FormDataType } from 'oneentry/dist/forms-data/formsDataInterfaces';
+import type { FormDataType } from 'oneentry/types';
 
 export type SavedAddress = {
   id: string;

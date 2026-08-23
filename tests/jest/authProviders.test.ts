@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { IAuthProvidersEntity } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
+import type { IAuthProvidersEntity } from 'oneentry/types';
 
 import { getProviderMeta, sortActiveAuthProviders } from '@/components/forms/authProviders';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { IMenusEntity, IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
+import type { IMenusEntity, IMenusPages } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useState } from 'react';
 

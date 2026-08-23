@@ -1,7 +1,6 @@
 'use client';
 
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { IProductsEntity } from 'oneentry/dist/products/productsInterfaces';
+import type { IPagesEntity, IProductsEntity } from 'oneentry/types';
 import type { Dispatch, JSX } from 'react';
 import { useEffect, useState } from 'react';
 

@@ -1,5 +1,4 @@
-import type { IError } from 'oneentry/dist/base/utils';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
+import type { IError, IPagesEntity } from 'oneentry/types';
 import { cache } from 'react';
 
 import { PAGES } from '@/app/utils/constants';

@@ -1,8 +1,7 @@
 'use server';
 
 import { defineOneEntry } from 'oneentry';
-import type { IAuthEntity, IOauthData } from 'oneentry/dist/auth-provider/authProvidersInterfaces';
-import type { IError } from 'oneentry/dist/base/utils';
+import type { IAuthEntity, IError, IOauthData } from 'oneentry/types';
 
 const PROJECT_URL = (process.env.NEXT_PUBLIC_ONEENTRY_URL ||
   process.env.NEXT_PUBLIC_PROJECT_URL) as string;

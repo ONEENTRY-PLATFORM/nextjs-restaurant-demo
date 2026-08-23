@@ -1,7 +1,6 @@
 'use client';
 
-import type { IFormsEntity } from 'oneentry/dist/forms/formsInterfaces';
-import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces';
+import type { IAccountsEntity, IFormsEntity } from 'oneentry/types';
 import { useMemo } from 'react';
 
 import {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IAccountsEntity, IOrdersFormData } from 'oneentry/types';
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
@@ -11,7 +11,7 @@ import { isOnlinePaymentAccount } from './paymentAccountKind';
 type CreateReservationArgs = {
   paymentAccountIdentifier: string;
   /** SDK `type` of the selected account; drives online-vs-offline routing (see {@link isOnlinePaymentAccount}). */
-  paymentAccountType?: 'stripe' | 'custom' | undefined;
+  paymentAccountType?: IAccountsEntity['type'] | undefined;
   formData: IOrdersFormData[];
 };
 

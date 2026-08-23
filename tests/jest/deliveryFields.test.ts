@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { IFormAttribute } from 'oneentry/dist/forms/formsInterfaces';
+import type { IFormAttribute } from 'oneentry/types';
 
 import {
   HANDLED_MARKERS,

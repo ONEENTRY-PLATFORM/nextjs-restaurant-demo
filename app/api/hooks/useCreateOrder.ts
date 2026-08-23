@@ -1,6 +1,6 @@
 'use client';
 
-import type { IOrderProductData, IOrdersFormData } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IAccountsEntity, IOrderProductData, IOrdersFormData } from 'oneentry/types';
 import { useState } from 'react';
 
 import { getApi, isError } from '@/app/api';
@@ -31,7 +31,7 @@ export type ConfirmOrderResult =
 type ConfirmOrderArgs = {
   paymentAccountIdentifier: string;
   /** SDK `type` of the selected account; drives online-vs-offline routing (see {@link isOnlinePaymentAccount}). */
-  paymentAccountType?: 'stripe' | 'custom' | undefined;
+  paymentAccountType?: IAccountsEntity['type'] | undefined;
 };
 
 type UseCreateOrderApi = {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { IOrderByMarkerEntity } from 'oneentry/dist/orders/ordersInterfaces';
+import type { IOrderByMarkerEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
 import { useT } from '@/app/store/providers/DictProvider';

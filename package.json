@@ -10,6 +10,7 @@
     "prebuild": "npm test",
     "build": "next build",
     "start": "next start",
+    "analyze": "next experimental-analyze",
     "lint": "eslint .",
     "tsc": "npx tsc --noEmit --watch false",
     "typecheck": "npm run tsc",

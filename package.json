@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint .",
     "tsc": "npx tsc --noEmit --watch false",
+    "typecheck": "npm run tsc",
     "lint-fix": "eslint --fix .",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -26,7 +26,7 @@ export default function Loading(): JSX.Element {
       {/* Banners */}
       <div className="mt-12.5 flex flex-col gap-15">
         {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="aspect-[2/1] w-full rounded-panel md:aspect-[1292/192]" />
+          <Skeleton key={i} className="aspect-2/1 w-full rounded-panel md:aspect-1292/192" />
         ))}
       </div>
     </section>

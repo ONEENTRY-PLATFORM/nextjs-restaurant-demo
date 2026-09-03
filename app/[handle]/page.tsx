@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import { getPageByUrl } from '@/app/api';
+import { sanitizeHtml } from '@/app/utils/sanitizeHtml';
 import { unwrapRichText } from '@/components/utils';
 
 // Pure CMS content (no searchParams/cookies) — ISR per docs/rules/performance.md §1.
@@ -29,7 +30,7 @@ const PageLayout = async ({
   }
 
   const title = page.localizeInfos?.title ?? '';
-  const html = unwrapRichText(page.attributeValues?.description?.value)?.htmlValue ?? '';
+  const html = sanitizeHtml(unwrapRichText(page.attributeValues?.description?.value)?.htmlValue);
 
   return (
     <article className="mx-auto flex w-full max-w-85 flex-col gap-6 px-4 py-10 xs:max-w-none md:max-w-175 lg:max-w-250 xl:max-w-323">

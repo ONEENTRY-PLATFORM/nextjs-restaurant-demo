@@ -8,6 +8,7 @@ import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
+import { sanitizeHtml } from '@/app/utils/sanitizeHtml';
 import RestaurantPhotoSlider from '@/components/restaurants/RestaurantPhotoSlider';
 import { parseScheduleSlots, unwrapRichText } from '@/components/utils';
 
@@ -101,7 +102,7 @@ const RestaurantsPage = async (): Promise<JSX.Element> => {
     parent.localizeInfos?.title ??
     (await t('restaurants_title_fallback', 'Welcome to our restaurant chain'));
   const descriptionBlock = unwrapRichText(parent.attributeValues?.description?.value);
-  const descriptionHtml = descriptionBlock?.htmlValue ?? '';
+  const descriptionHtml = sanitizeHtml(descriptionBlock?.htmlValue);
   const descriptionPlain = descriptionBlock?.plainValue ?? '';
 
   const visiblePages = (childrenRes.pages ?? [])

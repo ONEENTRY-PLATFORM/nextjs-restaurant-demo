@@ -4,6 +4,7 @@ import type { IProductsEntity } from 'oneentry/types';
 import { type JSX, Suspense } from 'react';
 
 import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/api';
+import { serializeJsonLd } from '@/app/utils/serializeJsonLd';
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
 import ProductSingleSkeleton from '@/components/shared/skeletons/ProductSingleSkeleton';
@@ -63,7 +64,7 @@ const ProductPageLayout = async ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productJsonLd),
+          __html: serializeJsonLd(productJsonLd),
         }}
       />
       <TrackProductView productId={product.id} />

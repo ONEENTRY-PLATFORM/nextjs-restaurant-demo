@@ -7,6 +7,7 @@ import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { serializeJsonLd } from '@/app/utils/serializeJsonLd';
 import { shopCrawlMeta, type ShopSearchParams } from '@/app/utils/shopCrawlMeta';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
@@ -65,7 +66,7 @@ const ShopCategoryLayout = async (props: PageProps): Promise<JSX.Element> => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbStructuredData),
+          __html: serializeJsonLd(breadcrumbStructuredData),
         }}
       />
       <section className="shop_section">

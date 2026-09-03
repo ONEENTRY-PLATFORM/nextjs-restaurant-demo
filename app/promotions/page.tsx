@@ -7,6 +7,7 @@ import type { JSX } from 'react';
 import { getBlogBanners, getPageByUrl } from '@/app/api';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
+import { sanitizeHtml } from '@/app/utils/sanitizeHtml';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';
 import { unwrapRichText } from '@/components/utils';
 
@@ -33,7 +34,7 @@ const PromotionsListPage = async (): Promise<JSX.Element> => {
   const title = page.localizeInfos?.title ?? (await t('promotions_title', 'Promotions'));
   const homeLabel = await t('home_label', 'Home');
   const description = unwrapRichText(page.attributeValues?.description?.value);
-  const subtitleHtml = description?.htmlValue ?? description?.plainValue ?? '';
+  const subtitleHtml = sanitizeHtml(description?.htmlValue ?? description?.plainValue);
 
   const visibleBanners = banners.filter(b => b.desktopImage || b.mobileImage);
 

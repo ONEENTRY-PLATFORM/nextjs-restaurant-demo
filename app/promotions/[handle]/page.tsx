@@ -10,6 +10,7 @@ import { getDictionary, t } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { sanitizeHtml } from '@/app/utils/sanitizeHtml';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';
@@ -60,7 +61,7 @@ const PromoDetailPage = async (props: PageProps): Promise<JSX.Element> => {
     getImageUrl(attrs.banner?.value as ImageValue);
   const title = page.localizeInfos?.title ?? '';
   const description = unwrapRichText(attrs.description?.value);
-  const subtitleHtml = description?.htmlValue ?? description?.plainValue ?? '';
+  const subtitleHtml = sanitizeHtml(description?.htmlValue ?? description?.plainValue);
   const goToSelectionLabel = await t('promo_go_to_selection', 'Go to selection');
   const homeLabel = await t('home_label', 'Home');
 

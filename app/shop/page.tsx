@@ -7,6 +7,7 @@ import { getPageByUrl } from '@/app/api';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { PAGES, SHOP_PAGE_LIMIT } from '@/app/utils/constants';
+import { serializeJsonLd } from '@/app/utils/serializeJsonLd';
 import ProductsGridLayout from '@/components/layout/products-grid';
 import ProductsGridLoader from '@/components/layout/products-grid/components/ProductsGridLoader';
 
@@ -60,7 +61,7 @@ const ShopPageLayout = async (props: PageProps): Promise<JSX.Element> => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbStructuredData),
+          __html: serializeJsonLd(breadcrumbStructuredData),
         }}
       />
       <section className="shop_section">

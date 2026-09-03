@@ -8,6 +8,7 @@ import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
+import { sanitizeHtml } from '@/app/utils/sanitizeHtml';
 import BookATableButton from '@/components/reservation/BookATableButton';
 import RestaurantPhotoGallery from '@/components/restaurants/RestaurantPhotoGallery';
 import { pickRichTextHtml, unwrapRichText } from '@/components/utils';
@@ -105,7 +106,7 @@ const RestaurantPage = async ({
   const cuisine = (attrs.cuisine?.value as string | undefined) ?? '';
   const bookingPolicy = (attrs.booking_policy?.value as string | undefined) ?? '';
   const liveEvents = (attrs.live_events?.value as string | undefined) ?? '';
-  const openingHoursHtml = pickRichTextHtml(attrs.opening_hours?.value);
+  const openingHoursHtml = sanitizeHtml(pickRichTextHtml(attrs.opening_hours?.value));
   const comforts = normalizeComforts(attrs.comforts?.value);
   // Unfilled string attributes arrive as `null` and Number(null) === 0 — check
   // "not filled" before coercion so empty coords fall through to the map placeholder.
@@ -116,7 +117,7 @@ const RestaurantPage = async ({
   const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
   const title = page.localizeInfos?.title ?? page.pageUrl ?? 'Restaurant';
   const descriptionPlain = unwrapRichText(attrs.description?.value)?.plainValue ?? '';
-  const descriptionHtml = pickRichTextHtml(attrs.description?.value);
+  const descriptionHtml = sanitizeHtml(pickRichTextHtml(attrs.description?.value));
 
   const waNumber = whatsapp.replace(/[^\d]/g, '');
   const instagramHandle = instagram.replace(/^@/, '');

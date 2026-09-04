@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import type { IBlockEntity, IError, IProductsEntity } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 /** BlockProducts — payload of {@link getBlockProducts}: title, products (sliced to `block.quantity`) and a column-count hint. */
 export interface BlockProducts {

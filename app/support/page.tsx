@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import type { JSX } from 'react';
 
-import { getFormByMarker, getPageByUrl } from '@/app/api';
+import { getFormByMarker } from '@/app/api/server/forms/getFormByMarker';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { getDictionary } from '@/app/dictionaries';
 import { FORMS, PAGES } from '@/app/utils/constants';
 import { sanitizeHtml } from '@/app/utils/sanitizeHtml';

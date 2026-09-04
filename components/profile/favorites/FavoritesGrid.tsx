@@ -3,7 +3,7 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { useGetProductsByIdsQuery } from '@/app/api';
+import { useGetProductsByIdsQuery } from '@/app/api/api/RTKApi';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectFavoritesItems } from '@/app/store/reducers/FavoritesSlice';

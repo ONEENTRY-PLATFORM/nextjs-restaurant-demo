@@ -1,8 +1,9 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getBlockProducts, getRelatedProductsById } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { getBlockProducts } from '@/app/api/server/blocks/getBlockProducts';
+import { getRelatedProductsById } from '@/app/api/server/products/getRelatedProductsById';
 import { t } from '@/app/dictionaries';
 import { BLOCKS } from '@/app/utils/constants';
 

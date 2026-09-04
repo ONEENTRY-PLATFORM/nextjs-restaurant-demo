@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import type { IProductsEntity } from 'oneentry/types';
 import { type JSX, Suspense } from 'react';
 
-import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/api';
+import { getProductImageUrl } from '@/app/api/hooks/useAttributesData';
+import { getProductById } from '@/app/api/server/products/getProductById';
+import { getOutOfStockMarker } from '@/app/api/server/products/getProductStatuses';
 import { getSiteUrl } from '@/app/utils/getSiteUrl';
 import { serializeJsonLd } from '@/app/utils/serializeJsonLd';
 import TrackProductView from '@/components/analytics/TrackProductView';

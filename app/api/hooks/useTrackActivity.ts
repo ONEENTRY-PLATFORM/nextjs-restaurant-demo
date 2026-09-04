@@ -3,7 +3,7 @@
 import type { ITrackActivity } from 'oneentry/types';
 import { useEffect } from 'react';
 
-import { getApi } from '@/app/api';
+import { getApi } from '@/app/api/api/api';
 
 /**
  * trackActivity — fire-and-forget user/guest activity event.

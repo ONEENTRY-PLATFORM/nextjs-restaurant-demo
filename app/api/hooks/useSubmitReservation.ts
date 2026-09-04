@@ -3,7 +3,7 @@
 import type { IAccountsEntity, IOrdersFormData } from 'oneentry/types';
 import { useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 import { BOOKING_PRODUCT_ID, FORMS } from '@/app/utils/constants';
 
 import { isOnlinePaymentAccount } from './paymentAccountKind';

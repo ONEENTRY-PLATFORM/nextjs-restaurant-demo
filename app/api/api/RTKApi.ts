@@ -20,7 +20,7 @@ import type {
   IUserEntity,
 } from 'oneentry/types';
 
-import { isError } from '@/app/api';
+import { isError } from '@/app/api/api/api';
 import type { IProducts } from '@/app/types/global';
 import { PAGES } from '@/app/utils/constants';
 

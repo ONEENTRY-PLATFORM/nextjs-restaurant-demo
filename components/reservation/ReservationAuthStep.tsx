@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { IAuthProvidersEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { useGetAuthProvidersQuery } from '@/app/api';
+import { useGetAuthProvidersQuery } from '@/app/api/api/RTKApi';
 import { useT } from '@/app/store/providers/DictProvider';
 import {
   getProviderMeta,

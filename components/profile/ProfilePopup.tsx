@@ -6,7 +6,9 @@ import type { IMenusPages } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { logOutUser, useEmailAuthProviderMarker, useGetMenuByMarkerQuery } from '@/app/api';
+import { useGetMenuByMarkerQuery } from '@/app/api/api/RTKApi';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
+import { logOutUser } from '@/app/api/server/users/logOutUser';
 import { useIsMdUp } from '@/app/hooks/useIsMdUp';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

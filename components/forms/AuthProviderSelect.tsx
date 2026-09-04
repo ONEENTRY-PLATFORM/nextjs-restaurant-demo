@@ -5,7 +5,7 @@ import type { IAuthProvidersEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
-import { useGetAuthProvidersQuery } from '@/app/api';
+import { useGetAuthProvidersQuery } from '@/app/api/api/RTKApi';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';

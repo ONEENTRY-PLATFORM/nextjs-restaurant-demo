@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { getBlogBanners } from '@/app/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import FavoritesGrid from '@/components/profile/favorites/FavoritesGrid';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';

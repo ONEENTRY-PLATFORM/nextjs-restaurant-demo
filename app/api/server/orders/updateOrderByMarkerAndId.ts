@@ -1,6 +1,6 @@
 import type { IBaseOrdersEntity, IError, IOrderData } from 'oneentry/types';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 interface HandleProps {
   marker: string;

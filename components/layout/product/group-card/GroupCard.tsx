@@ -1,7 +1,7 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductCurrency } from '@/app/api';
+import { getProductCurrency } from '@/app/api/hooks/useAttributesData';
 import Placeholder from '@/components/shared/Placeholder';
 
 import ApplyButton from './ApplyButton';

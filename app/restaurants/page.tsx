@@ -4,8 +4,9 @@ import { notFound } from 'next/navigation';
 import type { IPagesEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getChildPagesByParentUrl, getPageByUrl } from '@/app/api';
 import getPhotosBlurMap from '@/app/api/lqip/getPhotosBlurMap';
+import { getChildPagesByParentUrl } from '@/app/api/server/pages/getChildPagesByParentUrl';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import { sanitizeHtml } from '@/app/utils/sanitizeHtml';

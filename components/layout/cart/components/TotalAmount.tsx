@@ -4,7 +4,7 @@ import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useMemo } from 'react';
 
-import { getProductCurrency } from '@/app/api';
+import { getProductCurrency } from '@/app/api/hooks/useAttributesData';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { selectCartData } from '@/app/store/reducers/CartSlice';

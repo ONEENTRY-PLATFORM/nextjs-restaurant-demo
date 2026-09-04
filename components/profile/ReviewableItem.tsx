@@ -5,7 +5,8 @@ import type { FormDataType, IOrderProducts, IProductsEntity } from 'oneentry/typ
 import type { JSX } from 'react';
 import { useState } from 'react';
 
-import { getApi, getProductImageUrl, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import { getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import { useT } from '@/app/store/providers/DictProvider';
 import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import {

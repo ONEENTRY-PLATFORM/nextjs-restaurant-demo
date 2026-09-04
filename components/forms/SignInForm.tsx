@@ -5,7 +5,9 @@ import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { logInUser, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
+import { logInUser } from '@/app/api/client/logInUser';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

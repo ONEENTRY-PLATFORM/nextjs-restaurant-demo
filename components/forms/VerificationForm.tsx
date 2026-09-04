@@ -5,13 +5,10 @@ import type { FormEvent, JSX } from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
-import {
-  getApi,
-  isError,
-  logInUser,
-  useEmailAuthProviderMarker,
-  useGetAuthProvidersQuery,
-} from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import { useGetAuthProvidersQuery } from '@/app/api/api/RTKApi';
+import { logInUser } from '@/app/api/client/logInUser';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

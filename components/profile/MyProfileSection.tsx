@@ -6,7 +6,7 @@ import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import { normalizeErrorMessage } from '@/app/utils/errorHandler';
 import { userHasPasswordAuth } from '@/components/forms/authProviders';

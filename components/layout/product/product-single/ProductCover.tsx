@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductBlurDataURL, getProductImageUrl } from '@/app/api';
+import { getProductBlurDataURL, getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import getLqipPreview from '@/app/api/lqip/getLqipPreview';
 import FavoritesButton from '@/components/layout/product/product-single/FavoritesButton';
 import Placeholder from '@/components/shared/Placeholder';

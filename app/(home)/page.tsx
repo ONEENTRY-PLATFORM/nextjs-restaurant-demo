@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
 import HeaderAnimGate from '@/app/animations/HeaderAnimGate';
-import { getBlocksByPageUrl, getPageByUrl } from '@/app/api';
+import { getBlocksByPageUrl } from '@/app/api/server/blocks/getBlocksByPageUrl';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { BLOCKS, PAGES } from '@/app/utils/constants';
 import HomeBlockServer from '@/components/home/HomeBlockServer';
 import HomeCategoriesSection from '@/components/home/HomeCategoriesSection';

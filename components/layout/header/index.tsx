@@ -2,13 +2,13 @@ import Link from 'next/link';
 import type { IListTitle, IPagesEntity } from 'oneentry/types';
 import { type JSX, Suspense } from 'react';
 
+import { getSingleAttributeByMarkerSet } from '@/app/api/server/attributes/getSingleAttributeByMarkerSet';
 import {
   contentFilterToOptions,
-  getChildPagesByParentUrl,
   getContentFilter,
-  getPageByUrl,
-  getSingleAttributeByMarkerSet,
-} from '@/app/api';
+} from '@/app/api/server/filters/getContentFilter';
+import { getChildPagesByParentUrl } from '@/app/api/server/pages/getChildPagesByParentUrl';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { t } from '@/app/dictionaries';
 import { ATTR_SETS, CONTENT_FILTERS, PAGES, PRODUCT_ATTRS } from '@/app/utils/constants';
 import LogoMobileIcon from '@/components/icons/logo-mobile.svg';

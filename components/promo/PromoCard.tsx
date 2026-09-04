@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getImageUrl } from '@/app/api';
+import { getImageUrl } from '@/app/api/api/api';
 import { unwrapRichText } from '@/components/utils';
 
 /**

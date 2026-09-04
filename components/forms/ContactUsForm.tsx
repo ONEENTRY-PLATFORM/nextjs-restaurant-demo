@@ -4,7 +4,8 @@ import type { IFormAttribute } from 'oneentry/types';
 import type { FormEvent, JSX } from 'react';
 import { useMemo, useState } from 'react';
 
-import { getApi, isError, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';

@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { getBlogBanners } from '@/app/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import BookingsContent from '@/components/profile/bookings/BookingsContent';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';

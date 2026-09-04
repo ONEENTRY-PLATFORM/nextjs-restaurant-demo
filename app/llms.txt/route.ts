@@ -1,6 +1,8 @@
 import type { IPagesEntity } from 'oneentry/types';
 
-import { getChildPagesByParentUrl, getPageByUrl, getProducts } from '@/app/api';
+import { getChildPagesByParentUrl } from '@/app/api/server/pages/getChildPagesByParentUrl';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
+import { getProducts } from '@/app/api/server/products/getProducts';
 import { PAGES } from '@/app/utils/constants';
 import { getSiteUrl } from '@/app/utils/getSiteUrl';
 

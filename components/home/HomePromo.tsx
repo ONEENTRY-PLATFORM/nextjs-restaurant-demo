@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
-import { getBlogBanners } from '@/app/api';
 import getBannerBlurMap from '@/app/api/lqip/getBannerBlurMap';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
 import { t } from '@/app/dictionaries';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';
 

@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { type JSX, useContext, useEffect, useRef, useState } from 'react';
 
-import { useGetProductsPriceRangeQuery } from '@/app/api';
+import { useGetProductsPriceRangeQuery } from '@/app/api/api/RTKApi';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import ArrowBackOrangeIcon from '@/components/icons/arrow-back-orange';

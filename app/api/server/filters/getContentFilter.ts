@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import type { IContentFilter, IError } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 
 /** A flattened, group-tagged option derived from a content-filter tree node. */
 export type ContentFilterOption = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetAuthProvidersQuery } from '@/app/api';
+import { useGetAuthProvidersQuery } from '@/app/api/api/RTKApi';
 import { findEmailLikeProvider } from '@/components/forms/authProviders';
 
 /**

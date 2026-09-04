@@ -2,7 +2,7 @@
 
 import type { JSX } from 'react';
 
-import { useTrackProductView } from '@/app/api';
+import { useTrackProductView } from '@/app/api/hooks/useTrackActivity';
 
 /**
  * TrackProductView — records a `product_view` activity event for the current product.

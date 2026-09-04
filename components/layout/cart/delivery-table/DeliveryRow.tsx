@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductCurrency } from '@/app/api';
+import { getProductCurrency } from '@/app/api/hooks/useAttributesData';
 import { UsePrice } from '@/components/utils';
 
 import TableRowAnimations from '../animations/TableRowAnimations';

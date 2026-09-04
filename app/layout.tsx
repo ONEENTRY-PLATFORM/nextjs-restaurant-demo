@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Lato } from 'next/font/google';
 
-import { getOutOfStockMarker } from '@/app/api';
+import { getOutOfStockMarker } from '@/app/api/server/products/getProductStatuses';
 import { getDictionary } from '@/app/dictionaries';
 import { AuthProvider } from '@/app/store/providers/AuthContext';
 import { DictProvider } from '@/app/store/providers/DictProvider';

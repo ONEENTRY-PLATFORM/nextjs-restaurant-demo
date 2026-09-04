@@ -5,7 +5,7 @@ import type { IAccountsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useGetAccountsQuery, useGetOrderStorageByMarkerQuery } from '@/app/api';
+import { useGetAccountsQuery, useGetOrderStorageByMarkerQuery } from '@/app/api/api/RTKApi';
 import { useT } from '@/app/store/providers/DictProvider';
 import { FORMS } from '@/app/utils/constants';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';

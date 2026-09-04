@@ -1,4 +1,9 @@
-import { getApi, getStoredAuthProviderMarker, isError, saveAuthProviderMarker } from '@/app/api';
+import {
+  getApi,
+  getStoredAuthProviderMarker,
+  isError,
+  saveAuthProviderMarker,
+} from '@/app/api/api/api';
 
 type LogOutProps = { marker: string; token?: string };
 

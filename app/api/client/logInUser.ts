@@ -2,7 +2,7 @@
 
 import type { IAuthEntity, IAuthPostBody } from 'oneentry/types';
 
-import { getApi, isError, saveAuthProviderMarker } from '@/app/api';
+import { getApi, isError, saveAuthProviderMarker } from '@/app/api/api/api';
 
 type LogInProps = {
   method: string;

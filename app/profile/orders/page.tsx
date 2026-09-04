@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { getBlogBanners } from '@/app/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
 import OrdersList from '@/components/profile/orders/OrdersList';
 import { blogBannerFromPage } from '@/components/promo/blogBanner';
 

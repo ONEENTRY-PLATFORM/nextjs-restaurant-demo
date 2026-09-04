@@ -1,7 +1,8 @@
 import { type JSX } from 'react';
 
-import { getProducts, getProductsByPageUrl } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { getProducts } from '@/app/api/server/products/getProducts';
+import { getProductsByPageUrl } from '@/app/api/server/products/getProductsByPageUrl';
 import CardsGridAnimations from '@/components/layout/products-grid/animations/CardsGridAnimations';
 
 import LoadMore from './components/LoadMore';

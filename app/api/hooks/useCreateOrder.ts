@@ -3,7 +3,7 @@
 import type { IAccountsEntity, IOrderProductData, IOrdersFormData } from 'oneentry/types';
 import { useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 import { trackActivity } from '@/app/api/hooks/useTrackActivity';
 import { useAppDispatch, useAppStore } from '@/app/store/hooks';
 import { removeAllProducts, selectCartData } from '@/app/store/reducers/CartSlice';

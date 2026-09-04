@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import type { IProductStatusEntity } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 import { PRODUCT_STATUSES } from '@/app/utils/constants';
 
 const fetchProductStatuses = unstable_cache(

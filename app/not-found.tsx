@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { JSX } from 'react';
 
-import { getPageByUrl } from '@/app/api';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import { unwrapRichText } from '@/components/utils';

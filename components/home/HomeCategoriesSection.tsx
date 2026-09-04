@@ -1,8 +1,9 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getChildPagesByParentUrl, getProductsByPageUrl } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { getChildPagesByParentUrl } from '@/app/api/server/pages/getChildPagesByParentUrl';
+import { getProductsByPageUrl } from '@/app/api/server/products/getProductsByPageUrl';
 import { PAGES } from '@/app/utils/constants';
 
 import CategoriesSection from './CategoriesSection';

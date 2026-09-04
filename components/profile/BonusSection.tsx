@@ -5,7 +5,7 @@ import type { IBonusTransactionType } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useState } from 'react';
 
-import { useGetBonusBalanceQuery, useGetBonusHistoryQuery } from '@/app/api';
+import { useGetBonusBalanceQuery, useGetBonusHistoryQuery } from '@/app/api/api/RTKApi';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { formatDate } from '@/app/utils/formatDate';

@@ -5,7 +5,9 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 import { memo, Suspense } from 'react';
 
-import { getBlogBanners, getImageUrl, getPageByUrl } from '@/app/api';
+import { getImageUrl } from '@/app/api/api/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { getDictionary, t } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';

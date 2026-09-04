@@ -3,7 +3,7 @@
 import type { ICartResponse, IError, IWishlistResponse } from 'oneentry/types';
 import { useMemo } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 /**
  * Operations over the server-side cart. Reads resolve to `null` on SDK error (graceful);

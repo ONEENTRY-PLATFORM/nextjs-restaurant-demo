@@ -4,13 +4,10 @@ import type { IFormAttribute, ISignUpData, ISignUpEntity } from 'oneentry/types'
 import type { FormEvent, JSX } from 'react';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import {
-  getApi,
-  isError,
-  logInUser,
-  useEmailAuthProviderMarker,
-  useGetFormByMarkerQuery,
-} from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
+import { logInUser } from '@/app/api/client/logInUser';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

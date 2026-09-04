@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductCurrency } from '@/app/api';
+import { getProductCurrency } from '@/app/api/hooks/useAttributesData';
 import { t } from '@/app/dictionaries';
 import ProductReviewsListServer from '@/components/reviews/ProductReviewsListServer';
 import { UsePrice } from '@/components/utils';

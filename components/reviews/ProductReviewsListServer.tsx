@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { getProductReviews } from '@/app/api';
+import { getProductReviews } from '@/app/api/server/forms/getProductReviews';
 
 import { productReviewFromFormData } from './productReview';
 import ProductReviewsList from './ProductReviewsList';

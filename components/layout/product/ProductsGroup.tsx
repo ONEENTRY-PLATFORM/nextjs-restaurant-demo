@@ -1,7 +1,7 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getBlockByMarker } from '@/app/api';
+import { getBlockByMarker } from '@/app/api/server/blocks/getBlockByMarker';
 
 import ProductAnimations from './animations/ProductAnimations';
 import GroupCard from './group-card/GroupCard';

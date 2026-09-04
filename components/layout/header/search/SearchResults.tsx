@@ -4,8 +4,9 @@ import type { IPagesEntity, IProductsEntity } from 'oneentry/types';
 import type { Dispatch, JSX } from 'react';
 import { useEffect, useState } from 'react';
 
-import { getPageById } from '@/app/api';
+import { RTKApi } from '@/app/api/api/RTKApi';
 import { useSearchProducts } from '@/app/api/hooks/useSearchProducts';
+import { useAppDispatch } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import SearchIcon from '@/components/icons/search';
 import Spinner from '@/components/shared/Spinner';
@@ -38,6 +39,7 @@ const SearchResults = ({
   onOpenInShop: (() => void) | null;
 }): JSX.Element => {
   const t = useT();
+  const dispatch = useAppDispatch();
   const [pages, setPages] = useState<{
     [key: number]: {
       page?: IPagesEntity;
@@ -48,6 +50,17 @@ const SearchResults = ({
   });
 
   useEffect(() => {
+    /*
+      Pages come from the RTK endpoint, not from `getPageById` in
+      `app/api/server/pages/`. That wrapper is `unstable_cache`-backed — a
+      server-only API — and importing it here bundled the cache wiring into the
+      client chunk, where its cache means nothing: `unstable_cache` keys live on
+      the server, so every visitor re-fetched anyway while paying for the code.
+
+      `initiate` rather than the `useGetPageByIdQuery` hook because the id list
+      is dynamic and hooks cannot be called per item; going through the store
+      still shares the endpoint's cache (600 s) across the whole session.
+    */
     const fetchPages = async () => {
       const pagesData: {
         [key: number]: {
@@ -57,9 +70,16 @@ const SearchResults = ({
       await Promise.all(
         products.map(async (product: IProductsEntity) => {
           const firstPage = product.productPages?.[0];
-          if (firstPage) {
-            const pageData = await getPageById(firstPage.pageId);
-            pagesData[product.id] = pageData;
+          if (!firstPage) {
+            return;
+          }
+          try {
+            const page = await dispatch(
+              RTKApi.endpoints.getPageById.initiate({ id: firstPage.pageId })
+            ).unwrap();
+            pagesData[product.id] = { page };
+          } catch {
+            // A page that fails to load just renders the row without its link — as before.
           }
         })
       );
@@ -69,7 +89,7 @@ const SearchResults = ({
     if (products.length > 0) {
       fetchPages();
     }
-  }, [products]);
+  }, [products, dispatch]);
 
   if (!state) {
     return <></>;

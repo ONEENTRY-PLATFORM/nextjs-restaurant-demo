@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductCurrency, getProductImageUrl } from '@/app/api';
+import { getProductCurrency, getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import { useAppDispatch } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { useOutOfStockMarker } from '@/app/store/providers/ProductStatusContext';

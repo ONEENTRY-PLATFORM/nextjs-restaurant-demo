@@ -4,7 +4,8 @@ import type { IFormAttribute } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useCreateOrder, useDeliveryCheckout } from '@/app/api';
+import { useCreateOrder } from '@/app/api/hooks/useCreateOrder';
+import { useDeliveryCheckout } from '@/app/api/hooks/useDeliveryCheckout';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

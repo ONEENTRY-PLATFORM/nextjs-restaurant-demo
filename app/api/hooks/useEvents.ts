@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { getApi } from '@/app/api';
+import { getApi } from '@/app/api/api/api';
 
 /**
  * onSubscribeEvents — subscribes to product-related events via the Events API (catalog, stock, price).

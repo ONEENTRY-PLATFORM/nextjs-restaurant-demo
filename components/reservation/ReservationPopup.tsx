@@ -4,7 +4,7 @@ import type { IOrdersFormData, IPagesEntity, IUserEntity } from 'oneentry/types'
 import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app/api';
+import { useGetChildPagesByParentUrlQuery, useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

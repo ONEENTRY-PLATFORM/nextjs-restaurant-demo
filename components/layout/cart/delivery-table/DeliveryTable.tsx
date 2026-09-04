@@ -2,7 +2,7 @@ import type { IFormAttribute, IProductsEntity } from 'oneentry/types';
 import type { JSX, Key } from 'react';
 import { useContext, useEffect } from 'react';
 
-import { useGetFormByMarkerQuery } from '@/app/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

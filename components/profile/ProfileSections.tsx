@@ -3,7 +3,7 @@
 import type { JSX } from 'react';
 import { useContext, useEffect } from 'react';
 
-import { useGetFormByMarkerQuery } from '@/app/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { FORMS } from '@/app/utils/constants';

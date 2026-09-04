@@ -5,7 +5,7 @@ import type {
   IFormsEntity,
 } from 'oneentry/types';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 import { FORM_MODULE_CONFIG_IDS, FORMS } from '@/app/utils/constants';
 
 const FORM_MARKER = FORMS.reviewForm;

@@ -4,13 +4,8 @@ import type { IError, IUserEntity } from 'oneentry/types';
 import type { JSX, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  getLang,
-  hasActiveSession,
-  reDefine,
-  saveAuthProviderMarker,
-  useLazyGetMeQuery,
-} from '@/app/api';
+import { getLang, hasActiveSession, reDefine, saveAuthProviderMarker } from '@/app/api/api/api';
+import { useLazyGetMeQuery } from '@/app/api/api/RTKApi';
 
 type AuthProviderProps = {
   children: ReactNode;

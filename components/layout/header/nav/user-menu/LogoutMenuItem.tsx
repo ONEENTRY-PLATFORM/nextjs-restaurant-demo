@@ -4,7 +4,8 @@ import { useTransitionRouter } from 'next-transition-router';
 import type { JSX } from 'react';
 import { useContext } from 'react';
 
-import { logOutUser, useEmailAuthProviderMarker } from '@/app/api';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
+import { logOutUser } from '@/app/api/server/users/logOutUser';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 

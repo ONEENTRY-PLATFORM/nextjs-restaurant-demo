@@ -1,7 +1,8 @@
 import type { JSX } from 'react';
 
-import { getBlockProducts, getProducts } from '@/app/api';
 import getProductBlurMap from '@/app/api/lqip/getProductBlurMap';
+import { getBlockProducts } from '@/app/api/server/blocks/getBlockProducts';
+import { getProducts } from '@/app/api/server/products/getProducts';
 import { t } from '@/app/dictionaries';
 
 import HomeBlockSection from './HomeBlockSection';

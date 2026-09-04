@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { IOrderProducts, IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getProductImageUrl } from '@/app/api';
+import { getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import { UsePrice } from '@/components/utils';
 
 /**

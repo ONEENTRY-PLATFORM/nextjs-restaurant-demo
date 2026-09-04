@@ -5,7 +5,7 @@ import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 
-import { useGetProductByIdQuery, useGetProductsByIdsQuery } from '@/app/api';
+import { useGetProductByIdQuery, useGetProductsByIdsQuery } from '@/app/api/api/RTKApi';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

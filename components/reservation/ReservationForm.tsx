@@ -10,7 +10,7 @@ import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { useSubmitReservation } from '@/app/api';
+import { useSubmitReservation } from '@/app/api/hooks/useSubmitReservation';
 import { useEnterpriseCaptcha } from '@/app/hooks/useEnterpriseCaptcha';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

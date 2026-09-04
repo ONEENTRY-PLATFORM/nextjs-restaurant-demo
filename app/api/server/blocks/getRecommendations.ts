@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import type { IProductsEntity } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 import { getProducts } from '@/app/api/server/products/getProducts';
 import { BLOCKS } from '@/app/utils/constants';
 

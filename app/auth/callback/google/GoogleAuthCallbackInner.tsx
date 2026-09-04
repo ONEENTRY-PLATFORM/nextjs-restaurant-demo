@@ -8,11 +8,11 @@ import { toast } from 'react-toastify';
 import {
   getDeviceMetadata,
   getLang,
-  oauthLogIn,
   reDefine,
   saveAuthProviderMarker,
   syncTokens,
-} from '@/app/api';
+} from '@/app/api/api/api';
+import { oauthLogIn } from '@/app/api/server/users/oauthLogIn';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import { GOOGLE_OAUTH_MARKER_STORAGE_KEY } from '@/components/forms/authProviders';

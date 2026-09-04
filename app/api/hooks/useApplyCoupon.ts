@@ -3,7 +3,7 @@
 import type { IOrderPreviewResponse } from 'oneentry/types';
 import { useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartData } from '@/app/store/reducers/CartSlice';
 import { clearAppliedCoupon, setAppliedCoupon } from '@/app/store/reducers/OrderSlice';

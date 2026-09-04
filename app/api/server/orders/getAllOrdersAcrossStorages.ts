@@ -1,7 +1,7 @@
 import type { IError, IOrderByMarkerEntity, IOrdersEntity } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 
 // Re-exported from the pure constants module so unit tests can import it without the SDK/api chain.
 export { isBookingStorageMarker } from '@/app/utils/constants';

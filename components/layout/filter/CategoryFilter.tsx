@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { IPagesEntity } from 'oneentry/types';
 import { type JSX, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
-import { getImageUrl } from '@/app/api';
+import { getImageUrl } from '@/app/api/api/api';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 

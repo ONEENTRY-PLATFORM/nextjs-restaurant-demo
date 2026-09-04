@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 import { PAGES } from '@/app/utils/constants';
 
 export type PriceRange = {

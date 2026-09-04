@@ -1,7 +1,8 @@
 import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getBlogBanners, getProductById } from '@/app/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
+import { getProductById } from '@/app/api/server/products/getProductById';
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import CartPromoSidebar from '@/components/cart/CartPromoSidebar';
 import CartWizard from '@/components/cart/CartWizard';

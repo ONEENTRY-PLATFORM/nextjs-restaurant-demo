@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/types';
 import { type JSX, useRef } from 'react';
 
-import { getProductImageUrl } from '@/app/api';
+import { getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import { useNearViewport } from '@/app/hooks/useNearViewport';
 import Placeholder from '@/components/shared/Placeholder';
 

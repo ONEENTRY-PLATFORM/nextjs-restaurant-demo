@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 import { memo, Suspense } from 'react';
 
-import { getPageByUrl } from '@/app/api';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';
 import { SHOP_PAGE_LIMIT } from '@/app/utils/constants';

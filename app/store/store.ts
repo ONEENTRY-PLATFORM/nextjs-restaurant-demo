@@ -3,7 +3,7 @@ import { createWrapper } from 'next-redux-wrapper';
 import { persistReducer } from 'redux-persist';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
-import { RTKApi } from '../api';
+import { RTKApi } from '../api/api/RTKApi';
 import animationsSlice from './reducers/AnimationsSlice';
 import cartSlice from './reducers/CartSlice';
 import favoritesSlice from './reducers/FavoritesSlice';

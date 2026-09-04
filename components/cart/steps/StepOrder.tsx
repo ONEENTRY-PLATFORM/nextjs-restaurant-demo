@@ -7,7 +7,9 @@ import type { IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useRef, useState } from 'react';
 
-import { useApplyCoupon, useGetBonusBalanceQuery, useOrderPreview } from '@/app/api';
+import { useGetBonusBalanceQuery } from '@/app/api/api/RTKApi';
+import { useApplyCoupon } from '@/app/api/hooks/useApplyCoupon';
+import { useOrderPreview } from '@/app/api/hooks/useOrderPreview';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';

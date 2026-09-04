@@ -7,7 +7,7 @@ import {
   useGetAccountsQuery,
   useGetFormByMarkerQuery,
   useGetOrderStorageByMarkerQuery,
-} from '@/app/api';
+} from '@/app/api/api/RTKApi';
 import { FORMS } from '@/app/utils/constants';
 
 import { filterAllowedAccounts } from './checkout.utils';

@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { IProductsEntity } from 'oneentry/types';
 
-import { getProductBlurDataURL, getProductImageUrl } from '@/app/api';
+import { getProductBlurDataURL, getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import getLqipPreview from '@/app/api/lqip/getLqipPreview';
 
 /**

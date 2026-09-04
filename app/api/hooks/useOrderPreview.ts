@@ -3,7 +3,7 @@
 import type { IOrderPreviewResponse } from 'oneentry/types';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { selectCartData } from '@/app/store/reducers/CartSlice';

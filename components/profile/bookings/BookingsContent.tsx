@@ -5,8 +5,12 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import type { OrderWithStorage } from '@/app/api';
-import { getAllOrdersAcrossStorages, getApi, isBookingStorageMarker, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import type { OrderWithStorage } from '@/app/api/server/orders/getAllOrdersAcrossStorages';
+import {
+  getAllOrdersAcrossStorages,
+  isBookingStorageMarker,
+} from '@/app/api/server/orders/getAllOrdersAcrossStorages';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

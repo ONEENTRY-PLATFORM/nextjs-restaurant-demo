@@ -5,7 +5,7 @@ import type { IMenusPages } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 
-import { useGetMenuByMarkerQuery } from '@/app/api';
+import { useGetMenuByMarkerQuery } from '@/app/api/api/RTKApi';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { type JSX, memo, Suspense } from 'react';
 
-import { getImageUrl, getPageByUrl } from '@/app/api';
+import { getImageUrl } from '@/app/api/api/api';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { getDictionary } from '@/app/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import type { MetadataParams, PageProps } from '@/app/types/global';

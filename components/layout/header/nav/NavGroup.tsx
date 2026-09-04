@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/types';
 import type { JSX } from 'react';
 
-import { getMenuByMarker } from '@/app/api';
+import { getMenuByMarker } from '@/app/api/server/menus/getMenuByMarker';
 import { MENUS, PAGES } from '@/app/utils/constants';
 import HouseIcon from '@/components/icons/house';
 

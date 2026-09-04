@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { JSX } from 'react';
 
-import { getBlogBanners, getPageByUrl } from '@/app/api';
+import { getBlogBanners } from '@/app/api/server/pages/getBlogBanners';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { t } from '@/app/dictionaries';
 import { PAGES } from '@/app/utils/constants';
 import { sanitizeHtml } from '@/app/utils/sanitizeHtml';

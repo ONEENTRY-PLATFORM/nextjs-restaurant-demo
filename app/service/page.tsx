@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { JSX } from 'react';
 
-import { getImageUrl, getPageByUrl } from '@/app/api';
+import { getImageUrl } from '@/app/api/api/api';
+import { getPageByUrl } from '@/app/api/server/pages/getPageByUrl';
 import { PAGES } from '@/app/utils/constants';
 
 export const dynamic = 'force-static';

@@ -3,7 +3,7 @@
 import type { ICreateRefundRequest, IRefundRequest } from 'oneentry/types';
 import { useMemo } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 /** Refund operations for a single order. Reads degrade to `[]`, writes to `false` on error. */
 export type RefundsApi = {

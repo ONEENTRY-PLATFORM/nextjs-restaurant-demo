@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import type { IAdminEntity, IError, IFilterParams } from 'oneentry/types';
 import { cache } from 'react';
 
-import { getApi, getLang, isError } from '@/app/api';
+import { getApi, getLang, isError } from '@/app/api/api/api';
 
 interface HandleProps {
   body: IFilterParams[];

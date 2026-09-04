@@ -3,7 +3,7 @@
 import type { IProductSearchResult, IProductsEntity } from 'oneentry/types';
 import { useEffect, useState } from 'react';
 
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 import { trackActivity } from './useTrackActivity';
 

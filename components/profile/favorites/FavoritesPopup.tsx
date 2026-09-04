@@ -8,12 +8,12 @@ import type { JSX } from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
+import { useGetProductsByIdsQuery } from '@/app/api/api/RTKApi';
 import {
   getProductBlurDataURL,
   getProductCurrency,
   getProductImageUrl,
-  useGetProductsByIdsQuery,
-} from '@/app/api';
+} from '@/app/api/hooks/useAttributesData';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

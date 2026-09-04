@@ -23,7 +23,7 @@ Async functions wrapping `getApi()` SDK with React `cache()` (deduplication with
 
 ```typescript
 import { cache } from 'react';
-import { getApi, isError } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
 
 export const getPageByUrl = cache(async (url: string) => {
   try {
@@ -40,7 +40,9 @@ Return a discriminated union `{ isError, error?, page? }` — graceful fallback,
 
 ### 2. RTK Query — [app/api/api/RTKApi.ts](../../app/api/api/RTKApi.ts)
 
-One centralized `createApi()` with `fakeBaseQuery()`. All query/mutation endpoints are collected in a single file and exported as `useGet*Query` / `useLazyGet*Query` via [app/api/index.ts](../../app/api/index.ts).
+One centralized `createApi()` with `fakeBaseQuery()`. All query/mutation endpoints are collected in a single file and exported as `useGet*Query` / `useLazyGet*Query` directly from [app/api/api/RTKApi.ts](../../app/api/api/RTKApi.ts).
+
+Import every one of these from its own module, never through an index that re-exports them. The `app/api/index.ts` barrel was removed on 2026-09-04: it pulled the whole server-wrapper graph into any client chunk that touched one symbol, and the built client bundle carried 41 `oneentry-*` cache-tag literals plus `unstable_cache` wiring — server-only code shipped to every visitor, including in the chunk the home page loads first.
 
 **When to use:**
 
@@ -167,7 +169,7 @@ import type { IProductsEntity } from 'oneentry/types';
 
 ## Current inventory
 
-- **Server fetchers** — `getPageByUrl`, `getProducts`, `getProductById`, `getProductStatuses` / `getOutOfStockMarker`, `getBlocks`, `getBlockProducts`, `getBlocksByPageUrl`, `getMenuByMarker`, `getFormByMarker`, `getAllOrdersByMarker`, `updateOrderByMarkerAndId`, `getBlogBanners`, `getChildPagesByParentUrl`, `getPagesByIds`, `getProductsByPageUrl`, `getProductsPriceRange`, `getRelatedProductsById`, `getProductReviews`, `getAdminsInfo`, `getSingleAttributeByMarkerSet`, `logOutUser`, `oauthLogIn`, `updateUserState` — see [app/api/index.ts](../../app/api/index.ts).
+- **Server fetchers** — `getPageByUrl`, `getProducts`, `getProductById`, `getProductStatuses` / `getOutOfStockMarker`, `getBlocks`, `getBlockProducts`, `getBlocksByPageUrl`, `getMenuByMarker`, `getFormByMarker`, `getAllOrdersByMarker`, `updateOrderByMarkerAndId`, `getBlogBanners`, `getChildPagesByParentUrl`, `getPagesByIds`, `getProductsByPageUrl`, `getProductsPriceRange`, `getRelatedProductsById`, `getProductReviews`, `getAdminsInfo`, `getSingleAttributeByMarkerSet`, `logOutUser`, `oauthLogIn`, `updateUserState` — each in its own module under [app/api/server/](../../app/api/server/).
 - **RTK Query endpoints** — `useGetAccountsQuery`, `useGetAuthProvidersQuery`, `useGetBlockByMarkerQuery`, `useGetBlocksByPageUrlQuery`, `useGetChildPagesByParentUrlQuery`, `useGetFormByMarkerQuery`, `useGetMenuByMarkerQuery`, `useGetOrderStorageByMarkerQuery`, `useGetPageByIdQuery`, `useGetPaymentSessionByIdQuery`, `useGetProductByIdQuery`, `useGetProductsByIdsQuery`, `useGetProductsByPageUrlQuery`, `useGetProductsQuery`, `useGetSingleOrderQuery`, `useLazyGetMeQuery`, `useLazyGetPaymentSessionByIdQuery`.
 - **Custom hooks** — `useApplyCoupon`, `useCreateOrder`, `useSubmitReservation`, `useSearchProducts`, `useSetForm`, `useAttributesData`, `useEvents`.
 - **Client SDK helpers** ([app/api/client/](../../app/api/client/)) — `logInUser`: client-only auth call (`AuthProvider.auth` needs the browser device fingerprint, so it must run in the browser and carries `'use client'`, never `'use server'`). Exported via the same `@/app/api` barrel.

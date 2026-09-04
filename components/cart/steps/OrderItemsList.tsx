@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import type { JSX } from 'react';
 
-import { getProductCurrency, getProductImageUrl } from '@/app/api';
+import { getProductCurrency, getProductImageUrl } from '@/app/api/hooks/useAttributesData';
 import { useT } from '@/app/store/providers/DictProvider';
 import type { OrderLineItem } from '@/components/cart/steps/stepOrderUtils';
 import Placeholder from '@/components/shared/Placeholder';

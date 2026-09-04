@@ -4,7 +4,9 @@ import type { IFormAttribute } from 'oneentry/types';
 import type { FormEvent, JSX } from 'react';
 import { useContext, useMemo, useState } from 'react';
 
-import { getApi, isError, useEmailAuthProviderMarker, useGetFormByMarkerQuery } from '@/app/api';
+import { getApi, isError } from '@/app/api/api/api';
+import { useGetFormByMarkerQuery } from '@/app/api/api/RTKApi';
+import { useEmailAuthProviderMarker } from '@/app/api/hooks/useAuthProviderMarker';
 import { useAppSelector } from '@/app/store/hooks';
 import { useT } from '@/app/store/providers/DictProvider';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';

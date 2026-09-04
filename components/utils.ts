@@ -74,6 +74,14 @@ export const parseScheduleSlots = (raw: unknown): ScheduleSlotEntry[] =>
 /**
  * dictText — pulls a string value from the `static_content` dictionary by marker with a fallback.
  *
+ * Escape sequences typed by an editor are turned into real characters. A OneEntry `string` attribute
+ * is a single-line input, so an editor who wants a line break has no way to enter one and types the
+ * two characters `\` and `n` instead — which then render literally, as they did on the booking
+ * confirmation screen (`…confirmed.\nSee you soon!`). Doing this here rather than in the component
+ * fixes every marker at once; a per-component fix would leave the same trap set for the next one.
+ *
+ * Only whitespace escapes are decoded, and only in this direction — nothing here interprets markup.
+ *
  * @example const title = dictText(dict, 'leave_review_button', 'Leave a review');
  *
  * @param   {IAttributeValues | undefined} dict     - Dictionary (attribute set `static_content`).
@@ -87,8 +95,26 @@ export const dictText = (
   fallback: string
 ): string => {
   const raw = (dict?.[marker] as { value?: unknown } | undefined)?.value;
-  return typeof raw === 'string' ? raw : fallback;
+  return typeof raw === 'string' ? decodeWhitespaceEscapes(raw) : fallback;
 };
+
+/**
+ * decodeWhitespaceEscapes — turns the literal two-character sequences `\n`, `\r\n` and `\t` into the
+ * characters they name.
+ *
+ * A doubled backslash escapes itself, so `C:\\next` keeps its literal `\n` rather than gaining a line
+ * break — the alternation consumes the pair before the single-backslash branches can match it.
+ *
+ * @param   {string} value - Raw string as stored in the CMS.
+ * @returns The string with whitespace escape sequences decoded.
+ */
+const decodeWhitespaceEscapes = (value: string): string =>
+  value.replace(/\\\\|\\r\\n|\\n|\\t/g, match => {
+    // Matched first, so the pair is consumed before `\n` can see its second backslash.
+    if (match === '\\\\') return '\\';
+    if (match === '\\t') return '\t';
+    return '\n';
+  });
 
 /**
  * UsePrice — formats a number as a currency string (project locale + currency).

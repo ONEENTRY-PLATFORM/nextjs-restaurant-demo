@@ -66,6 +66,33 @@ describe('dictText', () => {
     expect(dictText(dict, 'count', 'fallback')).toBe('fallback');
   });
 
+  /*
+    A OneEntry `string` attribute is a single-line input, so an editor who wants a line break types
+    the two characters `\` and `n`. Left alone they render literally — that is what put
+    "confirmed.\nSee you soon!" on the booking confirmation screen.
+  */
+  it('decodes an editor-typed \\n into a real line break', () => {
+    const dict = { msg: { value: 'Confirmed.\\nSee you soon!' } } as never;
+    expect(dictText(dict, 'msg', 'fallback')).toBe('Confirmed.\nSee you soon!');
+  });
+
+  it('decodes \\r\\n and \\t as well', () => {
+    const dict = { msg: { value: 'a\\r\\nb\\tc' } } as never;
+    expect(dictText(dict, 'msg', 'fallback')).toBe('a\nb\tc');
+  });
+
+  it('leaves a doubled backslash alone instead of inventing a line break', () => {
+    const dict = { msg: { value: 'C:\\\\next' } } as never;
+    // `\\` is consumed as an escaped backslash, so the following `n` stays an ordinary letter.
+    expect(dictText(dict, 'msg', 'fallback')).toBe('C:\\next');
+    expect(dictText(dict, 'msg', 'fallback')).not.toContain('\n');
+  });
+
+  it('leaves text without escapes untouched', () => {
+    const dict = { msg: { value: 'Plain copy, no escapes.' } } as never;
+    expect(dictText(dict, 'msg', 'fallback')).toBe('Plain copy, no escapes.');
+  });
+
   it('returns fallback when dict is undefined', () => {
     expect(dictText(undefined, 'x', 'fallback')).toBe('fallback');
   });

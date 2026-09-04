@@ -5,8 +5,11 @@ import { getSiteUrl } from './getSiteUrl';
 /**
  * URL search-param keys that turn a catalog page into a non-canonical (filtered / searched / paginated)
  * view. Keep in sync with the `GridSearchParams` map consumed by `ProductsGridLayout`.
+ *
+ * Exported because `robots.ts` builds its catalog disallow patterns from this same list — the two have
+ * to name the same set of parameters or one of them silently stops matching what the other targets.
  */
-const NON_CANONICAL_PARAMS = [
+export const NON_CANONICAL_PARAMS = [
   'search',
   'page',
   'preferences',
@@ -45,6 +48,10 @@ export const isFilteredShopView = (searchParams: ShopSearchParams): boolean => {
  * shopCrawlMeta — robots/canonical overlay for catalog pages. Keeps the bare listing indexable while
  * de-indexing filtered/paginated variants (crawl-budget hygiene) and canonicalising every variant to the
  * clean path, so faceted query-string URLs neither fragment the index nor get crawled into compute.
+ *
+ * The `index: false` branch is defence in depth, not the primary mechanism: `robots.ts` blocks the same
+ * URLs outright, and a compliant crawler therefore never fetches them to read this `noindex`. It earns
+ * its place against the crawlers that ignore robots.txt — the ones that caused the compute spike.
  *
  * @param   {object}           options               - Overlay options.
  * @param   {ShopSearchParams} options.searchParams  - Resolved page `searchParams` map.

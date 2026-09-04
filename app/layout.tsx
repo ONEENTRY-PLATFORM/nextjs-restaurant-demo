@@ -25,6 +25,7 @@ const Header = dynamic(() => import('@/components/layout/header'), {
 
 import './globals.css';
 
+import { getSiteUrl } from '@/app/utils/getSiteUrl';
 import ResponsiveToastContainer from '@/components/shared/ResponsiveToastContainer';
 
 const lato = Lato({
@@ -49,9 +50,20 @@ const latoItalic = Lato({
   variable: '--font-lato-italic',
 });
 
-/** Static metadata for the home page. */
+/**
+ * Static metadata for the home page.
+ *
+ * `metadataBase` is what makes every relative URL in child metadata resolve
+ * against the real origin; without it Next resolves them against
+ * `localhost:3000`. `title.template` gives child pages their brand suffix, so a
+ * CMS title like "Soups" reads as a page title rather than a bare word.
+ */
 export const metadata: Metadata = {
-  title: 'Restaurant — Excellent taste in every bite',
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: 'Restaurant — Excellent taste in every bite',
+    template: '%s — Restaurant',
+  },
   description: 'Restaurant ordering platform built with Next.js + OneEntry CMS',
   openGraph: {
     type: 'website',

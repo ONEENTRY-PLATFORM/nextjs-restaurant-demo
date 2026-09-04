@@ -66,7 +66,31 @@ describe('generatePageMetadata — robots / isVisible', () => {
 });
 
 describe('generatePageMetadata — canonical URL', () => {
-  it('falls back to localhost:3000 when NEXT_PUBLIC_SITE_URL is not set', () => {
+  /*
+    Contract changed on purpose (2026-09-04). The origin now falls back through
+    `NEXT_PUBLIC_VERCEL_URL` before localhost, because the deployment sets that
+    variable and never `NEXT_PUBLIC_SITE_URL` — so the old "straight to
+    localhost" behaviour is exactly what put `http://localhost:3000` into all
+    140 URLs of the live sitemap and into the `Sitemap:` line of robots.txt.
+  */
+  it('falls back to NEXT_PUBLIC_VERCEL_URL when NEXT_PUBLIC_SITE_URL is not set', () => {
+    process.env.NEXT_PUBLIC_VERCEL_URL = 'https://deployed.example.com/';
+    const md = generatePageMetadata({
+      handle: '',
+      title: 't',
+      description: 'd',
+      isVisible: true,
+      lang: 'en',
+      baseUrl: '',
+    });
+    // The trailing slash of the env value is stripped by the helper.
+    expect(md.alternates?.canonical).toBe('https://deployed.example.com/');
+  });
+
+  it('falls back to localhost:3000 only when no origin variable is set at all', () => {
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    delete process.env.VERCEL_URL;
     const md = generatePageMetadata({
       handle: '',
       title: 't',

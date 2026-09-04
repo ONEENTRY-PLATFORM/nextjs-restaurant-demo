@@ -93,9 +93,33 @@ describe('shopCrawlMeta', () => {
     expect(filtered.alternates?.canonical).toBe('https://example.com/shop/category/pizza');
   });
 
-  it('falls back to localhost when NEXT_PUBLIC_SITE_URL is unset', () => {
+  /*
+    The origin falls back through `NEXT_PUBLIC_VERCEL_URL` before localhost: the
+    deployment sets that variable and never `NEXT_PUBLIC_SITE_URL`, so going
+    straight to localhost is what shipped `http://localhost:3000` in the live
+    sitemap and robots.txt.
+  */
+  it('falls back to NEXT_PUBLIC_VERCEL_URL when NEXT_PUBLIC_SITE_URL is unset', () => {
     delete process.env.NEXT_PUBLIC_SITE_URL;
+    process.env.NEXT_PUBLIC_VERCEL_URL = 'https://deployed.example.com/';
+    const meta = shopCrawlMeta({ searchParams: {}, canonicalPath: '/shop' });
+    expect(meta.alternates?.canonical).toBe('https://deployed.example.com/shop');
+  });
+
+  it('falls back to localhost only when no origin variable is set at all', () => {
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    delete process.env.VERCEL_URL;
     const meta = shopCrawlMeta({ searchParams: {}, canonicalPath: '/shop' });
     expect(meta.alternates?.canonical).toBe('http://localhost:3000/shop');
+  });
+
+  it("adds the scheme to Vercel's bare-host variable", () => {
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = 'shop.example.com';
+    const meta = shopCrawlMeta({ searchParams: {}, canonicalPath: '/shop' });
+    expect(meta.alternates?.canonical).toBe('https://shop.example.com/shop');
   });
 });

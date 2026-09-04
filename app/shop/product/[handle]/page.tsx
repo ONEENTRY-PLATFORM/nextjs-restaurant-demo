@@ -4,6 +4,7 @@ import type { IProductsEntity } from 'oneentry/types';
 import { type JSX, Suspense } from 'react';
 
 import { getOutOfStockMarker, getProductById, getProductImageUrl } from '@/app/api';
+import { getSiteUrl } from '@/app/utils/getSiteUrl';
 import { serializeJsonLd } from '@/app/utils/serializeJsonLd';
 import TrackProductView from '@/components/analytics/TrackProductView';
 import ProductSingle from '@/components/layout/product';
@@ -47,16 +48,29 @@ const ProductPageLayout = async ({
     name: localizeInfos.title,
     description: unwrapRichText(attributeValues.description?.value)?.plainValue,
     image: imageUrl || undefined,
-    offers: {
-      '@type': 'AggregateOffer',
-      availability:
-        statusIdentifier === outOfStockMarker
-          ? 'https://schema.org/OutOfStock'
-          : 'https://schema.org/InStock',
-      priceCurrency: attributeValues.currency?.value,
-      highPrice: additional.prices?.max,
-      lowPrice: additional.prices?.min,
-    },
+    /*
+      Emitted only when the CMS actually has prices. Passing them through
+      undefined left an `AggregateOffer` with neither `lowPrice` nor
+      `highPrice` — an offer that claims to exist while naming no price, which
+      rich results reject and which tells a crawler less than no offer at all.
+    */
+    ...(typeof additional.prices?.min === 'number' && typeof additional.prices?.max === 'number'
+      ? {
+          offers: {
+            '@type': 'AggregateOffer',
+            /** Rich results want the offer to name the page it is sold on. */
+            url: `${getSiteUrl()}/shop/product/${handle}`,
+            availability:
+              statusIdentifier === outOfStockMarker
+                ? 'https://schema.org/OutOfStock'
+                : 'https://schema.org/InStock',
+            itemCondition: 'https://schema.org/NewCondition',
+            priceCurrency: attributeValues.currency?.value,
+            highPrice: additional.prices.max,
+            lowPrice: additional.prices.min,
+          },
+        }
+      : {}),
   };
 
   return (

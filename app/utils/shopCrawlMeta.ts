@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { getSiteUrl } from './getSiteUrl';
+
 /**
  * URL search-param keys that turn a catalog page into a non-canonical (filtered / searched / paginated)
  * view. Keep in sync with the `GridSearchParams` map consumed by `ProductsGridLayout`.
@@ -59,7 +61,7 @@ export const shopCrawlMeta = ({
   canonicalPath: string;
   isVisible?: boolean;
 }): Pick<Metadata, 'robots' | 'alternates'> => {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const base = getSiteUrl();
   const index = isVisible && !isFilteredShopView(searchParams);
 
   return {

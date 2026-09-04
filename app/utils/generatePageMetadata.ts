@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { getSiteUrl } from './getSiteUrl';
+
 /**
  * PageMetadataOptions — options for generating page metadata.
  *
@@ -53,7 +55,7 @@ export const generatePageMetadata = ({
   imageAlt,
   baseUrl = '',
 }: PageMetadataOptions): Metadata => {
-  const canonicalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${baseUrl && baseUrl + '/'}${handle && '/' + handle}`;
+  const canonicalUrl = `${getSiteUrl()}/${baseUrl && baseUrl + '/'}${handle && '/' + handle}`;
 
   return {
     title,

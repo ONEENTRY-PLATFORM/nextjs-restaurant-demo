@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 import { getChildPagesByParentUrl, getProducts } from '@/app/api';
 import { PAGES } from '@/app/utils/constants';
+import { getSiteUrl } from '@/app/utils/getSiteUrl';
 
 export const dynamic = 'force-static';
 export const revalidate = 3600;
@@ -20,7 +21,7 @@ const STATIC_PATHS = ['', '/shop', '/service', '/promotions', '/support', '/rest
  * @returns Promise resolving to the sitemap entries.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const base = getSiteUrl();
 
   const entries: MetadataRoute.Sitemap = STATIC_PATHS.map(path => ({
     url: `${base}${path}`,

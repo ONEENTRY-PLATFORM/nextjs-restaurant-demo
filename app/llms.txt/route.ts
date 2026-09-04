@@ -2,6 +2,7 @@ import type { IPagesEntity } from 'oneentry/types';
 
 import { getChildPagesByParentUrl, getPageByUrl, getProducts } from '@/app/api';
 import { PAGES } from '@/app/utils/constants';
+import { getSiteUrl } from '@/app/utils/getSiteUrl';
 
 // ISR, one hour, as a literal — segment config cannot be computed.
 // Neither `force-static` nor `force-dynamic`: the former without `revalidate`
@@ -18,7 +19,7 @@ const SITE_NAME = 'Restaurant';
 // Blockquote fallback, used when the home page carries no description.
 const FALLBACK_SUMMARY = 'A restaurant chain with online ordering, table reservation and delivery.';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const SITE_URL = getSiteUrl();
 
 /**
  * describe — builds a one-line description of a CMS page for an `llms.txt` item.

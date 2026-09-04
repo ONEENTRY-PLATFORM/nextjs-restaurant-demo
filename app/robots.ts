@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 
+import { getSiteUrl } from '@/app/utils/getSiteUrl';
+
 /**
  * robots — site crawler directives.
  *
@@ -11,7 +13,7 @@ import type { MetadataRoute } from 'next';
  * @returns The `robots.txt` ruleset for the site.
  */
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const base = getSiteUrl();
 
   return {
     rules: [

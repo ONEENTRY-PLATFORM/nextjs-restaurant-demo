@@ -36,8 +36,24 @@ const MobileMenuAnimations = ({
       paused: true,
     });
 
+    /*
+      Resolve the animated nodes from this component's own subtree. `#modalBody`
+      is not unique in the document — nine components render that id (cart,
+      profile popups, reservation, support, the generic modal, the date picker),
+      so the bare `'#modalBg, #modalBody'` selectors used here matched whichever
+      copy came first in document order: with any of those open, the mobile menu
+      animated another component's nodes and left its own untouched. Every other
+      animation wrapper in this codebase (`ModalAnimations`, `DrawerAnimations`,
+      `DateTimePickerSheet`) already resolves through its wrapper ref.
+
+      `useGSAP`'s `scope` option cannot express this: the menu body *is* the
+      wrapper element, and a scope only matches its descendants.
+    */
+    const modalBody = ref.current as HTMLDivElement | null;
+    const modalBg = modalBody?.querySelector('#modalBg') ?? null;
+
     if (transition === 'close') {
-      tl.to('#modalBg, #modalBody', {
+      tl.to([modalBg, modalBody], {
         xPercent: -150,
         autoAlpha: 0,
         onComplete: () => {
@@ -46,19 +62,19 @@ const MobileMenuAnimations = ({
         },
       }).play();
     } else if (open) {
-      tl.set('#modalBg, #modalBody', {
+      tl.set([modalBg, modalBody], {
         xPercent: -150,
         autoAlpha: 0,
       })
-        .to('#modalBg', {
+        .to(modalBg, {
           xPercent: 0,
           autoAlpha: 1,
         })
-        .to('#modalBody', {
+        .to(modalBody, {
           xPercent: 0,
           autoAlpha: 1,
         })
-        .to('#modalBg', {
+        .to(modalBg, {
           backdropFilter: 'blur(10px)',
         })
         .play();

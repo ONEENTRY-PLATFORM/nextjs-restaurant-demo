@@ -16,8 +16,11 @@ test.describe('SEO infrastructure', () => {
     expect(body).toMatch(/Disallow/i);
     expect(body).toContain('/profile');
     expect(body).toContain('/cart');
-    // Faceted/paginated catalog blocking — the `?`-carrying `/shop` rules from robots.ts.
-    expect(body).toContain('/shop?');
+    // Faceted/paginated catalog blocking. `app/robots.ts` no longer blocks a bare `/shop?`: that
+    // pattern also swallowed `/shop/product/<id>?utm_source=…`. It emits one rule per non-canonical
+    // parameter instead, so assert on that shape.
+    expect(body).toContain('/shop*?*search=');
+    expect(body).toContain('/shop*?*page=');
     // The ruleset points bots at the sitemap.
     expect(body).toMatch(/Sitemap:\s*\S+\/sitemap\.xml/i);
   });

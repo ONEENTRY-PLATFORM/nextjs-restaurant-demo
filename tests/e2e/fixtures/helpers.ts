@@ -82,6 +82,39 @@ export const openFirstProduct = async (page: Page): Promise<void> => {
 };
 
 /**
+ * Waits for redux-persist to write a slice to `localStorage`.
+ *
+ * Every "click, then navigate" flow needs this. The UI reflects the in-memory store, which runs
+ * ahead of `localStorage`; a `goto` right after reboots the app, rehydrates from a key that has
+ * not been written yet, and lands on an empty cart or an empty favourites page. Against
+ * `next dev` the navigation was slow enough to hide it, which is why these specs passed there
+ * and failed against a production build.
+ *
+ * `marker` matches the RAW stored text. The slice payload is a JSON string INSIDE the persisted
+ * JSON, so its quotes arrive escaped, and a marker like `"id"` never fires. An empty list
+ * persists as `"[]"`, so the opening `[{` is the thing that says an item is really in there.
+ * @param   {Page}           page   - Playwright page.
+ * @param   {string}         key    - `localStorage` key, e.g. `persist:cart-slice`.
+ * @param   {string}         marker - Substring the raw stored value must contain.
+ * @returns {Promise<void>}         Resolves once the slice holds the marker.
+ */
+export const waitForPersisted = async (page: Page, key: string, marker: string): Promise<void> => {
+  await expect
+    .poll(
+      () =>
+        page.evaluate(storageKey => {
+          try {
+            return window.localStorage.getItem(storageKey) ?? '';
+          } catch {
+            return '';
+          }
+        }, key),
+      { timeout: 10_000 }
+    )
+    .toContain(marker);
+};
+
+/**
  * addFirstProductToCart — adds the first catalog card to the Redux cart by clicking its in-card add button.
  *
  * @param   {Page}   page - Playwright page.
@@ -94,7 +127,24 @@ export const addFirstProductToCart = async (page: Page): Promise<Locator> => {
   // whose template is `Add <title> to cart`.
   const addBtn = card.locator('button[aria-label*="to cart"]').first();
   await expect(addBtn).toBeVisible();
-  await addBtn.click();
+
+  // The click is retried until the header badge actually counts the item.
+  //
+  // A single `click()` is enough against `next dev`, which compiles the route per request and so
+  // has always finished hydrating by the time Playwright acts. Against a production build the
+  // HTML arrives from the ISR cache at once and the click can land before the handler is
+  // attached — swallowed, with Playwright reporting success and the cart staying empty. That is
+  // why these specs passed in dev and failed in prod, on the assertion after this one rather
+  // than here.
+  const badge = page.getByRole('link', { name: /cart/i }).first().locator('p');
+  await expect(async () => {
+    await addBtn.click({ timeout: 4000 }).catch(() => {});
+    await expect(badge).toBeVisible({ timeout: 3000 });
+  }).toPass({ timeout: 20_000 });
+
+  // And wait for redux-persist to write it — see `waitForPersisted`.
+  await waitForPersisted(page, 'persist:cart-slice', 'productsData":"[{');
+
   return card;
 };
 
@@ -305,6 +355,24 @@ export const openOrderStep = async (page: Page): Promise<void> => {
 
   await expect(page.locator('.step-order-row').first()).toBeVisible({ timeout: 20_000 });
 };
+
+/**
+ * deliveryAddressInput — the address field of the checkout payment step.
+ *
+ * `page.getByRole('textbox').first()` is NOT a substitute: the page also carries the cart's quantity
+ * boxes and the promo-code field, and whichever of them mounts first wins — the address then stays
+ * empty and APPLY never enables (`addressRequired && !address.trim()` in StepPayment). Anchor on the
+ * row that owns the "Change address" button instead; that pairing is unique to AddressRow.
+ *
+ * @param   {Page}    page - Playwright page (payment step already open).
+ * @returns {Locator}      Locator for the address `<input>`.
+ */
+export const deliveryAddressInput = (page: Page): Locator =>
+  page
+    .locator('.step-payment-row')
+    .filter({ has: page.getByRole('button', { name: /change address/i }) })
+    .locator('input[type="text"]')
+    .first();
 
 /**
  * openPaymentStep — drives an already signed-in user through `order` to the `payment` step.

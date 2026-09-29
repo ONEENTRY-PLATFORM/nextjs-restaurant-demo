@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
-import { gotoAndReady, isMobile } from './fixtures/helpers';
+import { gotoAndReady, isMobile, waitForPersisted } from './fixtures/helpers';
 
 /**
  * openFavoritesPopup — clicks the Favorites trigger (desktop header on md+, bottom-menu on mobile)
@@ -136,6 +136,9 @@ test.describe('Favorites flow', () => {
 
     await card.locator('button[aria-label="Add to favorites"]').click();
     await expect(card.locator('button[aria-label="Remove from favorites"]')).toBeVisible();
+    // The heart flips from the in-memory store; the navigation below reboots the app and
+    // rehydrates from `localStorage` — see `waitForPersisted`.
+    await waitForPersisted(page, 'persist:favorites-slice', '[{');
 
     await gotoAndReady(page, '/profile/favorites');
 

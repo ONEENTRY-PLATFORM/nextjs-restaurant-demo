@@ -257,14 +257,22 @@ export const RTKApi = createApi({
       providesTags: ['User'],
       keepUnusedDataFor: 60,
     }),
-    /** getBonusHistory — current user's bonus transaction history (requires auth). */
+    /**
+     * getBonusHistory — current user's bonus transaction history (requires auth).
+     *
+     * The endpoint answers the container `{ items, total }`, not a bare array —
+     * an account with no operations gives `{"items":[],"total":0}`. The SDK
+     * declared an array until 1.0.168, and this query handed that object to the
+     * component, where `txns.map` threw. The items are unwrapped here so the
+     * component keeps working with a list.
+     */
     getBonusHistory: build.query<IBonusTransactionEntity[], void>({
       queryFn: async () => {
         const result = await getApi().Discounts.getBonusHistory();
         if (isError(result)) {
           return { error: result };
         }
-        return { data: result as IBonusTransactionEntity[] };
+        return { data: result.items };
       },
       providesTags: ['User'],
       keepUnusedDataFor: 60,

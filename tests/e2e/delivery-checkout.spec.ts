@@ -1,6 +1,7 @@
 import { expect, type Page, test } from '@playwright/test';
 
 import {
+  deliveryAddressInput,
   getTestUserCreds,
   gotoAndReady,
   isMobile,
@@ -124,7 +125,7 @@ test.describe.serial('Delivery checkout — payment step', () => {
     await page.locator('label[for="pay-cash"]').click();
 
     // Fill the required delivery address if the profile did not pre-fill it.
-    const address = page.getByRole('textbox').first();
+    const address = deliveryAddressInput(page);
     await expect(address).toBeVisible({ timeout: 10_000 });
     if (!(await address.inputValue())) {
       await address.fill('E2E Test Street 1');

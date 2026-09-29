@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { FormDataType, IOrderProducts, IProductsEntity } from 'oneentry/types';
+import type { FormDataPostType, IOrderProducts, IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
@@ -58,7 +58,9 @@ const ReviewableItem = ({
       return;
     }
     setState(s => ({ ...s, loading: true, error: '' }));
-    const formData: FormDataType[] = [
+    // Submission shapes, not the ones a read returns: a `text` field takes a
+    // one-element array with exactly one representation and no editor params.
+    const formData: FormDataPostType[] = [
       { marker: RATING_MARKER, type: 'integer', value: state.rating },
       {
         marker: TEXT_MARKER,

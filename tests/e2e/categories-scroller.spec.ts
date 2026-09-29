@@ -101,7 +101,11 @@ test.describe('CategoriesScroller (preferences chips)', () => {
 
     await page.waitForLoadState('networkidle').catch(() => undefined);
 
-    const grid = page.locator('.menu_items');
+    // `.menu_items` matches twice mid-transition — the aria-hidden skeleton from
+    // `ProductsGridLoader` and the real grid that replaces it. A bare `page.locator('.menu_items')`
+    // is a strict locator, so `waitFor` threw "strict mode violation" the moment both were mounted,
+    // the race below rejected, and the test read that as "nothing rendered". Take the visible one.
+    const grid = page.locator('.menu_items').filter({ visible: true }).first();
     const notFound = page.getByText(/no products|not found|nothing found/i).first();
 
     const ok = await Promise.race([

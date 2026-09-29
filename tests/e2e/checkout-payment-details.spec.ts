@@ -1,6 +1,7 @@
 import { expect, type Page, test } from '@playwright/test';
 
 import {
+  deliveryAddressInput,
   getTestUserCreds,
   gotoAndReady,
   openPaymentStep,
@@ -62,7 +63,7 @@ test.describe.serial('Delivery checkout — payment step details', () => {
     await expect(anyLabel.or(emptyState)).toBeVisible({ timeout: 20_000 });
 
     // Satisfy the required address so APPLY's only remaining blocker is the empty alt phone.
-    const address = page.getByRole('textbox').first();
+    const address = deliveryAddressInput(page);
     if ((await address.isVisible().catch(() => false)) && !(await address.inputValue())) {
       await address.fill('E2E Test Street 1');
     }

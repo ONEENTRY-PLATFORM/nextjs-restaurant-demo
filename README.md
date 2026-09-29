@@ -167,7 +167,7 @@ Per-form **field markers** (e.g. `email`, `password`, `delivery_address`, `comme
 
 ## Run Locally
 
-> **Node version:** this repo pins Node to `>=20.9.0 <20.19.0 || >=22.0.0 <22.15.0` (see `engines` in [package.json](package.json)). Newer Node breaks Playwright 1.61 — stay within the supported range.
+> **Node version:** this repo pins Node to `^22.22.3 || ^24.15.0 || >=26` (see `engines` in [package.json](package.json)) — the range required by the build toolchain (`cssnano`). Older Node fails `npm ci` on an engine check.
 
 Clone the project:
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAuthFormData, IUserEntity } from 'oneentry/types';
+import type { IUserEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -106,7 +106,7 @@ const AddressSection = ({
         // notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
         const res = await getApi().Users.updateUser({
           formIdentifier: user.formIdentifier,
-          formData: formData as unknown as IAuthFormData[],
+          formData,
           ...(userHasPasswordAuth(user)
             ? {
                 notificationData: {

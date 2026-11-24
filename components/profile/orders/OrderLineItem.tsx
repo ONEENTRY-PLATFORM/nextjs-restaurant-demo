@@ -4,6 +4,7 @@ import type { IOrderProducts, IProductsEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 
 import { getProductImageUrl } from '@/app/api/hooks/useAttributesData';
+import { orderProductPreview, orderProductTitle } from '@/components/profile/orders/orderUtils';
 import { UsePrice } from '@/components/utils';
 
 /**
@@ -28,16 +29,17 @@ const OrderLineItem = ({
   currency?: string;
 }): JSX.Element => {
   const fallbackFromEntity = getProductImageUrl(fullProduct?.attributeValues);
-  const previewSrc = product.previewImage?.previewLink ?? fallbackFromEntity ?? null;
+  const previewSrc = orderProductPreview(product) ?? fallbackFromEntity ?? null;
+  const title = orderProductTitle(product, fullProduct);
   const href = '/shop/product/' + product.id;
   return (
     <div className={'order-body-row' + (first ? '' : ' mt-5')}>
       <div className="flex items-center justify-between gap-3.75">
-        <Link href={href} aria-label={product.title} className="shrink-0">
+        <Link href={href} aria-label={title} className="shrink-0">
           {previewSrc ? (
             <Image
               src={previewSrc}
-              alt={product.title}
+              alt={title}
               width={69}
               height={69}
               className="size-17.25 object-cover"
@@ -51,7 +53,7 @@ const OrderLineItem = ({
             href={href}
             className="text-sm font-normal text-white transition-colors duration-200 hover:text-brand"
           >
-            {product.title}
+            {title}
           </Link>
           <div className="flex items-center gap-2.5">
             <p className="text-xl font-bold text-brand">

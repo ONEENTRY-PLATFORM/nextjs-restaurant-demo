@@ -93,25 +93,30 @@ export const openFirstProduct = async (page: Page): Promise<void> => {
  * `marker` matches the RAW stored text. The slice payload is a JSON string INSIDE the persisted
  * JSON, so its quotes arrive escaped, and a marker like `"id"` never fires. An empty list
  * persists as `"[]"`, so the opening `[{` is the thing that says an item is really in there.
+ * A slice that stores bare ids (favourites: `"[3568]"`) has no `[{`; pass a RegExp such as
+ * `/\[\d/` for it.
  * @param   {Page}           page   - Playwright page.
  * @param   {string}         key    - `localStorage` key, e.g. `persist:cart-slice`.
- * @param   {string}         marker - Substring the raw stored value must contain.
+ * @param   {string | RegExp} marker - Substring (or pattern) the raw stored value must contain.
  * @returns {Promise<void>}         Resolves once the slice holds the marker.
  */
-export const waitForPersisted = async (page: Page, key: string, marker: string): Promise<void> => {
-  await expect
-    .poll(
-      () =>
-        page.evaluate(storageKey => {
-          try {
-            return window.localStorage.getItem(storageKey) ?? '';
-          } catch {
-            return '';
-          }
-        }, key),
-      { timeout: 10_000 }
-    )
-    .toContain(marker);
+export const waitForPersisted = async (
+  page: Page,
+  key: string,
+  marker: string | RegExp
+): Promise<void> => {
+  const stored = expect.poll(
+    () =>
+      page.evaluate(storageKey => {
+        try {
+          return window.localStorage.getItem(storageKey) ?? '';
+        } catch {
+          return '';
+        }
+      }, key),
+    { timeout: 10_000 }
+  );
+  await (typeof marker === 'string' ? stored.toContain(marker) : stored.toMatch(marker));
 };
 
 /**
@@ -136,7 +141,14 @@ export const addFirstProductToCart = async (page: Page): Promise<Locator> => {
   // attached — swallowed, with Playwright reporting success and the cart staying empty. That is
   // why these specs passed in dev and failed in prod, on the assertion after this one rather
   // than here.
-  const badge = page.getByRole('link', { name: /cart/i }).first().locator('p');
+  // Desktop counts on the header cart link; mobile hides it and counts on the bottom menu's
+  // `CenterCartButton` (a button, `aria-label="Open cart"`). Take whichever is visible.
+  const badge = page
+    .getByRole('link', { name: /cart/i })
+    .or(page.getByRole('button', { name: /open cart/i }))
+    .filter({ visible: true })
+    .first()
+    .locator('p');
   await expect(async () => {
     await addBtn.click({ timeout: 4000 }).catch(() => {});
     await expect(badge).toBeVisible({ timeout: 3000 });

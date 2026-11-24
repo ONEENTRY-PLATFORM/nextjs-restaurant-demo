@@ -132,7 +132,7 @@ const OrderCard = ({
 
   const repeatOrder = async (): Promise<void> => {
     const inCartIds = new Set(cartItems.map(c => c.id));
-    const skipped: string[] = [];
+    const skipped: number[] = [];
     const addedItems: { id: number; quantity: number; selected: boolean }[] = cartItems.map(c => ({
       id: c.id,
       quantity: c.quantity,
@@ -142,7 +142,7 @@ const OrderCard = ({
     for (const p of order.products) {
       const fullProduct = productsById.get(p.id);
       if (fullProduct?.statusIdentifier === outOfStockMarker) {
-        skipped.push(p.title);
+        skipped.push(p.id);
         continue;
       }
       const qty = Number(p.quantity) || 1;

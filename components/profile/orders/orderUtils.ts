@@ -1,4 +1,4 @@
-import type { IOrderByMarkerEntity } from 'oneentry/types';
+import type { IOrderByMarkerEntity, IOrderProducts, IProductsEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID, ORDER_HISTORY_STATUSES } from '@/app/utils/constants';
 
@@ -66,3 +66,44 @@ export const formatOrderNumber = (o: IOrderByMarkerEntity): string => {
   if (fromSdk) return fromSdk;
   return String(o.id);
 };
+
+/**
+ * orderProductPreview — preview image URL of an order line item.
+ *
+ * `previewImage` arrives as one picture, an array of pictures (`[]` when the product has no
+ * preview) or `null`; the first picture of an array is used.
+ *
+ * The SDK types `previewLink` as a string, but the API sends an object of named previews —
+ * `{ preview: ['data:image/webp;base64,…', 'https://…/x.preview.preview.jpeg'] }` — so the first
+ * `http(s)` URL inside it is taken. Anything else yields `undefined`, and the caller falls back
+ * to the catalogue image.
+ *
+ * @param   {IOrderProducts} p - Order line item.
+ * @returns Preview URL, or `undefined` when the line item carries none.
+ */
+export const orderProductPreview = (p: IOrderProducts): string | undefined => {
+  const img = Array.isArray(p.previewImage) ? p.previewImage[0] : p.previewImage;
+  const link: unknown = img?.previewLink;
+  if (typeof link === 'string') return link || undefined;
+  if (link && typeof link === 'object') {
+    for (const variants of Object.values(link)) {
+      const list: unknown[] = Array.isArray(variants) ? variants : [variants];
+      const url = list.find((v): v is string => typeof v === 'string' && /^https?:\/\//.test(v));
+      if (url) return url;
+    }
+  }
+  return undefined;
+};
+
+/**
+ * orderProductTitle — display title of an order line item.
+ *
+ * `title` is `null` when the product has no translation in the order's language; then the
+ * full product's title is used, and an empty string as the last resort.
+ *
+ * @param   {IOrderProducts}              p             - Order line item.
+ * @param   {IProductsEntity | undefined} [fullProduct] - Full product entity, when loaded.
+ * @returns Title to show.
+ */
+export const orderProductTitle = (p: IOrderProducts, fullProduct?: IProductsEntity): string =>
+  p.title ?? fullProduct?.localizeInfos?.title ?? '';

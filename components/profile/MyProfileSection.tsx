@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { IAuthFormData, IFormAttribute, IUserEntity } from 'oneentry/types';
+import type { IFormAttribute, IUserEntity } from 'oneentry/types';
 import type { JSX } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -157,7 +157,7 @@ const MyProfileSection = ({
       // no notification record server-side and PUT /me 500s on it ("reading 'en_US'" of null).
       const res = await getApi().Users.updateUser({
         formIdentifier: user.formIdentifier,
-        formData: formData as unknown as IAuthFormData[],
+        formData,
         ...(hasPassword ? { authData: [{ marker: 'password', value: password }] } : {}),
         ...(passwordAuth
           ? {

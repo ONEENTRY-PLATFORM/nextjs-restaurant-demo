@@ -28,6 +28,13 @@ import ProductCard from '@/components/layout/cart/components/ProductCard';
 import { prefetchPopup } from '@/components/layout/popupRegistry';
 import CartListSkeleton from '@/components/shared/skeletons/CartListSkeleton';
 
+/** Product fields of a `notification` WS event that the cart reads (price / status pushes). */
+type WsProductPayload = {
+  id?: number;
+  attributes?: Record<string, { value?: unknown } | undefined>;
+  status?: { identifier?: string };
+};
+
 /**
  * CartPage — list of products in the cart + APPLY button (proceed to checkout).
  *
@@ -129,10 +136,13 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
         const ws = getApi().WS.connect();
         if (ws) {
           ws.on('notification', async res => {
-            if (res?.product) {
+            // `product` is not part of the SDK's typed payload (other fields are `unknown`);
+            // narrow it to the fields read below.
+            const wsProduct = res?.product as WsProductPayload | null | undefined;
+            if (wsProduct && typeof wsProduct === 'object') {
               const product = {
-                ...res.product,
-                attributeValues: res.product?.attributes,
+                ...wsProduct,
+                attributeValues: wsProduct.attributes,
               };
               const index = data.findIndex((p: IProductsEntity) => p.id === product.id);
               // `price` is a float attribute (fractional values like 6.5) and arrives as
@@ -153,7 +163,7 @@ const CartPage = ({ deliveryData }: { deliveryData: IProductsEntity }): JSX.Elem
                   newProducts[index] = {
                     ...prevProduct,
                     price: Number.isFinite(newPrice) ? newPrice : prevProduct.price,
-                    statusIdentifier: res?.product?.status?.identifier,
+                    statusIdentifier: wsProduct.status?.identifier ?? prevProduct.statusIdentifier,
                   };
                 }
                 return newProducts;

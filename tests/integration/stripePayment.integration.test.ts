@@ -12,8 +12,9 @@
  *      request origin.
  *   2. A whole-dollar order opens a real Stripe TEST checkout session (`checkout.stripe.com/...`) —
  *      the entry point a buyer reaches to pay with the `4242…` test card.
- *   3. A SENTINEL for the known OneEntry server bug: `createSession` 500s on a fractional total
- *      (see .claude/rules/ONEENTRY-ADMIN-TODO.md C.6.1). When the server is fixed this test flips.
+ *   3. A fractional total (e.g. `$16.50`) opens a Stripe session too. It used to 500 with
+ *      `invalid input syntax for type integer` (ADMIN-TODO C.6.1); fixed server-side by 2026-11-23,
+ *      kept as a regression guard.
  *
  * NOTE: each run creates a couple of test-mode orders in OneEntry (one whole-dollar, one fractional)
  * and one Stripe test session. It is intentionally excluded from the default `npm test` / `prebuild`
@@ -97,7 +98,7 @@ const getInStockProducts = async (): Promise<ProductLike[]> => {
  * pickProductByTotalParity — finds a product whose price makes `price + delivery` whole or fractional.
  *
  * Delivery is a whole-dollar line item, so an integer-priced product yields a whole order total
- * (dodges the C.6.1 fractional-amount bug) and a `.5`-priced product yields a fractional total.
+ * and a `.5`-priced product yields a fractional total — the flow is checked for both.
  *
  * @param   {boolean} wantInteger - `true` for a whole-dollar-priced product, `false` for fractional.
  * @returns Promise resolving to the chosen product, or `undefined` when none match.
@@ -199,12 +200,12 @@ describeIf('Stripe payment flow (OneEntry integration)', () => {
     expect(session.paymentUrl).toMatch(/^https:\/\/checkout\.stripe\.com\//);
   });
 
-  it('SENTINEL: createSession 500s on a fractional total (known OneEntry bug — ADMIN-TODO C.6.1)', async () => {
+  it('a fractional total opens a Stripe checkout session (regression: ADMIN-TODO C.6.1)', async () => {
     const product = await pickProductByTotalParity(false);
     if (!product) {
       // No fractional-priced product in the sample — nothing to assert (data-dependent).
       // eslint-disable-next-line no-console
-      console.warn('No fractional-priced product found; skipping the fractional-amount sentinel.');
+      console.warn('No fractional-priced product found; skipping the fractional-amount check.');
       return;
     }
     const products = [
@@ -224,12 +225,9 @@ describeIf('Stripe payment flow (OneEntry integration)', () => {
       'session'
     )) as unknown as SessionResult;
 
-    // Known server bug: the session amount is persisted to an integer (dollars) column, so any
-    // fractional total fails the INSERT with `invalid input syntax for type integer`. When OneEntry
-    // stores the amount in cents / numeric, createSession will succeed and these assertions flip —
-    // that is the signal to re-enable fractional Stripe checkout and close ADMIN-TODO C.6.1.
-    expect(isErr(session)).toBe(true);
-    expect(session.statusCode).toBe(500);
-    expect(String(session.message)).toMatch(/integer/i);
+    // Regression guard: the session amount used to be persisted to an integer column, so any
+    // fractional total failed with `500 invalid input syntax for type integer`.
+    expect(isErr(session)).toBe(false);
+    expect(session.paymentUrl).toMatch(/^https:\/\/checkout\.stripe\.com\//);
   });
 });

@@ -18,6 +18,7 @@ import {
   RATING_MARKER,
   TEXT_MARKER,
 } from '@/components/profile/orderReviewUtils';
+import { orderProductPreview, orderProductTitle } from '@/components/profile/orders/orderUtils';
 import StarRating from '@/components/reviews/StarRating';
 
 /**
@@ -45,7 +46,8 @@ const ReviewableItem = ({
   const [state, setState] = useState<ItemState>(() => initialItemState(initialReview));
 
   const fallbackFromEntity = getProductImageUrl(fullProduct?.attributeValues);
-  const previewSrc = product.previewImage?.previewLink ?? fallbackFromEntity ?? null;
+  const previewSrc = orderProductPreview(product) ?? fallbackFromEntity ?? null;
+  const title = orderProductTitle(product, fullProduct);
 
   const onApply = async () => {
     if (state.loading) return;
@@ -135,12 +137,12 @@ const ReviewableItem = ({
 
   return (
     <div className="flex flex-col gap-3.75">
-      <p className="text-sm leading-4.25 font-normal text-paper">{product.title}</p>
+      <p className="text-sm leading-4.25 font-normal text-paper">{title}</p>
       <div className="flex gap-3.75">
         {previewSrc ? (
           <Image
             src={previewSrc}
-            alt={product.title}
+            alt={title}
             width={69}
             height={69}
             className="size-17.25 shrink-0 rounded-card object-cover"

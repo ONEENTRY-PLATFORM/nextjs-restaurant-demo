@@ -138,7 +138,8 @@ test.describe('Favorites flow', () => {
     await expect(card.locator('button[aria-label="Remove from favorites"]')).toBeVisible();
     // The heart flips from the in-memory store; the navigation below reboots the app and
     // rehydrates from `localStorage` — see `waitForPersisted`.
-    await waitForPersisted(page, 'persist:favorites-slice', '[{');
+    // Favourites persist bare ids (`"[3568]"`), not objects — wait for a digit after `[`.
+    await waitForPersisted(page, 'persist:favorites-slice', /\[\d/);
 
     await gotoAndReady(page, '/profile/favorites');
 

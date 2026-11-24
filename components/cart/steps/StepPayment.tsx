@@ -195,9 +195,11 @@ const StepPayment = (): JSX.Element => {
   usePaymentStepAnimations(containerRef);
 
   const addressRequired = hasField('delivery_address');
+  const phoneRequiredValidator = attrByMarker.get('contact_phone')?.validators?.requiredValidator;
   const phoneRequired =
     hasField('contact_phone') &&
-    attrByMarker.get('contact_phone')?.validators?.requiredValidator?.strict === true;
+    typeof phoneRequiredValidator === 'object' &&
+    phoneRequiredValidator.strict === true;
 
   const onNext = async () => {
     if (!identifier) return;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { IOrderByMarkerEntity } from 'oneentry/types';
+import type { IOrderByMarkerEntity, IOrderProducts, IProductsEntity } from 'oneentry/types';
 
 import { DELIVERY_PRODUCT_ID } from '@/app/utils/constants';
 import {
@@ -7,6 +7,8 @@ import {
   formatOrderNumber,
   HISTORY_STATUSES,
   isHistoryOrder,
+  orderProductPreview,
+  orderProductTitle,
   statusLabel,
 } from '@/components/profile/orders/orderUtils';
 
@@ -128,5 +130,76 @@ describe('computeTotals', () => {
       discount: 0,
       total: 0,
     });
+  });
+});
+
+/** Build a minimal IOrderProducts line item — only the fields the helpers read. */
+const line = (overrides: Partial<IOrderProducts> = {}): IOrderProducts =>
+  ({ id: 7, title: 'Soup', previewImage: null, ...overrides }) as unknown as IOrderProducts;
+
+const pic = (previewLink: string) => ({
+  filename: 'a.jpg',
+  downloadLink: 'https://cdn/a.jpg',
+  size: 1,
+  previewLink,
+});
+
+describe('orderProductPreview', () => {
+  it('reads previewLink of a single picture', () => {
+    expect(orderProductPreview(line({ previewImage: pic('https://cdn/p.jpg') }))).toBe(
+      'https://cdn/p.jpg'
+    );
+  });
+
+  it('takes the first picture of an array', () => {
+    expect(
+      orderProductPreview(
+        line({ previewImage: [pic('https://cdn/1.jpg'), pic('https://cdn/2.jpg')] })
+      )
+    ).toBe('https://cdn/1.jpg');
+  });
+
+  it('reads the http URL out of the object form the API actually sends', () => {
+    const real = {
+      filename: 'a.jpeg',
+      downloadLink: 'https://cdn/a.jpeg',
+      size: 1,
+      previewLink: {
+        preview: ['data:image/webp;base64,AAAA', 'https://cdn/a.preview.preview.jpeg'],
+      },
+    } as unknown as ReturnType<typeof pic>;
+    expect(orderProductPreview(line({ previewImage: [real] }))).toBe(
+      'https://cdn/a.preview.preview.jpeg'
+    );
+  });
+
+  it('returns undefined when the object form holds no http URL', () => {
+    const dataOnly = {
+      ...pic(''),
+      previewLink: { preview: ['data:image/webp;base64,AAAA'] },
+    } as unknown as ReturnType<typeof pic>;
+    expect(orderProductPreview(line({ previewImage: [dataOnly] }))).toBeUndefined();
+  });
+
+  it('returns undefined for an empty array, null or an empty link', () => {
+    expect(orderProductPreview(line({ previewImage: [] }))).toBeUndefined();
+    expect(orderProductPreview(line({ previewImage: null }))).toBeUndefined();
+    expect(orderProductPreview(line({ previewImage: pic('') }))).toBeUndefined();
+  });
+});
+
+describe('orderProductTitle', () => {
+  const full = { localizeInfos: { title: 'Borscht' } } as unknown as IProductsEntity;
+
+  it('prefers the line item title', () => {
+    expect(orderProductTitle(line({ title: 'Soup' }), full)).toBe('Soup');
+  });
+
+  it('falls back to the full product title when the line item title is null', () => {
+    expect(orderProductTitle(line({ title: null }), full)).toBe('Borscht');
+  });
+
+  it('returns an empty string when nothing is known', () => {
+    expect(orderProductTitle(line({ title: null }))).toBe('');
   });
 });

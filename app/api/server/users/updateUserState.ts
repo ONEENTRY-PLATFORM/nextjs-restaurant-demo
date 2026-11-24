@@ -1,4 +1,4 @@
-import type { IAuthFormData, IUserEntity } from 'oneentry/types';
+import type { FormDataType, IUserEntity } from 'oneentry/types';
 
 import { getApi, isError } from '@/app/api/api/api';
 import type { IProducts } from '@/app/types/global';
@@ -29,12 +29,12 @@ export const updateUserState = async ({
     item !== null &&
     typeof (item as { marker?: unknown }).marker === 'string';
 
-  const formData: IAuthFormData[] = user.formData
+  const formData: FormDataType[] = user.formData
     .filter(hasMarker)
     .filter(item => item.marker !== 'otp_code')
     .map(item => ({
       marker: item.marker,
-      type: 'string',
+      type: 'string' as const,
       value: String(item.value ?? ''),
     }));
 
